@@ -1,7 +1,9 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
-        "rootDir": "scripts/",
+        "rootDirs": [
+            "scripts"
+        ],
         "outDir": "src",
         "jsx": "react",
         "target": "es2017"

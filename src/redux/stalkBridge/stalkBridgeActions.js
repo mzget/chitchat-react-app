@@ -10,38 +10,16 @@ import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
 import Store from "../configureStore";
 import * as ChatLogsActions from "../chatlogs/chatlogsActions";
 import * as StalkPushActions from "./stalkPushActions";
-import AccountService from "../../servicesAccess/accountService";
 export const STALK_GET_PRIVATE_CHAT_ROOM_ID_REQUEST = "STALK_GET_PRIVATE_CHAT_ROOM_ID_REQUEST";
 export const STALK_GET_PRIVATE_CHAT_ROOM_ID_FAILURE = "STALK_GET_PRIVATE_CHAT_ROOM_ID_FAILURE";
 export const STALK_GET_PRIVATE_CHAT_ROOM_ID_SUCCESS = "STALK_GET_PRIVATE_CHAT_ROOM_ID_SUCCESS";
 const onGetContactProfileFail = (contact_id) => {
-    let dataManager = BackendFactory.getInstance().dataManager;
-    AccountService.getInstance().getUserInfo(contact_id).then(result => result.json()).then(result => {
-        let user = result.data[0];
-        let contact = {
-            _id: user._id, displayname: `${user.first_name} ${user.last_name}`, status: "", image: user.avatar
-        };
-        dataManager.setContactProfile(user._id, contact);
-    }).catch(err => {
-        console.log("get userInfo fail", err);
-    });
 };
 export function getUserInfo(userId, callback) {
     let self = this;
     let dataManager = BackendFactory.getInstance().dataManager;
     let user = dataManager.getContactProfile(userId);
     if (!user) {
-        AccountService.getInstance().getUserInfo(userId).then(result => result.json()).then(result => {
-            let user = result.data[0];
-            let contact = {
-                _id: user._id, displayname: `${user.first_name} ${user.last_name}`, status: "", image: user.avatar
-            };
-            dataManager.setContactProfile(user._id, contact);
-            callback(contact);
-        }).catch(err => {
-            console.log("get userInfo fail", err);
-            callback(null);
-        });
     }
     else {
         callback(user);

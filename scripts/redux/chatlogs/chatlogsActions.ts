@@ -3,8 +3,7 @@
  *
  * This is pure function action for redux app.
  */
-
-import * as async from "async";
+import * as async from "async-es";
 
 import BackendFactory from "../../chats/BackendFactory";
 import ChatsLogComponent, { ChatLogMap, IUnread, Unread } from "../../chats/chatslogComponent";
@@ -12,7 +11,6 @@ import ChatLog from "../../chats/models/chatLog";
 import StalkImp, { IDictionary } from "../../libs/stalk/serverImplemented";
 
 import Store from "../configureStore";
-import AccountService from "../../servicesAccess/accountService";
 
 export const STALK_INIT_CHATSLOG = 'STALK_INIT_CHATSLOG';
 export const STALK_GET_CHATSLOG_COMPLETE = 'STALK_GET_CHATSLOG_COMPLETE';
@@ -168,42 +166,6 @@ function getUnreadMessageComplete() {
     chatsLogComp.getRoomsInfo();
 
     // $rootScope.$broadcast('getunreadmessagecomplete', {});
-}
-
-export function getContactOnlineStatus() {
-    if (!BackendFactory.getInstance().stalk._isConnected) return;
-
-    const chatsLogComp: ChatsLogComponent = Store.getState().stalkReducer.chatslogComponent;
-
-    if(!chatsLogComp) return;
-    
-    let chatsLog = chatsLogComp.getChatsLog();
-    let arr_chatsLog: ChatLog[] = [];
-    Object.keys(chatsLog).forEach((key) => {
-        arr_chatsLog.push(chatsLog[key]);
-    });
-    async.map(arr_chatsLog, (log, cb) => {
-        getOnlineStatus(getChatLogContact(log)).then(onlineStatus => {
-            chatsLog[log.id].contact = onlineStatus;
-            cb(null, null);
-        }).catch(err => cb(null, null));
-    }, (err, results) => {
-        // console.log("get chatslog contact_status done.", chatsLog);
-        Store.dispatch({
-            type: STALK_CHATSLOG_CONTACT_COMPLETE,
-            payload: chatsLog
-        });
-    });
-}
-
-const getOnlineStatus = async (uid: string) => {
-    let token = Store.getState().authReducer.token;
-    let response = await AccountService.getInstance().getOnlineStatus(uid, token);
-    let value = await response.json();
-
-    if (value.success) {
-        return value.result;
-    }
 }
 
 const getChatLogContact = (chatlog: ChatLog) => {

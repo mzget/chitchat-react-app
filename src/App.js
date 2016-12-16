@@ -13,8 +13,6 @@ import Store from './redux/configureStore';
 
 class App extends Component {
   render() {
-
-
     var messages = [{
       message: 'How do I use this messaging app?',
       from: 'right',

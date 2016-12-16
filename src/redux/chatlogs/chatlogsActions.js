@@ -1,13 +1,6 @@
-/**
- * Copyright 2016 Ahoo Studio.co.th.
- *
- * This is pure function action for redux app.
- */
-import * as async from "async";
 import BackendFactory from "../../chats/BackendFactory";
 import ChatsLogComponent, { Unread } from "../../chats/chatslogComponent";
 import Store from "../configureStore";
-import AccountService from "../../servicesAccess/accountService";
 export const STALK_INIT_CHATSLOG = 'STALK_INIT_CHATSLOG';
 export const STALK_GET_CHATSLOG_COMPLETE = 'STALK_GET_CHATSLOG_COMPLETE';
 export const STALK_UNREAD_MAP_CHANGED = 'STALK_UNREAD_MAP_CHANGED';
@@ -136,38 +129,6 @@ function getUnreadMessageComplete() {
     chatsLogComp.getRoomsInfo();
     // $rootScope.$broadcast('getunreadmessagecomplete', {});
 }
-export function getContactOnlineStatus() {
-    if (!BackendFactory.getInstance().stalk._isConnected)
-        return;
-    const chatsLogComp = Store.getState().stalkReducer.chatslogComponent;
-    if (!chatsLogComp)
-        return;
-    let chatsLog = chatsLogComp.getChatsLog();
-    let arr_chatsLog = [];
-    Object.keys(chatsLog).forEach((key) => {
-        arr_chatsLog.push(chatsLog[key]);
-    });
-    async.map(arr_chatsLog, (log, cb) => {
-        getOnlineStatus(getChatLogContact(log)).then(onlineStatus => {
-            chatsLog[log.id].contact = onlineStatus;
-            cb(null, null);
-        }).catch(err => cb(null, null));
-    }, (err, results) => {
-        // console.log("get chatslog contact_status done.", chatsLog);
-        Store.dispatch({
-            type: STALK_CHATSLOG_CONTACT_COMPLETE,
-            payload: chatsLog
-        });
-    });
-}
-const getOnlineStatus = async (uid) => {
-    let token = Store.getState().authReducer.token;
-    let response = await AccountService.getInstance().getOnlineStatus(uid, token);
-    let value = await response.json();
-    if (value.success) {
-        return value.result;
-    }
-};
 const getChatLogContact = (chatlog) => {
     let dataManager = BackendFactory.getInstance().dataManager;
     let contacts = chatlog.room.members.filter(value => {
