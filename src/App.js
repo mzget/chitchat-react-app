@@ -12,6 +12,12 @@ import './App.css';
 import Store from './redux/configureStore';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    console.log(this.props);
+  }
+
   render() {
     var messages = [{
       message: 'How do I use this messaging app?',
