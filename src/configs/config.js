@@ -35,18 +35,27 @@ const devConfig = {
         chat: "git.animation-genius.com",
         // chat: "192.168.1.5",
         port: "3010",
+    },
+    appConfig: {
+        encryption: false
     }
 };
 const masterConfig = {
     Stalk: {
         chat: "git.animation-genius.com",
         port: "3010",
+    },
+    appConfig: {
+        encryption: false
     }
 };
 const productionConfig = {
     Stalk: {
         chat: "git.animation-genius.com",
         port: "3010",
+    },
+    appConfig: {
+        encryption: false
     }
 };
 const composeMyconfig = (config) => {

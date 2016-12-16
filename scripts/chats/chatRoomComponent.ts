@@ -14,8 +14,7 @@ import ServerEventListener from "../libs/stalk/serverEventListener";
 import { absSpartan } from "../libs/stalk/spartanEvents";
 import { IMessageDAL } from "../libs/chitchat/dataAccessLayer/IMessageDAL";
 import MessageDALFactory from "../libs/chitchat/dataAccessLayer/messageDALFactory";
-import { ISecureService } from "../libs/chitchat/services/ISecureService";
-import SecureServiceFactory from "../libs/chitchat/services/secureServiceFactory";
+import SecureServiceFactory from "../libs/stalk/services/secureServiceFactory";
 import { ContentType, Member, Message } from "./models/ChatDataModels";
 
 import Config from "../configs/config";
@@ -43,7 +42,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         this.roomId = rid;
     }
     private messageDAL: IMessageDAL;
-    private secure: ISecureService;
+    private secure: SecureServiceFactory;
 
     constructor() {
         this.secure = SecureServiceFactory.getService();

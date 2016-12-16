@@ -7,7 +7,7 @@
 import ChatRoomComponent from "../../chats/chatRoomComponent";
 import DataListener from "../../chats/dataListener";
 import BackendFactory from "../../chats/BackendFactory";
-import SecureServiceFactory from "../../libs/chitchat/services/secureServiceFactory";
+import SecureServiceFactory from "../../libs/stalk/services/secureServiceFactory";
 import ServerEventListener from "../../libs/stalk/serverEventListener";
 import { IMessage } from "../../libs/stalk/chatRoomApiProvider";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";

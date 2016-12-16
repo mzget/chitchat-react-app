@@ -8,7 +8,7 @@ import BackendFactory from "./BackendFactory";
 import ServerImplemented from "../libs/stalk/serverImplemented";
 import ServerEventListener from "../libs/stalk/serverEventListener";
 import MessageDALFactory from "../libs/chitchat/dataAccessLayer/messageDALFactory";
-import SecureServiceFactory from "../libs/chitchat/services/secureServiceFactory";
+import SecureServiceFactory from "../libs/stalk/services/secureServiceFactory";
 import { ContentType } from "./models/ChatDataModels";
 import Config from "../configs/config";
 let serverImp = null;

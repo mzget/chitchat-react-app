@@ -5,7 +5,7 @@
  */
 import ChatRoomComponent from "../../chats/chatRoomComponent";
 import BackendFactory from "../../chats/BackendFactory";
-import SecureServiceFactory from "../../libs/chitchat/services/secureServiceFactory";
+import SecureServiceFactory from "../../libs/stalk/services/secureServiceFactory";
 import ServerEventListener from "../../libs/stalk/serverEventListener";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
 import { ContentType } from "../../chats/models/ChatDataModels";
