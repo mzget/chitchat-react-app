@@ -1,0 +1,12 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "rootDir": "scripts/",
+        "outDir": "src",
+        "jsx": "react",
+        "target": "es2017"
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}

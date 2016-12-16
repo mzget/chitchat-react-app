@@ -3,11 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "react-scripts": "0.8.4"
+    "@types/immutable": "^3.8.6",
+    "@types/isomorphic-fetch": "0.0.31",
+    "@types/react-redux": "^4.4.35",
+    "@types/redux": "^3.6.0",
+    "@types/redux-logger": "^2.6.32",
+    "react-scripts": "0.8.4",
+    "redux-devtools": "^3.3.1",
+    "redux-devtools-dock-monitor": "^1.1.1",
+    "redux-devtools-log-monitor": "^1.1.1"
   },
   "dependencies": {
+    "chat-template": "0.0.22",
+    "immutable": "^3.8.1",
+    "isomorphic-fetch": "^2.2.1",
     "react": "^15.4.1",
-    "react-dom": "^15.4.1"
+    "react-dom": "^15.4.1",
+    "react-redux": "^5.0.1",
+    "redux": "^3.6.0",
+    "redux-logger": "^2.7.4",
+    "redux-observable": "^0.12.2",
+    "rxjs": "^5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
