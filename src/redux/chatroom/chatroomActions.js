@@ -5,11 +5,10 @@
  */
 import ChatRoomComponent from "../../chats/chatRoomComponent";
 import BackendFactory from "../../chats/BackendFactory";
-import SecureServiceFactory from "../../libs/stalk/services/secureServiceFactory";
+import SecureServiceFactory from "../../libs/chitchat/services/secureServiceFactory";
 import ServerEventListener from "../../libs/stalk/serverEventListener";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
 import { ContentType } from "../../chats/models/ChatDataModels";
-import NotificationManager from '../../chats/notificationManager';
 import Store from "../configureStore";
 import Config from "../../configs/config";
 /**
@@ -44,7 +43,7 @@ export function initChatRoom(currentRoom) {
         let chatroomComp = ChatRoomComponent.getInstance();
         chatroomComp.setRoomId(currentRoom._id);
         BackendFactory.getInstance().dataListener.addChatListenerImp(chatroomComp);
-        NotificationManager.getInstance().unsubscribeGlobalNotifyMessageEvent();
+        // NotificationManager.getInstance().unsubscribeGlobalNotifyMessageEvent();
         chatroomComp.chatroomDelegate = onChatRoomDelegate;
         chatroomComp.outsideRoomDelegete = onOutSideRoomDelegate;
     };
@@ -82,7 +81,6 @@ function onChatRoomDelegate(event, newMsg) {
 function onOutSideRoomDelegate(event, data) {
     if (event === ServerEventListener.ON_CHAT) {
         console.log("Call notification here..."); //active, background, inactive
-        NotificationManager.getInstance().notify(data);
     }
 }
 function replaceMyMessage(receiveMsg) {
@@ -287,7 +285,7 @@ export function leaveRoom() {
                 console.log("leaveRoom result", res);
                 BackendFactory.getInstance().dataListener.removeChatListenerImp(room);
                 ChatRoomComponent.getInstance().dispose();
-                NotificationManager.getInstance().regisNotifyNewMessageEvent();
+                // NotificationManager.getInstance().regisNotifyNewMessageEvent();
             });
         }).catch(err => {
         });

@@ -1,5 +1,8 @@
 const CryptoJS = require('crypto-js');
-export default class NodeSecureService {
+
+import { ISecureService } from "./ISecureService";
+
+export default class NodeSecureService implements ISecureService {
     key: string;
     passiv: string;
 
@@ -31,7 +34,7 @@ export default class NodeSecureService {
         let ciphertext = CryptoJS.AES.encrypt(content, key, { iv: iv });
         callback(null, ciphertext.toString());
     }
-    decryptWithSecureRandom(content, callback) {
+    public decryptWithSecureRandom(content, callback) {
         let self = this;
         let key = CryptoJS.enc.Utf8.parse(self.key);
         let iv = CryptoJS.enc.Utf8.parse(self.passiv);

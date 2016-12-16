@@ -16,7 +16,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 */
 // import { messageReducer, MessageInitState } from "./message/messageReducer";
 import { stalkReducer, StalkInitState } from "./stalkBridge/stalkReducer";
-// import { chatRoomReducer, ChatRoomInitState } from "./chatroom/chatroomReducer";
+import { chatRoomReducer, ChatRoomInitState } from "./chatroom/chatroomReducer";
 
 /**
  * ## CombineReducers
@@ -27,7 +27,7 @@ import { stalkReducer, StalkInitState } from "./stalkBridge/stalkReducer";
 const appReducer = combineReducers({
     // messageReducer,
     stalkReducer,
-    // chatRoomReducer,
+    chatRoomReducer,
 });
 
 /*
@@ -40,7 +40,7 @@ export function getInitialState() {
         // Initial state for any reducer.
         // messageReducer: new MessageInitState,
         stalkReducer: new StalkInitState,
-        // chatRoomReducer: new ChatRoomInitState,
+        chatRoomReducer: new ChatRoomInitState,
 
     };
     return _initState;

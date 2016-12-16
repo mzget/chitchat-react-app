@@ -9,6 +9,7 @@ class App extends Component {
     super(props);
 
     console.log(this.props);
+    console.log(global.userAgent);
   }
 
   render() {

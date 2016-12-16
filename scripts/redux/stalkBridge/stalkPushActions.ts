@@ -22,26 +22,5 @@ export function stalkPushInit() {
 }
 
 function onPush_handler(dataEvent) {
-    //  console.log(`Event : ${dataEvent}`);
-
-    if (dataEvent) {
-        let profile: Account = Store.getState().profileReducer.form.profile;
-
-        switch (dataEvent.event) {
-            case LINK_REQUEST: {
-                Store.dispatch(ProfileActions.getLinkRequestFromNet(profile.email));
-                break;
-            }
-            case LINK_ACCEPTED: {
-                Store.dispatch(ProfileActions.getLinkRequestFromNet(profile.email));
-                break;
-            }
-            case NEW_NOTICE:
-                {
-                    Store.dispatch(notificationsActions.getNotifications(profile._id))
-                } break;
-
-            default: { console.log(`Other : ${dataEvent}`); } break;
-        }
-    }
+    console.log(`Event : ${dataEvent}`);
 }

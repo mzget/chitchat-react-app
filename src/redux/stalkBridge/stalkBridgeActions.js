@@ -4,7 +4,7 @@
  * This is pure function action for redux app.
  */
 import BackendFactory from "../../chats/BackendFactory";
-import NotificationManager from "../../chats/notificationManager";
+// import NotificationManager from "../../chats/notificationManager";
 import * as DataModels from "../../chats/models/ChatDataModels";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
 import Store from "../configureStore";
@@ -35,7 +35,7 @@ export function stalkLogin(uid, token) {
             if (result.success) {
                 backendFactory.getServerListener();
                 backendFactory.startChatServerListener();
-                NotificationManager.getInstance().regisNotifyNewMessageEvent();
+                // NotificationManager.getInstance().regisNotifyNewMessageEvent();
                 let msg = {};
                 msg["token"] = token;
                 backendFactory.getServer().then(server => {

@@ -7,12 +7,12 @@
 import ChatRoomComponent from "../../chats/chatRoomComponent";
 import DataListener from "../../chats/dataListener";
 import BackendFactory from "../../chats/BackendFactory";
-import SecureServiceFactory from "../../libs/stalk/services/secureServiceFactory";
+import SecureServiceFactory from "../../libs/chitchat/services/secureServiceFactory";
 import ServerEventListener from "../../libs/stalk/serverEventListener";
 import { IMessage } from "../../libs/stalk/chatRoomApiProvider";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
 import { ContentType, Message, Room, RoomType } from "../../chats/models/ChatDataModels";
-import NotificationManager from '../../chats/notificationManager';
+// import NotificationManager from '../../chats/notificationManager';
 
 import { Account } from "../../dataAccess/AppAccount";
 
@@ -62,7 +62,7 @@ export function initChatRoom(currentRoom: Room) {
         chatroomComp.setRoomId(currentRoom._id);
         BackendFactory.getInstance().dataListener.addChatListenerImp(chatroomComp);
 
-        NotificationManager.getInstance().unsubscribeGlobalNotifyMessageEvent();
+        // NotificationManager.getInstance().unsubscribeGlobalNotifyMessageEvent();
 
         chatroomComp.chatroomDelegate = onChatRoomDelegate;
         chatroomComp.outsideRoomDelegete = onOutSideRoomDelegate;
@@ -104,7 +104,7 @@ function onChatRoomDelegate(event, newMsg) {
 function onOutSideRoomDelegate(event, data) {
     if (event === ServerEventListener.ON_CHAT) {
         console.log("Call notification here..."); //active, background, inactive
-        NotificationManager.getInstance().notify(data);
+        // NotificationManager.getInstance().notify(data);
     }
 }
 function replaceMyMessage(receiveMsg) {
@@ -332,7 +332,7 @@ export function leaveRoom() {
 
                 BackendFactory.getInstance().dataListener.removeChatListenerImp(room);
                 ChatRoomComponent.getInstance().dispose();
-                NotificationManager.getInstance().regisNotifyNewMessageEvent();
+                // NotificationManager.getInstance().regisNotifyNewMessageEvent();
             });
         }).catch(err => {
 
