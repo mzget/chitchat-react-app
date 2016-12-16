@@ -24,7 +24,7 @@ export const StalkInitState = Record({
     isFetching: false,
     state: null
 });
-const initialState = new StalkInitState;
+const initialState = new StalkInitState();
 
 export function stalkReducer(state = initialState, action) {
     if (!(state instanceof StalkInitState)) return initialState.mergeDeep(state);

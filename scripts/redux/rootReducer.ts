@@ -39,8 +39,8 @@ export function getInitialState() {
     const _initState = {
         // Initial state for any reducer.
         // messageReducer: new MessageInitState,
-        stalkReducer: new StalkInitState,
-        chatRoomReducer: new ChatRoomInitState,
+        stalkReducer: new StalkInitState(),
+        chatRoomReducer: new ChatRoomInitState(),
 
     };
     return _initState;

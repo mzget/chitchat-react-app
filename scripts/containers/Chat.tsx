@@ -19,6 +19,8 @@ class Chat extends React.Component<any, any> {
 
         let { chatRoomReducer } = this.props;
 
+        console.log(this.props);
+
         if (chatRoomReducer.state == chatRoomActions.ChatRoomActionsType.SELECT_CHAT_ROOM) {
             //@ todo
             // - Init chatroom service.
