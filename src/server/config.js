@@ -1,17 +1,14 @@
 const dev = {
-    appDB: "mongodb://git.animation-genius.com:27017/smelink",
-    appDB2: "mongodb://smelink:1234@smelink.animation-genius.com:27017/smelink"
+    appDB: "mongodb://git.animation-genius.com:27017/smelink-yii"
 };
 const master = {
-    appDB: "mongodb://git.animation-genius.com:27017/smelink-master",
-    appDB2: "mongodb://smelink:1234@smelink.animation-genius.com:27017/smelink"
+    appDB: "mongodb://git.animation-genius.com:27017/smelink-master"
 };
 const production = {
-    appDB: "mongodb://git.animation-genius.com:27017/smelink-master",
-    appDB2: "mongodb://smelink:1234@smelink.animation-genius.com:27017/smelink"
+    appDB: "mongodb://git.animation-genius.com:27017/smelink-master"
 };
 export function getConfig() {
-    let conf = (process.env.NODE_ENV === `production`) ? production : master;
+    let conf = (process.env.NODE_ENV === `production`) ? production : dev;
     return conf;
 }
 export const DbClient = {

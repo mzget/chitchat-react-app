@@ -1,25 +1,21 @@
 type Config = {
-    appDB: string,
-    appDB2: string
+    appDB: string
 }
 
 const dev: Config = {
-    appDB: "mongodb://git.animation-genius.com:27017/smelink",
-    appDB2: "mongodb://smelink:1234@smelink.animation-genius.com:27017/smelink"
+    appDB: "mongodb://git.animation-genius.com:27017/smelink-yii"
 }
 
 const master: Config = {
-    appDB: "mongodb://git.animation-genius.com:27017/smelink-master",
-    appDB2: "mongodb://smelink:1234@smelink.animation-genius.com:27017/smelink"
+    appDB: "mongodb://git.animation-genius.com:27017/smelink-master"
 }
 
 const production: Config = {
-    appDB: "mongodb://git.animation-genius.com:27017/smelink-master",
-    appDB2: "mongodb://smelink:1234@smelink.animation-genius.com:27017/smelink"
+    appDB: "mongodb://git.animation-genius.com:27017/smelink-master"
 }
 
 export function getConfig(): Config {
-    let conf = (process.env.NODE_ENV === `production`) ? production : master;
+    let conf = (process.env.NODE_ENV === `production`) ? production : dev;
 
     return conf;
 }
