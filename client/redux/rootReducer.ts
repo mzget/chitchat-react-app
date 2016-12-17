@@ -16,7 +16,7 @@ import * as rootRxEpic from "./rootRxEpic";
 * ## Reducers
 */
 // import { messageReducer, MessageInitState } from "./message/messageReducer";
-import { authReducer, AuthInitState, usersReducer } from "./auth/authActions";
+import { UserInitState, usersReducer } from "./user/userActions";
 import { stalkReducer, StalkInitState } from "./stalkBridge/stalkReducer";
 import { chatRoomReducer, ChatRoomInitState } from "./chatroom/chatroomReducer";
 
@@ -27,7 +27,6 @@ import { chatRoomReducer, ChatRoomInitState } from "./chatroom/chatroomReducer";
  * EVERY TIME there is a basic action
  */
 const appReducer = combineReducers({
-    authReducer,
     // messageReducer,
     stalkReducer,
     chatRoomReducer,
@@ -42,11 +41,10 @@ const appReducer = combineReducers({
 export function getInitialState() {
     const _initState = {
         // Initial state for any reducer.
-        authReducer: AuthInitState,
         // messageReducer: new MessageInitState,
         stalkReducer: new StalkInitState(),
         chatRoomReducer: new ChatRoomInitState(),
-        usersReducer: {}
+        usersReducer: new UserInitState()
     };
     return _initState;
 }

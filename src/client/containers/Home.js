@@ -8,15 +8,19 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 import * as React from "react";
 import { connect } from "react-redux";
-import * as authActions from "../redux/auth/authActions";
+import * as userActions from "../redux/user/userActions";
 ;
 ;
 class Home extends React.Component {
     componentDidMount() {
         console.log("Home", this.props);
-        let { location: { query: { userId, username, roomId } } } = this.props;
-        if (username)
-            this.props.dispatch(authActions.fetchUser(username));
+        let { location: { query: { userId, username, roomId, contactId } } } = this.props;
+        if (username) {
+            this.props.dispatch(userActions.fetchUser(username));
+        }
+        if (contactId) {
+            this.props.dispatch(userActions.fetchContact(contactId));
+        }
         // StalkBridgeActions.stalkLogin(this.props.location.query.agentId, "");
         if (this.props.location.query.roomId) {
         }

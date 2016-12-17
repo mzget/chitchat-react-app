@@ -1,3 +1,3 @@
 import { combineEpics } from 'redux-observable';
-import * as authActions from "./auth/authActions";
-export const rootEpic = combineEpics(authActions.fetchUserEpic);
+import * as userActions from "./user/userActions";
+export const rootEpic = combineEpics(userActions.fetchUserEpic, userActions.fetchContactEpic);

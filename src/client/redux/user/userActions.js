@@ -1,24 +1,9 @@
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 import config from "../../configs/config";
-import { createAction, handleActions } from 'redux-actions';
+import { createAction } from 'redux-actions';
+import { Record } from "immutable";
 const Rx = require('rxjs/Rx');
 const { ajax } = Rx.Observable;
 export const AUTH_REQUEST = "AUTH_REQUEST";
-export const AuthInitState = {
-    token: null,
-    isFetching: false,
-    state: null
-};
-export const authReducer = handleActions({
-    AUTH_REQUEST: (state, action) => (__assign({ isFetching: true }, state)),
-}, AuthInitState);
 let auth_request = createAction(AUTH_REQUEST);
 const FETCH_USER = 'FETCH_USER';
 const FETCH_USER_FULFILLED = 'FETCH_USER_FULFILLED';
@@ -33,18 +18,32 @@ export const fetchUserEpic = action$ => action$.ofType(FETCH_USER)
     .map(fetchUserFulfilled)
     .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
     .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response))));
-export const usersReducer = (state = {}, action) => {
+const FETCH_CONTACT = "FETCH_CONTACT";
+const FETCH_CONTACT_SUCCESS = 'FETCH_CONTACT_SUCCESS';
+export const fetchContact = (contactId) => ({ type: FETCH_CONTACT, payload: contactId });
+const fetchContactSuccess = payload => ({ type: FETCH_CONTACT_SUCCESS, payload });
+export const fetchContactEpic = action$ => action$.ofType(FETCH_CONTACT)
+    .mergeMap(action => ajax.getJSON(`${config.api.usersApi}/${action.payload}`)
+    .map(fetchContactSuccess)
+    .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
+    .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response))));
+export const UserInitState = Record({
+    token: null,
+    isFetching: false,
+    state: null,
+    user: null,
+    contact: null
+});
+export const usersReducer = (state = new UserInitState(), action) => {
     switch (action.type) {
         case FETCH_USER_FULFILLED:
-            console.log(FETCH_USER_FULFILLED, action.payload);
-            return __assign({}, state, { 
-                // `login` is the username
-                [action.payload.login]: action.payload });
-        case FETCH_USER_FULFILLED:
+            return state.set("user", action.payload.result[0]);
         case FETCH_USER_CANCELLED:
-            return false;
+            return state;
         case FETCH_USER_REJECTED:
             return action.payload;
+        case FETCH_CONTACT_SUCCESS:
+            return state.set("contact", action.payload.result[0]);
         default:
             return state;
     }

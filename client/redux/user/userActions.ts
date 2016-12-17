@@ -1,30 +1,14 @@
 import config from "../../configs/config";
 import { createAction, handleActions } from 'redux-actions';
-
+import { Record } from "immutable";
 
 const Rx = require('rxjs/Rx');
 const { ajax } = Rx.Observable;
 
 export const AUTH_REQUEST = "AUTH_REQUEST";
-
-export const AuthInitState = {
-  token: null,
-  isFetching: false,
-  state: null
-};
-export const authReducer = handleActions({
-  AUTH_REQUEST: (state, action) => ({
-    isFetching: true, ...state
-  }),
-
-  // DECREMENT: (state, action) => ({
-  //     counter: state.counter - action.payload
-  // })
-}, AuthInitState);
-
-
-
 let auth_request = createAction(AUTH_REQUEST);
+
+
 
 const FETCH_USER = 'FETCH_USER';
 const FETCH_USER_FULFILLED = 'FETCH_USER_FULFILLED';
@@ -47,21 +31,41 @@ export const fetchUserEpic = action$ =>
         ))
     );
 
+const FETCH_CONTACT = "FETCH_CONTACT";
+const FETCH_CONTACT_SUCCESS = 'FETCH_CONTACT_SUCCESS';
 
-export const usersReducer = (state = {}, action: ReduxActions.Action<any>) => {
+export const fetchContact = (contactId: string) => ({ type: FETCH_CONTACT, payload: contactId });
+const fetchContactSuccess = payload => ({ type: FETCH_CONTACT_SUCCESS, payload });
+export const fetchContactEpic = action$ => action$.ofType(FETCH_CONTACT)
+  .mergeMap(action =>
+    ajax.getJSON(`${config.api.usersApi}/${action.payload}`)
+      .map(fetchContactSuccess)
+      .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
+      .catch(error => Rx.Observable.of(
+        fetchUserRejected(error.xhr.response)
+      ))
+  );
+
+
+export const UserInitState = Record({
+  token: null,
+  isFetching: false,
+  state: null,
+  user: null,
+  contact: null
+});
+export const usersReducer = (state = new UserInitState(), action: ReduxActions.Action<any>) => {
   switch (action.type) {
     case FETCH_USER_FULFILLED:
-      console.log(FETCH_USER_FULFILLED, action.payload);
-      return {
-        ...state,
-        // `login` is the username
-        [action.payload.login]: action.payload
-      };
-    case FETCH_USER_FULFILLED:
+      return state.set("user", action.payload.result[0]);
     case FETCH_USER_CANCELLED:
-      return false;
+      return state;
     case FETCH_USER_REJECTED:
       return action.payload;
+
+    case FETCH_CONTACT_SUCCESS:
+      return state.set("contact", action.payload.result[0]);
+
     default:
       return state;
   }

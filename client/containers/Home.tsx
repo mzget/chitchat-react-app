@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 
 
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
-import * as authActions from "../redux/auth/authActions";
+import * as userActions from "../redux/user/userActions";
 
 interface IComponentNameProps {
     location: {
@@ -28,10 +28,14 @@ class Home extends React.Component<IComponentNameProps, any> {
     componentDidMount() {
         console.log("Home", this.props);
 
-        let { location: {query: {userId, username, roomId}} } = this.props;
+        let { location: {query: {userId, username, roomId, contactId}} } = this.props;
 
-        if (username)
-            this.props.dispatch(authActions.fetchUser(username));
+        if (username) {
+            this.props.dispatch(userActions.fetchUser(username));
+        }
+        if (contactId) {
+            this.props.dispatch(userActions.fetchContact(contactId));
+        }
         // StalkBridgeActions.stalkLogin(this.props.location.query.agentId, "");
 
         if (this.props.location.query.roomId) {
