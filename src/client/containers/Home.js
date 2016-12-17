@@ -14,13 +14,15 @@ import * as authActions from "../redux/auth/authActions";
 class Home extends React.Component {
     componentDidMount() {
         console.log("Home", this.props);
-        this.props.dispatch(authActions.fetchUser("mzget"));
+        let { location: { query: { userId, username, roomId } } } = this.props;
+        if (username)
+            this.props.dispatch(authActions.fetchUser(username));
         // StalkBridgeActions.stalkLogin(this.props.location.query.agentId, "");
         if (this.props.location.query.roomId) {
         }
     }
     render() {
-        return (React.createElement("span", null, "Body"));
+        return (React.createElement("span", null, "Welcome to stalk chat service."));
     }
 }
 /**

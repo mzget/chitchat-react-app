@@ -46,6 +46,5 @@ export function getInitialState() {
     return _initState;
 }
 export const rootReducer = (state, action) => {
-    console.log("rootReducer", action.type, action.payload);
     return appReducer(state, action);
 };

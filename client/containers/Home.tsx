@@ -13,9 +13,10 @@ import * as authActions from "../redux/auth/authActions";
 interface IComponentNameProps {
     location: {
         query: {
+            contactId: string;
             userId: string;
-            agentId: string;
             roomId: string;
+            username: string;
         }
     };
     dispatch
@@ -27,7 +28,10 @@ class Home extends React.Component<IComponentNameProps, any> {
     componentDidMount() {
         console.log("Home", this.props);
 
-        this.props.dispatch(authActions.fetchUser("mzget"));
+        let { location: {query: {userId, username, roomId}} } = this.props;
+
+        if (username)
+            this.props.dispatch(authActions.fetchUser(username));
         // StalkBridgeActions.stalkLogin(this.props.location.query.agentId, "");
 
         if (this.props.location.query.roomId) {
@@ -36,7 +40,7 @@ class Home extends React.Component<IComponentNameProps, any> {
     }
 
     public render(): JSX.Element {
-        return (<span>Body</span>);
+        return (<span>Welcome to stalk chat service.</span>);
     }
 }
 

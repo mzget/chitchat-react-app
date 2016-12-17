@@ -10,17 +10,17 @@ const webConfig = config_1.getConfig();
 router.get('/', function (req, res, next) {
     res.send('respond with a resource');
 });
-router.get('/:id', (req, res, next) => {
-    req.checkParams("id", "Request for id as param").notEmpty();
+router.get('/:username', (req, res, next) => {
+    req.checkParams("username", "Request for id as param").notEmpty();
     let errors = req.validationErrors();
     if (errors) {
         return res.status(500).json({ success: false, message: errors });
     }
     MongoClient.connect(webConfig.appDB).then(db => {
         let collection = db.collection(config_1.DbClient.user);
-        collection.find({ _id: new ObjectID(req.params.id) }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
+        collection.find({ username: req.params.username }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
             if (docs.length >= 1) {
-                res.status(200).json({ success: true, data: docs });
+                res.status(200).json({ success: true, result: docs });
                 db.close();
             }
             else {

@@ -27,11 +27,12 @@ const FETCH_USER_CANCELLED = 'FETCH_USER_CANCELLED';
 export const fetchUser = username => ({ type: FETCH_USER, payload: username });
 const fetchUserFulfilled = payload => ({ type: FETCH_USER_FULFILLED, payload });
 const cancelFetchUser = () => ({ type: FETCH_USER_CANCELLED });
-//
+const fetchUserRejected = payload => ({ type: FETCH_USER_REJECTED, payload, error: true });
 export const fetchUserEpic = action$ => action$.ofType(FETCH_USER)
     .mergeMap(action => ajax.getJSON(`${config.api.usersApi}/${action.payload}`)
     .map(fetchUserFulfilled)
-    .takeUntil(action$.ofType(FETCH_USER_CANCELLED)));
+    .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
+    .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response))));
 export const usersReducer = (state = {}, action) => {
     switch (action.type) {
         case FETCH_USER_FULFILLED:
@@ -42,6 +43,8 @@ export const usersReducer = (state = {}, action) => {
         case FETCH_USER_FULFILLED:
         case FETCH_USER_CANCELLED:
             return false;
+        case FETCH_USER_REJECTED:
+            return action.payload;
         default:
             return state;
     }
