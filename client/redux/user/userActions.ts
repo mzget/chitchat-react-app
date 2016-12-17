@@ -23,7 +23,7 @@ const fetchUserRejected = payload => ({ type: FETCH_USER_REJECTED, payload, erro
 export const fetchUserEpic = action$ =>
   action$.ofType(FETCH_USER)
     .mergeMap(action =>
-      ajax.getJSON(`${config.api.usersApi}/${action.payload}`)
+      ajax.getJSON(`${config.api.usersApi}/agent/${action.payload}`)
         .map(fetchUserFulfilled)
         .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
         .catch(error => Rx.Observable.of(
@@ -38,7 +38,7 @@ export const fetchContact = (contactId: string) => ({ type: FETCH_CONTACT, paylo
 const fetchContactSuccess = payload => ({ type: FETCH_CONTACT_SUCCESS, payload });
 export const fetchContactEpic = action$ => action$.ofType(FETCH_CONTACT)
   .mergeMap(action =>
-    ajax.getJSON(`${config.api.usersApi}/${action.payload}`)
+    ajax.getJSON(`${config.api.usersApi}/contact/${action.payload}`)
       .map(fetchContactSuccess)
       .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
       .catch(error => Rx.Observable.of(
@@ -61,7 +61,7 @@ export const usersReducer = (state = new UserInitState(), action: ReduxActions.A
     case FETCH_USER_CANCELLED:
       return state;
     case FETCH_USER_REJECTED:
-      return action.payload;
+      return state;
 
     case FETCH_CONTACT_SUCCESS:
       return state.set("contact", action.payload.result[0]);

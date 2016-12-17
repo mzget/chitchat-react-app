@@ -1,17 +1,21 @@
 type Config = {
-    appDB: string
+    appDB: string,
+    backendDB: string
 }
 
 const dev: Config = {
-    appDB: "mongodb://git.animation-genius.com:27017/smelink-yii"
+    appDB: "mongodb://git.animation-genius.com:27017/smelink",
+    backendDB: "mongodb://git.animation-genius.com:27017/smelink-yii"
 }
 
 const master: Config = {
-    appDB: "mongodb://git.animation-genius.com:27017/smelink-master"
+    appDB: "mongodb://git.animation-genius.com:27017/smelink-master",
+    backendDB: "mongodb://git.animation-genius.com:27017/smelink-yii"
 }
 
 const production: Config = {
-    appDB: "mongodb://git.animation-genius.com:27017/smelink-master"
+    appDB: "mongodb://git.animation-genius.com:27017/smelink-master",
+    backendDB: "mongodb://git.animation-genius.com:27017/smelink-yii"
 }
 
 export function getConfig(): Config {
@@ -21,5 +25,6 @@ export function getConfig(): Config {
 }
 
 export const DbClient = {
-    user: "user"
+    user: "user",
+    userContactColl: "users"
 }
