@@ -8,11 +8,17 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 import * as React from "react";
 import { connect } from "react-redux";
-import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import * as userActions from "../redux/user/userActions";
+import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 ;
 ;
 class Home extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.fetch_privateChatRoom = (roommateId, owerId) => {
+            this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
+        };
+    }
     componentDidMount() {
         console.log("Home", this.props);
         let { location: { query: { userId, username, roomId, contactId } } } = this.props;
@@ -22,7 +28,10 @@ class Home extends React.Component {
         if (contactId) {
             this.props.dispatch(userActions.fetchContact(contactId));
         }
-        StalkBridgeActions.getPrivateChatRoomId(this.props.location.query.agentId, "");
+        if (contactId && userId) {
+            this.fetch_privateChatRoom(contactId, userId);
+        }
+        // StalkBridgeActions.getPrivateChatRoomId(this.props.location.query.agentId, "");
         if (this.props.location.query.roomId) {
         }
     }

@@ -1,3 +1,4 @@
 import { combineEpics } from 'redux-observable';
 import * as userActions from "./user/userActions";
-export const rootEpic = combineEpics(userActions.fetchUserEpic, userActions.fetchContactEpic);
+import * as chatroomRxEpic from "./chatroom/chatroomRxEpic";
+export const rootEpic = combineEpics(userActions.fetchUserEpic, userActions.fetchContactEpic, chatroomRxEpic.getPrivateChatRoomEpic);

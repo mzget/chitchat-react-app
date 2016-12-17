@@ -28,7 +28,7 @@ const rest_api = (host) => {
         support: `${host}api/support/`,
         notifications: `${host}api/notification/`,
         privacy: `${host}api/privacy/`,
-        chat: `${host}api/chats`,
+        chatroom: `${host}/chatroom`,
         location: `${host}api/location/`,
     }
 }

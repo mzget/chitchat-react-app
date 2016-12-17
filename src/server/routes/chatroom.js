@@ -15,8 +15,8 @@ router.post('/', function (req, res, next) {
         return res.status(500).json({ success: false, message: errors });
     }
     let id = '';
-    let owner = req.query.ownerId;
-    let roommate = req.query.roommateId;
+    let owner = req.body.ownerId;
+    let roommate = req.body.roommateId;
     if (owner < roommate) {
         id = owner.concat(roommate);
     }

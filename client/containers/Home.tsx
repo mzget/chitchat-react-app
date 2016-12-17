@@ -6,9 +6,9 @@ import { Map } from 'immutable';
 import { bindActionCreators } from 'redux';
 import { connect } from "react-redux";
 
-
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import * as userActions from "../redux/user/userActions";
+import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 
 interface IComponentNameProps {
     location: {
@@ -36,13 +36,20 @@ class Home extends React.Component<IComponentNameProps, any> {
         if (contactId) {
             this.props.dispatch(userActions.fetchContact(contactId));
         }
+        if (contactId && userId) {
+            this.fetch_privateChatRoom(contactId, userId);
+        }
 
-        StalkBridgeActions.getPrivateChatRoomId(this.props.location.query.agentId, "");
+        // StalkBridgeActions.getPrivateChatRoomId(this.props.location.query.agentId, "");
 
         if (this.props.location.query.roomId) {
 
         }
     }
+
+    fetch_privateChatRoom = (roommateId, owerId) => {
+        this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
+    };
 
     public render(): JSX.Element {
         return (<span>Welcome to stalk chat service.</span>);

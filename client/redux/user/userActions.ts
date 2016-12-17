@@ -1,5 +1,5 @@
 import config from "../../configs/config";
-import { createAction, handleActions } from 'redux-actions';
+import { createAction } from 'redux-actions';
 import { Record } from "immutable";
 
 const Rx = require('rxjs/Rx');
