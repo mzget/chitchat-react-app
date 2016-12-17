@@ -8,8 +8,8 @@ import { connect } from "react-redux";
 
 import logo from './logo.svg';
 import './App.css';
-import Home from "./containers/Home";
-import Chat from "./containers/Chat";
+import Home from "./client/containers/Home";
+import Chat from "./client/containers/Chat";
 
 class App extends Component {
     constructor(props) {

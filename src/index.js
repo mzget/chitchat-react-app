@@ -9,7 +9,7 @@ import { Provider } from 'react-redux';
  * ### configureStore
  *  ```configureStore``` will connect the ```reducers```,
  */
-import Store from './redux/configureStore';
+import Store from './client/redux/configureStore';
 
 import App from './App';
 import './index.css';

@@ -2,11 +2,15 @@
     "compileOnSave": true,
     "compilerOptions": {
         "rootDirs": [
-            "scripts"
+            "client/"
         ],
         "outDir": "src",
         "jsx": "react",
-        "target": "es2017"
+        "target": "es2017",
+        "typeRoots": [
+            "node_modules/@types",
+            "node_modules/@reactivex/rxjs"
+        ]
     },
     "exclude": [
         "node_modules",

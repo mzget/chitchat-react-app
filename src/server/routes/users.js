@@ -17,7 +17,7 @@ router.get('/:id', (req, res, next) => {
         let collection = db.collection(DbClient.user);
         collection.find({ _id: new ObjectID(req.params.id) }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
             if (docs.length >= 1) {
-                res.status(200).json({ success: true, data: docs });
+                res.status(200).json({ success: true, result: docs });
                 db.close();
             }
             else {
