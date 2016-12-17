@@ -1,14 +1,17 @@
 const dev = {
     appDB: "mongodb://git.animation-genius.com:27017/smelink",
-    backendDB: "mongodb://git.animation-genius.com:27017/smelink-yii"
+    backendDB: "mongodb://git.animation-genius.com:27017/smelink-yii",
+    chatDB: "mongodb://git.animation-genius.com:27017/smelink-chat"
 };
 const master = {
     appDB: "mongodb://git.animation-genius.com:27017/smelink-master",
-    backendDB: "mongodb://git.animation-genius.com:27017/smelink-yii"
+    backendDB: "mongodb://git.animation-genius.com:27017/smelink-yii",
+    chatDB: "mongodb://git.animation-genius.com:27017/smelink-chat"
 };
 const production = {
     appDB: "mongodb://git.animation-genius.com:27017/smelink-master",
-    backendDB: "mongodb://git.animation-genius.com:27017/smelink-yii"
+    backendDB: "mongodb://git.animation-genius.com:27017/smelink-yii",
+    chatDB: "mongodb://git.animation-genius.com:27017/smelink-chat"
 };
 export function getConfig() {
     let conf = (process.env.NODE_ENV === `production`) ? production : dev;
@@ -16,5 +19,7 @@ export function getConfig() {
 }
 export const DbClient = {
     user: "user",
-    userContactColl: "users"
+    userContactColl: "users",
+    chatroomCall: "rooms",
+    chatUserCall: "users"
 };

@@ -8,6 +8,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 import * as React from "react";
 import { connect } from "react-redux";
+import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import * as userActions from "../redux/user/userActions";
 ;
 ;
@@ -21,7 +22,7 @@ class Home extends React.Component {
         if (contactId) {
             this.props.dispatch(userActions.fetchContact(contactId));
         }
-        // StalkBridgeActions.stalkLogin(this.props.location.query.agentId, "");
+        StalkBridgeActions.getPrivateChatRoomId(this.props.location.query.agentId, "");
         if (this.props.location.query.roomId) {
         }
     }

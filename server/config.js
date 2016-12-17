@@ -1,15 +1,18 @@
 "use strict";
 const dev = {
     appDB: "mongodb://git.animation-genius.com:27017/smelink",
-    backendDB: "mongodb://git.animation-genius.com:27017/smelink-yii"
+    backendDB: "mongodb://git.animation-genius.com:27017/smelink-yii",
+    chatDB: "mongodb://git.animation-genius.com:27017/smelink-chat"
 };
 const master = {
     appDB: "mongodb://git.animation-genius.com:27017/smelink-master",
-    backendDB: "mongodb://git.animation-genius.com:27017/smelink-yii"
+    backendDB: "mongodb://git.animation-genius.com:27017/smelink-yii",
+    chatDB: "mongodb://git.animation-genius.com:27017/smelink-chat"
 };
 const production = {
     appDB: "mongodb://git.animation-genius.com:27017/smelink-master",
-    backendDB: "mongodb://git.animation-genius.com:27017/smelink-yii"
+    backendDB: "mongodb://git.animation-genius.com:27017/smelink-yii",
+    chatDB: "mongodb://git.animation-genius.com:27017/smelink-chat"
 };
 function getConfig() {
     let conf = (process.env.NODE_ENV === `production`) ? production : dev;
@@ -18,5 +21,7 @@ function getConfig() {
 exports.getConfig = getConfig;
 exports.DbClient = {
     user: "user",
-    userContactColl: "users"
+    userContactColl: "users",
+    chatroomCall: "rooms",
+    chatUserCall: "users"
 };

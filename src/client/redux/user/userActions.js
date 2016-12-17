@@ -3,13 +3,11 @@ import { createAction } from 'redux-actions';
 import { Record } from "immutable";
 const Rx = require('rxjs/Rx');
 const { ajax } = Rx.Observable;
-export const AUTH_REQUEST = "AUTH_REQUEST";
-let auth_request = createAction(AUTH_REQUEST);
 const FETCH_USER = 'FETCH_USER';
 const FETCH_USER_FULFILLED = 'FETCH_USER_FULFILLED';
 const FETCH_USER_REJECTED = 'FETCH_USER_REJECTED';
 const FETCH_USER_CANCELLED = 'FETCH_USER_CANCELLED';
-export const fetchUser = username => ({ type: FETCH_USER, payload: username });
+export const fetchUser = createAction(FETCH_USER, username => username); // username => ({ type: FETCH_USER, payload: username });
 const fetchUserFulfilled = payload => ({ type: FETCH_USER_FULFILLED, payload });
 const cancelFetchUser = () => ({ type: FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: FETCH_USER_REJECTED, payload, error: true });
@@ -23,7 +21,7 @@ const FETCH_CONTACT_SUCCESS = 'FETCH_CONTACT_SUCCESS';
 export const fetchContact = (contactId) => ({ type: FETCH_CONTACT, payload: contactId });
 const fetchContactSuccess = payload => ({ type: FETCH_CONTACT_SUCCESS, payload });
 export const fetchContactEpic = action$ => action$.ofType(FETCH_CONTACT)
-    .mergeMap(action => ajax.getJSON(`${config.api.usersApi}/contact/${action.payload}`)
+    .mergeMap(action => ajax.getJSON(`${config.api.usersApi}/contact/?id=${action.payload}`)
     .map(fetchContactSuccess)
     .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
     .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response))));

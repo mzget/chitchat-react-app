@@ -2,7 +2,7 @@ global.userAgent = navigator.userAgent;
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, hashHistory, Link, browserHistory } from 'react-router';
+import { Router, Route, browserHistory } from 'react-router';
 import { Provider } from 'react-redux';
 
 /**

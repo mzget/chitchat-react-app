@@ -36,7 +36,8 @@ class Home extends React.Component<IComponentNameProps, any> {
         if (contactId) {
             this.props.dispatch(userActions.fetchContact(contactId));
         }
-        // StalkBridgeActions.stalkLogin(this.props.location.query.agentId, "");
+
+        StalkBridgeActions.getPrivateChatRoomId(this.props.location.query.agentId, "");
 
         if (this.props.location.query.roomId) {
 
