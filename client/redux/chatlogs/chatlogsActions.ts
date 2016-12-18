@@ -3,7 +3,7 @@
  *
  * This is pure function action for redux app.
  */
-import * as async from "async-es";
+import * as async from "async";
 
 import BackendFactory from "../../chats/BackendFactory";
 import ChatsLogComponent, { ChatLogMap, IUnread, Unread } from "../../chats/chatslogComponent";
@@ -64,7 +64,7 @@ export function initChatsLog() {
         }
 
         let msg: IDictionary = {};
-        msg["token"] = Store.getState().authReducer.token;
+        msg["token"] = dataManager.getSessionToken();
         BackendFactory.getInstance().getServer().then(server => {
             server.getLastAccessRoomsInfo(msg, function (err, res) {
                 console.log("getLastAccessRoomsInfo:", JSON.stringify(res));

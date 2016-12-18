@@ -45,7 +45,7 @@ export function initChatsLog() {
             // $rootScope.$broadcast('onEditedGroupMember', []);
         };
         let msg = {};
-        msg["token"] = Store.getState().authReducer.token;
+        msg["token"] = dataManager.getSessionToken();
         BackendFactory.getInstance().getServer().then(server => {
             server.getLastAccessRoomsInfo(msg, function (err, res) {
                 console.log("getLastAccessRoomsInfo:", JSON.stringify(res));

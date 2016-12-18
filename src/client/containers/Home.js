@@ -36,8 +36,12 @@ class Home extends React.Component {
         }
     }
     joinChatServer() {
-        if (this.props.userReducer.user) {
-            StalkBridgeActions.stalkLogin(this.props.userReducer.user);
+        let { location: { query: { userId, username, roomId, contactId } }, userReducer } = this.props;
+        if (userReducer.user) {
+            StalkBridgeActions.onStalkLoginSuccess.push(() => {
+                this.fetch_privateChatRoom(contactId, userReducer.user._id);
+            });
+            StalkBridgeActions.stalkLogin(userReducer.user);
         }
     }
     componentWillReceiveProps(nextProps) {
