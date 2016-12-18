@@ -142,7 +142,7 @@ export default class BackendFactory {
         this.serverEventsListener.addListenner(resolve);
     }
 
-    checkIn(uid: string, token: string) {
+    checkIn(uid: string, token: string, user: any) {
         let self = this;
         return new Promise((resolve: (data: any) => void, rejected) => {
             self.stalk.gateEnter(uid).then(value => {
@@ -159,6 +159,7 @@ export default class BackendFactory {
                     else {
                         let msg = {};
                         msg["token"] = token;
+                        msg["user"] = user;
                         self.stalk.connectorEnter(msg).then(value => {
                             resolve(value);
                         }).catch(err => {

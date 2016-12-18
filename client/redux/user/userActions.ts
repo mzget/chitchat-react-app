@@ -7,14 +7,14 @@ const { ajax } = Rx.Observable;
 
 
 const FETCH_USER = 'FETCH_USER';
-const FETCH_USER_FULFILLED = 'FETCH_USER_FULFILLED';
-const FETCH_USER_REJECTED = 'FETCH_USER_REJECTED';
+export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
+const FETCH_USER_FAILURE = 'FETCH_USER_FAILURE';
 const FETCH_USER_CANCELLED = 'FETCH_USER_CANCELLED';
 
 export const fetchUser = createAction(FETCH_USER, username => username); // username => ({ type: FETCH_USER, payload: username });
-const fetchUserFulfilled = payload => ({ type: FETCH_USER_FULFILLED, payload });
+const fetchUserFulfilled = payload => ({ type: FETCH_USER_SUCCESS, payload });
 const cancelFetchUser = () => ({ type: FETCH_USER_CANCELLED });
-const fetchUserRejected = payload => ({ type: FETCH_USER_REJECTED, payload, error: true });
+const fetchUserRejected = payload => ({ type: FETCH_USER_FAILURE, payload, error: true });
 
 export const fetchUserEpic = action$ =>
   action$.ofType(FETCH_USER)
@@ -46,13 +46,13 @@ export const UserInitState = Record({
   user: null,
   contact: null
 });
-export const usersReducer = (state = new UserInitState(), action: ReduxActions.Action<any>) => {
+export const userReducer = (state = new UserInitState(), action: ReduxActions.Action<any>) => {
   switch (action.type) {
-    case FETCH_USER_FULFILLED:
-      return state.set("user", action.payload.result[0]);
+    case FETCH_USER_SUCCESS:
+      return state.set("user", action.payload.result[0]).set("state", FETCH_USER_SUCCESS);
     case FETCH_USER_CANCELLED:
       return state;
-    case FETCH_USER_REJECTED:
+    case FETCH_USER_FAILURE:
       return state;
 
     case FETCH_CONTACT_SUCCESS:

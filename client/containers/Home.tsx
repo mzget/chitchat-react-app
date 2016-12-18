@@ -19,7 +19,8 @@ interface IComponentNameProps {
             username: string;
         }
     };
-    dispatch
+    dispatch,
+    userReducer
 };
 
 interface IComponentNameState { };
@@ -40,8 +41,6 @@ class Home extends React.Component<IComponentNameProps, any> {
             this.fetch_privateChatRoom(contactId, userId);
         }
 
-        // StalkBridgeActions.getPrivateChatRoomId(this.props.location.query.agentId, "");
-
         if (this.props.location.query.roomId) {
 
         }
@@ -50,6 +49,29 @@ class Home extends React.Component<IComponentNameProps, any> {
     fetch_privateChatRoom = (roommateId, owerId) => {
         this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
     };
+
+    joinChatServer() {
+        if (this.props.userReducer.user) {
+            StalkBridgeActions.stalkLogin(this.props.userReducer.user);
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        let { location: {query: {userId, username, roomId, contactId}}, chatroomReducer, userReducer } = nextProps;
+
+        if (chatroomReducer.state == chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS) {
+
+        }
+
+        switch (userReducer.state) {
+            case userActions.FETCH_USER_SUCCESS:
+                this.joinChatServer();
+                break;
+
+            default:
+                break;
+        }
+    }
 
     public render(): JSX.Element {
         return (<span>Welcome to stalk chat service.</span>);

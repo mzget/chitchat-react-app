@@ -5,7 +5,7 @@ const Rx = require('rxjs/Rx');
 const { ajax } = Rx.Observable;
 const FETCH_PRIVATE_CHATROOM = "FETCH_PRIVATE_CHATROOM";
 const FETCH_PRIVATE_CHATROOM_FAILURE = "FETCH_PRIVATE_CHATROOM_FAILURE";
-const FETCH_PRIVATE_CHATROOM_SUCCESS = "FETCH_PRIVATE_CHATROOM_SUCCESS";
+export const FETCH_PRIVATE_CHATROOM_SUCCESS = "FETCH_PRIVATE_CHATROOM_SUCCESS";
 const FETCH_PRIVATE_CHATROOM_CANCELLED = "FETCH_PRIVATE_CHATROOM_CANCELLED";
 export const fetchPrivateChatRoom = createAction(FETCH_PRIVATE_CHATROOM, (ownerId, roommateId) => ({ ownerId, roommateId }));
 const fetchPrivateChatRoomSuccess = (payload) => ({ type: FETCH_PRIVATE_CHATROOM_SUCCESS, payload });
@@ -26,7 +26,8 @@ export const ChatRoomInitState = Record({
 export const chatroomReducer = (state = new ChatRoomInitState(), action) => {
     switch (action.type) {
         case FETCH_PRIVATE_CHATROOM_SUCCESS:
-            return state.set("room", action.payload.result[0]);
+            return state.set("room", action.payload.result[0])
+                .set("state", FETCH_PRIVATE_CHATROOM_SUCCESS);
         case FETCH_PRIVATE_CHATROOM_CANCELLED:
             return state;
         case FETCH_PRIVATE_CHATROOM_FAILURE:

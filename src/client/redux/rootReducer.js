@@ -13,7 +13,7 @@ import { combineReducers } from 'redux';
 * ## Reducers
 */
 // import { messageReducer, MessageInitState } from "./message/messageReducer";
-import { UserInitState, usersReducer } from "./user/userActions";
+import { UserInitState, userReducer } from "./user/userActions";
 import { stalkReducer, StalkInitState } from "./stalkBridge/stalkReducer";
 import { chatroomReducer, ChatRoomInitState } from "./chatroom/chatroomRxEpic";
 /**
@@ -26,7 +26,7 @@ const appReducer = combineReducers({
     // messageReducer,
     stalkReducer,
     chatroomReducer,
-    usersReducer
+    userReducer
 });
 /*
  *
@@ -39,7 +39,7 @@ export function getInitialState() {
         // messageReducer: new MessageInitState,
         stalkReducer: new StalkInitState(),
         chatroomReducer: new ChatRoomInitState(),
-        usersReducer: new UserInitState()
+        userReducer: new UserInitState()
     };
     return _initState;
 }

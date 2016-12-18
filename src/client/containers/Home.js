@@ -8,6 +8,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 import * as React from "react";
 import { connect } from "react-redux";
+import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import * as userActions from "../redux/user/userActions";
 import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 ;
@@ -31,8 +32,24 @@ class Home extends React.Component {
         if (contactId && userId) {
             this.fetch_privateChatRoom(contactId, userId);
         }
-        // StalkBridgeActions.getPrivateChatRoomId(this.props.location.query.agentId, "");
         if (this.props.location.query.roomId) {
+        }
+    }
+    joinChatServer() {
+        if (this.props.userReducer.user) {
+            StalkBridgeActions.stalkLogin(this.props.userReducer.user);
+        }
+    }
+    componentWillReceiveProps(nextProps) {
+        let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, userReducer } = nextProps;
+        if (chatroomReducer.state == chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS) {
+        }
+        switch (userReducer.state) {
+            case userActions.FETCH_USER_SUCCESS:
+                this.joinChatServer();
+                break;
+            default:
+                break;
         }
     }
     render() {

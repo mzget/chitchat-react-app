@@ -10,8 +10,6 @@ import * as React from "react";
 /**
  * Redux + Immutable
  */
-import { Map } from 'immutable';
-import { bindActionCreators } from 'redux';
 import { connect } from "react-redux";
 import Conversation from 'chat-template/dist/Conversation';
 import * as chatRoomActions from "../redux/chatroom/chatroomActions";
@@ -19,15 +17,15 @@ import * as chatRoomActions from "../redux/chatroom/chatroomActions";
 ;
 class Chat extends React.Component {
     componentDidMount() {
-        let { chatRoomReducer } = this.props;
-        console.log(this.props);
-        if (chatRoomReducer.state == chatRoomActions.ChatRoomActionsType.SELECT_CHAT_ROOM) {
+        let { chatroomReducer } = this.props;
+        console.log("Chat", this.props);
+        if (chatroomReducer.state == chatRoomActions.ChatRoomActionsType.SELECT_CHAT_ROOM) {
             //@ todo
             // - Init chatroom service.
             // - getPersistedMessage.
             // - Request join room.
-            this.props.dispatch(chatRoomActions.initChatRoom(chatRoomReducer.selectRoom));
-            this.props.dispatch(chatRoomActions.getPersistendMessage(chatRoomReducer.selectRoom._id));
+            this.props.dispatch(chatRoomActions.initChatRoom(chatroomReducer.selectRoom));
+            this.props.dispatch(chatRoomActions.getPersistendMessage(chatroomReducer.selectRoom._id));
         }
     }
     render() {
@@ -51,12 +49,7 @@ function mapStateToProps(state) {
     return __assign({}, state);
 }
 function mapDispatchToProps(dispatch) {
-    const creators = Map()
-        .merge()
-        .filter(value => typeof value === 'function')
-        .toObject();
     return {
-        actions: bindActionCreators(creators, dispatch),
         dispatch
     };
 }

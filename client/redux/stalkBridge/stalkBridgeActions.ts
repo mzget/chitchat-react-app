@@ -37,8 +37,8 @@ export function getUserInfo(userId: string, callback: (user: DataModels.ContactI
     }
 }
 
-export function stalkLogin(uid: string, token: string) {
-    console.log("stalkLogin", uid, token);
+export function stalkLoginWithToken(uid: string, token: string) {
+    console.log("stalkLoginWithToken", uid, token);
 
     const backendFactory = BackendFactory.getInstance();
 
@@ -85,26 +85,50 @@ export function stalkLogin(uid: string, token: string) {
     });
 }
 
-export function getPrivateChatRoomId(contactId: string) {
-    return dispatch => {
-        let profile: Account = Store.getState().profileReducer.form.profile;
-        let token = Store.getState().authReducer.token;
+export function stalkLogin(user: any) {
+    console.log("stalkLogin", user);
 
-        dispatch({ type: STALK_GET_PRIVATE_CHAT_ROOM_ID_REQUEST });
+    const backendFactory = BackendFactory.getInstance();
 
-        BackendFactory.getInstance().getServer().then(server => {
-            server.getPrivateChatRoomId(token, profile._id, contactId, function result(err, res) {
-                if (res.code === HTTPStatus.success) {
-                    let room = JSON.parse(JSON.stringify(res.data));
-                    dispatch({ type: STALK_GET_PRIVATE_CHAT_ROOM_ID_SUCCESS, payload: room });
-                }
-                else {
-                    console.warn(err, res);
-                    dispatch({ type: STALK_GET_PRIVATE_CHAT_ROOM_ID_FAILURE, payload: err });
-                }
-            });
+    backendFactory.stalkInit().then(value => {
+        backendFactory.checkIn(user._id, null, user).then(value => {
+            console.log("Joined chat-server success", value.code);
+            let result: { success: boolean, decoded: any } = JSON.parse(value.data);
+            if (result.success) {
+                backendFactory.getServerListener();
+                backendFactory.startChatServerListener();
+
+                // NotificationManager.getInstance().regisNotifyNewMessageEvent();
+
+                let msg: IDictionary = {};
+                // msg["token"] = token;
+                backendFactory.getServer().then(server => {
+                    server.getMe(msg, (err, res) => {
+                        console.log("MyChat-Profile", res);
+                        let account = new DataModels.StalkAccount();
+                        account._id = result.decoded._id;
+                        account.displayname = result.decoded.email;
+
+                        let data = (!!res.data) ? res.data : account;
+                        backendFactory.dataManager.setProfile(data).then(profile => {
+                            console.log("set chat profile success", profile);
+                            ChatLogsActions.initChatsLog();
+                        });
+                        // backendFactory.dataManager.setSessionToken(token);
+                        backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
+                        StalkPushActions.stalkPushInit();
+                    });
+                }).catch(err => {
+                    console.warn("Chat-server not yet ready");
+                });
+            }
+            else {
+                console.warn("Cannot joined chat server.");
+            }
         }).catch(err => {
-            dispatch({ type: STALK_GET_PRIVATE_CHAT_ROOM_ID_FAILURE, payload: err });
+            console.warn("Cannot checkIn", err);
         });
-    }
+    }).catch(err => {
+        console.warn("StalkInit Fail.");
+    });
 }
