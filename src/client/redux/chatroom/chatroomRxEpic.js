@@ -38,7 +38,6 @@ export const getPersistendMessageEpic = action$ => {
         .map(json => getPersistendMessage_success(json))
         .takeUntil(action$.ofType(GET_PERSISTEND_MESSAGE_CANCELLED))
         .catch(error => Rx.Observable.of(getPersistendMessage_failure(error)));
-    // console.log("getPersistendMessage of room %s: completed.", action.payload, ChatRoomComponent.getInstance().chatMessages.length, messages);
     //@ Next call 2 method below. -->
     //getNewerMessageFromNet();
     //checkOlderMessages();

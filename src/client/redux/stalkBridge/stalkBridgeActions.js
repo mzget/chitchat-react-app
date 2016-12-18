@@ -12,6 +12,10 @@ import * as StalkPushActions from "./stalkPushActions";
 export const STALK_GET_PRIVATE_CHAT_ROOM_ID_REQUEST = "STALK_GET_PRIVATE_CHAT_ROOM_ID_REQUEST";
 export const STALK_GET_PRIVATE_CHAT_ROOM_ID_FAILURE = "STALK_GET_PRIVATE_CHAT_ROOM_ID_FAILURE";
 export const STALK_GET_PRIVATE_CHAT_ROOM_ID_SUCCESS = "STALK_GET_PRIVATE_CHAT_ROOM_ID_SUCCESS";
+export const getSessionToken = () => {
+    const backendFactory = BackendFactory.getInstance();
+    return backendFactory.dataManager.getSessionToken();
+};
 export const onStalkLoginSuccess = new Array();
 const onGetContactProfileFail = (contact_id) => {
 };

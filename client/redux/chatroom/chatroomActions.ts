@@ -136,16 +136,11 @@ export function getPersistendMessage(currentRid: string) {
     return (dispatch) => {
         dispatch(getPersistendMessage_request());
 
-        ChatRoomComponent.getInstance().getPersistentMessage(currentRid, function (err, messages) {
+        ChatRoomComponent.getInstance().getPersistentMessage(currentRid).then(function (messages) {
             console.log("getPersistendMessage of room %s: completed.", currentRid, ChatRoomComponent.getInstance().chatMessages.length);
 
-            if (err) {
-                dispatch(getPersistendMessage_failure());
-            }
-            else {
-                dispatch(getPersistendMessage_success());
-            }
-        });
+            dispatch(getPersistendMessage_success());
+        }).catch(err => dispatch(getPersistendMessage_failure()));
 
         //@ Next call 2 method below. -->
         //getNewerMessageFromNet();
@@ -195,6 +190,11 @@ export function getNewerMessageFromNet() {
             //@ Todo next joinroom function is ready to call.
         });
     }
+}
+
+export function getMessages() {
+    let chatroomComp = ChatRoomComponent.getInstance();
+    return chatroomComp.chatMessages;
 }
 
 function send_message_request() {

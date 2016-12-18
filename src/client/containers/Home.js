@@ -45,7 +45,7 @@ class Home extends React.Component {
     componentWillReceiveProps(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, userReducer } = nextProps;
         if (chatroomReducer.state == chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS) {
-            this.props.router.push(`/chat/${userId}`);
+            this.props.router.push(`/chat/${chatroomReducer.room._id}`);
         }
         switch (userReducer.state) {
             case userActions.FETCH_USER_SUCCESS:
