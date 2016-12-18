@@ -7,5 +7,6 @@ export const rootEpic = combineEpics(
     userActions.fetchUserEpic,
     userActions.fetchContactEpic,
 
-    chatroomRxEpic.getPrivateChatRoomEpic
+    chatroomRxEpic.getPrivateChatRoomEpic,
+    chatroomRxEpic.getPersistendMessageEpic
 );

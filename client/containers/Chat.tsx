@@ -23,15 +23,13 @@ class Chat extends React.Component<IComponentNameProps, any> {
 
         console.log("Chat", this.props);
 
-        if (chatroomReducer.state == chatRoomActions.ChatRoomActionsType.SELECT_CHAT_ROOM) {
-            //@ todo
-            // - Init chatroom service.
-            // - getPersistedMessage.
-            // - Request join room.
-            this.props.dispatch(chatRoomActions.initChatRoom(chatroomReducer.selectRoom));
-            this.props.dispatch(chatRoomActions.getPersistendMessage(chatroomReducer.selectRoom._id));
-            //  this.props.dispatch(chatRoomActions.joinRoom(chatRoomReducer.selectRoom._id, authReducer.token, profileReducer.form.profile.email));
-        }
+        //@ todo
+        // - Init chatroom service.
+        // - getPersistedMessage.
+        // - Request join room.
+        chatRoomActions.initChatRoom(chatroomReducer.room);
+        this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
+        //  this.props.dispatch(chatRoomActions.joinRoom(chatRoomReducer.selectRoom._id, authReducer.token, profileReducer.form.profile.email));
     }
 
     render(): JSX.Element {

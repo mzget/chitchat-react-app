@@ -1,6 +1,6 @@
 ﻿import { IMessageDAL } from "./IMessageDAL";
 
-import * as localForage from "localforage";
+import localForage from "localforage";
 
 export class MessageDAL implements IMessageDAL {
 

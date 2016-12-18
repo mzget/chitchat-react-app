@@ -37,16 +37,14 @@ export function stop() {
     return dispatch => { return { type: ChatRoomActionsType.STOP }; };
 }
 export function initChatRoom(currentRoom) {
-    return dispatch => {
-        if (!currentRoom)
-            throw new Error("Empty roomInfo");
-        let chatroomComp = ChatRoomComponent.getInstance();
-        chatroomComp.setRoomId(currentRoom._id);
-        BackendFactory.getInstance().dataListener.addChatListenerImp(chatroomComp);
-        // NotificationManager.getInstance().unsubscribeGlobalNotifyMessageEvent();
-        chatroomComp.chatroomDelegate = onChatRoomDelegate;
-        chatroomComp.outsideRoomDelegete = onOutSideRoomDelegate;
-    };
+    if (!currentRoom)
+        throw new Error("Empty roomInfo");
+    let chatroomComp = ChatRoomComponent.getInstance();
+    chatroomComp.setRoomId(currentRoom._id);
+    BackendFactory.getInstance().dataListener.addChatListenerImp(chatroomComp);
+    // NotificationManager.getInstance().unsubscribeGlobalNotifyMessageEvent();
+    chatroomComp.chatroomDelegate = onChatRoomDelegate;
+    chatroomComp.outsideRoomDelegete = onOutSideRoomDelegate;
 }
 function onChatRoomDelegate(event, newMsg) {
     if (event == ServerEventListener.ON_CHAT) {
@@ -95,11 +93,7 @@ function onNewMessage(messages) {
         payload: messages
     };
 }
-function getPersistendMessage_request() {
-    return {
-        type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_REQUEST
-    };
-}
+function getPersistendMessage_request() { return { type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_REQUEST }; }
 function getPersistendMessage_success(data) {
     return {
         type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS,

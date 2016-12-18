@@ -116,44 +116,46 @@ export default class ChatRoomComponent {
         });
         self.messageDAL.saveData(self.roomId, self.chatMessages);
     }
-    getPersistentMessage(rid, done) {
-        var self = this;
-        self.messageDAL.getData(rid, (err, messages) => {
-            if (messages !== null) {
-                let chats = messages.slice(0);
-                async.mapSeries(chats, function iterator(item, result) {
-                    if (item.type === ContentType.Text) {
-                        if (Config.appConfig.encryption == true) {
-                            self.secure.decryptWithSecureRandom(item.body, function (err, res) {
-                                if (!err) {
-                                    item.body = res;
-                                    self.chatMessages.push(item);
-                                }
-                                else {
-                                    self.chatMessages.push(item);
-                                }
+    getPersistentMessage(rid) {
+        let self = this;
+        return new Promise((resolve, reject) => {
+            self.messageDAL.getData(rid, (err, messages) => {
+                if (messages !== null) {
+                    let chats = messages.slice(0);
+                    async.mapSeries(chats, function iterator(item, result) {
+                        if (item.type === ContentType.Text) {
+                            if (Config.appConfig.encryption == true) {
+                                self.secure.decryptWithSecureRandom(item.body, function (err, res) {
+                                    if (!err) {
+                                        item.body = res;
+                                        self.chatMessages.push(item);
+                                    }
+                                    else {
+                                        self.chatMessages.push(item);
+                                    }
+                                    result(null, item);
+                                });
+                            }
+                            else {
+                                self.chatMessages.push(item);
                                 result(null, item);
-                            });
+                            }
                         }
                         else {
                             self.chatMessages.push(item);
                             result(null, item);
                         }
-                    }
-                    else {
-                        self.chatMessages.push(item);
-                        result(null, item);
-                    }
-                }, (err, results) => {
-                    console.log("decode chats text completed.", self.chatMessages.length);
-                    done(err, messages);
-                });
-            }
-            else {
-                self.chatMessages = [];
-                console.log("chatMessages", self.chatMessages.length);
-                done(err, messages);
-            }
+                    }, (err, results) => {
+                        console.log("decode chats text completed.", self.chatMessages.length);
+                        resolve(messages);
+                    });
+                }
+                else {
+                    self.chatMessages = [];
+                    console.log("chatMessages", self.chatMessages.length);
+                    resolve(self.chatMessages);
+                }
+            });
         });
     }
     getNewerMessageRecord(callback) {

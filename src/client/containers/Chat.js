@@ -13,20 +13,20 @@ import * as React from "react";
 import { connect } from "react-redux";
 import Conversation from 'chat-template/dist/Conversation';
 import * as chatRoomActions from "../redux/chatroom/chatroomActions";
+import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 ;
 ;
 class Chat extends React.Component {
     componentDidMount() {
         let { chatroomReducer } = this.props;
         console.log("Chat", this.props);
-        if (chatroomReducer.state == chatRoomActions.ChatRoomActionsType.SELECT_CHAT_ROOM) {
-            //@ todo
-            // - Init chatroom service.
-            // - getPersistedMessage.
-            // - Request join room.
-            this.props.dispatch(chatRoomActions.initChatRoom(chatroomReducer.selectRoom));
-            this.props.dispatch(chatRoomActions.getPersistendMessage(chatroomReducer.selectRoom._id));
-        }
+        //@ todo
+        // - Init chatroom service.
+        // - getPersistedMessage.
+        // - Request join room.
+        chatRoomActions.initChatRoom(chatroomReducer.room);
+        this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
+        //  this.props.dispatch(chatRoomActions.joinRoom(chatRoomReducer.selectRoom._id, authReducer.token, profileReducer.form.profile.email));
     }
     render() {
         var messages = [{

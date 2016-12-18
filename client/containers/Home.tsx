@@ -5,6 +5,7 @@ import * as React from "react";
 import { Map } from 'immutable';
 import { bindActionCreators } from 'redux';
 import { connect } from "react-redux";
+import { Link } from 'react-router'
 
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import * as userActions from "../redux/user/userActions";
@@ -19,8 +20,7 @@ interface IComponentNameProps {
             username: string;
         }
     };
-    dispatch,
-    userReducer
+    dispatch, userReducer, chatroomReducer, router
 };
 
 interface IComponentNameState { };
@@ -36,9 +36,6 @@ class Home extends React.Component<IComponentNameProps, any> {
         }
         if (contactId) {
             this.props.dispatch(userActions.fetchContact(contactId));
-        }
-        if (contactId && userId) {
-            this.fetch_privateChatRoom(contactId, userId);
         }
 
         if (this.props.location.query.roomId) {
@@ -64,7 +61,7 @@ class Home extends React.Component<IComponentNameProps, any> {
         let { location: {query: {userId, username, roomId, contactId}}, chatroomReducer, userReducer } = nextProps;
 
         if (chatroomReducer.state == chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS) {
-
+            this.props.router.push(`/chat/${userId}`);
         }
 
         switch (userReducer.state) {
@@ -78,7 +75,13 @@ class Home extends React.Component<IComponentNameProps, any> {
     }
 
     public render(): JSX.Element {
-        return (<span>Welcome to stalk chat service.</span>);
+        let { location: {query: {userId, username, roomId, contactId}}, chatroomReducer, userReducer } = this.props;
+        return (
+            <div>
+                <span>Welcome to stalk chat service.</span>
+                <li key={userId}><Link to={`/chat/${userId}`}>{username}</Link></li>
+            </div>
+        );
     }
 }
 

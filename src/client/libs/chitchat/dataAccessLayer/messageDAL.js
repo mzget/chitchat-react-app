@@ -1,4 +1,4 @@
-import * as localForage from "localforage";
+import localForage from "localforage";
 export class MessageDAL {
     constructor() {
         // localforage.config({
