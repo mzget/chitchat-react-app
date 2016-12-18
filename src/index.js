@@ -13,7 +13,6 @@ import Store from './client/redux/configureStore';
 
 import App from './App';
 import Chat from "./client/containers/Chat";
-
 import './index.css';
 import 'rxjs';
 

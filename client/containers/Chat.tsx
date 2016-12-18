@@ -5,7 +5,9 @@ import * as React from "react";
 import { connect } from "react-redux";
 import * as async from 'async';
 
+import { Box, Container } from 'react-layout-components';
 import Messages from 'chat-template/dist/Messages';
+import { TypingBox } from './TypingBox';
 
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import * as chatRoomActions from "../redux/chatroom/chatroomActions";
@@ -48,8 +50,33 @@ interface IGiftedChat {
 //     inbound: false
 // }];
 
+
 class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
     _messages = [{
+        message: 'How do I use this messaging app?',
+        from: 'right',
+        backColor: '#3d83fa',
+        textColor: "white",
+        avatar: 'https://www.seeklogo.net/wp-content/uploads/2015/09/google-plus-new-icon-logo.png',
+        duration: 2000,
+        inbound: true
+    }, {
+        message: 'How do I use this messaging app?',
+        from: 'right',
+        backColor: '#3d83fa',
+        textColor: "white",
+        avatar: 'https://www.seeklogo.net/wp-content/uploads/2015/09/google-plus-new-icon-logo.png',
+        duration: 2000,
+        inbound: false
+    }, {
+        message: 'How do I use this messaging app?',
+        from: 'right',
+        backColor: '#3d83fa',
+        textColor: "white",
+        avatar: 'https://www.seeklogo.net/wp-content/uploads/2015/09/google-plus-new-icon-logo.png',
+        duration: 2000,
+        inbound: true
+    }, {
         message: 'How do I use this messaging app?',
         from: 'right',
         backColor: '#3d83fa',
@@ -252,9 +279,14 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
 
     render(): JSX.Element {
         return (
-            <div >
-                {(this.state) ? <Messages messages={this.state.messages} /> : null}
-            </div>
+            <Box column flex="1 0 auto">
+                <Box flex="1 0 auto" alignItems="stretch">
+                    {(this.state) ? <Messages messages={this.state.messages} styles={{ container: { position: '', bottom: '' } }} /> : null}
+                </Box>
+                <Container alignSelf='center' absolute style={{ bottom: '0%' }} >
+                    <TypingBox />
+                </Container>
+            </Box>
         );
     }
 }
