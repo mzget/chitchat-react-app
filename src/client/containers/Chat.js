@@ -236,7 +236,14 @@ class Chat extends React.Component {
         this.setState(__assign({}, this.state, { typingText: event.target.value }));
     }
     onSubmitMessage() {
-        this.setState(__assign({}, this.state, { typingText: "" }));
+        let msg = {
+            text: this.state.typingText
+        };
+        let message = this.setMsgKey(msg);
+        this.sendText(message);
+        let tempMsgs = this.state.messages.slice(1);
+        tempMsgs.push(message);
+        this.setState(__assign({}, this.state, { messages: tempMsgs, typingText: "" }));
     }
     render() {
         if (!this.state)
@@ -245,6 +252,30 @@ class Chat extends React.Component {
             React.createElement(Box, { flex: "1 0 auto", alignItems: "stretch" }, (this.state) ? React.createElement(Messages, { messages: this.state.messages, styles: { container: { position: '', bottom: '' } } }) : null),
             React.createElement(Container, { alignSelf: 'center', absolute: true, style: { bottom: '0%' } },
                 React.createElement(TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText }))));
+    }
+    setMsgKey(msg) {
+        let message;
+        if (msg.image) {
+            message = msg;
+            message.type = ContentType[ContentType.Image];
+        }
+        else if (msg.text) {
+            message = msg;
+            message.type = ContentType[ContentType.Text];
+        }
+        else if (msg.location) {
+            message = msg;
+            message.type = ContentType[ContentType.Location];
+        }
+        message.uniqueId = Math.round(Math.random() * 10000); // simulating server-side unique id generation
+        message.rid = this.props.chatroomReducer.room._id;
+        message.sender = this.props.userReducer.user._id;
+        message.target = "*";
+        return message;
+    }
+    sendText(message) {
+        this.props.dispatch(chatRoomActions.sendMessage(message));
+        this.setMessageStatus(message.uniqueId, 'Sending...');
     }
 }
 /**

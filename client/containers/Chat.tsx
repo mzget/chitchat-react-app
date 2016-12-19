@@ -22,9 +22,9 @@ interface IComponentNameProps {
 };
 
 interface IComponentNameState {
-    messages,
+    messages: any[],
     isLoadingEarlierMessages,
-    typingText,
+    typingText: string,
     earlyMessageReady
 };
 
@@ -289,7 +289,15 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
     }
 
     onSubmitMessage() {
-        this.setState({ ...this.state, typingText: "" });
+        let msg = {
+            text: this.state.typingText
+        };
+        let message = this.setMsgKey(msg);
+        this.sendText(message);
+
+        let tempMsgs = this.state.messages.slice(1);
+        tempMsgs.push(message);
+        this.setState({ ...this.state, messages: tempMsgs, typingText: "" });
     }
 
     render(): JSX.Element {
@@ -304,6 +312,33 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                 </Container>
             </Box>
         );
+    }
+
+    setMsgKey(msg) {
+        let message;
+        if (msg.image) {
+            message = msg;
+            message.type = ContentType[ContentType.Image];
+        }
+        else if (msg.text) {
+            message = msg;
+            message.type = ContentType[ContentType.Text];
+        } else if (msg.location) {
+            message = msg;
+            message.type = ContentType[ContentType.Location];
+        }
+
+        message.uniqueId = Math.round(Math.random() * 10000); // simulating server-side unique id generation
+        message.rid = this.props.chatroomReducer.room._id;
+        message.sender = this.props.userReducer.user._id;
+        message.target = "*";
+
+        return message;
+    }
+
+    sendText(message) {
+        this.props.dispatch(chatRoomActions.sendMessage(message));
+        this.setMessageStatus(message.uniqueId, 'Sending...');
     }
 }
 
