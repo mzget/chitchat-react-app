@@ -16,16 +16,14 @@
  */
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 
-import createLogger from 'redux-logger';
-import ReduxThunk from 'redux-thunk';
+import thunk from 'redux-thunk';
 import { createEpicMiddleware } from 'redux-observable';
-
-import * as rootRxEpic from './rootRxEpic';
-const epicMiddleware = createEpicMiddleware(rootRxEpic.rootEpic);
+import createLogger from 'redux-logger';
 
 import * as rootReducer from "./rootReducer";
-
-const middlewares = [epicMiddleware, ReduxThunk];
+import * as rootRxEpic from './rootRxEpic';
+const epicMiddleware = createEpicMiddleware(rootRxEpic.rootEpic);
+const middlewares = [thunk, epicMiddleware];
 
 if (process.env.NODE_ENV === `development`) {
     const logger = createLogger();
@@ -49,7 +47,7 @@ const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 //    const store:Redux.Store = compose(applyMiddleware(ReduxThunk))(createStore)(RootReducer.rootReducer, RootReducer.getInitialState());
 //    return store;
 // };
-function configureStore(): Redux.Store {
+function configureStore() {
     let initialState = rootReducer.getInitialState();
     return createStoreWithMiddleware(rootReducer.rootReducer, initialState);
 };

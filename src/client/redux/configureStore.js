@@ -14,13 +14,13 @@
  * redux functions
  */
 import { createStore, applyMiddleware } from 'redux';
-import createLogger from 'redux-logger';
-import ReduxThunk from 'redux-thunk';
+import thunk from 'redux-thunk';
 import { createEpicMiddleware } from 'redux-observable';
+import createLogger from 'redux-logger';
+import * as rootReducer from "./rootReducer";
 import * as rootRxEpic from './rootRxEpic';
 const epicMiddleware = createEpicMiddleware(rootRxEpic.rootEpic);
-import * as rootReducer from "./rootReducer";
-const middlewares = [epicMiddleware, ReduxThunk];
+const middlewares = [thunk, epicMiddleware];
 if (process.env.NODE_ENV === `development`) {
     const logger = createLogger();
     middlewares.push(logger);

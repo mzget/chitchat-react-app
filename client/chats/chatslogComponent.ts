@@ -87,7 +87,9 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
                 this.dataManager.roomDAL.get(room_id).then((room: DataModels.Room) => {
                     _rooms.set(room_id, room);
                     cb(null, null);
-                }).catch(err => cb(null, null));
+                }).catch(err => {
+                    cb(null, null)
+                });
             }, (err, results) => {
                 addRoomData(_rooms);
             });

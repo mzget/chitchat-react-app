@@ -11,6 +11,8 @@ import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import * as userActions from "../redux/user/userActions";
 import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 
+import ChatLogs from "./ChatLogs";
+
 interface IComponentNameProps {
     location: {
         query: {
@@ -82,6 +84,7 @@ class Home extends React.Component<IComponentNameProps, any> {
             <div>
                 <span>Welcome to stalk chat service.</span>
                 <li key={userId}><Link to={`/chat/${userId}`}>{username}</Link></li>
+                <ChatLogs {...this.props} />
             </div>
         );
     }

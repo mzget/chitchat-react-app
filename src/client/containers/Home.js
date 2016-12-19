@@ -12,6 +12,7 @@ import { Link } from 'react-router';
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import * as userActions from "../redux/user/userActions";
 import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
+import ChatLogs from "./ChatLogs";
 ;
 ;
 class Home extends React.Component {
@@ -62,7 +63,8 @@ class Home extends React.Component {
         return (React.createElement("div", null,
             React.createElement("span", null, "Welcome to stalk chat service."),
             React.createElement("li", { key: userId },
-                React.createElement(Link, { to: `/chat/${userId}` }, username))));
+                React.createElement(Link, { to: `/chat/${userId}` }, username)),
+            React.createElement(ChatLogs, __assign({}, this.props))));
     }
 }
 /**

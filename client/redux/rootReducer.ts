@@ -9,9 +9,8 @@
  *
  */
 
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { combineReducers } from 'redux';
 
-import * as rootRxEpic from "./rootRxEpic";
 /**
 * ## Reducers
 */
