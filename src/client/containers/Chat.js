@@ -31,8 +31,8 @@ import { ContentType } from "../chats/models/ChatDataModels";
 //     inbound: false
 // }];
 class Chat extends React.Component {
-    constructor() {
-        super(...arguments);
+    constructor(props) {
+        super(props);
         this._messages = [{
                 message: 'How do I use this messaging app?',
                 from: 'right',
@@ -66,6 +66,8 @@ class Chat extends React.Component {
                 duration: 2000,
                 inbound: false
             }];
+        this.onSubmitMessage = this.onSubmitMessage.bind(this);
+        this.onTypingTextChange = this.onTypingTextChange.bind(this);
     }
     componentDidMount() {
         let { chatroomReducer, userReducer } = this.props;
@@ -230,11 +232,19 @@ class Chat extends React.Component {
         };
         return msg;
     }
+    onTypingTextChange(event) {
+        this.setState(__assign({}, this.state, { typingText: event.target.value }));
+    }
+    onSubmitMessage() {
+        this.setState(__assign({}, this.state, { typingText: "" }));
+    }
     render() {
+        if (!this.state)
+            return null;
         return (React.createElement(Box, { column: true, flex: "1 0 auto" },
             React.createElement(Box, { flex: "1 0 auto", alignItems: "stretch" }, (this.state) ? React.createElement(Messages, { messages: this.state.messages, styles: { container: { position: '', bottom: '' } } }) : null),
             React.createElement(Container, { alignSelf: 'center', absolute: true, style: { bottom: '0%' } },
-                React.createElement(TypingBox, null))));
+                React.createElement(TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText }))));
     }
 }
 /**

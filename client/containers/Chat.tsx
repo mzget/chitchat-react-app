@@ -86,6 +86,13 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         inbound: false
     }];
 
+    constructor(props) {
+        super(props);
+
+        this.onSubmitMessage = this.onSubmitMessage.bind(this);
+        this.onTypingTextChange = this.onTypingTextChange.bind(this);
+    }
+
     componentDidMount() {
         let { chatroomReducer, userReducer} = this.props;
 
@@ -277,14 +284,23 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         return msg
     }
 
+    onTypingTextChange(event) {
+        this.setState({ ...this.state, typingText: event.target.value });
+    }
+
+    onSubmitMessage() {
+        this.setState({ ...this.state, typingText: "" });
+    }
+
     render(): JSX.Element {
+        if (!this.state) return null;
         return (
             <Box column flex="1 0 auto">
                 <Box flex="1 0 auto" alignItems="stretch">
                     {(this.state) ? <Messages messages={this.state.messages} styles={{ container: { position: '', bottom: '' } }} /> : null}
                 </Box>
                 <Container alignSelf='center' absolute style={{ bottom: '0%' }} >
-                    <TypingBox />
+                    <TypingBox onSubmit={this.onSubmitMessage} onValueChange={this.onTypingTextChange} value={this.state.typingText} />
                 </Container>
             </Box>
         );

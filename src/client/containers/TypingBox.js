@@ -10,9 +10,11 @@ const styles = {
         position: 'absolute'
     }
 };
-export const SendButton = () => (React.createElement(RaisedButton, { label: "Send", primary: true, onTouchTap: () => { } }));
-export const TypingBox = () => (React.createElement(MuiThemeProvider, null,
-    React.createElement("div", null,
-        React.createElement(TextField, { hintText: "Hint Text" }),
-        React.createElement("span", { style: styles.span }),
-        React.createElement(SendButton, null))));
+export const SendButton = (props) => (React.createElement(RaisedButton, { label: "Send", primary: true, onTouchEnd: props.onSubmit, onMouseUp: props.onSubmit }));
+export const TypingBox = (props) => {
+    return (React.createElement(MuiThemeProvider, null,
+        React.createElement("div", null,
+            React.createElement(TextField, { hintText: "Type your message", value: props.value, onChange: props.onValueChange }),
+            React.createElement("span", { style: styles.span }),
+            React.createElement(SendButton, { onSubmit: props.onSubmit }))));
+};

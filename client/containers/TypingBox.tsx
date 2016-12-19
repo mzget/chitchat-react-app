@@ -11,16 +11,18 @@ const styles = {
         position: 'absolute'
     }
 };
-export const SendButton = () => (
-    <RaisedButton label="Send" primary={true} onTouchTap={() => { } } />
+export const SendButton = (props) => (
+    <RaisedButton label="Send" primary={true} onTouchEnd={props.onSubmit} onMouseUp={props.onSubmit} />
 );
 
-export const TypingBox = () => (
-    <MuiThemeProvider>
-        <div>
-            <TextField hintText="Hint Text" />
-            <span style={styles.span} />
-            <SendButton />
-        </div>
-    </MuiThemeProvider>
-);
+export const TypingBox = (props) => {
+    return (
+        < MuiThemeProvider >
+            <div>
+                <TextField hintText="Type your message" value={props.value} onChange={props.onValueChange} />
+                <span style={styles.span} />
+                <SendButton onSubmit={props.onSubmit} />
+            </div>
+        </MuiThemeProvider >
+    );
+}
