@@ -212,22 +212,21 @@ function send_message_failure(data?: any) {
         payload: data
     }
 }
-export function sendMessage(message: any) {
+export function sendMessage(msg: any) {
     return (dispatch) => {
         let secure = SecureServiceFactory.getService();
 
-        let msg: IMessage = {};
-        msg.rid = message.rid
-        msg.content = message.text
-        msg.sender = message.sender
-        msg.target = message.target
-        msg.type = message.type
-        msg.uuid = message.uniqueId
+        // let msg: IMessage = {};
+        // msg.rid = message.rid
+        // msg.content = message.text
+        // msg.sender = message.sender
+        // msg.target = message.target
+        // msg.type = message.type
+        // msg.uuid = message.uniqueId
 
         dispatch(send_message_request());
 
         if (msg.type == ContentType[ContentType.Location]) {
-            msg.content = message.location
             BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
                 dispatch(sendMessageResponse(err, res));
             });

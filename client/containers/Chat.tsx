@@ -13,7 +13,7 @@ import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import * as chatRoomActions from "../redux/chatroom/chatroomActions";
 import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 
-import { ContentType } from "../chats/models/ChatDataModels";
+import { ContentType, IMessage } from "../chats/models/ChatDataModels";
 
 interface IComponentNameProps {
     dispatch,
@@ -28,18 +28,6 @@ interface IComponentNameState {
     earlyMessageReady
 };
 
-interface IGiftedChat {
-    _id: string;
-    message: string;
-    createdAt: Date;
-    user: {
-        _id: string;
-        name: string;
-        avatar: string;
-    };
-    src: string;
-    // additional custom parameters
-}
 // var messages = [{
 //     message: 'How do I use this messaging app?',
 //     from: 'right',
@@ -49,6 +37,26 @@ interface IGiftedChat {
 //     duration: 2000,
 //     inbound: false
 // }];
+class IGiftedChat {
+    _id: string;
+    message: string;
+    createdAt: Date;
+    user: {
+        _id: string;
+        name: string;
+        avatar: string;
+    };
+    avatar: string;
+    src: string;
+    inbound: boolean;
+    uuid: number;
+    type: string;
+    rid: string;
+    target: string;
+    sender: string;
+    backColor = '#3d83fa';
+    textColor = "white";
+}
 
 
 class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
@@ -60,30 +68,6 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         avatar: 'https://www.seeklogo.net/wp-content/uploads/2015/09/google-plus-new-icon-logo.png',
         duration: 2000,
         inbound: true
-    }, {
-        message: 'How do I use this messaging app?',
-        from: 'right',
-        backColor: '#3d83fa',
-        textColor: "white",
-        avatar: 'https://www.seeklogo.net/wp-content/uploads/2015/09/google-plus-new-icon-logo.png',
-        duration: 2000,
-        inbound: false
-    }, {
-        message: 'How do I use this messaging app?',
-        from: 'right',
-        backColor: '#3d83fa',
-        textColor: "white",
-        avatar: 'https://www.seeklogo.net/wp-content/uploads/2015/09/google-plus-new-icon-logo.png',
-        duration: 2000,
-        inbound: true
-    }, {
-        message: 'How do I use this messaging app?',
-        from: 'right',
-        backColor: '#3d83fa',
-        textColor: "white",
-        avatar: 'https://www.seeklogo.net/wp-content/uploads/2015/09/google-plus-new-icon-logo.png',
-        duration: 2000,
-        inbound: false
     }];
 
     constructor(props) {
@@ -121,7 +105,6 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
-                //this.setMessageStatus(chatRoomReducer.responseMessage.uuid, '');
                 this.setMessageTemp(chatroomReducer.responseMessage);
                 this.props.dispatch(chatRoomActions.stop());
                 break;
@@ -213,10 +196,11 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
     }
 
     setMessageTemp(server_msg) {
+        console.log("server_msg", server_msg)
         if (!server_msg.uuid) return
 
         let messages = [];
-        let msg = null
+        let msg = new IGiftedChat();
         let found = false;
 
         this.state.messages.map((message, i) => {
@@ -230,9 +214,12 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
             }
         })
 
-        if (found == true) {
-            messages.unshift(msg)
-            this.setMessages(messages)
+        if (found) {
+            messages.unshift(msg);
+
+            this.setState({
+                ...this.state, messages: messages
+            }, () => console.log(this.state));
         }
     }
 
@@ -292,7 +279,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         let msg = {
             text: this.state.typingText
         };
-        let message = this.setMsgKey(msg);
+        let message = this.prepareSendMessage(msg);
         this.sendText(message);
 
         let tempMsgs = this.state.messages.slice(1);
@@ -314,21 +301,19 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         );
     }
 
-    setMsgKey(msg) {
-        let message;
+    prepareSendMessage(msg): IMessage {
+        let message = {} as IMessage;
         if (msg.image) {
-            message = msg;
             message.type = ContentType[ContentType.Image];
         }
         else if (msg.text) {
-            message = msg;
+            message.body = msg.text;
             message.type = ContentType[ContentType.Text];
         } else if (msg.location) {
-            message = msg;
             message.type = ContentType[ContentType.Location];
         }
 
-        message.uniqueId = Math.round(Math.random() * 10000); // simulating server-side unique id generation
+        message.uuid = Math.round(Math.random() * 10000); // simulating server-side unique id generation
         message.rid = this.props.chatroomReducer.room._id;
         message.sender = this.props.userReducer.user._id;
         message.target = "*";
@@ -336,9 +321,9 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         return message;
     }
 
-    sendText(message) {
+    sendText(message: IMessage) {
         this.props.dispatch(chatRoomActions.sendMessage(message));
-        this.setMessageStatus(message.uniqueId, 'Sending...');
+        this.setMessageStatus(message.uuid, 'Sending...');
     }
 }
 

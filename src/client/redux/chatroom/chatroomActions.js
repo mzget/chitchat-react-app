@@ -176,19 +176,18 @@ function send_message_failure(data) {
         payload: data
     };
 }
-export function sendMessage(message) {
+export function sendMessage(msg) {
     return (dispatch) => {
         let secure = SecureServiceFactory.getService();
-        let msg = {};
-        msg.rid = message.rid;
-        msg.content = message.text;
-        msg.sender = message.sender;
-        msg.target = message.target;
-        msg.type = message.type;
-        msg.uuid = message.uniqueId;
+        // let msg: IMessage = {};
+        // msg.rid = message.rid
+        // msg.content = message.text
+        // msg.sender = message.sender
+        // msg.target = message.target
+        // msg.type = message.type
+        // msg.uuid = message.uniqueId
         dispatch(send_message_request());
         if (msg.type == ContentType[ContentType.Location]) {
-            msg.content = message.location;
             BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
                 dispatch(sendMessageResponse(err, res));
             });

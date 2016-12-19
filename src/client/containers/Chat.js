@@ -30,6 +30,12 @@ import { ContentType } from "../chats/models/ChatDataModels";
 //     duration: 2000,
 //     inbound: false
 // }];
+class IGiftedChat {
+    constructor() {
+        this.backColor = '#3d83fa';
+        this.textColor = "white";
+    }
+}
 class Chat extends React.Component {
     constructor(props) {
         super(props);
@@ -41,30 +47,6 @@ class Chat extends React.Component {
                 avatar: 'https://www.seeklogo.net/wp-content/uploads/2015/09/google-plus-new-icon-logo.png',
                 duration: 2000,
                 inbound: true
-            }, {
-                message: 'How do I use this messaging app?',
-                from: 'right',
-                backColor: '#3d83fa',
-                textColor: "white",
-                avatar: 'https://www.seeklogo.net/wp-content/uploads/2015/09/google-plus-new-icon-logo.png',
-                duration: 2000,
-                inbound: false
-            }, {
-                message: 'How do I use this messaging app?',
-                from: 'right',
-                backColor: '#3d83fa',
-                textColor: "white",
-                avatar: 'https://www.seeklogo.net/wp-content/uploads/2015/09/google-plus-new-icon-logo.png',
-                duration: 2000,
-                inbound: true
-            }, {
-                message: 'How do I use this messaging app?',
-                from: 'right',
-                backColor: '#3d83fa',
-                textColor: "white",
-                avatar: 'https://www.seeklogo.net/wp-content/uploads/2015/09/google-plus-new-icon-logo.png',
-                duration: 2000,
-                inbound: false
             }];
         this.onSubmitMessage = this.onSubmitMessage.bind(this);
         this.onTypingTextChange = this.onTypingTextChange.bind(this);
@@ -92,7 +74,6 @@ class Chat extends React.Component {
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
-                //this.setMessageStatus(chatRoomReducer.responseMessage.uuid, '');
                 this.setMessageTemp(chatroomReducer.responseMessage);
                 this.props.dispatch(chatRoomActions.stop());
                 break;
@@ -167,10 +148,11 @@ class Chat extends React.Component {
         }
     }
     setMessageTemp(server_msg) {
+        console.log("server_msg", server_msg);
         if (!server_msg.uuid)
             return;
         let messages = [];
-        let msg = null;
+        let msg = new IGiftedChat();
         let found = false;
         this.state.messages.map((message, i) => {
             if (message.uniqueId == server_msg.uuid) {
@@ -183,9 +165,9 @@ class Chat extends React.Component {
                 messages.push(message);
             }
         });
-        if (found == true) {
+        if (found) {
             messages.unshift(msg);
-            this.setMessages(messages);
+            this.setState(__assign({}, this.state, { messages: messages }), () => console.log(this.state));
         }
     }
     setInitMessages(messages) {
@@ -239,7 +221,7 @@ class Chat extends React.Component {
         let msg = {
             text: this.state.typingText
         };
-        let message = this.setMsgKey(msg);
+        let message = this.prepareSendMessage(msg);
         this.sendText(message);
         let tempMsgs = this.state.messages.slice(1);
         tempMsgs.push(message);
@@ -253,21 +235,19 @@ class Chat extends React.Component {
             React.createElement(Container, { alignSelf: 'center', absolute: true, style: { bottom: '0%' } },
                 React.createElement(TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText }))));
     }
-    setMsgKey(msg) {
-        let message;
+    prepareSendMessage(msg) {
+        let message = {};
         if (msg.image) {
-            message = msg;
             message.type = ContentType[ContentType.Image];
         }
         else if (msg.text) {
-            message = msg;
+            message.body = msg.text;
             message.type = ContentType[ContentType.Text];
         }
         else if (msg.location) {
-            message = msg;
             message.type = ContentType[ContentType.Location];
         }
-        message.uniqueId = Math.round(Math.random() * 10000); // simulating server-side unique id generation
+        message.uuid = Math.round(Math.random() * 10000); // simulating server-side unique id generation
         message.rid = this.props.chatroomReducer.room._id;
         message.sender = this.props.userReducer.user._id;
         message.target = "*";
@@ -275,7 +255,7 @@ class Chat extends React.Component {
     }
     sendText(message) {
         this.props.dispatch(chatRoomActions.sendMessage(message));
-        this.setMessageStatus(message.uniqueId, 'Sending...');
+        this.setMessageStatus(message.uuid, 'Sending...');
     }
 }
 /**

@@ -78,10 +78,10 @@ export type ContactInfo = {
 /**
  * @Message...
  */
-export type Message = {
+export interface IMessage {
     _id: string;
     rid: string;
-    type: ContentType;
+    type: string;
     body: string;
     sender: string;
     duration: string;
@@ -89,6 +89,7 @@ export type Message = {
     createTime: Date;
     readers: string[];
     meta: MessageMeta;
+    target: string;
 }
 type MessageMeta = {
     duration: string;

@@ -4,6 +4,7 @@
  * This is pure function action for redux app.
  */
 import ChatRoomComponent from "../../chats/chatRoomComponent";
+import { ChatRoomActionsType } from "./chatroomActions";
 import config from "../../configs/config";
 import { Record } from "immutable";
 import { createAction } from 'redux-actions';
@@ -45,7 +46,8 @@ export const getPersistendMessageEpic = action$ => {
 export const ChatRoomInitState = Record({
     isFetching: false,
     state: null,
-    room: null
+    room: null,
+    responseMessage: null
 });
 export const chatroomReducer = (state = new ChatRoomInitState(), action) => {
     switch (action.type) {
@@ -56,6 +58,20 @@ export const chatroomReducer = (state = new ChatRoomInitState(), action) => {
             return state;
         case FETCH_PRIVATE_CHATROOM_FAILURE:
             return state;
+        case ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
+            let payload = action.payload;
+            let nextState = state.set("state", ChatRoomActionsType.SEND_MESSAGE_SUCCESS)
+                .set("isFetching", false)
+                .set("responseMessage", payload);
+            return nextState;
+        }
+        case ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
+            let payload = action.payload;
+            let nextState = state.set("state", ChatRoomActionsType.SEND_MESSAGE_FAILURE)
+                .set("isFetching", false)
+                .set("responseMessage", payload);
+            return nextState;
+        }
         default:
             return state;
     }
