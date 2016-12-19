@@ -17,8 +17,8 @@ import HttpCode from "../libs/stalk/utils/httpStatusCode";
 import ServerImplement, { IDictionary } from "../libs/stalk/serverImplemented";
 
 export interface ChatLogMap { [key: string]: ChatLog };
-export interface IUnread { message: DataModels.Message; rid: string; count: number };
-export class Unread { message: DataModels.Message; rid: string; count: number };
+export interface IUnread { message: DataModels.IMessage; rid: string; count: number };
+export class Unread { message: DataModels.IMessage; rid: string; count: number };
 
 export default class ChatsLogComponent implements IRoomAccessListenerImp {
     serverImp: ServerImplement = null;

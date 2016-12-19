@@ -47,18 +47,20 @@ class Home extends React.Component<IComponentNameProps, any> {
         this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
     };
 
-    joinChatServer() {
-        let { location: {query: {userId, username, roomId, contactId}}, userReducer } = this.props;
+    joinChatServer(nextProps) {
+        let { location: {query: {userId, username, roomId, contactId}}, userReducer } = nextProps as IComponentNameProps;
         if (userReducer.user) {
             StalkBridgeActions.onStalkLoginSuccess.push(() => {
-                this.fetch_privateChatRoom(contactId, userReducer.user._id);
+                if (contactId) {
+                    this.fetch_privateChatRoom(contactId, userReducer.user._id);
+                }
             });
             StalkBridgeActions.stalkLogin(userReducer.user);
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        let { location: {query: {userId, username, roomId, contactId}}, chatroomReducer, userReducer } = nextProps;
+        let { location: {query: {userId, username, roomId, contactId}}, chatroomReducer, userReducer } = nextProps as IComponentNameProps;
 
         if (chatroomReducer.state == chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS) {
             this.props.router.push(`/chat/${chatroomReducer.room._id}`);
@@ -66,7 +68,7 @@ class Home extends React.Component<IComponentNameProps, any> {
 
         switch (userReducer.state) {
             case userActions.FETCH_USER_SUCCESS:
-                this.joinChatServer();
+                this.joinChatServer(nextProps);
                 break;
 
             default:

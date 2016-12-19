@@ -57,7 +57,8 @@ export const ChatRoomInitState = Record({
     isFetching: false,
     state: null,
     room: null,
-    responseMessage: null
+    responseMessage: null,
+    newMessage: null
 });
 export const chatroomReducer = (state = new ChatRoomInitState(), action: ReduxActions.Action<any>) => {
     switch (action.type) {
@@ -84,6 +85,12 @@ export const chatroomReducer = (state = new ChatRoomInitState(), action: ReduxAc
                 .set("responseMessage", payload);
 
             return nextState;
+        }
+
+        case ChatRoomActionsType.ON_NEW_MESSAGE: {
+            let payload = action.payload;
+            return state.set("state", ChatRoomActionsType.ON_NEW_MESSAGE)
+                .set("newMessage", payload);
         }
 
         default:

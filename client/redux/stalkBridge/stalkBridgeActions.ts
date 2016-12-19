@@ -91,9 +91,9 @@ export function stalkLoginWithToken(uid: string, token: string) {
 }
 
 export function stalkLogin(user: any) {
+    console.log("stalkLogin init status", Store.getState().stalkReducer.isInit);
     if (Store.getState().stalkReducer.isInit) return;
 
-    console.log("stalkLogin", user);
     const backendFactory = BackendFactory.getInstance();
     backendFactory.stalkInit().then(value => {
         backendFactory.checkIn(user._id, null, user).then(value => {

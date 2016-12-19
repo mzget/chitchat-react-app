@@ -33,11 +33,13 @@ class Home extends React.Component {
         if (this.props.location.query.roomId) {
         }
     }
-    joinChatServer() {
-        let { location: { query: { userId, username, roomId, contactId } }, userReducer } = this.props;
+    joinChatServer(nextProps) {
+        let { location: { query: { userId, username, roomId, contactId } }, userReducer } = nextProps;
         if (userReducer.user) {
             StalkBridgeActions.onStalkLoginSuccess.push(() => {
-                this.fetch_privateChatRoom(contactId, userReducer.user._id);
+                if (contactId) {
+                    this.fetch_privateChatRoom(contactId, userReducer.user._id);
+                }
             });
             StalkBridgeActions.stalkLogin(userReducer.user);
         }
@@ -49,7 +51,7 @@ class Home extends React.Component {
         }
         switch (userReducer.state) {
             case userActions.FETCH_USER_SUCCESS:
-                this.joinChatServer();
+                this.joinChatServer(nextProps);
                 break;
             default:
                 break;
