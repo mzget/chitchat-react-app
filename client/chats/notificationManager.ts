@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 import BackendFactory from "./BackendFactory";
-import { Message } from "../libs/chitchat/dataModel/message";
+import { IMessage } from "../libs/chitchat/dataModel/message";
 import PushNotifyHelper from '../libs/pushNotifyHelper';
 
 import Store from "../reducers/configureStore";
@@ -41,7 +41,7 @@ export default class NotificationManager {
         BackendFactory.getInstance().dataListener.removeNoticeNewMessageEvent(this.notify);
     }
 
-    notify(messageImp: Message) {
+    notify(messageImp: IMessage) {
         //@ Check app not run in background.
         let device = Store.getState().deviceReducer; //active, background, inactive
 

@@ -1,5 +1,6 @@
 import * as async from "async";
 import { RoomType, MemberRole, StalkAccount } from "./models/ChatDataModels";
+import { RoomDALFactory } from "../libs/chitchat/dataAccessLayer/RoomDALFactory";
 export default class DataManager {
     constructor() {
         this.orgGroups = {};
@@ -9,6 +10,7 @@ export default class DataManager {
         this.contactsMember = {};
         this.isOrgMembersReady = false;
         this.getContactInfoFailEvents = new Array();
+        this.roomDAL = RoomDALFactory.getObject();
     }
     addContactInfoFailEvents(func) {
         this.getContactInfoFailEvents.push(func);

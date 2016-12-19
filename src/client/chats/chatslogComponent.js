@@ -59,8 +59,16 @@ export default class ChatsLogComponent {
     onAccessRoom(dataEvent) {
         let self = this;
         let roomAccess = dataEvent.roomAccess;
-        this.dataManager.roomDAL.get().then((data) => {
-            addRoomData(data);
+        let _rooms = new Map();
+        this.dataManager.roomDAL.getKeys().then(keys => {
+            async.map(keys, (room_id, cb) => {
+                this.dataManager.roomDAL.get(room_id).then((room) => {
+                    _rooms.set(room_id, room);
+                    cb(null, null);
+                }).catch(err => cb(null, null));
+            }, (err, results) => {
+                addRoomData(_rooms);
+            });
         }).catch(err => {
             done();
         });

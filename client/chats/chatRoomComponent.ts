@@ -4,7 +4,6 @@
  * ChatRoomComponent for handle some business logic of chat room.
  */
 
-
 import * as async from "async";
 
 import BackendFactory from "./BackendFactory";
@@ -15,7 +14,7 @@ import { absSpartan } from "../libs/stalk/spartanEvents";
 import { IMessageDAL } from "../libs/chitchat/dataAccessLayer/IMessageDAL";
 import MessageDALFactory from "../libs/chitchat/dataAccessLayer/messageDALFactory";
 import SecureServiceFactory from "../libs/chitchat/services/secureServiceFactory";
-import { ContentType, Member, Message } from "./models/ChatDataModels";
+import { ContentType, Member, IMessage } from "./models/ChatDataModels";
 import { ISecureService } from "../libs/chitchat/services/ISecureService";
 
 import Config from "../configs/config";
@@ -31,7 +30,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         return ChatRoomComponent.instance;
     }
 
-    public chatMessages: Array<Message> = [];
+    public chatMessages: Array<IMessage> = [];
     public chatroomDelegate: (eventName: string, data: any) => void;
     public outsideRoomDelegete: (eventName: string, data: any) => void;
     private chatRoomApi: ChatRoomApiProvider;
@@ -56,7 +55,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         });
     }
 
-    onChat(chatMessage: Message) {
+    onChat(chatMessage: IMessage) {
         let self = this;
 
         if (this.roomId === chatMessage.rid) {
@@ -118,7 +117,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         console.log("onMessageRead", JSON.stringify(dataEvent));
 
         let self = this;
-        let newMsg: Message = JSON.parse(JSON.stringify(dataEvent));
+        let newMsg: IMessage = JSON.parse(JSON.stringify(dataEvent));
 
         let promise = new Promise(function (resolve, reject) {
             self.chatMessages.some(function callback(value) {
@@ -167,7 +166,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         return new Promise((resolve, reject) => {
             self.messageDAL.getData(rid, (err, messages) => {
                 if (messages !== null) {
-                    let chats: Message[] = messages.slice(0);
+                    let chats: IMessage[] = messages.slice(0);
                     async.mapSeries(chats, function iterator(item, result) {
                         if (item.type === ContentType.Text) {
                             if (Config.appConfig.encryption == true) {
@@ -257,7 +256,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                 console.log("Newer message counts.", histories.length);
                 if (histories.length > 0) {
 
-                    var messages: Array<Message> = JSON.parse(JSON.stringify(histories));
+                    var messages: Array<IMessage> = JSON.parse(JSON.stringify(histories));
 
                     async.mapSeries(messages, function (item, cb) {
                         if (item.type.toString() === ContentType[ContentType.Text]) {
@@ -333,13 +332,13 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                 let datas = [];
                 datas = res.data;
                 let clientMessages = self.chatMessages.slice(0);
-                let mergedArray: Array<Message> = [];
+                let mergedArray: Array<IMessage> = [];
                 if (datas.length > 0) {
-                    let messages: Array<Message> = JSON.parse(JSON.stringify(datas));
+                    let messages: Array<IMessage> = JSON.parse(JSON.stringify(datas));
                     mergedArray = messages.concat(clientMessages);
                 }
 
-                let resultsArray: Array<Message> = [];
+                let resultsArray: Array<IMessage> = [];
                 async.map(mergedArray, function iterator(item, cb) {
                     let hasMessage = resultsArray.some(function itor(value, id, arr) {
                         if (value._id == item._id) {
@@ -354,7 +353,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                     else {
                         cb(null, null);
                     }
-                }, function done(err, results: Array<Message>) {
+                }, function done(err, results: Array<IMessage>) {
                     resultsArray.sort(self.compareMessage);
 
                     self.chatMessages = resultsArray.slice(0);
@@ -395,7 +394,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         callback(null, topEdgeMessageTime);
     }
 
-    private compareMessage(a: Message, b: Message) {
+    private compareMessage(a: IMessage, b: IMessage) {
         if (a.createTime > b.createTime) {
             return 1;
         }
@@ -420,7 +419,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                     resolve();
                 }
                 else {
-                    var arr_fromLog: Array<Message> = JSON.parse(chatLog);
+                    var arr_fromLog: Array<IMessage> = JSON.parse(chatLog);
                     if (arr_fromLog === null || arr_fromLog instanceof Array === false) {
                         self.chatMessages = [];
                         resolve();

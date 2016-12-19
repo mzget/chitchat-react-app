@@ -4,6 +4,9 @@ import { absSpartan } from "../libs/stalk/spartanEvents";
 import ServerImplemented from "../libs/stalk/serverImplemented";
 import { RoomAccessData, Room, RoomType, ContactInfo, Member, MemberRole, StalkAccount } from "./models/ChatDataModels";
 
+import { IRoomDAL } from "../libs/chitchat/dataAccessLayer/IRoomDAL";
+import { RoomDALFactory } from "../libs/chitchat/dataAccessLayer/RoomDALFactory";
+
 interface IRoomMap {
     [key: string]: Room;
 }
@@ -35,9 +38,11 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
         this.getContactInfoFailEvents.splice(id, 1);
     }
 
+    public roomDAL: IRoomDAL;
     private sessionToken: string;
 
     constructor() {
+        this.roomDAL = RoomDALFactory.getObject();
     }
 
     public getSessionToken(): string {

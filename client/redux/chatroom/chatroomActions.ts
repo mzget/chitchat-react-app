@@ -11,7 +11,7 @@ import SecureServiceFactory from "../../libs/chitchat/services/secureServiceFact
 import ServerEventListener from "../../libs/stalk/serverEventListener";
 import { IMessage } from "../../libs/stalk/chatRoomApiProvider";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
-import { ContentType, Message, Room, RoomType } from "../../chats/models/ChatDataModels";
+import { ContentType, IMessage, Room, RoomType } from "../../chats/models/ChatDataModels";
 // import NotificationManager from '../../chats/notificationManager';
 
 import { Account } from "../../dataAccess/AppAccount";
@@ -113,7 +113,7 @@ function replaceMyMessage(receiveMsg) {
     }
 }
 
-function onNewMessage(messages: Message[]) {
+function onNewMessage(messages: IMessage[]) {
     return {
         type: ChatRoomActionsType.ON_NEW_MESSAGE,
         payload: messages

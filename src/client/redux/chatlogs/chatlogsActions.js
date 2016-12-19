@@ -72,7 +72,7 @@ function updateLastAccessTimeEventHandler(newRoomAccess) {
 function getUnreadMessages() {
     let chatsLogComp = Store.getState().stalkReducer.chatslogComponent;
     let dataManager = BackendFactory.getInstance().dataManager;
-    let token = Store.getState().authReducer.token;
+    let token = dataManager.getSessionToken();
     chatsLogComp.getUnreadMessages(token, dataManager.getRoomAccess(), function done(err, unreadLogs) {
         if (!!unreadLogs) {
             unreadLogs.map(function element(unread) {

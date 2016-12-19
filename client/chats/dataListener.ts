@@ -1,6 +1,6 @@
 ﻿import { absSpartan } from "../libs/stalk/spartanEvents";
 import * as IRoomAccessEvents from "../libs/stalk/IRoomAccessEvents";
-import { Message, RoomAccessData, Room, StalkAccount } from "./models/ChatDataModels";
+import { IMessage, RoomAccessData, Room, StalkAccount } from "./models/ChatDataModels";
 
 import DataManager from "./dataManager";
 
@@ -9,13 +9,13 @@ type RoomAccessEvents = IRoomAccessEvents.absSpartan.IRoomAccessListenerImp;
 export default class DataListener implements absSpartan.IServerListener, absSpartan.IChatServerListener {
     private dataManager: DataManager;
 
-    private notifyNewMessageEvents = new Array<(message: Message) => void>();
-    public addNoticeNewMessageEvent(listener: (message: Message) => void) {
+    private notifyNewMessageEvents = new Array<(message: IMessage) => void>();
+    public addNoticeNewMessageEvent(listener: (message: IMessage) => void) {
         if (this.notifyNewMessageEvents.length === 0) {
             this.notifyNewMessageEvents.push(listener);
         }
     }
-    public removeNoticeNewMessageEvent(listener: (message: Message) => void) {
+    public removeNoticeNewMessageEvent(listener: (message: IMessage) => void) {
         let id = this.notifyNewMessageEvents.indexOf(listener);
         this.notifyNewMessageEvents.splice(id, 1);
     }
@@ -149,7 +149,7 @@ export default class DataListener implements absSpartan.IServerListener, absSpar
     /*******************************************************************************/
     //<!-- chat room data listener.
     onChat(data) {
-        let chatMessageImp: Message = JSON.parse(JSON.stringify(data));
+        let chatMessageImp: IMessage = JSON.parse(JSON.stringify(data));
 
         if (!!this.notifyNewMessageEvents && this.notifyNewMessageEvents.length !== 0) {
             this.notifyNewMessageEvents.map((v, id, arr) => {
