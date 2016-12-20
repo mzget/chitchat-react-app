@@ -78,7 +78,7 @@ class Home extends React.Component {
             React.createElement("li", { key: userId },
                 React.createElement(Link, { to: `/chat/${userId}` }, username)),
             React.createElement(ChatLogs, __assign({}, this.props)),
-            React.createElement(DialogBox, { handleClose: () => { this.setState({ openDialog: !this.state.openDialog }); }, open: this.state.openDialog })));
+            React.createElement(DialogBox, { handleClose: () => { this.setState({ openDialog: false }); }, open: this.state.openDialog })));
     }
 }
 /**

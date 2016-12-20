@@ -8,27 +8,29 @@ const actions = (props) => [
     <FlatButton
         label="Cancel"
         primary={true}
-        onTouchTap={props.handleClose}
+        onMouseUp={props.handleClose}
         />,
     <FlatButton
         label="Submit"
         primary={true}
         keyboardFocused={true}
-        onTouchTap={props.handleClose}
+        onMouseUp={props.handleClose}
         />,
 ];
 export const DialogBox = (props: { handleClose, open: boolean }) => {
     return (
         < MuiThemeProvider >
-            <Dialog
-                title="Dialog With Actions"
-                actions={actions(props)}
-                modal={false}
-                open={props.open}
-                onRequestClose={props.handleClose}
-                >
-                The actions in this window were passed in as an array of React objects.
+            <div>
+                <Dialog
+                    title="Dialog With Actions"
+                    actions={actions(props)}
+                    modal={false}
+                    open={props.open}
+                    onRequestClose={props.handleClose}
+                    >
+                    The actions in this window were passed in as an array of React objects.
             </Dialog>
+            </div>
         </MuiThemeProvider >
     );
 }
