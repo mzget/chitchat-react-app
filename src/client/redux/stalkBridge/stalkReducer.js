@@ -4,6 +4,7 @@
  * This is pure function for redux app.
  */
 import * as ChatlogsActions from "../chatlogs/chatlogsActions";
+import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
 import { Record } from 'immutable';
 /**
  * ## Initial State
@@ -27,6 +28,9 @@ export function stalkReducer(state = initialState, action) {
         case ChatlogsActions.STALK_INIT_CHATSLOG: {
             return state.set("isInit", true)
                 .set("chatslogComponent", action.payload);
+        }
+        case StalkBridgeActions.STALK_INIT_FAILURE: {
+            return state.set("state", StalkBridgeActions.STALK_INIT_FAILURE);
         }
         default:
             return state;

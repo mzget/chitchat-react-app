@@ -16,10 +16,6 @@ import Store from "../configureStore";
 import * as ChatLogsActions from "../chatlogs/chatlogsActions";
 import * as StalkPushActions from "./stalkPushActions";
 
-export const STALK_GET_PRIVATE_CHAT_ROOM_ID_REQUEST = "STALK_GET_PRIVATE_CHAT_ROOM_ID_REQUEST";
-export const STALK_GET_PRIVATE_CHAT_ROOM_ID_FAILURE = "STALK_GET_PRIVATE_CHAT_ROOM_ID_FAILURE";
-export const STALK_GET_PRIVATE_CHAT_ROOM_ID_SUCCESS = "STALK_GET_PRIVATE_CHAT_ROOM_ID_SUCCESS";
-
 export const getSessionToken = () => {
     const backendFactory = BackendFactory.getInstance();
     return backendFactory.dataManager.getSessionToken();
@@ -40,6 +36,9 @@ export function getUserInfo(userId: string, callback: (user: DataModels.ContactI
     let user: DataModels.ContactInfo = dataManager.getContactProfile(userId);
     callback(user);
 }
+
+
+export const STALK_INIT_FAILURE = "STALK_INIT_FAILURE";
 
 export function stalkLoginWithToken(uid: string, token: string) {
     console.log("stalkLoginWithToken", uid, token);
@@ -128,5 +127,7 @@ export function stalkLogin(user: any) {
         });
     }).catch(err => {
         console.warn("StalkInit Fail.");
+
+        Store.dispatch({ type: STALK_INIT_FAILURE });
     });
 }

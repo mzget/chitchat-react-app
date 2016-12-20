@@ -60,10 +60,6 @@ class ChatLogs extends React.Component<IComponentNameProps, IComponentNameState>
             default:
                 break;
         }
-
-        if (chatroomReducer.state == StalkBridgeActions.STALK_GET_PRIVATE_CHAT_ROOM_ID_SUCCESS) {
-
-        }
     }
 
     convertObjToArr(obj: ChatLogMap) {

@@ -34,6 +34,10 @@ export function stalkReducer(state = initialState, action) {
                 .set("chatslogComponent", action.payload);
         }
 
+        case StalkBridgeActions.STALK_INIT_FAILURE: {
+            return state.set("state", StalkBridgeActions.STALK_INIT_FAILURE);
+        }
+
         default:
             return state;
     }

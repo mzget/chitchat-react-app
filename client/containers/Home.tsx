@@ -14,6 +14,7 @@ import * as userActions from "../redux/user/userActions";
 import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 
 import ChatLogs from "./ChatLogs";
+import { DialogBox } from "../components/DialogBox";
 
 abstract class IComponentNameProps implements IComponentProps {
     location: {
@@ -29,11 +30,22 @@ abstract class IComponentNameProps implements IComponentProps {
     dispatch;
     userReducer;
     chatroomReducer;
+    stalkReducer;
 };
 
-interface IComponentNameState { };
+interface IComponentNameState {
+    openDialog: boolean
+};
 
-class Home extends React.Component<IComponentNameProps, any> {
+class Home extends React.Component<IComponentNameProps, IComponentNameState> {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            openDialog: false
+        }
+    }
+
     componentDidMount() {
         console.log("Home", this.props);
 
@@ -68,7 +80,7 @@ class Home extends React.Component<IComponentNameProps, any> {
     }
 
     componentWillReceiveProps(nextProps) {
-        let { location: {query: {userId, username, roomId, contactId}}, chatroomReducer, userReducer } = nextProps as IComponentNameProps;
+        let { location: {query: {userId, username, roomId, contactId}}, chatroomReducer, userReducer, stalkReducer } = nextProps as IComponentNameProps;
 
         if (chatroomReducer.state == chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS) {
             this.props.router.push(`/chat/${chatroomReducer.room._id}`);
@@ -77,6 +89,15 @@ class Home extends React.Component<IComponentNameProps, any> {
         switch (userReducer.state) {
             case userActions.FETCH_USER_SUCCESS:
                 this.joinChatServer(nextProps);
+                break;
+
+            default:
+                break;
+        }
+
+        switch (stalkReducer.state) {
+            case StalkBridgeActions.STALK_INIT_FAILURE:
+                this.setState({ openDialog: true });
                 break;
 
             default:
@@ -91,6 +112,7 @@ class Home extends React.Component<IComponentNameProps, any> {
                 <span>Welcome to stalk chat service.</span>
                 <li key={userId}><Link to={`/chat/${userId}`}>{username}</Link></li>
                 <ChatLogs {...this.props} />
+                <DialogBox handleClose={() => { this.setState({ openDialog: !this.state.openDialog }) } } open={this.state.openDialog} />
             </div>
         );
     }

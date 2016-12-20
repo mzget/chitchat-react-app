@@ -5,7 +5,6 @@
  */
 import { ChatRoomActionsType } from "./chatroomActions";
 import * as chatroomActions from "./chatroomActions";
-import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
 import { Record } from 'immutable';
 /**
  * ## Initial State
@@ -81,20 +80,6 @@ function oldRoomReducer(state = initialState, action) {
             return state
                 .set("state", chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS)
                 .set("selectRoom", roomInfo);
-        }
-        case StalkBridgeActions.STALK_GET_PRIVATE_CHAT_ROOM_ID_REQUEST: {
-            return state.set("isFetching", true);
-        }
-        case StalkBridgeActions.STALK_GET_PRIVATE_CHAT_ROOM_ID_FAILURE: {
-            return state.set("isFetching", false)
-                .set("error", action.payload);
-        }
-        case StalkBridgeActions.STALK_GET_PRIVATE_CHAT_ROOM_ID_SUCCESS: {
-            let payload = action.payload;
-            return state
-                .set("isFetching", false)
-                .set("selectRoom", payload)
-                .set("state", StalkBridgeActions.STALK_GET_PRIVATE_CHAT_ROOM_ID_SUCCESS);
         }
         default:
             return state;

@@ -262,7 +262,8 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
     }
 
     onSubmitMessage() {
-        if (this.state.typingText.length <= 0) return;
+        if (this.state && this.state.typingText.length <= 0) return;
+
         let msg = {
             text: this.state.typingText
         };

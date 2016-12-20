@@ -96,21 +96,6 @@ function oldRoomReducer(state = initialState, action) {
                 .set("selectRoom", roomInfo);
         }
 
-
-        case StalkBridgeActions.STALK_GET_PRIVATE_CHAT_ROOM_ID_REQUEST: {
-            return state.set("isFetching", true);
-        }
-        case StalkBridgeActions.STALK_GET_PRIVATE_CHAT_ROOM_ID_FAILURE: {
-            return state.set("isFetching", false)
-                .set("error", action.payload);
-        }
-        case StalkBridgeActions.STALK_GET_PRIVATE_CHAT_ROOM_ID_SUCCESS: {
-            let payload = action.payload;
-            return state
-                .set("isFetching", false)
-                .set("selectRoom", payload)
-                .set("state", StalkBridgeActions.STALK_GET_PRIVATE_CHAT_ROOM_ID_SUCCESS);
-        }
         default:
             return state;
     }

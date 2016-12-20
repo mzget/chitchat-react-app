@@ -215,7 +215,7 @@ class Chat extends React.Component {
         this.setState(__assign({}, this.state, { typingText: event.target.value }));
     }
     onSubmitMessage() {
-        if (this.state.typingText.length <= 0)
+        if (this.state && this.state.typingText.length <= 0)
             return;
         let msg = {
             text: this.state.typingText
