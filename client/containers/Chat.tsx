@@ -87,7 +87,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         let { chatroomReducer} = nextProps as IComponentNameProps;
 
         switch (chatroomReducer.state) {
-            case chatRoomActions.ChatRoomActionsType.SELECT_CHAT_ROOM: {
+            case chatRoomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
                 this.roomInitialize(nextProps);
                 break;
             }
@@ -270,7 +270,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         this.sendText(message);
 
         let _messages = this.state.messages.slice();
-        let gift = this.setGiftMessage(message, null);
+        let gift = this.setGiftMessage(message);
         gift.status = 'Sending...';
         _messages.push(gift);
         this.setState({ ...this.state, typingText: "", messages: _messages });

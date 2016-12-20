@@ -45,9 +45,6 @@ export class ChatRoomActionsType {
     static ON_NEW_MESSAGE = "ON_NEW_MESSAGE";
     static ON_EARLY_MESSAGE_READY = "ON_EARLY_MESSAGE_READY";
     static LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
-
-    static SELECT_CHAT_ROOM = "SELECT_CHAT_ROOM";
-
 }
 
 export function stop() {
@@ -346,17 +343,19 @@ export function loadEarlyMessageChunk() {
     }
 }
 
-const selectRoom = (roomInfo: Room) => ({ type: ChatRoomActionsType.SELECT_CHAT_ROOM, payload: roomInfo });
-
 const GET_PERSISTEND_CHATROOM = "GET_PERSISTEND_CHATROOM";
 const GET_PERSISTEND_CHATROOM_CANCELLED = "GET_PERSISTEND_CHATROOM_CANCELLED";
-const GET_PERSISTEND_CHATROOM_SUCCESS = "GET_PERSISTEND_CHATROOM_SUCCESS";
+export const GET_PERSISTEND_CHATROOM_SUCCESS = "GET_PERSISTEND_CHATROOM_SUCCESS";
 const GET_PERSISTEND_CHATROOM_FAILURE = "GET_PERSISTEND_CHATROOM_FAILURE";
+const getPersistChatroomFail = () => ({ type: GET_PERSISTEND_CHATROOM_FAILURE });
+const getPersistChatroomSuccess = (roomInfo: Room) => ({ type: GET_PERSISTEND_CHATROOM_SUCCESS, payload: roomInfo });
 export const getPersistendChatroom = (roomId: string) => (dispatch => {
     dispatch({ type: GET_PERSISTEND_CHATROOM });
 
     const dataManager = BackendFactory.getInstance().dataManager;
     const room = dataManager.getGroup(roomId);
-
-    dispatch(selectRoom(room));
+    if (room)
+        dispatch(getPersistChatroomSuccess(room));
+    else
+        dispatch(getPersistChatroomFail());
 });

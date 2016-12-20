@@ -29,20 +29,21 @@ const rightIconMenu = (
     </IconMenu>
 );
 
-const renderList = (props: { value: Array<any>, onSelected }) => (props.value.map(log => {
-    return (<div>
-        <ListItem key={log.id} onTouchEnd={() => props.onSelected(log)} onMouseUp={() => props.onSelected(log)}
-            leftAvatar={<Avatar src="images/ok-128.jpg" />}
-            primaryText={log.roomName}
-            secondaryText={
-                <p>
-                    <span style={{ color: darkBlack }}>{log.lastMessage}</span>
-                </p>
-            }
-            secondaryTextLines={2}
-            />
-        <Divider inset={true} />
-    </div>)
+const renderList = (props: { value: Array<any>, onSelected }) => (props.value.map((log, i) => {
+    return (
+        <div key={i}>
+            <ListItem onTouchEnd={() => props.onSelected(log)} onMouseUp={() => props.onSelected(log)}
+                leftAvatar={<Avatar src="images/ok-128.jpg" />}
+                primaryText={log.roomName}
+                secondaryText={
+                    <p>
+                        <span style={{ color: darkBlack }}>{log.lastMessage}</span>
+                    </p>
+                }
+                secondaryTextLines={2}
+                />
+            <Divider inset={true} />
+        </div>)
 })
 );
 

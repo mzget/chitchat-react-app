@@ -5,6 +5,7 @@
  */
 
 import { ChatRoomActionsType } from "./chatroomActions";
+import * as chatroomActions from "./chatroomActions";
 import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
 import { Record } from 'immutable';
 /**
@@ -87,11 +88,11 @@ function oldRoomReducer(state = initialState, action) {
             return state.set("state", ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS);
         }
 
-        case ChatRoomActionsType.SELECT_CHAT_ROOM: {
+        case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
             let roomInfo = (!!action.payload) ? action.payload : state.get("selectRoom");
 
             return state
-                .set("state", ChatRoomActionsType.SELECT_CHAT_ROOM)
+                .set("state", chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS)
                 .set("selectRoom", roomInfo);
         }
 

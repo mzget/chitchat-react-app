@@ -94,9 +94,9 @@ export const chatroomReducer = (state = new ChatRoomInitState(), action: ReduxAc
                 .set("newMessage", payload);
         }
 
-        case ChatRoomActionsType.SELECT_CHAT_ROOM: {
+        case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
             return state
-                .set("state", ChatRoomActionsType.SELECT_CHAT_ROOM)
+                .set("state", chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS)
                 .set("room", action.payload);
         }
         case chatroomActions.LEAVE_ROOM_SUCCESS: {

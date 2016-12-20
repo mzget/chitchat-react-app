@@ -19,7 +19,9 @@ export const TypingBox = (props) => {
     return (
         < MuiThemeProvider >
             <div>
-                <TextField hintText="Type your message" value={props.value} onChange={props.onValueChange} />
+                <TextField hintText="Type your message" value={props.value} onChange={props.onValueChange} onKeyPress={(e) => {
+                    if (e.key === 'Enter') props.onSubmit();
+                } } />
                 <span style={styles.span} />
                 <SendButton onSubmit={props.onSubmit} />
             </div>

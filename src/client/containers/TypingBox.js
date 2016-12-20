@@ -14,7 +14,10 @@ export const SendButton = (props) => (React.createElement(RaisedButton, { label:
 export const TypingBox = (props) => {
     return (React.createElement(MuiThemeProvider, null,
         React.createElement("div", null,
-            React.createElement(TextField, { hintText: "Type your message", value: props.value, onChange: props.onValueChange }),
+            React.createElement(TextField, { hintText: "Type your message", value: props.value, onChange: props.onValueChange, onKeyPress: (e) => {
+                    if (e.key === 'Enter')
+                        props.onSubmit();
+                } }),
             React.createElement("span", { style: styles.span }),
             React.createElement(SendButton, { onSubmit: props.onSubmit }))));
 };
