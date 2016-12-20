@@ -13,7 +13,11 @@ import * as ChatLogsActions from "../redux/chatlogs/chatlogsActions";
 import ListChatLogs from "./ListChatLogs";
 
 interface IComponentNameProps {
-    chatroomReducer, stalkReducer,
+    location: {
+        query
+    },
+    params,
+    chatroomReducer, stalkReducer, chatlogReducer
     dispatch,
     router
 };
@@ -34,22 +38,24 @@ class ChatLogs extends React.Component<IComponentNameProps, IComponentNameState>
         this.convertObjToArr = this.convertObjToArr.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
-        let { chatroomReducer, stalkReducer } = nextProps;
+    componentWillReceiveProps(nextProps: IComponentNameProps) {
+        let { chatroomReducer, stalkReducer, chatlogReducer } = nextProps;
 
-        switch (stalkReducer.state) {
+        console.log("ChatLogsPage", nextProps)
+
+        switch (chatlogReducer.state) {
             case ChatLogsActions.STALK_GET_CHATSLOG_COMPLETE:
-                this.convertObjToArr(stalkReducer.chatsLog);
+                this.convertObjToArr(chatlogReducer.chatsLog);
                 // - need to get online-status of contact...
                 // ChatLogsActions.getContactOnlineStatus();
                 break;
             case ChatLogsActions.STALK_UNREAD_MAP_CHANGED:
-                this.convertObjToArr(stalkReducer.chatsLog);
+                this.convertObjToArr(chatlogReducer.chatsLog);
                 // - need to get online-status of contact...
                 // ChatLogsActions.getContactOnlineStatus();
                 break;
             case ChatLogsActions.STALK_CHATSLOG_CONTACT_COMPLETE:
-                this.convertObjToArr(stalkReducer.chatsLog);
+                this.convertObjToArr(chatlogReducer.chatsLog);
                 break;
             default:
                 break;
@@ -64,6 +70,8 @@ class ChatLogs extends React.Component<IComponentNameProps, IComponentNameState>
         if (!obj) return;
 
         let chatsLog = obj;
+        console.log(chatsLog);
+
         let self = this
         let arr = Object.keys(chatsLog).filter(function (log) {
             if (!!chatsLog[log].roomName && chatsLog[log].roomName.toLowerCase().includes(self.state.search.toLowerCase()))

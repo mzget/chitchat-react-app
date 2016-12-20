@@ -93,6 +93,13 @@ export const chatroomReducer = (state = new ChatRoomInitState(), action: ReduxAc
                 .set("newMessage", payload);
         }
 
+        case ChatRoomActionsType.SELECT_CHAT_ROOM: {
+            return state
+                .set("state", ChatRoomActionsType.SELECT_CHAT_ROOM)
+                .set("room", action.payload);
+        }
+
+
         default:
             return state;
     }

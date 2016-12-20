@@ -19,6 +19,8 @@ import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import * as chatRoomActions from "../redux/chatroom/chatroomActions";
 import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 import { ContentType } from "../chats/models/ChatDataModels";
+class IComponentNameProps {
+}
 ;
 ;
 // var messages = [{
@@ -37,8 +39,8 @@ class IGiftedChat {
     }
 }
 class Chat extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super(...arguments);
         this._messages = [{
                 message: 'How do I use this messaging app?',
                 from: 'right',
@@ -48,26 +50,30 @@ class Chat extends React.Component {
                 duration: 2000,
                 inbound: true
             }];
+    }
+    componentWillMount() {
+        console.log("Chat", this.props, this.state);
         this.onSubmitMessage = this.onSubmitMessage.bind(this);
         this.onTypingTextChange = this.onTypingTextChange.bind(this);
+        this.roomInitialize = this.roomInitialize.bind(this);
+        this.setState(__assign({ messages: this._messages }, this.state));
+        let { chatroomReducer, userReducer, params } = this.props;
+        if (chatroomReducer.state == chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS) {
+            this.roomInitialize(this.props);
+        }
+        if (!chatroomReducer.room) {
+            this.props.dispatch(chatRoomActions.getPersistendChatroom(params.filter));
+        }
     }
     componentDidMount() {
-        let { chatroomReducer, userReducer } = this.props;
-        console.log("Chat", this.props, this.state);
-        this.setState(__assign({ messages: this._messages }, this.state));
-        if (chatroomReducer.state == chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS) {
-            //@ todo
-            // - Init chatroom service.
-            // - getPersistedMessage.
-            // - Request join room.
-            chatRoomActions.initChatRoom(chatroomReducer.room);
-            this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
-            this.props.dispatch(chatRoomActions.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
-        }
     }
     componentWillReceiveProps(nextProps) {
         let { chatroomReducer } = nextProps;
         switch (chatroomReducer.state) {
+            case chatRoomActions.ChatRoomActionsType.SELECT_CHAT_ROOM: {
+                this.roomInitialize(nextProps);
+                break;
+            }
             case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
                 this.setMessageStatus(chatroomReducer.responseMessage.uuid, 'ErrorButton');
                 this.props.dispatch(chatRoomActions.stop());
@@ -107,6 +113,16 @@ class Chat extends React.Component {
             default:
                 break;
         }
+    }
+    roomInitialize(props) {
+        let { chatroomReducer, userReducer, params } = props;
+        //@ todo
+        // - Init chatroom service.
+        // - getPersistedMessage.
+        // - Request join room.
+        chatRoomActions.initChatRoom(chatroomReducer.room);
+        this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
+        this.props.dispatch(chatRoomActions.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
     }
     onReceive(message) {
         console.log("onReceive: ", message);
@@ -148,7 +164,7 @@ class Chat extends React.Component {
         }
     }
     setMessageTemp(server_msg) {
-        console.log("server_msg", server_msg);
+        console.log("server_response_msg", server_msg);
         if (!server_msg.uuid)
             return;
         let messages = [];
@@ -218,6 +234,8 @@ class Chat extends React.Component {
         this.setState(__assign({}, this.state, { typingText: event.target.value }));
     }
     onSubmitMessage() {
+        if (this.state.typingText.length <= 0)
+            return;
         let msg = {
             text: this.state.typingText
         };
@@ -269,4 +287,7 @@ function mapDispatchToProps(dispatch) {
         dispatch
     };
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Chat);
+function mergeProps(stateProps, dispatchProps, ownProps) {
+    return Object.assign({}, ownProps, __assign({}, stateProps, dispatchProps));
+}
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(Chat);

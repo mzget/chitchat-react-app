@@ -13,6 +13,8 @@ import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import * as userActions from "../redux/user/userActions";
 import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 import ChatLogs from "./ChatLogs";
+class IComponentNameProps {
+}
 ;
 ;
 class Home extends React.Component {

@@ -31,7 +31,7 @@ const rightIconMenu = (
 
 const renderList = (props: { value: Array<any>, onSelected }) => (props.value.map(log => {
     return (<div>
-        <ListItem onTouchEnd={() => props.onSelected(log)} onMouseUp={() => props.onSelected(log)}
+        <ListItem key={log.id} onTouchEnd={() => props.onSelected(log)} onMouseUp={() => props.onSelected(log)}
             leftAvatar={<Avatar src="images/ok-128.jpg" />}
             primaryText={log.roomName}
             secondaryText={

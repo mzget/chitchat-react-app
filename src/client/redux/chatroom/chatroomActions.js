@@ -179,13 +179,7 @@ function send_message_failure(data) {
 export function sendMessage(msg) {
     return (dispatch) => {
         let secure = SecureServiceFactory.getService();
-        // let msg: IMessage = {};
-        // msg.rid = message.rid
-        // msg.content = message.text
-        // msg.sender = message.sender
-        // msg.target = message.target
-        // msg.type = message.type
-        // msg.uuid = message.uniqueId
+        console.log("sendMessage", msg);
         dispatch(send_message_request());
         if (msg.type == ContentType[ContentType.Location]) {
             BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
@@ -298,9 +292,14 @@ export function loadEarlyMessageChunk() {
         });
     };
 }
-export function selectRoom(roomInfo) {
-    return {
-        type: ChatRoomActionsType.SELECT_CHAT_ROOM,
-        payload: roomInfo
-    };
-}
+const selectRoom = (roomInfo) => ({ type: ChatRoomActionsType.SELECT_CHAT_ROOM, payload: roomInfo });
+const GET_PERSISTEND_CHATROOM = "GET_PERSISTEND_CHATROOM";
+const GET_PERSISTEND_CHATROOM_CANCELLED = "GET_PERSISTEND_CHATROOM_CANCELLED";
+const GET_PERSISTEND_CHATROOM_SUCCESS = "GET_PERSISTEND_CHATROOM_SUCCESS";
+const GET_PERSISTEND_CHATROOM_FAILURE = "GET_PERSISTEND_CHATROOM_FAILURE";
+export const getPersistendChatroom = (roomId) => (dispatch => {
+    dispatch({ type: GET_PERSISTEND_CHATROOM });
+    const dataManager = BackendFactory.getInstance().dataManager;
+    const room = dataManager.getGroup(roomId);
+    dispatch(selectRoom(room));
+});

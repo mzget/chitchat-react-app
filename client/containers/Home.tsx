@@ -5,7 +5,9 @@ import * as React from "react";
 import { Map } from 'immutable';
 import { bindActionCreators } from 'redux';
 import { connect } from "react-redux";
-import { Link } from 'react-router'
+import { Link } from 'react-router';
+
+import { IComponentProps } from "../utils/IComponentProps";
 
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import * as userActions from "../redux/user/userActions";
@@ -13,7 +15,7 @@ import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 
 import ChatLogs from "./ChatLogs";
 
-interface IComponentNameProps {
+abstract class IComponentNameProps implements IComponentProps {
     location: {
         query: {
             contactId: string;
@@ -22,7 +24,11 @@ interface IComponentNameProps {
             username: string;
         }
     };
-    dispatch, userReducer, chatroomReducer, router
+    params;
+    router;
+    dispatch;
+    userReducer;
+    chatroomReducer;
 };
 
 interface IComponentNameState { };

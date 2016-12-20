@@ -197,21 +197,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
     }
 
     private updatePersistRoomInfo(roomInfo: DataModels.Room) {
-        let self = this;
-        this.dataManager.roomDAL.get().then((roomsInfos: Map<string, DataModels.Room>) => {
-            if (roomsInfos instanceof Map) {
-                save();
-            }
-            else {
-                roomsInfos = new Map();
-                save();
-            }
-
-            function save() {
-                roomsInfos.set(roomInfo._id, roomInfo);
-                self.dataManager.roomDAL.save(roomsInfos);
-            }
-        });
+        this.dataManager.roomDAL.save(roomInfo._id, roomInfo);
     }
 
     private decorateRoomInfoData(roomInfo: DataModels.Room) {
@@ -256,7 +242,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
 
     public getRoomsInfo() {
         let self = this;
-        let results = new Map<string, DataModels.Room>();
+        let results = new Array<DataModels.Room>();
 
         this.unreadMessageMap.forEach((value, key, map) => {
             let roomInfo: DataModels.Room = self.dataManager.getGroup(value.rid);
@@ -264,7 +250,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
                 let room = self.decorateRoomInfoData(roomInfo);
                 self.dataManager.addGroup(room);
                 self.organizeChatLogMap(value, room, function done() {
-                    results.set(room._id, room);
+                    results.push(room);
                 });
             }
             else {
@@ -274,14 +260,14 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
                     if (!!room) {
                         this.updatePersistRoomInfo(room);
                         self.organizeChatLogMap(value, room, function done() {
-                            results.set(room._id, room);
+                            results.push(room);
                         });
                     }
                 });
             }
         });
 
-        self.dataManager.roomDAL.save(results);
+        results.map(room => self.dataManager.roomDAL.save(room._id, room));
 
         console.log("getRoomsInfo Completed.");
         if (this.getRoomsInfoCompleteEvent())

@@ -12,10 +12,12 @@ import { combineReducers } from 'redux';
 /**
 * ## Reducers
 */
+import { deviceReducer, DeviceInitialState } from "./device/deviceReducer";
 // import { messageReducer, MessageInitState } from "./message/messageReducer";
 import { UserInitState, userReducer } from "./user/userActions";
 import { stalkReducer, StalkInitState } from "./stalkBridge/stalkReducer";
 import { chatroomReducer, ChatRoomInitState } from "./chatroom/chatroomRxEpic";
+import { chatlogReducer, ChatLogInitState } from "./chatlogs/chatlogReducer";
 /**
  * ## CombineReducers
  *
@@ -23,9 +25,11 @@ import { chatroomReducer, ChatRoomInitState } from "./chatroom/chatroomRxEpic";
  * EVERY TIME there is a basic action
  */
 const appReducer = combineReducers({
+    deviceReducer,
     // messageReducer,
     stalkReducer,
     chatroomReducer,
+    chatlogReducer,
     userReducer
 });
 /*
@@ -35,10 +39,11 @@ const appReducer = combineReducers({
  */
 export function getInitialState() {
     const _initState = {
-        // Initial state for any reducer.
+        deviceReducer: new DeviceInitialState(),
         // messageReducer: new MessageInitState,
         stalkReducer: new StalkInitState(),
         chatroomReducer: new ChatRoomInitState(),
+        chatlogReducer: new ChatLogInitState(),
         userReducer: new UserInitState()
     };
     return _initState;

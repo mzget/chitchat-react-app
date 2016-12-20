@@ -16,6 +16,10 @@ export const getSessionToken = () => {
     const backendFactory = BackendFactory.getInstance();
     return backendFactory.dataManager.getSessionToken();
 };
+export const getRoomDAL = () => {
+    const backendFactory = BackendFactory.getInstance();
+    return backendFactory.dataManager.roomDAL;
+};
 export const onStalkLoginSuccess = new Array();
 const onGetContactProfileFail = (contact_id) => {
 };

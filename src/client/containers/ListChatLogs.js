@@ -17,7 +17,7 @@ const rightIconMenu = (React.createElement(IconMenu, { iconButtonElement: iconBu
     React.createElement(MenuItem, null, "Delete")));
 const renderList = (props) => (props.value.map(log => {
     return (React.createElement("div", null,
-        React.createElement(ListItem, { onTouchEnd: () => props.onSelected(log), onMouseUp: () => props.onSelected(log), leftAvatar: React.createElement(Avatar, { src: "images/ok-128.jpg" }), primaryText: log.roomName, secondaryText: React.createElement("p", null,
+        React.createElement(ListItem, { key: log.id, onTouchEnd: () => props.onSelected(log), onMouseUp: () => props.onSelected(log), leftAvatar: React.createElement(Avatar, { src: "images/ok-128.jpg" }), primaryText: log.roomName, secondaryText: React.createElement("p", null,
                 React.createElement("span", { style: { color: darkBlack } }, log.lastMessage)), secondaryTextLines: 2 }),
         React.createElement(Divider, { inset: true })));
 }));

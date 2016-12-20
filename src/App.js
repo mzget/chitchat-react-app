@@ -4,47 +4,28 @@ import React, { Component } from 'react';
  */
 import { Map } from 'immutable';
 import { bindActionCreators } from 'redux';
-import { connect } from "react-redux";
+import { connect, Provider } from "react-redux";
+import { Router, Route, browserHistory } from 'react-router';
 
-import logo from './logo.svg';
-import './App.css';
+/**
+ * ### configureStore
+ *  ```configureStore``` will connect the ```reducers```,
+ */
+import Store from './client/redux/configureStore';
+
 import Home from "./client/containers/Home";
+import Chat from "./client/containers/Chat";
 
 class App extends Component {
-    constructor(props) {
-        super(props);
-        console.log(global.userAgent);
-    }
-
     render() {
         return (
-            <div className="App">
-                <div className="App-header">
-                    <img src={logo} className="App-logo" alt="logo" />
-                </div>
-                <Home {...this.props} />
-            </div>
+            <Provider store={Store}>
+                <Router history={browserHistory}>
+                    <Route path="/(:filter)" component={Home} />
+                    <Route path="/chat/(:filter)" component={Chat} />
+                </Router>
+            </Provider>
         );
     }
 }
-
-/**
- * ## Redux boilerplate
- */
-function mapStateToProps(state) {
-    return {
-        ...state
-    };
-}
-function mapDispatchToProps(dispatch) {
-    const creators = Map()
-        .merge()
-        .filter(value => typeof value === 'function')
-        .toObject();
-
-    return {
-        actions: bindActionCreators(creators, dispatch),
-        dispatch
-    };
-}
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

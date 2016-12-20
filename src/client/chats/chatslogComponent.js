@@ -163,20 +163,7 @@ export default class ChatsLogComponent {
         });
     }
     updatePersistRoomInfo(roomInfo) {
-        let self = this;
-        this.dataManager.roomDAL.get().then((roomsInfos) => {
-            if (roomsInfos instanceof Map) {
-                save();
-            }
-            else {
-                roomsInfos = new Map();
-                save();
-            }
-            function save() {
-                roomsInfos.set(roomInfo._id, roomInfo);
-                self.dataManager.roomDAL.save(roomsInfos);
-            }
-        });
+        this.dataManager.roomDAL.save(roomInfo._id, roomInfo);
     }
     decorateRoomInfoData(roomInfo) {
         if (roomInfo.type === DataModels.RoomType.privateChat) {
@@ -214,14 +201,14 @@ export default class ChatsLogComponent {
     }
     getRoomsInfo() {
         let self = this;
-        let results = new Map();
+        let results = new Array();
         this.unreadMessageMap.forEach((value, key, map) => {
             let roomInfo = self.dataManager.getGroup(value.rid);
             if (!!roomInfo) {
                 let room = self.decorateRoomInfoData(roomInfo);
                 self.dataManager.addGroup(room);
                 self.organizeChatLogMap(value, room, function done() {
-                    results.set(room._id, room);
+                    results.push(room);
                 });
             }
             else {
@@ -230,13 +217,13 @@ export default class ChatsLogComponent {
                     if (!!room) {
                         this.updatePersistRoomInfo(room);
                         self.organizeChatLogMap(value, room, function done() {
-                            results.set(room._id, room);
+                            results.push(room);
                         });
                     }
                 });
             }
         });
-        self.dataManager.roomDAL.save(results);
+        results.map(room => self.dataManager.roomDAL.save(room._id, room));
         console.log("getRoomsInfo Completed.");
         if (this.getRoomsInfoCompleteEvent())
             this.getRoomsInfoCompleteEvent();
