@@ -112,7 +112,7 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
                 <span>Welcome to stalk chat service.</span>
                 <li key={userId}><Link to={`/chat/${userId}`}>{username}</Link></li>
                 <ChatLogs {...this.props} />
-                <DialogBox handleClose={() => { this.setState({ openDialog: false }) } open={this.state.openDialog} />
+                <DialogBox handleClose={() => { this.setState({ openDialog: false }) } } open={this.state.openDialog} />
             </div>
         );
     }
