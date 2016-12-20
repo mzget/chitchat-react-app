@@ -306,11 +306,11 @@ export function joinRoom(roomId: string, token: string, username: string) {
     }
 }
 
+export const LEAVE_ROOM_SUCCESS = "LEAVE_ROOM_SUCCESS";
 export function leaveRoom() {
     return (dispatch) => {
-        let token = Store.getState().authReducer.token;
-        let myProfile: Account = Store.getState().profileReducer.form.profile;
-        let username = myProfile.email;
+        let token = BackendFactory.getInstance().dataManager.getSessionToken();
+        let username = Store.getState().userReducer.user.username;
         let room = ChatRoomComponent.getInstance();
 
         BackendFactory.getInstance().getServer().then(server => {
@@ -324,6 +324,8 @@ export function leaveRoom() {
         }).catch(err => {
 
         });
+
+        dispatch({ type: LEAVE_ROOM_SUCCESS });
     }
 }
 

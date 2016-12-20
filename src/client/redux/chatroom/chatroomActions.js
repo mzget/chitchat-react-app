@@ -260,11 +260,11 @@ export function joinRoom(roomId, token, username) {
         });
     };
 }
+export const LEAVE_ROOM_SUCCESS = "LEAVE_ROOM_SUCCESS";
 export function leaveRoom() {
     return (dispatch) => {
-        let token = Store.getState().authReducer.token;
-        let myProfile = Store.getState().profileReducer.form.profile;
-        let username = myProfile.email;
+        let token = BackendFactory.getInstance().dataManager.getSessionToken();
+        let username = Store.getState().userReducer.user.username;
         let room = ChatRoomComponent.getInstance();
         BackendFactory.getInstance().getServer().then(server => {
             server.LeaveChatRoomRequest(token, room.getRoomId(), username, (err, res) => {
@@ -275,6 +275,7 @@ export function leaveRoom() {
             });
         }).catch(err => {
         });
+        dispatch({ type: LEAVE_ROOM_SUCCESS });
     };
 }
 function loadEarlyMessage_success() {

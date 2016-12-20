@@ -4,6 +4,7 @@
  * This is pure function action for redux app.
  */
 import ChatRoomComponent from "../../chats/chatRoomComponent";
+import * as chatroomActions from "./chatroomActions";
 import { ChatRoomActionsType } from "./chatroomActions";
 import config from "../../configs/config";
 import { Record } from "immutable";
@@ -82,6 +83,14 @@ export const chatroomReducer = (state = new ChatRoomInitState(), action) => {
             return state
                 .set("state", ChatRoomActionsType.SELECT_CHAT_ROOM)
                 .set("room", action.payload);
+        }
+        case chatroomActions.LEAVE_ROOM_SUCCESS: {
+            return state
+                .set("state", chatroomActions.LEAVE_ROOM_SUCCESS)
+                .set("room", null);
+        }
+        case ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
+            return state.set("state", ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS);
         }
         default:
             return state;

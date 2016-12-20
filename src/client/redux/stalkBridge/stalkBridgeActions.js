@@ -27,11 +27,7 @@ export function getUserInfo(userId, callback) {
     let self = this;
     let dataManager = BackendFactory.getInstance().dataManager;
     let user = dataManager.getContactProfile(userId);
-    if (!user) {
-    }
-    else {
-        callback(user);
-    }
+    callback(user);
 }
 export function stalkLoginWithToken(uid, token) {
     console.log("stalkLoginWithToken", uid, token);

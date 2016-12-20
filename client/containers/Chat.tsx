@@ -44,12 +44,6 @@ interface IComponentNameState {
 class IGiftedChat {
     _id: string;
     message: string;
-    createdAt: Date;
-    user: {
-        _id: string;
-        name: string;
-        avatar: string;
-    };
     avatar: string;
     src: string;
     inbound: boolean;
@@ -64,24 +58,12 @@ class IGiftedChat {
 
 
 class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
-    _messages = [{
-        message: 'How do I use this messaging app?',
-        from: 'right',
-        backColor: '#3d83fa',
-        textColor: "white",
-        avatar: 'https://www.seeklogo.net/wp-content/uploads/2015/09/google-plus-new-icon-logo.png',
-        duration: 2000,
-        inbound: true
-    }];
-
     componentWillMount() {
         console.log("Chat", this.props, this.state);
 
         this.onSubmitMessage = this.onSubmitMessage.bind(this);
         this.onTypingTextChange = this.onTypingTextChange.bind(this);
         this.roomInitialize = this.roomInitialize.bind(this);
-
-        this.setState({ messages: this._messages, ...this.state });
 
         let { chatroomReducer, userReducer, params} = this.props;
 
@@ -94,6 +76,11 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
     }
 
     componentDidMount() {
+    }
+
+    componentWillUnmount() {
+        console.log("Chat: leaveRoom");
+        this.props.dispatch(chatRoomActions.leaveRoom());
     }
 
     componentWillReceiveProps(nextProps) {
@@ -117,7 +104,6 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
             }
             case chatRoomActions.ChatRoomActionsType.ON_NEW_MESSAGE: {
                 this.onReceive(chatroomReducer.newMessage);
-
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
@@ -165,128 +151,110 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
     }
 
     onReceive(message) {
-        console.log("onReceive: ", message);
+        let _message = new IGiftedChat();
+        _message = { ...message };
 
+        console.log("onReceive: ", _message);
         StalkBridgeActions.getUserInfo(message.sender, (result) => {
-
-            message._id = message._id;
-            message.createdAt = message.createTime;
-
+            _message.inbound = true;
+            // _message.backColor = 
             if (message.type == ContentType[ContentType.Text])
-                message.text = message.body;
+                _message.message = message.body;
             else if (message.type == ContentType[ContentType.Image])
                 message.image = message.body;
             else if (message.type == ContentType[ContentType.Location])
                 message.location = message.body
-
-            message.user = {
-                _id: result._id,
-                name: result.displayname,
-                avatar: result.image
+            if (result) {
+                message.user = {
+                    _id: result._id,
+                    name: result.displayname,
+                    avatar: result.image
+                }
+                this.setState((previousState) => {
+                    return {
+                        messages: previousState.messages,
+                        ...previousState
+                    };
+                })
             }
-            this.setState((previousState) => {
-                return {
-                    messages: previousState.messages.append(message),
-                    ...previousState
-                };
-            })
+            else {
+                let _temp = this.state.messages.slice();
+                _temp.push(_message);
+                this.setState((previousState) => {
+                    return { ...previousState, messages: _temp };
+                });
+            }
         })
     }
 
     setMessageStatus(uniqueId, status) {
         let messages = [];
-        let found = false;
+        let _messages = this.state.messages.slice();
 
-        for (let i = 0; i < this._messages.length; i++) {
-            if (this._messages[i].uniqueId === uniqueId) {
-                let clone = Object.assign({}, this._messages[i]);
+        for (let i = 0; i < _messages.length; i++) {
+            if (_messages[i].uuid === uniqueId) {
+                let clone = Object.assign({}, _messages[i]);
                 clone.status = status;
                 messages.push(clone);
-                found = true;
             } else {
-                messages.push(this._messages[i]);
+                messages.push(_messages[i]);
             }
         }
 
-        if (found === true) {
-            this.setMessages(messages);
-        }
+        this.setState({ ...this.state, messages: messages });
     }
 
-    setMessageTemp(server_msg) {
+    setMessageTemp(server_msg: IMessage) {
         console.log("server_response_msg", server_msg)
-        if (!server_msg.uuid) return
+        if (!server_msg.uuid) return;
 
-        let messages = [];
-        let msg = new IGiftedChat();
-        let found = false;
-
-        this.state.messages.map((message, i) => {
-            if (message.uniqueId == server_msg.uuid) {
-                msg = message;
-                msg.uniqueId = server_msg.messageId
-                msg.createdAt = server_msg.createTime
-                found = true
-            } else {
-                messages.push(message);
+        let _messages = this.state.messages.slice();
+        _messages.forEach((message: IGiftedChat) => {
+            if (message.uuid == server_msg.uuid) {
+                message.createTime = server_msg.createTime;
+                message.uuid = server_msg.messageId;
+                message.status = "Sent";
             }
-        })
+        });
 
-        if (found) {
-            messages.unshift(msg);
-
-            this.setState({
-                ...this.state, messages: messages
-            }, () => console.log(this.state));
-        }
+        this.setState({ ...this.state, messages: _messages });
     }
 
-    setInitMessages(messages: any[]) {
-        let myProfile = this.props.userReducer.user;
-
+    setInitMessages(messages: Array<IMessage>) {
         async.mapSeries(messages, (message, resultCB) => {
-            //@ Is my message.
-            if (message.sender == myProfile._id) {
-                resultCB(null, this.setGiftMessage(message, myProfile));
-            }
-            else {
-                StalkBridgeActions.getUserInfo(message.sender, (user) => {
-                    resultCB(null, this.setGiftMessage(message, user));
-                });
-            }
+            resultCB(null, this.setGiftMessage(message));
         }, (err, results) => {
-            this._messages = results.reverse();
-
             // append the message...
-            this.setState({ messages: this._messages }, () => {
+            this.setState((previousState) => { return { ...previousState, messages: results } }, () => {
                 console.log("Map completed: ", this.state.messages.length);
             });
         });
     }
 
-    setGiftMessage(message, user) {
-        let msg: IGiftedChat = {};
+    setGiftMessage(message) {
+        let myProfile = this.props.userReducer.user;
+        let msg = new IGiftedChat();
+        msg = { ...message };
+
+        //@ Is my message.
+        if (msg.sender == myProfile._id) {
+            msg.inbound = false;
+        }
+        else {
+            msg.inbound = true;
+        }
 
         if (message.type == ContentType[ContentType.Text]) {
-            msg.text = message.body
+            msg.message = message.body;
         } else if (message.type == ContentType[ContentType.Image]) {
-            msg.image = message.body
+            msg.image = message.body;
         } else if (message.type == ContentType[ContentType.Location]) {
-            msg.location = message.body
+            msg.location = message.body;
         } else {
-            msg.text = message.body
+            msg.message = message.body;
         }
 
-        msg._id = message._id;
-        msg.createdAt = message.createTime;
-        msg.type = message.type;
-        msg.user = {
-            _id: user._id,
-            name: user.displayname ? user.displayname : user.first_name + ' ' + user.last_name,
-            avatar: user.image ? user.image : user.avatar
-        }
-
-        return msg
+        return msg;
     }
 
     onTypingTextChange(event) {
@@ -301,9 +269,11 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         let message = this.prepareSendMessage(msg);
         this.sendText(message);
 
-        let tempMsgs = this.state.messages.slice(1);
-        tempMsgs.push(message);
-        this.setState({ ...this.state, messages: tempMsgs, typingText: "" });
+        let _messages = this.state.messages.slice();
+        let gift = this.setGiftMessage(message, null);
+        gift.status = 'Sending...';
+        _messages.push(gift);
+        this.setState({ ...this.state, typingText: "", messages: _messages });
     }
 
     render(): JSX.Element {
@@ -332,17 +302,16 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
             message.type = ContentType[ContentType.Location];
         }
 
-        message.uuid = Math.round(Math.random() * 10000); // simulating server-side unique id generation
         message.rid = this.props.chatroomReducer.room._id;
         message.sender = this.props.userReducer.user._id;
         message.target = "*";
+        message.uuid = Math.round(Math.random() * 10000); // simulating server-side unique id generation
 
         return message;
     }
 
     sendText(message: IMessage) {
         this.props.dispatch(chatRoomActions.sendMessage(message));
-        this.setMessageStatus(message.uuid, 'Sending...');
     }
 }
 

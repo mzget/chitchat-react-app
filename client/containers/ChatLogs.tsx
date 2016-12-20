@@ -70,7 +70,6 @@ class ChatLogs extends React.Component<IComponentNameProps, IComponentNameState>
         if (!obj) return;
 
         let chatsLog = obj;
-        console.log(chatsLog);
 
         let self = this
         let arr = Object.keys(chatsLog).filter(function (log) {

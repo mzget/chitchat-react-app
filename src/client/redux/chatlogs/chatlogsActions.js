@@ -60,7 +60,7 @@ export function initChatsLog() {
 }
 function updateLastAccessTimeEventHandler(newRoomAccess) {
     let chatsLogComp = Store.getState().stalkReducer.chatslogComponent;
-    let token = Store.getState().authReducer.token;
+    let token = BackendFactory.getInstance().dataManager.getSessionToken();
     chatsLogComp.getUnreadMessage(token, newRoomAccess.roomAccess[0], function (err, unread) {
         if (!!unread) {
             chatsLogComp.addUnreadMessage(unread);

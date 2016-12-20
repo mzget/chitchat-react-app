@@ -27,7 +27,7 @@ export const ChatRoomInitState = Record({
 });
 const initialState = new ChatRoomInitState();
 
-export function chatRoomReducer(state = initialState, action) {
+function oldRoomReducer(state = initialState, action) {
     if (!(state instanceof ChatRoomInitState)) return initialState.mergeDeep(state);
 
     switch (action.type) {

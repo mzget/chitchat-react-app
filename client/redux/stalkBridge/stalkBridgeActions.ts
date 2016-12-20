@@ -38,12 +38,7 @@ export function getUserInfo(userId: string, callback: (user: DataModels.ContactI
 
     let dataManager = BackendFactory.getInstance().dataManager;
     let user: DataModels.ContactInfo = dataManager.getContactProfile(userId);
-    if (!user) {
-
-    }
-    else {
-        callback(user);
-    }
+    callback(user);
 }
 
 export function stalkLoginWithToken(uid: string, token: string) {

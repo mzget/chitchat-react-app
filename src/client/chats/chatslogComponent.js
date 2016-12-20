@@ -65,8 +65,6 @@ export default class ChatsLogComponent {
                 this.dataManager.roomDAL.get(room_id).then((room) => {
                     _rooms.set(room_id, room);
                     cb(null, null);
-                }).catch(err => {
-                    cb(null, null);
                 });
             }, (err, results) => {
                 addRoomData(_rooms);

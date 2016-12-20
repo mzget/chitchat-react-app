@@ -48,7 +48,6 @@ class ChatLogs extends React.Component {
         if (!obj)
             return;
         let chatsLog = obj;
-        console.log(chatsLog);
         let self = this;
         let arr = Object.keys(chatsLog).filter(function (log) {
             if (!!chatsLog[log].roomName && chatsLog[log].roomName.toLowerCase().includes(self.state.search.toLowerCase()))
