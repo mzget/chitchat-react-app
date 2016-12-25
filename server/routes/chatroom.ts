@@ -16,6 +16,10 @@ router.get('/', function (req, res, next) {
     next();
 });
 
+/**
+/* Require owner memberId and roommate id. 
+* For get or create one-to-one chat room.
+*/
 router.post('/', function (req, res, next) {
     req.checkBody("ownerId", "request for ownerId").isMongoId();
     req.checkBody("roommateId", "request for roommateId").isMongoId();

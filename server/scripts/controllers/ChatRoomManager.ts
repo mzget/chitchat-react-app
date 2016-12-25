@@ -40,16 +40,16 @@ export class ChatRoomManager {
     }
 
     public createPrivateChatRoom(doc): Promise<any> {
-        var self = this;
-        var members = new Array<Room.Member>();
-        var _tempArr = doc.members;
+        let self = this;
+        let members = new Array<Room.Member>();
+        let _tempArr = doc.members;
         for (var i in _tempArr) {
             var user = new Room.Member();
             user.id = _tempArr[i];
             members.push(user);
         }
 
-        var _room = new Room.Room();
+        let _room = new Room.Room();
         _room._id = doc._id;
         _room.type = Room.RoomType.privateChat;
         _room.members = members;

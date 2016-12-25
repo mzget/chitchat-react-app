@@ -48,11 +48,10 @@ export const getRoomAccessOfRoom = (uid: string, rid: string) => {
 }
 
 export const updateLastAccessTimeOfRoom = (uid: string, rid: string, date: Date, callback: (err: any, res: any) => void) => {
-    let self = this;
-
     async.waterfall([function (cb) {
-        MongoClient.connect(Mdb.DbController.chatDB).then(db => {
-            let collection = db.collection(Mdb.DbController.userColl);
+        MongoClient.connect(config.chatDB).then(db => {
+            let collection = db.collection(DbClient.chatUserCall);
+
             collection.find({ _id: new ObjectID(uid) }).limit(1).project({ roomAccess: 1 }).toArray().then(docs => {
                 cb(null, docs[0]);
                 db.close();
@@ -66,11 +65,11 @@ export const updateLastAccessTimeOfRoom = (uid: string, rid: string, date: Date,
     }
         , function (arg, cb) {
             if (arg && arg.roomAccess) {
-                self.userDataAccess.findRoomAccessDataMatchWithRoomId(uid, rid, date, cb);
+                findRoomAccessDataMatchWithRoomId(uid, rid, date, cb);
             }
             else {
                 //<!-- insert roomAccess info field in user data collection.
-                self.userDataAccess.insertRoomAccessInfoField(uid, rid, cb);
+                insertRoomAccessInfoField(uid, rid, cb);
             }
         }],
         function done(err, result) {
@@ -102,9 +101,8 @@ const onInsertRoomAccessInfoDone = function (uid: string, rid: string, callback)
 }
 
 export const AddRoomIdToRoomAccessField = (roomId: string, memberIds: string[], date: Date, callback: (err, res: boolean) => void) => {
-    var self = this;
     async.each(memberIds, function (element: string, cb) {
-        self.userDataAccess.AddRidToRoomAccessField(element, roomId, date, (error, response) => {
+        AddRidToRoomAccessField(element, roomId, date, (error, response) => {
             cb();
         });
     }, function (errCb) {
@@ -123,7 +121,7 @@ export const AddRoomIdToRoomAccessFieldForUser = (roomId: string, userId: string
             chatUserCollection.find({ _id: new ObjectID(userId) }, { roomAccess: 1 }).limit(1).toArray().then(docs => {
                 if (docs.length > 0 && !!docs[0].roomAccess) {
                     //<!-- add rid to MembersFields.
-                    self.findRoomAccessDataMatchWithRoomId(userId, roomId, date, (err, res) => {
+                    findRoomAccessDataMatchWithRoomId(userId, roomId, date, (err, res) => {
                         if (err) {
                             console.warn("findRoomAccessDataMatchWithRoomId: ", err);
 
@@ -209,14 +207,9 @@ export const getCreatorPermission = (creator: string, callback: (err, res) => vo
 
 export const checkUnsubscribeRoom = (userId: string, roomType: Room.RoomType, roomId: string, callback: Function) => {
     if (roomType === Room.RoomType.privateGroup) {
-        MongoClient.connect(Mdb.DbController.chatDB, (err, db) => {
-            if (err) {
-                return console.dir(err);
-            }
-            assert.equal(null, err);
-
+        MongoClient.connect(config.chatDB).then(function (db) {
             // Get the documents collection
-            var user = db.collection(Mdb.DbController.userColl);
+            let user = db.collection(DbClient.chatUserCall);
 
             user.find({ _id: new ObjectID(userId), closedNoticeGroups: roomId }).limit(1).toArray(function (err, results) {
                 if (err || results === null) {
@@ -231,14 +224,9 @@ export const checkUnsubscribeRoom = (userId: string, roomType: Room.RoomType, ro
         });
     }
     else if (roomType === Room.RoomType.privateChat) {
-        MongoClient.connect(Mdb.DbController.chatDB, (err, db) => {
-            if (err) {
-                return console.dir(err);
-            }
-            assert.equal(null, err);
-
+        MongoClient.connect(config.chatDB).then(db => {
             // Get the documents collection
-            var user = db.collection(Mdb.DbController.userColl);
+            let user = db.collection(DbClient.chatUserCall);
 
             user.find({ _id: new ObjectID(userId), closedNoticeUsers: roomId }).limit(1).toArray((err, docs) => {
                 if (err || docs === null) {
@@ -280,9 +268,8 @@ const findRoomAccessDataMatchWithRoomId = function (uid: string, rid: string, da
         console.warn("rid is invalid: careful for use this func: ", rid);
     }
 
-    MongoClient.connect(Mdb.DbController.chatDB, function (err, db) {
-
-        let collection = db.collection(Mdb.DbController.userColl);
+    MongoClient.connect(config.chatDB).then(db => {
+        let collection = db.collection(DbClient.chatUserCall);
 
         // Peform a simple find and return all the documents
         collection.find({ _id: new ObjectID(uid) }).project({ roomAccess: { $elemMatch: { roomId: rid.toString() } } }).toArray(function (err, docs) {
@@ -316,6 +303,8 @@ const findRoomAccessDataMatchWithRoomId = function (uid: string, rid: string, da
                 });
             }
         });
+    }).catch(err => {
+        console.warn("findRoomAccessDataMatchWithRoomId fail", err);
     });
 }
 
@@ -344,9 +333,9 @@ const insertRoomAccessInfoField = function (uid: string, rid: string, callback):
 }
 
 export const getUserProfile = (query: any, projection: any, callback: (err, res: Array<any>) => void) => {
-    MongoClient.connect(Mdb.DbController.chatDB).then(db => {
+    MongoClient.connect(config.chatDB).then(db => {
         // Get the documents collection
-        let collection = db.collection(Mdb.DbController.userColl);
+        let collection = db.collection(DbClient.chatUserCall);
         // Find some documents
         collection.find(query).project(projection).limit(1).toArray((err, results) => {
             if (err) {
@@ -365,14 +354,9 @@ export const getUserProfile = (query: any, projection: any, callback: (err, res:
 }
 
 export const getRole = (creator: string, callback: (err, res) => void) => {
-    MongoClient.connect(Mdb.DbController.chatDB, (err, db) => {
-        if (err) {
-            return console.dir(err);
-        }
-        assert.equal(null, err);
-
+    MongoClient.connect(config.chatDB).then(db => {
         // Get the documents collection
-        var collection = db.collection(Mdb.DbController.userColl);
+        let collection = db.collection(DbClient.chatUserCall);
         // Find some documents
         collection.find({ _id: new ObjectID(creator) }).project({ role: 1 }).limit(1).toArray((err, results) => {
             if (err || results === null) {
@@ -384,18 +368,15 @@ export const getRole = (creator: string, callback: (err, res) => void) => {
 
             db.close();
         });
+    }).catch(err => {
+        console.warn("getRole", err);
     });
 }
 
 export const addFavoriteMembers = (member: string, uid: string, callback: (err, res) => void) => {
-    MongoClient.connect(Mdb.DbController.chatDB, (err, db) => {
-        if (err) {
-            return console.dir(err);
-        }
-        assert.equal(null, err);
-
+    MongoClient.connect(config.chatDB).then(db => {
         // Get the documents collection
-        var collection = db.collection(Mdb.DbController.userColl);
+        let collection = db.collection(DbClient.chatUserCall);
 
         collection.updateOne({ _id: new ObjectID(uid) }, { $addToSet: { favoriteUsers: member } }, { upsert: true }, (err, result) => {
             if (err || result === null) {
@@ -407,6 +388,8 @@ export const addFavoriteMembers = (member: string, uid: string, callback: (err, 
 
             db.close();
         });
+    }).catch(err => {
+        console.warn("addFavoriteMembers fail", err);
     });
 }
 
