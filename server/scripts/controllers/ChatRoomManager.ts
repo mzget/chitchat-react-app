@@ -2,7 +2,7 @@
 import async = require('async');
 import Room = require("../models/Room");
 import message = require("../models/Message");
-import { UserManager } from './UserManager';
+import * as UserManager from './UserManager';
 const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
 import { getConfig, DbClient } from "../../config";
@@ -13,12 +13,12 @@ export class ChatRoomManager {
     private userManager = UserManager.getInstance();
     private roomDAL = new RoomDataAccess();
 
-    public GetChatRoomInfo(query, projections?): Promise<any[]> {
+    public GetChatRoomInfo(room_id: string): Promise<any[]> {
         return new Promise((resolve, reject) => {
             MongoClient.connect(config.chatDB).then(db => {
                 let roomColl = db.collection(DbClient.chatroomCall);
 
-                roomColl.find(query).project(projections).limit(1).toArray().then(docs => {
+                roomColl.find({ _id: new ObjectID(room_id) }).limit(1).toArray().then(docs => {
                     db.close();
                     resolve(docs);
                 }).catch(err => {
@@ -39,27 +39,12 @@ export class ChatRoomManager {
         this.roomDAL.findPrivateGroupChat(uid, callback);
     }
 
-    public createPrivateChatRoom(doc): Promise<any> {
-        let self = this;
-        let members = new Array<Room.Member>();
-        let _tempArr = doc.members;
-        for (var i in _tempArr) {
-            var user = new Room.Member();
-            user.id = _tempArr[i];
-            members.push(user);
-        }
-
-        let _room = new Room.Room();
-        _room._id = doc._id;
-        _room.type = Room.RoomType.privateChat;
-        _room.members = members;
-        _room.createTime = new Date();
-
+    public createPrivateChatRoom(room: Room.Room): Promise<any> {
         return new Promise((resolve, reject) => {
             MongoClient.connect(config.chatDB).then(db => {
                 let roomColl = db.collection(DbClient.chatroomCall);
 
-                roomColl.insertOne(_room).then(result => {
+                roomColl.insertOne(room).then(result => {
                     db.close();
                     resolve(result.ops);
                 }).catch(err => {

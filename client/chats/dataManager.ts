@@ -127,7 +127,7 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
                 this.privateChats[data._id] = data;
                 break;
             default:
-                console.info("new room is not a group type.");
+                console.warn("new room is not a group type.", data);
                 break;
         }
     }

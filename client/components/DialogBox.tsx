@@ -4,7 +4,13 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 
-const actions = (props) => [
+interface ICompProps {
+    title: string;
+    open: boolean;
+    handleClose;
+    message: string;
+}
+const actions = (props: ICompProps) => [
     <FlatButton
         label="Cancel"
         primary={true}
@@ -17,19 +23,19 @@ const actions = (props) => [
         onMouseUp={props.handleClose}
         />,
 ];
-export const DialogBox = (props: { handleClose, open: boolean }) => {
+export const DialogBox = (props: ICompProps) => {
     return (
         < MuiThemeProvider >
             <div>
                 <Dialog
-                    title="Dialog With Actions"
+                    title={props.title}
                     actions={actions(props)}
                     modal={false}
                     open={props.open}
                     onRequestClose={props.handleClose}
                     >
-                    The actions in this window were passed in as an array of React objects.
-            </Dialog>
+                    {props.message}
+                </Dialog>
             </div>
         </MuiThemeProvider >
     );

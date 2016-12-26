@@ -2,21 +2,21 @@
 const mongodb = require("mongodb");
 const async = require("async");
 const Room = require("../models/Room");
-const UserManager_1 = require("./UserManager");
+const UserManager = require("./UserManager");
 const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
 const config_1 = require("../../config");
 const config = config_1.getConfig();
 class ChatRoomManager {
     constructor() {
-        this.userManager = UserManager_1.UserManager.getInstance();
+        this.userManager = UserManager.getInstance();
         this.roomDAL = new RoomDataAccess();
     }
-    GetChatRoomInfo(query, projections) {
+    GetChatRoomInfo(room_id) {
         return new Promise((resolve, reject) => {
             MongoClient.connect(config.chatDB).then(db => {
                 let roomColl = db.collection(config_1.DbClient.chatroomCall);
-                roomColl.find(query).project(projections).limit(1).toArray().then(docs => {
+                roomColl.find({ _id: new ObjectID(room_id) }).limit(1).toArray().then(docs => {
                     db.close();
                     resolve(docs);
                 }).catch(err => {
@@ -34,24 +34,11 @@ class ChatRoomManager {
     getPrivateGroupChat(uid, callback) {
         this.roomDAL.findPrivateGroupChat(uid, callback);
     }
-    createPrivateChatRoom(doc) {
-        let self = this;
-        let members = new Array();
-        let _tempArr = doc.members;
-        for (var i in _tempArr) {
-            var user = new Room.Member();
-            user.id = _tempArr[i];
-            members.push(user);
-        }
-        let _room = new Room.Room();
-        _room._id = doc._id;
-        _room.type = Room.RoomType.privateChat;
-        _room.members = members;
-        _room.createTime = new Date();
+    createPrivateChatRoom(room) {
         return new Promise((resolve, reject) => {
             MongoClient.connect(config.chatDB).then(db => {
                 let roomColl = db.collection(config_1.DbClient.chatroomCall);
-                roomColl.insertOne(_room).then(result => {
+                roomColl.insertOne(room).then(result => {
                     db.close();
                     resolve(result.ops);
                 }).catch(err => {
@@ -271,7 +258,7 @@ ChatRoomManager._Instance = null;
 exports.ChatRoomManager = ChatRoomManager;
 class RoomDataAccess {
     constructor() {
-        this.userManager = UserManager_1.UserManager.getInstance();
+        this.userManager = UserManager.getInstance();
     }
     findProjectBaseGroups(userId, callback) {
         dbClient.FindDocuments(MDb.DbController.roomColl, function (res) {

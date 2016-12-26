@@ -17,7 +17,7 @@ import SecureServiceFactory from "../libs/chitchat/services/secureServiceFactory
 import { ContentType, Member, IMessage } from "./models/ChatDataModels";
 import { ISecureService } from "../libs/chitchat/services/ISecureService";
 
-import Config from "../configs/config";
+import config from "../configs/config";
 let serverImp: ServerImplemented = null;
 
 export default class ChatRoomComponent implements absSpartan.IChatServerListener {
@@ -60,7 +60,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
 
         if (this.roomId === chatMessage.rid) {
             if (chatMessage.type.toString() === ContentType[ContentType.Text]) {
-                if (Config.appConfig.encryption == true) {
+                if (config.appConfig.encryption == true) {
                     self.secure.decryptWithSecureRandom(chatMessage.body, (err, res) => {
                         if (!err) {
                             chatMessage.body = res;
@@ -169,7 +169,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                     let chats: IMessage[] = messages.slice(0);
                     async.mapSeries(chats, function iterator(item, result) {
                         if (item.type === ContentType.Text) {
-                            if (Config.appConfig.encryption == true) {
+                            if (config.appConfig.encryption == true) {
                                 self.secure.decryptWithSecureRandom(item.body, function (err, res) {
                                     if (!err) {
                                         item.body = res;
@@ -260,7 +260,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
 
                     async.mapSeries(messages, function (item, cb) {
                         if (item.type.toString() === ContentType[ContentType.Text]) {
-                            if (Config.appConfig.encryption == true) {
+                            if (config.appConfig.encryption == true) {
                                 self.secure.decryptWithSecureRandom(item.body, function (err, res) {
                                     if (!err) {
                                         item.body = res;
@@ -430,7 +430,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                         arr_fromLog.map((log, i, a) => {
                             var messageImp: any = log;
                             if (messageImp.type === ContentType[ContentType.Text]) {
-                                if (Config.appConfig.encryption == true) {
+                                if (config.appConfig.encryption == true) {
                                     self.secure.decryptWithSecureRandom(messageImp.body, function (err, res) {
                                         if (!err) {
                                             messageImp.body = res;

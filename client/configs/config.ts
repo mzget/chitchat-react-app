@@ -1,4 +1,4 @@
-const api_master = "http://smelink.animation-genius.com/api/v1/";
+const api_master = "http://smelink.animation-genius.com:3002/";
 const api_dev = "http://localhost:9000";
 const api_production = "http://203.148.250.152:3002/";
 
@@ -7,7 +7,7 @@ const rest_api = (host) => {
     return {
         apiKey: "smelink1234",
         host: `${host}`,
-        api: `${host}api`,
+        api: `${host}/api`,
         authenticate: `${host}api/authenticate`,
         usersApi: `${host}/users`,
         imagePath: `${host}uploads/images/`,

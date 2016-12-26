@@ -102,7 +102,8 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
                 }
                 else {
                     let roomInfo = rooms.get(item.roomId);
-                    self.dataManager.addGroup(roomInfo);
+                    if (roomInfo)
+                        self.dataManager.addGroup(roomInfo);
                     resultCallback(null, null);
                 }
             }, (err, results) => {

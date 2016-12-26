@@ -15,10 +15,11 @@ import { ContentType, IMessage, Room, RoomType } from "../../chats/models/ChatDa
 // import NotificationManager from '../../chats/notificationManager';
 
 import { Account } from "../../dataAccess/AppAccount";
+import fetch from 'isomorphic-fetch';
 
 import Store from "../configureStore";
 
-import Config from "../../configs/config";
+import config from "../../configs/config";
 
 /**
  * ChatRoomActionsType
@@ -223,7 +224,7 @@ export function sendMessage(msg: any) {
             return
         }
 
-        if (Config.appConfig.encryption == true) {
+        if (config.appConfig.encryption == true) {
             secure.decryptWithSecureRandom(msg.content, function (err, result) {
                 if (err) {
                     console.error(err);

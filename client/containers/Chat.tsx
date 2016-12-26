@@ -67,7 +67,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
 
         let { chatroomReducer, userReducer, params} = this.props;
 
-        if (chatroomReducer.state == chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS) {
+        if (chatroomReducer.state == chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS || chatroomReducer.state == chatroomRxEpic.CREATE_PRIVATE_CHATROOM_SUCCESS) {
             this.roomInitialize(this.props);
         }
         if (!chatroomReducer.room) {

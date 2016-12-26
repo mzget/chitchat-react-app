@@ -10,7 +10,7 @@ import ServerEventListener from "../libs/stalk/serverEventListener";
 import MessageDALFactory from "../libs/chitchat/dataAccessLayer/messageDALFactory";
 import SecureServiceFactory from "../libs/chitchat/services/secureServiceFactory";
 import { ContentType } from "./models/ChatDataModels";
-import Config from "../configs/config";
+import config from "../configs/config";
 let serverImp = null;
 export default class ChatRoomComponent {
     constructor() {
@@ -39,7 +39,7 @@ export default class ChatRoomComponent {
         let self = this;
         if (this.roomId === chatMessage.rid) {
             if (chatMessage.type.toString() === ContentType[ContentType.Text]) {
-                if (Config.appConfig.encryption == true) {
+                if (config.appConfig.encryption == true) {
                     self.secure.decryptWithSecureRandom(chatMessage.body, (err, res) => {
                         if (!err) {
                             chatMessage.body = res;
@@ -124,7 +124,7 @@ export default class ChatRoomComponent {
                     let chats = messages.slice(0);
                     async.mapSeries(chats, function iterator(item, result) {
                         if (item.type === ContentType.Text) {
-                            if (Config.appConfig.encryption == true) {
+                            if (config.appConfig.encryption == true) {
                                 self.secure.decryptWithSecureRandom(item.body, function (err, res) {
                                     if (!err) {
                                         item.body = res;
@@ -205,7 +205,7 @@ export default class ChatRoomComponent {
                     var messages = JSON.parse(JSON.stringify(histories));
                     async.mapSeries(messages, function (item, cb) {
                         if (item.type.toString() === ContentType[ContentType.Text]) {
-                            if (Config.appConfig.encryption == true) {
+                            if (config.appConfig.encryption == true) {
                                 self.secure.decryptWithSecureRandom(item.body, function (err, res) {
                                     if (!err) {
                                         item.body = res;
@@ -356,7 +356,7 @@ export default class ChatRoomComponent {
                         arr_fromLog.map((log, i, a) => {
                             var messageImp = log;
                             if (messageImp.type === ContentType[ContentType.Text]) {
-                                if (Config.appConfig.encryption == true) {
+                                if (config.appConfig.encryption == true) {
                                     self.secure.decryptWithSecureRandom(messageImp.body, function (err, res) {
                                         if (!err) {
                                             messageImp.body = res;

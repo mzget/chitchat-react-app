@@ -24,6 +24,21 @@ class Home extends React.Component {
         this.fetch_privateChatRoom = (roommateId, owerId) => {
             this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
         };
+        this.createChatRoom = () => {
+            let { userReducer } = this.props;
+            if (userReducer.user && userReducer.contact) {
+                let owner = {};
+                owner._id = userReducer.user._id;
+                owner.user_role = "agent";
+                let contact = {};
+                contact._id = userReducer.contact._id;
+                contact.user_role = "user";
+                this.props.dispatch(chatroomRxEpic.createPrivateChatRoom(owner, contact));
+            }
+            else {
+                console.warn("Not yet ready for create chatroom");
+            }
+        };
         this.state = {
             openDialog: false
         };
@@ -53,8 +68,22 @@ class Home extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, userReducer, stalkReducer } = nextProps;
-        if (chatroomReducer.state == chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS) {
-            this.props.router.push(`/chat/${chatroomReducer.room._id}`);
+        switch (chatroomReducer.state) {
+            case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS:
+                if (chatroomReducer.room) {
+                    this.props.router.push(`/chat/${chatroomReducer.room._id}`);
+                }
+                else {
+                    this.createChatRoom();
+                }
+                break;
+            case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_SUCCESS: {
+                if (chatroomReducer.room.length > 0) {
+                    this.props.router.push(`/chat/${chatroomReducer.room._id}`);
+                }
+            }
+            default:
+                break;
         }
         switch (userReducer.state) {
             case userActions.FETCH_USER_SUCCESS:

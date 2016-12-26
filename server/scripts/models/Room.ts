@@ -8,8 +8,9 @@ export interface IMembersStatus {
     status: string;
 }
 export class Member {
-    id: string;
-    role: MemberRole;
+    _id: string;
+    room_role: MemberRole;
+    user_role: string;
     joinTime: Date;
     status: string;
     jobPosition: string;
@@ -17,7 +18,7 @@ export class Member {
 export enum RoomType { organizationGroup, projectBaseGroup, privateGroup, privateChat };
 export enum RoomStatus { active, disable, delete };
 export class Room {
-    _id: string;
+    _id: any;
     nodeId: number;
     name: string;
     type: RoomType;

@@ -9,7 +9,7 @@ import HttpStatusCode from './utils/httpStatusCode';
 import TokenDecode from './utils/tokenDecode';
 
 const Pomelo = require('../pomelo/reactWSClient');
-import Config from '../../configs/config';
+import config from '../../configs/config';
 
 
 export interface IDictionary {
@@ -108,8 +108,8 @@ export default class ServerImplemented {
         this._isConnected = false;
         self.pomelo = Pomelo;
 
-        self.host = Config.Stalk.chat;
-        self.port = parseInt(Config.Stalk.port);
+        self.host = config.Stalk.chat;
+        self.port = parseInt(config.Stalk.port);
         if (!!self.pomelo) {
             //<!-- Connecting gate server.
             let params: IPomeloParam = { host: self.host, port: self.port, reconnect: false };

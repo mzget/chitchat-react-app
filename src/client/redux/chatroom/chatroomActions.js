@@ -10,7 +10,7 @@ import ServerEventListener from "../../libs/stalk/serverEventListener";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
 import { ContentType } from "../../chats/models/ChatDataModels";
 import Store from "../configureStore";
-import Config from "../../configs/config";
+import config from "../../configs/config";
 /**
  * ChatRoomActionsType
  */
@@ -186,7 +186,7 @@ export function sendMessage(msg) {
             });
             return;
         }
-        if (Config.appConfig.encryption == true) {
+        if (config.appConfig.encryption == true) {
             secure.decryptWithSecureRandom(msg.content, function (err, result) {
                 if (err) {
                     console.error(err);

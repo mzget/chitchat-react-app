@@ -113,7 +113,6 @@ export const AddRoomIdToRoomAccessField = (roomId: string, memberIds: string[], 
 }
 
 export const AddRoomIdToRoomAccessFieldForUser = (roomId: string, userId: string, date: Date): Promise<any> => {
-    let self = this;
     return new Promise((resolve, reject) => {
         MongoClient.connect(config.chatDB).then(db => {
             let chatUserCollection = db.collection(DbClient.chatUserCall);
@@ -123,22 +122,18 @@ export const AddRoomIdToRoomAccessFieldForUser = (roomId: string, userId: string
                     //<!-- add rid to MembersFields.
                     findRoomAccessDataMatchWithRoomId(userId, roomId, date, (err, res) => {
                         if (err) {
-                            console.warn("findRoomAccessDataMatchWithRoomId: ", err);
-
                             db.close();
                             reject(err);
                         }
                         else {
-                            console.log("findRoomAccessDataMatchWithRoomId: ", res.result);
-
                             db.close();
-                            resolve(res);
+                            resolve(res.result);
                         }
                     });
                 }
                 else {
                     db.close();
-                    self.InsertMembersFieldsToUserModel(userId, roomId, date, (err, res) => {
+                    InsertMembersFieldsToUserModel(userId, roomId, date, (err, res) => {
                         if (err) reject(err)
                         else resolve(res)
                     });
@@ -148,6 +143,7 @@ export const AddRoomIdToRoomAccessFieldForUser = (roomId: string, userId: string
                 reject(err);
             });
         }).catch(err => {
+            console.warn("AddRoomIdToRoomAccessFieldForUser fail", err);
             reject(err);
         });
     });
@@ -259,6 +255,7 @@ const InsertMembersFieldsToUserModel = (uid: string, roomId: string, date: Date,
             callback(err, null);
         });
     }).catch(err => {
+        console.warn("InsertMembersFieldsToUserModel faile", err);
         callback(err, null);
     });
 }

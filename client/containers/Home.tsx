@@ -12,9 +12,11 @@ import { IComponentProps } from "../utils/IComponentProps";
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import * as userActions from "../redux/user/userActions";
 import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
+import * as chatroomActions from "../redux/chatroom/chatroomActions";
 
 import ChatLogs from "./ChatLogs";
 import { DialogBox } from "../components/DialogBox";
+import { AlertBox } from "../components/AlertBox";
 
 abstract class IComponentNameProps implements IComponentProps {
     location: {
@@ -67,6 +69,24 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
         this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
     };
 
+    createChatRoom = () => {
+        let { userReducer } = this.props;
+        if (userReducer.user && userReducer.contact) {
+            type Member = { _id: string, user_role: string };
+            let owner = {} as Member;
+            owner._id = userReducer.user._id;
+            owner.user_role = "agent";
+
+            let contact = {} as Member;
+            contact._id = userReducer.contact._id;
+            contact.user_role = "user";
+            this.props.dispatch(chatroomRxEpic.createPrivateChatRoom(owner, contact));
+        }
+        else {
+            console.warn("Not yet ready for create chatroom");
+        }
+    }
+
     joinChatServer(nextProps) {
         let { location: {query: {userId, username, roomId, contactId}}, userReducer } = nextProps as IComponentNameProps;
         if (userReducer.user) {
@@ -82,15 +102,28 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
     componentWillReceiveProps(nextProps) {
         let { location: {query: {userId, username, roomId, contactId}}, chatroomReducer, userReducer, stalkReducer } = nextProps as IComponentNameProps;
 
-        if (chatroomReducer.state == chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS) {
-            this.props.router.push(`/chat/${chatroomReducer.room._id}`);
+        switch (chatroomReducer.state) {
+            case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS:
+                if (chatroomReducer.room) {
+                    this.props.router.push(`/chat/${chatroomReducer.room._id}`);
+                }
+                else {
+                    this.createChatRoom();
+                }
+                break;
+            case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_SUCCESS: {
+                if (chatroomReducer.room.length > 0) {
+                    this.props.router.push(`/chat/${chatroomReducer.room._id}`);
+                }
+            }
+            default:
+                break;
         }
 
         switch (userReducer.state) {
             case userActions.FETCH_USER_SUCCESS:
                 this.joinChatServer(nextProps);
                 break;
-
             default:
                 break;
         }
@@ -112,7 +145,9 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
                 <span>Welcome to stalk chat service.</span>
                 <li key={userId}><Link to={`/chat/${userId}`}>{username}</Link></li>
                 <ChatLogs {...this.props} />
-                <DialogBox handleClose={() => { this.setState({ openDialog: false }) } } open={this.state.openDialog} />
+                <DialogBox
+                    handleClose={() => { this.setState({ openDialog: false }) } }
+                    open={this.state.openDialog} />
             </div>
         );
     }

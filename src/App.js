@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
-/**
- * Redux + Immutable
- */
-import { Map } from 'immutable';
-import { bindActionCreators } from 'redux';
-import { connect, Provider } from "react-redux";
+import { Provider } from "react-redux";
 import { Router, Route, browserHistory } from 'react-router';
 
 /**

@@ -9,5 +9,5 @@ const actions = (props) => [
 export const DialogBox = (props) => {
     return (React.createElement(MuiThemeProvider, null,
         React.createElement("div", null,
-            React.createElement(Dialog, { title: "Dialog With Actions", actions: actions(props), modal: false, open: props.open, onRequestClose: props.handleClose }, "The actions in this window were passed in as an array of React objects."))));
+            React.createElement(Dialog, { title: props.title, actions: actions(props), modal: false, open: props.open, onRequestClose: props.handleClose }, props.message))));
 };

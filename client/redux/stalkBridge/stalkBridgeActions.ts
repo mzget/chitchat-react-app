@@ -10,7 +10,7 @@ import * as DataModels from "../../chats/models/ChatDataModels";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
 import StalkImp, { IDictionary } from "../../libs/stalk/serverImplemented";
 
-import Config from "../../configs/config";
+import config from "../../configs/config";
 import Store from "../configureStore";
 
 import * as ChatLogsActions from "../chatlogs/chatlogsActions";

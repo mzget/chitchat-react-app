@@ -1,5 +1,4 @@
 import config from "../../configs/config";
-import { createAction } from 'redux-actions';
 import { Record } from "immutable";
 
 const Rx = require('rxjs/Rx');
@@ -11,7 +10,7 @@ export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
 const FETCH_USER_FAILURE = 'FETCH_USER_FAILURE';
 const FETCH_USER_CANCELLED = 'FETCH_USER_CANCELLED';
 
-export const fetchUser = createAction(FETCH_USER, username => username); // username => ({ type: FETCH_USER, payload: username });
+export const fetchUser = (username) => ({ type: FETCH_USER, payload: username }); // username => ({ type: FETCH_USER, payload: username });
 const fetchUserFulfilled = payload => ({ type: FETCH_USER_SUCCESS, payload });
 const cancelFetchUser = () => ({ type: FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: FETCH_USER_FAILURE, payload, error: true });
@@ -56,7 +55,7 @@ export const userReducer = (state = new UserInitState(), action: ReduxActions.Ac
       return state;
 
     case FETCH_CONTACT_SUCCESS:
-      return state.set("contact", action.payload.result[0]);
+      return state.set("contact", action.payload.result[0]).set("state", FETCH_CONTACT_SUCCESS);
 
     default:
       return state;

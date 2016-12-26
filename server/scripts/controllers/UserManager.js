@@ -96,7 +96,6 @@ exports.AddRoomIdToRoomAccessField = (roomId, memberIds, date, callback) => {
     });
 };
 exports.AddRoomIdToRoomAccessFieldForUser = (roomId, userId, date) => {
-    let self = this;
     return new Promise((resolve, reject) => {
         MongoClient.connect(config.chatDB).then(db => {
             let chatUserCollection = db.collection(config_1.DbClient.chatUserCall);
@@ -105,20 +104,18 @@ exports.AddRoomIdToRoomAccessFieldForUser = (roomId, userId, date) => {
                     //<!-- add rid to MembersFields.
                     findRoomAccessDataMatchWithRoomId(userId, roomId, date, (err, res) => {
                         if (err) {
-                            console.warn("findRoomAccessDataMatchWithRoomId: ", err);
                             db.close();
                             reject(err);
                         }
                         else {
-                            console.log("findRoomAccessDataMatchWithRoomId: ", res.result);
                             db.close();
-                            resolve(res);
+                            resolve(res.result);
                         }
                     });
                 }
                 else {
                     db.close();
-                    self.InsertMembersFieldsToUserModel(userId, roomId, date, (err, res) => {
+                    InsertMembersFieldsToUserModel(userId, roomId, date, (err, res) => {
                         if (err)
                             reject(err);
                         else
@@ -130,6 +127,7 @@ exports.AddRoomIdToRoomAccessFieldForUser = (roomId, userId, date) => {
                 reject(err);
             });
         }).catch(err => {
+            console.warn("AddRoomIdToRoomAccessFieldForUser fail", err);
             reject(err);
         });
     });
@@ -228,6 +226,7 @@ const InsertMembersFieldsToUserModel = (uid, roomId, date, callback) => {
             callback(err, null);
         });
     }).catch(err => {
+        console.warn("InsertMembersFieldsToUserModel faile", err);
         callback(err, null);
     });
 };
