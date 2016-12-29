@@ -537,12 +537,11 @@ export default class ServerImplemented {
             }
         });
     }
-    LeaveChatRoomRequest(token, roomId, username, callback) {
+    LeaveChatRoomRequest(token, roomId, callback) {
         let self = this;
-        var msg = {};
+        let msg = {};
         msg["token"] = token;
         msg["rid"] = roomId;
-        msg["username"] = username;
         self.pomelo.request("connector.entryHandler.leaveRoom", msg, (result) => {
             if (callback != null)
                 callback(null, result);

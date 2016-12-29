@@ -61,6 +61,13 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
     componentWillMount() {
         console.log("Chat", this.props, this.state);
 
+        this.state = {
+            messages: [],
+            typingText: '',
+            isLoadingEarlierMessages: false,
+            earlyMessageReady: false
+        };
+
         this.onSubmitMessage = this.onSubmitMessage.bind(this);
         this.onTypingTextChange = this.onTypingTextChange.bind(this);
         this.roomInitialize = this.roomInitialize.bind(this);
@@ -262,7 +269,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
     }
 
     onSubmitMessage() {
-        if (this.state && this.state.typingText.length <= 0) return;
+        if (this.state.typingText.length <= 0) return;
 
         let msg = {
             text: this.state.typingText

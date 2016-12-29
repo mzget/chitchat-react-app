@@ -308,11 +308,10 @@ export const LEAVE_ROOM_SUCCESS = "LEAVE_ROOM_SUCCESS";
 export function leaveRoom() {
     return (dispatch) => {
         let token = BackendFactory.getInstance().dataManager.getSessionToken();
-        let username = Store.getState().userReducer.user.username;
         let room = ChatRoomComponent.getInstance();
 
         BackendFactory.getInstance().getServer().then(server => {
-            server.LeaveChatRoomRequest(token, room.getRoomId(), username, (err, res) => {
+            server.LeaveChatRoomRequest(token, room.getRoomId(), (err, res) => {
                 console.log("leaveRoom result", res);
 
                 BackendFactory.getInstance().dataListener.removeChatListenerImp(room);
