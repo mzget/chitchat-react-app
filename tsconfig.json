@@ -10,7 +10,8 @@
         "typeRoots": [
             "node_modules/@types",
             "node_modules/@reactivex/rxjs"
-        ]
+        ],
+        "module": "commonjs"
     },
     "exclude": [
         "node_modules",

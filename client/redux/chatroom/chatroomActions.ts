@@ -326,11 +326,7 @@ export function leaveRoom() {
     }
 }
 
-function loadEarlyMessage_success() {
-    return {
-        type: ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS
-    }
-}
+const loadEarlyMessage_success = () => ({ type: ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS });
 export function loadEarlyMessageChunk() {
     return dispatch => {
         ChatRoomComponent.getInstance().getOlderMessageChunk(function done(err, res) {
@@ -346,7 +342,7 @@ export function loadEarlyMessageChunk() {
 const GET_PERSISTEND_CHATROOM = "GET_PERSISTEND_CHATROOM";
 const GET_PERSISTEND_CHATROOM_CANCELLED = "GET_PERSISTEND_CHATROOM_CANCELLED";
 export const GET_PERSISTEND_CHATROOM_SUCCESS = "GET_PERSISTEND_CHATROOM_SUCCESS";
-const GET_PERSISTEND_CHATROOM_FAILURE = "GET_PERSISTEND_CHATROOM_FAILURE";
+export const GET_PERSISTEND_CHATROOM_FAILURE = "GET_PERSISTEND_CHATROOM_FAILURE";
 const getPersistChatroomFail = () => ({ type: GET_PERSISTEND_CHATROOM_FAILURE });
 const getPersistChatroomSuccess = (roomInfo: Room) => ({ type: GET_PERSISTEND_CHATROOM_SUCCESS, payload: roomInfo });
 export const getPersistendChatroom = (roomId: string) => (dispatch => {

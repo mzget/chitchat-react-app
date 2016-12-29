@@ -1,25 +1,28 @@
-export var MemberRole;
+"use strict";
+var MemberRole;
 (function (MemberRole) {
     MemberRole[MemberRole["member"] = 0] = "member";
     MemberRole[MemberRole["admin"] = 1] = "admin";
     MemberRole[MemberRole["owner"] = 2] = "owner";
-})(MemberRole || (MemberRole = {}));
-export class Member {
+})(MemberRole = exports.MemberRole || (exports.MemberRole = {}));
+class Member {
 }
-export var RoomType;
+exports.Member = Member;
+var RoomType;
 (function (RoomType) {
     RoomType[RoomType["organizationGroup"] = 0] = "organizationGroup";
     RoomType[RoomType["projectBaseGroup"] = 1] = "projectBaseGroup";
     RoomType[RoomType["privateGroup"] = 2] = "privateGroup";
     RoomType[RoomType["privateChat"] = 3] = "privateChat";
-})(RoomType || (RoomType = {}));
+})(RoomType = exports.RoomType || (exports.RoomType = {}));
 ;
-export var RoomStatus;
+var RoomStatus;
 (function (RoomStatus) {
     RoomStatus[RoomStatus["active"] = 0] = "active";
     RoomStatus[RoomStatus["disable"] = 1] = "disable";
     RoomStatus[RoomStatus["delete"] = 2] = "delete";
-})(RoomStatus || (RoomStatus = {}));
+})(RoomStatus = exports.RoomStatus || (exports.RoomStatus = {}));
 ;
-export class Room {
+class Room {
 }
+exports.Room = Room;

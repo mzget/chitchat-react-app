@@ -1,3 +1,4 @@
+"use strict";
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -6,19 +7,19 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-import * as React from "react";
+const React = require("react");
 /**
  * Redux + Immutable
  */
-import { connect } from "react-redux";
-import * as async from 'async';
-import { Box, Container } from 'react-layout-components';
-import Messages from 'chat-template/dist/Messages';
-import { TypingBox } from './TypingBox';
-import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
-import * as chatRoomActions from "../redux/chatroom/chatroomActions";
-import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
-import { ContentType } from "../chats/models/ChatDataModels";
+const react_redux_1 = require("react-redux");
+const async = require("async");
+const react_layout_components_1 = require("react-layout-components");
+const Messages_1 = require("chat-template/dist/Messages");
+const TypingBox_1 = require("./TypingBox");
+const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
+const chatRoomActions = require("../redux/chatroom/chatroomActions");
+const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
+const ChatDataModels_1 = require("../chats/models/ChatDataModels");
 class IComponentNameProps {
 }
 ;
@@ -71,6 +72,10 @@ class Chat extends React.Component {
                 this.roomInitialize(nextProps);
                 break;
             }
+            case chatRoomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
+                this.props.router.push(`/`);
+                break;
+            }
             case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
                 this.setMessageStatus(chatroomReducer.responseMessage.uuid, 'ErrorButton');
                 this.props.dispatch(chatRoomActions.stop());
@@ -96,20 +101,21 @@ class Chat extends React.Component {
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
-                this.setState({ earlyMessageReady: chatroomReducer.earlyMessageReady });
+                this.setState((previousState) => (__assign({}, previousState, { earlyMessageReady: chatroomReducer.earlyMessageReady })));
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS: {
-                this.setState({
-                    isLoadingEarlierMessages: false,
-                    earlyMessageReady: false
-                });
+                this.setState(previousState => (__assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false })));
                 this.setInitMessages(chatRoomActions.getMessages());
                 break;
             }
             default:
                 break;
         }
+    }
+    onLoadEarlierMessages() {
+        this.setState(previousState => (__assign({}, previousState, { isLoadingEarlierMessages: true })));
+        this.props.dispatch(chatRoomActions.loadEarlyMessageChunk());
     }
     roomInitialize(props) {
         let { chatroomReducer, userReducer, params } = props;
@@ -128,11 +134,11 @@ class Chat extends React.Component {
         StalkBridgeActions.getUserInfo(message.sender, (result) => {
             _message.inbound = true;
             // _message.backColor = 
-            if (message.type == ContentType[ContentType.Text])
+            if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text])
                 _message.message = message.body;
-            else if (message.type == ContentType[ContentType.Image])
+            else if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image])
                 message.image = message.body;
-            else if (message.type == ContentType[ContentType.Location])
+            else if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location])
                 message.location = message.body;
             if (result) {
                 message.user = {
@@ -195,7 +201,11 @@ class Chat extends React.Component {
     setGiftMessage(message) {
         let myProfile = this.props.userReducer.user;
         let msg = new IGiftedChat();
-        msg = __assign({}, message);
+        msg.type = message.type;
+        msg._id = message._id;
+        msg.rid = message.rid;
+        msg.sender = message.sender;
+        msg.target = message.target;
         //@ Is my message.
         if (msg.sender == myProfile._id) {
             msg.inbound = false;
@@ -203,13 +213,13 @@ class Chat extends React.Component {
         else {
             msg.inbound = true;
         }
-        if (message.type == ContentType[ContentType.Text]) {
+        if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
             msg.message = message.body;
         }
-        else if (message.type == ContentType[ContentType.Image]) {
+        else if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image]) {
             msg.image = message.body;
         }
-        else if (message.type == ContentType[ContentType.Location]) {
+        else if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location]) {
             msg.location = message.body;
         }
         else {
@@ -235,24 +245,27 @@ class Chat extends React.Component {
         this.setState(__assign({}, this.state, { typingText: "", messages: _messages }));
     }
     render() {
-        if (!this.state)
-            return null;
-        return (React.createElement(Box, { column: true, flex: "1 0 auto" },
-            React.createElement(Box, { flex: "1 0 auto", alignItems: "stretch" }, (this.state) ? React.createElement(Messages, { messages: this.state.messages, styles: { container: { position: '', bottom: '' } } }) : null),
-            React.createElement(Container, { alignSelf: 'center', absolute: true, style: { bottom: '0%' } },
-                React.createElement(TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText }))));
+        return (React.createElement(react_layout_components_1.Box, { column: true, flex: "1 0 auto" },
+            (this.state.earlyMessageReady) ?
+                React.createElement(react_layout_components_1.Container, { alignSelf: 'center', style: {} },
+                    React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))
+                :
+                    null,
+            React.createElement(react_layout_components_1.Box, { flex: "1 0 auto", alignItems: "stretch" }, (this.state) ? React.createElement(Messages_1.default, { messages: this.state.messages, styles: { container: { position: '', bottom: '' } } }) : null),
+            React.createElement(react_layout_components_1.Container, { alignSelf: 'center', absolute: true, style: { bottom: '0%' } },
+                React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText }))));
     }
     prepareSendMessage(msg) {
         let message = {};
         if (msg.image) {
-            message.type = ContentType[ContentType.Image];
+            message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image];
         }
         else if (msg.text) {
             message.body = msg.text;
-            message.type = ContentType[ContentType.Text];
+            message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text];
         }
         else if (msg.location) {
-            message.type = ContentType[ContentType.Location];
+            message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location];
         }
         message.rid = this.props.chatroomReducer.room._id;
         message.sender = this.props.userReducer.user._id;
@@ -278,4 +291,5 @@ function mapDispatchToProps(dispatch) {
 function mergeProps(stateProps, dispatchProps, ownProps) {
     return Object.assign({}, ownProps, __assign({}, stateProps, dispatchProps));
 }
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(Chat);
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = react_redux_1.connect(mapStateToProps, mapDispatchToProps, mergeProps)(Chat);

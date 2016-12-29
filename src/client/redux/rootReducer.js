@@ -8,46 +8,48 @@
  * A Redux boilerplate setup
  *
  */
-import { combineReducers } from 'redux';
+"use strict";
+const redux_1 = require("redux");
 /**
 * ## Reducers
 */
-import { deviceReducer, DeviceInitialState } from "./device/deviceReducer";
+const deviceReducer_1 = require("./device/deviceReducer");
 // import { messageReducer, MessageInitState } from "./message/messageReducer";
-import { UserInitState, userReducer } from "./user/userActions";
-import { stalkReducer, StalkInitState } from "./stalkBridge/stalkReducer";
-import { chatroomReducer, ChatRoomInitState } from "./chatroom/chatroomRxEpic";
-import { chatlogReducer, ChatLogInitState } from "./chatlogs/chatlogReducer";
+const userActions_1 = require("./user/userActions");
+const stalkReducer_1 = require("./stalkBridge/stalkReducer");
+const chatroomReducer_1 = require("./chatroom/chatroomReducer");
+const chatlogReducer_1 = require("./chatlogs/chatlogReducer");
 /**
  * ## CombineReducers
  *
  * the rootReducer will call each and every reducer with the state and action
  * EVERY TIME there is a basic action
  */
-const appReducer = combineReducers({
-    deviceReducer,
+const appReducer = redux_1.combineReducers({
+    deviceReducer: deviceReducer_1.deviceReducer,
     // messageReducer,
-    stalkReducer,
-    chatroomReducer,
-    chatlogReducer,
-    userReducer
+    stalkReducer: stalkReducer_1.stalkReducer,
+    chatroomReducer: chatroomReducer_1.chatroomReducer,
+    chatlogReducer: chatlogReducer_1.chatlogReducer,
+    userReducer: userActions_1.userReducer
 });
 /*
  *
  * ## Initial state
  * Create instances for the keys of each structure in snowflake
  */
-export function getInitialState() {
+function getInitialState() {
     const _initState = {
-        deviceReducer: new DeviceInitialState(),
+        deviceReducer: new deviceReducer_1.DeviceInitialState(),
         // messageReducer: new MessageInitState,
-        stalkReducer: new StalkInitState(),
-        chatroomReducer: new ChatRoomInitState(),
-        chatlogReducer: new ChatLogInitState(),
-        userReducer: new UserInitState()
+        stalkReducer: new stalkReducer_1.StalkInitState(),
+        chatroomReducer: new chatroomReducer_1.ChatRoomInitState(),
+        chatlogReducer: new chatlogReducer_1.ChatLogInitState(),
+        userReducer: new userActions_1.UserInitState()
     };
     return _initState;
 }
-export const rootReducer = (state, action) => {
+exports.getInitialState = getInitialState;
+exports.rootReducer = (state, action) => {
     return appReducer(state, action);
 };

@@ -8,19 +8,20 @@
  * A Redux boilerplate setup
  *
  */
+"use strict";
 /**
  * ## Imports
  *
  * redux functions
  */
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import { createEpicMiddleware } from 'redux-observable';
-import createLogger from 'redux-logger';
-import * as rootReducer from "./rootReducer";
-import * as rootRxEpic from './rootRxEpic';
-const epicMiddleware = createEpicMiddleware(rootRxEpic.rootEpic);
-const middlewares = [thunk, epicMiddleware];
+const redux_1 = require("redux");
+const redux_thunk_1 = require("redux-thunk");
+const redux_observable_1 = require("redux-observable");
+const createLogger = require("redux-logger");
+const rootReducer = require("./rootReducer");
+const rootRxEpic = require("./rootRxEpic");
+const epicMiddleware = redux_observable_1.createEpicMiddleware(rootRxEpic.rootEpic);
+const middlewares = [redux_thunk_1.default, epicMiddleware];
 if (process.env.NODE_ENV === `development`) {
     const logger = createLogger();
     middlewares.push(logger);
@@ -30,7 +31,7 @@ if (process.env.NODE_ENV === `development`) {
  * Like the name...
  */
 // const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore)(RootReducer.rootReducer, RootReducer.getInitialState());
-const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
+const createStoreWithMiddleware = redux_1.applyMiddleware(...middlewares)(redux_1.createStore);
 /**
  * ## configureStore
  * @param {Object} the state with for keys:
@@ -48,4 +49,5 @@ function configureStore() {
 ;
 //!!! Note >>> Do not edit these 2 line below. I make it for call global store. @ Mzget.
 const store = configureStore();
-export default store;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = store;

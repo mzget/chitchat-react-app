@@ -1,3 +1,4 @@
+"use strict";
 const api_master = "http://smelink.animation-genius.com:3002/";
 const api_dev = "http://localhost:9000";
 const api_production = "http://203.148.250.152:3002/";
@@ -75,4 +76,5 @@ const getConfig = () => {
     }
 };
 const config = getConfig();
-export default config;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = config;

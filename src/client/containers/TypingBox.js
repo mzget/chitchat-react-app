@@ -1,6 +1,7 @@
-import * as React from "react";
-import { RaisedButton, TextField } from 'material-ui';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+"use strict";
+const React = require("react");
+const material_ui_1 = require("material-ui");
+const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const styles = {
     span: {
         padding: 10
@@ -10,14 +11,14 @@ const styles = {
         position: 'absolute'
     }
 };
-export const SendButton = (props) => (React.createElement(RaisedButton, { label: "Send", primary: true, onTouchEnd: props.onSubmit, onMouseUp: props.onSubmit }));
-export const TypingBox = (props) => {
-    return (React.createElement(MuiThemeProvider, null,
+exports.SendButton = (props) => (React.createElement(material_ui_1.RaisedButton, { label: "Send", primary: true, onTouchEnd: props.onSubmit, onMouseUp: props.onSubmit }));
+exports.TypingBox = (props) => {
+    return (React.createElement(MuiThemeProvider_1.default, null,
         React.createElement("div", null,
-            React.createElement(TextField, { hintText: "Type your message", value: props.value, onChange: props.onValueChange, onKeyPress: (e) => {
+            React.createElement(material_ui_1.TextField, { hintText: "Type your message", value: props.value, onChange: props.onValueChange, onKeyPress: (e) => {
                     if (e.key === 'Enter')
                         props.onSubmit();
                 } }),
             React.createElement("span", { style: styles.span }),
-            React.createElement(SendButton, { onSubmit: props.onSubmit }))));
+            React.createElement(exports.SendButton, { onSubmit: props.onSubmit }))));
 };

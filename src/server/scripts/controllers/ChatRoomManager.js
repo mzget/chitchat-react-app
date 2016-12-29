@@ -1,9 +1,13 @@
-import * as UserManager from './UserManager';
+"use strict";
+const mongodb = require("mongodb");
+const async = require("async");
+const Room = require("../models/Room");
+const UserManager = require("./UserManager");
 const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
-import { getConfig, DbClient } from "../../config";
-const config = getConfig();
-export class ChatRoomManager {
+const config_1 = require("../../config");
+const config = config_1.getConfig();
+class ChatRoomManager {
     constructor() {
         this.userManager = UserManager.getInstance();
         this.roomDAL = new RoomDataAccess();
@@ -11,7 +15,7 @@ export class ChatRoomManager {
     GetChatRoomInfo(room_id) {
         return new Promise((resolve, reject) => {
             MongoClient.connect(config.chatDB).then(db => {
-                let roomColl = db.collection(DbClient.chatroomCall);
+                let roomColl = db.collection(config_1.DbClient.chatroomCall);
                 roomColl.find({ _id: new ObjectID(room_id) }).limit(1).toArray().then(docs => {
                     db.close();
                     resolve(docs);
@@ -33,7 +37,7 @@ export class ChatRoomManager {
     createPrivateChatRoom(room) {
         return new Promise((resolve, reject) => {
             MongoClient.connect(config.chatDB).then(db => {
-                let roomColl = db.collection(DbClient.chatroomCall);
+                let roomColl = db.collection(config_1.DbClient.chatroomCall);
                 roomColl.insertOne(room).then(result => {
                     db.close();
                     resolve(result.ops);
@@ -251,7 +255,8 @@ export class ChatRoomManager {
     }
 }
 ChatRoomManager._Instance = null;
-export class RoomDataAccess {
+exports.ChatRoomManager = ChatRoomManager;
+class RoomDataAccess {
     constructor() {
         this.userManager = UserManager.getInstance();
     }
@@ -487,3 +492,4 @@ export class RoomDataAccess {
         }, { _id: new ObjectID(messageId) }, { sender: 1, readers: 1 });
     }
 }
+exports.RoomDataAccess = RoomDataAccess;

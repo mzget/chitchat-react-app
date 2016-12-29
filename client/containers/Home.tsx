@@ -25,6 +25,7 @@ abstract class IComponentNameProps implements IComponentProps {
             userId: string;
             roomId: string;
             username: string;
+            agent_id: string;
         }
     };
     params;
@@ -40,18 +41,13 @@ interface IComponentNameState {
 };
 
 class Home extends React.Component<IComponentNameProps, IComponentNameState> {
-    constructor(props) {
-        super(props);
+    componentWillMount() {
+        console.log("Home", this.props);
 
         this.state = {
             openDialog: false
         }
-    }
-
-    componentDidMount() {
-        console.log("Home", this.props);
-
-        let { location: {query: {userId, username, roomId, contactId}} } = this.props;
+        let { location: {query: {userId, username, roomId, contactId, agent_id}} } = this.props;
 
         if (username) {
             this.props.dispatch(userActions.fetchUser(username));
@@ -59,10 +55,17 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
         if (contactId) {
             this.props.dispatch(userActions.fetchContact(contactId));
         }
+        if (agent_id) {
+            // this.props.dispatch(userActions.fetchAgentById(agent_id));
+        }
 
         if (this.props.location.query.roomId) {
 
         }
+    }
+
+    componentDidMount() {
+
     }
 
     fetch_privateChatRoom = (roommateId, owerId) => {

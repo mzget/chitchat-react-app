@@ -98,6 +98,10 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                 this.roomInitialize(nextProps);
                 break;
             }
+            case chatRoomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
+                this.props.router.push(`/`);
+                break;
+            }
 
             case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
                 this.setMessageStatus(chatroomReducer.responseMessage.uuid, 'ErrorButton');
@@ -126,15 +130,18 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
-                this.setState({ earlyMessageReady: chatroomReducer.earlyMessageReady });
+                this.setState((previousState) => ({
+                    ...previousState, earlyMessageReady: chatroomReducer.earlyMessageReady
+                }));
 
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS: {
-                this.setState({
+                this.setState(previousState => ({
+                    ...previousState,
                     isLoadingEarlierMessages: false,
                     earlyMessageReady: false
-                });
+                }));
 
                 this.setInitMessages(chatRoomActions.getMessages());
 
@@ -143,6 +150,15 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
             default:
                 break;
         }
+    }
+
+    onLoadEarlierMessages() {
+        this.setState(previousState => ({
+            ...previousState,
+            isLoadingEarlierMessages: true,
+        }));
+
+        this.props.dispatch(chatRoomActions.loadEarlyMessageChunk());
     }
 
     roomInitialize(props: IComponentNameProps) {
@@ -238,10 +254,14 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         });
     }
 
-    setGiftMessage(message) {
+    setGiftMessage(message: IMessage) {
         let myProfile = this.props.userReducer.user;
         let msg = new IGiftedChat();
-        msg = { ...message };
+        msg.type = message.type;
+        msg._id = message._id;
+        msg.rid = message.rid;
+        msg.sender = message.sender;
+        msg.target = message.target;
 
         //@ Is my message.
         if (msg.sender == myProfile._id) {
@@ -285,9 +305,16 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
     }
 
     render(): JSX.Element {
-        if (!this.state) return null;
         return (
             <Box column flex="1 0 auto">
+                {
+                    (this.state.earlyMessageReady) ?
+                        <Container alignSelf='center' style={{}} >
+                            <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
+                        </Container>
+                        :
+                        null
+                }
                 <Box flex="1 0 auto" alignItems="stretch">
                     {(this.state) ? <Messages messages={this.state.messages} styles={{ container: { position: '', bottom: '' } }} /> : null}
                 </Box>

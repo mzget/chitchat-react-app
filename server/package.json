@@ -16,11 +16,13 @@
     "jade": "~1.11.0",
     "mongodb": "^2.2.16",
     "morgan": "~1.7.0",
+    "redis": "^2.6.3",
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
     "@types/express-validator": "^2.20.33",
     "@types/mongodb": "^2.1.36",
+    "@types/redis": "^0.12.34",
     "nodemon": "^1.11.0"
   }
 }

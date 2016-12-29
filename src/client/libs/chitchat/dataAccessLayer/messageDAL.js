@@ -1,5 +1,6 @@
-import localForage from "localforage";
-export class MessageDAL {
+"use strict";
+const localforage_1 = require("localforage");
+class MessageDAL {
     constructor() {
         // localforage.config({
         //     driver: localforage.WEBSQL, // Force WebSQL; same as using setDriver()
@@ -9,7 +10,7 @@ export class MessageDAL {
         //     storeName: 'keyvaluepairs', // Should be alphanumeric, with underscores.
         //     description: 'some description'
         // });
-        this.store = localForage.createInstance({
+        this.store = localforage_1.default.createInstance({
             name: "message"
         });
     }
@@ -58,3 +59,4 @@ export class MessageDAL {
         });
     }
 }
+exports.MessageDAL = MessageDAL;

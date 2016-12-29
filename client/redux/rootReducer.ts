@@ -18,7 +18,7 @@ import { deviceReducer, DeviceInitialState } from "./device/deviceReducer";
 // import { messageReducer, MessageInitState } from "./message/messageReducer";
 import { UserInitState, userReducer } from "./user/userActions";
 import { stalkReducer, StalkInitState } from "./stalkBridge/stalkReducer";
-import { chatroomReducer, ChatRoomInitState } from "./chatroom/chatroomRxEpic";
+import { chatroomReducer, ChatRoomInitState } from "./chatroom/chatroomReducer";
 import { chatlogReducer, ChatLogInitState } from "./chatlogs/chatlogReducer";
 
 /**

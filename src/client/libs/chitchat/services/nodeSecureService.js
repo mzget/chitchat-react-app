@@ -1,5 +1,6 @@
+"use strict";
 const CryptoJS = require('crypto-js');
-export default class NodeSecureService {
+class NodeSecureService {
     constructor() {
         this.key = "CHITCHAT!@#$%^&*()_+|===";
         this.passiv = "ThisIsUrPassword";
@@ -46,3 +47,5 @@ export default class NodeSecureService {
             callback(new Error("cannot decrypt content"), content);
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = NodeSecureService;

@@ -3,33 +3,35 @@
  *
  * This is pure function action for redux app.
  */
-import BackendFactory from "../../chats/BackendFactory";
+"use strict";
+const BackendFactory_1 = require("../../chats/BackendFactory");
 // import NotificationManager from "../../chats/notificationManager";
-import * as DataModels from "../../chats/models/ChatDataModels";
-import Store from "../configureStore";
-import * as ChatLogsActions from "../chatlogs/chatlogsActions";
-import * as StalkPushActions from "./stalkPushActions";
-export const getSessionToken = () => {
-    const backendFactory = BackendFactory.getInstance();
+const DataModels = require("../../chats/models/ChatDataModels");
+const configureStore_1 = require("../configureStore");
+const ChatLogsActions = require("../chatlogs/chatlogsActions");
+const StalkPushActions = require("./stalkPushActions");
+exports.getSessionToken = () => {
+    const backendFactory = BackendFactory_1.default.getInstance();
     return backendFactory.dataManager.getSessionToken();
 };
-export const getRoomDAL = () => {
-    const backendFactory = BackendFactory.getInstance();
+exports.getRoomDAL = () => {
+    const backendFactory = BackendFactory_1.default.getInstance();
     return backendFactory.dataManager.roomDAL;
 };
-export const onStalkLoginSuccess = new Array();
+exports.onStalkLoginSuccess = new Array();
 const onGetContactProfileFail = (contact_id) => {
 };
-export function getUserInfo(userId, callback) {
+function getUserInfo(userId, callback) {
     let self = this;
-    let dataManager = BackendFactory.getInstance().dataManager;
+    let dataManager = BackendFactory_1.default.getInstance().dataManager;
     let user = dataManager.getContactProfile(userId);
     callback(user);
 }
-export const STALK_INIT_FAILURE = "STALK_INIT_FAILURE";
-export function stalkLoginWithToken(uid, token) {
+exports.getUserInfo = getUserInfo;
+exports.STALK_INIT_FAILURE = "STALK_INIT_FAILURE";
+function stalkLoginWithToken(uid, token) {
     console.log("stalkLoginWithToken", uid, token);
-    const backendFactory = BackendFactory.getInstance();
+    const backendFactory = BackendFactory_1.default.getInstance();
     backendFactory.stalkInit().then(value => {
         backendFactory.checkIn(uid, token, null).then(value => {
             console.log("Joined chat-server success", value.code);
@@ -69,11 +71,12 @@ export function stalkLoginWithToken(uid, token) {
         console.warn("StalkInit Fail.");
     });
 }
-export function stalkLogin(user) {
-    console.log("stalkLogin init status", Store.getState().stalkReducer.isInit);
-    if (Store.getState().stalkReducer.isInit)
+exports.stalkLoginWithToken = stalkLoginWithToken;
+function stalkLogin(user) {
+    console.log("stalkLogin init status", configureStore_1.default.getState().stalkReducer.isInit);
+    if (configureStore_1.default.getState().stalkReducer.isInit)
         return;
-    const backendFactory = BackendFactory.getInstance();
+    const backendFactory = BackendFactory_1.default.getInstance();
     backendFactory.stalkInit().then(value => {
         backendFactory.checkIn(user._id, null, user).then(value => {
             console.log("Joined chat-server success", value);
@@ -93,8 +96,8 @@ export function stalkLogin(user) {
                 backendFactory.dataManager.setSessionToken(result.token);
                 backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
                 StalkPushActions.stalkPushInit();
-                if (onStalkLoginSuccess.length > 0)
-                    onStalkLoginSuccess.map(item => item());
+                if (exports.onStalkLoginSuccess.length > 0)
+                    exports.onStalkLoginSuccess.map(item => item());
             }
             else {
                 console.warn("Cannot joined chat server.");
@@ -104,6 +107,7 @@ export function stalkLogin(user) {
         });
     }).catch(err => {
         console.warn("StalkInit Fail.");
-        Store.dispatch({ type: STALK_INIT_FAILURE });
+        configureStore_1.default.dispatch({ type: exports.STALK_INIT_FAILURE });
     });
 }
+exports.stalkLogin = stalkLogin;

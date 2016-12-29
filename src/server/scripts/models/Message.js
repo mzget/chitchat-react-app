@@ -1,3 +1,4 @@
+"use strict";
 var MessageType;
 (function (MessageType) {
     MessageType[MessageType["Text"] = 0] = "Text";
@@ -8,7 +9,9 @@ var MessageType;
     MessageType[MessageType["Sticker"] = 5] = "Sticker";
 })(MessageType || (MessageType = {}));
 ;
-export class MessageMeta {
+class MessageMeta {
 }
-export class Message {
+exports.MessageMeta = MessageMeta;
+class Message {
 }
+exports.Message = Message;

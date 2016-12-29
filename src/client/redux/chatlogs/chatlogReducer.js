@@ -3,8 +3,9 @@
  *
  * This is pure function for redux app.
  */
-import * as ChatlogsActions from "../chatlogs/chatlogsActions";
-import { Record } from 'immutable';
+"use strict";
+const ChatlogsActions = require("../chatlogs/chatlogsActions");
+const immutable_1 = require("immutable");
 /**
  * ## Initial State
  */
@@ -13,14 +14,14 @@ import { Record } from 'immutable';
  * This Record contains the state of the form and the
  * fields it contains.
  */
-export const ChatLogInitState = Record({
+exports.ChatLogInitState = immutable_1.Record({
     chatsLog: null,
     isFetching: false,
     state: null
 });
-const initialState = new ChatLogInitState();
-export function chatlogReducer(state = initialState, action) {
-    if (!(state instanceof ChatLogInitState))
+const initialState = new exports.ChatLogInitState();
+function chatlogReducer(state = initialState, action) {
+    if (!(state instanceof exports.ChatLogInitState))
         return initialState.mergeDeep(state);
     switch (action.type) {
         case ChatlogsActions.STALK_GET_CHATSLOG_COMPLETE: {
@@ -40,3 +41,4 @@ export function chatlogReducer(state = initialState, action) {
             return state;
     }
 }
+exports.chatlogReducer = chatlogReducer;

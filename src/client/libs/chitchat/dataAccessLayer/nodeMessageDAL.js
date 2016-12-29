@@ -1,3 +1,4 @@
+"use strict";
 /**
  * NodeMessageDAL.
  *
@@ -8,7 +9,7 @@
  * Use react-native-simple-storage for stroage engines.
  */
 const store = require('react-native-simple-store');
-export default class NodeMessageDAL {
+class NodeMessageDAL {
     getData(rid, done) {
         store.get(rid).then(function (value) {
             let docs = JSON.parse(JSON.stringify(value));
@@ -26,3 +27,5 @@ export default class NodeMessageDAL {
     clearData(next) {
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = NodeMessageDAL;

@@ -3,7 +3,6 @@
  *
  * This is pure function action for redux app.
  */
-
 import ChatRoomComponent from "../../chats/chatRoomComponent";
 import * as chatroomActions from "./chatroomActions";
 import { ChatRoomActionsType } from "./chatroomActions";
@@ -14,10 +13,10 @@ import { Record } from "immutable";
 const Rx = require('rxjs/Rx');
 const { ajax } = Rx.Observable;
 
-const FETCH_PRIVATE_CHATROOM = "FETCH_PRIVATE_CHATROOM";
-const FETCH_PRIVATE_CHATROOM_FAILURE = "FETCH_PRIVATE_CHATROOM_FAILURE";
+export const FETCH_PRIVATE_CHATROOM = "FETCH_PRIVATE_CHATROOM";
+export const FETCH_PRIVATE_CHATROOM_FAILURE = "FETCH_PRIVATE_CHATROOM_FAILURE";
 export const FETCH_PRIVATE_CHATROOM_SUCCESS = "FETCH_PRIVATE_CHATROOM_SUCCESS";
-const FETCH_PRIVATE_CHATROOM_CANCELLED = "FETCH_PRIVATE_CHATROOM_CANCELLED";
+export const FETCH_PRIVATE_CHATROOM_CANCELLED = "FETCH_PRIVATE_CHATROOM_CANCELLED";
 
 export const fetchPrivateChatRoom = (ownerId, roommateId) => ({ type: FETCH_PRIVATE_CHATROOM, payload: { ownerId, roommateId } });
 const fetchPrivateChatRoomSuccess = (payload) => ({ type: FETCH_PRIVATE_CHATROOM_SUCCESS, payload });
@@ -78,68 +77,3 @@ export const getPersistendMessageEpic = action$ => {
     //getNewerMessageFromNet();
     //checkOlderMessages();
 }
-
-export const ChatRoomInitState = Record({
-    isFetching: false,
-    state: null,
-    room: null,
-    responseMessage: null,
-    newMessage: null
-});
-export const chatroomReducer = (state = new ChatRoomInitState(), action: ReduxActions.Action<any>) => {
-    switch (action.type) {
-        case FETCH_PRIVATE_CHATROOM_SUCCESS:
-            return state.set("room", action.payload.result[0])
-                .set("state", FETCH_PRIVATE_CHATROOM_SUCCESS);
-        case FETCH_PRIVATE_CHATROOM_CANCELLED:
-            return state;
-        case FETCH_PRIVATE_CHATROOM_FAILURE:
-            return state;
-
-        case ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
-            let payload = action.payload;
-            let nextState = state.set("state", ChatRoomActionsType.SEND_MESSAGE_SUCCESS)
-                .set("isFetching", false)
-                .set("responseMessage", payload);
-
-            return nextState;
-        }
-        case ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
-            let payload = action.payload;
-            let nextState = state.set("state", ChatRoomActionsType.SEND_MESSAGE_FAILURE)
-                .set("isFetching", false)
-                .set("responseMessage", payload);
-
-            return nextState;
-        }
-
-        case ChatRoomActionsType.ON_NEW_MESSAGE: {
-            let payload = action.payload;
-            return state.set("state", ChatRoomActionsType.ON_NEW_MESSAGE)
-                .set("newMessage", payload);
-        }
-
-        case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
-            return state
-                .set("state", chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS)
-                .set("room", action.payload);
-        }
-        case chatroomActions.LEAVE_ROOM_SUCCESS: {
-            return state
-                .set("state", chatroomActions.LEAVE_ROOM_SUCCESS)
-                .set("room", null);
-        }
-
-        case ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
-            return state.set("state", ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS);
-        }
-
-        case CREATE_PRIVATE_CHATROOM_SUCCESS: {
-            return state.set("room", action.payload).set("state", CREATE_PRIVATE_CHATROOM_SUCCESS);
-        }
-
-
-        default:
-            return state;
-    }
-};

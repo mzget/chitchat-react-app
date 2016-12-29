@@ -1,29 +1,31 @@
-import * as React from 'react';
-import { List, ListItem } from 'material-ui/List';
-import Divider from 'material-ui/Divider';
-import Subheader from 'material-ui/Subheader';
-import Avatar from 'material-ui/Avatar';
-import { grey400, darkBlack } from 'material-ui/styles/colors';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-const iconButtonElement = (React.createElement(IconButton, { touch: true, tooltip: "more", tooltipPosition: "bottom-left" },
-    React.createElement(MoreVertIcon, { color: grey400 })));
-const rightIconMenu = (React.createElement(IconMenu, { iconButtonElement: iconButtonElement },
-    React.createElement(MenuItem, null, "Reply"),
-    React.createElement(MenuItem, null, "Forward"),
-    React.createElement(MenuItem, null, "Delete")));
+"use strict";
+const React = require("react");
+const List_1 = require("material-ui/List");
+const Divider_1 = require("material-ui/Divider");
+const Subheader_1 = require("material-ui/Subheader");
+const Avatar_1 = require("material-ui/Avatar");
+const colors_1 = require("material-ui/styles/colors");
+const IconButton_1 = require("material-ui/IconButton");
+const more_vert_1 = require("material-ui/svg-icons/navigation/more-vert");
+const IconMenu_1 = require("material-ui/IconMenu");
+const MenuItem_1 = require("material-ui/MenuItem");
+const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
+const iconButtonElement = (React.createElement(IconButton_1.default, { touch: true, tooltip: "more", tooltipPosition: "bottom-left" },
+    React.createElement(more_vert_1.default, { color: colors_1.grey400 })));
+const rightIconMenu = (React.createElement(IconMenu_1.default, { iconButtonElement: iconButtonElement },
+    React.createElement(MenuItem_1.default, null, "Reply"),
+    React.createElement(MenuItem_1.default, null, "Forward"),
+    React.createElement(MenuItem_1.default, null, "Delete")));
 const renderList = (props) => (props.value.map((log, i) => {
     return (React.createElement("div", { key: i },
-        React.createElement(ListItem, { onTouchEnd: () => props.onSelected(log), onMouseUp: () => props.onSelected(log), leftAvatar: React.createElement(Avatar, { src: "images/ok-128.jpg" }), primaryText: log.roomName, secondaryText: React.createElement("p", null,
-                React.createElement("span", { style: { color: darkBlack } }, log.lastMessage)), secondaryTextLines: 2 }),
-        React.createElement(Divider, { inset: true })));
+        React.createElement(List_1.ListItem, { onTouchEnd: () => props.onSelected(log), onMouseUp: () => props.onSelected(log), leftAvatar: React.createElement(Avatar_1.default, { src: "images/ok-128.jpg" }), primaryText: log.roomName, secondaryText: React.createElement("p", null,
+                React.createElement("span", { style: { color: colors_1.darkBlack } }, log.lastMessage)), secondaryTextLines: 2 }),
+        React.createElement(Divider_1.default, { inset: true })));
 }));
-const ListChatLogs = (props) => (React.createElement(MuiThemeProvider, null,
+const ListChatLogs = (props) => (React.createElement(MuiThemeProvider_1.default, null,
     React.createElement("div", null,
-        React.createElement(List, null,
-            React.createElement(Subheader, null, "Today"),
+        React.createElement(List_1.List, null,
+            React.createElement(Subheader_1.default, null, "Today"),
             (!!props.value) ? renderList(props) : null))));
-export default ListChatLogs;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = ListChatLogs;

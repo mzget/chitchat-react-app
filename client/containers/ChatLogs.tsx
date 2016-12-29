@@ -28,9 +28,7 @@ interface IComponentNameState {
 };
 
 class ChatLogs extends React.Component<IComponentNameProps, IComponentNameState> {
-    constructor(props) {
-        super(props);
-
+    componentWillMount() {
         this.state = {
             search: "", chatsLog: null
         }
@@ -41,7 +39,7 @@ class ChatLogs extends React.Component<IComponentNameProps, IComponentNameState>
     componentWillReceiveProps(nextProps: IComponentNameProps) {
         let { chatroomReducer, stalkReducer, chatlogReducer } = nextProps;
 
-        console.log("ChatLogsPage", nextProps)
+        console.log("ChatLogsPage", chatlogReducer.state, chatlogReducer.chatsLog)
 
         switch (chatlogReducer.state) {
             case ChatLogsActions.STALK_GET_CHATSLOG_COMPLETE:

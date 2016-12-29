@@ -6,7 +6,7 @@
 
 import { IRoomDAL } from "./IRoomDAL";
 
-import localForage from "localforage";
+import * as localForage from "localforage";
 
 export class RoomDAL implements IRoomDAL {
     private store: LocalForage;

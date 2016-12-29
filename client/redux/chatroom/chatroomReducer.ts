@@ -5,28 +5,91 @@
  */
 
 import { ChatRoomActionsType } from "./chatroomActions";
+import * as ChatRoomRx from "./chatroomRxEpic";
 import * as chatroomActions from "./chatroomActions";
 import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
 import { Record } from 'immutable';
 /**
  * ## Initial State
  */
-/**
- * ## Form
- * This Record contains the state of the form and the
- * fields it contains.
- */
 export const ChatRoomInitState = Record({
-    selectRoom: null,
-    responseMessage: null,
-    newMessage: null,
-    messages: null,
-    earlyMessageReady: false,
     isFetching: false,
     state: null,
-    error: null,
+    room: null,
+    responseMessage: null,
+    newMessage: null,
+    earlyMessageReady: false
 });
 const initialState = new ChatRoomInitState();
+
+
+export const chatroomReducer = (state = new ChatRoomInitState(), action: ReduxActions.Action<any>) => {
+    switch (action.type) {
+        case ChatRoomRx.FETCH_PRIVATE_CHATROOM_SUCCESS:
+            return state.set("room", action.payload.result[0])
+                .set("state", ChatRoomRx.FETCH_PRIVATE_CHATROOM_SUCCESS);
+        case ChatRoomRx.FETCH_PRIVATE_CHATROOM_CANCELLED:
+            return state;
+        case ChatRoomRx.FETCH_PRIVATE_CHATROOM_FAILURE:
+            return state;
+
+        case ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
+            let payload = action.payload;
+            let nextState = state.set("state", ChatRoomActionsType.SEND_MESSAGE_SUCCESS)
+                .set("isFetching", false)
+                .set("responseMessage", payload);
+
+            return nextState;
+        }
+        case ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
+            let payload = action.payload;
+            let nextState = state.set("state", ChatRoomActionsType.SEND_MESSAGE_FAILURE)
+                .set("isFetching", false)
+                .set("responseMessage", payload);
+
+            return nextState;
+        }
+        case ChatRoomActionsType.ON_NEW_MESSAGE: {
+            let payload = action.payload;
+            return state.set("state", ChatRoomActionsType.ON_NEW_MESSAGE)
+                .set("newMessage", payload);
+        }
+
+        case ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
+            let payload = action.payload;
+            return state.set("state", ChatRoomActionsType.ON_EARLY_MESSAGE_READY)
+                .set("earlyMessageReady", payload);
+        }
+        case ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS: {
+            return state.set("state", ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS);
+        }
+
+        case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
+            return state
+                .set("state", chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS)
+                .set("room", action.payload);
+        }
+        case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
+            return state.set("state", chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE);
+        }
+        case chatroomActions.LEAVE_ROOM_SUCCESS: {
+            return state
+                .set("state", chatroomActions.LEAVE_ROOM_SUCCESS)
+                .set("room", null);
+        }
+
+        case ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
+            return state.set("state", ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS);
+        }
+
+        case ChatRoomRx.CREATE_PRIVATE_CHATROOM_SUCCESS: {
+            return state.set("room", action.payload).set("state", ChatRoomRx.CREATE_PRIVATE_CHATROOM_SUCCESS);
+        }
+
+        default:
+            return state;
+    }
+};
 
 function oldRoomReducer(state = initialState, action) {
     if (!(state instanceof ChatRoomInitState)) return initialState.mergeDeep(state);
@@ -68,16 +131,6 @@ function oldRoomReducer(state = initialState, action) {
             let payload = action.payload;
             return state.set("state", ChatRoomActionsType.ON_NEW_MESSAGE)
                 .set("newMessage", payload);
-        }
-
-
-        case ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
-            let payload = action.payload;
-            return state.set("state", ChatRoomActionsType.ON_EARLY_MESSAGE_READY)
-                .set("earlyMessageReady", payload);
-        }
-        case ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS: {
-            return state.set("state", ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS);
         }
 
         case ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {

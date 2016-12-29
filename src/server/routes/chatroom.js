@@ -1,8 +1,14 @@
+"use strict";
+const express = require("express");
+const crypto = require("crypto");
+const mongodb = require("mongodb");
+const async = require("async");
 const router = express.Router();
 const ObjectID = mongodb.ObjectID;
-import { ChatRoomManager } from "../scripts/controllers/ChatRoomManager";
-import * as UserManager from "../scripts/controllers/UserManager";
-const chatRoomManager = ChatRoomManager.prototype;
+const Room = require("../scripts/models/Room");
+const ChatRoomManager_1 = require("../scripts/controllers/ChatRoomManager");
+const UserManager = require("../scripts/controllers/UserManager");
+const chatRoomManager = ChatRoomManager_1.ChatRoomManager.prototype;
 /* GET home page. */
 router.get('/', function (req, res, next) {
     next();

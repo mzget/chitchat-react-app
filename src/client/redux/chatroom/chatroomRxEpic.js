@@ -1,37 +1,35 @@
+"use strict";
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
  * This is pure function action for redux app.
  */
-import ChatRoomComponent from "../../chats/chatRoomComponent";
-import * as chatroomActions from "./chatroomActions";
-import { ChatRoomActionsType } from "./chatroomActions";
-import config from "../../configs/config";
-import { Record } from "immutable";
+const chatRoomComponent_1 = require("../../chats/chatRoomComponent");
+const config_1 = require("../../configs/config");
 const Rx = require('rxjs/Rx');
 const { ajax } = Rx.Observable;
-const FETCH_PRIVATE_CHATROOM = "FETCH_PRIVATE_CHATROOM";
-const FETCH_PRIVATE_CHATROOM_FAILURE = "FETCH_PRIVATE_CHATROOM_FAILURE";
-export const FETCH_PRIVATE_CHATROOM_SUCCESS = "FETCH_PRIVATE_CHATROOM_SUCCESS";
-const FETCH_PRIVATE_CHATROOM_CANCELLED = "FETCH_PRIVATE_CHATROOM_CANCELLED";
-export const fetchPrivateChatRoom = (ownerId, roommateId) => ({ type: FETCH_PRIVATE_CHATROOM, payload: { ownerId, roommateId } });
-const fetchPrivateChatRoomSuccess = (payload) => ({ type: FETCH_PRIVATE_CHATROOM_SUCCESS, payload });
-const cancelFetchPrivateChatRoom = () => ({ type: FETCH_PRIVATE_CHATROOM_CANCELLED });
-const fetchPrivateChatRoomFailure = payload => ({ type: FETCH_PRIVATE_CHATROOM_FAILURE, payload, error: true });
-export const getPrivateChatRoomEpic = action$ => {
-    return action$.ofType(FETCH_PRIVATE_CHATROOM)
-        .mergeMap(action => ajax.post(`${config.api.chatroom}`, action.payload))
+exports.FETCH_PRIVATE_CHATROOM = "FETCH_PRIVATE_CHATROOM";
+exports.FETCH_PRIVATE_CHATROOM_FAILURE = "FETCH_PRIVATE_CHATROOM_FAILURE";
+exports.FETCH_PRIVATE_CHATROOM_SUCCESS = "FETCH_PRIVATE_CHATROOM_SUCCESS";
+exports.FETCH_PRIVATE_CHATROOM_CANCELLED = "FETCH_PRIVATE_CHATROOM_CANCELLED";
+exports.fetchPrivateChatRoom = (ownerId, roommateId) => ({ type: exports.FETCH_PRIVATE_CHATROOM, payload: { ownerId, roommateId } });
+const fetchPrivateChatRoomSuccess = (payload) => ({ type: exports.FETCH_PRIVATE_CHATROOM_SUCCESS, payload });
+const cancelFetchPrivateChatRoom = () => ({ type: exports.FETCH_PRIVATE_CHATROOM_CANCELLED });
+const fetchPrivateChatRoomFailure = payload => ({ type: exports.FETCH_PRIVATE_CHATROOM_FAILURE, payload, error: true });
+exports.getPrivateChatRoomEpic = action$ => {
+    return action$.ofType(exports.FETCH_PRIVATE_CHATROOM)
+        .mergeMap(action => ajax.post(`${config_1.default.api.chatroom}`, action.payload))
         .map(json => fetchPrivateChatRoomSuccess(json.response))
-        .takeUntil(action$.ofType(FETCH_PRIVATE_CHATROOM_CANCELLED))
+        .takeUntil(action$.ofType(exports.FETCH_PRIVATE_CHATROOM_CANCELLED))
         .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.xhr.response)));
 };
 const CREATE_PRIVATE_CHATROOM = "CREATE_PRIVATE_CHATROOM";
-export const CREATE_PRIVATE_CHATROOM_SUCCESS = "CREATE_PRIVATE_CHATROOM_SUCCESS";
+exports.CREATE_PRIVATE_CHATROOM_SUCCESS = "CREATE_PRIVATE_CHATROOM_SUCCESS";
 const CREATE_PRIVATE_CHATROOM_CANCELLED = "CREATE_PRIVATE_CHATROOM_CANCELLED";
 const CREATE_PRIVATE_CHATROOM_FAILURE = "CREATE_PRIVATE_CHATROOM_FAILURE";
-export const createPrivateChatRoom = (owner, roommate) => ({ type: CREATE_PRIVATE_CHATROOM, payload: { owner, roommate } });
+exports.createPrivateChatRoom = (owner, roommate) => ({ type: CREATE_PRIVATE_CHATROOM, payload: { owner, roommate } });
 const createPrivateChatRoomSuccess = (payload) => ({
-    type: CREATE_PRIVATE_CHATROOM_SUCCESS, payload
+    type: exports.CREATE_PRIVATE_CHATROOM_SUCCESS, payload
 });
 const createPrivateRoomCancelled = () => ({
     type: CREATE_PRIVATE_CHATROOM_CANCELLED
@@ -39,11 +37,11 @@ const createPrivateRoomCancelled = () => ({
 const createPrivateChatRoomFailure = (payload) => ({
     type: CREATE_PRIVATE_CHATROOM_FAILURE, payload
 });
-export const createPrivateChatRoomEpic = action$ => {
+exports.createPrivateChatRoomEpic = action$ => {
     return action$.ofType(CREATE_PRIVATE_CHATROOM)
         .mergeMap(action => ajax({
         method: 'POST',
-        url: `${config.api.chatroom}/createPrivateRoom`,
+        url: `${config_1.default.api.chatroom}/createPrivateRoom`,
         body: action.payload,
         headers: { 'Content-Type': 'application/json' }
     }))
@@ -58,69 +56,14 @@ const GET_PERSISTEND_MESSAGE_FAILURE = "GET_PERSISTEND_MESSAGE_FAILURE";
 const getPersistendMessage_cancel = () => ({ type: GET_PERSISTEND_MESSAGE_CANCELLED });
 const getPersistendMessage_success = (payload) => ({ type: GET_PERSISTEND_MESSAGE_SUCCESS, payload: payload });
 const getPersistendMessage_failure = (error) => ({ type: GET_PERSISTEND_MESSAGE_FAILURE, payload: error });
-export const getPersistendMessage = (currentRid) => ({ type: GET_PERSISTEND_MESSAGE, payload: currentRid });
-export const getPersistendMessageEpic = action$ => {
+exports.getPersistendMessage = (currentRid) => ({ type: GET_PERSISTEND_MESSAGE, payload: currentRid });
+exports.getPersistendMessageEpic = action$ => {
     return action$.ofType(GET_PERSISTEND_MESSAGE)
-        .mergeMap(action => ChatRoomComponent.getInstance().getPersistentMessage(action.payload))
+        .mergeMap(action => chatRoomComponent_1.default.getInstance().getPersistentMessage(action.payload))
         .map(json => getPersistendMessage_success(json))
         .takeUntil(action$.ofType(GET_PERSISTEND_MESSAGE_CANCELLED))
         .catch(error => Rx.Observable.of(getPersistendMessage_failure(error)));
     //@ Next call 2 method below. -->
     //getNewerMessageFromNet();
     //checkOlderMessages();
-};
-export const ChatRoomInitState = Record({
-    isFetching: false,
-    state: null,
-    room: null,
-    responseMessage: null,
-    newMessage: null
-});
-export const chatroomReducer = (state = new ChatRoomInitState(), action) => {
-    switch (action.type) {
-        case FETCH_PRIVATE_CHATROOM_SUCCESS:
-            return state.set("room", action.payload.result[0])
-                .set("state", FETCH_PRIVATE_CHATROOM_SUCCESS);
-        case FETCH_PRIVATE_CHATROOM_CANCELLED:
-            return state;
-        case FETCH_PRIVATE_CHATROOM_FAILURE:
-            return state;
-        case ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
-            let payload = action.payload;
-            let nextState = state.set("state", ChatRoomActionsType.SEND_MESSAGE_SUCCESS)
-                .set("isFetching", false)
-                .set("responseMessage", payload);
-            return nextState;
-        }
-        case ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
-            let payload = action.payload;
-            let nextState = state.set("state", ChatRoomActionsType.SEND_MESSAGE_FAILURE)
-                .set("isFetching", false)
-                .set("responseMessage", payload);
-            return nextState;
-        }
-        case ChatRoomActionsType.ON_NEW_MESSAGE: {
-            let payload = action.payload;
-            return state.set("state", ChatRoomActionsType.ON_NEW_MESSAGE)
-                .set("newMessage", payload);
-        }
-        case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
-            return state
-                .set("state", chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS)
-                .set("room", action.payload);
-        }
-        case chatroomActions.LEAVE_ROOM_SUCCESS: {
-            return state
-                .set("state", chatroomActions.LEAVE_ROOM_SUCCESS)
-                .set("room", null);
-        }
-        case ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
-            return state.set("state", ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS);
-        }
-        case CREATE_PRIVATE_CHATROOM_SUCCESS: {
-            return state.set("room", action.payload).set("state", CREATE_PRIVATE_CHATROOM_SUCCESS);
-        }
-        default:
-            return state;
-    }
 };

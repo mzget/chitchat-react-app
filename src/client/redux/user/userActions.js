@@ -1,40 +1,53 @@
-import config from "../../configs/config";
-import { Record } from "immutable";
-const Rx = require('rxjs/Rx');
+"use strict";
+const config_1 = require("../../configs/config");
+const immutable_1 = require("immutable");
+const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 const FETCH_USER = 'FETCH_USER';
-export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
+exports.FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
 const FETCH_USER_FAILURE = 'FETCH_USER_FAILURE';
 const FETCH_USER_CANCELLED = 'FETCH_USER_CANCELLED';
-export const fetchUser = (username) => ({ type: FETCH_USER, payload: username }); // username => ({ type: FETCH_USER, payload: username });
-const fetchUserFulfilled = payload => ({ type: FETCH_USER_SUCCESS, payload });
+exports.fetchUser = (username) => ({ type: FETCH_USER, payload: username }); // username => ({ type: FETCH_USER, payload: username });
+const fetchUserFulfilled = payload => ({ type: exports.FETCH_USER_SUCCESS, payload });
 const cancelFetchUser = () => ({ type: FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: FETCH_USER_FAILURE, payload, error: true });
-export const fetchUserEpic = action$ => action$.ofType(FETCH_USER)
-    .mergeMap(action => ajax.getJSON(`${config.api.usersApi}/agent/${action.payload}`)
+exports.fetchUserEpic = action$ => action$.ofType(FETCH_USER)
+    .mergeMap(action => ajax.getJSON(`${config_1.default.api.usersApi}/agent/${action.payload}`)
     .map(fetchUserFulfilled)
     .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
     .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response))));
+const FETCH_AGENT_BY_ID = "FETCH_AGENT_BY_ID";
+const FETCH_AGENT_BY_ID_SUCCESS = "FETCH_AGENT_BY_ID_SUCCESS";
+const FETCH_AGENT_BY_ID_FAILURE = "FETCH_AGENT_BY_ID_FAILURE";
+const FETCH_AGENT_BY_ID_CANCELLED = "FETCH_AGENT_BY_ID_CANCELLED";
+const fetchAgentById = (agent_id) => ({ type: FETCH_AGENT_BY_ID, payload: agent_id });
+const fetchAgentByIdSuccess = (payload) => ({ type: FETCH_AGENT_BY_ID_SUCCESS, payload });
+const fetchAgentByIdFailure = (payload) => ({ type: FETCH_AGENT_BY_ID_FAILURE, payload });
+const fetchAgentByIdCancelled = () => ({ type: FETCH_AGENT_BY_ID_CANCELLED });
+exports.fetchAgentIdEpic = action$ => (action$.ofType(FETCH_AGENT_BY_ID)
+    .margeMap(action => ajax.getJSON(`${config_1.default.api.usersApi}/agent/${action.payload}`)
+    .map(fetchAgentByIdSuccess)
+    .takeUntil(action$.ofType(FETCH_AGENT_BY_ID_CANCELLED)).catch(error => Rx.Observable.of(fetchAgentByIdFailure(error.xhr.response)))));
 const FETCH_CONTACT = "FETCH_CONTACT";
 const FETCH_CONTACT_SUCCESS = 'FETCH_CONTACT_SUCCESS';
-export const fetchContact = (contactId) => ({ type: FETCH_CONTACT, payload: contactId });
+exports.fetchContact = (contactId) => ({ type: FETCH_CONTACT, payload: contactId });
 const fetchContactSuccess = payload => ({ type: FETCH_CONTACT_SUCCESS, payload });
-export const fetchContactEpic = action$ => action$.ofType(FETCH_CONTACT)
-    .mergeMap(action => ajax.getJSON(`${config.api.usersApi}/contact/?id=${action.payload}`)
+exports.fetchContactEpic = action$ => action$.ofType(FETCH_CONTACT)
+    .mergeMap(action => ajax.getJSON(`${config_1.default.api.usersApi}/contact/?id=${action.payload}`)
     .map(fetchContactSuccess)
     .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
     .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response))));
-export const UserInitState = Record({
+exports.UserInitState = immutable_1.Record({
     token: null,
     isFetching: false,
     state: null,
     user: null,
     contact: null
 });
-export const userReducer = (state = new UserInitState(), action) => {
+exports.userReducer = (state = new exports.UserInitState(), action) => {
     switch (action.type) {
-        case FETCH_USER_SUCCESS:
-            return state.set("user", action.payload.result[0]).set("state", FETCH_USER_SUCCESS);
+        case exports.FETCH_USER_SUCCESS:
+            return state.set("user", action.payload.result[0]).set("state", exports.FETCH_USER_SUCCESS);
         case FETCH_USER_CANCELLED:
             return state;
         case FETCH_USER_FAILURE:

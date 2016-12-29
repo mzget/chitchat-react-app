@@ -3,9 +3,10 @@
  *
  * Redux actions creator.
  */
-import BackendFactory from "../../chats/BackendFactory";
-import HttpStatus from "../../libs/stalk/utils/httpStatusCode";
-export class MessageActionsType {
+"use strict";
+const BackendFactory_1 = require("../../chats/BackendFactory");
+const httpStatusCode_1 = require("../../libs/stalk/utils/httpStatusCode");
+class MessageActionsType {
 }
 MessageActionsType.STOP = "STOP";
 MessageActionsType.GET_ROOMID_REQUEST = "GET_ROOMID_REQUEST";
@@ -14,9 +15,11 @@ MessageActionsType.GET_ROOMID_FAILURE = "GET_ROOMID_FAILURE";
 MessageActionsType.LEAVE_ROOM_REQUEST = "LEAVE_ROOM_REQUEST";
 MessageActionsType.LEAVE_ROOM_SUCCESS = "LEAVE_ROOM_SUCCESS";
 MessageActionsType.LEAVE_ROOM_FAILURE = "LEAVE_ROOM_FAILURE";
-export function stop() {
+exports.MessageActionsType = MessageActionsType;
+function stop() {
     return { type: MessageActionsType.STOP };
 }
+exports.stop = stop;
 function getRoomId_request() {
     return { type: MessageActionsType.GET_ROOMID_REQUEST };
 }
@@ -26,15 +29,15 @@ function getRoomId_success(data) {
 function getRoomId_failure() {
     return { type: MessageActionsType.GET_ROOMID_FAILURE };
 }
-export function getDirectMessageRoomId(token, myId, contactId) {
+function getDirectMessageRoomId(token, myId, contactId) {
     return dispatch => {
         dispatch(getRoomId_request());
-        BackendFactory.getInstance().getServer().getPrivateChatRoomId(token, myId, contactId, (err, res) => {
+        BackendFactory_1.default.getInstance().getServer().getPrivateChatRoomId(token, myId, contactId, (err, res) => {
             if (err) {
                 dispatch(getRoomId_failure());
             }
             else {
-                if (res.code == HttpStatus.success) {
+                if (res.code == httpStatusCode_1.default.success) {
                     let roomInfo = res.data;
                     dispatch(getRoomId_success(roomInfo));
                 }
@@ -46,6 +49,7 @@ export function getDirectMessageRoomId(token, myId, contactId) {
         });
     };
 }
+exports.getDirectMessageRoomId = getDirectMessageRoomId;
 function leaveRoom_request() {
     return { type: MessageActionsType.LEAVE_ROOM_REQUEST };
 }
@@ -55,15 +59,15 @@ function leaveRoom_success(data) {
 function leaveRoom_failure() {
     return { type: MessageActionsType.LEAVE_ROOM_FAILURE };
 }
-export function leaveRoom(token, currentRid, username) {
+function leaveRoom(token, currentRid, username) {
     return dispatch => {
         dispatch(leaveRoom_request());
-        BackendFactory.getInstance().getServer().LeaveChatRoomRequest(token, currentRid, username, (err, res) => {
+        BackendFactory_1.default.getInstance().getServer().LeaveChatRoomRequest(token, currentRid, username, (err, res) => {
             if (err) {
                 dispatch(leaveRoom_failure());
             }
             else {
-                if (res.code === HttpStatus.success) {
+                if (res.code === httpStatusCode_1.default.success) {
                     dispatch(leaveRoom_success());
                 }
                 else {
@@ -73,3 +77,4 @@ export function leaveRoom(token, currentRid, username) {
         });
     };
 }
+exports.leaveRoom = leaveRoom;

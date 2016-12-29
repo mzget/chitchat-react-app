@@ -3,8 +3,9 @@
  *
  *  RoomDAL.ts
  */
-import localForage from "localforage";
-export class RoomDAL {
+"use strict";
+const localForage = require("localforage");
+class RoomDAL {
     constructor() {
         this.store = localForage.createInstance({
             name: "rooms"
@@ -26,3 +27,4 @@ export class RoomDAL {
         return this.store.keys();
     }
 }
+exports.RoomDAL = RoomDAL;

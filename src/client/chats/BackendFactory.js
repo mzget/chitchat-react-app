@@ -2,13 +2,14 @@
  * Copyright 2016 Ahoo Studio.co.th.
  *
  */
-import Stalk from '../libs/stalk/serverImplemented';
-import ChatRoomApiProvider from '../libs/stalk/chatRoomApiProvider';
-import ServerEventListener from "../libs/stalk/serverEventListener";
-import DataManager from "./dataManager";
-import DataListener from "./dataListener";
-import PushDataListener from "./pushDataListener";
-export default class BackendFactory {
+"use strict";
+const serverImplemented_1 = require("../libs/stalk/serverImplemented");
+const chatRoomApiProvider_1 = require("../libs/stalk/chatRoomApiProvider");
+const serverEventListener_1 = require("../libs/stalk/serverEventListener");
+const dataManager_1 = require("./dataManager");
+const dataListener_1 = require("./dataListener");
+const pushDataListener_1 = require("./pushDataListener");
+class BackendFactory {
     static getInstance() {
         if (BackendFactory.instance == null || BackendFactory.instance == undefined) {
             BackendFactory.instance = new BackendFactory();
@@ -17,10 +18,10 @@ export default class BackendFactory {
     }
     constructor(token = null) {
         console.log('BackendFactory: ', token);
-        this.stalk = Stalk.getInstance();
-        this.pushDataListener = new PushDataListener();
-        this.dataManager = new DataManager();
-        this.dataListener = new DataListener(this.dataManager);
+        this.stalk = serverImplemented_1.default.getInstance();
+        this.pushDataListener = new pushDataListener_1.default();
+        this.dataManager = new dataManager_1.default();
+        this.dataListener = new dataListener_1.default(this.dataManager);
     }
     getServer() {
         return new Promise((resolve, rejected) => {
@@ -32,13 +33,13 @@ export default class BackendFactory {
     }
     getChatApi() {
         if (!this.chatRoomApiProvider) {
-            this.chatRoomApiProvider = new ChatRoomApiProvider(this.stalk.getClient());
+            this.chatRoomApiProvider = new chatRoomApiProvider_1.default(this.stalk.getClient());
         }
         return this.chatRoomApiProvider;
     }
     getServerListener() {
         if (!this.serverEventsListener) {
-            this.serverEventsListener = new ServerEventListener(this.stalk.getClient());
+            this.serverEventsListener = new serverEventListener_1.default(this.stalk.getClient());
         }
         return this.serverEventsListener;
     }
@@ -62,7 +63,7 @@ export default class BackendFactory {
     login(username, hexPassword, deviceToken) {
         let email = username;
         let promise = new Promise(function executor(resolve, reject) {
-            Stalk.getInstance().logIn(email, hexPassword, deviceToken, (err, res) => {
+            serverImplemented_1.default.getInstance().logIn(email, hexPassword, deviceToken, (err, res) => {
                 if (!!err) {
                     reject(err);
                 }
@@ -77,7 +78,7 @@ export default class BackendFactory {
         let token = tokenBearer;
         let promise = new Promise((resolved, rejected) => {
             console.warn(token);
-            Stalk.getInstance().TokenAuthen(token, (err, res) => {
+            serverImplemented_1.default.getInstance().TokenAuthen(token, (err, res) => {
                 if (!!err) {
                     rejected(err);
                 }
@@ -91,7 +92,7 @@ export default class BackendFactory {
     logout() {
         let self = this;
         let promise = new Promise(function exe(resolve, reject) {
-            if (Stalk.getInstance) {
+            if (serverImplemented_1.default.getInstance) {
                 if (!!self.stalk.pomelo)
                     self.stalk.pomelo.setReconnect(false);
                 self.stalk.logout();
@@ -146,3 +147,5 @@ export default class BackendFactory {
         });
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = BackendFactory;

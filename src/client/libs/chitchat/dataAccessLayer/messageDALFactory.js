@@ -1,13 +1,10 @@
+"use strict";
 /**
  * MessageDALFactory.
  *
  * Copyright 2016 Ahoo Studio.co.th.
  */
-/**
- * MessageDALFactory.
- *
- * Copyright 2016 Ahoo Studio.co.th.
- */ export default class MessageDALFactory {
+class MessageDALFactory {
     static getObject() {
         console.log(global.userAgent);
         if (!!global.userAgent) {
@@ -18,3 +15,5 @@
         }
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = MessageDALFactory;

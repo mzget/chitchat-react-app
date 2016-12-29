@@ -1,10 +1,14 @@
+"use strict";
 ;
-export class OnlineUser {
+class OnlineUser {
 }
+exports.OnlineUser = OnlineUser;
 ;
-export class UserTransaction {
+class UserTransaction {
 }
+exports.UserTransaction = UserTransaction;
 ;
-export class StalkAccount {
+class StalkAccount {
 }
+exports.StalkAccount = StalkAccount;
 ;

@@ -1,3 +1,4 @@
+"use strict";
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -6,21 +7,21 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-import * as React from "react";
-import { connect } from "react-redux";
-import { Link } from 'react-router';
-import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
-import * as userActions from "../redux/user/userActions";
-import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
-import ChatLogs from "./ChatLogs";
-import { DialogBox } from "../components/DialogBox";
+const React = require("react");
+const react_redux_1 = require("react-redux");
+const react_router_1 = require("react-router");
+const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
+const userActions = require("../redux/user/userActions");
+const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
+const ChatLogs_1 = require("./ChatLogs");
+const DialogBox_1 = require("../components/DialogBox");
 class IComponentNameProps {
 }
 ;
 ;
 class Home extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super(...arguments);
         this.fetch_privateChatRoom = (roommateId, owerId) => {
             this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
         };
@@ -39,21 +40,25 @@ class Home extends React.Component {
                 console.warn("Not yet ready for create chatroom");
             }
         };
+    }
+    componentWillMount() {
+        console.log("Home", this.props);
         this.state = {
             openDialog: false
         };
-    }
-    componentDidMount() {
-        console.log("Home", this.props);
-        let { location: { query: { userId, username, roomId, contactId } } } = this.props;
+        let { location: { query: { userId, username, roomId, contactId, agent_id } } } = this.props;
         if (username) {
             this.props.dispatch(userActions.fetchUser(username));
         }
         if (contactId) {
             this.props.dispatch(userActions.fetchContact(contactId));
         }
+        if (agent_id) {
+        }
         if (this.props.location.query.roomId) {
         }
+    }
+    componentDidMount() {
     }
     joinChatServer(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } }, userReducer } = nextProps;
@@ -105,9 +110,9 @@ class Home extends React.Component {
         return (React.createElement("div", null,
             React.createElement("span", null, "Welcome to stalk chat service."),
             React.createElement("li", { key: userId },
-                React.createElement(Link, { to: `/chat/${userId}` }, username)),
-            React.createElement(ChatLogs, __assign({}, this.props)),
-            React.createElement(DialogBox, { handleClose: () => { this.setState({ openDialog: false }); }, open: this.state.openDialog })));
+                React.createElement(react_router_1.Link, { to: `/chat/${userId}` }, username)),
+            React.createElement(ChatLogs_1.default, __assign({}, this.props)),
+            React.createElement(DialogBox_1.DialogBox, { handleClose: () => { this.setState({ openDialog: false }); }, open: this.state.openDialog })));
     }
 }
 /**
@@ -121,4 +126,5 @@ function mapDispatchToProps(dispatch) {
         dispatch
     };
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = react_redux_1.connect(mapStateToProps, mapDispatchToProps)(Home);

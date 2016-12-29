@@ -1,2 +1,4 @@
-export class Company {
+"use strict";
+class Company {
 }
+exports.Company = Company;

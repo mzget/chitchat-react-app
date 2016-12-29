@@ -227,8 +227,8 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
             console.log("getRoomInfo result", err, res);
 
             if (res.code === HttpCode.success) {
-                let roomInfo: DataModels.Room = JSON.parse(JSON.stringify(res.data));
-                let room = self.decorateRoomInfoData(roomInfo);
+                let roomInfos: Array<DataModels.Room> = JSON.parse(JSON.stringify(res.data));
+                let room = self.decorateRoomInfoData(roomInfos[0]);
 
                 self.dataManager.addGroup(room);
                 callback(null, room);
@@ -243,34 +243,51 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         let self = this;
         let results = new Array<DataModels.Room>();
 
-        this.unreadMessageMap.forEach((value, key, map) => {
+        // create a queue object with concurrency 2
+        let q = async.queue(function (task, callback) {
+            let value = task as IUnread;
             let roomInfo: DataModels.Room = self.dataManager.getGroup(value.rid);
             if (!!roomInfo) {
                 let room = self.decorateRoomInfoData(roomInfo);
                 self.dataManager.addGroup(room);
                 self.organizeChatLogMap(value, room, function done() {
                     results.push(room);
+                    callback();
                 });
             }
             else {
                 console.warn("Can't find roomInfo from persisted data: ", value.rid);
 
-                this.getRoomInfo(value.rid, (err, room) => {
+                self.getRoomInfo(value.rid, (err, room) => {
                     if (!!room) {
-                        this.updatePersistRoomInfo(room);
+                        self.updatePersistRoomInfo(room);
                         self.organizeChatLogMap(value, room, function done() {
                             results.push(room);
+                            callback();
                         });
+                    }
+                    else {
+                        callback(err);
                     }
                 });
             }
+        }, 2);
+
+        // assign a callback
+        q.drain = function () {
+            results.map(room => {
+                self.dataManager.roomDAL.save(room._id.toString(), room);
+            });
+
+            console.log("getRoomsInfo Completed.");
+            if (self.getRoomsInfoCompleteEvent())
+                self.getRoomsInfoCompleteEvent();
+        };
+
+        this.unreadMessageMap.forEach((value, key, map) => {
+            // add some items to the queue
+            q.push(value, function (err) { });
         });
-
-        results.map(room => self.dataManager.roomDAL.save(room._id, room));
-
-        console.log("getRoomsInfo Completed.");
-        if (this.getRoomsInfoCompleteEvent())
-            this.getRoomsInfoCompleteEvent();
     }
 
     private organizeChatLogMap(unread: IUnread, roomInfo: DataModels.Room, done) {

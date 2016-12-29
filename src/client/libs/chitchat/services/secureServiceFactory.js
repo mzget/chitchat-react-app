@@ -1,9 +1,12 @@
-import NodeSecureService from "./nodeSecureService";
+"use strict";
+const nodeSecureService_1 = require("./nodeSecureService");
 /**
  * SecureServiceFactory
  */
-export default class SecureServiceFactory {
+class SecureServiceFactory {
     static getService() {
-        return new NodeSecureService();
+        return new nodeSecureService_1.default();
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = SecureServiceFactory;

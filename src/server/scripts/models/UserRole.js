@@ -1,3 +1,4 @@
+"use strict";
 var UserRole;
 (function (UserRole) {
     UserRole[UserRole["personnel"] = 0] = "personnel";
@@ -7,4 +8,5 @@ var UserRole;
     UserRole[UserRole["admin"] = 4] = "admin";
 })(UserRole || (UserRole = {}));
 ;
-export default UserRole;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = UserRole;

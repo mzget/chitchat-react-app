@@ -1,22 +1,26 @@
-import * as Room from '../models/Room';
-import RoomAccessData from '../models/RoomAccessData';
-import { getConfig, DbClient } from "../../config";
+"use strict";
+const Room = require("../models/Room");
+const RoomAccessData_1 = require("../models/RoomAccessData");
+const mongodb = require("mongodb");
+const async = require("async");
+const assert = require("assert");
+const config_1 = require("../../config");
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
-const config = getConfig();
+const config = config_1.getConfig();
 ;
-export const getLastProfileChanged = (uid, callback) => {
+exports.getLastProfileChanged = (uid, callback) => {
 };
-export const updateImageProfile = (uid, newUrl, callback) => {
+exports.updateImageProfile = (uid, newUrl, callback) => {
 };
-export const getRoomAccessForUser = (uid, callback) => {
+exports.getRoomAccessForUser = (uid, callback) => {
     this.userDataAccess.getRoomAccessForUser(uid, callback);
 };
-export const getRoomAccessOfRoom = (uid, rid) => {
+exports.getRoomAccessOfRoom = (uid, rid) => {
     return new Promise((resolve, reject) => {
         MongoClient.connect(config.chatDB).then(db => {
             // Get the documents collection
-            let collection = db.collection(DbClient.chatUserCall);
+            let collection = db.collection(config_1.DbClient.chatUserCall);
             collection.find({ _id: new ObjectID(uid) }).project({ roomAccess: { $elemMatch: { roomId: rid } } })
                 .limit(1).toArray().then(docs => {
                 db.close();
@@ -32,10 +36,10 @@ export const getRoomAccessOfRoom = (uid, rid) => {
         });
     });
 };
-export const updateLastAccessTimeOfRoom = (uid, rid, date, callback) => {
+exports.updateLastAccessTimeOfRoom = (uid, rid, date, callback) => {
     async.waterfall([function (cb) {
             MongoClient.connect(config.chatDB).then(db => {
-                let collection = db.collection(DbClient.chatUserCall);
+                let collection = db.collection(config_1.DbClient.chatUserCall);
                 collection.find({ _id: new ObjectID(uid) }).limit(1).project({ roomAccess: 1 }).toArray().then(docs => {
                     cb(null, docs[0]);
                     db.close();
@@ -80,7 +84,7 @@ const onInsertRoomAccessInfoDone = function (uid, rid, callback) {
         console.error("Cannot connect database", err);
     });
 };
-export const AddRoomIdToRoomAccessField = (roomId, memberIds, date, callback) => {
+exports.AddRoomIdToRoomAccessField = (roomId, memberIds, date, callback) => {
     async.each(memberIds, function (element, cb) {
         AddRidToRoomAccessField(element, roomId, date, (error, response) => {
             cb();
@@ -91,10 +95,10 @@ export const AddRoomIdToRoomAccessField = (roomId, memberIds, date, callback) =>
         }
     });
 };
-export const AddRoomIdToRoomAccessFieldForUser = (roomId, userId, date) => {
+exports.AddRoomIdToRoomAccessFieldForUser = (roomId, userId, date) => {
     return new Promise((resolve, reject) => {
         MongoClient.connect(config.chatDB).then(db => {
-            let chatUserCollection = db.collection(DbClient.chatUserCall);
+            let chatUserCollection = db.collection(config_1.DbClient.chatUserCall);
             chatUserCollection.find({ _id: new ObjectID(userId) }, { roomAccess: 1 }).limit(1).toArray().then(docs => {
                 if (docs.length > 0 && !!docs[0].roomAccess) {
                     //<!-- add rid to MembersFields.
@@ -128,7 +132,7 @@ export const AddRoomIdToRoomAccessFieldForUser = (roomId, userId, date) => {
         });
     });
 };
-export const updateFavoriteMembers = (editType, member, uid, callback) => {
+exports.updateFavoriteMembers = (editType, member, uid, callback) => {
     if (editType === "add") {
         this.userDataAccess.addFavoriteMembers(member, uid, callback);
     }
@@ -136,7 +140,7 @@ export const updateFavoriteMembers = (editType, member, uid, callback) => {
         this.userDataAccess.removeFavoriteMembers(member, uid, callback);
     }
 };
-export const updateFavoriteGroups = (editType, group, uid, callback) => {
+exports.updateFavoriteGroups = (editType, group, uid, callback) => {
     if (editType === "add") {
         this.userDataAccess.addFavoriteGroup(group, uid, callback);
     }
@@ -144,7 +148,7 @@ export const updateFavoriteGroups = (editType, group, uid, callback) => {
         this.userDataAccess.removeFavoriteGroup(group, uid, callback);
     }
 };
-export const updateClosedNoticeUsersList = (editType, member, uid, callback) => {
+exports.updateClosedNoticeUsersList = (editType, member, uid, callback) => {
     if (editType === "add") {
         this.userDataAccess.addClosedNoticeUsersList(member, uid, callback);
     }
@@ -152,7 +156,7 @@ export const updateClosedNoticeUsersList = (editType, member, uid, callback) => 
         this.userDataAccess.removeClosedNoticeUsersList(member, uid, callback);
     }
 };
-export const updateClosedNoticeGroups = (editType, group, uid, callback) => {
+exports.updateClosedNoticeGroups = (editType, group, uid, callback) => {
     if (editType === "add") {
         this.userDataAccess.addClosedNoticeGroupList(group, uid, callback);
     }
@@ -164,7 +168,7 @@ export const updateClosedNoticeGroups = (editType, group, uid, callback) => {
 * Check creator permission for create ProjectBase Group requesting.
 * res will return { _id, role } of user model.
 */
-export const getCreatorPermission = (creator, callback) => {
+exports.getCreatorPermission = (creator, callback) => {
     this.userDataAccess.getRole(creator, (err, res) => {
         //<!-- res will return { _id, role } of user model.
         if (err || res === null) {
@@ -175,11 +179,11 @@ export const getCreatorPermission = (creator, callback) => {
         }
     });
 };
-export const checkUnsubscribeRoom = (userId, roomType, roomId, callback) => {
+exports.checkUnsubscribeRoom = (userId, roomType, roomId, callback) => {
     if (roomType === Room.RoomType.privateGroup) {
         MongoClient.connect(config.chatDB).then(function (db) {
             // Get the documents collection
-            let user = db.collection(DbClient.chatUserCall);
+            let user = db.collection(config_1.DbClient.chatUserCall);
             user.find({ _id: new ObjectID(userId), closedNoticeGroups: roomId }).limit(1).toArray(function (err, results) {
                 if (err || results === null) {
                     callback(err, null);
@@ -194,7 +198,7 @@ export const checkUnsubscribeRoom = (userId, roomType, roomId, callback) => {
     else if (roomType === Room.RoomType.privateChat) {
         MongoClient.connect(config.chatDB).then(db => {
             // Get the documents collection
-            let user = db.collection(DbClient.chatUserCall);
+            let user = db.collection(config_1.DbClient.chatUserCall);
             user.find({ _id: new ObjectID(userId), closedNoticeUsers: roomId }).limit(1).toArray((err, docs) => {
                 if (err || docs === null) {
                     callback(err, null);
@@ -209,11 +213,11 @@ export const checkUnsubscribeRoom = (userId, roomType, roomId, callback) => {
 };
 const InsertMembersFieldsToUserModel = (uid, roomId, date, callback) => {
     let newRoomAccessInfos = new Array();
-    newRoomAccessInfos[0] = new RoomAccessData();
+    newRoomAccessInfos[0] = new RoomAccessData_1.default();
     newRoomAccessInfos[0].roomId = roomId;
     newRoomAccessInfos[0].accessTime = date;
     MongoClient.connect(config.chatDB).then(db => {
-        let chatUserColl = db.collection(DbClient.chatUserCall);
+        let chatUserColl = db.collection(config_1.DbClient.chatUserCall);
         chatUserColl.updateOne({ _id: new ObjectID(uid) }, { $set: { roomAccess: newRoomAccessInfos } }).then(result => {
             db.close();
             callback(null, result.result);
@@ -231,14 +235,14 @@ const findRoomAccessDataMatchWithRoomId = function (uid, rid, date, callback) {
         console.warn("rid is invalid: careful for use this func: ", rid);
     }
     MongoClient.connect(config.chatDB).then(db => {
-        let collection = db.collection(DbClient.chatUserCall);
+        let collection = db.collection(config_1.DbClient.chatUserCall);
         // Peform a simple find and return all the documents
         collection.find({ _id: new ObjectID(uid) }).project({ roomAccess: { $elemMatch: { roomId: rid.toString() } } }).toArray(function (err, docs) {
             let printR = (docs) ? docs : null;
             console.log("find roomAccessInfo of uid: %s match with rid: %s :: ", uid, rid, printR);
             if (!docs || !docs[0].roomAccess) {
                 //<!-- Push new roomAccess data. 
-                let newRoomAccessInfo = new RoomAccessData();
+                let newRoomAccessInfo = new RoomAccessData_1.default();
                 newRoomAccessInfo.roomId = rid.toString();
                 newRoomAccessInfo.accessTime = date;
                 collection.updateOne({ _id: new ObjectID(uid) }, { $push: { roomAccess: newRoomAccessInfo } }, { w: 1 }).then(result => {
@@ -268,7 +272,7 @@ const findRoomAccessDataMatchWithRoomId = function (uid, rid, date, callback) {
 };
 const insertRoomAccessInfoField = function (uid, rid, callback) {
     let newRoomAccessInfos = new Array();
-    newRoomAccessInfos[0] = new RoomAccessData();
+    newRoomAccessInfos[0] = new RoomAccessData_1.default();
     newRoomAccessInfos[0].roomId = rid;
     newRoomAccessInfos[0].accessTime = new Date();
     MongoClient.connect(Mdb.DbController.chatDB).then(db => {
@@ -285,10 +289,10 @@ const insertRoomAccessInfoField = function (uid, rid, callback) {
         console.error("Cannot connect database", err);
     });
 };
-export const getUserProfile = (query, projection, callback) => {
+exports.getUserProfile = (query, projection, callback) => {
     MongoClient.connect(config.chatDB).then(db => {
         // Get the documents collection
-        let collection = db.collection(DbClient.chatUserCall);
+        let collection = db.collection(config_1.DbClient.chatUserCall);
         // Find some documents
         collection.find(query).project(projection).limit(1).toArray((err, results) => {
             if (err) {
@@ -304,10 +308,10 @@ export const getUserProfile = (query, projection, callback) => {
         callback(err, null);
     });
 };
-export const getRole = (creator, callback) => {
+exports.getRole = (creator, callback) => {
     MongoClient.connect(config.chatDB).then(db => {
         // Get the documents collection
-        let collection = db.collection(DbClient.chatUserCall);
+        let collection = db.collection(config_1.DbClient.chatUserCall);
         // Find some documents
         collection.find({ _id: new ObjectID(creator) }).project({ role: 1 }).limit(1).toArray((err, results) => {
             if (err || results === null) {
@@ -322,10 +326,10 @@ export const getRole = (creator, callback) => {
         console.warn("getRole", err);
     });
 };
-export const addFavoriteMembers = (member, uid, callback) => {
+exports.addFavoriteMembers = (member, uid, callback) => {
     MongoClient.connect(config.chatDB).then(db => {
         // Get the documents collection
-        let collection = db.collection(DbClient.chatUserCall);
+        let collection = db.collection(config_1.DbClient.chatUserCall);
         collection.updateOne({ _id: new ObjectID(uid) }, { $addToSet: { favoriteUsers: member } }, { upsert: true }, (err, result) => {
             if (err || result === null) {
                 callback(err, null);
@@ -339,7 +343,7 @@ export const addFavoriteMembers = (member, uid, callback) => {
         console.warn("addFavoriteMembers fail", err);
     });
 };
-export const removeFavoriteMembers = (member, uid, callback) => {
+exports.removeFavoriteMembers = (member, uid, callback) => {
     MongoClient.connect(Mdb.DbController.chatDB, (err, db) => {
         if (err) {
             return console.dir(err);
@@ -359,7 +363,7 @@ export const removeFavoriteMembers = (member, uid, callback) => {
         });
     });
 };
-export const addFavoriteGroup = (group, uid, callback) => {
+exports.addFavoriteGroup = (group, uid, callback) => {
     MongoClient.connect(Mdb.DbController.chatDB, (err, db) => {
         if (err) {
             return console.dir(err);
@@ -378,7 +382,7 @@ export const addFavoriteGroup = (group, uid, callback) => {
         });
     });
 };
-export const removeFavoriteGroup = (group, uid, callback) => {
+exports.removeFavoriteGroup = (group, uid, callback) => {
     MongoClient.connect(Mdb.DbController.chatDB, (err, db) => {
         if (err) {
             return console.dir(err);
@@ -398,7 +402,7 @@ export const removeFavoriteGroup = (group, uid, callback) => {
         });
     });
 };
-export const addClosedNoticeUsersList = (member, uid, callback) => {
+exports.addClosedNoticeUsersList = (member, uid, callback) => {
     MongoClient.connect(Mdb.DbController.chatDB, (err, db) => {
         if (err) {
             return console.dir(err);
@@ -417,7 +421,7 @@ export const addClosedNoticeUsersList = (member, uid, callback) => {
         });
     });
 };
-export const removeClosedNoticeUsersList = (member, uid, callback) => {
+exports.removeClosedNoticeUsersList = (member, uid, callback) => {
     MongoClient.connect(Mdb.DbController.chatDB, (err, db) => {
         if (err) {
             return console.dir(err);
@@ -437,7 +441,7 @@ export const removeClosedNoticeUsersList = (member, uid, callback) => {
         });
     });
 };
-export const addClosedNoticeGroupList = (member, uid, callback) => {
+exports.addClosedNoticeGroupList = (member, uid, callback) => {
     MongoClient.connect(Mdb.DbController.chatDB, (err, db) => {
         if (err) {
             return console.dir(err);
@@ -456,7 +460,7 @@ export const addClosedNoticeGroupList = (member, uid, callback) => {
         });
     });
 };
-export const removeClosedNoticeGroupList = (member, uid, callback) => {
+exports.removeClosedNoticeGroupList = (member, uid, callback) => {
     MongoClient.connect(Mdb.DbController.chatDB, (err, db) => {
         if (err) {
             return console.dir(err);

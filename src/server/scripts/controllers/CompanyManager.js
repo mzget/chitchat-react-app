@@ -1,3 +1,8 @@
+"use strict";
+const Mdb = require("../db/dbClient");
+const room = require("../model/Room");
+const mongodb = require("mongodb");
+const assert = require("assert");
 var MongoClient = mongodb.MongoClient;
 var DbClient = Mdb.DbController.DbClient.GetInstance();
 var Controller;
@@ -55,3 +60,4 @@ var Controller;
         }
     }
 })(Controller || (Controller = {}));
+module.exports = Controller;

@@ -1,9 +1,8 @@
 import config from "../../configs/config";
 import { Record } from "immutable";
 
-const Rx = require('rxjs/Rx');
+import * as Rx from 'rxjs/Rx';
 const { ajax } = Rx.Observable;
-
 
 const FETCH_USER = 'FETCH_USER';
 export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
@@ -23,6 +22,22 @@ export const fetchUserEpic = action$ =>
         .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
         .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))
     );
+
+const FETCH_AGENT_BY_ID = "FETCH_AGENT_BY_ID";
+const FETCH_AGENT_BY_ID_SUCCESS = "FETCH_AGENT_BY_ID_SUCCESS";
+const FETCH_AGENT_BY_ID_FAILURE = "FETCH_AGENT_BY_ID_FAILURE";
+const FETCH_AGENT_BY_ID_CANCELLED = "FETCH_AGENT_BY_ID_CANCELLED";
+const fetchAgentById = (agent_id: string) => ({ type: FETCH_AGENT_BY_ID, payload: agent_id });
+const fetchAgentByIdSuccess = (payload) => ({ type: FETCH_AGENT_BY_ID_SUCCESS, payload });
+const fetchAgentByIdFailure = (payload) => ({ type: FETCH_AGENT_BY_ID_FAILURE, payload });
+const fetchAgentByIdCancelled = () => ({ type: FETCH_AGENT_BY_ID_CANCELLED });
+export const fetchAgentIdEpic = action$ => (
+  action$.ofType(FETCH_AGENT_BY_ID)
+    .margeMap(action => ajax.getJSON(`${config.api.usersApi}/agent/${action.payload}`)
+      .map(fetchAgentByIdSuccess)
+      .takeUntil(action$.ofType(FETCH_AGENT_BY_ID_CANCELLED)).catch(error => Rx.Observable.of(fetchAgentByIdFailure(error.xhr.response))))
+);
+
 
 const FETCH_CONTACT = "FETCH_CONTACT";
 const FETCH_CONTACT_SUCCESS = 'FETCH_CONTACT_SUCCESS';

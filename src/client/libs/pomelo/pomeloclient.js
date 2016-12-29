@@ -1,3 +1,4 @@
+"use strict";
 //@ require for socket.io
 window.navigator.userAgent = 'react-native';
 //if (window.navigator && Object.keys(window.navigator).length == 0) {
@@ -70,7 +71,7 @@ var io = require('socket.io-client/socket.io');
         return result;
     };
 })('object' === typeof module ? module.exports : (this.Protocol = {}), this);
-export default class Pomelo extends EventEmitter {
+class Pomelo extends EventEmitter {
     constructor() {
         console.log('Pomelo constructor.');
         super();
@@ -208,4 +209,6 @@ export default class Pomelo extends EventEmitter {
         return msg;
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = Pomelo;
 ;
