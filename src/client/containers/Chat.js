@@ -252,7 +252,7 @@ class Chat extends React.Component {
                 :
                     null,
             React.createElement(react_layout_components_1.Box, { flex: "1 0 auto", alignItems: "stretch" }, (this.state) ? React.createElement(Messages_1.default, { messages: this.state.messages, styles: { container: { position: '', bottom: '' } } }) : null),
-            React.createElement(react_layout_components_1.Container, { alignSelf: 'center', absolute: true, style: { bottom: '0%' } },
+            React.createElement(react_layout_components_1.Container, { alignSelf: 'center', style: { bottom: '0%', position: 'absolute' } },
                 React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText }))));
     }
     prepareSendMessage(msg) {

@@ -1,5 +1,5 @@
 "use strict";
-const localforage_1 = require("localforage");
+const localForage = require("localforage");
 class MessageDAL {
     constructor() {
         // localforage.config({
@@ -10,7 +10,7 @@ class MessageDAL {
         //     storeName: 'keyvaluepairs', // Should be alphanumeric, with underscores.
         //     description: 'some description'
         // });
-        this.store = localforage_1.default.createInstance({
+        this.store = localForage.createInstance({
             name: "message"
         });
     }

@@ -18,7 +18,6 @@ exports.getRoomDAL = () => {
     const backendFactory = BackendFactory_1.default.getInstance();
     return backendFactory.dataManager.roomDAL;
 };
-exports.onStalkLoginSuccess = new Array();
 const onGetContactProfileFail = (contact_id) => {
 };
 function getUserInfo(userId, callback) {
@@ -28,6 +27,8 @@ function getUserInfo(userId, callback) {
     callback(user);
 }
 exports.getUserInfo = getUserInfo;
+exports.STALK_INIT = "STALK_INIT";
+exports.STALK_INIT_SUCCESS = "STALK_INIT_SUCCESS";
 exports.STALK_INIT_FAILURE = "STALK_INIT_FAILURE";
 function stalkLoginWithToken(uid, token) {
     console.log("stalkLoginWithToken", uid, token);
@@ -76,6 +77,7 @@ function stalkLogin(user) {
     console.log("stalkLogin init status", configureStore_1.default.getState().stalkReducer.isInit);
     if (configureStore_1.default.getState().stalkReducer.isInit)
         return;
+    configureStore_1.default.dispatch({ type: exports.STALK_INIT });
     const backendFactory = BackendFactory_1.default.getInstance();
     backendFactory.stalkInit().then(value => {
         backendFactory.checkIn(user._id, null, user).then(value => {
@@ -96,8 +98,7 @@ function stalkLogin(user) {
                 backendFactory.dataManager.setSessionToken(result.token);
                 backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
                 StalkPushActions.stalkPushInit();
-                if (exports.onStalkLoginSuccess.length > 0)
-                    exports.onStalkLoginSuccess.map(item => item());
+                configureStore_1.default.dispatch({ type: exports.STALK_INIT_SUCCESS });
             }
             else {
                 console.warn("Cannot joined chat server.");

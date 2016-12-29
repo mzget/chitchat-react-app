@@ -27,11 +27,16 @@ function stalkReducer(state = initialState, action) {
         return initialState.mergeDeep(state);
     switch (action.type) {
         case ChatlogsActions.STALK_INIT_CHATSLOG: {
-            return state.set("isInit", true)
-                .set("chatslogComponent", action.payload);
+            return state.set("chatslogComponent", action.payload);
+        }
+        case StalkBridgeActions.STALK_INIT: {
+            return state.set("isInit", false).set("state", StalkBridgeActions.STALK_INIT);
+        }
+        case StalkBridgeActions.STALK_INIT_SUCCESS: {
+            return state.set("isInit", true).set("state", StalkBridgeActions.STALK_INIT_SUCCESS);
         }
         case StalkBridgeActions.STALK_INIT_FAILURE: {
-            return state.set("state", StalkBridgeActions.STALK_INIT_FAILURE);
+            return state.set("isInit", false).set("state", StalkBridgeActions.STALK_INIT_FAILURE);
         }
         default:
             return state;

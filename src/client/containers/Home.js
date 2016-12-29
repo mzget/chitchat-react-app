@@ -10,11 +10,13 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const react_router_1 = require("react-router");
+const reflexbox_1 = require("reflexbox");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 const userActions = require("../redux/user/userActions");
 const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const ChatLogs_1 = require("./ChatLogs");
 const DialogBox_1 = require("../components/DialogBox");
+const CircularProgressSimple_1 = require("../components/CircularProgressSimple");
 class IComponentNameProps {
 }
 ;
@@ -46,30 +48,20 @@ class Home extends React.Component {
         this.state = {
             openDialog: false
         };
-        let { location: { query: { userId, username, roomId, contactId, agent_id } } } = this.props;
+        let { location: { query: { userId, username, roomId, contactId, agent_name } } } = this.props;
         if (username) {
             this.props.dispatch(userActions.fetchUser(username));
         }
         if (contactId) {
             this.props.dispatch(userActions.fetchContact(contactId));
         }
-        if (agent_id) {
+        if (agent_name) {
+            this.props.dispatch(userActions.fetchAgent(agent_name));
         }
         if (this.props.location.query.roomId) {
         }
     }
     componentDidMount() {
-    }
-    joinChatServer(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, userReducer } = nextProps;
-        if (userReducer.user) {
-            StalkBridgeActions.onStalkLoginSuccess.push(() => {
-                if (contactId) {
-                    this.fetch_privateChatRoom(contactId, userReducer.user._id);
-                }
-            });
-            StalkBridgeActions.stalkLogin(userReducer.user);
-        }
     }
     componentWillReceiveProps(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, userReducer, stalkReducer } = nextProps;
@@ -94,12 +86,26 @@ class Home extends React.Component {
             case userActions.FETCH_USER_SUCCESS:
                 this.joinChatServer(nextProps);
                 break;
+            case userActions.FETCH_AGENT_SUCCESS:
+                this.joinChatServer(nextProps);
+                break;
             default:
                 break;
         }
+        console.info(this.props.stalkReducer.state, stalkReducer.state);
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_INIT_FAILURE:
                 this.setState({ openDialog: true });
+                break;
+            case StalkBridgeActions.STALK_INIT_SUCCESS:
+                if (this.props.stalkReducer.state != StalkBridgeActions.STALK_INIT_SUCCESS) {
+                    if (contactId) {
+                        this.fetch_privateChatRoom(contactId, userReducer.user._id);
+                    }
+                    else if (userReducer.contact) {
+                        this.fetch_privateChatRoom(userReducer.contact._id, userReducer.user._id);
+                    }
+                }
                 break;
             default:
                 break;
@@ -108,11 +114,31 @@ class Home extends React.Component {
     render() {
         let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, userReducer } = this.props;
         return (React.createElement("div", null,
-            React.createElement("span", null, "Welcome to stalk chat service."),
+            React.createElement(reflexbox_1.Flex, null,
+                React.createElement(reflexbox_1.Box, { sm: 6, md: 3 }, "Box"),
+                React.createElement(reflexbox_1.Box, { sm: 6, md: 3 }, "Box"),
+                React.createElement(reflexbox_1.Box, { sm: 6, md: 3 }, "Box"),
+                React.createElement(reflexbox_1.Box, { sm: 6, md: 3 }, "Box")),
+            React.createElement(reflexbox_1.Flex, { px: 2, align: 'center' },
+                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
+                React.createElement("h2", null, "Welcome to stalk chat service."),
+                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
             React.createElement("li", { key: userId },
                 React.createElement(react_router_1.Link, { to: `/chat/${userId}` }, username)),
             React.createElement(ChatLogs_1.default, __assign({}, this.props)),
-            React.createElement(DialogBox_1.DialogBox, { handleClose: () => { this.setState({ openDialog: false }); }, open: this.state.openDialog })));
+            React.createElement(DialogBox_1.DialogBox, { handleClose: () => { this.setState({ openDialog: false }); }, open: this.state.openDialog }),
+            React.createElement(reflexbox_1.Flex, { p: 2, align: 'center' },
+                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
+                React.createElement(CircularProgressSimple_1.default, null),
+                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }))));
+    }
+    joinChatServer(nextProps) {
+        let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer } = nextProps;
+        if (userReducer.user) {
+            if (stalkReducer.state != StalkBridgeActions.STALK_INIT) {
+                StalkBridgeActions.stalkLogin(userReducer.user);
+            }
+        }
     }
 }
 /**

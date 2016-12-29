@@ -1,7 +1,6 @@
 import * as React from "react";
 import Dialog from 'react-toolbox/lib/dialog';
 import { Button } from 'react-toolbox/lib/button';
-import theme from 'react-toolbox/lib/ripple/theme';
 
 interface ICompProps {
     active: boolean;
@@ -14,7 +13,7 @@ const actions = (props: ICompProps) => [
 ];
 export const AlertBox = (props: ICompProps) => (
     <div>
-        <Dialog theme={theme}
+        <Dialog>
             actions={actions(props)}
             active={props.active}
             onEscKeyDown={props.handleToggle}

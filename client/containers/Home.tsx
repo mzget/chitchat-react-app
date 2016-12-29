@@ -6,6 +6,7 @@ import { Map } from 'immutable';
 import { bindActionCreators } from 'redux';
 import { connect } from "react-redux";
 import { Link } from 'react-router';
+import { Flex, Box } from 'reflexbox';
 
 import { IComponentProps } from "../utils/IComponentProps";
 
@@ -17,6 +18,7 @@ import * as chatroomActions from "../redux/chatroom/chatroomActions";
 import ChatLogs from "./ChatLogs";
 import { DialogBox } from "../components/DialogBox";
 import { AlertBox } from "../components/AlertBox";
+import CircularProgressSimple from "../components/CircularProgressSimple";
 
 abstract class IComponentNameProps implements IComponentProps {
     location: {
@@ -25,7 +27,7 @@ abstract class IComponentNameProps implements IComponentProps {
             userId: string;
             roomId: string;
             username: string;
-            agent_id: string;
+            agent_name: string;
         }
     };
     params;
@@ -47,7 +49,7 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
         this.state = {
             openDialog: false
         }
-        let { location: {query: {userId, username, roomId, contactId, agent_id}} } = this.props;
+        let { location: {query: {userId, username, roomId, contactId, agent_name}} } = this.props;
 
         if (username) {
             this.props.dispatch(userActions.fetchUser(username));
@@ -55,8 +57,8 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
         if (contactId) {
             this.props.dispatch(userActions.fetchContact(contactId));
         }
-        if (agent_id) {
-            // this.props.dispatch(userActions.fetchAgentById(agent_id));
+        if (agent_name) {
+            this.props.dispatch(userActions.fetchAgent(agent_name));
         }
 
         if (this.props.location.query.roomId) {
@@ -66,40 +68,6 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
 
     componentDidMount() {
 
-    }
-
-    fetch_privateChatRoom = (roommateId, owerId) => {
-        this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
-    };
-
-    createChatRoom = () => {
-        let { userReducer } = this.props;
-        if (userReducer.user && userReducer.contact) {
-            type Member = { _id: string, user_role: string };
-            let owner = {} as Member;
-            owner._id = userReducer.user._id;
-            owner.user_role = "agent";
-
-            let contact = {} as Member;
-            contact._id = userReducer.contact._id;
-            contact.user_role = "user";
-            this.props.dispatch(chatroomRxEpic.createPrivateChatRoom(owner, contact));
-        }
-        else {
-            console.warn("Not yet ready for create chatroom");
-        }
-    }
-
-    joinChatServer(nextProps) {
-        let { location: {query: {userId, username, roomId, contactId}}, userReducer } = nextProps as IComponentNameProps;
-        if (userReducer.user) {
-            StalkBridgeActions.onStalkLoginSuccess.push(() => {
-                if (contactId) {
-                    this.fetch_privateChatRoom(contactId, userReducer.user._id);
-                }
-            });
-            StalkBridgeActions.stalkLogin(userReducer.user);
-        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -127,15 +95,28 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
             case userActions.FETCH_USER_SUCCESS:
                 this.joinChatServer(nextProps);
                 break;
+            case userActions.FETCH_AGENT_SUCCESS:
+                this.joinChatServer(nextProps);
+                break;
             default:
                 break;
         }
 
+        console.info(this.props.stalkReducer.state, stalkReducer.state)
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_INIT_FAILURE:
                 this.setState({ openDialog: true });
                 break;
-
+            case StalkBridgeActions.STALK_INIT_SUCCESS:
+                if (this.props.stalkReducer.state != StalkBridgeActions.STALK_INIT_SUCCESS) {
+                    if (contactId) {
+                        this.fetch_privateChatRoom(contactId, userReducer.user._id);
+                    }
+                    else if (userReducer.contact) {
+                        this.fetch_privateChatRoom(userReducer.contact._id, userReducer.user._id);
+                    }
+                }
+                break;
             default:
                 break;
         }
@@ -145,14 +126,63 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
         let { location: {query: {userId, username, roomId, contactId}}, chatroomReducer, userReducer } = this.props;
         return (
             <div>
-                <span>Welcome to stalk chat service.</span>
+                <Flex>
+                    <Box sm={6} md={3}>Box</Box>
+                    <Box sm={6} md={3}>Box</Box>
+                    <Box sm={6} md={3}>Box</Box>
+                    <Box sm={6} md={3}>Box</Box>
+                </Flex>
+                <Flex px={2} align='center'>
+                    <Box p={2} flexAuto></Box>
+                    <h2>Welcome to stalk chat service.</h2>
+                    <Box p={2} flexAuto></Box>
+                </Flex>
+
                 <li key={userId}><Link to={`/chat/${userId}`}>{username}</Link></li>
                 <ChatLogs {...this.props} />
                 <DialogBox
                     handleClose={() => { this.setState({ openDialog: false }) } }
                     open={this.state.openDialog} />
+
+                <Flex p={2} align='center'>
+                    <Box p={2} flexAuto></Box>
+                    <CircularProgressSimple />
+                    <Box p={2} flexAuto></Box>
+                </Flex>
             </div>
         );
+    }
+
+    fetch_privateChatRoom = (roommateId, owerId) => {
+        this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
+    };
+
+    createChatRoom = () => {
+        let { userReducer } = this.props;
+        if (userReducer.user && userReducer.contact) {
+            type Member = { _id: string, user_role: string };
+            let owner = {} as Member;
+            owner._id = userReducer.user._id;
+            owner.user_role = "agent";
+
+            let contact = {} as Member;
+            contact._id = userReducer.contact._id;
+            contact.user_role = "user";
+            this.props.dispatch(chatroomRxEpic.createPrivateChatRoom(owner, contact));
+        }
+        else {
+            console.warn("Not yet ready for create chatroom");
+        }
+    }
+
+    joinChatServer(nextProps) {
+        let { location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer } = nextProps as IComponentNameProps;
+
+        if (userReducer.user) {
+            if (stalkReducer.state != StalkBridgeActions.STALK_INIT) {
+                StalkBridgeActions.stalkLogin(userReducer.user);
+            }
+        }
     }
 }
 

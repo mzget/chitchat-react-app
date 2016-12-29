@@ -318,7 +318,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                 <Box flex="1 0 auto" alignItems="stretch">
                     {(this.state) ? <Messages messages={this.state.messages} styles={{ container: { position: '', bottom: '' } }} /> : null}
                 </Box>
-                <Container alignSelf='center' absolute style={{ bottom: '0%' }} >
+                <Container alignSelf='center' style={{ bottom: '0%', position: 'absolute' }} >
                     <TypingBox onSubmit={this.onSubmitMessage} onValueChange={this.onTypingTextChange} value={this.state.typingText} />
                 </Container>
             </Box>

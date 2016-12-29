@@ -38,19 +38,36 @@ export const fetchAgentIdEpic = action$ => (
       .takeUntil(action$.ofType(FETCH_AGENT_BY_ID_CANCELLED)).catch(error => Rx.Observable.of(fetchAgentByIdFailure(error.xhr.response))))
 );
 
+const FETCH_AGENT = "FETCH_AGENT";
+export const FETCH_AGENT_SUCCESS = "FETCH_AGENT_SUCCESS";
+const FETCH_AGENT_FAILURE = "FETCH_AGENT_FAILURE";
+const FETCH_AGENT_CANCELLED = "FETCH_AGENT_CANCELLED";
+export const fetchAgent = (agent_id: string) => ({ type: FETCH_AGENT, payload: agent_id });
+const fetchAgentSuccess = (payload) => ({ type: FETCH_AGENT_SUCCESS, payload });
+const fetchAgentFailure = (payload) => ({ type: FETCH_AGENT_FAILURE, payload });
+const fetchAgentCancelled = () => ({ type: FETCH_AGENT_CANCELLED });
+export const fetchAgentEpic = action$ => (
+  action$.ofType(FETCH_AGENT)
+    .mergeMap(action =>
+      ajax.getJSON(`${config.api.usersApi}/agent/${action.payload}`)
+        .map(fetchAgentSuccess)
+        .takeUntil(action$.ofType(FETCH_AGENT_CANCELLED))
+        .catch(error => Rx.Observable.of(fetchAgentFailure(error.xhr.response))))
+);
 
 const FETCH_CONTACT = "FETCH_CONTACT";
 const FETCH_CONTACT_SUCCESS = 'FETCH_CONTACT_SUCCESS';
 
 export const fetchContact = (contactId: string) => ({ type: FETCH_CONTACT, payload: contactId });
 const fetchContactSuccess = payload => ({ type: FETCH_CONTACT_SUCCESS, payload });
-export const fetchContactEpic = action$ => action$.ofType(FETCH_CONTACT)
-  .mergeMap(action =>
-    ajax.getJSON(`${config.api.usersApi}/contact/?id=${action.payload}`)
-      .map(fetchContactSuccess)
-      .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
-      .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))
-  );
+export const fetchContactEpic = action$ =>
+  action$.ofType(FETCH_CONTACT)
+    .mergeMap(action =>
+      ajax.getJSON(`${config.api.usersApi}/contact/?id=${action.payload}`)
+        .map(fetchContactSuccess)
+        .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
+        .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))
+    );
 
 
 export const UserInitState = Record({
@@ -60,18 +77,22 @@ export const UserInitState = Record({
   user: null,
   contact: null
 });
-export const userReducer = (state = new UserInitState(), action: ReduxActions.Action<any>) => {
+export const userReducer = (state = new UserInitState(), action) => {
   switch (action.type) {
     case FETCH_USER_SUCCESS:
-      return state.set("user", action.payload.result[0]).set("state", FETCH_USER_SUCCESS);
+      return state.set("user", action.payload.result[0])
+        .set("state", FETCH_USER_SUCCESS);
     case FETCH_USER_CANCELLED:
       return state;
     case FETCH_USER_FAILURE:
       return state;
 
     case FETCH_CONTACT_SUCCESS:
-      return state.set("contact", action.payload.result[0]).set("state", FETCH_CONTACT_SUCCESS);
-
+      return state.set("contact", action.payload.result[0])
+        .set("state", FETCH_CONTACT_SUCCESS);
+    case FETCH_AGENT_SUCCESS:
+      return state.set("contact", action.payload.result[0])
+        .set("state", FETCH_AGENT_SUCCESS);
     default:
       return state;
   }

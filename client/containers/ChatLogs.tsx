@@ -39,18 +39,12 @@ class ChatLogs extends React.Component<IComponentNameProps, IComponentNameState>
     componentWillReceiveProps(nextProps: IComponentNameProps) {
         let { chatroomReducer, stalkReducer, chatlogReducer } = nextProps;
 
-        console.log("ChatLogsPage", chatlogReducer.state, chatlogReducer.chatsLog)
-
         switch (chatlogReducer.state) {
             case ChatLogsActions.STALK_GET_CHATSLOG_COMPLETE:
                 this.convertObjToArr(chatlogReducer.chatsLog);
-                // - need to get online-status of contact...
-                // ChatLogsActions.getContactOnlineStatus();
                 break;
             case ChatLogsActions.STALK_UNREAD_MAP_CHANGED:
                 this.convertObjToArr(chatlogReducer.chatsLog);
-                // - need to get online-status of contact...
-                // ChatLogsActions.getContactOnlineStatus();
                 break;
             case ChatLogsActions.STALK_CHATSLOG_CONTACT_COMPLETE:
                 this.convertObjToArr(chatlogReducer.chatsLog);
