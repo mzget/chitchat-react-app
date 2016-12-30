@@ -193,7 +193,7 @@ class DataManager {
         let hasMe = data.members.some(function isMySelfId(element, index, array) {
             return element.id === self.myProfile._id;
         });
-        console.debug("New data has me", hasMe);
+        console.log("New data has me", hasMe);
         return hasMe;
     }
     //<!------------------------------------------------------

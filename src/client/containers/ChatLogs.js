@@ -8,7 +8,6 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 const React = require("react");
-const react_redux_1 = require("react-redux");
 const ChatLogsActions = require("../redux/chatlogs/chatlogsActions");
 const ListChatLogs_1 = require("./ListChatLogs");
 ;
@@ -29,7 +28,10 @@ class ChatLogs extends React.Component {
             case ChatLogsActions.STALK_UNREAD_MAP_CHANGED:
                 this.convertObjToArr(chatlogReducer.chatsLog);
                 break;
-            case ChatLogsActions.STALK_CHATSLOG_CONTACT_COMPLETE:
+            case ChatLogsActions.STALK_CHATLOG_CONTACT_COMPLETE:
+                this.convertObjToArr(chatlogReducer.chatsLog);
+                break;
+            case ChatLogsActions.STALK_CHATLOG_MAP_CHANGED:
                 this.convertObjToArr(chatlogReducer.chatsLog);
                 break;
             default:
@@ -52,23 +54,10 @@ class ChatLogs extends React.Component {
         this.setState(__assign({}, this.state, { chatsLog: arr }), () => console.log("chatsLog convertObjToArr", this.state));
     }
     render() {
-        if (!this.state)
-            return null;
         return (React.createElement(ListChatLogs_1.default, { value: this.state.chatsLog, onSelected: (data) => {
                 this.props.router.push(`/chat/${data.id}`);
             } }));
     }
 }
-/**
- * ## Redux boilerplate
- */
-function mapStateToProps(state) {
-    return __assign({}, state);
-}
-function mapDispatchToProps(dispatch) {
-    return {
-        dispatch
-    };
-}
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapStateToProps, mapDispatchToProps)(ChatLogs);
+exports.default = ChatLogs;

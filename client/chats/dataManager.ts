@@ -230,7 +230,7 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
             return element.id === self.myProfile._id;
         });
 
-        console.debug("New data has me", hasMe);
+        console.log("New data has me", hasMe);
         return hasMe;
     }
 

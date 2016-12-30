@@ -20,9 +20,9 @@ class ChatsLogComponent {
         this.serverImp = null;
         this.dataManager = null;
         this.dataListener = null;
+        this.chatlog_count = 0;
         this.chatslog = {};
         this.unreadMessageMap = new Map();
-        this.chatlog_count = 0;
         this.chatListeners = new Array();
         this._isReady = false;
         this.convertDateService = _convertDateService;
@@ -210,20 +210,16 @@ class ChatsLogComponent {
             if (!!roomInfo) {
                 let room = self.decorateRoomInfoData(roomInfo);
                 self.dataManager.addGroup(room);
-                self.organizeChatLogMap(value, room, function done() {
-                    results.push(room);
-                    callback();
-                });
+                results.push(room);
+                callback();
             }
             else {
                 console.warn("Can't find roomInfo from persisted data: ", value.rid);
                 self.getRoomInfo(value.rid, (err, room) => {
                     if (!!room) {
                         self.updatePersistRoomInfo(room);
-                        self.organizeChatLogMap(value, room, function done() {
-                            results.push(room);
-                            callback();
-                        });
+                        results.push(room);
+                        callback();
                     }
                     else {
                         callback(err);
@@ -243,6 +239,26 @@ class ChatsLogComponent {
         this.unreadMessageMap.forEach((value, key, map) => {
             // add some items to the queue
             q.push(value, function (err) { });
+        });
+    }
+    manageChatLog() {
+        let self = this;
+        return new Promise((resolve, rejected) => {
+            // create a queue object with concurrency 2
+            let q = async.queue(function (task, callback) {
+                let unread = task;
+                self.organizeChatLogMap(unread, self.dataManager.getGroup(unread.rid), () => {
+                    callback();
+                });
+            }, 2);
+            // assign a callback
+            q.drain = function () {
+                resolve(self.chatslog);
+            };
+            this.unreadMessageMap.forEach((value, key, map) => {
+                // add some items to the queue
+                q.push(value, function (err) { });
+            });
         });
     }
     organizeChatLogMap(unread, roomInfo, done) {

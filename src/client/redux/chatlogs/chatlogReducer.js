@@ -27,14 +27,17 @@ function chatlogReducer(state = initialState, action) {
         case ChatlogsActions.STALK_GET_CHATSLOG_COMPLETE: {
             return state.set("chatsLog", action.payload).set("state", ChatlogsActions.STALK_GET_CHATSLOG_COMPLETE);
         }
-        case ChatlogsActions.STALK_CHATSLOG_CONTACT_COMPLETE: {
-            let nextState = state.set("state", ChatlogsActions.STALK_CHATSLOG_CONTACT_COMPLETE)
+        case ChatlogsActions.STALK_CHATLOG_CONTACT_COMPLETE: {
+            let nextState = state.set("state", ChatlogsActions.STALK_CHATLOG_CONTACT_COMPLETE)
                 .set("chatsLog", action.payload);
             return nextState;
         }
         case ChatlogsActions.STALK_UNREAD_MAP_CHANGED: {
+            return state.set("state", ChatlogsActions.STALK_UNREAD_MAP_CHANGED);
+        }
+        case ChatlogsActions.STALK_CHATLOG_MAP_CHANGED: {
             let nextState = state.set("chatsLog", action.payload)
-                .set("state", ChatlogsActions.STALK_UNREAD_MAP_CHANGED);
+                .set("state", ChatlogsActions.STALK_CHATLOG_MAP_CHANGED);
             return nextState;
         }
         default:

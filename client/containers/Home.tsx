@@ -14,6 +14,7 @@ import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import * as userActions from "../redux/user/userActions";
 import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 import * as chatroomActions from "../redux/chatroom/chatroomActions";
+import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 
 import ChatLogs from "./ChatLogs";
 import { DialogBox } from "../components/DialogBox";
@@ -37,6 +38,7 @@ abstract class IComponentNameProps implements IComponentProps {
     dispatch;
     userReducer;
     chatroomReducer;
+    chatlogReducer;
     stalkReducer;
 };
 
@@ -65,10 +67,6 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
         if (agent_name) {
             this.props.dispatch(userActions.fetchAgent(agent_name));
         }
-
-        if (this.props.location.query.roomId) {
-
-        }
     }
 
     componentDidMount() {
@@ -76,7 +74,7 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
     }
 
     componentWillReceiveProps(nextProps) {
-        let { location: {query: {userId, username, roomId, contactId}}, chatroomReducer, userReducer, stalkReducer } = nextProps as IComponentNameProps;
+        let { location: {query: {userId, username, roomId, contactId}}, chatroomReducer, chatlogReducer, userReducer, stalkReducer } = nextProps as IComponentNameProps;
 
         switch (chatroomReducer.state) {
             case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS:
@@ -107,7 +105,6 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
                 break;
         }
 
-        console.info(this.props.stalkReducer.state, stalkReducer.state)
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_INIT_FAILURE:
                 this.setState({
@@ -206,10 +203,5 @@ function mapStateToProps(state) {
         ...state
     };
 }
-function mapDispatchToProps(dispatch) {
-    return {
-        dispatch
-    };
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps)(Home);

@@ -60,13 +60,11 @@ class Home extends React.Component {
         if (agent_name) {
             this.props.dispatch(userActions.fetchAgent(agent_name));
         }
-        if (this.props.location.query.roomId) {
-        }
     }
     componentDidMount() {
     }
     componentWillReceiveProps(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, userReducer, stalkReducer } = nextProps;
+        let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, chatlogReducer, userReducer, stalkReducer } = nextProps;
         switch (chatroomReducer.state) {
             case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS:
                 if (chatroomReducer.room) {
@@ -94,7 +92,6 @@ class Home extends React.Component {
             default:
                 break;
         }
-        console.info(this.props.stalkReducer.state, stalkReducer.state);
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_INIT_FAILURE:
                 this.setState({
@@ -153,10 +150,5 @@ class Home extends React.Component {
 function mapStateToProps(state) {
     return __assign({}, state);
 }
-function mapDispatchToProps(dispatch) {
-    return {
-        dispatch
-    };
-}
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapStateToProps, mapDispatchToProps)(Home);
+exports.default = react_redux_1.connect(mapStateToProps)(Home);

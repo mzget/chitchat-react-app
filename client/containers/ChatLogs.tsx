@@ -17,7 +17,9 @@ interface IComponentNameProps {
         query
     },
     params,
-    chatroomReducer, stalkReducer, chatlogReducer
+    chatroomReducer,
+    stalkReducer,
+    chatlogReducer
     dispatch,
     router
 };
@@ -46,7 +48,10 @@ class ChatLogs extends React.Component<IComponentNameProps, IComponentNameState>
             case ChatLogsActions.STALK_UNREAD_MAP_CHANGED:
                 this.convertObjToArr(chatlogReducer.chatsLog);
                 break;
-            case ChatLogsActions.STALK_CHATSLOG_CONTACT_COMPLETE:
+            case ChatLogsActions.STALK_CHATLOG_CONTACT_COMPLETE:
+                this.convertObjToArr(chatlogReducer.chatsLog);
+                break;
+            case ChatLogsActions.STALK_CHATLOG_MAP_CHANGED:
                 this.convertObjToArr(chatlogReducer.chatsLog);
                 break;
             default:
@@ -73,24 +78,10 @@ class ChatLogs extends React.Component<IComponentNameProps, IComponentNameState>
     }
 
     public render(): JSX.Element {
-        if (!this.state) return null;
         return (<ListChatLogs value={this.state.chatsLog} onSelected={(data) => {
             this.props.router.push(`/chat/${data.id}`);
         } } />);
     }
 }
 
-/**
- * ## Redux boilerplate
- */
-function mapStateToProps(state) {
-    return {
-        ...state
-    };
-}
-function mapDispatchToProps(dispatch) {
-    return {
-        dispatch
-    };
-}
-export default connect(mapStateToProps, mapDispatchToProps)(ChatLogs);
+export default ChatLogs;

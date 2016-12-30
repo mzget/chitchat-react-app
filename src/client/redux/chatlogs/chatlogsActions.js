@@ -5,13 +5,14 @@ const configureStore_1 = require("../configureStore");
 exports.STALK_INIT_CHATSLOG = 'STALK_INIT_CHATSLOG';
 exports.STALK_GET_CHATSLOG_COMPLETE = 'STALK_GET_CHATSLOG_COMPLETE';
 exports.STALK_UNREAD_MAP_CHANGED = 'STALK_UNREAD_MAP_CHANGED';
-exports.STALK_CHATSLOG_CONTACT_COMPLETE = 'STALK_CHATSLOG_CONTACT_COMPLETE';
+exports.STALK_CHATLOG_MAP_CHANGED = 'STALK_CHATLOG_MAP_CHANGED';
+exports.STALK_CHATLOG_CONTACT_COMPLETE = 'STALK_CHATLOG_CONTACT_COMPLETE';
 const listenerImp = (newMsg) => {
     let chatsLogComp = configureStore_1.default.getState().stalkReducer.chatslogComponent;
     let dataManager = BackendFactory_1.default.getInstance().dataManager;
     if (!dataManager.isMySelf(newMsg.sender)) {
         chatsLogComp.increaseChatsLogCount(1);
-        console.warn("room to add: ", JSON.stringify(chatsLogComp.getUnreadItem(newMsg.rid)));
+        console.log("room to add: ", dataManager.getGroup(newMsg.rid));
         let unread = new chatslogComponent_1.Unread();
         unread.message = newMsg;
         unread.rid = newMsg.rid;
@@ -19,45 +20,48 @@ const listenerImp = (newMsg) => {
         count++;
         unread.count = count;
         chatsLogComp.addUnreadMessage(unread);
+        configureStore_1.default.dispatch({
+            type: exports.STALK_UNREAD_MAP_CHANGED, payload: unread
+        });
         onUnreadMessageMapChanged(unread);
     }
 };
 function initChatsLog() {
-    if (!configureStore_1.default.getState().stalkReducer.isInit) {
-        let dataManager = BackendFactory_1.default.getInstance().dataManager;
-        let chatsLogComponent = new chatslogComponent_1.default();
-        dataManager.contactsProfileChanged = (contact) => {
-            chatsLogComponent.getRoomsInfo();
-        };
-        chatsLogComponent.onReady = function () {
-            getUnreadMessages();
-            chatsLogComponent.onReady = null;
-        };
-        chatsLogComponent.getRoomsInfoCompleteEvent = () => {
+    let dataManager = BackendFactory_1.default.getInstance().dataManager;
+    let chatsLogComponent = new chatslogComponent_1.default();
+    dataManager.contactsProfileChanged = (contact) => {
+        chatsLogComponent.getRoomsInfo();
+    };
+    chatsLogComponent.onReady = function () {
+        getUnreadMessages();
+        chatsLogComponent.onReady = null;
+    };
+    chatsLogComponent.getRoomsInfoCompleteEvent = () => {
+        chatsLogComponent.manageChatLog().then(chatlog => {
             getChatsLog();
-        };
-        chatsLogComponent.addOnChatListener(listenerImp);
-        chatsLogComponent.updatedLastAccessTimeEvent = updateLastAccessTimeEventHandler;
-        chatsLogComponent.addNewRoomAccessEvent = function (data) {
-            getUnreadMessages();
-        };
-        chatsLogComponent.onEditedGroupMember = function (newgroup) {
-            console.log('onEditedGroupMember: ', JSON.stringify(newgroup));
-            // $rootScope.$broadcast('onEditedGroupMember', []);
-        };
-        let msg = {};
-        msg["token"] = dataManager.getSessionToken();
-        BackendFactory_1.default.getInstance().getServer().then(server => {
-            server.getLastAccessRoomsInfo(msg, function (err, res) {
-                console.log("getLastAccessRoomsInfo:", JSON.stringify(res));
-            });
-        }).catch(err => {
-            console.warn("Cannot getLastAccessRoomsInfo", err);
         });
-        configureStore_1.default.dispatch({
-            type: exports.STALK_INIT_CHATSLOG, payload: chatsLogComponent
+    };
+    chatsLogComponent.addOnChatListener(listenerImp);
+    chatsLogComponent.updatedLastAccessTimeEvent = updateLastAccessTimeEventHandler;
+    chatsLogComponent.addNewRoomAccessEvent = function (data) {
+        getUnreadMessages();
+    };
+    chatsLogComponent.onEditedGroupMember = function (newgroup) {
+        console.log('onEditedGroupMember: ', JSON.stringify(newgroup));
+        // $rootScope.$broadcast('onEditedGroupMember', []);
+    };
+    let msg = {};
+    msg["token"] = dataManager.getSessionToken();
+    BackendFactory_1.default.getInstance().getServer().then(server => {
+        server.getLastAccessRoomsInfo(msg, function (err, res) {
+            console.log("getLastAccessRoomsInfo:", JSON.stringify(res));
         });
-    }
+    }).catch(err => {
+        console.warn("Cannot getLastAccessRoomsInfo", err);
+    });
+    configureStore_1.default.dispatch({
+        type: exports.STALK_INIT_CHATSLOG, payload: chatsLogComponent
+    });
 }
 exports.initChatsLog = initChatsLog;
 function updateLastAccessTimeEventHandler(newRoomAccess) {
@@ -120,7 +124,7 @@ function onUnreadMessageMapChanged(unread) {
     chatsLogComp.checkRoomInfo(unread).then(function () {
         let chatsLog = chatsLogComp.getChatsLog();
         configureStore_1.default.dispatch({
-            type: exports.STALK_UNREAD_MAP_CHANGED,
+            type: exports.STALK_CHATLOG_MAP_CHANGED,
             payload: chatsLog
         });
     }).catch(function () {
@@ -130,7 +134,6 @@ function onUnreadMessageMapChanged(unread) {
 function getUnreadMessageComplete() {
     let chatsLogComp = configureStore_1.default.getState().stalkReducer.chatslogComponent;
     chatsLogComp.getRoomsInfo();
-    // $rootScope.$broadcast('getunreadmessagecomplete', {});
 }
 const getChatLogContact = (chatlog) => {
     let dataManager = BackendFactory_1.default.getInstance().dataManager;
