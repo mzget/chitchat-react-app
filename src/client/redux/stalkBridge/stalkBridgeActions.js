@@ -5,7 +5,7 @@
  */
 "use strict";
 const BackendFactory_1 = require("../../chats/BackendFactory");
-const notificationManager_1 = require("../../chats/notificationManager");
+const StalkNotificationAction = require("./StalkNotificationActions");
 const DataModels = require("../../chats/models/ChatDataModels");
 const configureStore_1 = require("../configureStore");
 const ChatLogsActions = require("../chatlogs/chatlogsActions");
@@ -40,7 +40,7 @@ function stalkLoginWithToken(uid, token) {
             if (result.success) {
                 backendFactory.getServerListener();
                 backendFactory.startChatServerListener();
-                notificationManager_1.default.getInstance().regisNotifyNewMessageEvent();
+                StalkNotificationAction.regisNotifyNewMessageEvent();
                 let msg = {};
                 msg["token"] = token;
                 backendFactory.getServer().then(server => {
@@ -86,7 +86,7 @@ function stalkLogin(user) {
             if (result.success) {
                 backendFactory.getServerListener();
                 backendFactory.startChatServerListener();
-                notificationManager_1.default.getInstance().regisNotifyNewMessageEvent();
+                StalkNotificationAction.regisNotifyNewMessageEvent();
                 console.log("MyChat-Profile", user);
                 let account = new DataModels.StalkAccount();
                 account._id = user._id;

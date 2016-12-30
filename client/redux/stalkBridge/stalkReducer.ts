@@ -6,6 +6,7 @@
 
 import * as ChatlogsActions from "../chatlogs/chatlogsActions";
 import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
+import * as StalkNotificationActions from "./StalkNotificationActions";
 
 import { Record } from 'immutable';
 
@@ -21,7 +22,8 @@ export const StalkInitState = Record({
     isInit: false,
     chatslogComponent: null,
     isFetching: false,
-    state: null
+    state: null,
+    notiMessage: "",
 });
 const initialState = new StalkInitState();
 
@@ -40,9 +42,12 @@ export function stalkReducer(state = initialState, action) {
             return state.set("isInit", true).set("state", StalkBridgeActions.STALK_INIT_SUCCESS);
         }
         case StalkBridgeActions.STALK_INIT_FAILURE: {
-            return state.set("isInit", false).set("state", StalkBridgeActions.STALK_INIT_FAILURE);
+            return state.set("isInit", true).set("state", StalkBridgeActions.STALK_INIT_FAILURE);
         }
 
+        case StalkNotificationActions.STALK_NOTICE_NEW_MESSAGE: {
+            return state.set("notiMessage", action.payload);
+        }
         default:
             return state;
     }

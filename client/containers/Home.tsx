@@ -17,12 +17,7 @@ import * as chatroomActions from "../redux/chatroom/chatroomActions";
 import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 
 import ChatLogs from "./ChatLogs";
-import { DialogBox } from "../components/DialogBox";
-import { AlertBox } from "../components/AlertBox";
-import { SnackbarSimple } from "../components/SnackbarSimple";
-import CircularProgressSimple from "../components/CircularProgressSimple";
-
-import * as AlertMsg from "../consts/AlertMsg";
+import UtilsBox from "./UtilsBox";
 
 abstract class IComponentNameProps implements IComponentProps {
     location: {
@@ -44,13 +39,6 @@ abstract class IComponentNameProps implements IComponentProps {
 };
 
 interface IComponentNameState {
-    openDialog: boolean,
-    dialogTitle: string,
-    dialogMessage: string,
-
-    openSnackbar: boolean,
-    snackbarMessage: string,
-    snackbarClose: (reason: string) => void
 };
 
 class Home extends React.Component<IComponentNameProps, IComponentNameState> {
@@ -58,13 +46,6 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
         console.log("Home", this.props);
 
         this.state = {
-            openDialog: false,
-            dialogTitle: "",
-            dialogMessage: "",
-
-            openSnackbar: false,
-            snackbarMessage: "",
-            snackbarClose: null
         }
         let { location: {query: {userId, username, roomId, contactId, agent_name}} } = this.props;
 
@@ -116,14 +97,6 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
         }
 
         switch (stalkReducer.state) {
-            case StalkBridgeActions.STALK_INIT_FAILURE:
-                this.setState({
-                    ...this.state,
-                    openDialog: true,
-                    dialogTitle: AlertMsg.stalkInitFail.title,
-                    dialogMessage: AlertMsg.stalkInitFail.message
-                });
-                break;
             case StalkBridgeActions.STALK_INIT_SUCCESS:
                 if (this.props.stalkReducer.state != StalkBridgeActions.STALK_INIT_SUCCESS) {
                     if (contactId) {
@@ -153,26 +126,15 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
                     <Box p={2} flexAuto></Box>
                     <h2>Welcome to stalk chat service.</h2>
                     <Box p={2} flexAuto></Box>
+                </Flex>
+                <Flex align='center'>
                     <Box p={2} flexAuto></Box>
                     <li key={userId}><Link to={`/chat/${userId}`}>{username}</Link></li>
                     <Box p={2} flexAuto></Box>
                 </Flex>
+
                 <ChatLogs {...this.props} />
-
-                <DialogBox handleClose={() => { this.setState({ ...this.state, openDialog: false }) } }
-                    open={this.state.openDialog}
-                    title={this.state.dialogTitle}
-                    message={this.state.dialogMessage}
-                    />
-
-                <Flex p={2} align='center'>
-                    <Box p={2} flexAuto></Box>
-                    <CircularProgressSimple />
-                    <Box p={2} flexAuto></Box>
-                </Flex>
-                <SnackbarSimple open={this.state.openSnackbar} message={this.state.snackbarMessage} handleRequestClose={(reason) => {
-                    console.log(reason);
-                } } hideDuration={2000} />
+                <UtilsBox />
             </div>
         );
     }

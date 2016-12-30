@@ -6,6 +6,7 @@
 "use strict";
 const ChatlogsActions = require("../chatlogs/chatlogsActions");
 const StalkBridgeActions = require("../stalkBridge/stalkBridgeActions");
+const StalkNotificationActions = require("./StalkNotificationActions");
 const immutable_1 = require("immutable");
 /**
  * ## Initial State
@@ -19,7 +20,8 @@ exports.StalkInitState = immutable_1.Record({
     isInit: false,
     chatslogComponent: null,
     isFetching: false,
-    state: null
+    state: null,
+    notiMessage: "",
 });
 const initialState = new exports.StalkInitState();
 function stalkReducer(state = initialState, action) {
@@ -36,7 +38,10 @@ function stalkReducer(state = initialState, action) {
             return state.set("isInit", true).set("state", StalkBridgeActions.STALK_INIT_SUCCESS);
         }
         case StalkBridgeActions.STALK_INIT_FAILURE: {
-            return state.set("isInit", false).set("state", StalkBridgeActions.STALK_INIT_FAILURE);
+            return state.set("isInit", true).set("state", StalkBridgeActions.STALK_INIT_FAILURE);
+        }
+        case StalkNotificationActions.STALK_NOTICE_NEW_MESSAGE: {
+            return state.set("notiMessage", action.payload);
         }
         default:
             return state;
