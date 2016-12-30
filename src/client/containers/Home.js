@@ -17,6 +17,7 @@ const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const ChatLogs_1 = require("./ChatLogs");
 const DialogBox_1 = require("../components/DialogBox");
 const CircularProgressSimple_1 = require("../components/CircularProgressSimple");
+const AlertMsg = require("../consts/AlertMsg");
 class IComponentNameProps {
 }
 ;
@@ -46,7 +47,8 @@ class Home extends React.Component {
     componentWillMount() {
         console.log("Home", this.props);
         this.state = {
-            openDialog: false
+            openDialog: false,
+            dialogTitle: "", dialogMessage: ""
         };
         let { location: { query: { userId, username, roomId, contactId, agent_name } } } = this.props;
         if (username) {
@@ -95,7 +97,11 @@ class Home extends React.Component {
         console.info(this.props.stalkReducer.state, stalkReducer.state);
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_INIT_FAILURE:
-                this.setState({ openDialog: true });
+                this.setState({
+                    openDialog: true,
+                    dialogTitle: AlertMsg.stalkInitFail.title,
+                    dialogMessage: AlertMsg.stalkInitFail.message
+                });
                 break;
             case StalkBridgeActions.STALK_INIT_SUCCESS:
                 if (this.props.stalkReducer.state != StalkBridgeActions.STALK_INIT_SUCCESS) {
@@ -126,7 +132,7 @@ class Home extends React.Component {
             React.createElement("li", { key: userId },
                 React.createElement(react_router_1.Link, { to: `/chat/${userId}` }, username)),
             React.createElement(ChatLogs_1.default, __assign({}, this.props)),
-            React.createElement(DialogBox_1.DialogBox, { handleClose: () => { this.setState({ openDialog: false }); }, open: this.state.openDialog }),
+            React.createElement(DialogBox_1.DialogBox, { handleClose: () => { this.setState(__assign({}, this.state, { openDialog: false })); }, open: this.state.openDialog, title: this.state.dialogTitle, message: this.state.dialogMessage }),
             React.createElement(reflexbox_1.Flex, { p: 2, align: 'center' },
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
                 React.createElement(CircularProgressSimple_1.default, null),

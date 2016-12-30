@@ -19,7 +19,6 @@ const actions = (props: ICompProps) => [
     <FlatButton
         label="Submit"
         primary={true}
-        keyboardFocused={true}
         onMouseUp={props.handleClose}
         />,
 ];
@@ -30,7 +29,7 @@ export const DialogBox = (props: ICompProps) => {
                 <Dialog
                     title={props.title}
                     actions={actions(props)}
-                    modal={false}
+                    modal={true}
                     open={props.open}
                     onRequestClose={props.handleClose}
                     >

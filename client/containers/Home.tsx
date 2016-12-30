@@ -20,6 +20,8 @@ import { DialogBox } from "../components/DialogBox";
 import { AlertBox } from "../components/AlertBox";
 import CircularProgressSimple from "../components/CircularProgressSimple";
 
+import * as AlertMsg from "../consts/AlertMsg";
+
 abstract class IComponentNameProps implements IComponentProps {
     location: {
         query: {
@@ -39,7 +41,9 @@ abstract class IComponentNameProps implements IComponentProps {
 };
 
 interface IComponentNameState {
-    openDialog: boolean
+    openDialog: boolean,
+    dialogTitle: string,
+    dialogMessage: string
 };
 
 class Home extends React.Component<IComponentNameProps, IComponentNameState> {
@@ -47,7 +51,8 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
         console.log("Home", this.props);
 
         this.state = {
-            openDialog: false
+            openDialog: false,
+            dialogTitle: "", dialogMessage: ""
         }
         let { location: {query: {userId, username, roomId, contactId, agent_name}} } = this.props;
 
@@ -105,7 +110,11 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
         console.info(this.props.stalkReducer.state, stalkReducer.state)
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_INIT_FAILURE:
-                this.setState({ openDialog: true });
+                this.setState({
+                    openDialog: true,
+                    dialogTitle: AlertMsg.stalkInitFail.title,
+                    dialogMessage: AlertMsg.stalkInitFail.message
+                });
                 break;
             case StalkBridgeActions.STALK_INIT_SUCCESS:
                 if (this.props.stalkReducer.state != StalkBridgeActions.STALK_INIT_SUCCESS) {
@@ -140,9 +149,12 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
 
                 <li key={userId}><Link to={`/chat/${userId}`}>{username}</Link></li>
                 <ChatLogs {...this.props} />
-                <DialogBox
-                    handleClose={() => { this.setState({ openDialog: false }) } }
-                    open={this.state.openDialog} />
+
+                <DialogBox handleClose={() => { this.setState({ ...this.state, openDialog: false }) } }
+                    open={this.state.openDialog}
+                    title={this.state.dialogTitle}
+                    message={this.state.dialogMessage}
+                    />
 
                 <Flex p={2} align='center'>
                     <Box p={2} flexAuto></Box>
