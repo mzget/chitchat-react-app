@@ -5,7 +5,7 @@
  */
 
 import BackendFactory from "../../chats/BackendFactory";
-// import NotificationManager from "../../chats/notificationManager";
+import NotificationManager from "../../chats/notificationManager";
 import * as DataModels from "../../chats/models/ChatDataModels";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
 import StalkImp, { IDictionary } from "../../libs/stalk/serverImplemented";
@@ -54,7 +54,7 @@ export function stalkLoginWithToken(uid: string, token: string) {
                 backendFactory.getServerListener();
                 backendFactory.startChatServerListener();
 
-                // NotificationManager.getInstance().regisNotifyNewMessageEvent();
+                NotificationManager.getInstance().regisNotifyNewMessageEvent();
 
                 let msg: IDictionary = {};
                 msg["token"] = token;
@@ -104,7 +104,7 @@ export function stalkLogin(user: any) {
                 backendFactory.getServerListener();
                 backendFactory.startChatServerListener();
 
-                // NotificationManager.getInstance().regisNotifyNewMessageEvent();
+                NotificationManager.getInstance().regisNotifyNewMessageEvent();
 
                 console.log("MyChat-Profile", user);
                 let account = new DataModels.StalkAccount();

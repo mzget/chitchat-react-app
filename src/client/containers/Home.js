@@ -16,6 +16,7 @@ const userActions = require("../redux/user/userActions");
 const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const ChatLogs_1 = require("./ChatLogs");
 const DialogBox_1 = require("../components/DialogBox");
+const SnackbarSimple_1 = require("../components/SnackbarSimple");
 const CircularProgressSimple_1 = require("../components/CircularProgressSimple");
 const AlertMsg = require("../consts/AlertMsg");
 class IComponentNameProps {
@@ -48,7 +49,11 @@ class Home extends React.Component {
         console.log("Home", this.props);
         this.state = {
             openDialog: false,
-            dialogTitle: "", dialogMessage: ""
+            dialogTitle: "",
+            dialogMessage: "",
+            openSnackbar: false,
+            snackbarMessage: "",
+            snackbarClose: null
         };
         let { location: { query: { userId, username, roomId, contactId, agent_name } } } = this.props;
         if (username) {
@@ -94,11 +99,7 @@ class Home extends React.Component {
         }
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_INIT_FAILURE:
-                this.setState({
-                    openDialog: true,
-                    dialogTitle: AlertMsg.stalkInitFail.title,
-                    dialogMessage: AlertMsg.stalkInitFail.message
-                });
+                this.setState(__assign({}, this.state, { openDialog: true, dialogTitle: AlertMsg.stalkInitFail.title, dialogMessage: AlertMsg.stalkInitFail.message }));
                 break;
             case StalkBridgeActions.STALK_INIT_SUCCESS:
                 if (this.props.stalkReducer.state != StalkBridgeActions.STALK_INIT_SUCCESS) {
@@ -125,15 +126,20 @@ class Home extends React.Component {
             React.createElement(reflexbox_1.Flex, { px: 2, align: 'center' },
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
                 React.createElement("h2", null, "Welcome to stalk chat service."),
+                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
+                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
+                React.createElement("li", { key: userId },
+                    React.createElement(react_router_1.Link, { to: `/chat/${userId}` }, username)),
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
-            React.createElement("li", { key: userId },
-                React.createElement(react_router_1.Link, { to: `/chat/${userId}` }, username)),
             React.createElement(ChatLogs_1.default, __assign({}, this.props)),
             React.createElement(DialogBox_1.DialogBox, { handleClose: () => { this.setState(__assign({}, this.state, { openDialog: false })); }, open: this.state.openDialog, title: this.state.dialogTitle, message: this.state.dialogMessage }),
             React.createElement(reflexbox_1.Flex, { p: 2, align: 'center' },
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
                 React.createElement(CircularProgressSimple_1.default, null),
-                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }))));
+                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
+            React.createElement(SnackbarSimple_1.SnackbarSimple, { open: this.state.openSnackbar, message: this.state.snackbarMessage, handleRequestClose: (reason) => {
+                    console.log(reason);
+                }, hideDuration: 2000 })));
     }
     joinChatServer(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer } = nextProps;

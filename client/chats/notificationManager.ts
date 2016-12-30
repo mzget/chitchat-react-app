@@ -1,19 +1,15 @@
 ﻿/**
- *  NotificationManager
+ *  NotificationManager.ts
  * 
  * Copyright 2016 Ahoo Studio.co.th.
+ * 
+ * The NotificationManager for react.js.
  *
  */
 
-import {
-    AppState
-} from 'react-native';
 
 import BackendFactory from "./BackendFactory";
-import { IMessage } from "../libs/chitchat/dataModel/message";
-import PushNotifyHelper from '../libs/pushNotifyHelper';
-
-import Store from "../reducers/configureStore";
+import { IMessage } from "./models/ChatDataModels";
 
 export default class NotificationManager {
     private static instance: NotificationManager;
@@ -27,8 +23,6 @@ export default class NotificationManager {
 
     init(onSuccess: (err, deviceToken) => void) {
         console.log("Initialize NotificationManager.");
-
-        PushNotifyHelper.getInstance().configure(onSuccess);
     }
 
     regisNotifyNewMessageEvent() {
@@ -42,19 +36,6 @@ export default class NotificationManager {
     }
 
     notify(messageImp: IMessage) {
-        //@ Check app not run in background.
-        let device = Store.getState().deviceReducer; //active, background, inactive
-
-        console.log("Notify Message. AppState is ", device.appState);
-
-        if (device.appState == "active") {
-            PushNotifyHelper.getInstance().localNotification(messageImp.body);
-        }
-        else if (device.appState != "active") {
-            //@ When user joined room but appState is inActive.
-            // sharedObjectService.getNotifyManager().notify(newMsg, appBackground, localNotifyService);
-
-            PushNotifyHelper.getInstance().localNotification(messageImp.body);
-        }
+        console.log("notify", messageImp);
     }
 }

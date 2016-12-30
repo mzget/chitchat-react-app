@@ -10,6 +10,7 @@ const secureServiceFactory_1 = require("../../libs/chitchat/services/secureServi
 const serverEventListener_1 = require("../../libs/stalk/serverEventListener");
 const httpStatusCode_1 = require("../../libs/stalk/utils/httpStatusCode");
 const ChatDataModels_1 = require("../../chats/models/ChatDataModels");
+const notificationManager_1 = require("../../chats/notificationManager");
 const configureStore_1 = require("../configureStore");
 const config_1 = require("../../configs/config");
 /**
@@ -41,7 +42,7 @@ function initChatRoom(currentRoom) {
     let chatroomComp = chatRoomComponent_1.default.getInstance();
     chatroomComp.setRoomId(currentRoom._id);
     BackendFactory_1.default.getInstance().dataListener.addChatListenerImp(chatroomComp);
-    // NotificationManager.getInstance().unsubscribeGlobalNotifyMessageEvent();
+    notificationManager_1.default.getInstance().unsubscribeGlobalNotifyMessageEvent();
     chatroomComp.chatroomDelegate = onChatRoomDelegate;
     chatroomComp.outsideRoomDelegete = onOutSideRoomDelegate;
 }
@@ -79,6 +80,7 @@ function onChatRoomDelegate(event, newMsg) {
 function onOutSideRoomDelegate(event, data) {
     if (event === serverEventListener_1.default.ON_CHAT) {
         console.log("Call notification here..."); //active, background, inactive
+        notificationManager_1.default.getInstance().notify(data);
     }
 }
 function replaceMyMessage(receiveMsg) {
@@ -277,7 +279,7 @@ function leaveRoom() {
                 console.log("leaveRoom result", res);
                 BackendFactory_1.default.getInstance().dataListener.removeChatListenerImp(room);
                 chatRoomComponent_1.default.getInstance().dispose();
-                // NotificationManager.getInstance().regisNotifyNewMessageEvent();
+                notificationManager_1.default.getInstance().regisNotifyNewMessageEvent();
             });
         }).catch(err => {
         });
