@@ -5,7 +5,7 @@ const Dialog_1 = require("material-ui/Dialog");
 const FlatButton_1 = require("material-ui/FlatButton");
 const actions = (props) => [
     React.createElement(FlatButton_1.default, { label: "Cancel", primary: true, onMouseUp: props.handleClose }),
-    React.createElement(FlatButton_1.default, { label: "Submit", primary: true, onMouseUp: props.handleClose }),
+    React.createElement(FlatButton_1.default, { label: "OK", primary: true, onMouseUp: props.handleClose }),
 ];
 exports.DialogBox = (props) => {
     return (React.createElement(MuiThemeProvider_1.default, null,

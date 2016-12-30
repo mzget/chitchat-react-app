@@ -17,7 +17,7 @@ const actions = (props: ICompProps) => [
         onMouseUp={props.handleClose}
         />,
     <FlatButton
-        label="Submit"
+        label="OK"
         primary={true}
         onMouseUp={props.handleClose}
         />,
