@@ -24,15 +24,6 @@ class IComponentNameProps {
 }
 ;
 ;
-// var messages = [{
-//     message: 'How do I use this messaging app?',
-//     from: 'right',
-//     backColor: '#3d83fa',
-//     textColor: "white",
-//     avatar: 'https://www.seeklogo.net/wp-content/uploads/2015/09/google-plus-new-icon-logo.png',
-//     duration: 2000,
-//     inbound: false
-// }];
 class IGiftedChat {
     constructor() {
         this.backColor = '#3d83fa';
@@ -78,16 +69,17 @@ class Chat extends React.Component {
             }
             case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
                 this.setMessageStatus(chatroomReducer.responseMessage.uuid, 'ErrorButton');
-                this.props.dispatch(chatRoomActions.stop());
+                this.props.dispatch(chatRoomActions.emptyState());
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
                 this.setMessageTemp(chatroomReducer.responseMessage);
-                this.props.dispatch(chatRoomActions.stop());
+                this.props.dispatch(chatRoomActions.emptyState());
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.ON_NEW_MESSAGE: {
                 this.onReceive(chatroomReducer.newMessage);
+                this.props.dispatch(chatRoomActions.emptyState());
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
@@ -128,18 +120,8 @@ class Chat extends React.Component {
         this.props.dispatch(chatRoomActions.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
     }
     onReceive(message) {
-        let _message = new IGiftedChat();
-        _message = __assign({}, message);
-        console.log("onReceive: ", _message);
+        let _message = this.setGiftMessage(message);
         StalkBridgeActions.getUserInfo(message.sender, (result) => {
-            _message.inbound = true;
-            // _message.backColor = 
-            if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text])
-                _message.message = message.body;
-            else if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image])
-                message.image = message.body;
-            else if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location])
-                message.location = message.body;
             if (result) {
                 message.user = {
                     _id: result._id,
@@ -283,13 +265,5 @@ class Chat extends React.Component {
 function mapStateToProps(state) {
     return __assign({}, state);
 }
-function mapDispatchToProps(dispatch) {
-    return {
-        dispatch
-    };
-}
-function mergeProps(stateProps, dispatchProps, ownProps) {
-    return Object.assign({}, ownProps, __assign({}, stateProps, dispatchProps));
-}
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapStateToProps, mapDispatchToProps, mergeProps)(Chat);
+exports.default = react_redux_1.connect(mapStateToProps)(Chat);

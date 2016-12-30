@@ -32,15 +32,6 @@ interface IComponentNameState {
     earlyMessageReady
 };
 
-// var messages = [{
-//     message: 'How do I use this messaging app?',
-//     from: 'right',
-//     backColor: '#3d83fa',
-//     textColor: "white",
-//     avatar: 'https://www.seeklogo.net/wp-content/uploads/2015/09/google-plus-new-icon-logo.png',
-//     duration: 2000,
-//     inbound: false
-// }];
 class IGiftedChat {
     _id: string;
     message: string;
@@ -105,16 +96,17 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
 
             case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
                 this.setMessageStatus(chatroomReducer.responseMessage.uuid, 'ErrorButton');
-                this.props.dispatch(chatRoomActions.stop());
+                this.props.dispatch(chatRoomActions.emptyState());
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
                 this.setMessageTemp(chatroomReducer.responseMessage);
-                this.props.dispatch(chatRoomActions.stop());
+                this.props.dispatch(chatRoomActions.emptyState());
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.ON_NEW_MESSAGE: {
                 this.onReceive(chatroomReducer.newMessage);
+                this.props.dispatch(chatRoomActions.emptyState());
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
@@ -174,19 +166,9 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
     }
 
     onReceive(message) {
-        let _message = new IGiftedChat();
-        _message = { ...message };
+        let _message = this.setGiftMessage(message);
 
-        console.log("onReceive: ", _message);
         StalkBridgeActions.getUserInfo(message.sender, (result) => {
-            _message.inbound = true;
-            // _message.backColor = 
-            if (message.type == ContentType[ContentType.Text])
-                _message.message = message.body;
-            else if (message.type == ContentType[ContentType.Image])
-                message.image = message.body;
-            else if (message.type == ContentType[ContentType.Location])
-                message.location = message.body
             if (result) {
                 message.user = {
                     _id: result._id,
@@ -358,15 +340,4 @@ function mapStateToProps(state) {
         ...state
     };
 }
-function mapDispatchToProps(dispatch) {
-    return {
-        dispatch
-    };
-}
-
-function mergeProps(stateProps, dispatchProps, ownProps) {
-    return Object.assign({}, ownProps, {
-        ...stateProps, ...dispatchProps
-    })
-}
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(Chat);
+export default connect(mapStateToProps)(Chat);

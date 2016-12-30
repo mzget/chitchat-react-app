@@ -23,7 +23,7 @@ export const ChatRoomInitState = Record({
 const initialState = new ChatRoomInitState();
 
 
-export const chatroomReducer = (state = new ChatRoomInitState(), action: ReduxActions.Action<any>) => {
+export const chatroomReducer = (state = new ChatRoomInitState(), action) => {
     switch (action.type) {
         case ChatRoomRx.FETCH_PRIVATE_CHATROOM_SUCCESS:
             return state.set("room", action.payload.result[0])
@@ -86,6 +86,10 @@ export const chatroomReducer = (state = new ChatRoomInitState(), action: ReduxAc
             return state.set("room", action.payload).set("state", ChatRoomRx.CREATE_PRIVATE_CHATROOM_SUCCESS);
         }
 
+
+        case chatroomActions.CHATROOM_REDUCER_EMPTY_STATE: {
+            return state.set("state", null);
+        }
         default:
             return state;
     }

@@ -9,13 +9,12 @@ import DataListener from "../../chats/dataListener";
 import BackendFactory from "../../chats/BackendFactory";
 import SecureServiceFactory from "../../libs/chitchat/services/secureServiceFactory";
 import ServerEventListener from "../../libs/stalk/serverEventListener";
-import { IMessage } from "../../libs/stalk/chatRoomApiProvider";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
 import { ContentType, IMessage, Room, RoomType } from "../../chats/models/ChatDataModels";
 // import NotificationManager from '../../chats/notificationManager';
 
 import { Account } from "../../dataAccess/AppAccount";
-import fetch from 'isomorphic-fetch';
+import * as fetch from 'isomorphic-fetch';
 
 import Store from "../configureStore";
 
@@ -25,7 +24,6 @@ import config from "../../configs/config";
  * ChatRoomActionsType
  */
 export class ChatRoomActionsType {
-    static STOP = "STOP_CHATROOM_REDUCER";
 
     static GET_PERSISTEND_MESSAGE_REQUEST = "GET_PERSISTEND_MESSAGE_REQUEST";
     static GET_PERSISTEND_MESSAGE_SUCCESS = "GET_PERSISTEND_MESSAGE_SUCCESS";
@@ -48,9 +46,9 @@ export class ChatRoomActionsType {
     static LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
 }
 
-export function stop() {
-    return dispatch => { return { type: ChatRoomActionsType.STOP } }
-}
+
+export const CHATROOM_REDUCER_EMPTY_STATE = "CHATROOM_REDUCER_EMPTY_STATE";
+export const emptyState = () => ({ type: CHATROOM_REDUCER_EMPTY_STATE });
 
 export function initChatRoom(currentRoom: Room) {
     if (!currentRoom) throw new Error("Empty roomInfo");

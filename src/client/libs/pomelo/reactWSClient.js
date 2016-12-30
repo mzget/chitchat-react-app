@@ -39,7 +39,7 @@ export default class WebSocketClient {
     let decodeIO_decoder = null;
     let Package = Protocol.Package;
     let Message = Protocol.Message;
-    let EventEmitter = require('./EventEmitter');
+    const EventEmitter = require('events');
     let rsa = window.rsa;
     /*
       if (typeof (window) != "undefined" && typeof (sys) != 'undefined' && sys.localStorage) {

@@ -17,7 +17,6 @@ const config_1 = require("../../configs/config");
  */
 class ChatRoomActionsType {
 }
-ChatRoomActionsType.STOP = "STOP_CHATROOM_REDUCER";
 ChatRoomActionsType.GET_PERSISTEND_MESSAGE_REQUEST = "GET_PERSISTEND_MESSAGE_REQUEST";
 ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS = "GET_PERSISTEND_MESSAGE_SUCCESS";
 ChatRoomActionsType.GET_PERSISTEND_MESSAGE_FAILURE = "GET_PERSISTEND_MESSAGE_FAILURE";
@@ -34,10 +33,8 @@ ChatRoomActionsType.ON_NEW_MESSAGE = "ON_NEW_MESSAGE";
 ChatRoomActionsType.ON_EARLY_MESSAGE_READY = "ON_EARLY_MESSAGE_READY";
 ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
 exports.ChatRoomActionsType = ChatRoomActionsType;
-function stop() {
-    return dispatch => { return { type: ChatRoomActionsType.STOP }; };
-}
-exports.stop = stop;
+exports.CHATROOM_REDUCER_EMPTY_STATE = "CHATROOM_REDUCER_EMPTY_STATE";
+exports.emptyState = () => ({ type: exports.CHATROOM_REDUCER_EMPTY_STATE });
 function initChatRoom(currentRoom) {
     if (!currentRoom)
         throw new Error("Empty roomInfo");
