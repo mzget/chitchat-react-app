@@ -14,7 +14,7 @@ const reflexbox_1 = require("reflexbox");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 const userActions = require("../redux/user/userActions");
 const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
-const ChatLogs_1 = require("./ChatLogs");
+const ChatLogsBox_1 = require("./ChatLogsBox");
 const UtilsBox_1 = require("./UtilsBox");
 class IComponentNameProps {
 }
@@ -119,7 +119,7 @@ class Home extends React.Component {
                 React.createElement("li", { key: userId },
                     React.createElement(react_router_1.Link, { to: `/chat/${userId}` }, username)),
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
-            React.createElement(ChatLogs_1.default, __assign({}, this.props)),
+            React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
             React.createElement(UtilsBox_1.default, null)));
     }
     joinChatServer(nextProps) {

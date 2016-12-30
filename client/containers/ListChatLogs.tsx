@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { Flex, Box } from 'reflexbox';
+
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import Subheader from 'material-ui/Subheader';
@@ -12,6 +14,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Avatar from 'material-ui/Avatar';
 
 import ChatLog from "../chats/models/chatLog";
+
+import BadgeSimple from "../components/BadgeSimple";
 
 const iconButtonElement = (
     <IconButton
@@ -34,10 +38,17 @@ const rightIconMenu = (
 const renderList = (props: { value: Array<ChatLog>, onSelected }) => (props.value.map((log, i) => {
     return (
         <div key={i}>
-            <ListItem onTouchEnd={() => props.onSelected(log)} onMouseUp={() => props.onSelected(log)}
-                leftAvatar={
-                    (!!log.room.image) ?
-                        <Avatar src={log.room.image} /> : <Avatar>{log.roomName.charAt(0)}</Avatar>
+            <ListItem
+                onClick={() => props.onSelected(log)}
+                leftAvatar={(!!log.room.image) ?
+                    <Avatar src={log.room.image} /> : <Avatar>{log.roomName.charAt(0)}</Avatar>
+                }
+                rightIcon={
+                    <div style={{ marginRight: '40px', marginTop: 0 }}>
+                        {
+                            (log.count && log.count != 0) ? <BadgeSimple content={log.count} /> : null
+                        }
+                    </div>
                 }
                 primaryText={log.roomName}
                 secondaryText={
@@ -45,7 +56,6 @@ const renderList = (props: { value: Array<ChatLog>, onSelected }) => (props.valu
                         <span style={{ color: darkBlack }}>{log.lastMessage}</span>
                     </p>
                 }
-                secondaryTextLines={2}
                 />
             <Divider inset={true} />
         </div>)

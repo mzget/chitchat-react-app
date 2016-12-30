@@ -16,7 +16,7 @@ import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 import * as chatroomActions from "../redux/chatroom/chatroomActions";
 import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 
-import ChatLogs from "./ChatLogs";
+import ChatLogsBox from "./ChatLogsBox";
 import UtilsBox from "./UtilsBox";
 
 abstract class IComponentNameProps implements IComponentProps {
@@ -133,7 +133,7 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
                     <Box p={2} flexAuto></Box>
                 </Flex>
 
-                <ChatLogs {...this.props} />
+                <ChatLogsBox {...this.props} />
                 <UtilsBox />
             </div>
         );

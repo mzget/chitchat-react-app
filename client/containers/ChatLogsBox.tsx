@@ -29,7 +29,7 @@ interface IComponentNameState {
     search
 };
 
-class ChatLogs extends React.Component<IComponentNameProps, IComponentNameState> {
+class ChatLogsBox extends React.Component<IComponentNameProps, IComponentNameState> {
     componentWillMount() {
         this.state = {
             search: "", chatsLog: null
@@ -84,4 +84,4 @@ class ChatLogs extends React.Component<IComponentNameProps, IComponentNameState>
     }
 }
 
-export default ChatLogs;
+export default ChatLogsBox;
