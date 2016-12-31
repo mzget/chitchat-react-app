@@ -10,7 +10,7 @@ const secureServiceFactory_1 = require("../../libs/chitchat/services/secureServi
 const serverEventListener_1 = require("../../libs/stalk/serverEventListener");
 const httpStatusCode_1 = require("../../libs/stalk/utils/httpStatusCode");
 const ChatDataModels_1 = require("../../chats/models/ChatDataModels");
-const notificationManager_1 = require("../../chats/notificationManager");
+const NotificationManager = require("../stalkBridge/StalkNotificationActions");
 const configureStore_1 = require("../configureStore");
 const config_1 = require("../../configs/config");
 /**
@@ -42,7 +42,7 @@ function initChatRoom(currentRoom) {
     let chatroomComp = chatRoomComponent_1.default.getInstance();
     chatroomComp.setRoomId(currentRoom._id);
     BackendFactory_1.default.getInstance().dataListener.addChatListenerImp(chatroomComp);
-    notificationManager_1.default.getInstance().unsubscribeGlobalNotifyMessageEvent();
+    NotificationManager.unsubscribeGlobalNotifyMessageEvent();
     chatroomComp.chatroomDelegate = onChatRoomDelegate;
     chatroomComp.outsideRoomDelegete = onOutSideRoomDelegate;
 }
@@ -80,7 +80,7 @@ function onChatRoomDelegate(event, newMsg) {
 function onOutSideRoomDelegate(event, data) {
     if (event === serverEventListener_1.default.ON_CHAT) {
         console.log("Call notification here..."); //active, background, inactive
-        notificationManager_1.default.getInstance().notify(data);
+        NotificationManager.notify(data);
     }
 }
 function replaceMyMessage(receiveMsg) {
@@ -279,7 +279,7 @@ function leaveRoom() {
                 console.log("leaveRoom result", res);
                 BackendFactory_1.default.getInstance().dataListener.removeChatListenerImp(room);
                 chatRoomComponent_1.default.getInstance().dispose();
-                notificationManager_1.default.getInstance().regisNotifyNewMessageEvent();
+                NotificationManager.regisNotifyNewMessageEvent();
             });
         }).catch(err => {
         });
@@ -314,3 +314,19 @@ exports.getPersistendChatroom = (roomId) => (dispatch => {
     else
         dispatch(getPersistChatroomFail());
 });
+exports.createChatRoom = (userReducer) => {
+    if (userReducer.user && userReducer.contact) {
+        let owner = {};
+        owner._id = userReducer.user._id;
+        owner.user_role = (userReducer.user.role) ? userReducer.user.role : "user";
+        let contact = {};
+        contact._id = userReducer.contact._id;
+        contact.user_role = (userReducer.contact.role) ? userReducer.contact.role : "user";
+        let members = { owner, contact };
+        return members;
+    }
+    else {
+        console.warn("Not yet ready for create chatroom");
+        return null;
+    }
+};

@@ -4,8 +4,11 @@ const crypto = require("crypto");
 const mongodb = require("mongodb");
 const async = require("async");
 const router = express.Router();
+const redis = require("redis");
 const ObjectID = mongodb.ObjectID;
+const CachingSevice_1 = require("../scripts/services/CachingSevice");
 const Room = require("../scripts/models/Room");
+const RoomService = require("../scripts/services/RoomService");
 const ChatRoomManager_1 = require("../scripts/controllers/ChatRoomManager");
 const UserManager = require("../scripts/controllers/UserManager");
 const chatRoomManager = ChatRoomManager_1.ChatRoomManager.prototype;
@@ -37,11 +40,21 @@ router.post('/', function (req, res, next) {
     md.update(id);
     let hexCode = md.digest('hex');
     let roomId = hexCode.slice(0, 24);
-    chatRoomManager.GetChatRoomInfo(roomId).then(function (results) {
-        console.log("GetChatRoomInfo", roomId, results);
-        res.status(200).json({ success: true, result: results });
-    }).catch(err => {
-        res.status(500).json({ success: false, message: err });
+    CachingSevice_1.default.hmget("rooms", roomId, (err, result) => {
+        console.log("get room from cache", result);
+        let room = JSON.parse(result[0]);
+        if (err || room == null) {
+            //@find from db..
+            chatRoomManager.GetChatRoomInfo(roomId).then(function (results) {
+                CachingSevice_1.default.hmset("rooms", roomId, JSON.stringify(results[0]), redis.print);
+                res.status(200).json({ success: true, result: results });
+            }).catch(err => {
+                res.status(500).json({ success: false, message: err });
+            });
+        }
+        else {
+            res.status(200).json({ success: true, result: [room] });
+        }
     });
 });
 /**
@@ -75,6 +88,8 @@ router.post('/createPrivateRoom', function (req, res, next) {
     _room.createTime = new Date();
     chatRoomManager.createPrivateChatRoom(_room).then(function (results) {
         console.log("Create Private Chat Room: ", JSON.stringify(results));
+        let _room = results[0];
+        CachingSevice_1.default.hmset("rooms", _room._id, JSON.stringify(_room), redis.print);
         //<!-- Push updated lastAccessRoom fields to all members.
         async.map(results[0].members, function (member, cb) {
             //<!-- Add rid to user members lastAccessField.
@@ -100,18 +115,33 @@ router.get("/roomInfo", (req, res, next) => {
     if (errors) {
         return res.status(500).json({ success: false, message: errors });
     }
-    // self.app.rpc.auth.authRemote.checkedCanAccessRoom(session, rid, uid, function (err, res) {
-    //     console.log("checkedCanAccessRoom: ", res);
-    //     if (err || res === false) {
-    //         next(null, { code: Code.FAIL, message: "cannot access your request room." });
-    //     }
-    //     else {
-    //         chatRoomManager.GetChatRoomInfo(rid).then(function (res) {
-    //             next(null, { code: Code.OK, data: res });
-    //         }).catch(err => {
-    //             next(null, { code: Code.FAIL, message: "Your request roomInfo is no longer." });
-    //         });
-    //     }
-    // });
+    let room_id = req.body.room_id;
+    let user_id = req.body.user_id;
+    RoomService.checkedCanAccessRoom(room_id, user_id, function (err, result) {
+        console.log("checkedCanAccessRoom: ", result);
+        if (err || result === false) {
+            res.status(500).json({ success: false, message: "cannot access your request room." });
+        }
+        else {
+            chatRoomManager.GetChatRoomInfo(room_id).then(function (result) {
+                if (result.length > 0) {
+                    res.status(200).json({ success: true, result: result });
+                }
+                else {
+                    res.status(500).json({ success: false, message: "Your request roomInfo is no longer." });
+                }
+            }).catch(err => {
+                res.status(500).json({ success: false, message: "Your request roomInfo is no longer." });
+            });
+        }
+    });
+});
+router.post('/clear_cache', (req, res, next) => {
+    CachingSevice_1.default.del("rooms", function (err, reply) {
+        console.log(err, reply);
+        if (err)
+            return res.status(500).json({ success: false, message: err });
+        res.status(200).json({ success: true, result: reply });
+    });
 });
 module.exports = router;

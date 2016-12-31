@@ -1,0 +1,19 @@
+"use strict";
+const AccountService_1 = require("./AccountService");
+const accountService = new AccountService_1.default();
+exports.checkedCanAccessRoom = (roomId, userId, callback) => {
+    accountService.getRoom(roomId, (err, room) => {
+        let result = false;
+        if (err || !room) {
+            callback(null, result);
+        }
+        else {
+            result = room.members.some(value => {
+                if (value._id === userId) {
+                    return true;
+                }
+            });
+            callback(null, result);
+        }
+    });
+};

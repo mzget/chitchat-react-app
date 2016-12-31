@@ -247,7 +247,10 @@ class ChatsLogComponent {
             // create a queue object with concurrency 2
             let q = async.queue(function (task, callback) {
                 let unread = task;
-                self.organizeChatLogMap(unread, self.dataManager.getGroup(unread.rid), () => {
+                let room = self.dataManager.getGroup(unread.rid);
+                if (!room)
+                    callback();
+                self.organizeChatLogMap(unread, room, () => {
                     callback();
                 });
             }, 2);

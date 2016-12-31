@@ -17,12 +17,12 @@ const init = (onSuccess) => {
 };
 exports.regisNotifyNewMessageEvent = () => {
     console.log("subscribe global notify message event");
-    BackendFactory_1.default.getInstance().dataListener.addNoticeNewMessageEvent(notify);
+    BackendFactory_1.default.getInstance().dataListener.addNoticeNewMessageEvent(exports.notify);
 };
 exports.unsubscribeGlobalNotifyMessageEvent = () => {
-    BackendFactory_1.default.getInstance().dataListener.removeNoticeNewMessageEvent(notify);
+    BackendFactory_1.default.getInstance().dataListener.removeNoticeNewMessageEvent(exports.notify);
 };
-const notify = (messageImp) => {
+exports.notify = (messageImp) => {
     console.log("notify", messageImp);
     let message = messageImp.body;
     if (messageImp.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location]) {

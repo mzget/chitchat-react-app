@@ -14,6 +14,7 @@ const reflexbox_1 = require("reflexbox");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 const userActions = require("../redux/user/userActions");
 const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
+const chatroomActions = require("../redux/chatroom/chatroomActions");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 const UtilsBox_1 = require("./UtilsBox");
 class IComponentNameProps {
@@ -25,21 +26,6 @@ class Home extends React.Component {
         super(...arguments);
         this.fetch_privateChatRoom = (roommateId, owerId) => {
             this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
-        };
-        this.createChatRoom = () => {
-            let { userReducer } = this.props;
-            if (userReducer.user && userReducer.contact) {
-                let owner = {};
-                owner._id = userReducer.user._id;
-                owner.user_role = "agent";
-                let contact = {};
-                contact._id = userReducer.contact._id;
-                contact.user_role = "user";
-                this.props.dispatch(chatroomRxEpic.createPrivateChatRoom(owner, contact));
-            }
-            else {
-                console.warn("Not yet ready for create chatroom");
-            }
         };
     }
     componentWillMount() {
@@ -66,11 +52,12 @@ class Home extends React.Component {
                     this.props.router.push(`/chat/${chatroomReducer.room._id}`);
                 }
                 else {
-                    this.createChatRoom();
+                    let members = chatroomActions.createChatRoom(userReducer);
+                    this.props.dispatch(chatroomRxEpic.createPrivateChatRoom(members.owner, members.contact));
                 }
                 break;
             case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_SUCCESS: {
-                if (chatroomReducer.room.length > 0) {
+                if (chatroomReducer.room) {
                     this.props.router.push(`/chat/${chatroomReducer.room._id}`);
                 }
             }
@@ -105,11 +92,6 @@ class Home extends React.Component {
     render() {
         let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, userReducer } = this.props;
         return (React.createElement("div", null,
-            React.createElement(reflexbox_1.Flex, null,
-                React.createElement(reflexbox_1.Box, { sm: 6, md: 3 }, "Box"),
-                React.createElement(reflexbox_1.Box, { sm: 6, md: 3 }, "Box"),
-                React.createElement(reflexbox_1.Box, { sm: 6, md: 3 }, "Box"),
-                React.createElement(reflexbox_1.Box, { sm: 6, md: 3 }, "Box")),
             React.createElement(reflexbox_1.Flex, { px: 2, align: 'center' },
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
                 React.createElement("h2", null, "Welcome to stalk chat service."),
