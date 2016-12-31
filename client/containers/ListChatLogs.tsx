@@ -65,7 +65,6 @@ const renderList = (props: { value: Array<ChatLog>, onSelected }) => (props.valu
 const ListChatLogs = (props: { value: Array<any>, onSelected }) => (
     < MuiThemeProvider >
         <List>
-            <Subheader>Today</Subheader>
             {(!!props.value) ? renderList(props) : null}
         </List>
     </ MuiThemeProvider >

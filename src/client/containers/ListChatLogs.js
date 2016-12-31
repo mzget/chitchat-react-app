@@ -2,7 +2,6 @@
 const React = require("react");
 const List_1 = require("material-ui/List");
 const Divider_1 = require("material-ui/Divider");
-const Subheader_1 = require("material-ui/Subheader");
 const colors_1 = require("material-ui/styles/colors");
 const IconButton_1 = require("material-ui/IconButton");
 const more_vert_1 = require("material-ui/svg-icons/navigation/more-vert");
@@ -25,8 +24,6 @@ const renderList = (props) => (props.value.map((log, i) => {
         React.createElement(Divider_1.default, { inset: true })));
 }));
 const ListChatLogs = (props) => (React.createElement(MuiThemeProvider_1.default, null,
-    React.createElement(List_1.List, null,
-        React.createElement(Subheader_1.default, null, "Today"),
-        (!!props.value) ? renderList(props) : null)));
+    React.createElement(List_1.List, null, (!!props.value) ? renderList(props) : null)));
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ListChatLogs;
