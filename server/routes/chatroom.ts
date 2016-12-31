@@ -3,10 +3,14 @@ import crypto = require('crypto');
 import mongodb = require('mongodb');
 import async = require('async');
 const router = express.Router();
+import redis = require('redis');
 const ObjectID = mongodb.ObjectID;
+import redisClient from "../scripts/services/CachingSevice";
 
 import Room = require("../scripts/models/Room");
 import Message = require("../scripts/models/Message");
+import * as RoomService from "../scripts/services/RoomService";
+
 
 import { ChatRoomManager } from "../scripts/controllers/ChatRoomManager";
 import * as UserManager from "../scripts/controllers/UserManager";
@@ -45,12 +49,21 @@ router.post('/', function (req, res, next) {
     let hexCode = md.digest('hex');
     let roomId = hexCode.slice(0, 24);
 
-    chatRoomManager.GetChatRoomInfo(roomId).then(function (results) {
-        console.log("GetChatRoomInfo", roomId, results);
-
-        res.status(200).json({ success: true, result: results });
-    }).catch(err => {
-        res.status(500).json({ success: false, message: err });
+    redisClient.hmget("rooms", roomId, (err, result) => {
+        console.log("get room from cache", result);
+        let room: Room.Room = JSON.parse(result[0]);
+        if (err || room == null) {
+            //@find from db..
+            chatRoomManager.GetChatRoomInfo(roomId).then(function (results) {
+                redisClient.hmset("rooms", roomId, JSON.stringify(results[0]), redis.print);
+                res.status(200).json({ success: true, result: results });
+            }).catch(err => {
+                res.status(500).json({ success: false, message: err });
+            });
+        }
+        else {
+            res.status(200).json({ success: true, result: [room] });
+        }
     });
 });
 
@@ -89,6 +102,9 @@ router.post('/createPrivateRoom', function (req, res, next) {
     chatRoomManager.createPrivateChatRoom(_room).then(function (results) {
         console.log("Create Private Chat Room: ", JSON.stringify(results));
 
+        let _room: Room.Room = results[0];
+        redisClient.hmset("rooms", _room._id, JSON.stringify(_room), redis.print);
+
         //<!-- Push updated lastAccessRoom fields to all members.
         async.map(results[0].members, function (member: Room.Member, cb) {
             //<!-- Add rid to user members lastAccessField.
@@ -118,21 +134,37 @@ router.get("/roomInfo", (req, res, next) => {
         return res.status(500).json({ success: false, message: errors });
     }
 
-    // self.app.rpc.auth.authRemote.checkedCanAccessRoom(session, rid, uid, function (err, res) {
-    //     console.log("checkedCanAccessRoom: ", res);
+    let room_id = req.body.room_id;
+    let user_id = req.body.user_id;
 
-    //     if (err || res === false) {
-    //         next(null, { code: Code.FAIL, message: "cannot access your request room." });
-    //     }
-    //     else {
-    //         chatRoomManager.GetChatRoomInfo(rid).then(function (res) {
-    //             next(null, { code: Code.OK, data: res });
-    //         }).catch(err => {
-    //             next(null, { code: Code.FAIL, message: "Your request roomInfo is no longer." });
-    //         });
-    //     }
-    // });
+    RoomService.checkedCanAccessRoom(room_id, user_id, function (err, result) {
+        console.log("checkedCanAccessRoom: ", result);
+
+        if (err || result === false) {
+            res.status(500).json({ success: false, message: "cannot access your request room." });
+        }
+        else {
+            chatRoomManager.GetChatRoomInfo(room_id).then(function (result) {
+                if (result.length > 0) {
+                    res.status(200).json({ success: true, result: result });
+                }
+                else {
+                    res.status(500).json({ success: false, message: "Your request roomInfo is no longer." });
+                }
+            }).catch(err => {
+                res.status(500).json({ success: false, message: "Your request roomInfo is no longer." });
+            });
+        }
+    });
 });
+
+router.post('/clear_cache', (req, res, next) => {
+    redisClient.del("rooms", function (err, reply) {
+        console.log(err, reply);
+        if (err) return res.status(500).json({ success: false, message: err });
+        res.status(200).json({ success: true, result: reply });
+    });
+})
 
 
 module.exports = router;

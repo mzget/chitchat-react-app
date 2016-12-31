@@ -6,9 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const cors = require('cors');
-import redis = require('redis');
-import config = require("./config");
-const getConfig = config.getConfig();
 
 process.env.NODE_ENV = 'development';
 const app = express();
@@ -36,15 +33,6 @@ app.use(expressValidator()); // this line must be immediately after express.body
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('../build'));
-
-const client = redis.createClient(getConfig.redis_port, getConfig.redis_host);
-client.on('connect', function () {
-  console.log('redis connected');
-});
-client.on("error", function (err) {
-  console.log("redis Error " + err);
-});
-app.set('redis', client);
 
 app.use('/', index);
 app.use('/users', users);
