@@ -95,43 +95,6 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
     }
 
     //<!---------- Group ------------------------------------
-    public getGroup(id: string): Room {
-        if (!!this.orgGroups[id]) {
-            return this.orgGroups[id];
-        }
-        else if (!!this.projectBaseGroups[id]) {
-            return this.projectBaseGroups[id];
-        }
-        else if (!!this.privateGroups[id]) {
-            return this.privateGroups[id];
-        }
-        else if (!!this.privateChats && !!this.privateChats[id]) {
-            return this.privateChats[id];
-        }
-    }
-    public addGroup(data: Room) {
-        switch (data.type) {
-            case RoomType.organizationGroup:
-                this.orgGroups[data._id] = data;
-                break;
-            case RoomType.projectBaseGroup:
-                this.projectBaseGroups[data._id] = data;
-                break;
-            case RoomType.privateGroup:
-                this.privateGroups[data._id] = data;
-                break;
-            case RoomType.privateChat:
-                if (!this.privateChats) {
-                    this.privateChats = {};
-                }
-                this.privateChats[data._id] = data;
-                break;
-            default:
-                console.warn("new room is not a group type.", data);
-                break;
-        }
-    }
-
     public updateGroupImage(data: Room) {
         if (!!this.orgGroups[data._id]) {
             this.orgGroups[data._id].image = data.image;

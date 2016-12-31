@@ -124,7 +124,7 @@ class ChatRoomComponent {
                 if (messages !== null) {
                     let chats = messages.slice(0);
                     async.mapSeries(chats, function iterator(item, result) {
-                        if (item.type === ChatDataModels_1.ContentType.Text) {
+                        if (item.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
                             if (config_1.default.appConfig.encryption == true) {
                                 self.secure.decryptWithSecureRandom(item.body, function (err, res) {
                                     if (!err) {
@@ -172,10 +172,10 @@ class ChatRoomComponent {
                 async.some(roomAccess, (item, cb) => {
                     if (item.roomId === self.roomId) {
                         lastMessageTime = item.accessTime;
-                        cb(true);
+                        cb(null, true);
                     }
                     else
-                        cb(false);
+                        cb(null, false);
                 }, (result) => {
                     console.log(result);
                     if (result) {
@@ -478,7 +478,7 @@ class ChatRoomComponent {
         });
     }
     getMemberProfile(member, callback) {
-        serverImplemented_1.default.getInstance().getMemberProfile(member.id, callback);
+        serverImplemented_1.default.getInstance().getMemberProfile(member._id, callback);
     }
     dispose() {
         ChatRoomComponent.instance = null;

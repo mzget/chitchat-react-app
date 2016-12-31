@@ -12,24 +12,18 @@ const React = require("react");
  * Redux + Immutable
  */
 const react_redux_1 = require("react-redux");
-const async = require("async");
-const react_layout_components_1 = require("react-layout-components");
-const Messages_1 = require("chat-template/dist/Messages");
+const reflexbox_1 = require("reflexbox");
 const TypingBox_1 = require("./TypingBox");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 const chatRoomActions = require("../redux/chatroom/chatroomActions");
 const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const ChatDataModels_1 = require("../chats/models/ChatDataModels");
+const MessageImp_1 = require("../chats/models/MessageImp");
+const ListMessages_1 = require("./ListMessages");
 class IComponentNameProps {
 }
 ;
 ;
-class IGiftedChat {
-    constructor() {
-        this.backColor = '#3d83fa';
-        this.textColor = "white";
-    }
-}
 class Chat extends React.Component {
     componentWillMount() {
         console.log("Chat", this.props, this.state);
@@ -121,24 +115,21 @@ class Chat extends React.Component {
         this.props.dispatch(chatRoomActions.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
     }
     onReceive(message) {
-        let _message = this.setGiftMessage(message);
+        let messageImp = __assign({}, message);
+        let _temp = this.state.messages.slice();
         StalkBridgeActions.getUserInfo(message.sender, (result) => {
             if (result) {
-                message.user = {
+                messageImp.user = {
                     _id: result._id,
-                    name: result.displayname,
+                    username: result.displayname,
                     avatar: result.image
                 };
-                this.setState((previousState) => {
-                    return __assign({ messages: previousState.messages }, previousState);
-                });
+                _temp.push(message);
+                this.setState((previousState) => (__assign({}, previousState, { messages: _temp })));
             }
             else {
-                let _temp = this.state.messages.slice();
-                _temp.push(_message);
-                this.setState((previousState) => {
-                    return __assign({}, previousState, { messages: _temp });
-                });
+                _temp.push(message);
+                this.setState((previousState) => (__assign({}, previousState, { messages: _temp })));
             }
         });
     }
@@ -172,43 +163,7 @@ class Chat extends React.Component {
         this.setState(__assign({}, this.state, { messages: _messages }));
     }
     setInitMessages(messages) {
-        async.mapSeries(messages, (message, resultCB) => {
-            resultCB(null, this.setGiftMessage(message));
-        }, (err, results) => {
-            // append the message...
-            this.setState((previousState) => { return __assign({}, previousState, { messages: results }); }, () => {
-                console.log("Map completed: ", this.state.messages.length);
-            });
-        });
-    }
-    setGiftMessage(message) {
-        let myProfile = this.props.userReducer.user;
-        let msg = new IGiftedChat();
-        msg.type = message.type;
-        msg._id = message._id;
-        msg.rid = message.rid;
-        msg.sender = message.sender;
-        msg.target = message.target;
-        //@ Is my message.
-        if (msg.sender == myProfile._id) {
-            msg.inbound = false;
-        }
-        else {
-            msg.inbound = true;
-        }
-        if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
-            msg.message = message.body;
-        }
-        else if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image]) {
-            msg.image = message.body;
-        }
-        else if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location]) {
-            msg.location = message.body;
-        }
-        else {
-            msg.message = message.body;
-        }
-        return msg;
+        this.setState((previousState) => { return __assign({}, previousState, { messages: messages }); });
     }
     onTypingTextChange(event) {
         this.setState(__assign({}, this.state, { typingText: event.target.value }));
@@ -222,24 +177,11 @@ class Chat extends React.Component {
         let message = this.prepareSendMessage(msg);
         this.sendText(message);
         let _messages = this.state.messages.slice();
-        let gift = this.setGiftMessage(message);
-        gift.status = 'Sending...';
-        _messages.push(gift);
-        this.setState(__assign({}, this.state, { typingText: "", messages: _messages }));
-    }
-    render() {
-        return (React.createElement(react_layout_components_1.Box, { column: true, flex: "1 0 auto" },
-            (this.state.earlyMessageReady) ?
-                React.createElement(react_layout_components_1.Container, { alignSelf: 'center', style: {} },
-                    React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))
-                :
-                    null,
-            React.createElement(react_layout_components_1.Box, { flex: "1 0 auto", alignItems: "stretch" }, (this.state) ? React.createElement(Messages_1.default, { messages: this.state.messages, styles: { container: { position: '', bottom: '' } } }) : null),
-            React.createElement(react_layout_components_1.Container, { alignSelf: 'center', style: { bottom: '0%', position: 'absolute' } },
-                React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText }))));
+        _messages.push(message);
+        this.setState(previousState => (__assign({}, previousState, { typingText: "", messages: _messages })));
     }
     prepareSendMessage(msg) {
-        let message = {};
+        let message = new MessageImp_1.MessageImp();
         if (msg.image) {
             message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image];
         }
@@ -252,12 +194,34 @@ class Chat extends React.Component {
         }
         message.rid = this.props.chatroomReducer.room._id;
         message.sender = this.props.userReducer.user._id;
+        message.user = {
+            _id: this.props.userReducer.user._id,
+            username: this.props.userReducer.user.username,
+            avatar: this.props.userReducer.user.avatar
+        };
         message.target = "*";
         message.uuid = Math.round(Math.random() * 10000); // simulating server-side unique id generation
+        message.status = 'Sending...';
         return message;
     }
     sendText(message) {
         this.props.dispatch(chatRoomActions.sendMessage(message));
+    }
+    render() {
+        return (React.createElement("div", null,
+            React.createElement(reflexbox_1.Flex, { flexColumn: true },
+                (this.state.earlyMessageReady) ?
+                    React.createElement(reflexbox_1.Box, { alignSelf: 'center', style: {} },
+                        React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))
+                    :
+                        null,
+                React.createElement(reflexbox_1.Box, { flexAuto: true }, " "),
+                React.createElement("div", { style: { height: 500, overflowY: 'scroll' } },
+                    React.createElement(ListMessages_1.default, { value: this.state.messages, onSelected: (message) => {
+                        } }))),
+            React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center' },
+                React.createElement("footer", { style: { bottom: '0%', position: 'absolute' } },
+                    React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText })))));
     }
 }
 /**

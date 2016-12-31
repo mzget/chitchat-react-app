@@ -12,7 +12,6 @@ const listenerImp = (newMsg) => {
     let dataManager = BackendFactory_1.default.getInstance().dataManager;
     if (!dataManager.isMySelf(newMsg.sender)) {
         chatsLogComp.increaseChatsLogCount(1);
-        console.log("room to add: ", dataManager.getGroup(newMsg.rid));
         let unread = new chatslogComponent_1.Unread();
         unread.message = newMsg;
         unread.rid = newMsg.rid;

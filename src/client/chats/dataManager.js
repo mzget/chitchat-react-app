@@ -65,42 +65,6 @@ class DataManager {
         return this.myProfile.roomAccess;
     }
     //<!---------- Group ------------------------------------
-    getGroup(id) {
-        if (!!this.orgGroups[id]) {
-            return this.orgGroups[id];
-        }
-        else if (!!this.projectBaseGroups[id]) {
-            return this.projectBaseGroups[id];
-        }
-        else if (!!this.privateGroups[id]) {
-            return this.privateGroups[id];
-        }
-        else if (!!this.privateChats && !!this.privateChats[id]) {
-            return this.privateChats[id];
-        }
-    }
-    addGroup(data) {
-        switch (data.type) {
-            case ChatDataModels_1.RoomType.organizationGroup:
-                this.orgGroups[data._id] = data;
-                break;
-            case ChatDataModels_1.RoomType.projectBaseGroup:
-                this.projectBaseGroups[data._id] = data;
-                break;
-            case ChatDataModels_1.RoomType.privateGroup:
-                this.privateGroups[data._id] = data;
-                break;
-            case ChatDataModels_1.RoomType.privateChat:
-                if (!this.privateChats) {
-                    this.privateChats = {};
-                }
-                this.privateChats[data._id] = data;
-                break;
-            default:
-                console.warn("new room is not a group type.", data);
-                break;
-        }
-    }
     updateGroupImage(data) {
         if (!!this.orgGroups[data._id]) {
             this.orgGroups[data._id].image = data.image;

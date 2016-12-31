@@ -14,7 +14,7 @@ import { absSpartan } from "../libs/stalk/spartanEvents";
 import { IMessageDAL } from "../libs/chitchat/dataAccessLayer/IMessageDAL";
 import MessageDALFactory from "../libs/chitchat/dataAccessLayer/messageDALFactory";
 import SecureServiceFactory from "../libs/chitchat/services/secureServiceFactory";
-import { ContentType, Member, IMessage } from "./models/ChatDataModels";
+import { ContentType, IMember, IMessage } from "./models/ChatDataModels";
 import { ISecureService } from "../libs/chitchat/services/ISecureService";
 
 import config from "../configs/config";
@@ -168,7 +168,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                 if (messages !== null) {
                     let chats: IMessage[] = messages.slice(0);
                     async.mapSeries(chats, function iterator(item, result) {
-                        if (item.type === ContentType.Text) {
+                        if (item.type === ContentType[ContentType.Text]) {
                             if (config.appConfig.encryption == true) {
                                 self.secure.decryptWithSecureRandom(item.body, function (err, res) {
                                     if (!err) {
@@ -220,9 +220,9 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                 async.some(roomAccess, (item, cb) => {
                     if (item.roomId === self.roomId) {
                         lastMessageTime = item.accessTime;
-                        cb(true);
+                        cb(null, true);
                     }
-                    else cb(false);
+                    else cb(null, false);
                 }, (result) => {
                     console.log(result);
 
@@ -562,8 +562,8 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         });
     }
 
-    public getMemberProfile(member: Member, callback: (err, res) => void) {
-        ServerImplemented.getInstance().getMemberProfile(member.id, callback);
+    public getMemberProfile(member: IMember, callback: (err, res) => void) {
+        ServerImplemented.getInstance().getMemberProfile(member._id, callback);
     }
 
     public dispose() {

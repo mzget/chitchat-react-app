@@ -24,7 +24,6 @@ const listenerImp = (newMsg) => {
 
     if (!dataManager.isMySelf(newMsg.sender)) {
         chatsLogComp.increaseChatsLogCount(1);
-        console.log("room to add: ", dataManager.getGroup(newMsg.rid));
 
         let unread: IUnread = new Unread();
         unread.message = newMsg;

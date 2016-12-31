@@ -82,14 +82,12 @@ export interface IMessage {
     type: string;
     body: string;
     sender: string;
-    duration: string;
-    resolution: string;
     createTime: Date;
     readers: string[];
-    meta: MessageMeta;
+    meta: IMessageMeta;
     target: string;
 }
-type MessageMeta = {
+export interface IMessageMeta {
     duration: string;
     thumbnail: string;
     name: string;
