@@ -8,6 +8,7 @@ import * as async from "async";
 import { IMessage } from "../libs/stalk/chatRoomApiProvider";
 import { IRoomAccessListenerImp } from "./abstracts/IRoomAccessListenerImp";
 import * as DataModels from "./models/ChatDataModels";
+import { Member } from "./models/Member";
 import ChatLog from "./models/chatLog";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
@@ -15,6 +16,7 @@ import BackendFactory from "./BackendFactory";
 
 import HttpCode from "../libs/stalk/utils/httpStatusCode";
 import ServerImplement, { IDictionary } from "../libs/stalk/serverImplemented";
+import { MemberRole } from "./models/ChatDataModels";
 
 export interface ChatLogMap { [key: string]: ChatLog };
 export interface IUnread { message: DataModels.IMessage; rid: string; count: number };
@@ -199,16 +201,12 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
 
     private decorateRoomInfoData(roomInfo: DataModels.Room) {
         if (roomInfo.type === DataModels.RoomType.privateChat) {
-            let others = roomInfo.members.filter((value) => !this.dataManager.isMySelf(value.id));
+            let others = roomInfo.members.filter((value) => !this.dataManager.isMySelf(value._id)) as Array<Member>;
             if (others.length > 0) {
-                let contactProfile = this.dataManager.getContactProfile(others[0].id);
-                if (contactProfile == null) {
-                    roomInfo.name = "EMPTY ROOM";
-                }
-                else {
-                    roomInfo.name = contactProfile.displayname;
-                    roomInfo.image = contactProfile.image;
-                }
+                let contact = others[0];
+
+                roomInfo.name = (contact.username) ? contact.username : "EMPTY ROOM";
+                roomInfo.image = (contact.avatar) ? contact.avatar : null;
             }
         }
 

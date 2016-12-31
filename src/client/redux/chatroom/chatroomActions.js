@@ -319,9 +319,11 @@ exports.createChatRoom = (userReducer) => {
         let owner = {};
         owner._id = userReducer.user._id;
         owner.user_role = (userReducer.user.role) ? userReducer.user.role : "user";
+        owner.username = userReducer.user.username;
         let contact = {};
         contact._id = userReducer.contact._id;
         contact.user_role = (userReducer.contact.role) ? userReducer.contact.role : "user";
+        contact.username = userReducer.contact.username;
         let members = { owner, contact };
         return members;
     }

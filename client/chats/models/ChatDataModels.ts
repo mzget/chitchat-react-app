@@ -13,7 +13,7 @@ export class Room {
     nodeId: number;
     name: string;
     type: RoomType;
-    members: Member[];
+    members: IMember[];
     image: string;
     description: string;
     status: RoomStatus;
@@ -38,13 +38,11 @@ export type RoomAccessData = {
     accessTime: Date;
 };
 
-export type Member = {
-    id: string;
-    role: MemberRole;
-    joinTime: string;
+export interface IMember {
+    _id: string;
+    username: string;
+    joinTime: Date;
     status: string;
-    jobPosition: string;
-    textRole: string;
 }
 
 export enum MemberRole {

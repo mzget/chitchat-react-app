@@ -11,6 +11,7 @@ export class Member {
     _id: string;
     room_role: MemberRole;
     user_role: string;
+    username: string;
     joinTime: Date;
     status: string;
     jobPosition: string;

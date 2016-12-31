@@ -168,16 +168,11 @@ class ChatsLogComponent {
     }
     decorateRoomInfoData(roomInfo) {
         if (roomInfo.type === DataModels.RoomType.privateChat) {
-            let others = roomInfo.members.filter((value) => !this.dataManager.isMySelf(value.id));
+            let others = roomInfo.members.filter((value) => !this.dataManager.isMySelf(value._id));
             if (others.length > 0) {
-                let contactProfile = this.dataManager.getContactProfile(others[0].id);
-                if (contactProfile == null) {
-                    roomInfo.name = "EMPTY ROOM";
-                }
-                else {
-                    roomInfo.name = contactProfile.displayname;
-                    roomInfo.image = contactProfile.image;
-                }
+                let contact = others[0];
+                roomInfo.name = (contact.username) ? contact.username : "EMPTY ROOM";
+                roomInfo.image = (contact.avatar) ? contact.avatar : null;
             }
         }
         return roomInfo;

@@ -12,8 +12,8 @@ import ServerEventListener from "../../libs/stalk/serverEventListener";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
 import { ContentType, IMessage, Room, RoomType } from "../../chats/models/ChatDataModels";
 import * as NotificationManager from '../stalkBridge/StalkNotificationActions';
+import { Member } from '../../chats/models/Member';
 
-import { Account } from "../../dataAccess/AppAccount";
 import * as fetch from 'isomorphic-fetch';
 
 import Store from "../configureStore";
@@ -355,14 +355,15 @@ export const getPersistendChatroom = (roomId: string) => (dispatch => {
 
 export const createChatRoom = (userReducer) => {
     if (userReducer.user && userReducer.contact) {
-        type Member = { _id: string, user_role: string };
         let owner = {} as Member;
         owner._id = userReducer.user._id;
         owner.user_role = (userReducer.user.role) ? userReducer.user.role : "user";
+        owner.username = userReducer.user.username;
 
         let contact = {} as Member;
         contact._id = userReducer.contact._id;
         contact.user_role = (userReducer.contact.role) ? userReducer.contact.role : "user";
+        contact.username = userReducer.contact.username;
 
         let members = { owner, contact };
 
