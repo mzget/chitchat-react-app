@@ -34,7 +34,9 @@ const CREATE_PRIVATE_CHATROOM = "CREATE_PRIVATE_CHATROOM";
 export const CREATE_PRIVATE_CHATROOM_SUCCESS = "CREATE_PRIVATE_CHATROOM_SUCCESS";
 const CREATE_PRIVATE_CHATROOM_CANCELLED = "CREATE_PRIVATE_CHATROOM_CANCELLED";
 const CREATE_PRIVATE_CHATROOM_FAILURE = "CREATE_PRIVATE_CHATROOM_FAILURE";
-export const createPrivateChatRoom = (owner, roommate) => ({ type: CREATE_PRIVATE_CHATROOM, payload: { owner, roommate } });
+export const createPrivateChatRoom = (owner, roommate) => ({
+    type: CREATE_PRIVATE_CHATROOM, payload: { owner, roommate }
+});
 const createPrivateChatRoomSuccess = (payload) => ({
     type: CREATE_PRIVATE_CHATROOM_SUCCESS, payload
 });

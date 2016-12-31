@@ -83,7 +83,8 @@ export const chatroomReducer = (state = new ChatRoomInitState(), action) => {
         }
 
         case ChatRoomRx.CREATE_PRIVATE_CHATROOM_SUCCESS: {
-            return state.set("room", action.payload).set("state", ChatRoomRx.CREATE_PRIVATE_CHATROOM_SUCCESS);
+            return state.set("room", action.payload.result[0])
+                .set("state", ChatRoomRx.CREATE_PRIVATE_CHATROOM_SUCCESS);
         }
 
 

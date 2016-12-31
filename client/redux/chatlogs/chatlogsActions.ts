@@ -33,11 +33,6 @@ const listenerImp = (newMsg) => {
         count++;
         unread.count = count;
         chatsLogComp.addUnreadMessage(unread);
-
-        Store.dispatch({
-            type: STALK_UNREAD_MAP_CHANGED, payload: unread
-        });
-
         onUnreadMessageMapChanged(unread);
         //             chatLogDAL.savePersistedUnreadMsgMap(unread);
     }
@@ -93,7 +88,6 @@ function updateLastAccessTimeEventHandler(newRoomAccess) {
             chatsLogComp.addUnreadMessage(unread);
 
             calculateUnreadCount();
-
             onUnreadMessageMapChanged(unread);
             //chatLogDAL.savePersistedUnreadMsgMap(unread);
         }
@@ -154,6 +148,10 @@ function getChatsLog() {
 
 function onUnreadMessageMapChanged(unread: IUnread) {
     console.log('UnreadMessageMapChanged: ', JSON.stringify(unread));
+
+    Store.dispatch({
+        type: STALK_UNREAD_MAP_CHANGED, payload: unread
+    });
 
     let chatsLogComp: ChatsLogComponent = Store.getState().stalkReducer.chatslogComponent;
     chatsLogComp.checkRoomInfo(unread).then(function () {

@@ -11,7 +11,7 @@ import SecureServiceFactory from "../../libs/chitchat/services/secureServiceFact
 import ServerEventListener from "../../libs/stalk/serverEventListener";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
 import { ContentType, IMessage, Room, RoomType } from "../../chats/models/ChatDataModels";
-import NotificationManager from '../../chats/notificationManager';
+import * as NotificationManager from '../stalkBridge/StalkNotificationActions';
 
 import { Account } from "../../dataAccess/AppAccount";
 import * as fetch from 'isomorphic-fetch';
@@ -46,7 +46,6 @@ export class ChatRoomActionsType {
     static LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
 }
 
-
 export const CHATROOM_REDUCER_EMPTY_STATE = "CHATROOM_REDUCER_EMPTY_STATE";
 export const emptyState = () => ({ type: CHATROOM_REDUCER_EMPTY_STATE });
 
@@ -57,7 +56,7 @@ export function initChatRoom(currentRoom: Room) {
     chatroomComp.setRoomId(currentRoom._id);
     BackendFactory.getInstance().dataListener.addChatListenerImp(chatroomComp);
 
-    NotificationManager.getInstance().unsubscribeGlobalNotifyMessageEvent();
+    NotificationManager.unsubscribeGlobalNotifyMessageEvent();
 
     chatroomComp.chatroomDelegate = onChatRoomDelegate;
     chatroomComp.outsideRoomDelegete = onOutSideRoomDelegate;
@@ -99,7 +98,7 @@ function onChatRoomDelegate(event, newMsg) {
 function onOutSideRoomDelegate(event, data) {
     if (event === ServerEventListener.ON_CHAT) {
         console.log("Call notification here..."); //active, background, inactive
-        NotificationManager.getInstance().notify(data);
+        NotificationManager.notify(data);
     }
 }
 function replaceMyMessage(receiveMsg) {
@@ -314,7 +313,7 @@ export function leaveRoom() {
 
                 BackendFactory.getInstance().dataListener.removeChatListenerImp(room);
                 ChatRoomComponent.getInstance().dispose();
-                NotificationManager.getInstance().regisNotifyNewMessageEvent();
+                NotificationManager.regisNotifyNewMessageEvent();
             });
         }).catch(err => {
 
@@ -353,3 +352,25 @@ export const getPersistendChatroom = (roomId: string) => (dispatch => {
     else
         dispatch(getPersistChatroomFail());
 });
+
+export const createChatRoom = (userReducer) => {
+    if (userReducer.user && userReducer.contact) {
+        type Member = { _id: string, user_role: string };
+        let owner = {} as Member;
+        owner._id = userReducer.user._id;
+        owner.user_role = (userReducer.user.role) ? userReducer.user.role : "user";
+
+        let contact = {} as Member;
+        contact._id = userReducer.contact._id;
+        contact.user_role = (userReducer.contact.role) ? userReducer.contact.role : "user";
+
+        let members = { owner, contact };
+
+        return members;
+    }
+    else {
+        console.warn("Not yet ready for create chatroom");
+
+        return null;
+    }
+}

@@ -31,7 +31,7 @@ export const unsubscribeGlobalNotifyMessageEvent = () => {
     BackendFactory.getInstance().dataListener.removeNoticeNewMessageEvent(notify);
 }
 
-const notify = (messageImp: IMessage) => {
+export const notify = (messageImp: IMessage) => {
     console.log("notify", messageImp);
 
     let message = messageImp.body;

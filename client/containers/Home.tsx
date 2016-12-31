@@ -73,11 +73,12 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
                     this.props.router.push(`/chat/${chatroomReducer.room._id}`);
                 }
                 else {
-                    this.createChatRoom();
+                    let members = chatroomActions.createChatRoom(userReducer);
+                    this.props.dispatch(chatroomRxEpic.createPrivateChatRoom(members.owner, members.contact));
                 }
                 break;
             case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_SUCCESS: {
-                if (chatroomReducer.room.length > 0) {
+                if (chatroomReducer.room) {
                     this.props.router.push(`/chat/${chatroomReducer.room._id}`);
                 }
             }
@@ -116,12 +117,6 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
         let { location: {query: {userId, username, roomId, contactId}}, chatroomReducer, userReducer } = this.props;
         return (
             <div>
-                <Flex>
-                    <Box sm={6} md={3}>Box</Box>
-                    <Box sm={6} md={3}>Box</Box>
-                    <Box sm={6} md={3}>Box</Box>
-                    <Box sm={6} md={3}>Box</Box>
-                </Flex>
                 <Flex px={2} align='center'>
                     <Box p={2} flexAuto></Box>
                     <h2>Welcome to stalk chat service.</h2>
@@ -142,24 +137,6 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
     fetch_privateChatRoom = (roommateId, owerId) => {
         this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
     };
-
-    createChatRoom = () => {
-        let { userReducer } = this.props;
-        if (userReducer.user && userReducer.contact) {
-            type Member = { _id: string, user_role: string };
-            let owner = {} as Member;
-            owner._id = userReducer.user._id;
-            owner.user_role = "agent";
-
-            let contact = {} as Member;
-            contact._id = userReducer.contact._id;
-            contact.user_role = "user";
-            this.props.dispatch(chatroomRxEpic.createPrivateChatRoom(owner, contact));
-        }
-        else {
-            console.warn("Not yet ready for create chatroom");
-        }
-    }
 
     joinChatServer(nextProps) {
         let { location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer } = nextProps as IComponentNameProps;
