@@ -94,7 +94,7 @@ class Home extends React.Component {
         return (React.createElement("div", null,
             React.createElement(reflexbox_1.Flex, { px: 2, align: 'center' },
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
-                React.createElement("h2", null, "Welcome to stalk chat service."),
+                React.createElement("h2", null, "Stalk realtime messaging service."),
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
             React.createElement(reflexbox_1.Flex, { align: 'center' },
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),

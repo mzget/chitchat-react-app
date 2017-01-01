@@ -7,6 +7,8 @@ import * as async from 'async';
 
 import { Flex, Box } from 'reflexbox';
 import { TypingBox } from './TypingBox';
+import ChatBox from "./ChatBox";
+import Toolbar from "../components/ToolbarSimple";
 
 import { IComponentProps } from "../utils/IComponentProps";
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
@@ -16,7 +18,6 @@ import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 import { ContentType, IMessage } from "../chats/models/ChatDataModels";
 import { MessageImp } from "../chats/models/MessageImp";
 
-import ListMessages from "./ListMessages";
 
 abstract class IComponentNameProps implements IComponentProps {
     location;
@@ -25,6 +26,8 @@ abstract class IComponentNameProps implements IComponentProps {
     dispatch;
     chatroomReducer;
     userReducer;
+    chatlogReducer;
+    stalkReducer;
 };
 
 interface IComponentNameState {
@@ -267,15 +270,14 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         let head = clientHeight * 0.1;
         let body = clientHeight * 0.8;
         let bottom = clientHeight * 0.1;
-        console.log(clientWidth, clientHeight, body);
+
+        let {chatroomReducer } = this.props;
 
         return (
             <div style={{ height: clientHeight }}>
                 <div style={{ height: head }}>
-                    <Flex align='center' justify='center'>
-                        <footer >
-                            <TypingBox onSubmit={this.onSubmitMessage} onValueChange={this.onTypingTextChange} value={this.state.typingText} />
-                        </footer>
+                    <Flex flexAuto>
+                        <Toolbar title={(chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : ""} />
                     </Flex>
                 </div>
                 <div style={{ height: body }}>
@@ -290,7 +292,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                                     null
                             }
                             <Box flexAuto> </Box>
-                            <ListMessages value={this.state.messages} onSelected={(message: IMessage) => {
+                            <ChatBox {...this.props} value={this.state.messages} onSelected={(message: IMessage) => {
 
                             } } />
                         </div>

@@ -6,8 +6,11 @@ export interface IComponentProps {
             roomId: string;
             username: string;
         }
-    },
-    params,
-    router,
-    dispatch,
+    };
+    params;
+    router;
+    userReducer;
+    chatroomReducer;
+    chatlogReducer;
+    stalkReducer;
 };

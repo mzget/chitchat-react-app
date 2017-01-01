@@ -14,12 +14,13 @@ const React = require("react");
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
 const TypingBox_1 = require("./TypingBox");
+const ChatBox_1 = require("./ChatBox");
+const ToolbarSimple_1 = require("../components/ToolbarSimple");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 const chatRoomActions = require("../redux/chatroom/chatroomActions");
 const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const ChatDataModels_1 = require("../chats/models/ChatDataModels");
 const MessageImp_1 = require("../chats/models/MessageImp");
-const ListMessages_1 = require("./ListMessages");
 class IComponentNameProps {
 }
 ;
@@ -213,12 +214,11 @@ class Chat extends React.Component {
         let head = clientHeight * 0.1;
         let body = clientHeight * 0.8;
         let bottom = clientHeight * 0.1;
-        console.log(clientWidth, clientHeight, body);
+        let { chatroomReducer } = this.props;
         return (React.createElement("div", { style: { height: clientHeight } },
             React.createElement("div", { style: { height: head } },
-                React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center' },
-                    React.createElement("footer", null,
-                        React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText })))),
+                React.createElement(reflexbox_1.Flex, { flexAuto: true },
+                    React.createElement(ToolbarSimple_1.default, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "" }))),
             React.createElement("div", { style: { height: body } },
                 React.createElement(reflexbox_1.Flex, { flexColumn: true },
                     React.createElement("div", { style: { height: body, overflowY: 'scroll' } },
@@ -228,8 +228,8 @@ class Chat extends React.Component {
                             :
                                 null,
                         React.createElement(reflexbox_1.Box, { flexAuto: true }, " "),
-                        React.createElement(ListMessages_1.default, { value: this.state.messages, onSelected: (message) => {
-                            } })))),
+                        React.createElement(ChatBox_1.default, __assign({}, this.props, { value: this.state.messages, onSelected: (message) => {
+                            } }))))),
             React.createElement("div", { style: { height: bottom } },
                 React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center' },
                     React.createElement("footer", { style: { bottom: '0%', position: 'absolute' } },

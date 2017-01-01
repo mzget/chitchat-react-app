@@ -119,7 +119,7 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
             <div>
                 <Flex px={2} align='center'>
                     <Box p={2} flexAuto></Box>
-                    <h2>Welcome to stalk chat service.</h2>
+                    <h2>Stalk realtime messaging service.</h2>
                     <Box p={2} flexAuto></Box>
                 </Flex>
                 <Flex align='center'>
