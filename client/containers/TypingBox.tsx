@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RaisedButton, TextField } from 'material-ui';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { FileReaderBox } from "../components/FileReaderBox";
 
 const styles = {
     span: {
@@ -19,6 +20,7 @@ export const TypingBox = (props) => {
     return (
         < MuiThemeProvider >
             <div>
+                <FileReaderBox />
                 <TextField hintText="Type your message" value={props.value} onChange={props.onValueChange} onKeyPress={(e) => {
                     if (e.key === 'Enter') props.onSubmit();
                 } } />
