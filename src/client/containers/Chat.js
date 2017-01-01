@@ -208,20 +208,32 @@ class Chat extends React.Component {
         this.props.dispatch(chatRoomActions.sendMessage(message));
     }
     render() {
-        return (React.createElement("div", null,
-            React.createElement(reflexbox_1.Flex, { flexColumn: true },
-                (this.state.earlyMessageReady) ?
-                    React.createElement(reflexbox_1.Box, { alignSelf: 'center', style: {} },
-                        React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))
-                    :
-                        null,
-                React.createElement(reflexbox_1.Box, { flexAuto: true }, " "),
-                React.createElement("div", { style: { height: 500, overflowY: 'scroll' } },
-                    React.createElement(ListMessages_1.default, { value: this.state.messages, onSelected: (message) => {
-                        } }))),
-            React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center' },
-                React.createElement("footer", { style: { bottom: '0%', position: 'absolute' } },
-                    React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText })))));
+        let clientWidth = document.documentElement.clientWidth;
+        let clientHeight = document.documentElement.clientHeight;
+        let head = clientHeight * 0.1;
+        let body = clientHeight * 0.8;
+        let bottom = clientHeight * 0.1;
+        console.log(clientWidth, clientHeight, body);
+        return (React.createElement("div", { style: { height: clientHeight } },
+            React.createElement("div", { style: { height: head } },
+                React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center' },
+                    React.createElement("footer", null,
+                        React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText })))),
+            React.createElement("div", { style: { height: body } },
+                React.createElement(reflexbox_1.Flex, { flexColumn: true },
+                    React.createElement("div", { style: { height: body, overflowY: 'scroll' } },
+                        (this.state.earlyMessageReady) ?
+                            React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center' },
+                                React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))
+                            :
+                                null,
+                        React.createElement(reflexbox_1.Box, { flexAuto: true }, " "),
+                        React.createElement(ListMessages_1.default, { value: this.state.messages, onSelected: (message) => {
+                            } })))),
+            React.createElement("div", { style: { height: bottom } },
+                React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center' },
+                    React.createElement("footer", { style: { bottom: '0%', position: 'absolute' } },
+                        React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText }))))));
     }
 }
 /**

@@ -262,29 +262,47 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
     }
 
     render(): JSX.Element {
-        return (
-            <div>
-                <Flex flexColumn={true}> 
-                    {
-                        (this.state.earlyMessageReady) ?
-                            <Box alignSelf='center' style={{}} >
-                                <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
-                            </Box>
-                            :
-                            null
-                    }
-                    <Box flexAuto> </Box>
-                    <div style={{height:500, overflowY:'scroll' }}>
-                        <ListMessages value={this.state.messages} onSelected={(message: IMessage) => {
+        let clientWidth = document.documentElement.clientWidth;
+        let clientHeight = document.documentElement.clientHeight;
+        let head = clientHeight * 0.1;
+        let body = clientHeight * 0.8;
+        let bottom = clientHeight * 0.1;
+        console.log(clientWidth, clientHeight, body);
 
-                        } } />
-                    </div>
-                </Flex>
-                <Flex align='center' justify='center'>
-                    <footer style={{ bottom: '0%', position: 'absolute' }} >
-                        <TypingBox onSubmit={this.onSubmitMessage} onValueChange={this.onTypingTextChange} value={this.state.typingText} />
-                    </footer>              
-                </Flex>
+        return (
+            <div style={{ height: clientHeight }}>
+                <div style={{ height: head }}>
+                    <Flex align='center' justify='center'>
+                        <footer >
+                            <TypingBox onSubmit={this.onSubmitMessage} onValueChange={this.onTypingTextChange} value={this.state.typingText} />
+                        </footer>
+                    </Flex>
+                </div>
+                <div style={{ height: body }}>
+                    <Flex flexColumn={true}>
+                        <div style={{ height: body, overflowY: 'scroll' }}>
+                            {
+                                (this.state.earlyMessageReady) ?
+                                    <Flex align='center' justify='center'>
+                                        <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
+                                    </Flex>
+                                    :
+                                    null
+                            }
+                            <Box flexAuto> </Box>
+                            <ListMessages value={this.state.messages} onSelected={(message: IMessage) => {
+
+                            } } />
+                        </div>
+                    </Flex>
+                </div>
+                <div style={{ height: bottom }}>
+                    <Flex align='center' justify='center'>
+                        <footer style={{ bottom: '0%', position: 'absolute' }} >
+                            <TypingBox onSubmit={this.onSubmitMessage} onValueChange={this.onTypingTextChange} value={this.state.typingText} />
+                        </footer>
+                    </Flex>
+                </div>
             </div>
         );
     }
