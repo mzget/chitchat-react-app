@@ -83,6 +83,10 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                 this.props.router.push(`/`);
                 break;
             }
+            case chatRoomActions.LEAVE_ROOM_SUCCESS: {
+                this.props.router.push('/');
+                break;
+            }
 
             case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
                 this.setMessageStatus(chatroomReducer.responseMessage.uuid, 'ErrorButton');
@@ -145,6 +149,9 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
 
     roomInitialize(props: IComponentNameProps) {
         let { chatroomReducer, userReducer, params} = props;
+        if (!userReducer.user) {
+            return this.props.dispatch(chatRoomActions.leaveRoom());
+        }
 
         //@ todo
         // - Init chatroom service.
