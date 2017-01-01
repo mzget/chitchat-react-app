@@ -662,27 +662,6 @@ export default class ServerImplemented {
         });
     }
 
-    /// <summary>
-    /// Gets the room info. For load Room info by room_id.
-    /// </summary>
-    /// <c> return data</c>
-    public getRoomInfo(msg: IDictionary, callback: (err, res) => void) {
-        let self = this;
-        self.pomelo.request("chat.chatRoomHandler.getRoomInfo", msg, (result) => {
-            if (callback != null)
-                callback(null, result);
-        });
-    }
-
-    public getUnreadMsgOfRoom(msg: IDictionary, callback: (err, res) => void) {
-        let self = this;
-        self.pomelo.request("chat.chatRoomHandler.getUnreadRoomMessage", msg, (result) => {
-            if (callback != null) {
-                callback(null, result);
-            }
-        });
-    }
-
     //endregion
 
 

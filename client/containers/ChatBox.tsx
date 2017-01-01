@@ -9,11 +9,14 @@ import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
+import Avatar from 'material-ui/Avatar';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
+import { ContentType } from "../chats/models/ChatDataModels";
 import { MessageImp } from "../chats/models/MessageImp";
 import { IncomingList, OutComingList } from '../components/MessageListItem';
+import CardWithAvatar from '../components/CardWithAvatar';
 
 import { IComponentProps } from '../utils/IComponentProps';
 
@@ -45,16 +48,22 @@ class ChatBox extends React.Component<MyProps, IComponentNameState> {
 
     renderList = () => {
         let { userReducer } = this.props;
+        // this.props.value.map(v => console.dir(v))
         return this.props.value.map((message, i) => (
             <div key={i}>
                 {
-                    (message.sender != this.props.userReducer.user._id) ?
-                        <IncomingList onSelected={this.props.onSelected} message={message} /> :
+                    (message.type == ContentType[ContentType.Text]) ?
+                        <CardWithAvatar
+                            title={message.user.username}
+                            subtitle={(message.createTime) ? message.createTime.toString() : ''}
+                            avatar={(message.user.avatar) ?
+                                <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
+                            }
+                            cardText={message.body} /> :
                         <Flex justify='flex-end'>
                             <OutComingList onSelected={this.props.onSelected} message={message} />
                         </Flex>
                 }
-                <Divider inset={true} />
             </div>
         ));
     }

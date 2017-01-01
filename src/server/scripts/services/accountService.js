@@ -1,4 +1,6 @@
 "use strict";
+const redis = require("redis");
+const CachingSevice_1 = require("./CachingSevice");
 class AccountService {
     constructor() {
         this.uidMap = {};
@@ -41,40 +43,34 @@ class AccountService {
             this._userTransaction = {};
         return this._userTransaction;
     }
-    get RoomsMap() {
-        return this.roomsMap;
-    }
+    /**
+     * roomMembers the dict for keep roomId pair with array of uid who is a member of room.
+     */
     setRoomsMap(data, callback) {
-        console.log("ChatService.setRoomMembers");
-        if (!this.roomsMap)
-            this.roomsMap = {};
         data.forEach(element => {
-            var room = JSON.parse(JSON.stringify(element));
-            if (!this.roomsMap[element.id]) {
-                this.roomsMap[element._id] = room;
-            }
+            let room = JSON.parse(JSON.stringify(element));
+            CachingSevice_1.default.hmset(CachingSevice_1.ROOM_MAP_KEY, element._id, JSON.stringify(room), redis.print);
         });
         callback();
     }
     getRoom(roomId, callback) {
-        if (!this.roomsMap[roomId]) {
-            callback("Have no a roomId in roomMembers dict.", null);
-            return;
-        }
-        let room = this.roomsMap[roomId];
-        callback(null, room);
+        CachingSevice_1.default.hmget(CachingSevice_1.ROOM_MAP_KEY, roomId, function (err, roomMap) {
+            let room = JSON.parse(roomMap[0]);
+            console.dir(roomMap);
+            if (err || room == null) {
+                callback("Have no a roomId in roomMembers dict." + err, null);
+            }
+            else {
+                callback(null, room);
+            }
+        });
     }
     /**
     * Require Room object. Must be { Room._id, Room.members }
     */
-    addRoom(data) {
-        let room = JSON.parse(JSON.stringify(data));
-        if (!this.roomsMap[room._id]) {
-            this.roomsMap[room._id] = room;
-        }
-        else {
-            this.roomsMap[room._id] = room;
-        }
+    addRoom(room) {
+        console.log("addRoom", room);
+        CachingSevice_1.default.hmset(CachingSevice_1.ROOM_MAP_KEY, room._id, JSON.stringify(room), redis.print);
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });

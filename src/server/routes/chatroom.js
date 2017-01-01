@@ -9,9 +9,8 @@ const ObjectID = mongodb.ObjectID;
 const CachingSevice_1 = require("../scripts/services/CachingSevice");
 const Room = require("../scripts/models/Room");
 const RoomService = require("../scripts/services/RoomService");
-const ChatRoomManager_1 = require("../scripts/controllers/ChatRoomManager");
+const ChatRoomManager = require("../scripts/controllers/ChatRoomManager");
 const UserManager = require("../scripts/controllers/UserManager");
-const chatRoomManager = ChatRoomManager_1.ChatRoomManager.prototype;
 /* GET home page. */
 router.get('/', function (req, res, next) {
     next();
@@ -40,12 +39,12 @@ router.post('/', function (req, res, next) {
     md.update(id);
     let hexCode = md.digest('hex');
     let roomId = hexCode.slice(0, 24);
-    CachingSevice_1.default.hmget("rooms", roomId, (err, result) => {
+    CachingSevice_1.default.hmget(CachingSevice_1.ROOM_KEY, roomId, (err, result) => {
         console.log("get room from cache", result);
         if (err || result == null) {
             //@find from db..
-            chatRoomManager.GetChatRoomInfo(roomId).then(function (results) {
-                CachingSevice_1.default.hmset("rooms", roomId, JSON.stringify(results[0]), redis.print);
+            ChatRoomManager.GetChatRoomInfo(roomId).then(function (results) {
+                CachingSevice_1.default.hmset(CachingSevice_1.ROOM_KEY, roomId, JSON.stringify(results[0]), redis.print);
                 res.status(200).json({ success: true, result: results });
             }).catch(err => {
                 res.status(500).json({ success: false, message: err });
@@ -86,10 +85,10 @@ router.post('/createPrivateRoom', function (req, res, next) {
     _room.type = Room.RoomType.privateChat;
     _room.members = _tempArr;
     _room.createTime = new Date();
-    chatRoomManager.createPrivateChatRoom(_room).then(function (results) {
+    ChatRoomManager.createPrivateChatRoom(_room).then(function (results) {
         console.log("Create Private Chat Room: ", JSON.stringify(results));
         let _room = results[0];
-        CachingSevice_1.default.hmset("rooms", _room._id, JSON.stringify(_room), redis.print);
+        CachingSevice_1.default.hmset(CachingSevice_1.ROOM_KEY, _room._id, JSON.stringify(_room), redis.print);
         //<!-- Push updated lastAccessRoom fields to all members.
         async.map(results[0].members, function (member, cb) {
             //<!-- Add rid to user members lastAccessField.
@@ -109,21 +108,21 @@ router.post('/createPrivateRoom', function (req, res, next) {
     });
 });
 router.get("/roomInfo", (req, res, next) => {
-    req.query("room_id", "request for room_id").isMongoId();
-    req.query("user_id", "request for user_id").isMongoId();
+    req.checkQuery("room_id", "request for room_id").isMongoId();
+    req.checkQuery("user_id", "request for user_id").isMongoId();
     let errors = req.validationErrors();
     if (errors) {
         return res.status(500).json({ success: false, message: errors });
     }
-    let room_id = req.body.room_id;
-    let user_id = req.body.user_id;
+    let room_id = req.query.room_id;
+    let user_id = req.query.user_id;
     RoomService.checkedCanAccessRoom(room_id, user_id, function (err, result) {
         console.log("checkedCanAccessRoom: ", result);
         if (err || result === false) {
             res.status(500).json({ success: false, message: "cannot access your request room." });
         }
         else {
-            chatRoomManager.GetChatRoomInfo(room_id).then(function (result) {
+            ChatRoomManager.GetChatRoomInfo(room_id).then(function (result) {
                 if (result.length > 0) {
                     res.status(200).json({ success: true, result: result });
                 }
@@ -136,8 +135,41 @@ router.get("/roomInfo", (req, res, next) => {
         }
     });
 });
+/**
+ * require: roomId, lastAccessTimeOfRoom
+ * **********************************************
+ *@return : unread message count of room.
+ *@return : last message of room.
+ */
+router.get('/unreadMessage', (req, res, next) => {
+    req.checkQuery("room_id", "request for room_id").isMongoId();
+    req.checkQuery("user_id", "request for user_id").isMongoId();
+    req.checkQuery('lastAccessTime', "request for lastAccessTime").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json({ success: false, message: errors });
+    }
+    let room_id = req.query.room_id;
+    let user_id = req.query.user_id;
+    let lastAccessTime = req.query.lastAccessTime;
+    RoomService.checkedCanAccessRoom(room_id, user_id, function (err, result) {
+        if (err || result === false) {
+            res.status(500).json({ success: false, message: "cannot access your request room." + err });
+        }
+        else {
+            ChatRoomManager.getUnreadMsgCountAndLastMsgContentInRoom(room_id, lastAccessTime, function (err, result2) {
+                if (err) {
+                    res.status(500).json({ success: false, message: err });
+                }
+                else {
+                    res.status(200).json({ success: true, result: result2 });
+                }
+            });
+        }
+    });
+});
 router.post('/clear_cache', (req, res, next) => {
-    CachingSevice_1.default.del("rooms", function (err, reply) {
+    CachingSevice_1.default.del(CachingSevice_1.ROOM_KEY, function (err, reply) {
         console.log(err, reply);
         if (err)
             return res.status(500).json({ success: false, message: err });

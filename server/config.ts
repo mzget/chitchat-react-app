@@ -40,5 +40,6 @@ export const DbClient = {
     user: "user",
     userContactColl: "users",
     chatroomCall: "rooms",
-    chatUserCall: "users"
+    chatUserCall: "users",
+    messageColl: "messages"
 }

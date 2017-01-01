@@ -1,6 +1,9 @@
 ﻿import * as User from '../models/User';
 import * as Room from '../models/Room';
 
+import redis = require('redis');
+import redisClient, { ROOM_MAP_KEY } from './CachingSevice';
+
 interface IRoomsMap {
     [rid: string]: Room.Room;
 }
@@ -64,48 +67,36 @@ export default class AccountService {
         return this._userTransaction;
     }
 
+
     /**
      * roomMembers the dict for keep roomId pair with array of uid who is a member of room.
      */
-    private roomsMap: IRoomsMap;
-    public get RoomsMap(): IRoomsMap {
-        return this.roomsMap;
-    }
-    setRoomsMap(data: Array<any>, callback) {
-        console.log("ChatService.setRoomMembers");
-
-        if (!this.roomsMap)
-            this.roomsMap = {};
-
+    setRoomsMap(data: Array<any>, callback: () => void) {
         data.forEach(element => {
-            var room: Room.Room = JSON.parse(JSON.stringify(element));
-            if (!this.roomsMap[element.id]) {
-                this.roomsMap[element._id] = room;
-            }
+            let room: Room.Room = JSON.parse(JSON.stringify(element));
+            redisClient.hmset(ROOM_MAP_KEY, element._id, JSON.stringify(room), redis.print);
         });
 
         callback();
     }
     getRoom(roomId: string, callback: (err: any, res: Room.Room) => void) {
-        if (!this.roomsMap[roomId]) {
-            callback("Have no a roomId in roomMembers dict.", null);
-            return;
-        }
-
-        let room = this.roomsMap[roomId];
-        callback(null, room);
+        redisClient.hmget(ROOM_MAP_KEY, roomId, function (err, roomMap) {
+            let room: Room.Room = JSON.parse(roomMap[0]);
+            console.dir(roomMap);
+            if (err || room == null) {
+                callback("Have no a roomId in roomMembers dict." + err, null);
+            }
+            else {
+                callback(null, room);
+            }
+        });
     }
-
     /**
     * Require Room object. Must be { Room._id, Room.members }
     */
-    addRoom(data) {
-        let room: Room.Room = JSON.parse(JSON.stringify(data));
-        if (!this.roomsMap[room._id]) {
-            this.roomsMap[room._id] = room;
-        }
-        else {
-            this.roomsMap[room._id] = room;
-        }
+    addRoom(room: Room.Room) {
+        console.log("addRoom", room);
+
+        redisClient.hmset(ROOM_MAP_KEY, room._id, JSON.stringify(room), redis.print);
     }
 }
