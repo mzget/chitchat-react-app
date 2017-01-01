@@ -42,8 +42,7 @@ router.post('/', function (req, res, next) {
     let roomId = hexCode.slice(0, 24);
     CachingSevice_1.default.hmget("rooms", roomId, (err, result) => {
         console.log("get room from cache", result);
-        let room = JSON.parse(result[0]);
-        if (err || room == null) {
+        if (err || result == null) {
             //@find from db..
             chatRoomManager.GetChatRoomInfo(roomId).then(function (results) {
                 CachingSevice_1.default.hmset("rooms", roomId, JSON.stringify(results[0]), redis.print);
@@ -53,6 +52,7 @@ router.post('/', function (req, res, next) {
             });
         }
         else {
+            let room = JSON.parse(result[0]);
             res.status(200).json({ success: true, result: [room] });
         }
     });

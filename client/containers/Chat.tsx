@@ -5,9 +5,10 @@ import * as React from "react";
 import { connect } from "react-redux";
 import * as async from 'async';
 
-import { Box, Container } from 'react-layout-components';
-import Messages from 'chat-template/dist/Messages';
+import { Flex, Box } from 'reflexbox';
 import { TypingBox } from './TypingBox';
+import ChatBox from "./ChatBox";
+import Toolbar from "../components/ToolbarSimple";
 
 import { IComponentProps } from "../utils/IComponentProps";
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
@@ -15,6 +16,8 @@ import * as chatRoomActions from "../redux/chatroom/chatroomActions";
 import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 
 import { ContentType, IMessage } from "../chats/models/ChatDataModels";
+import { MessageImp } from "../chats/models/MessageImp";
+
 
 abstract class IComponentNameProps implements IComponentProps {
     location;
@@ -23,6 +26,8 @@ abstract class IComponentNameProps implements IComponentProps {
     dispatch;
     chatroomReducer;
     userReducer;
+    chatlogReducer;
+    stalkReducer;
 };
 
 interface IComponentNameState {
@@ -31,22 +36,6 @@ interface IComponentNameState {
     typingText: string,
     earlyMessageReady
 };
-
-class IGiftedChat {
-    _id: string;
-    message: string;
-    avatar: string;
-    src: string;
-    inbound: boolean;
-    uuid: number;
-    type: string;
-    rid: string;
-    target: string;
-    sender: string;
-    backColor = '#3d83fa';
-    textColor = "white";
-}
-
 
 class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
     componentWillMount() {
@@ -166,31 +155,28 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         this.props.dispatch(chatRoomActions.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
     }
 
-    onReceive(message) {
-        let _message = this.setGiftMessage(message);
-
+    onReceive(message: IMessage) {
+        let messageImp = { ...message } as MessageImp;
+        let _temp = this.state.messages.slice();
         StalkBridgeActions.getUserInfo(message.sender, (result) => {
             if (result) {
-                message.user = {
+                messageImp.user = {
                     _id: result._id,
-                    name: result.displayname,
+                    username: result.displayname,
                     avatar: result.image
                 }
-                this.setState((previousState) => {
-                    return {
-                        messages: previousState.messages,
-                        ...previousState
-                    };
-                })
+                _temp.push(message);
+                this.setState((previousState) => ({
+                    ...previousState, messages: _temp
+                }));
             }
             else {
-                let _temp = this.state.messages.slice();
-                _temp.push(_message);
-                this.setState((previousState) => {
-                    return { ...previousState, messages: _temp };
-                });
+                _temp.push(message);
+                this.setState((previousState) => ({
+                    ...previousState, messages: _temp
+                }));
             }
-        })
+        });
     }
 
     setMessageStatus(uniqueId, status) {
@@ -215,7 +201,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         if (!server_msg.uuid) return;
 
         let _messages = this.state.messages.slice();
-        _messages.forEach((message: IGiftedChat) => {
+        _messages.forEach((message: MessageImp) => {
             if (message.uuid == server_msg.uuid) {
                 message.createTime = server_msg.createTime;
                 message.uuid = server_msg.messageId;
@@ -227,44 +213,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
     }
 
     setInitMessages(messages: Array<IMessage>) {
-        async.mapSeries(messages, (message, resultCB) => {
-            resultCB(null, this.setGiftMessage(message));
-        }, (err, results) => {
-            // append the message...
-            this.setState((previousState) => { return { ...previousState, messages: results } }, () => {
-                console.log("Map completed: ", this.state.messages.length);
-            });
-        });
-    }
-
-    setGiftMessage(message: IMessage) {
-        let myProfile = this.props.userReducer.user;
-        let msg = new IGiftedChat();
-        msg.type = message.type;
-        msg._id = message._id;
-        msg.rid = message.rid;
-        msg.sender = message.sender;
-        msg.target = message.target;
-
-        //@ Is my message.
-        if (msg.sender == myProfile._id) {
-            msg.inbound = false;
-        }
-        else {
-            msg.inbound = true;
-        }
-
-        if (message.type == ContentType[ContentType.Text]) {
-            msg.message = message.body;
-        } else if (message.type == ContentType[ContentType.Image]) {
-            msg.image = message.body;
-        } else if (message.type == ContentType[ContentType.Location]) {
-            msg.location = message.body;
-        } else {
-            msg.message = message.body;
-        }
-
-        return msg;
+        this.setState((previousState) => { return { ...previousState, messages: messages } });
     }
 
     onTypingTextChange(event) {
@@ -281,35 +230,12 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         this.sendText(message);
 
         let _messages = this.state.messages.slice();
-        let gift = this.setGiftMessage(message);
-        gift.status = 'Sending...';
-        _messages.push(gift);
-        this.setState({ ...this.state, typingText: "", messages: _messages });
-    }
-
-    render(): JSX.Element {
-        return (
-            <Box column flex="1 0 auto">
-                {
-                    (this.state.earlyMessageReady) ?
-                        <Container alignSelf='center' style={{}} >
-                            <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
-                        </Container>
-                        :
-                        null
-                }
-                <Box flex="1 0 auto" alignItems="stretch">
-                    {(this.state) ? <Messages messages={this.state.messages} styles={{ container: { position: '', bottom: '' } }} /> : null}
-                </Box>
-                <Container alignSelf='center' style={{ bottom: '0%', position: 'absolute' }} >
-                    <TypingBox onSubmit={this.onSubmitMessage} onValueChange={this.onTypingTextChange} value={this.state.typingText} />
-                </Container>
-            </Box>
-        );
+        _messages.push(message);
+        this.setState(previousState => ({ ...previousState, typingText: "", messages: _messages }));
     }
 
     prepareSendMessage(msg): IMessage {
-        let message = {} as IMessage;
+        let message = new MessageImp();
         if (msg.image) {
             message.type = ContentType[ContentType.Image];
         }
@@ -322,14 +248,65 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
 
         message.rid = this.props.chatroomReducer.room._id;
         message.sender = this.props.userReducer.user._id;
+        message.user = {
+            _id: this.props.userReducer.user._id,
+            username: this.props.userReducer.user.username,
+            avatar: this.props.userReducer.user.avatar
+        };
         message.target = "*";
         message.uuid = Math.round(Math.random() * 10000); // simulating server-side unique id generation
+        message.status = 'Sending...';
 
         return message;
     }
 
     sendText(message: IMessage) {
         this.props.dispatch(chatRoomActions.sendMessage(message));
+    }
+
+    render(): JSX.Element {
+        let clientWidth = document.documentElement.clientWidth;
+        let clientHeight = document.documentElement.clientHeight;
+        let head = clientHeight * 0.1;
+        let body = clientHeight * 0.8;
+        let bottom = clientHeight * 0.1;
+
+        let {chatroomReducer } = this.props;
+
+        return (
+            <div style={{ height: clientHeight }}>
+                <div style={{ height: head }}>
+                    <Flex flexAuto>
+                        <Toolbar title={(chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : ""} />
+                    </Flex>
+                </div>
+                <div style={{ height: body }}>
+                    <Flex flexColumn={true}>
+                        <div style={{ height: body, overflowY: 'scroll' }}>
+                            {
+                                (this.state.earlyMessageReady) ?
+                                    <Flex align='center' justify='center'>
+                                        <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
+                                    </Flex>
+                                    :
+                                    null
+                            }
+                            <Box flexAuto> </Box>
+                            <ChatBox {...this.props} value={this.state.messages} onSelected={(message: IMessage) => {
+
+                            } } />
+                        </div>
+                    </Flex>
+                </div>
+                <div style={{ height: bottom }}>
+                    <Flex align='center' justify='center'>
+                        <footer style={{ bottom: '0%', position: 'absolute' }} >
+                            <TypingBox onSubmit={this.onSubmitMessage} onValueChange={this.onTypingTextChange} value={this.state.typingText} />
+                        </footer>
+                    </Flex>
+                </div>
+            </div>
+        );
     }
 }
 

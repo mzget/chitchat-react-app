@@ -346,11 +346,12 @@ export const getPersistendChatroom = (roomId: string) => (dispatch => {
     dispatch({ type: GET_PERSISTEND_CHATROOM });
 
     const dataManager = BackendFactory.getInstance().dataManager;
-    const room = dataManager.getGroup(roomId);
-    if (room)
-        dispatch(getPersistChatroomSuccess(room));
-    else
-        dispatch(getPersistChatroomFail());
+    dataManager.roomDAL.get(roomId).then(room => {
+        if (room)
+            dispatch(getPersistChatroomSuccess(room));
+        else
+            dispatch(getPersistChatroomFail());
+    });
 });
 
 export const createChatRoom = (userReducer) => {

@@ -61,30 +61,31 @@ class ChatsLogComponent {
     onAccessRoom(dataEvent) {
         let self = this;
         let roomAccess = dataEvent.roomAccess;
-        let _rooms = new Map();
-        this.dataManager.roomDAL.getKeys().then(keys => {
-            async.map(keys, (room_id, cb) => {
-                this.dataManager.roomDAL.get(room_id).then((room) => {
-                    _rooms.set(room_id, room);
-                    cb(null, null);
+        /*
+                let _rooms = new Map<string, DataModels.Room>();
+                this.dataManager.roomDAL.getKeys().then(keys => {
+                    async.map(keys, (room_id, cb) => {
+                        this.dataManager.roomDAL.get(room_id).then((room: DataModels.Room) => {
+                            _rooms.set(room_id, room);
+                            cb(null, null);
+                        });
+                    }, (err, results) => {
+                        addRoomData(_rooms);
+                    });
+                }).catch(err => {
+                    done();
                 });
-            }, (err, results) => {
-                addRoomData(_rooms);
-            });
-        }).catch(err => {
-            done();
-        });
-        const addRoomData = (rooms) => {
+        */
+        const addRoomData = () => {
             async.map(roomAccess, function iterator(item, resultCallback) {
-                if (!rooms && !rooms.has(item.roomId)) {
+                self.getRoomInfo(item.roomId, (err, room) => {
+                    if (err) {
+                    }
+                    else {
+                        self.dataManager.roomDAL.save(room._id, room);
+                    }
                     resultCallback(null, null);
-                }
-                else {
-                    let roomInfo = rooms.get(item.roomId);
-                    if (roomInfo)
-                        self.dataManager.addGroup(roomInfo);
-                    resultCallback(null, null);
-                }
+                });
             }, (err, results) => {
                 done();
             });
@@ -94,6 +95,7 @@ class ChatsLogComponent {
             if (!!self.onReady)
                 self.onReady();
         };
+        addRoomData();
     }
     onUpdatedLastAccessTime(dataEvent) {
         console.log("onUpdatedLastAccessTime", JSON.stringify(dataEvent));
@@ -123,10 +125,8 @@ class ChatsLogComponent {
                 msg["roomId"] = item.roomId;
                 msg["lastAccessTime"] = item.accessTime.toString();
                 self.serverImp.getUnreadMsgOfRoom(msg, function res(err, res) {
-                    if (err || res === null) {
-                        console.warn("getUnreadMsgOfRoom: ", err);
-                    }
-                    else {
+                    console.log("getUnreadMsgOfRoom: ", err, res);
+                    if (!err && res != null) {
                         if (res.code === httpStatusCode_1.default.success) {
                             let unread = JSON.parse(JSON.stringify(res.data));
                             unread.rid = item.roomId;
@@ -163,9 +163,6 @@ class ChatsLogComponent {
             }
         });
     }
-    updatePersistRoomInfo(roomInfo) {
-        this.dataManager.roomDAL.save(roomInfo._id, roomInfo);
-    }
     decorateRoomInfoData(roomInfo) {
         if (roomInfo.type === DataModels.RoomType.privateChat) {
             let others = roomInfo.members.filter((value) => !this.dataManager.isMySelf(value._id));
@@ -187,7 +184,6 @@ class ChatsLogComponent {
             if (res.code === httpStatusCode_1.default.success) {
                 let roomInfos = JSON.parse(JSON.stringify(res.data));
                 let room = self.decorateRoomInfoData(roomInfos[0]);
-                self.dataManager.addGroup(room);
                 callback(null, room);
             }
             else {
@@ -201,26 +197,28 @@ class ChatsLogComponent {
         // create a queue object with concurrency 2
         let q = async.queue(function (task, callback) {
             let value = task;
-            let roomInfo = self.dataManager.getGroup(value.rid);
-            if (!!roomInfo) {
-                let room = self.decorateRoomInfoData(roomInfo);
-                self.dataManager.addGroup(room);
-                results.push(room);
-                callback();
-            }
-            else {
-                console.warn("Can't find roomInfo from persisted data: ", value.rid);
-                self.getRoomInfo(value.rid, (err, room) => {
-                    if (!!room) {
-                        self.updatePersistRoomInfo(room);
-                        results.push(room);
-                        callback();
-                    }
-                    else {
-                        callback(err);
-                    }
-                });
-            }
+            self.dataManager.roomDAL.get(value.rid).then(roomInfo => {
+                console.dir(roomInfo);
+                if (!!roomInfo) {
+                    let room = self.decorateRoomInfoData(roomInfo);
+                    self.dataManager.roomDAL.save(room._id, room);
+                    results.push(room);
+                    callback();
+                }
+                else {
+                    console.warn("Can't find roomInfo from persisted data: ", value.rid);
+                    self.getRoomInfo(value.rid, (err, room) => {
+                        if (!!room) {
+                            self.dataManager.roomDAL.save(room._id, room);
+                            results.push(room);
+                            callback();
+                        }
+                        else {
+                            callback(err);
+                        }
+                    });
+                }
+            });
         }, 2);
         // assign a callback
         q.drain = function () {
@@ -242,11 +240,12 @@ class ChatsLogComponent {
             // create a queue object with concurrency 2
             let q = async.queue(function (task, callback) {
                 let unread = task;
-                let room = self.dataManager.getGroup(unread.rid);
-                if (!room)
-                    callback();
-                self.organizeChatLogMap(unread, room, () => {
-                    callback();
+                self.dataManager.roomDAL.get(unread.rid).then(room => {
+                    if (!room)
+                        callback();
+                    self.organizeChatLogMap(unread, room, () => {
+                        callback();
+                    });
                 });
             }, 2);
             // assign a callback
@@ -339,28 +338,30 @@ class ChatsLogComponent {
         done();
     }
     checkRoomInfo(unread) {
+        let self = this;
         return new Promise((resolve, rejected) => {
-            let roomInfo = this.dataManager.getGroup(unread.rid);
-            if (!roomInfo) {
-                console.warn("No have roomInfo in room store.", unread.rid);
-                this.getRoomInfo(unread.rid, (err, room) => {
-                    if (!!room) {
-                        this.updatePersistRoomInfo(room);
-                        this.organizeChatLogMap(unread, room, () => {
-                            resolve();
-                        });
-                    }
-                    else {
-                        rejected();
-                    }
-                });
-            }
-            else {
-                console.log("organize chats log of room: ", roomInfo.name);
-                this.organizeChatLogMap(unread, roomInfo, () => {
-                    resolve();
-                });
-            }
+            this.dataManager.roomDAL.get(unread.rid).then(roomInfo => {
+                if (!roomInfo) {
+                    console.warn("No have roomInfo in room store.", unread.rid);
+                    this.getRoomInfo(unread.rid, (err, room) => {
+                        if (!!room) {
+                            self.dataManager.roomDAL.save(room._id, room);
+                            this.organizeChatLogMap(unread, room, () => {
+                                resolve();
+                            });
+                        }
+                        else {
+                            rejected();
+                        }
+                    });
+                }
+                else {
+                    console.log("organize chats log of room: ", roomInfo.name);
+                    this.organizeChatLogMap(unread, roomInfo, () => {
+                        resolve();
+                    });
+                }
+            });
         });
     }
     getChatsLogCount() {

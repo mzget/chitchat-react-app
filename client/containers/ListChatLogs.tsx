@@ -62,7 +62,7 @@ const renderList = (props: { value: Array<ChatLog>, onSelected }) => (props.valu
 })
 );
 
-const ListChatLogs = (props: { value: Array<any>, onSelected }) => (
+const ListChatLogs = (props: { value: Array<ChatLog>, onSelected }) => (
     < MuiThemeProvider >
         <List>
             {(!!props.value) ? renderList(props) : null}

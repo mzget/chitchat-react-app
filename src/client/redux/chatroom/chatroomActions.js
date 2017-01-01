@@ -308,11 +308,12 @@ const getPersistChatroomSuccess = (roomInfo) => ({ type: exports.GET_PERSISTEND_
 exports.getPersistendChatroom = (roomId) => (dispatch => {
     dispatch({ type: GET_PERSISTEND_CHATROOM });
     const dataManager = BackendFactory_1.default.getInstance().dataManager;
-    const room = dataManager.getGroup(roomId);
-    if (room)
-        dispatch(getPersistChatroomSuccess(room));
-    else
-        dispatch(getPersistChatroomFail());
+    dataManager.roomDAL.get(roomId).then(room => {
+        if (room)
+            dispatch(getPersistChatroomSuccess(room));
+        else
+            dispatch(getPersistChatroomFail());
+    });
 });
 exports.createChatRoom = (userReducer) => {
     if (userReducer.user && userReducer.contact) {
