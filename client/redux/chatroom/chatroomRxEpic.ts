@@ -77,18 +77,18 @@ export const getPersistendMessageEpic = action$ => {
     //checkOlderMessages();
 }
 
-const UPLOAD_FILE = "UPLOAD_FILE";
-const UPLOAD_FILE_SUCCESS = "UPLOAD_FILE_SUCCESS";
-const UPLOAD_FILE_FAILURE = "UPLOAD_FILE_FAILURE";
-const UPLOAD_FILE_CANCELLED = "UPLOAD_FILE_CANCELLED";
+const CHATROOM_UPLOAD_FILE = "CHATROOM_UPLOAD_FILE";
+export const CHATROOM_UPLOAD_FILE_SUCCESS = "CHATROOM_UPLOAD_FILE_SUCCESS";
+export const CHATROOM_UPLOAD_FILE_FAILURE = "CHATROOM_UPLOAD_FILE_FAILURE";
+const CHATROOM_UPLOAD_FILE_CANCELLED = "CHATROOM_UPLOAD_FILE_CANCELLED";
 
-export const uploadFile = (formData) => ({ type: UPLOAD_FILE, payload: formData });
-const uploadFileSuccess = (payload) => ({ type: UPLOAD_FILE_SUCCESS, payload });
-const uploadFileFailure = (error) => ({ type: UPLOAD_FILE_FAILURE, payload: error });
-const uploadFileCanceled = () => ({ type: UPLOAD_FILE_CANCELLED });
+export const uploadFile = (formData) => ({ type: CHATROOM_UPLOAD_FILE, payload: formData });
+const uploadFileSuccess = (result) => ({ type: CHATROOM_UPLOAD_FILE_SUCCESS, payload: result.result });
+const uploadFileFailure = (error) => ({ type: CHATROOM_UPLOAD_FILE_FAILURE, payload: error });
+const uploadFileCanceled = () => ({ type: CHATROOM_UPLOAD_FILE_CANCELLED });
 
 export const uploadFileEpic = action$ => (
-    action$.ofType(UPLOAD_FILE)
+    action$.ofType(CHATROOM_UPLOAD_FILE)
         .mergeMap(action => {
             return ajax({
                 method: 'POST',
@@ -98,6 +98,6 @@ export const uploadFileEpic = action$ => (
             })
         })
         .map(json => uploadFileSuccess(json.response))
-        .takeUntil(action$.ofType(UPLOAD_FILE_CANCELLED))
+        .takeUntil(action$.ofType(CHATROOM_UPLOAD_FILE_CANCELLED))
         .catch(error => Rx.Observable.of(uploadFileFailure(error)))
 );

@@ -29,11 +29,25 @@ class Chat extends React.Component {
     constructor() {
         super(...arguments);
         this.fileReaderChange = (e, results) => {
+            const textType = /text.*/;
+            const imageType = /image.*/;
             results.forEach(result => {
                 const [progressEvent, file] = result;
                 let body = new FormData();
                 body.append('file', file);
                 console.dir(progressEvent);
+                console.dir(file);
+                if (file.type.match(imageType)) {
+                    let msg = {
+                        image: file.name,
+                        src: file
+                    };
+                    let message = this.prepareSendMessage(msg);
+                    // this.send(message);
+                    let _messages = this.state.messages.slice();
+                    _messages.push(message);
+                    this.setState(previousState => (__assign({}, previousState, { typingText: "", messages: _messages })));
+                }
                 this.props.dispatch(chatroomRxEpic.uploadFile(body));
             });
         };
@@ -77,6 +91,10 @@ class Chat extends React.Component {
             }
             case chatRoomActions.LEAVE_ROOM_SUCCESS: {
                 this.props.router.push('/');
+                break;
+            }
+            case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
+                let { responseUrl } = chatroomReducer;
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
@@ -195,7 +213,7 @@ class Chat extends React.Component {
             text: this.state.typingText
         };
         let message = this.prepareSendMessage(msg);
-        this.sendText(message);
+        this.send(message);
         let _messages = this.state.messages.slice();
         _messages.push(message);
         this.setState(previousState => (__assign({}, previousState, { typingText: "", messages: _messages })));
@@ -224,7 +242,7 @@ class Chat extends React.Component {
         message.status = 'Sending...';
         return message;
     }
-    sendText(message) {
+    send(message) {
         this.props.dispatch(chatRoomActions.sendMessage(message));
     }
     render() {
@@ -246,7 +264,6 @@ class Chat extends React.Component {
                                 React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))
                             :
                                 null,
-                        React.createElement(reflexbox_1.Box, { flexAuto: true }, " "),
                         React.createElement(ChatBox_1.default, __assign({}, this.props, { value: this.state.messages, onSelected: (message) => {
                             } }))))),
             React.createElement("div", { style: { height: bottom } },

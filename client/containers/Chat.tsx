@@ -87,6 +87,12 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                 break;
             }
 
+            case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
+                let {responseUrl} = chatroomReducer;
+
+                break;
+            }
+
             case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
                 this.setMessageStatus(chatroomReducer.responseMessage.uuid, 'ErrorButton');
                 this.props.dispatch(chatRoomActions.emptyState());
@@ -233,7 +239,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
             text: this.state.typingText
         };
         let message = this.prepareSendMessage(msg);
-        this.sendText(message);
+        this.send(message);
 
         let _messages = this.state.messages.slice();
         _messages.push(message);
@@ -266,11 +272,13 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         return message;
     }
 
-    sendText(message: IMessage) {
+    send(message: IMessage) {
         this.props.dispatch(chatRoomActions.sendMessage(message));
     }
 
     fileReaderChange = (e, results) => {
+        const textType = /text.*/;
+        const imageType = /image.*/;
         results.forEach(result => {
             const [progressEvent, file] = result;
 
@@ -278,6 +286,18 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
             body.append('file', file);
 
             console.dir(progressEvent);
+            console.dir(file);
+            if (file.type.match(imageType)) {
+                let msg = {
+                    image: file.name,
+                    src: file
+                };
+                let message = this.prepareSendMessage(msg);
+                // this.send(message);
+                let _messages = this.state.messages.slice();
+                _messages.push(message);
+                this.setState(previousState => ({ ...previousState, typingText: "", messages: _messages }));
+            }
 
             this.props.dispatch(chatroomRxEpic.uploadFile(body));
         });
@@ -310,7 +330,6 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                                     :
                                     null
                             }
-                            <Box flexAuto> </Box>
                             <ChatBox {...this.props} value={this.state.messages} onSelected={(message: IMessage) => {
 
                             } } />

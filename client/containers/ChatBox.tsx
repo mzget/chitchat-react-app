@@ -15,7 +15,6 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import { ContentType } from "../chats/models/ChatDataModels";
 import { MessageImp } from "../chats/models/MessageImp";
-import { IncomingList, OutComingList } from '../components/MessageListItem';
 import CardWithAvatar from '../components/CardWithAvatar';
 
 import { IComponentProps } from '../utils/IComponentProps';
@@ -48,24 +47,38 @@ class ChatBox extends React.Component<MyProps, IComponentNameState> {
 
     renderList = () => {
         let { userReducer } = this.props;
-        // this.props.value.map(v => console.dir(v))
-        return this.props.value.map((message, i) => (
-            <div key={i}>
-                {
-                    (message.type == ContentType[ContentType.Text]) ?
-                        <CardWithAvatar
-                            title={message.user.username}
-                            subtitle={(message.createTime) ? message.createTime.toString() : ''}
-                            avatar={(message.user.avatar) ?
-                                <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
-                            }
-                            cardText={message.body} /> :
-                        <Flex justify='flex-end'>
-                            <OutComingList onSelected={this.props.onSelected} message={message} />
-                        </Flex>
-                }
-            </div>
-        ));
+        return this.props.value.map((message, i, arr) => {
+            switch (message.type) {
+                case ContentType[ContentType.Text]:
+                    {
+                        return (
+                            <div key={i}>
+                                <CardWithAvatar
+                                    title={message.user.username}
+                                    subtitle={(message.createTime) ? message.createTime.toString() : ''}
+                                    avatar={(message.user.avatar) ?
+                                        <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
+                                    }
+                                    cardText={message.body} />
+                            </div>);
+                    }
+                case ContentType[ContentType.Image]:
+                    {
+                        return (
+                            <div key={i}>
+                                <CardWithAvatar
+                                    title={message.user.username}
+                                    subtitle={(message.createTime) ? message.createTime.toString() : ''}
+                                    avatar={(message.user.avatar) ?
+                                        <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
+                                    }
+                                    cardText={message.body} />
+                            </div>);
+                    }
+                default:
+                    break;
+            }
+        });
     }
 
     public render(): JSX.Element {
