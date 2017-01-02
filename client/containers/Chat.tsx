@@ -18,7 +18,6 @@ import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 import { ContentType, IMessage } from "../chats/models/ChatDataModels";
 import { MessageImp } from "../chats/models/MessageImp";
 
-
 abstract class IComponentNameProps implements IComponentProps {
     location;
     params;
@@ -271,6 +270,19 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         this.props.dispatch(chatRoomActions.sendMessage(message));
     }
 
+    fileReaderChange = (e, results) => {
+        results.forEach(result => {
+            const [progressEvent, file] = result;
+
+            let body = new FormData();
+            body.append('file', file);
+
+            console.dir(progressEvent);
+
+            this.props.dispatch(chatroomRxEpic.uploadFile(body));
+        });
+    }
+
     render(): JSX.Element {
         let clientWidth = document.documentElement.clientWidth;
         let clientHeight = document.documentElement.clientHeight;
@@ -308,7 +320,11 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                 <div style={{ height: bottom }}>
                     <Flex align='center' justify='center' flexColumn={false}>
                         <div style={{ bottom: '0%', position: 'absolute' }} >
-                            <TypingBox onSubmit={this.onSubmitMessage} onValueChange={this.onTypingTextChange} value={this.state.typingText} />
+                            <TypingBox
+                                onSubmit={this.onSubmitMessage}
+                                onValueChange={this.onTypingTextChange}
+                                value={this.state.typingText}
+                                fileReaderChange={this.fileReaderChange} />
                         </div>
                     </Flex>
                 </div>

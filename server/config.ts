@@ -43,3 +43,7 @@ export const DbClient = {
     chatUserCall: "users",
     messageColl: "messages"
 }
+
+export const Paths = {
+    fileUpload: `${__dirname}/public/uploads/`
+}

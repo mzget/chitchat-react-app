@@ -26,6 +26,18 @@ class IComponentNameProps {
 ;
 ;
 class Chat extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.fileReaderChange = (e, results) => {
+            results.forEach(result => {
+                const [progressEvent, file] = result;
+                let body = new FormData();
+                body.append('file', file);
+                console.dir(progressEvent);
+                this.props.dispatch(chatroomRxEpic.uploadFile(body));
+            });
+        };
+    }
     componentWillMount() {
         console.log("Chat", this.props, this.state);
         this.state = {
@@ -240,7 +252,7 @@ class Chat extends React.Component {
             React.createElement("div", { style: { height: bottom } },
                 React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center', flexColumn: false },
                     React.createElement("div", { style: { bottom: '0%', position: 'absolute' } },
-                        React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText }))))));
+                        React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange }))))));
     }
 }
 /**

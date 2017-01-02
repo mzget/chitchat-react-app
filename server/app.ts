@@ -7,6 +7,10 @@ var bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const cors = require('cors');
 
+import { getConfig, Paths } from './config';
+import multer = require('multer');
+const upload = multer({ dest: Paths.fileUpload }).single('file');
+
 process.env.NODE_ENV = 'development';
 const app = express();
 if (app.get('env') === 'development') {
@@ -17,11 +21,13 @@ else if (app.get('env') === 'production') {
 }
 console.log("listen on ", process.env.PORT);
 
-var index = require('./routes/index');
-var users = require('./routes/users');
+const index = require('./routes/index');
+const users = require('./routes/users');
 const chatroom = require('./routes/chatroom');
+const chat_upload = require('./routes/upload/uploadFile');
 
 app.use(cors());
+// app.use(upload);
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -37,6 +43,7 @@ app.use(express.static('../build'));
 app.use('/', index);
 app.use('/users', users);
 app.use('/chatroom', chatroom);
+app.use("/chats/upload", chat_upload);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

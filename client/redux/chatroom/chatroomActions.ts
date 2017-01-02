@@ -211,7 +211,6 @@ export function sendMessage(msg: any) {
     return (dispatch) => {
         let secure = SecureServiceFactory.getService();
 
-        console.log("sendMessage", msg)
         dispatch(send_message_request());
 
         if (msg.type == ContentType[ContentType.Location]) {

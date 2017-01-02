@@ -6,7 +6,7 @@
  */
 const chatRoomComponent_1 = require("../../chats/chatRoomComponent");
 const config_1 = require("../../configs/config");
-const Rx = require('rxjs/Rx');
+const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 exports.FETCH_PRIVATE_CHATROOM = "FETCH_PRIVATE_CHATROOM";
 exports.FETCH_PRIVATE_CHATROOM_FAILURE = "FETCH_PRIVATE_CHATROOM_FAILURE";
@@ -69,3 +69,23 @@ exports.getPersistendMessageEpic = action$ => {
     //getNewerMessageFromNet();
     //checkOlderMessages();
 };
+const UPLOAD_FILE = "UPLOAD_FILE";
+const UPLOAD_FILE_SUCCESS = "UPLOAD_FILE_SUCCESS";
+const UPLOAD_FILE_FAILURE = "UPLOAD_FILE_FAILURE";
+const UPLOAD_FILE_CANCELLED = "UPLOAD_FILE_CANCELLED";
+exports.uploadFile = (formData) => ({ type: UPLOAD_FILE, payload: formData });
+const uploadFileSuccess = (payload) => ({ type: UPLOAD_FILE_SUCCESS, payload });
+const uploadFileFailure = (error) => ({ type: UPLOAD_FILE_FAILURE, payload: error });
+const uploadFileCanceled = () => ({ type: UPLOAD_FILE_CANCELLED });
+exports.uploadFileEpic = action$ => (action$.ofType(UPLOAD_FILE)
+    .mergeMap(action => {
+    return ajax({
+        method: 'POST',
+        url: `${config_1.default.api.fileUpload}`,
+        body: action.payload,
+        headers: {}
+    });
+})
+    .map(json => uploadFileSuccess(json.response))
+    .takeUntil(action$.ofType(UPLOAD_FILE_CANCELLED))
+    .catch(error => Rx.Observable.of(uploadFileFailure(error))));

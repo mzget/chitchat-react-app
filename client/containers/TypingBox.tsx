@@ -17,7 +17,7 @@ const styles = {
 };
 
 
-const handleChange = (e, results) => {
+const fileReaderChange = (e, results) => {
     results.forEach(result => {
         const [e, file] = result;
         // this.props.dispatch(uploadFile(e.target.result));
@@ -25,25 +25,32 @@ const handleChange = (e, results) => {
     });
 }
 
-export const FileReaderBox = (props) => (
-    <FileReaderInput id="file-input" onChange={handleChange}>
+const FileReaderBox = (props) => (
+    <FileReaderInput as='url' id="file-input" onChange={props.fileReaderChange}>
         <IconButton>
             <FontIcon className="material-icons">attachment</FontIcon>
         </IconButton>
     </FileReaderInput>
 );
 
-export const SendButton = (props) => (
+const SendButton = (props) => (
     <IconButton onClick={props.onSubmit} >
         <FontIcon className="material-icons">send</FontIcon>
     </IconButton>
 );
 
-export const TypingBox = (props) => {
+interface ITypingBox {
+    onSubmit: () => void;
+    value: string;
+    onValueChange: (text) => void;
+    fileReaderChange: (e, results) => void;
+}
+
+export const TypingBox = (props: ITypingBox) => {
     return (
         < MuiThemeProvider >
             <Flex>
-                <FileReaderBox />
+                <FileReaderBox {...props} />
                 <span style={styles.span} />
                 <TextField hintText="Type your message" value={props.value} onChange={props.onValueChange} onKeyDown={(e) => {
                     if (e.key === 'Enter') props.onSubmit();

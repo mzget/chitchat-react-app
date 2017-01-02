@@ -32,3 +32,6 @@ exports.DbClient = {
     chatUserCall: "users",
     messageColl: "messages"
 };
+exports.Paths = {
+    fileUpload: `${__dirname}/public/uploads/`
+};

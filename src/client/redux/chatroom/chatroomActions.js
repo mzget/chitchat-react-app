@@ -185,7 +185,6 @@ function send_message_failure(data) {
 function sendMessage(msg) {
     return (dispatch) => {
         let secure = secureServiceFactory_1.default.getService();
-        console.log("sendMessage", msg);
         dispatch(send_message_request());
         if (msg.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location]) {
             BackendFactory_1.default.getInstance().getChatApi().chat("*", msg, (err, res) => {

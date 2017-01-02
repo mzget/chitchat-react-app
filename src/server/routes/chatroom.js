@@ -117,7 +117,6 @@ router.get("/roomInfo", (req, res, next) => {
     let room_id = req.query.room_id;
     let user_id = req.query.user_id;
     RoomService.checkedCanAccessRoom(room_id, user_id, function (err, result) {
-        console.log("checkedCanAccessRoom: ", result);
         if (err || result === false) {
             res.status(500).json({ success: false, message: "cannot access your request room." });
         }

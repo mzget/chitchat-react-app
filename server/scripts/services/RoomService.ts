@@ -10,8 +10,6 @@ export const checkedCanAccessRoom = (roomId: string, userId: string, callback: (
             callback(null, result);
         }
         else {
-            console.log("getRoom success", room._id);
-
             result = room.members.some(value => {
                 if (value._id === userId) {
                     return true;

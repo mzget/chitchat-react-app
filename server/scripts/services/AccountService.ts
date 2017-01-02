@@ -81,12 +81,12 @@ export default class AccountService {
     }
     getRoom(roomId: string, callback: (err: any, res: Room.Room) => void) {
         redisClient.hmget(ROOM_MAP_KEY, roomId, function (err, roomMap) {
-            let room: Room.Room = JSON.parse(roomMap[0]);
             console.dir(roomMap);
-            if (err || room == null) {
+            if (err || roomMap[0] == null) {
                 callback("Have no a roomId in roomMembers dict." + err, null);
             }
             else {
+                let room: Room.Room = JSON.parse(roomMap[0]);
                 callback(null, room);
             }
         });
