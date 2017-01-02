@@ -2,7 +2,6 @@
 const express = require("express");
 const mongodb = require("mongodb");
 const mkdirp = require("mkdirp");
-const fs = require("fs");
 const uuid = require('uuid');
 const multer = require("multer");
 const MongoClient = mongodb.MongoClient;
@@ -11,70 +10,20 @@ const config_1 = require("../../config");
 const webConfig = config_1.getConfig();
 const upload = multer({ dest: config_1.Paths.fileUpload }).single('file');
 router.post('/', function (req, res, next) {
+    let path = config_1.Paths.fileUpload;
+    mkdirp.sync(path);
     upload(req, res, function (err) {
         if (err) {
             // An error occurred when uploading
             console.dir(err);
             return res.status(500).json({ success: false, message: "fail to upload" + err });
         }
-        console.dir(req.body);
         console.dir(req.file);
-        // Everything went fine
-        if (req.body || !!req.file || !!req.files) {
-            // req.checkBody("image", "Require image").notEmpty();
-            // req.checkBody("extension", "Require extension").notEmpty();
-            // let errors = req.validationErrors();
-            // if (errors) {
-            //     return res.status(500).json({ success: false, message: errors });
-            // }
-            let image = req.body.image;
-            let isVertical = req.body.isVertical;
-            let fileSize = req.body.fileSize;
-            let extension = req.body.extension;
-            let uuname = uuid.v1();
-            let filename = uuname + "." + extension;
-            let path = config_1.Paths.fileUpload;
-            let fullname = path + filename;
-            console.log("filename", fullname);
-            mkdirp.sync(path);
-            if (!!image) {
-                fs.writeFile(fullname, image, { encoding: 'base64' }, function (err) {
-                    if (!err) {
-                        res.status(200).json({ filename: fullname.replace("./public", "") });
-                    }
-                    else {
-                        res.status(500).json({ success: false, message: err });
-                    }
-                });
-            }
-            else if (!!req.file) {
-                fs.readFile(req.file.filename, function (err, data) {
-                    if (err) {
-                        res.status(500).json({ message: err });
-                    }
-                    else {
-                        // var dirname = "/Node/file-upload/uploads/";
-                        // var newPath = dirname + req.body.filename;
-                        fs.writeFile(fullname, data, function (err) {
-                            if (err) {
-                                return res.end("Error uploading file.");
-                            }
-                            res.status(200).json({ filename: fullname.replace("./public", "") });
-                            fs.unlink('./public/uploads/' + req.file.filename, (err) => {
-                                if (err)
-                                    throw err;
-                                console.log('successfully deleted req.files[0].filename');
-                            });
-                        });
-                    }
-                });
-            }
-            else {
-                res.status(500).json({ success: false });
-            }
+        if (!!req.file) {
+            res.status(200).json({ success: true, result: req.file.path });
         }
         else {
-            res.status(500).json({ success: false, message: "missing file upload." });
+            res.status(500).json({ success: false, message: "fail file is missing: " });
         }
     });
 });

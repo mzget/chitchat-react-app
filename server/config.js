@@ -33,5 +33,5 @@ exports.DbClient = {
     messageColl: "messages"
 };
 exports.Paths = {
-    fileUpload: `${__dirname}/public/uploads/`
+    fileUpload: `./public/uploads/`
 };

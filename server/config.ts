@@ -45,5 +45,5 @@ export const DbClient = {
 }
 
 export const Paths = {
-    fileUpload: `${__dirname}/public/uploads/`
+    fileUpload: `./public/uploads/`
 }

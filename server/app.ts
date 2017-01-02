@@ -8,8 +8,6 @@ const expressValidator = require('express-validator');
 const cors = require('cors');
 
 import { getConfig, Paths } from './config';
-import multer = require('multer');
-const upload = multer({ dest: Paths.fileUpload }).single('file');
 
 process.env.NODE_ENV = 'development';
 const app = express();
@@ -27,7 +25,6 @@ const chatroom = require('./routes/chatroom');
 const chat_upload = require('./routes/upload/uploadFile');
 
 app.use(cors());
-// app.use(upload);
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
