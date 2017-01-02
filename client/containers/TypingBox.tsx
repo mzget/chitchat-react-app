@@ -1,32 +1,56 @@
 import * as React from "react";
+import { Flex, Box } from 'reflexbox';
 import { RaisedButton, TextField } from 'material-ui';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { FileReaderBox } from "../components/FileReaderBox";
+import * as FileReaderInput from 'react-file-reader-input';
+import FontIcon from 'material-ui/FontIcon';
+import IconButton from 'material-ui/IconButton';
 
 const styles = {
     span: {
-        padding: 10
+        paddingRight: 2
     },
     box: {
         bottom: 0,
         position: 'absolute'
     }
 };
+
+
+const handleChange = (e, results) => {
+    results.forEach(result => {
+        const [e, file] = result;
+        // this.props.dispatch(uploadFile(e.target.result));
+        console.log(`Successfully uploaded ${file.name}!`, e);
+    });
+}
+
+export const FileReaderBox = (props) => (
+    <FileReaderInput id="file-input" onChange={handleChange}>
+        <IconButton>
+            <FontIcon className="material-icons">attachment</FontIcon>
+        </IconButton>
+    </FileReaderInput>
+);
+
 export const SendButton = (props) => (
-    <RaisedButton label="Send" primary={true} onTouchEnd={props.onSubmit} onMouseUp={props.onSubmit} />
+    <IconButton onClick={props.onSubmit} >
+        <FontIcon className="material-icons">send</FontIcon>
+    </IconButton>
 );
 
 export const TypingBox = (props) => {
     return (
         < MuiThemeProvider >
-            <div>
+            <Flex>
                 <FileReaderBox />
-                <TextField hintText="Type your message" value={props.value} onChange={props.onValueChange} onKeyPress={(e) => {
+                <span style={styles.span} />
+                <TextField hintText="Type your message" value={props.value} onChange={props.onValueChange} onKeyDown={(e) => {
                     if (e.key === 'Enter') props.onSubmit();
                 } } />
                 <span style={styles.span} />
                 <SendButton onSubmit={props.onSubmit} />
-            </div>
+            </Flex>
         </MuiThemeProvider >
     );
 }

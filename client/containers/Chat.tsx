@@ -306,10 +306,10 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                     </Flex>
                 </div>
                 <div style={{ height: bottom }}>
-                    <Flex align='center' justify='center'>
-                        <footer style={{ bottom: '0%', position: 'absolute' }} >
+                    <Flex align='center' justify='center' flexColumn={false}>
+                        <div style={{ bottom: '0%', position: 'absolute' }} >
                             <TypingBox onSubmit={this.onSubmitMessage} onValueChange={this.onTypingTextChange} value={this.state.typingText} />
-                        </footer>
+                        </div>
                     </Flex>
                 </div>
             </div>
