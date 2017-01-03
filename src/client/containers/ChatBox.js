@@ -27,7 +27,7 @@ class ChatBox extends React.Component {
                         {
                             return (React.createElement("div", { key: i },
                                 React.createElement(CardImageWithAvatar_1.default, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : '', avatar: (message.user.avatar) ?
-                                        React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), imageSrc: message.body })));
+                                        React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), imageSrc: message.src })));
                         }
                     default:
                         break;

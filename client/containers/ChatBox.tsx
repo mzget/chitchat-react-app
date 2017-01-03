@@ -73,7 +73,7 @@ class ChatBox extends React.Component<MyProps, IComponentNameState> {
                                     avatar={(message.user.avatar) ?
                                         <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                                     }
-                                    imageSrc={message.body} />
+                                    imageSrc={message.src} />
                             </div>);
                     }
                 default:

@@ -82,8 +82,8 @@ export const CHATROOM_UPLOAD_FILE_SUCCESS = "CHATROOM_UPLOAD_FILE_SUCCESS";
 export const CHATROOM_UPLOAD_FILE_FAILURE = "CHATROOM_UPLOAD_FILE_FAILURE";
 export const CHATROOM_UPLOAD_FILE_CANCELLED = "CHATROOM_UPLOAD_FILE_CANCELLED";
 
-export const uploadFile = (formData, progressEvent: ProgressEvent) => ({
-    type: CHATROOM_UPLOAD_FILE, payload: { form: formData, data: progressEvent }
+export const uploadFile = (progressEvent: ProgressEvent, file) => ({
+    type: CHATROOM_UPLOAD_FILE, payload: { data: progressEvent, file: file }
 });
 const uploadFileSuccess = (result) => ({ type: CHATROOM_UPLOAD_FILE_SUCCESS, payload: result.result });
 const uploadFileFailure = (error) => ({ type: CHATROOM_UPLOAD_FILE_FAILURE, payload: error });
@@ -91,12 +91,17 @@ export const uploadFileCanceled = () => ({ type: CHATROOM_UPLOAD_FILE_CANCELLED 
 
 export const uploadFileEpic = action$ => (
     action$.ofType(CHATROOM_UPLOAD_FILE)
-        .mergeMap(action => ajax({
-            method: 'POST',
-            url: `${config.api.fileUpload}`,
-            body: action.payload.form,
-            headers: {}
-        }))
+        .mergeMap(action => {
+            let body = new FormData();
+            body.append('file', action.payload.file);
+
+            return ajax({
+                method: 'POST',
+                url: `${config.api.fileUpload}`,
+                body: body,
+                headers: {}
+            });
+        })
         .map(json => uploadFileSuccess(json.response))
         .takeUntil(action$.ofType(CHATROOM_UPLOAD_FILE_CANCELLED))
         .catch(error => Rx.Observable.of(uploadFileFailure(error)))

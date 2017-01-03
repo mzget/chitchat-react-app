@@ -20,10 +20,8 @@ const CardImageWithAvatar = (props: MyProps) => (
         <CardText style={{ color: 'black', marginLeft: 15 }}>
             {props.cardText}
         </CardText>
-        <CardMedia
-            overlay={<CardTitle title="Overlay title" subtitle="Overlay subtitle" />}
-            >
-            <img src={props.imageSrc} />
+        <CardMedia>
+            <img src={props.imageSrc} width='100%' alt={`Image preview: ${props.cardText}`} />
         </CardMedia>
     </Card>
 );

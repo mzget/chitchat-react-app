@@ -13,6 +13,7 @@ const React = require("react");
  */
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
+const config_1 = require("../configs/config");
 const TypingBox_1 = require("./TypingBox");
 const ChatBox_1 = require("./ChatBox");
 const ToolbarSimple_1 = require("../components/ToolbarSimple");
@@ -30,28 +31,11 @@ class Chat extends React.Component {
     constructor() {
         super(...arguments);
         this.fileReaderChange = (e, results) => {
-            const textType = /text.*/;
-            const imageType = /image.*/;
             results.forEach(result => {
                 const [progressEvent, file] = result;
-                let body = new FormData();
-                body.append('file', file);
                 console.dir(progressEvent);
                 console.dir(file);
-                /*
-                if (file.type.match(imageType)) {
-                    let msg = {
-                        image: file.name,
-                        src: file
-                    };
-                    let message = this.prepareSendMessage(msg);
-                    // this.send(message);
-                    let _messages = this.state.messages.slice();
-                    _messages.push(message);
-                    this.setState(previousState => ({ ...previousState, typingText: "", messages: _messages }));
-                }
-    */
-                this.props.dispatch(chatroomRxEpic.uploadFile(body, progressEvent));
+                this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
             });
         };
     }
@@ -63,7 +47,7 @@ class Chat extends React.Component {
             isLoadingEarlierMessages: false,
             earlyMessageReady: false
         };
-        this.onSubmitMessage = this.onSubmitMessage.bind(this);
+        this.onSubmitTextMessage = this.onSubmitTextMessage.bind(this);
         this.onTypingTextChange = this.onTypingTextChange.bind(this);
         this.roomInitialize = this.roomInitialize.bind(this);
         let { chatroomReducer, userReducer, params } = this.props;
@@ -97,7 +81,12 @@ class Chat extends React.Component {
                 break;
             }
             case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
-                let { responseUrl } = chatroomReducer;
+                let { responseUrl, fileInfo } = chatroomReducer;
+                const textType = /text.*/;
+                const imageType = /image.*/;
+                if (fileInfo.type.match(imageType)) {
+                    this.onSubmitImageMessage(fileInfo, responseUrl);
+                }
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
@@ -209,7 +198,7 @@ class Chat extends React.Component {
     onTypingTextChange(event) {
         this.setState(__assign({}, this.state, { typingText: event.target.value }));
     }
-    onSubmitMessage() {
+    onSubmitTextMessage() {
         if (this.state.typingText.length <= 0)
             return;
         let msg = {
@@ -221,9 +210,22 @@ class Chat extends React.Component {
         _messages.push(message);
         this.setState(previousState => (__assign({}, previousState, { typingText: "", messages: _messages })));
     }
+    onSubmitImageMessage(file, responseUrl) {
+        let msg = {
+            image: file.name,
+            src: `${config_1.default.api.host}/${responseUrl}`
+        };
+        let message = this.prepareSendMessage(msg);
+        this.send(message);
+        let _messages = this.state.messages.slice();
+        _messages.push(message);
+        this.setState(previousState => (__assign({}, previousState, { typingText: "", messages: _messages })));
+    }
     prepareSendMessage(msg) {
         let message = new MessageImp_1.MessageImp();
         if (msg.image) {
+            message.body = msg.image;
+            message.src = msg.src;
             message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image];
         }
         else if (msg.text) {
@@ -272,7 +274,7 @@ class Chat extends React.Component {
             React.createElement("div", { style: { height: bottom } },
                 React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center', flexColumn: false },
                     React.createElement("div", { style: { bottom: '0%', position: 'absolute' } },
-                        React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange })))),
+                        React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitTextMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange })))),
             React.createElement(UploadingDialog_1.default, null)));
     }
 }

@@ -20,7 +20,7 @@ router.post('/', function (req, res, next) {
         }
         console.dir(req.file);
         if (!!req.file) {
-            res.status(200).json({ success: true, result: req.file.path });
+            res.status(200).json({ success: true, result: req.file.path.replace('public', '') });
         }
         else {
             res.status(500).json({ success: false, message: "fail file is missing: " });

@@ -5,6 +5,7 @@ export class MessageImp implements IMessage {
     rid: string;
     type: string;
     body: string;
+    src: any;
     sender: string;
     createTime: Date;
     readers: string[];
