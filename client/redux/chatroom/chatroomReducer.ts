@@ -19,10 +19,10 @@ export const ChatRoomInitState = Record({
     responseMessage: null,
     responseUrl: null,
     newMessage: null,
-    earlyMessageReady: false
+    earlyMessageReady: false,
+    uploadingFile: null
 });
 const initialState = new ChatRoomInitState();
-
 
 export const chatroomReducer = (state = new ChatRoomInitState(), action) => {
     switch (action.type) {
@@ -34,6 +34,10 @@ export const chatroomReducer = (state = new ChatRoomInitState(), action) => {
         case ChatRoomRx.FETCH_PRIVATE_CHATROOM_FAILURE:
             return state;
 
+        case ChatRoomRx.CHATROOM_UPLOAD_FILE: {
+            return state.set("state", ChatRoomRx.CHATROOM_UPLOAD_FILE)
+                .set("uploadingFile", action.payload.data.target.result);
+        }
         case ChatRoomRx.CHATROOM_UPLOAD_FILE_FAILURE: {
             return state;
         }

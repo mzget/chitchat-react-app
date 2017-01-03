@@ -18,7 +18,8 @@ exports.ChatRoomInitState = immutable_1.Record({
     responseMessage: null,
     responseUrl: null,
     newMessage: null,
-    earlyMessageReady: false
+    earlyMessageReady: false,
+    uploadingFile: null
 });
 const initialState = new exports.ChatRoomInitState();
 exports.chatroomReducer = (state = new exports.ChatRoomInitState(), action) => {
@@ -30,6 +31,10 @@ exports.chatroomReducer = (state = new exports.ChatRoomInitState(), action) => {
             return state;
         case ChatRoomRx.FETCH_PRIVATE_CHATROOM_FAILURE:
             return state;
+        case ChatRoomRx.CHATROOM_UPLOAD_FILE: {
+            return state.set("state", ChatRoomRx.CHATROOM_UPLOAD_FILE)
+                .set("uploadingFile", action.payload.data.target.result);
+        }
         case ChatRoomRx.CHATROOM_UPLOAD_FILE_FAILURE: {
             return state;
         }

@@ -23,13 +23,6 @@ const styles = {
         position: 'absolute'
     }
 };
-const fileReaderChange = (e, results) => {
-    results.forEach(result => {
-        const [e, file] = result;
-        // this.props.dispatch(uploadFile(e.target.result));
-        console.log(`Successfully uploaded ${file.name}!`, e);
-    });
-};
 const FileReaderBox = (props) => (React.createElement(FileReaderInput, { as: 'url', id: "file-input", onChange: props.fileReaderChange },
     React.createElement(IconButton_1.default, null,
         React.createElement(FontIcon_1.default, { className: "material-icons" }, "attachment"))));

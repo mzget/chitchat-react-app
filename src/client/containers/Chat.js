@@ -16,6 +16,7 @@ const reflexbox_1 = require("reflexbox");
 const TypingBox_1 = require("./TypingBox");
 const ChatBox_1 = require("./ChatBox");
 const ToolbarSimple_1 = require("../components/ToolbarSimple");
+const UploadingDialog_1 = require("./UploadingDialog");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 const chatRoomActions = require("../redux/chatroom/chatroomActions");
 const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
@@ -37,6 +38,7 @@ class Chat extends React.Component {
                 body.append('file', file);
                 console.dir(progressEvent);
                 console.dir(file);
+                /*
                 if (file.type.match(imageType)) {
                     let msg = {
                         image: file.name,
@@ -46,9 +48,10 @@ class Chat extends React.Component {
                     // this.send(message);
                     let _messages = this.state.messages.slice();
                     _messages.push(message);
-                    this.setState(previousState => (__assign({}, previousState, { typingText: "", messages: _messages })));
+                    this.setState(previousState => ({ ...previousState, typingText: "", messages: _messages }));
                 }
-                this.props.dispatch(chatroomRxEpic.uploadFile(body));
+    */
+                this.props.dispatch(chatroomRxEpic.uploadFile(body, progressEvent));
             });
         };
     }
@@ -269,7 +272,8 @@ class Chat extends React.Component {
             React.createElement("div", { style: { height: bottom } },
                 React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center', flexColumn: false },
                     React.createElement("div", { style: { bottom: '0%', position: 'absolute' } },
-                        React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange }))))));
+                        React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange })))),
+            React.createElement(UploadingDialog_1.default, null)));
     }
 }
 /**

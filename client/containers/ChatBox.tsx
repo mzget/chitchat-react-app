@@ -15,7 +15,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import { ContentType } from "../chats/models/ChatDataModels";
 import { MessageImp } from "../chats/models/MessageImp";
-import CardWithAvatar from '../components/CardWithAvatar';
+import CardTextWithAvatar from '../components/CardTextWithAvatar';
+import CardImageWithAvatar from '../components/CardImageWithAvatar';
 
 import { IComponentProps } from '../utils/IComponentProps';
 
@@ -53,7 +54,7 @@ class ChatBox extends React.Component<MyProps, IComponentNameState> {
                     {
                         return (
                             <div key={i}>
-                                <CardWithAvatar
+                                <CardTextWithAvatar
                                     title={message.user.username}
                                     subtitle={(message.createTime) ? message.createTime.toString() : ''}
                                     avatar={(message.user.avatar) ?
@@ -66,13 +67,13 @@ class ChatBox extends React.Component<MyProps, IComponentNameState> {
                     {
                         return (
                             <div key={i}>
-                                <CardWithAvatar
+                                <CardImageWithAvatar
                                     title={message.user.username}
                                     subtitle={(message.createTime) ? message.createTime.toString() : ''}
                                     avatar={(message.user.avatar) ?
                                         <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                                     }
-                                    cardText={message.body} />
+                                    imageSrc={message.body} />
                             </div>);
                     }
                 default:

@@ -77,26 +77,26 @@ export const getPersistendMessageEpic = action$ => {
     //checkOlderMessages();
 }
 
-const CHATROOM_UPLOAD_FILE = "CHATROOM_UPLOAD_FILE";
+export const CHATROOM_UPLOAD_FILE = "CHATROOM_UPLOAD_FILE";
 export const CHATROOM_UPLOAD_FILE_SUCCESS = "CHATROOM_UPLOAD_FILE_SUCCESS";
 export const CHATROOM_UPLOAD_FILE_FAILURE = "CHATROOM_UPLOAD_FILE_FAILURE";
-const CHATROOM_UPLOAD_FILE_CANCELLED = "CHATROOM_UPLOAD_FILE_CANCELLED";
+export const CHATROOM_UPLOAD_FILE_CANCELLED = "CHATROOM_UPLOAD_FILE_CANCELLED";
 
-export const uploadFile = (formData) => ({ type: CHATROOM_UPLOAD_FILE, payload: formData });
+export const uploadFile = (formData, progressEvent: ProgressEvent) => ({
+    type: CHATROOM_UPLOAD_FILE, payload: { form: formData, data: progressEvent }
+});
 const uploadFileSuccess = (result) => ({ type: CHATROOM_UPLOAD_FILE_SUCCESS, payload: result.result });
 const uploadFileFailure = (error) => ({ type: CHATROOM_UPLOAD_FILE_FAILURE, payload: error });
 const uploadFileCanceled = () => ({ type: CHATROOM_UPLOAD_FILE_CANCELLED });
 
 export const uploadFileEpic = action$ => (
     action$.ofType(CHATROOM_UPLOAD_FILE)
-        .mergeMap(action => {
-            return ajax({
-                method: 'POST',
-                url: `${config.api.fileUpload}`,
-                body: action.payload,
-                headers: {}
-            })
-        })
+        .mergeMap(action => ajax({
+            method: 'POST',
+            url: `${config.api.fileUpload}`,
+            body: action.payload.form,
+            headers: {}
+        }))
         .map(json => uploadFileSuccess(json.response))
         .takeUntil(action$.ofType(CHATROOM_UPLOAD_FILE_CANCELLED))
         .catch(error => Rx.Observable.of(uploadFileFailure(error)))

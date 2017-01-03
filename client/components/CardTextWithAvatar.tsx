@@ -9,7 +9,7 @@ interface MyProps {
     cardText: string;
 }
 
-const CardWithAvatar = (props: MyProps) => (
+const CardTextWithAvatar = (props: MyProps) => (
     <Card>
         <CardHeader
             title={<span style={{ color: "blue" }}>{props.title}</span>}
@@ -22,4 +22,4 @@ const CardWithAvatar = (props: MyProps) => (
     </Card>
 );
 
-export default CardWithAvatar;
+export default CardTextWithAvatar;

@@ -4,7 +4,8 @@ const List_1 = require("material-ui/List");
 const Avatar_1 = require("material-ui/Avatar");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const ChatDataModels_1 = require("../chats/models/ChatDataModels");
-const CardWithAvatar_1 = require("../components/CardWithAvatar");
+const CardTextWithAvatar_1 = require("../components/CardTextWithAvatar");
+const CardImageWithAvatar_1 = require("../components/CardImageWithAvatar");
 class MyProps {
 }
 ;
@@ -19,14 +20,14 @@ class ChatBox extends React.Component {
                     case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]:
                         {
                             return (React.createElement("div", { key: i },
-                                React.createElement(CardWithAvatar_1.default, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : '', avatar: (message.user.avatar) ?
+                                React.createElement(CardTextWithAvatar_1.default, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : '', avatar: (message.user.avatar) ?
                                         React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), cardText: message.body })));
                         }
                     case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image]:
                         {
                             return (React.createElement("div", { key: i },
-                                React.createElement(CardWithAvatar_1.default, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : '', avatar: (message.user.avatar) ?
-                                        React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), cardText: message.body })));
+                                React.createElement(CardImageWithAvatar_1.default, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : '', avatar: (message.user.avatar) ?
+                                        React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), imageSrc: message.body })));
                         }
                     default:
                         break;

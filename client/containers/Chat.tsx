@@ -9,6 +9,8 @@ import { Flex, Box } from 'reflexbox';
 import { TypingBox } from './TypingBox';
 import ChatBox from "./ChatBox";
 import Toolbar from "../components/ToolbarSimple";
+import UtilsBox from "./UtilsBox";
+import UploadingDialog from './UploadingDialog';
 
 import { IComponentProps } from "../utils/IComponentProps";
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
@@ -287,6 +289,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
 
             console.dir(progressEvent);
             console.dir(file);
+            /*
             if (file.type.match(imageType)) {
                 let msg = {
                     image: file.name,
@@ -298,8 +301,8 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                 _messages.push(message);
                 this.setState(previousState => ({ ...previousState, typingText: "", messages: _messages }));
             }
-
-            this.props.dispatch(chatroomRxEpic.uploadFile(body));
+*/
+            this.props.dispatch(chatroomRxEpic.uploadFile(body, progressEvent));
         });
     }
 
@@ -347,6 +350,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                         </div>
                     </Flex>
                 </div>
+                <UploadingDialog />
             </div>
         );
     }
