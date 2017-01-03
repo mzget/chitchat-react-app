@@ -5,7 +5,7 @@ import FlatButton from 'material-ui/FlatButton';
 const SimpleCardImage = (props: { src: any }) => (
     <Card>
         <CardMedia>
-            <img src={props.src} height="200" alt="Image preview..." />
+            <img src={props.src} width='100%' alt="Image preview..." />
         </CardMedia>
     </Card>
 );

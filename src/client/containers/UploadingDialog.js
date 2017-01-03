@@ -15,7 +15,7 @@ const FlatButton_1 = require("material-ui/FlatButton");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const ChatroomRx = require("../redux/chatroom/chatroomRxEpic");
 const SimpleCardImage_1 = require("../components/SimpleCardImage");
-const CircularProgressSimple_1 = require("../components/CircularProgressSimple");
+const LinearProgressSimple_1 = require("../components/LinearProgressSimple");
 class IComponentNameProps {
 }
 ;
@@ -23,34 +23,60 @@ class IComponentNameProps {
 class UploadingDialog extends React.Component {
     constructor() {
         super(...arguments);
-        this.actions = [
-            React.createElement(FlatButton_1.default, { label: "Cancel", primary: true, onTouchTap: () => this.setState(previousState => (__assign({}, previousState, { openState: false }))) })
-        ];
+        this.closeDialog = () => {
+            this.setState(previouseState => (__assign({}, previouseState, { openState: false })));
+        };
+        this.cancelFileUpload = () => {
+            let { chatroomReducer } = this.props;
+            if (chatroomReducer.state == ChatroomRx.CHATROOM_UPLOAD_FILE) {
+                this.props.dispatch(ChatroomRx.uploadFileCanceled());
+            }
+            this.closeDialog();
+        };
     }
     componentWillMount() {
         this.state = {
-            openState: false
+            dialogTitle: "Uploading...",
+            openState: false,
+            closeLabel: "Cancel"
         };
+        this.closeDialog = this.closeDialog.bind(this);
     }
     componentWillReceiveProps(nextProps) {
         let { chatroomReducer } = nextProps;
+        let self = this;
         switch (chatroomReducer.state) {
             case ChatroomRx.CHATROOM_UPLOAD_FILE:
                 this.setState(previouseState => (__assign({}, previouseState, { openState: true })));
                 break;
+            case ChatroomRx.CHATROOM_UPLOAD_FILE_SUCCESS: {
+                this.setState(previouseState => (__assign({}, previouseState, { dialogTitle: "Upload Success!" })));
+                setTimeout(function () {
+                    self.closeDialog();
+                }, 3000);
+                break;
+            }
+            case ChatroomRx.CHATROOM_UPLOAD_FILE_FAILURE: {
+                this.setState(previouseState => (__assign({}, previouseState, { dialogTitle: "Upload Fail!" })));
+                setTimeout(function () {
+                    self.closeDialog();
+                }, 3000);
+                break;
+            }
             default:
                 break;
         }
     }
     render() {
         let { chatroomReducer } = this.props;
+        const actions = [
+            React.createElement(FlatButton_1.default, { label: this.state.closeLabel, primary: true, onClick: this.cancelFileUpload })
+        ];
         return (React.createElement(MuiThemeProvider_1.default, null,
-            React.createElement(Dialog_1.default, { title: "Uploading...", actions: this.actions, modal: true, open: this.state.openState },
+            React.createElement(Dialog_1.default, { title: this.state.dialogTitle, actions: actions, modal: true, open: this.state.openState },
                 React.createElement(SimpleCardImage_1.default, { src: chatroomReducer.uploadingFile }),
                 React.createElement(reflexbox_1.Flex, { p: 2, align: 'center' },
-                    React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
-                    React.createElement(CircularProgressSimple_1.default, null),
-                    React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })))));
+                    React.createElement(LinearProgressSimple_1.default, null)))));
     }
 }
 /**

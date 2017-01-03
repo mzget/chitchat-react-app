@@ -87,7 +87,7 @@ export const uploadFile = (formData, progressEvent: ProgressEvent) => ({
 });
 const uploadFileSuccess = (result) => ({ type: CHATROOM_UPLOAD_FILE_SUCCESS, payload: result.result });
 const uploadFileFailure = (error) => ({ type: CHATROOM_UPLOAD_FILE_FAILURE, payload: error });
-const uploadFileCanceled = () => ({ type: CHATROOM_UPLOAD_FILE_CANCELLED });
+export const uploadFileCanceled = () => ({ type: CHATROOM_UPLOAD_FILE_CANCELLED });
 
 export const uploadFileEpic = action$ => (
     action$.ofType(CHATROOM_UPLOAD_FILE)
