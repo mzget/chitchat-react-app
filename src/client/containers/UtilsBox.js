@@ -9,10 +9,8 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const react_redux_1 = require("react-redux");
-const reflexbox_1 = require("reflexbox");
 const DialogBox_1 = require("../components/DialogBox");
 const SnackbarSimple_1 = require("../components/SnackbarSimple");
-const CircularProgressSimple_1 = require("../components/CircularProgressSimple");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 const AlertMsg = require("../consts/AlertMsg");
 ;
@@ -48,10 +46,6 @@ class UtilsBox extends React.Component {
     render() {
         return (React.createElement("div", null,
             React.createElement(DialogBox_1.DialogBox, { handleClose: () => { this.setState(__assign({}, this.state, { openDialog: false })); }, open: this.state.openDialog, title: this.state.dialogTitle, message: this.state.dialogMessage }),
-            React.createElement(reflexbox_1.Flex, { p: 2, align: 'center' },
-                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
-                React.createElement(CircularProgressSimple_1.default, null),
-                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
             React.createElement(SnackbarSimple_1.SnackbarSimple, { open: this.state.openSnackbar, message: this.state.snackbarMessage, handleRequestClose: this.closeSnackbar, hideDuration: 2000 })));
     }
 }

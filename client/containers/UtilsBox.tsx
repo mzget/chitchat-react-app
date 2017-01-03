@@ -5,8 +5,6 @@ import { Flex, Box } from 'reflexbox';
 import { DialogBox } from "../components/DialogBox";
 import { AlertBox } from "../components/AlertBox";
 import { SnackbarSimple } from "../components/SnackbarSimple";
-import CircularProgressSimple from "../components/CircularProgressSimple";
-
 
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import * as StalkNotificationActions from '../redux/stalkBridge/StalkNotificationActions';
@@ -86,11 +84,6 @@ class UtilsBox extends React.Component<IComponentNameProps, IComponentNameState>
                     message={this.state.dialogMessage}
                     />
 
-                <Flex p={2} align='center'>
-                    <Box p={2} flexAuto></Box>
-                    <CircularProgressSimple />
-                    <Box p={2} flexAuto></Box>
-                </Flex>
                 <SnackbarSimple open={this.state.openSnackbar} message={this.state.snackbarMessage} handleRequestClose={this.closeSnackbar} hideDuration={2000} />
             </div>
         );
