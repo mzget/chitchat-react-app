@@ -120,7 +120,12 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
-                this.setInitMessages(chatRoomActions.getMessages());
+                chatRoomActions.getMessages().then(messages => {
+                    this.setState(previousState => ({
+                        ...previousState,
+                        messages: messages
+                    }));
+                });
 
                 this.props.dispatch(chatRoomActions.checkOlderMessages());
                 this.props.dispatch(chatRoomActions.getNewerMessageFromNet());
@@ -128,24 +133,32 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
-                this.setInitMessages(chatRoomActions.getMessages());
+                chatRoomActions.getMessages().then(messages => {
+                    this.setState(previousState => ({
+                        ...previousState,
+                        messages: messages
+                    }));
+                });
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
                 this.setState((previousState) => ({
-                    ...previousState, earlyMessageReady: chatroomReducer.earlyMessageReady
+                    ...previousState,
+                    earlyMessageReady: chatroomReducer.earlyMessageReady
                 }));
 
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS: {
-                this.setState(previousState => ({
-                    ...previousState,
-                    isLoadingEarlierMessages: false,
-                    earlyMessageReady: false
-                }));
-
-                this.setInitMessages(chatRoomActions.getMessages());
+                chatRoomActions.getMessages().then(messages => {
+                    console.dir(messages);
+                    this.setState(previousState => ({
+                        ...previousState,
+                        isLoadingEarlierMessages: false,
+                        earlyMessageReady: false,
+                        messages: messages
+                    }));
+                });
 
                 break;
             }
@@ -181,25 +194,32 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
     onReceive(message: IMessage) {
         let messageImp = { ...message } as MessageImp;
         let _temp = this.state.messages.slice();
-        StalkBridgeActions.getUserInfo(message.sender, (result) => {
-            if (result) {
-                messageImp.user = {
-                    _id: result._id,
-                    username: result.displayname,
-                    avatar: result.image
-                }
-                _temp.push(message);
-                this.setState((previousState) => ({
-                    ...previousState, messages: _temp
-                }));
-            }
-            else {
-                _temp.push(message);
-                this.setState((previousState) => ({
-                    ...previousState, messages: _temp
-                }));
-            }
-        });
+        _temp.push(message);
+        this.setState((previousState) => ({
+            ...previousState, messages: _temp
+        }));
+
+        /*
+                StalkBridgeActions.getUserInfo(message.sender, (result) => {
+                    if (result) {
+                        messageImp.user = {
+                            _id: result._id,
+                            username: result.displayname,
+                            avatar: result.image
+                        }
+                        _temp.push(message);
+                        this.setState((previousState) => ({
+                            ...previousState, messages: _temp
+                        }));
+                    }
+                    else {
+                        _temp.push(message);
+                        this.setState((previousState) => ({
+                            ...previousState, messages: _temp
+                        }));
+                    }
+                });
+                */
     }
 
     setMessageStatus(uniqueId, status) {
@@ -233,10 +253,6 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         });
 
         this.setState({ ...this.state, messages: _messages });
-    }
-
-    setInitMessages(messages: Array<IMessage>) {
-        this.setState((previousState) => { return { ...previousState, messages: messages } });
     }
 
     onTypingTextChange(event) {

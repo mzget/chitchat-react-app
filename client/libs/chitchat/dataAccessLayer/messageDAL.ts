@@ -21,30 +21,12 @@ export class MessageDAL implements IMessageDAL {
         });
     }
 
-    getData(rid: string, done: (err, messages: Array<any>) => void) {
-        this.store.getItem(rid).then(function (value) {
-            let docs: Array<any> = JSON.parse(JSON.stringify(value));
-            console.log("get persistent success");
-            done(null, docs);
-        }).catch(function rejected(err) {
-            console.warn(err);
-        });
+    getData(rid: string): Promise<any> {
+        return this.store.getItem(rid);
     }
 
-    saveData(rid: string, chatRecord: Array<any>, callback?: (err, result) => void) {
-        let self = this;
-        this.store.setItem(rid, chatRecord).then(function (value) {
-            console.log("save persistent success");
-            if (callback != null) {
-                callback(null, value);
-            }
-        }).catch(function rejected(err) {
-            console.warn(err);
-            self.removeData(rid);
-            if (callback != null) {
-                callback(err, null);
-            }
-        });
+    saveData(rid: string, chatRecord: Array<any>) {
+        return this.store.setItem(rid, chatRecord);
     }
 
     removeData(rid: string, callback?: (err, res) => void) {

@@ -14,29 +14,11 @@ class MessageDAL {
             name: "message"
         });
     }
-    getData(rid, done) {
-        this.store.getItem(rid).then(function (value) {
-            let docs = JSON.parse(JSON.stringify(value));
-            console.log("get persistent success");
-            done(null, docs);
-        }).catch(function rejected(err) {
-            console.warn(err);
-        });
+    getData(rid) {
+        return this.store.getItem(rid);
     }
-    saveData(rid, chatRecord, callback) {
-        let self = this;
-        this.store.setItem(rid, chatRecord).then(function (value) {
-            console.log("save persistent success");
-            if (callback != null) {
-                callback(null, value);
-            }
-        }).catch(function rejected(err) {
-            console.warn(err);
-            self.removeData(rid);
-            if (callback != null) {
-                callback(err, null);
-            }
-        });
+    saveData(rid, chatRecord) {
+        return this.store.setItem(rid, chatRecord);
     }
     removeData(rid, callback) {
         this.store.removeItem(rid).then(() => {

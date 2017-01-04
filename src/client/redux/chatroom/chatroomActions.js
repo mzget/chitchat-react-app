@@ -111,7 +111,7 @@ function getPersistendMessage(currentRid) {
     return (dispatch) => {
         dispatch(getPersistendMessage_request());
         chatRoomComponent_1.default.getInstance().getPersistentMessage(currentRid).then(function (messages) {
-            console.log("getPersistendMessage of room %s: completed.", currentRid, chatRoomComponent_1.default.getInstance().chatMessages.length);
+            console.log("getPersistendMessage of room %s: completed.", currentRid);
             dispatch(getPersistendMessage_success());
         }).catch(err => dispatch(getPersistendMessage_failure()));
         //@ Next call 2 method below. -->
@@ -164,7 +164,7 @@ function getNewerMessageFromNet() {
 exports.getNewerMessageFromNet = getNewerMessageFromNet;
 function getMessages() {
     let chatroomComp = chatRoomComponent_1.default.getInstance();
-    return chatroomComp.chatMessages;
+    return chatroomComp.getMessages();
 }
 exports.getMessages = getMessages;
 function send_message_request() {
@@ -290,7 +290,6 @@ const loadEarlyMessage_success = () => ({ type: ChatRoomActionsType.LOAD_EARLY_M
 function loadEarlyMessageChunk() {
     return dispatch => {
         chatRoomComponent_1.default.getInstance().getOlderMessageChunk(function done(err, res) {
-            console.log('olderMessages %s => %s', res.length, chatRoomComponent_1.default.getInstance().chatMessages.length);
             dispatch(loadEarlyMessage_success());
             //@ check older message again.
             dispatch(checkOlderMessages());

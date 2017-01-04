@@ -2,6 +2,7 @@
 const async = require("async");
 const ChatDataModels_1 = require("./models/ChatDataModels");
 const RoomDALFactory_1 = require("../libs/chitchat/dataAccessLayer/RoomDALFactory");
+const messageDALFactory_1 = require("../libs/chitchat/dataAccessLayer/messageDALFactory");
 class DataManager {
     constructor() {
         this.orgGroups = {};
@@ -12,6 +13,7 @@ class DataManager {
         this.isOrgMembersReady = false;
         this.getContactInfoFailEvents = new Array();
         this.roomDAL = RoomDALFactory_1.RoomDALFactory.getObject();
+        this.messageDAL = messageDALFactory_1.default.getObject();
     }
     addContactInfoFailEvents(func) {
         this.getContactInfoFailEvents.push(func);

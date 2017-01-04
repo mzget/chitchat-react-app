@@ -105,13 +105,17 @@ class Chat extends React.Component {
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
-                this.setInitMessages(chatRoomActions.getMessages());
+                chatRoomActions.getMessages().then(messages => {
+                    this.setState(previousState => (__assign({}, previousState, { messages: messages })));
+                });
                 this.props.dispatch(chatRoomActions.checkOlderMessages());
                 this.props.dispatch(chatRoomActions.getNewerMessageFromNet());
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
-                this.setInitMessages(chatRoomActions.getMessages());
+                chatRoomActions.getMessages().then(messages => {
+                    this.setState(previousState => (__assign({}, previousState, { messages: messages })));
+                });
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
@@ -119,8 +123,10 @@ class Chat extends React.Component {
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS: {
-                this.setState(previousState => (__assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false })));
-                this.setInitMessages(chatRoomActions.getMessages());
+                chatRoomActions.getMessages().then(messages => {
+                    console.dir(messages);
+                    this.setState(previousState => (__assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false, messages: messages })));
+                });
                 break;
             }
             default:
@@ -147,21 +153,29 @@ class Chat extends React.Component {
     onReceive(message) {
         let messageImp = __assign({}, message);
         let _temp = this.state.messages.slice();
-        StalkBridgeActions.getUserInfo(message.sender, (result) => {
-            if (result) {
-                messageImp.user = {
-                    _id: result._id,
-                    username: result.displayname,
-                    avatar: result.image
-                };
-                _temp.push(message);
-                this.setState((previousState) => (__assign({}, previousState, { messages: _temp })));
-            }
-            else {
-                _temp.push(message);
-                this.setState((previousState) => (__assign({}, previousState, { messages: _temp })));
-            }
-        });
+        _temp.push(message);
+        this.setState((previousState) => (__assign({}, previousState, { messages: _temp })));
+        /*
+                StalkBridgeActions.getUserInfo(message.sender, (result) => {
+                    if (result) {
+                        messageImp.user = {
+                            _id: result._id,
+                            username: result.displayname,
+                            avatar: result.image
+                        }
+                        _temp.push(message);
+                        this.setState((previousState) => ({
+                            ...previousState, messages: _temp
+                        }));
+                    }
+                    else {
+                        _temp.push(message);
+                        this.setState((previousState) => ({
+                            ...previousState, messages: _temp
+                        }));
+                    }
+                });
+                */
     }
     setMessageStatus(uniqueId, status) {
         let messages = [];
@@ -191,9 +205,6 @@ class Chat extends React.Component {
             }
         });
         this.setState(__assign({}, this.state, { messages: _messages }));
-    }
-    setInitMessages(messages) {
-        this.setState((previousState) => { return __assign({}, previousState, { messages: messages }); });
     }
     onTypingTextChange(event) {
         this.setState(__assign({}, this.state, { typingText: event.target.value }));

@@ -16,6 +16,10 @@ class ChatBox extends React.Component {
         this.renderList = () => {
             let { userReducer } = this.props;
             return this.props.value.map((message, i, arr) => {
+                if (!message.user || !message.user.username) {
+                    console.dir(message);
+                    return null;
+                }
                 switch (message.type) {
                     case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]:
                         {
