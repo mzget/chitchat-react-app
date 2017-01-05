@@ -45,7 +45,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         console.log("Chat", this.props, this.state);
 
         this.state = {
-            messages: [],
+            messages: new Array(),
             typingText: '',
             isLoadingEarlierMessages: false,
             earlyMessageReady: false
@@ -157,7 +157,6 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
             }
             case chatRoomActions.ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS: {
                 chatRoomActions.getMessages().then(messages => {
-                    console.dir(messages);
                     this.setState(previousState => ({
                         ...previousState,
                         isLoadingEarlierMessages: false,
@@ -243,7 +242,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         let message = this.prepareSendMessage(msg);
         this.send(message);
 
-        let _messages = this.state.messages.slice();
+        let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
         _messages.push(message);
         this.setState(previousState => ({ ...previousState, typingText: "", messages: _messages }));
     }

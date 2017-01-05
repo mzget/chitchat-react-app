@@ -55,50 +55,39 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
 
     onChat(message: IMessage) {
         let self = this;
-        this.dataManager.messageDAL.getData(this.roomId).then((chatMessages: Array<any>) => {
-            return chatMessages;
-        }).catch(err => {
-            console.error("Cannot get persistend message of room", err);
-            return new Array<any>();
-        }).then((chatMessages: IMessage[]) => {
+
+        const saveMessages = (chatMessages: Array<IMessage>) => {
+            chatMessages.push(message);
+
+            self.dataManager.messageDAL.saveData(self.roomId, chatMessages).then(chats => {
+                if (!!this.chatroomDelegate)
+                    this.chatroomDelegate(ServerEventListener.ON_CHAT, message);
+            });
+        }
+
+        this.dataManager.messageDAL.getData(this.roomId).then((chats: Array<any>) => {
+            return chats;
+        }).then((chats: IMessage[]) => {
+            let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
             if (this.roomId === message.rid) {
                 if (message.type == ContentType[ContentType.Text]) {
                     if (config.appConfig.encryption == true) {
                         self.secure.decryptWithSecureRandom(message.body, (err, res) => {
                             if (!err) {
                                 message.body = res;
-                                chatMessages.push(message);
-                                self.dataManager.messageDAL.saveData(self.roomId, chatMessages);
-
-                                if (!!this.chatroomDelegate)
-                                    this.chatroomDelegate(ServerEventListener.ON_CHAT, message);
+                                saveMessages(chatMessages);
                             }
                             else {
-                                console.log(err, res);
-                                chatMessages.push(message);
-                                self.dataManager.messageDAL.saveData(self.roomId, chatMessages);
-
-                                if (!!this.chatroomDelegate)
-                                    this.chatroomDelegate(ServerEventListener.ON_CHAT, message);
+                                saveMessages(chatMessages);
                             }
                         });
                     }
                     else {
-                        chatMessages.push(message);
-
-                        self.dataManager.messageDAL.saveData(self.roomId, chatMessages).then(chats => {
-                            if (!!this.chatroomDelegate)
-                                this.chatroomDelegate(ServerEventListener.ON_CHAT, message);
-                        });
+                        saveMessages(chatMessages);
                     }
                 }
                 else {
-                    chatMessages.push(message);
-
-                    self.dataManager.messageDAL.saveData(self.roomId, chatMessages).then(chats => {
-                        if (!!this.chatroomDelegate)
-                            this.chatroomDelegate(ServerEventListener.ON_CHAT, message);
-                    });
+                    saveMessages(chatMessages);
                 }
             }
             else {
@@ -108,6 +97,8 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                     this.outsideRoomDelegete(ServerEventListener.ON_CHAT, message);
                 }
             }
+        }).catch(err => {
+            console.error("Cannot get persistend message of room", err);
         });
     }
 
@@ -248,7 +239,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
             let histories = [];
             if (result.code === 200) {
                 histories = result.data;
-                console.log("Newer message counts.", histories.length);
+                console.info("Newer message counts.", histories.length);
                 if (histories.length > 0) {
 
                     let messages: Array<IMessage> = JSON.parse(JSON.stringify(histories));
@@ -272,10 +263,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                             cb(null);
                         }
                     }, function done(err) {
-                        if (!err) {
-                            console.log("get newer message completed.", messages.length);
-                        }
-                        else {
+                        if (!!err) {
                             console.error('get newer message error', err);
                         }
 
@@ -323,45 +311,47 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                 if (res.code == 200) {
                     let datas = res.data as Array<IMessage>;
                     let earlyMessages: Array<IMessage> = datas;
-
-                    waitForRoomMessage().then(messages => {
-                        if (!!messages && messages.length > 0) {
-                            let mergedArray: Array<IMessage> = [];
-                            if (earlyMessages.length > 0) {
+                    if (earlyMessages.length > 0) {
+                        waitForRoomMessage().then(messages => {
+                            if (!!messages && messages.length > 0) {
+                                let mergedArray: Array<IMessage> = [];
                                 mergedArray = earlyMessages.concat(messages);
-                            }
 
-                            let resultsArray: Array<IMessage> = [];
-                            async.map(mergedArray, function iterator(item, cb) {
-                                let hasMessage = resultsArray.some(function itor(value, id, arr) {
-                                    if (!!value && value._id == item._id) {
-                                        return true;
+                                let resultsArray: Array<IMessage> = [];
+                                async.map(mergedArray, function iterator(item, cb) {
+                                    let hasMessage = resultsArray.some(function itor(value, id, arr) {
+                                        if (!!value && value._id == item._id) {
+                                            return true;
+                                        }
+                                    });
+
+                                    if (hasMessage == false) {
+                                        resultsArray.push(item);
+                                        cb(null, null);
                                     }
+                                    else {
+                                        cb(null, null);
+                                    }
+                                }, function done(err, results) {
+                                    let merged = resultsArray.sort(self.compareMessage);
+                                    self.dataManager.messageDAL.saveData(self.roomId, merged).then(value => {
+                                        callback(null, value);
+                                    });
                                 });
-
-                                if (hasMessage == false) {
-                                    resultsArray.push(item);
-                                    cb(null, null);
-                                }
-                                else {
-                                    cb(null, null);
-                                }
-                            }, function done(err, results) {
-                                let merged = resultsArray.sort(self.compareMessage);
+                            }
+                            else {
+                                let merged = earlyMessages.sort(self.compareMessage);
                                 self.dataManager.messageDAL.saveData(self.roomId, merged).then(value => {
                                     callback(null, value);
                                 });
-                            });
-                        }
-                        else {
-                            let merged = earlyMessages.sort(self.compareMessage);
-                            self.dataManager.messageDAL.saveData(self.roomId, merged).then(value => {
-                                callback(null, value);
-                            });
-                        }
-                    }).catch(err => {
-                        console.error(err + ": Cannot get room message/");
-                    });
+                            }
+                        }).catch(err => {
+                            console.error(err + ": Cannot get room message/");
+                        });
+                    }
+                    else {
+                        callback(null, null);
+                    }
                 }
                 else {
                     callback(res, null);

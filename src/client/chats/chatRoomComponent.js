@@ -44,46 +44,36 @@ class ChatRoomComponent {
     }
     onChat(message) {
         let self = this;
-        this.dataManager.messageDAL.getData(this.roomId).then((chatMessages) => {
-            return chatMessages;
-        }).catch(err => {
-            console.error("Cannot get persistend message of room", err);
-            return new Array();
-        }).then((chatMessages) => {
+        const saveMessages = (chatMessages) => {
+            chatMessages.push(message);
+            self.dataManager.messageDAL.saveData(self.roomId, chatMessages).then(chats => {
+                if (!!this.chatroomDelegate)
+                    this.chatroomDelegate(serverEventListener_1.default.ON_CHAT, message);
+            });
+        };
+        this.dataManager.messageDAL.getData(this.roomId).then((chats) => {
+            return chats;
+        }).then((chats) => {
+            let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
             if (this.roomId === message.rid) {
                 if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
                     if (config_1.default.appConfig.encryption == true) {
                         self.secure.decryptWithSecureRandom(message.body, (err, res) => {
                             if (!err) {
                                 message.body = res;
-                                chatMessages.push(message);
-                                self.dataManager.messageDAL.saveData(self.roomId, chatMessages);
-                                if (!!this.chatroomDelegate)
-                                    this.chatroomDelegate(serverEventListener_1.default.ON_CHAT, message);
+                                saveMessages(chatMessages);
                             }
                             else {
-                                console.log(err, res);
-                                chatMessages.push(message);
-                                self.dataManager.messageDAL.saveData(self.roomId, chatMessages);
-                                if (!!this.chatroomDelegate)
-                                    this.chatroomDelegate(serverEventListener_1.default.ON_CHAT, message);
+                                saveMessages(chatMessages);
                             }
                         });
                     }
                     else {
-                        chatMessages.push(message);
-                        self.dataManager.messageDAL.saveData(self.roomId, chatMessages).then(chats => {
-                            if (!!this.chatroomDelegate)
-                                this.chatroomDelegate(serverEventListener_1.default.ON_CHAT, message);
-                        });
+                        saveMessages(chatMessages);
                     }
                 }
                 else {
-                    chatMessages.push(message);
-                    self.dataManager.messageDAL.saveData(self.roomId, chatMessages).then(chats => {
-                        if (!!this.chatroomDelegate)
-                            this.chatroomDelegate(serverEventListener_1.default.ON_CHAT, message);
-                    });
+                    saveMessages(chatMessages);
                 }
             }
             else {
@@ -92,6 +82,8 @@ class ChatRoomComponent {
                     this.outsideRoomDelegete(serverEventListener_1.default.ON_CHAT, message);
                 }
             }
+        }).catch(err => {
+            console.error("Cannot get persistend message of room", err);
         });
     }
     onLeaveRoom(data) {
@@ -208,7 +200,7 @@ class ChatRoomComponent {
             let histories = [];
             if (result.code === 200) {
                 histories = result.data;
-                console.log("Newer message counts.", histories.length);
+                console.info("Newer message counts.", histories.length);
                 if (histories.length > 0) {
                     let messages = JSON.parse(JSON.stringify(histories));
                     async.forEach(messages, function (chat, cb) {
@@ -229,10 +221,7 @@ class ChatRoomComponent {
                             cb(null);
                         }
                     }, function done(err) {
-                        if (!err) {
-                            console.log("get newer message completed.", messages.length);
-                        }
-                        else {
+                        if (!!err) {
                             console.error('get newer message error', err);
                         }
                         //<!-- Save persistent chats log here.
@@ -275,42 +264,45 @@ class ChatRoomComponent {
                 if (res.code == 200) {
                     let datas = res.data;
                     let earlyMessages = datas;
-                    waitForRoomMessage().then(messages => {
-                        if (!!messages && messages.length > 0) {
-                            let mergedArray = [];
-                            if (earlyMessages.length > 0) {
+                    if (earlyMessages.length > 0) {
+                        waitForRoomMessage().then(messages => {
+                            if (!!messages && messages.length > 0) {
+                                let mergedArray = [];
                                 mergedArray = earlyMessages.concat(messages);
-                            }
-                            let resultsArray = [];
-                            async.map(mergedArray, function iterator(item, cb) {
-                                let hasMessage = resultsArray.some(function itor(value, id, arr) {
-                                    if (!!value && value._id == item._id) {
-                                        return true;
+                                let resultsArray = [];
+                                async.map(mergedArray, function iterator(item, cb) {
+                                    let hasMessage = resultsArray.some(function itor(value, id, arr) {
+                                        if (!!value && value._id == item._id) {
+                                            return true;
+                                        }
+                                    });
+                                    if (hasMessage == false) {
+                                        resultsArray.push(item);
+                                        cb(null, null);
                                     }
+                                    else {
+                                        cb(null, null);
+                                    }
+                                }, function done(err, results) {
+                                    let merged = resultsArray.sort(self.compareMessage);
+                                    self.dataManager.messageDAL.saveData(self.roomId, merged).then(value => {
+                                        callback(null, value);
+                                    });
                                 });
-                                if (hasMessage == false) {
-                                    resultsArray.push(item);
-                                    cb(null, null);
-                                }
-                                else {
-                                    cb(null, null);
-                                }
-                            }, function done(err, results) {
-                                let merged = resultsArray.sort(self.compareMessage);
+                            }
+                            else {
+                                let merged = earlyMessages.sort(self.compareMessage);
                                 self.dataManager.messageDAL.saveData(self.roomId, merged).then(value => {
                                     callback(null, value);
                                 });
-                            });
-                        }
-                        else {
-                            let merged = earlyMessages.sort(self.compareMessage);
-                            self.dataManager.messageDAL.saveData(self.roomId, merged).then(value => {
-                                callback(null, value);
-                            });
-                        }
-                    }).catch(err => {
-                        console.error(err + ": Cannot get room message/");
-                    });
+                            }
+                        }).catch(err => {
+                            console.error(err + ": Cannot get room message/");
+                        });
+                    }
+                    else {
+                        callback(null, null);
+                    }
                 }
                 else {
                     callback(res, null);

@@ -121,7 +121,7 @@ function checkOlderMessages() {
     return dispatch => {
         chatRoomComponent_1.default.getInstance().checkOlderMessages(function done(err, res) {
             if (!err && res.data > 0) {
-                console.log('has olderMessage => %s', res.data);
+                console.info('has olderMessage => %s', res.data);
                 //               console.log("onOlderMessageReady is true ! Show load earlier message on top view.");
                 dispatch(onEarlyMessageReady(true));
             }
