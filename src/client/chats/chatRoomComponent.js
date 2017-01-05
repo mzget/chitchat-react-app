@@ -47,7 +47,7 @@ class ChatRoomComponent {
         this.dataManager.messageDAL.getData(this.roomId).then((chatMessages) => {
             return chatMessages;
         }).catch(err => {
-            console.warn("Cannot get persistend message of room", err);
+            console.error("Cannot get persistend message of room", err);
             return new Array();
         }).then((chatMessages) => {
             if (this.roomId === message.rid) {
@@ -72,20 +72,22 @@ class ChatRoomComponent {
                     }
                     else {
                         chatMessages.push(message);
-                        self.dataManager.messageDAL.saveData(self.roomId, chatMessages);
-                        if (!!this.chatroomDelegate)
-                            this.chatroomDelegate(serverEventListener_1.default.ON_CHAT, message);
+                        self.dataManager.messageDAL.saveData(self.roomId, chatMessages).then(chats => {
+                            if (!!this.chatroomDelegate)
+                                this.chatroomDelegate(serverEventListener_1.default.ON_CHAT, message);
+                        });
                     }
                 }
                 else {
                     chatMessages.push(message);
-                    self.dataManager.messageDAL.saveData(self.roomId, chatMessages);
-                    if (!!this.chatroomDelegate)
-                        this.chatroomDelegate(serverEventListener_1.default.ON_CHAT, message);
+                    self.dataManager.messageDAL.saveData(self.roomId, chatMessages).then(chats => {
+                        if (!!this.chatroomDelegate)
+                            this.chatroomDelegate(serverEventListener_1.default.ON_CHAT, message);
+                    });
                 }
             }
             else {
-                console.warn("this msg come from other room.");
+                console.info("this msg come from other room.");
                 if (!!this.outsideRoomDelegete) {
                     this.outsideRoomDelegete(serverEventListener_1.default.ON_CHAT, message);
                 }

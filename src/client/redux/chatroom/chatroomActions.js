@@ -89,12 +89,7 @@ function replaceMyMessage(receiveMsg) {
         payload: receiveMsg
     };
 }
-function onNewMessage(messages) {
-    return {
-        type: ChatRoomActionsType.ON_NEW_MESSAGE,
-        payload: messages
-    };
-}
+const onNewMessage = (message) => ({ type: ChatRoomActionsType.ON_NEW_MESSAGE, payload: message });
 function getPersistendMessage_request() { return { type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_REQUEST }; }
 function getPersistendMessage_success(data) {
     return {
@@ -102,11 +97,7 @@ function getPersistendMessage_success(data) {
         payload: data
     };
 }
-function getPersistendMessage_failure() {
-    return {
-        type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_FAILURE
-    };
-}
+const getPersistendMessage_failure = () => ({ type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_FAILURE });
 function getPersistendMessage(currentRid) {
     return (dispatch) => {
         dispatch(getPersistendMessage_request());

@@ -62,7 +62,7 @@ export function initChatRoom(currentRoom: Room) {
     chatroomComp.outsideRoomDelegete = onOutSideRoomDelegate;
 }
 
-function onChatRoomDelegate(event, newMsg) {
+function onChatRoomDelegate(event, newMsg: IMessage) {
     if (event == ServerEventListener.ON_CHAT) {
         console.log("onChatRoomDelegate: ", ServerEventListener.ON_CHAT, newMsg);
         /**
@@ -108,12 +108,7 @@ function replaceMyMessage(receiveMsg) {
     }
 }
 
-function onNewMessage(messages: IMessage[]) {
-    return {
-        type: ChatRoomActionsType.ON_NEW_MESSAGE,
-        payload: messages
-    }
-}
+const onNewMessage = (message: IMessage) => ({ type: ChatRoomActionsType.ON_NEW_MESSAGE, payload: message });
 
 function getPersistendMessage_request() { return { type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_REQUEST } }
 function getPersistendMessage_success(data?: any) {
@@ -122,11 +117,7 @@ function getPersistendMessage_success(data?: any) {
         payload: data
     }
 }
-function getPersistendMessage_failure() {
-    return {
-        type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_FAILURE
-    }
-}
+const getPersistendMessage_failure = () => ({ type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_FAILURE });
 export function getPersistendMessage(currentRid: string) {
     return (dispatch) => {
         dispatch(getPersistendMessage_request());

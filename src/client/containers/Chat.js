@@ -100,7 +100,9 @@ class Chat extends React.Component {
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.ON_NEW_MESSAGE: {
-                this.onReceive(chatroomReducer.newMessage);
+                chatRoomActions.getMessages().then(messages => {
+                    this.setState(previousState => (__assign({}, previousState, { messages: messages })));
+                });
                 this.props.dispatch(chatRoomActions.emptyState());
                 break;
             }
@@ -149,33 +151,6 @@ class Chat extends React.Component {
         chatRoomActions.initChatRoom(chatroomReducer.room);
         this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
         this.props.dispatch(chatRoomActions.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
-    }
-    onReceive(message) {
-        let messageImp = __assign({}, message);
-        let _temp = this.state.messages.slice();
-        _temp.push(message);
-        this.setState((previousState) => (__assign({}, previousState, { messages: _temp })));
-        /*
-                StalkBridgeActions.getUserInfo(message.sender, (result) => {
-                    if (result) {
-                        messageImp.user = {
-                            _id: result._id,
-                            username: result.displayname,
-                            avatar: result.image
-                        }
-                        _temp.push(message);
-                        this.setState((previousState) => ({
-                            ...previousState, messages: _temp
-                        }));
-                    }
-                    else {
-                        _temp.push(message);
-                        this.setState((previousState) => ({
-                            ...previousState, messages: _temp
-                        }));
-                    }
-                });
-                */
     }
     setMessageStatus(uniqueId, status) {
         let messages = [];

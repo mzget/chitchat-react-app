@@ -58,7 +58,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         this.dataManager.messageDAL.getData(this.roomId).then((chatMessages: Array<any>) => {
             return chatMessages;
         }).catch(err => {
-            console.warn("Cannot get persistend message of room", err);
+            console.error("Cannot get persistend message of room", err);
             return new Array<any>();
         }).then((chatMessages: IMessage[]) => {
             if (this.roomId === message.rid) {
@@ -81,26 +81,28 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                                 if (!!this.chatroomDelegate)
                                     this.chatroomDelegate(ServerEventListener.ON_CHAT, message);
                             }
-                        })
+                        });
                     }
                     else {
                         chatMessages.push(message);
-                        self.dataManager.messageDAL.saveData(self.roomId, chatMessages);
 
-                        if (!!this.chatroomDelegate)
-                            this.chatroomDelegate(ServerEventListener.ON_CHAT, message);
+                        self.dataManager.messageDAL.saveData(self.roomId, chatMessages).then(chats => {
+                            if (!!this.chatroomDelegate)
+                                this.chatroomDelegate(ServerEventListener.ON_CHAT, message);
+                        });
                     }
                 }
                 else {
                     chatMessages.push(message);
-                    self.dataManager.messageDAL.saveData(self.roomId, chatMessages);
 
-                    if (!!this.chatroomDelegate)
-                        this.chatroomDelegate(ServerEventListener.ON_CHAT, message);
+                    self.dataManager.messageDAL.saveData(self.roomId, chatMessages).then(chats => {
+                        if (!!this.chatroomDelegate)
+                            this.chatroomDelegate(ServerEventListener.ON_CHAT, message);
+                    });
                 }
             }
             else {
-                console.warn("this msg come from other room.");
+                console.info("this msg come from other room.");
 
                 if (!!this.outsideRoomDelegete) {
                     this.outsideRoomDelegete(ServerEventListener.ON_CHAT, message);
