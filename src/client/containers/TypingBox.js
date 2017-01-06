@@ -28,9 +28,12 @@ const FileReaderBox = (props) => (React.createElement(FileReaderInput, { as: 'ur
         React.createElement(FontIcon_1.default, { className: "material-icons" }, "attachment"))));
 const SendButton = (props) => (React.createElement(IconButton_1.default, { onClick: props.onSubmit },
     React.createElement(FontIcon_1.default, { className: "material-icons" }, "send")));
+const StickerButton = (props) => (React.createElement(IconButton_1.default, { onClick: props.onSticker },
+    React.createElement(FontIcon_1.default, { className: "material-icons" }, "insert_emoticon")));
 exports.TypingBox = (props) => {
     return (React.createElement(MuiThemeProvider_1.default, null,
         React.createElement(reflexbox_1.Flex, null,
+            React.createElement(StickerButton, __assign({}, props)),
             React.createElement(FileReaderBox, __assign({}, props)),
             React.createElement("span", { style: styles.span }),
             React.createElement(material_ui_1.TextField, { hintText: "Type your message", value: props.value, onChange: props.onValueChange, onKeyDown: (e) => {
@@ -38,5 +41,5 @@ exports.TypingBox = (props) => {
                         props.onSubmit();
                 } }),
             React.createElement("span", { style: styles.span }),
-            React.createElement(SendButton, { onSubmit: props.onSubmit }))));
+            React.createElement(SendButton, __assign({}, props)))));
 };

@@ -353,17 +353,18 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                         </div>
                     </Flex>
                 </div>
-                <div style={{ height: bottom }}>
-                    <Flex align='center' justify='center' flexColumn={false}>
-                        <div style={{ bottom: '0%', position: 'absolute' }} >
-                            <TypingBox
-                                onSubmit={this.onSubmitTextMessage}
-                                onValueChange={this.onTypingTextChange}
-                                value={this.state.typingText}
-                                fileReaderChange={this.fileReaderChange} />
-                        </div>
-                    </Flex>
-                </div>
+                <Flex align='center' justify='center' flexColumn={false}>
+                    <div style={{ bottom: '0%', position: 'absolute' }} >
+                        <TypingBox
+                            onSubmit={this.onSubmitTextMessage}
+                            onValueChange={this.onTypingTextChange}
+                            value={this.state.typingText}
+                            fileReaderChange={this.fileReaderChange}
+                            onSticker={() => {
+
+                            } } />
+                    </div>
+                </Flex>
                 <UploadingDialog />
             </div>
         );

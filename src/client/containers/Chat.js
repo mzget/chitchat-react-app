@@ -272,10 +272,10 @@ class Chat extends React.Component {
                                 null,
                         React.createElement(ChatBox_1.default, __assign({}, this.props, { value: this.state.messages, onSelected: (message) => {
                             } }))))),
-            React.createElement("div", { style: { height: bottom } },
-                React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center', flexColumn: false },
-                    React.createElement("div", { style: { bottom: '0%', position: 'absolute' } },
-                        React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitTextMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange })))),
+            React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center', flexColumn: false },
+                React.createElement("div", { style: { bottom: '0%', position: 'absolute' } },
+                    React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitTextMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: () => {
+                        } }))),
             React.createElement(UploadingDialog_1.default, null)));
     }
 }
