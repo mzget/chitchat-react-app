@@ -4,11 +4,15 @@ import * as React from "react";
  */
 import { connect } from "react-redux";
 import * as async from 'async';
-
 import { Flex, Box } from 'reflexbox';
+
+import Config from '../configs/config';
+
 import { TypingBox } from './TypingBox';
 import ChatBox from "./ChatBox";
 import Toolbar from "../components/ToolbarSimple";
+import UtilsBox from "./UtilsBox";
+import UploadingDialog from './UploadingDialog';
 
 import { IComponentProps } from "../utils/IComponentProps";
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
@@ -17,7 +21,6 @@ import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 
 import { ContentType, IMessage } from "../chats/models/ChatDataModels";
 import { MessageImp } from "../chats/models/MessageImp";
-
 
 abstract class IComponentNameProps implements IComponentProps {
     location;
@@ -42,13 +45,13 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         console.log("Chat", this.props, this.state);
 
         this.state = {
-            messages: [],
+            messages: new Array(),
             typingText: '',
             isLoadingEarlierMessages: false,
             earlyMessageReady: false
         };
 
-        this.onSubmitMessage = this.onSubmitMessage.bind(this);
+        this.onSubmitTextMessage = this.onSubmitTextMessage.bind(this);
         this.onTypingTextChange = this.onTypingTextChange.bind(this);
         this.roomInitialize = this.roomInitialize.bind(this);
 
@@ -83,6 +86,23 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                 this.props.router.push(`/`);
                 break;
             }
+            case chatRoomActions.LEAVE_ROOM_SUCCESS: {
+                this.props.router.push('/');
+                break;
+            }
+
+            case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
+                let {responseUrl, fileInfo} = chatroomReducer;
+                const textType = /text.*/;
+                const imageType = /image.*/;
+
+
+                if (fileInfo.type.match(imageType)) {
+                    this.onSubmitImageMessage(fileInfo, responseUrl);
+                }
+
+                break;
+            }
 
             case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
                 this.setMessageStatus(chatroomReducer.responseMessage.uuid, 'ErrorButton');
@@ -95,12 +115,23 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.ON_NEW_MESSAGE: {
-                this.onReceive(chatroomReducer.newMessage);
+                chatRoomActions.getMessages().then(messages => {
+                    this.setState(previousState => ({
+                        ...previousState,
+                        messages: messages
+                    }));
+                });
+
                 this.props.dispatch(chatRoomActions.emptyState());
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
-                this.setInitMessages(chatRoomActions.getMessages());
+                chatRoomActions.getMessages().then(messages => {
+                    this.setState(previousState => ({
+                        ...previousState,
+                        messages: messages
+                    }));
+                });
 
                 this.props.dispatch(chatRoomActions.checkOlderMessages());
                 this.props.dispatch(chatRoomActions.getNewerMessageFromNet());
@@ -108,24 +139,31 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
-                this.setInitMessages(chatRoomActions.getMessages());
+                chatRoomActions.getMessages().then(messages => {
+                    this.setState(previousState => ({
+                        ...previousState,
+                        messages: messages
+                    }));
+                });
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
                 this.setState((previousState) => ({
-                    ...previousState, earlyMessageReady: chatroomReducer.earlyMessageReady
+                    ...previousState,
+                    earlyMessageReady: chatroomReducer.earlyMessageReady
                 }));
 
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS: {
-                this.setState(previousState => ({
-                    ...previousState,
-                    isLoadingEarlierMessages: false,
-                    earlyMessageReady: false
-                }));
-
-                this.setInitMessages(chatRoomActions.getMessages());
+                chatRoomActions.getMessages().then(messages => {
+                    this.setState(previousState => ({
+                        ...previousState,
+                        isLoadingEarlierMessages: false,
+                        earlyMessageReady: false,
+                        messages: messages
+                    }));
+                });
 
                 break;
             }
@@ -145,6 +183,9 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
 
     roomInitialize(props: IComponentNameProps) {
         let { chatroomReducer, userReducer, params} = props;
+        if (!userReducer.user) {
+            return this.props.dispatch(chatRoomActions.leaveRoom());
+        }
 
         //@ todo
         // - Init chatroom service.
@@ -153,30 +194,6 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         chatRoomActions.initChatRoom(chatroomReducer.room);
         this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
         this.props.dispatch(chatRoomActions.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
-    }
-
-    onReceive(message: IMessage) {
-        let messageImp = { ...message } as MessageImp;
-        let _temp = this.state.messages.slice();
-        StalkBridgeActions.getUserInfo(message.sender, (result) => {
-            if (result) {
-                messageImp.user = {
-                    _id: result._id,
-                    username: result.displayname,
-                    avatar: result.image
-                }
-                _temp.push(message);
-                this.setState((previousState) => ({
-                    ...previousState, messages: _temp
-                }));
-            }
-            else {
-                _temp.push(message);
-                this.setState((previousState) => ({
-                    ...previousState, messages: _temp
-                }));
-            }
-        });
     }
 
     setMessageStatus(uniqueId, status) {
@@ -212,22 +229,31 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         this.setState({ ...this.state, messages: _messages });
     }
 
-    setInitMessages(messages: Array<IMessage>) {
-        this.setState((previousState) => { return { ...previousState, messages: messages } });
-    }
-
     onTypingTextChange(event) {
         this.setState({ ...this.state, typingText: event.target.value });
     }
 
-    onSubmitMessage() {
+    onSubmitTextMessage() {
         if (this.state.typingText.length <= 0) return;
 
         let msg = {
             text: this.state.typingText
         };
         let message = this.prepareSendMessage(msg);
-        this.sendText(message);
+        this.send(message);
+
+        let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
+        _messages.push(message);
+        this.setState(previousState => ({ ...previousState, typingText: "", messages: _messages }));
+    }
+
+    onSubmitImageMessage(file: File, responseUrl: string) {
+        let msg = {
+            image: file.name,
+            src: `${Config.api.host}/${responseUrl}`
+        };
+        let message = this.prepareSendMessage(msg);
+        this.send(message);
 
         let _messages = this.state.messages.slice();
         _messages.push(message);
@@ -237,6 +263,8 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
     prepareSendMessage(msg): IMessage {
         let message = new MessageImp();
         if (msg.image) {
+            message.body = msg.image;
+            message.src = msg.src;
             message.type = ContentType[ContentType.Image];
         }
         else if (msg.text) {
@@ -260,8 +288,19 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         return message;
     }
 
-    sendText(message: IMessage) {
+    send(message: IMessage) {
         this.props.dispatch(chatRoomActions.sendMessage(message));
+    }
+
+    fileReaderChange = (e, results) => {
+        results.forEach(result => {
+            const [progressEvent, file] = result;
+
+            console.dir(progressEvent);
+            console.dir(file);
+
+            this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
+        });
     }
 
     render(): JSX.Element {
@@ -291,7 +330,6 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                                     :
                                     null
                             }
-                            <Box flexAuto> </Box>
                             <ChatBox {...this.props} value={this.state.messages} onSelected={(message: IMessage) => {
 
                             } } />
@@ -299,12 +337,17 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                     </Flex>
                 </div>
                 <div style={{ height: bottom }}>
-                    <Flex align='center' justify='center'>
-                        <footer style={{ bottom: '0%', position: 'absolute' }} >
-                            <TypingBox onSubmit={this.onSubmitMessage} onValueChange={this.onTypingTextChange} value={this.state.typingText} />
-                        </footer>
+                    <Flex align='center' justify='center' flexColumn={false}>
+                        <div style={{ bottom: '0%', position: 'absolute' }} >
+                            <TypingBox
+                                onSubmit={this.onSubmitTextMessage}
+                                onValueChange={this.onTypingTextChange}
+                                value={this.state.typingText}
+                                fileReaderChange={this.fileReaderChange} />
+                        </div>
                     </Flex>
                 </div>
+                <UploadingDialog />
             </div>
         );
     }

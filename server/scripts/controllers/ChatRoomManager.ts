@@ -8,28 +8,138 @@ const MongoClient = mongodb.MongoClient;
 import { getConfig, DbClient } from "../../config";
 const config = getConfig();
 
+
+
+export const getUnreadMsgCountAndLastMsgContentInRoom = (roomId: string, lastAccessTime: string, callback: (err, result) => void) => {
+    let isoDate = new Date(lastAccessTime).toISOString();
+
+    // Use connect method to connect to the Server
+    MongoClient.connect(config.chatDB).then(db => {
+        // Get the documents collection
+        let messagesColl = db.collection(DbClient.messageColl);
+        messagesColl.createIndex({ rid: 1, createTime: 1 }, { background: true, w: 1 });
+
+        messagesColl.find({ rid: roomId.toString(), createTime: { $gt: new Date(isoDate) } })
+            .project({ _id: 1 }).sort({ createTime: 1 })
+            .toArray()
+            .then(docs => {
+                db.close();
+                if (docs.length > 0) {
+                    getLastMsgContentInMessagesIdArray(docs, function (err, res) {
+                        if (!!res) {
+                            callback(null, { count: docs.length, message: res });
+                        }
+                        else {
+                            callback(null, { count: docs.length });
+                        }
+                    });
+                }
+                else {
+                    getLastMessageContentOfRoom(roomId, function (err, res) {
+                        if (!!res) {
+                            callback(null, { count: docs.length, message: res });
+                        }
+                        else {
+                            callback(null, { count: docs.length });
+                        }
+                    });
+                }
+            }).catch(err => {
+                db.close();
+                callback(new Error("GetUnreadMsgOfRoom by query date is no response." + err), null);
+            });
+    }).catch(err => {
+        callback("Cannot connect database." + err, null);
+    });
+}
+
+/**
+* return : =>
+* unread msgs count.
+* type of msg, 
+* msg.body
+*/
+const getLastMsgContentInMessagesIdArray = (docs: any[], callback: (err, resutl) => void) => {
+    let lastDoc = docs[docs.length - 1];
+
+    // Use connect method to connect to the Server
+    MongoClient.connect(config.chatDB).then(function (db) {
+        // Get the documents collection
+        let collection = db.collection(DbClient.messageColl);
+        // Find some documents
+        collection.find({ _id: new ObjectID(lastDoc._id) }).limit(1).toArray().then(docs => {
+            if (docs.length > 0) {
+                callback(null, docs[0]);
+            }
+            else {
+                callback("no have last message", null);
+            }
+            db.close();
+        }).catch(err => callback(new Error("getLastMsgContentInMessagesIdArray error." + err), null));
+    }).catch(err => callback(err, null));
+}
+
+const getLastMessageContentOfRoom = (rid: string, callback: (err, result) => void) => {
+    // Use connect method to connect to the Server
+    MongoClient.connect(config.chatDB).then((db) => {
+        // Get the documents collection
+        let collection = db.collection(DbClient.messageColl);
+        collection.createIndex({ rid: 1 }, { background: true, w: 1 });
+
+        // Find newest message documents
+        collection.find({ rid: rid.toString() }).sort({ createTime: -1 }).limit(1).toArray().then(docs => {
+            if (docs.length > 0) {
+                callback(null, docs[0]);
+            }
+            else {
+                callback("No have last message", null);
+            }
+            db.close();
+        });
+    }).catch(err => callback(err, null));
+}
+
+export const GetChatRoomInfo = (room_id: string): Promise<any[]> => {
+    return new Promise((resolve, reject) => {
+        MongoClient.connect(config.chatDB).then(db => {
+            let roomColl = db.collection(DbClient.chatroomCall);
+
+            roomColl.find({ _id: new ObjectID(room_id) }).limit(1).toArray().then(docs => {
+                db.close();
+                resolve(docs);
+            }).catch(err => {
+                db.close();
+                reject(err);
+            });
+        }).catch(err => {
+            reject(err);
+        });
+    });
+}
+
+export const createPrivateChatRoom = (room: Room.Room): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        MongoClient.connect(config.chatDB).then(db => {
+            let roomColl = db.collection(DbClient.chatroomCall);
+
+            roomColl.insertOne(room).then(result => {
+                db.close();
+                resolve(result.ops);
+            }).catch(err => {
+                db.close();
+                reject(err);
+            });
+        }).catch(err => {
+            reject(err);
+        });
+    });
+}
+
 export class ChatRoomManager {
     private static _Instance: ChatRoomManager = null;
     private userManager = UserManager.getInstance();
     private roomDAL = new RoomDataAccess();
 
-    public GetChatRoomInfo(room_id: string): Promise<any[]> {
-        return new Promise((resolve, reject) => {
-            MongoClient.connect(config.chatDB).then(db => {
-                let roomColl = db.collection(DbClient.chatroomCall);
-
-                roomColl.find({ _id: new ObjectID(room_id) }).limit(1).toArray().then(docs => {
-                    db.close();
-                    resolve(docs);
-                }).catch(err => {
-                    db.close();
-                    reject(err);
-                });
-            }).catch(err => {
-                reject(err);
-            });
-        });
-    }
 
     public getProjectBaseGroups(userId: string, callback: (err, res) => void) {
         this.roomDAL.findProjectBaseGroups(userId, callback);
@@ -37,24 +147,6 @@ export class ChatRoomManager {
 
     public getPrivateGroupChat(uid: string, callback: (err, res) => void) {
         this.roomDAL.findPrivateGroupChat(uid, callback);
-    }
-
-    public createPrivateChatRoom(room: Room.Room): Promise<any> {
-        return new Promise((resolve, reject) => {
-            MongoClient.connect(config.chatDB).then(db => {
-                let roomColl = db.collection(DbClient.chatroomCall);
-
-                roomColl.insertOne(room).then(result => {
-                    db.close();
-                    resolve(result.ops);
-                }).catch(err => {
-                    db.close();
-                    reject(err);
-                });
-            }).catch(err => {
-                reject(err);
-            });
-        });
     }
 
     public createPrivateGroup(groupName: string, memberIds: string[], callback: (err, res) => void) {
@@ -228,51 +320,6 @@ export class ChatRoomManager {
         });
     }
 
-    public getUnreadMsgCountAndLastMsgContentInRoom(roomId: string, lastAccessTime: string, callback: Function) {
-        let self = this;
-        let isoDate = new Date(lastAccessTime).toISOString();
-
-        // Use connect method to connect to the Server
-        MongoClient.connect(MDb.DbController.chatDB).then(db => {
-            // Get the documents collection
-            let collection = db.collection(MDb.DbController.messageColl);
-            collection.createIndex({ rid: 1, createTime: 1 }, { background: true, w: 1 }).then(indexName => {
-                collection.find({ rid: roomId.toString(), createTime: { $gt: new Date(isoDate) } })
-                    .project({ _id: 1 }).sort({ createTime: 1 }).toArray().then(docs => {
-                        db.close();
-                        if (docs.length > 0) {
-                            self.roomDAL.getLastMsgContentInMessagesIdArray(docs, function (err, res) {
-                                if (!!res) {
-                                    callback(null, { count: docs.length, message: res });
-                                }
-                                else {
-                                    callback(null, { count: docs.length });
-                                }
-                            });
-                        }
-                        else {
-                            self.roomDAL.getLastMessageContentOfRoom(roomId, function (err, res) {
-                                if (!!res) {
-                                    callback(null, { count: docs.length, message: res });
-                                }
-                                else {
-                                    callback(null, { count: docs.length });
-                                }
-                            });
-                        }
-                    }).catch(err => {
-                        db.close();
-                        callback(new Error("GetUnreadMsgOfRoom by query date is no response."), null);
-                    });
-            }).catch(err => {
-                db.close();
-                console.error("createIndex fail...");
-            });
-        }).catch(err => {
-            console.error("Cannot connect database.");
-        });
-    }
-
     /**
      * Retrive all room in db and then get all members from each room. 
      */
@@ -297,61 +344,6 @@ export class RoomDataAccess {
         dbClient.FindDocuments(MDb.DbController.roomColl, function (res) {
             callback(null, res);
         }, { type: Room.RoomType.privateGroup, members: { $elemMatch: { id: uid } } });
-    }
-
-    /**
-    * return : =>
-    * unread msgs count.
-    * type of msg, 
-    * msg.body
-    */
-    public getLastMsgContentInMessagesIdArray(docs: any[], callback: Function) {
-        var lastDoc = docs[docs.length - 1];
-
-        // Use connect method to connect to the Server
-        MongoClient.connect(MDb.DbController.chatDB, function (err, db) {
-            if (err) { return console.dir(err); }
-            assert.equal(null, err);
-
-            // Get the documents collection
-            let collection = db.collection(MDb.DbController.messageColl);
-            // Find some documents
-            collection.find({ _id: new ObjectID(lastDoc._id) }).limit(1).toArray(function (err, docs) {
-                if (!docs) {
-                    callback(new Error("getLastMsgContentInMessagesIdArray error."), docs);
-                }
-                else {
-                    callback(null, docs[0]);
-                }
-                db.close();
-            });
-        });
-    }
-
-    public getLastMessageContentOfRoom(rid: string, callback: Function) {
-        // Use connect method to connect to the Server
-        MongoClient.connect(MDb.DbController.chatDB, function (err, db) {
-            if (err) { return console.dir(err); }
-            assert.equal(null, err);
-
-            // Get the documents collection
-            let collection = db.collection(MDb.DbController.messageColl);
-            collection.createIndex({ rid: 1 }, { background: true, w: 1 }).then(indexName => {
-                // Find newest message documents
-                collection.find({ rid: rid.toString() }).sort({ createTime: -1 }).limit(1).toArray(function (err, docs) {
-                    if (!docs || err) {
-                        callback(err, null);
-                    }
-                    else {
-                        callback(null, docs[0]);
-                    }
-                    db.close();
-                });
-            }).catch(err => {
-                db.close();
-                console.error("Create index fail.", err);
-            });
-        });
     }
 
     /**

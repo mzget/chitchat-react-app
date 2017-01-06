@@ -1,3 +1,4 @@
+"use strict";
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -15,9 +16,10 @@ else if (app.get('env') === 'production') {
     process.env.PORT = 9000;
 }
 console.log("listen on ", process.env.PORT);
-var index = require('./routes/index');
-var users = require('./routes/users');
+const index = require('./routes/index');
+const users = require('./routes/users');
 const chatroom = require('./routes/chatroom');
+const chat_upload = require('./routes/upload/uploadFile');
 app.use(cors());
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -33,6 +35,7 @@ app.use(express.static('../build'));
 app.use('/', index);
 app.use('/users', users);
 app.use('/chatroom', chatroom);
+app.use("/chats/upload", chat_upload);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     var err = new Error('Not Found');

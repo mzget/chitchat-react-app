@@ -9,11 +9,14 @@ import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
+import Avatar from 'material-ui/Avatar';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
+import { ContentType } from "../chats/models/ChatDataModels";
 import { MessageImp } from "../chats/models/MessageImp";
-import { IncomingList, OutComingList } from '../components/MessageListItem';
+import CardTextWithAvatar from '../components/CardTextWithAvatar';
+import CardImageWithAvatar from '../components/CardImageWithAvatar';
 
 import { IComponentProps } from '../utils/IComponentProps';
 
@@ -45,18 +48,44 @@ class ChatBox extends React.Component<MyProps, IComponentNameState> {
 
     renderList = () => {
         let { userReducer } = this.props;
-        return this.props.value.map((message, i) => (
-            <div key={i}>
-                {
-                    (message.sender != this.props.userReducer.user._id) ?
-                        <IncomingList onSelected={this.props.onSelected} message={message} /> :
-                        <Flex justify='flex-end'>
-                            <OutComingList onSelected={this.props.onSelected} message={message} />
-                        </Flex>
-                }
-                <Divider inset={true} />
-            </div>
-        ));
+        return this.props.value.map((message, i, arr) => {
+
+            if (!message.user || !message.user.username) {
+                console.dir(message);
+                return null;
+            }
+
+            switch (message.type) {
+                case ContentType[ContentType.Text]:
+                    {
+                        return (
+                            <div key={i}>
+                                <CardTextWithAvatar
+                                    title={message.user.username}
+                                    subtitle={(message.createTime) ? message.createTime.toString() : ''}
+                                    avatar={(message.user.avatar) ?
+                                        <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
+                                    }
+                                    cardText={message.body} />
+                            </div>);
+                    }
+                case ContentType[ContentType.Image]:
+                    {
+                        return (
+                            <div key={i}>
+                                <CardImageWithAvatar
+                                    title={message.user.username}
+                                    subtitle={(message.createTime) ? message.createTime.toString() : ''}
+                                    avatar={(message.user.avatar) ?
+                                        <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
+                                    }
+                                    imageSrc={message.src} />
+                            </div>);
+                    }
+                default:
+                    break;
+            }
+        });
     }
 
     public render(): JSX.Element {

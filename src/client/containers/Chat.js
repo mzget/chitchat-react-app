@@ -13,9 +13,11 @@ const React = require("react");
  */
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
+const config_1 = require("../configs/config");
 const TypingBox_1 = require("./TypingBox");
 const ChatBox_1 = require("./ChatBox");
 const ToolbarSimple_1 = require("../components/ToolbarSimple");
+const UploadingDialog_1 = require("./UploadingDialog");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 const chatRoomActions = require("../redux/chatroom/chatroomActions");
 const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
@@ -26,15 +28,26 @@ class IComponentNameProps {
 ;
 ;
 class Chat extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.fileReaderChange = (e, results) => {
+            results.forEach(result => {
+                const [progressEvent, file] = result;
+                console.dir(progressEvent);
+                console.dir(file);
+                this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
+            });
+        };
+    }
     componentWillMount() {
         console.log("Chat", this.props, this.state);
         this.state = {
-            messages: [],
+            messages: new Array(),
             typingText: '',
             isLoadingEarlierMessages: false,
             earlyMessageReady: false
         };
-        this.onSubmitMessage = this.onSubmitMessage.bind(this);
+        this.onSubmitTextMessage = this.onSubmitTextMessage.bind(this);
         this.onTypingTextChange = this.onTypingTextChange.bind(this);
         this.roomInitialize = this.roomInitialize.bind(this);
         let { chatroomReducer, userReducer, params } = this.props;
@@ -63,6 +76,19 @@ class Chat extends React.Component {
                 this.props.router.push(`/`);
                 break;
             }
+            case chatRoomActions.LEAVE_ROOM_SUCCESS: {
+                this.props.router.push('/');
+                break;
+            }
+            case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
+                let { responseUrl, fileInfo } = chatroomReducer;
+                const textType = /text.*/;
+                const imageType = /image.*/;
+                if (fileInfo.type.match(imageType)) {
+                    this.onSubmitImageMessage(fileInfo, responseUrl);
+                }
+                break;
+            }
             case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
                 this.setMessageStatus(chatroomReducer.responseMessage.uuid, 'ErrorButton');
                 this.props.dispatch(chatRoomActions.emptyState());
@@ -74,18 +100,24 @@ class Chat extends React.Component {
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.ON_NEW_MESSAGE: {
-                this.onReceive(chatroomReducer.newMessage);
+                chatRoomActions.getMessages().then(messages => {
+                    this.setState(previousState => (__assign({}, previousState, { messages: messages })));
+                });
                 this.props.dispatch(chatRoomActions.emptyState());
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
-                this.setInitMessages(chatRoomActions.getMessages());
+                chatRoomActions.getMessages().then(messages => {
+                    this.setState(previousState => (__assign({}, previousState, { messages: messages })));
+                });
                 this.props.dispatch(chatRoomActions.checkOlderMessages());
                 this.props.dispatch(chatRoomActions.getNewerMessageFromNet());
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
-                this.setInitMessages(chatRoomActions.getMessages());
+                chatRoomActions.getMessages().then(messages => {
+                    this.setState(previousState => (__assign({}, previousState, { messages: messages })));
+                });
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
@@ -93,8 +125,9 @@ class Chat extends React.Component {
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS: {
-                this.setState(previousState => (__assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false })));
-                this.setInitMessages(chatRoomActions.getMessages());
+                chatRoomActions.getMessages().then(messages => {
+                    this.setState(previousState => (__assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false, messages: messages })));
+                });
                 break;
             }
             default:
@@ -107,6 +140,9 @@ class Chat extends React.Component {
     }
     roomInitialize(props) {
         let { chatroomReducer, userReducer, params } = props;
+        if (!userReducer.user) {
+            return this.props.dispatch(chatRoomActions.leaveRoom());
+        }
         //@ todo
         // - Init chatroom service.
         // - getPersistedMessage.
@@ -114,25 +150,6 @@ class Chat extends React.Component {
         chatRoomActions.initChatRoom(chatroomReducer.room);
         this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
         this.props.dispatch(chatRoomActions.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
-    }
-    onReceive(message) {
-        let messageImp = __assign({}, message);
-        let _temp = this.state.messages.slice();
-        StalkBridgeActions.getUserInfo(message.sender, (result) => {
-            if (result) {
-                messageImp.user = {
-                    _id: result._id,
-                    username: result.displayname,
-                    avatar: result.image
-                };
-                _temp.push(message);
-                this.setState((previousState) => (__assign({}, previousState, { messages: _temp })));
-            }
-            else {
-                _temp.push(message);
-                this.setState((previousState) => (__assign({}, previousState, { messages: _temp })));
-            }
-        });
     }
     setMessageStatus(uniqueId, status) {
         let messages = [];
@@ -163,20 +180,28 @@ class Chat extends React.Component {
         });
         this.setState(__assign({}, this.state, { messages: _messages }));
     }
-    setInitMessages(messages) {
-        this.setState((previousState) => { return __assign({}, previousState, { messages: messages }); });
-    }
     onTypingTextChange(event) {
         this.setState(__assign({}, this.state, { typingText: event.target.value }));
     }
-    onSubmitMessage() {
+    onSubmitTextMessage() {
         if (this.state.typingText.length <= 0)
             return;
         let msg = {
             text: this.state.typingText
         };
         let message = this.prepareSendMessage(msg);
-        this.sendText(message);
+        this.send(message);
+        let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
+        _messages.push(message);
+        this.setState(previousState => (__assign({}, previousState, { typingText: "", messages: _messages })));
+    }
+    onSubmitImageMessage(file, responseUrl) {
+        let msg = {
+            image: file.name,
+            src: `${config_1.default.api.host}/${responseUrl}`
+        };
+        let message = this.prepareSendMessage(msg);
+        this.send(message);
         let _messages = this.state.messages.slice();
         _messages.push(message);
         this.setState(previousState => (__assign({}, previousState, { typingText: "", messages: _messages })));
@@ -184,6 +209,8 @@ class Chat extends React.Component {
     prepareSendMessage(msg) {
         let message = new MessageImp_1.MessageImp();
         if (msg.image) {
+            message.body = msg.image;
+            message.src = msg.src;
             message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image];
         }
         else if (msg.text) {
@@ -205,7 +232,7 @@ class Chat extends React.Component {
         message.status = 'Sending...';
         return message;
     }
-    sendText(message) {
+    send(message) {
         this.props.dispatch(chatRoomActions.sendMessage(message));
     }
     render() {
@@ -227,13 +254,13 @@ class Chat extends React.Component {
                                 React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))
                             :
                                 null,
-                        React.createElement(reflexbox_1.Box, { flexAuto: true }, " "),
                         React.createElement(ChatBox_1.default, __assign({}, this.props, { value: this.state.messages, onSelected: (message) => {
                             } }))))),
             React.createElement("div", { style: { height: bottom } },
-                React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center' },
-                    React.createElement("footer", { style: { bottom: '0%', position: 'absolute' } },
-                        React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText }))))));
+                React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center', flexColumn: false },
+                    React.createElement("div", { style: { bottom: '0%', position: 'absolute' } },
+                        React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitTextMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange })))),
+            React.createElement(UploadingDialog_1.default, null)));
     }
 }
 /**

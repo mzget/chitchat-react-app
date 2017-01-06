@@ -62,7 +62,7 @@ export function initChatRoom(currentRoom: Room) {
     chatroomComp.outsideRoomDelegete = onOutSideRoomDelegate;
 }
 
-function onChatRoomDelegate(event, newMsg) {
+function onChatRoomDelegate(event, newMsg: IMessage) {
     if (event == ServerEventListener.ON_CHAT) {
         console.log("onChatRoomDelegate: ", ServerEventListener.ON_CHAT, newMsg);
         /**
@@ -108,12 +108,7 @@ function replaceMyMessage(receiveMsg) {
     }
 }
 
-function onNewMessage(messages: IMessage[]) {
-    return {
-        type: ChatRoomActionsType.ON_NEW_MESSAGE,
-        payload: messages
-    }
-}
+const onNewMessage = (message: IMessage) => ({ type: ChatRoomActionsType.ON_NEW_MESSAGE, payload: message });
 
 function getPersistendMessage_request() { return { type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_REQUEST } }
 function getPersistendMessage_success(data?: any) {
@@ -122,17 +117,13 @@ function getPersistendMessage_success(data?: any) {
         payload: data
     }
 }
-function getPersistendMessage_failure() {
-    return {
-        type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_FAILURE
-    }
-}
+const getPersistendMessage_failure = () => ({ type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_FAILURE });
 export function getPersistendMessage(currentRid: string) {
     return (dispatch) => {
         dispatch(getPersistendMessage_request());
 
         ChatRoomComponent.getInstance().getPersistentMessage(currentRid).then(function (messages) {
-            console.log("getPersistendMessage of room %s: completed.", currentRid, ChatRoomComponent.getInstance().chatMessages.length);
+            console.log("getPersistendMessage of room %s: completed.", currentRid);
 
             dispatch(getPersistendMessage_success());
         }).catch(err => dispatch(getPersistendMessage_failure()));
@@ -153,7 +144,7 @@ export function checkOlderMessages() {
     return dispatch => {
         ChatRoomComponent.getInstance().checkOlderMessages(function done(err, res) {
             if (!err && res.data > 0) {
-                console.log('has olderMessage => %s', res.data);
+                console.info('has olderMessage => %s', res.data);
 
                 //               console.log("onOlderMessageReady is true ! Show load earlier message on top view.");
                 dispatch(onEarlyMessageReady(true));
@@ -189,7 +180,7 @@ export function getNewerMessageFromNet() {
 
 export function getMessages() {
     let chatroomComp = ChatRoomComponent.getInstance();
-    return chatroomComp.chatMessages;
+    return chatroomComp.getMessages();
 }
 
 function send_message_request() {
@@ -211,7 +202,6 @@ export function sendMessage(msg: any) {
     return (dispatch) => {
         let secure = SecureServiceFactory.getService();
 
-        console.log("sendMessage", msg)
         dispatch(send_message_request());
 
         if (msg.type == ContentType[ContentType.Location]) {
@@ -327,8 +317,6 @@ const loadEarlyMessage_success = () => ({ type: ChatRoomActionsType.LOAD_EARLY_M
 export function loadEarlyMessageChunk() {
     return dispatch => {
         ChatRoomComponent.getInstance().getOlderMessageChunk(function done(err, res) {
-            console.log('olderMessages %s => %s', res.length, ChatRoomComponent.getInstance().chatMessages.length);
-
             dispatch(loadEarlyMessage_success());
             //@ check older message again.
             dispatch(checkOlderMessages());

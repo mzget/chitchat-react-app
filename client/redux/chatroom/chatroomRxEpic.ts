@@ -4,13 +4,10 @@
  * This is pure function action for redux app.
  */
 import ChatRoomComponent from "../../chats/chatRoomComponent";
-import * as chatroomActions from "./chatroomActions";
-import { ChatRoomActionsType } from "./chatroomActions";
 
 import config from "../../configs/config";
-import { Record } from "immutable";
 
-const Rx = require('rxjs/Rx');
+import Rx = require('rxjs/Rx');
 const { ajax } = Rx.Observable;
 
 export const FETCH_PRIVATE_CHATROOM = "FETCH_PRIVATE_CHATROOM";
@@ -79,3 +76,33 @@ export const getPersistendMessageEpic = action$ => {
     //getNewerMessageFromNet();
     //checkOlderMessages();
 }
+
+export const CHATROOM_UPLOAD_FILE = "CHATROOM_UPLOAD_FILE";
+export const CHATROOM_UPLOAD_FILE_SUCCESS = "CHATROOM_UPLOAD_FILE_SUCCESS";
+export const CHATROOM_UPLOAD_FILE_FAILURE = "CHATROOM_UPLOAD_FILE_FAILURE";
+export const CHATROOM_UPLOAD_FILE_CANCELLED = "CHATROOM_UPLOAD_FILE_CANCELLED";
+
+export const uploadFile = (progressEvent: ProgressEvent, file) => ({
+    type: CHATROOM_UPLOAD_FILE, payload: { data: progressEvent, file: file }
+});
+const uploadFileSuccess = (result) => ({ type: CHATROOM_UPLOAD_FILE_SUCCESS, payload: result.result });
+const uploadFileFailure = (error) => ({ type: CHATROOM_UPLOAD_FILE_FAILURE, payload: error });
+export const uploadFileCanceled = () => ({ type: CHATROOM_UPLOAD_FILE_CANCELLED });
+
+export const uploadFileEpic = action$ => (
+    action$.ofType(CHATROOM_UPLOAD_FILE)
+        .mergeMap(action => {
+            let body = new FormData();
+            body.append('file', action.payload.file);
+
+            return ajax({
+                method: 'POST',
+                url: `${config.api.fileUpload}`,
+                body: body,
+                headers: {}
+            });
+        })
+        .map(json => uploadFileSuccess(json.response))
+        .takeUntil(action$.ofType(CHATROOM_UPLOAD_FILE_CANCELLED))
+        .catch(error => Rx.Observable.of(uploadFileFailure(error)))
+);

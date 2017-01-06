@@ -1,30 +1,54 @@
 import * as React from "react";
+import { Flex, Box } from 'reflexbox';
 import { RaisedButton, TextField } from 'material-ui';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import * as FileReaderInput from 'react-file-reader-input';
+import FontIcon from 'material-ui/FontIcon';
+import IconButton from 'material-ui/IconButton';
 
 const styles = {
     span: {
-        padding: 10
+        paddingRight: 2
     },
     box: {
         bottom: 0,
         position: 'absolute'
     }
 };
-export const SendButton = (props) => (
-    <RaisedButton label="Send" primary={true} onTouchEnd={props.onSubmit} onMouseUp={props.onSubmit} />
+
+const FileReaderBox = (props) => (
+    <FileReaderInput as='url' id="file-input" onChange={props.fileReaderChange}>
+        <IconButton>
+            <FontIcon className="material-icons">attachment</FontIcon>
+        </IconButton>
+    </FileReaderInput>
 );
 
-export const TypingBox = (props) => {
+const SendButton = (props) => (
+    <IconButton onClick={props.onSubmit} >
+        <FontIcon className="material-icons">send</FontIcon>
+    </IconButton>
+);
+
+interface ITypingBox {
+    onSubmit: () => void;
+    value: string;
+    onValueChange: (text) => void;
+    fileReaderChange: (e, results) => void;
+}
+
+export const TypingBox = (props: ITypingBox) => {
     return (
         < MuiThemeProvider >
-            <div>
-                <TextField hintText="Type your message" value={props.value} onChange={props.onValueChange} onKeyPress={(e) => {
+            <Flex>
+                <FileReaderBox {...props} />
+                <span style={styles.span} />
+                <TextField hintText="Type your message" value={props.value} onChange={props.onValueChange} onKeyDown={(e) => {
                     if (e.key === 'Enter') props.onSubmit();
                 } } />
                 <span style={styles.span} />
                 <SendButton onSubmit={props.onSubmit} />
-            </div>
+            </Flex>
         </MuiThemeProvider >
     );
 }

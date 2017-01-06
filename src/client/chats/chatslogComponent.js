@@ -8,7 +8,7 @@ const async = require("async");
 const DataModels = require("./models/ChatDataModels");
 const chatLog_1 = require("./models/chatLog");
 const BackendFactory_1 = require("./BackendFactory");
-const httpStatusCode_1 = require("../libs/stalk/utils/httpStatusCode");
+const ServiceProvider = require("./services/ServiceProvider");
 ;
 ;
 class Unread {
@@ -124,15 +124,17 @@ class ChatsLogComponent {
                 msg["token"] = token;
                 msg["roomId"] = item.roomId;
                 msg["lastAccessTime"] = item.accessTime.toString();
-                self.serverImp.getUnreadMsgOfRoom(msg, function res(err, res) {
-                    console.log("getUnreadMsgOfRoom: ", err, res);
-                    if (!err && res != null) {
-                        if (res.code === httpStatusCode_1.default.success) {
-                            let unread = JSON.parse(JSON.stringify(res.data));
-                            unread.rid = item.roomId;
-                            unreadLogs.push(unread);
-                        }
+                ServiceProvider.getUnreadMessage(self.dataManager.getMyProfile()._id, item.roomId, item.accessTime.toString())
+                    .then(response => response.json())
+                    .then(value => {
+                    console.log("getUnreadMessage: ", value);
+                    if (value.success) {
+                        let unread = JSON.parse(JSON.stringify(value.result));
+                        unread.rid = item.roomId;
+                        unreadLogs.push(unread);
                     }
+                    cb(null, null);
+                }).catch(err => {
                     cb(null, null);
                 });
             }
@@ -149,18 +151,19 @@ class ChatsLogComponent {
         msg["token"] = token;
         msg["roomId"] = roomAccess.roomId;
         msg["lastAccessTime"] = roomAccess.accessTime.toString();
-        this.serverImp.getUnreadMsgOfRoom(msg, function res(err, res) {
-            console.log("getUnreadMsgOfRoom: ", JSON.stringify(res));
-            if (err || res === null) {
-                callback(err, null);
+        ServiceProvider.getUnreadMessage(this.dataManager.getMyProfile()._id, roomAccess.roomId, roomAccess.accessTime.toString())
+            .then(response => response.json())
+            .then(value => {
+            if (value.success) {
+                let unread = JSON.parse(JSON.stringify(value.result));
+                unread.rid = roomAccess.roomId;
+                callback(null, unread);
             }
             else {
-                if (res.code === httpStatusCode_1.default.success) {
-                    let unread = JSON.parse(JSON.stringify(res.data));
-                    unread.rid = roomAccess.roomId;
-                    callback(null, unread);
-                }
+                callback(value.message, null);
             }
+        }).catch(err => {
+            callback(err, null);
         });
     }
     decorateRoomInfoData(roomInfo) {
@@ -176,19 +179,18 @@ class ChatsLogComponent {
     }
     getRoomInfo(room_id, callback) {
         let self = this;
-        let msg = {};
-        msg["token"] = self.dataManager.getSessionToken();
-        msg["roomId"] = room_id;
-        self.serverImp.getRoomInfo(msg, function (err, res) {
-            console.log("getRoomInfo result", err, res);
-            if (res.code === httpStatusCode_1.default.success) {
-                let roomInfos = JSON.parse(JSON.stringify(res.data));
+        ServiceProvider.getRoomInfo(self.dataManager.getMyProfile()._id, room_id).then(response => response.json()).then(function (res) {
+            console.log("getRoomInfo result", res);
+            if (res.success) {
+                let roomInfos = JSON.parse(JSON.stringify(res.result));
                 let room = self.decorateRoomInfoData(roomInfos[0]);
                 callback(null, room);
             }
             else {
-                callback("Cannot get roomInfo", null);
+                callback(res.message, null);
             }
+        }).catch(err => {
+            callback("Cannot get roomInfo" + err, null);
         });
     }
     getRoomsInfo() {

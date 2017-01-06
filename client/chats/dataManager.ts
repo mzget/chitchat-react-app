@@ -6,6 +6,8 @@ import { RoomAccessData, Room, RoomType, ContactInfo, Member, MemberRole, StalkA
 
 import { IRoomDAL } from "../libs/chitchat/dataAccessLayer/IRoomDAL";
 import { RoomDALFactory } from "../libs/chitchat/dataAccessLayer/RoomDALFactory";
+import { IMessageDAL } from "../libs/chitchat/dataAccessLayer/IMessageDAL";
+import MessageDALFactory from "../libs/chitchat/dataAccessLayer/messageDALFactory";
 
 interface IRoomMap {
     [key: string]: Room;
@@ -39,10 +41,12 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
     }
 
     public roomDAL: IRoomDAL;
+    public messageDAL: IMessageDAL;
     private sessionToken: string;
 
     constructor() {
         this.roomDAL = RoomDALFactory.getObject();
+        this.messageDAL = MessageDALFactory.getObject();
     }
 
     public getSessionToken(): string {

@@ -70,6 +70,7 @@ class ChatRoomApiProvider {
         message["rid"] = roomId;
         message["topEdgeMessageTime"] = topEdgeMessageTime.toString();
         this.pomelo.request("chat.chatHandler.getOlderMessageChunk", message, (result) => {
+            console.log("getOlderMessageChunk", result);
             if (callback !== null)
                 callback(null, result);
         });

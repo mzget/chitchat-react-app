@@ -1,10 +1,11 @@
 "use strict";
 const React = require("react");
-const reflexbox_1 = require("reflexbox");
 const List_1 = require("material-ui/List");
-const Divider_1 = require("material-ui/Divider");
+const Avatar_1 = require("material-ui/Avatar");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
-const MessageListItem_1 = require("../components/MessageListItem");
+const ChatDataModels_1 = require("../chats/models/ChatDataModels");
+const CardTextWithAvatar_1 = require("../components/CardTextWithAvatar");
+const CardImageWithAvatar_1 = require("../components/CardImageWithAvatar");
 class MyProps {
 }
 ;
@@ -14,12 +15,28 @@ class ChatBox extends React.Component {
         super(...arguments);
         this.renderList = () => {
             let { userReducer } = this.props;
-            return this.props.value.map((message, i) => (React.createElement("div", { key: i },
-                (message.sender != this.props.userReducer.user._id) ?
-                    React.createElement(MessageListItem_1.IncomingList, { onSelected: this.props.onSelected, message: message }) :
-                    React.createElement(reflexbox_1.Flex, { justify: 'flex-end' },
-                        React.createElement(MessageListItem_1.OutComingList, { onSelected: this.props.onSelected, message: message })),
-                React.createElement(Divider_1.default, { inset: true }))));
+            return this.props.value.map((message, i, arr) => {
+                if (!message.user || !message.user.username) {
+                    console.dir(message);
+                    return null;
+                }
+                switch (message.type) {
+                    case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]:
+                        {
+                            return (React.createElement("div", { key: i },
+                                React.createElement(CardTextWithAvatar_1.default, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : '', avatar: (message.user.avatar) ?
+                                        React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), cardText: message.body })));
+                        }
+                    case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image]:
+                        {
+                            return (React.createElement("div", { key: i },
+                                React.createElement(CardImageWithAvatar_1.default, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : '', avatar: (message.user.avatar) ?
+                                        React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), imageSrc: message.src })));
+                        }
+                    default:
+                        break;
+                }
+            });
         };
     }
     componentWillMount() {

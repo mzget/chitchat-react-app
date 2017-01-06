@@ -548,25 +548,6 @@ class ServerImplemented {
                 callback(null, result);
         });
     }
-    /// <summary>
-    /// Gets the room info. For load Room info by room_id.
-    /// </summary>
-    /// <c> return data</c>
-    getRoomInfo(msg, callback) {
-        let self = this;
-        self.pomelo.request("chat.chatRoomHandler.getRoomInfo", msg, (result) => {
-            if (callback != null)
-                callback(null, result);
-        });
-    }
-    getUnreadMsgOfRoom(msg, callback) {
-        let self = this;
-        self.pomelo.request("chat.chatRoomHandler.getUnreadRoomMessage", msg, (result) => {
-            if (callback != null) {
-                callback(null, result);
-            }
-        });
-    }
     //endregion
     // region <!-- Web RTC Calling...
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////

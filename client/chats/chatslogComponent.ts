@@ -17,6 +17,7 @@ import BackendFactory from "./BackendFactory";
 import HttpCode from "../libs/stalk/utils/httpStatusCode";
 import ServerImplement, { IDictionary } from "../libs/stalk/serverImplemented";
 import { MemberRole } from "./models/ChatDataModels";
+import * as ServiceProvider from './services/ServiceProvider';
 
 export interface ChatLogMap { [key: string]: ChatLog };
 export interface IUnread { message: DataModels.IMessage; rid: string; count: number };
@@ -153,17 +154,20 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
                 msg["token"] = token;
                 msg["roomId"] = item.roomId;
                 msg["lastAccessTime"] = item.accessTime.toString();
-                self.serverImp.getUnreadMsgOfRoom(msg, function res(err, res) {
-                    console.log("getUnreadMsgOfRoom: ", err, res);
-                    if (!err && res != null) {
-                        if (res.code === HttpCode.success) {
-                            let unread: IUnread = JSON.parse(JSON.stringify(res.data));
+                ServiceProvider.getUnreadMessage(self.dataManager.getMyProfile()._id, item.roomId, item.accessTime.toString())
+                    .then(response => response.json())
+                    .then(value => {
+                        console.log("getUnreadMessage: ", value);
+                        if (value.success) {
+                            let unread: IUnread = JSON.parse(JSON.stringify(value.result));
                             unread.rid = item.roomId;
                             unreadLogs.push(unread);
                         }
-                    }
-                    cb(null, null);
-                });
+
+                        cb(null, null);
+                    }).catch(err => {
+                        cb(null, null);
+                    });
             }
             else {
                 cb(null, null);
@@ -179,20 +183,22 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         msg["token"] = token;
         msg["roomId"] = roomAccess.roomId;
         msg["lastAccessTime"] = roomAccess.accessTime.toString();
-        this.serverImp.getUnreadMsgOfRoom(msg, function res(err, res) {
-            console.log("getUnreadMsgOfRoom: ", JSON.stringify(res));
-            if (err || res === null) {
-                callback(err, null);
-            }
-            else {
-                if (res.code === HttpCode.success) {
-                    let unread: IUnread = JSON.parse(JSON.stringify(res.data));
+
+        ServiceProvider.getUnreadMessage(this.dataManager.getMyProfile()._id, roomAccess.roomId, roomAccess.accessTime.toString())
+            .then(response => response.json())
+            .then(value => {
+                if (value.success) {
+                    let unread: IUnread = JSON.parse(JSON.stringify(value.result));
                     unread.rid = roomAccess.roomId;
 
                     callback(null, unread);
                 }
-            }
-        });
+                else {
+                    callback(value.message, null);
+                }
+            }).catch(err => {
+                callback(err, null);
+            });
     }
 
     private decorateRoomInfoData(roomInfo: DataModels.Room) {
@@ -210,21 +216,18 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
 
     private getRoomInfo(room_id: string, callback: (err, room: DataModels.Room) => void) {
         let self = this;
-
-        let msg: IDictionary = {};
-        msg["token"] = self.dataManager.getSessionToken();
-        msg["roomId"] = room_id;
-        self.serverImp.getRoomInfo(msg, function (err, res) {
-            console.log("getRoomInfo result", err, res);
-
-            if (res.code === HttpCode.success) {
-                let roomInfos: Array<DataModels.Room> = JSON.parse(JSON.stringify(res.data));
+        ServiceProvider.getRoomInfo(self.dataManager.getMyProfile()._id, room_id).then(response => response.json()).then(function (res) {
+            console.log("getRoomInfo result", res);
+            if (res.success) {
+                let roomInfos: Array<DataModels.Room> = JSON.parse(JSON.stringify(res.result));
                 let room = self.decorateRoomInfoData(roomInfos[0]);
                 callback(null, room);
             }
             else {
-                callback("Cannot get roomInfo", null);
+                callback(res.message, null);
             }
+        }).catch(err => {
+            callback("Cannot get roomInfo" + err, null);
         });
     }
 

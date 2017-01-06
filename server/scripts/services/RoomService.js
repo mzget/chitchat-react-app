@@ -5,6 +5,7 @@ exports.checkedCanAccessRoom = (roomId, userId, callback) => {
     accountService.getRoom(roomId, (err, room) => {
         let result = false;
         if (err || !room) {
+            console.warn("getRoom fail", err);
             callback(null, result);
         }
         else {

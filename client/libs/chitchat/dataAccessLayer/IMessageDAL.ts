@@ -1,6 +1,6 @@
 export interface IMessageDAL {
-    getData(rid: string, done: (err, message) => void);
-    saveData(rid: string, chatRecord: Array<any>, callback?: (err, result) => void);
+    getData(rid: string): Promise<any>;
+    saveData(rid: string, chatRecord: Array<any>): Promise<any>;
     removeData(rid: string, callback?: (err, res) => void);
     clearData(next: (err?: Error) => void);
 }

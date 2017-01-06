@@ -18,7 +18,7 @@ export interface IMessage {
 
 
 export default class ChatRoomApiProvider {
-    pomelo : any;
+    pomelo: any;
     constructor(socket) {
         this.pomelo = socket;
     }
@@ -32,9 +32,9 @@ export default class ChatRoomApiProvider {
         });
     }
 
-/**
- * @deprecated please use chat instead.
- */
+    /**
+     * @deprecated please use chat instead.
+     */
     public chatFile(room_id: string, target: string, sender_id: string, fileUrl: string, contentType: string, meta: any, callback: (err, res) => void) {
         console.log("Send file to ", target);
 
@@ -100,6 +100,7 @@ export default class ChatRoomApiProvider {
         message["topEdgeMessageTime"] = topEdgeMessageTime.toString();
 
         this.pomelo.request("chat.chatHandler.getOlderMessageChunk", message, (result) => {
+            console.log("getOlderMessageChunk", result);
             if (callback !== null)
                 callback(null, result);
         });
