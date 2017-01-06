@@ -15,7 +15,9 @@ const FlatButton_1 = require("material-ui/FlatButton");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const ChatroomRx = require("../redux/chatroom/chatroomRxEpic");
 const SimpleCardImage_1 = require("../components/SimpleCardImage");
+const SimpleCardVideo_1 = require("../components/SimpleCardVideo");
 const LinearProgressSimple_1 = require("../components/LinearProgressSimple");
+const FileType = require("../consts/FileType");
 class IComponentNameProps {
 }
 ;
@@ -72,9 +74,21 @@ class UploadingDialog extends React.Component {
         const actions = [
             React.createElement(FlatButton_1.default, { label: this.state.closeLabel, primary: true, onClick: this.cancelFileUpload })
         ];
+        const getMediaCard = () => {
+            if (chatroomReducer.fileInfo.type.match(FileType.imageType)) {
+                return (React.createElement(SimpleCardImage_1.default, { src: chatroomReducer.uploadingFile }));
+            }
+            else if (chatroomReducer.fileInfo.type.match(FileType.textType)) {
+                return null;
+            }
+            else if (chatroomReducer.fileInfo.type.match(FileType.videoType)) {
+                return (React.createElement(SimpleCardVideo_1.default, { src: chatroomReducer.uploadingFile }));
+            }
+        };
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement(Dialog_1.default, { title: this.state.dialogTitle, actions: actions, modal: true, open: this.state.openState },
-                React.createElement(SimpleCardImage_1.default, { src: chatroomReducer.uploadingFile }),
+                (this.state.openState) ?
+                    getMediaCard() : null,
                 React.createElement(reflexbox_1.Flex, { p: 2, align: 'center' },
                     React.createElement(LinearProgressSimple_1.default, null)))));
     }

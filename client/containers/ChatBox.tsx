@@ -17,6 +17,7 @@ import { ContentType } from "../chats/models/ChatDataModels";
 import { MessageImp } from "../chats/models/MessageImp";
 import CardTextWithAvatar from '../components/CardTextWithAvatar';
 import CardImageWithAvatar from '../components/CardImageWithAvatar';
+import CardVideoWithAvatar from '../components/CardVideoWithAvatar';
 
 import { IComponentProps } from '../utils/IComponentProps';
 
@@ -80,6 +81,19 @@ class ChatBox extends React.Component<MyProps, IComponentNameState> {
                                         <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                                     }
                                     imageSrc={message.src} />
+                            </div>);
+                    }
+                case ContentType[ContentType.Video]:
+                    {
+                        return (
+                            <div key={i}>
+                                <CardVideoWithAvatar
+                                    title={message.user.username}
+                                    subtitle={(message.createTime) ? message.createTime.toString() : ''}
+                                    avatar={(message.user.avatar) ?
+                                        <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
+                                    }
+                                    src={message.src} />
                             </div>);
                     }
                 default:

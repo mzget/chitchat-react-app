@@ -14,6 +14,7 @@ const React = require("react");
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
 const config_1 = require("../configs/config");
+const FileType = require("../consts/FileType");
 const TypingBox_1 = require("./TypingBox");
 const ChatBox_1 = require("./ChatBox");
 const ToolbarSimple_1 = require("../components/ToolbarSimple");
@@ -33,7 +34,6 @@ class Chat extends React.Component {
         this.fileReaderChange = (e, results) => {
             results.forEach(result => {
                 const [progressEvent, file] = result;
-                console.dir(progressEvent);
                 console.dir(file);
                 this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
             });
@@ -82,10 +82,11 @@ class Chat extends React.Component {
             }
             case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
                 let { responseUrl, fileInfo } = chatroomReducer;
-                const textType = /text.*/;
-                const imageType = /image.*/;
-                if (fileInfo.type.match(imageType)) {
+                if (fileInfo.type.match(FileType.imageType)) {
                     this.onSubmitImageMessage(fileInfo, responseUrl);
+                }
+                else if (fileInfo.type.match(FileType.videoType)) {
+                    this.onSubmitVideoMessage(fileInfo, responseUrl);
                 }
                 break;
             }
@@ -200,9 +201,19 @@ class Chat extends React.Component {
             image: file.name,
             src: `${config_1.default.api.host}/${responseUrl}`
         };
+        this.prepareSend(msg);
+    }
+    onSubmitVideoMessage(file, responseUrl) {
+        let msg = {
+            video: file.name,
+            src: `${config_1.default.api.host}/${responseUrl}`
+        };
+        this.prepareSend(msg);
+    }
+    prepareSend(msg) {
         let message = this.prepareSendMessage(msg);
         this.send(message);
-        let _messages = this.state.messages.slice();
+        let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
         _messages.push(message);
         this.setState(previousState => (__assign({}, previousState, { typingText: "", messages: _messages })));
     }
@@ -219,6 +230,11 @@ class Chat extends React.Component {
         }
         else if (msg.location) {
             message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location];
+        }
+        else if (msg.video) {
+            message.body = msg.video;
+            message.src = msg.src;
+            message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Video];
         }
         message.rid = this.props.chatroomReducer.room._id;
         message.sender = this.props.userReducer.user._id;

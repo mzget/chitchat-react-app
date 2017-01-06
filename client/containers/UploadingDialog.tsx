@@ -12,7 +12,10 @@ import { IComponentProps } from "../utils/IComponentProps";
 import * as ChatroomRx from '../redux/chatroom/chatroomRxEpic';
 
 import SimpleCardImage from '../components/SimpleCardImage';
+import SimpleCardVideo from '../components/SimpleCardVideo';
 import LinearProgressSimple from "../components/LinearProgressSimple";
+
+import * as FileType from '../consts/FileType';
 
 abstract class IComponentNameProps implements IComponentProps {
     location: {
@@ -101,6 +104,18 @@ class UploadingDialog extends React.Component<IComponentNameProps, IComponentNam
                 />
         ];
 
+        const getMediaCard = () => {
+            if (chatroomReducer.fileInfo.type.match(FileType.imageType)) {
+                return (< SimpleCardImage src={chatroomReducer.uploadingFile} />)
+            }
+            else if (chatroomReducer.fileInfo.type.match(FileType.textType)) {
+                return null;
+            }
+            else if (chatroomReducer.fileInfo.type.match(FileType.videoType)) {
+                return (< SimpleCardVideo src={chatroomReducer.uploadingFile} />)
+            }
+        }
+
         return (
             <MuiThemeProvider>
                 <Dialog
@@ -109,8 +124,10 @@ class UploadingDialog extends React.Component<IComponentNameProps, IComponentNam
                     modal={true}
                     open={this.state.openState}
                     >
-                    <SimpleCardImage src={chatroomReducer.uploadingFile} />
-
+                    {
+                        (this.state.openState) ?
+                            getMediaCard() : null
+                    }
                     <Flex p={2} align='center'>
                         <LinearProgressSimple />
                     </Flex>

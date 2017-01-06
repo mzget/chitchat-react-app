@@ -7,6 +7,7 @@ import * as async from 'async';
 import { Flex, Box } from 'reflexbox';
 
 import Config from '../configs/config';
+import * as FileType from '../consts/FileType';
 
 import { TypingBox } from './TypingBox';
 import ChatBox from "./ChatBox";
@@ -93,12 +94,12 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
 
             case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
                 let {responseUrl, fileInfo} = chatroomReducer;
-                const textType = /text.*/;
-                const imageType = /image.*/;
 
-
-                if (fileInfo.type.match(imageType)) {
+                if (fileInfo.type.match(FileType.imageType)) {
                     this.onSubmitImageMessage(fileInfo, responseUrl);
+                }
+                else if (fileInfo.type.match(FileType.videoType)) {
+                    this.onSubmitVideoMessage(fileInfo, responseUrl);
                 }
 
                 break;
@@ -252,10 +253,24 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
             image: file.name,
             src: `${Config.api.host}/${responseUrl}`
         };
+
+        this.prepareSend(msg);
+    }
+
+    onSubmitVideoMessage(file: File, responseUrl: string) {
+        let msg = {
+            video: file.name,
+            src: `${Config.api.host}/${responseUrl}`
+        };
+
+        this.prepareSend(msg);
+    }
+
+    prepareSend(msg) {
         let message = this.prepareSendMessage(msg);
         this.send(message);
 
-        let _messages = this.state.messages.slice();
+        let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
         _messages.push(message);
         this.setState(previousState => ({ ...previousState, typingText: "", messages: _messages }));
     }
@@ -266,12 +281,15 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
             message.body = msg.image;
             message.src = msg.src;
             message.type = ContentType[ContentType.Image];
-        }
-        else if (msg.text) {
+        } else if (msg.text) {
             message.body = msg.text;
             message.type = ContentType[ContentType.Text];
         } else if (msg.location) {
             message.type = ContentType[ContentType.Location];
+        } else if (msg.video) {
+            message.body = msg.video;
+            message.src = msg.src;
+            message.type = ContentType[ContentType.Video];
         }
 
         message.rid = this.props.chatroomReducer.room._id;
@@ -296,7 +314,6 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         results.forEach(result => {
             const [progressEvent, file] = result;
 
-            console.dir(progressEvent);
             console.dir(file);
 
             this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
