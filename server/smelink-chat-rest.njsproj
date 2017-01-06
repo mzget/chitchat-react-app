@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{e50b5197-0a0a-4b13-ad3c-b82f4ab94b3b}</ProjectGuid>
+    <ProjectHome />
+    <ProjectView>ShowAllFiles</ProjectView>
+    <StartupFile>app.ts</StartupFile>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <TypeScriptSourceMap>true</TypeScriptSourceMap>
+    <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
+    <EnableTypeScript>true</EnableTypeScript>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Content Include="package.json" />
+    <Content Include="tsconfig.json" />
+    <TypeScriptCompile Include="app.ts" />
+    <TypeScriptCompile Include="config.ts" />
+    <Compile Include="app.js" />
+    <Compile Include="config.js" />
+    <TypeScriptCompile Include="routes\chatroom.ts" />
+    <TypeScriptCompile Include="routes\index.ts" />
+    <TypeScriptCompile Include="routes\users.ts" />
+    <Compile Include="routes\chatroom.js" />
+    <Compile Include="routes\index.js" />
+    <Compile Include="routes\users.js" />
+    <Content Include="public\stylesheets\style.css" />
+    <TypeScriptCompile Include="routes\upload\uploadFile.ts" />
+    <Compile Include="routes\upload\uploadFile.js" />
+    <TypeScriptCompile Include="scripts\controllers\ChatRoomManager.ts" />
+    <TypeScriptCompile Include="scripts\controllers\CompanyManager.ts" />
+    <TypeScriptCompile Include="scripts\controllers\UserManager.ts" />
+    <Compile Include="scripts\controllers\ChatRoomManager.js" />
+    <Compile Include="scripts\controllers\CompanyManager.js" />
+    <Compile Include="scripts\controllers\UserManager.js" />
+    <TypeScriptCompile Include="scripts\models\Company.ts" />
+    <TypeScriptCompile Include="scripts\models\IChatRoom.ts" />
+    <TypeScriptCompile Include="scripts\models\IProfile.ts" />
+    <TypeScriptCompile Include="scripts\models\JobLevel.ts" />
+    <TypeScriptCompile Include="scripts\models\Message.ts" />
+    <TypeScriptCompile Include="scripts\models\Room.ts" />
+    <TypeScriptCompile Include="scripts\models\RoomAccessData.ts" />
+    <TypeScriptCompile Include="scripts\models\User.ts" />
+    <TypeScriptCompile Include="scripts\models\UserRole.ts" />
+    <Compile Include="scripts\models\Company.js" />
+    <Compile Include="scripts\models\IChatRoom.js" />
+    <Compile Include="scripts\models\IProfile.js" />
+    <Compile Include="scripts\models\JobLevel.js" />
+    <Compile Include="scripts\models\Message.js" />
+    <Compile Include="scripts\models\Room.js" />
+    <Compile Include="scripts\models\RoomAccessData.js" />
+    <Compile Include="scripts\models\User.js" />
+    <Compile Include="scripts\models\UserRole.js" />
+    <Compile Include="scripts\models\userService.js" />
+    <TypeScriptCompile Include="scripts\services\AccountService.ts" />
+    <TypeScriptCompile Include="scripts\services\CachingSevice.ts" />
+    <TypeScriptCompile Include="scripts\services\RoomService.ts" />
+    <Compile Include="scripts\services\AccountService.js" />
+    <Compile Include="scripts\services\CachingSevice.js" />
+    <Compile Include="scripts\services\RoomService.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="public" />
+    <Folder Include="public\stylesheets" />
+    <Folder Include="routes" />
+    <Folder Include="routes\upload" />
+    <Folder Include="scripts" />
+    <Folder Include="scripts\controllers" />
+    <Folder Include="scripts\models" />
+    <Folder Include="scripts\services" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
