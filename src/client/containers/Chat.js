@@ -118,7 +118,10 @@ class Chat extends React.Component {
             }
             case chatRoomActions.ChatRoomActionsType.ON_NEW_MESSAGE: {
                 chatRoomActions.getMessages().then(messages => {
-                    this.setState(previousState => (__assign({}, previousState, { messages: messages })));
+                    this.setState(previousState => (__assign({}, previousState, { messages: messages })), () => {
+                        let chatBox = document.getElementById('h_chatArea');
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    });
                 });
                 this.props.dispatch(chatRoomActions.emptyState());
                 break;
@@ -234,28 +237,31 @@ class Chat extends React.Component {
         this.send(message);
         let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
         _messages.push(message);
-        this.setState(previousState => (__assign({}, previousState, { typingText: "", messages: _messages })));
+        this.setState(previousState => (__assign({}, previousState, { typingText: "", messages: _messages })), () => {
+            let chatBox = document.getElementById('h_chatArea');
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
     }
     decorateMessage(msg) {
         let message = new MessageImp_1.MessageImp();
-        if (msg.image) {
+        if (msg.image != null) {
             message.body = msg.image;
             message.src = msg.src;
             message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image];
         }
-        else if (msg.text) {
+        else if (msg.text != null) {
             message.body = msg.text;
             message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text];
         }
-        else if (msg.location) {
+        else if (msg.location != null) {
             message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location];
         }
-        else if (msg.video) {
+        else if (msg.video != null) {
             message.body = msg.video;
             message.src = msg.src;
             message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Video];
         }
-        else if (msg.sticker) {
+        else if (msg.sticker != null) {
             message.body = msg.sticker;
             message.src = StickerPath_1.imagesPath[msg.sticker].img;
             message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Sticker];
@@ -286,7 +292,7 @@ class Chat extends React.Component {
                     React.createElement(ToolbarSimple_1.default, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "" }))),
             React.createElement("div", { style: { height: this.state.h_body } },
                 React.createElement(reflexbox_1.Flex, { flexColumn: true },
-                    React.createElement("div", { style: { height: this.state.h_chatArea, overflowY: 'scroll' } },
+                    React.createElement("div", { style: { height: this.state.h_chatArea, overflowY: 'scroll' }, id: 'h_chatArea' },
                         (this.state.earlyMessageReady) ?
                             React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center' },
                                 React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))

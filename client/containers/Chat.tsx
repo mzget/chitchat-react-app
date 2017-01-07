@@ -145,7 +145,10 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                     this.setState(previousState => ({
                         ...previousState,
                         messages: messages
-                    }));
+                    }), () => {
+                        let chatBox = document.getElementById('h_chatArea');
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    });
                 });
 
                 this.props.dispatch(chatRoomActions.emptyState());
@@ -301,26 +304,33 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
 
         let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
         _messages.push(message);
-        this.setState(previousState => ({ ...previousState, typingText: "", messages: _messages }));
+        this.setState(previousState => ({ ...previousState, typingText: "", messages: _messages }), () => {
+            let chatBox = document.getElementById('h_chatArea');
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
     }
 
     decorateMessage(msg): IMessage {
         let message = new MessageImp();
-        if (msg.image) {
+
+        if (msg.image != null) {
             message.body = msg.image;
             message.src = msg.src;
             message.type = ContentType[ContentType.Image];
-        } else if (msg.text) {
+        }
+        else if (msg.text != null) {
             message.body = msg.text;
             message.type = ContentType[ContentType.Text];
-        } else if (msg.location) {
+        }
+        else if (msg.location != null) {
             message.type = ContentType[ContentType.Location];
-        } else if (msg.video) {
+        }
+        else if (msg.video != null) {
             message.body = msg.video;
             message.src = msg.src;
             message.type = ContentType[ContentType.Video];
         }
-        else if (msg.sticker) {
+        else if (msg.sticker != null) {
             message.body = msg.sticker;
             message.src = imagesPath[msg.sticker].img;
             message.type = ContentType[ContentType.Sticker];
@@ -374,7 +384,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                 </div>
                 <div style={{ height: this.state.h_body }}>
                     <Flex flexColumn={true}>
-                        <div style={{ height: this.state.h_chatArea, overflowY: 'scroll' }}>
+                        <div style={{ height: this.state.h_chatArea, overflowY: 'scroll' }} id={'h_chatArea'}>
                             {
                                 (this.state.earlyMessageReady) ?
                                     <Flex align='center' justify='center'>
@@ -383,7 +393,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                                     :
                                     null
                             }
-                            <ChatBox {...this.props} value={this.state.messages} onSelected={(message: IMessage) => {
+                            <ChatBox  {...this.props} value={this.state.messages} onSelected={(message: IMessage) => {
 
                             } } />
                         </div>
