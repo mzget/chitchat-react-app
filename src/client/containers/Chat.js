@@ -30,12 +30,6 @@ class IComponentNameProps {
 }
 ;
 ;
-const clientWidth = document.documentElement.clientWidth;
-const clientHeight = document.documentElement.clientHeight;
-const head = clientHeight * 0.1;
-const body = clientHeight * 0.8;
-const bottom = clientHeight * 0.1;
-const stickersBox = clientHeight * 0.3;
 class Chat extends React.Component {
     constructor() {
         super(...arguments);
@@ -49,6 +43,12 @@ class Chat extends React.Component {
     }
     componentWillMount() {
         console.log("Chat", this.props, this.state);
+        const clientWidth = document.documentElement.clientWidth;
+        const clientHeight = document.documentElement.clientHeight;
+        const head = clientHeight * 0.1;
+        const body = clientHeight * 0.8;
+        const bottom = clientHeight * 0.1;
+        const stickersBox = clientHeight * 0.3;
         this.state = {
             messages: new Array(),
             typingText: '',
@@ -267,7 +267,7 @@ class Chat extends React.Component {
         this.props.dispatch(chatRoomActions.sendMessage(message));
     }
     onToggleSticker() {
-        this.setState(previousState => (__assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu, h_chatArea: (previousState.openButtomMenu) ? body : body - previousState.h_stickerBox })));
+        this.setState(previousState => (__assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu, h_chatArea: (previousState.openButtomMenu) ? previousState.h_body : previousState.h_body - previousState.h_stickerBox })));
     }
     render() {
         let { chatroomReducer } = this.props;

@@ -50,17 +50,16 @@ interface IComponentNameState {
     h_chatArea: number
 };
 
-
-const clientWidth = document.documentElement.clientWidth;
-const clientHeight = document.documentElement.clientHeight;
-const head = clientHeight * 0.1;
-const body = clientHeight * 0.8;
-const bottom = clientHeight * 0.1;
-const stickersBox = clientHeight * 0.3;
-
 class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
     componentWillMount() {
         console.log("Chat", this.props, this.state);
+
+        const clientWidth = document.documentElement.clientWidth;
+        const clientHeight = document.documentElement.clientHeight;
+        const head = clientHeight * 0.1;
+        const body = clientHeight * 0.8;
+        const bottom = clientHeight * 0.1;
+        const stickersBox = clientHeight * 0.3;
 
         this.state = {
             messages: new Array(),
@@ -349,7 +348,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         this.setState(previousState => ({
             ...previousState,
             openButtomMenu: !previousState.openButtomMenu,
-            h_chatArea: (previousState.openButtomMenu) ? body : body - previousState.h_stickerBox
+            h_chatArea: (previousState.openButtomMenu) ? previousState.h_body : previousState.h_body - previousState.h_stickerBox
         }));
     }
 

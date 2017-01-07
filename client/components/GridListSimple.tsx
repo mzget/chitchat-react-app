@@ -14,7 +14,6 @@ const styles = (props) => ({
         height: props.boxHeight
     },
     gridList: {
-        overflowY: 'hidden',
         overflowX: 'hidden'
     },
 });
