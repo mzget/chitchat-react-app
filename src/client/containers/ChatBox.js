@@ -23,25 +23,25 @@ class ChatBox extends React.Component {
                 switch (message.type) {
                     case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]:
                         {
-                            return (React.createElement("div", { key: i },
+                            return (React.createElement(List_1.ListItem, { key: i },
                                 React.createElement(CardTextWithAvatar_1.default, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : '', avatar: (message.user.avatar) ?
                                         React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), cardText: message.body })));
                         }
                     case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Sticker]:
                         {
-                            return (React.createElement("div", { key: i },
+                            return (React.createElement(List_1.ListItem, { key: i },
                                 React.createElement(CardImageWithAvatar_1.CardStickerWithAvatar, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : '', avatar: (message.user.avatar) ?
                                         React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), imageSrc: message.src })));
                         }
                     case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image]:
                         {
-                            return (React.createElement("div", { key: i },
+                            return (React.createElement(List_1.ListItem, { key: i },
                                 React.createElement(CardImageWithAvatar_1.CardImageWithAvatar, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : '', avatar: (message.user.avatar) ?
                                         React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), imageSrc: message.src })));
                         }
                     case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Video]:
                         {
-                            return (React.createElement("div", { key: i },
+                            return (React.createElement(List_1.ListItem, { key: i },
                                 React.createElement(CardVideoWithAvatar_1.default, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : '', avatar: (message.user.avatar) ?
                                         React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), src: message.src })));
                         }

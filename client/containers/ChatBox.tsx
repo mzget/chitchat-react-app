@@ -54,7 +54,7 @@ class ChatBox extends React.Component<MyProps, any> {
                 case ContentType[ContentType.Text]:
                     {
                         return (
-                            <div key={i}>
+                            <ListItem key={i} >
                                 <CardTextWithAvatar
                                     title={message.user.username}
                                     subtitle={(message.createTime) ? message.createTime.toString() : ''}
@@ -62,12 +62,12 @@ class ChatBox extends React.Component<MyProps, any> {
                                         <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                                     }
                                     cardText={message.body} />
-                            </div>);
+                            </ListItem>);
                     }
                 case ContentType[ContentType.Sticker]:
                     {
                         return (
-                            <div key={i}>
+                            <ListItem key={i}>
                                 <CardStickerWithAvatar
                                     title={message.user.username}
                                     subtitle={(message.createTime) ? message.createTime.toString() : ''}
@@ -75,12 +75,12 @@ class ChatBox extends React.Component<MyProps, any> {
                                         <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                                     }
                                     imageSrc={message.src} />
-                            </div>);
+                            </ListItem>);
                     }
                 case ContentType[ContentType.Image]:
                     {
                         return (
-                            <div key={i}>
+                            <ListItem key={i}>
                                 <CardImageWithAvatar
                                     title={message.user.username}
                                     subtitle={(message.createTime) ? message.createTime.toString() : ''}
@@ -88,12 +88,12 @@ class ChatBox extends React.Component<MyProps, any> {
                                         <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                                     }
                                     imageSrc={message.src} />
-                            </div>);
+                            </ListItem>);
                     }
                 case ContentType[ContentType.Video]:
                     {
                         return (
-                            <div key={i}>
+                            <ListItem key={i}>
                                 <CardVideoWithAvatar
                                     title={message.user.username}
                                     subtitle={(message.createTime) ? message.createTime.toString() : ''}
@@ -101,7 +101,7 @@ class ChatBox extends React.Component<MyProps, any> {
                                         <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                                     }
                                     src={message.src} />
-                            </div>);
+                            </ListItem>);
                     }
                 default:
                     break;
