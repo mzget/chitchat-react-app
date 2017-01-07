@@ -18,7 +18,6 @@ import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 
 import ChatLogsBox from "./ChatLogsBox";
 import UtilsBox from "./UtilsBox";
-import GridListExampleSimple from "../components/GridListExampleSimple";
 
 abstract class IComponentNameProps implements IComponentProps {
     location: {
@@ -131,8 +130,6 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
 
                 <ChatLogsBox {...this.props} />
                 <UtilsBox />
-
-                <GridListExampleSimple />
             </div>
         );
     }

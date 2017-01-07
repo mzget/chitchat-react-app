@@ -19,15 +19,23 @@ const TypingBox_1 = require("./TypingBox");
 const ChatBox_1 = require("./ChatBox");
 const ToolbarSimple_1 = require("../components/ToolbarSimple");
 const UploadingDialog_1 = require("./UploadingDialog");
+const GridListSimple_1 = require("../components/GridListSimple");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 const chatRoomActions = require("../redux/chatroom/chatroomActions");
 const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const ChatDataModels_1 = require("../chats/models/ChatDataModels");
 const MessageImp_1 = require("../chats/models/MessageImp");
+const StickerPath_1 = require("../consts/StickerPath");
 class IComponentNameProps {
 }
 ;
 ;
+const clientWidth = document.documentElement.clientWidth;
+const clientHeight = document.documentElement.clientHeight;
+const head = clientHeight * 0.1;
+const body = clientHeight * 0.8;
+const bottom = clientHeight * 0.1;
+const stickersBox = clientHeight * 0.3;
 class Chat extends React.Component {
     constructor() {
         super(...arguments);
@@ -45,11 +53,18 @@ class Chat extends React.Component {
             messages: new Array(),
             typingText: '',
             isLoadingEarlierMessages: false,
-            earlyMessageReady: false
+            earlyMessageReady: false,
+            openButtomMenu: false,
+            h_header: head,
+            h_body: body,
+            h_footer: bottom,
+            h_chatArea: body,
+            h_stickerBox: stickersBox
         };
         this.onSubmitTextMessage = this.onSubmitTextMessage.bind(this);
         this.onTypingTextChange = this.onTypingTextChange.bind(this);
         this.roomInitialize = this.roomInitialize.bind(this);
+        this.onToggleSticker = this.onToggleSticker.bind(this);
         let { chatroomReducer, userReducer, params } = this.props;
         if (chatroomReducer.state == chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS
             || chatroomReducer.state == chatroomRxEpic.CREATE_PRIVATE_CHATROOM_SUCCESS) {
@@ -251,31 +266,33 @@ class Chat extends React.Component {
     send(message) {
         this.props.dispatch(chatRoomActions.sendMessage(message));
     }
+    onToggleSticker() {
+        this.setState(previousState => (__assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu, h_chatArea: (previousState.openButtomMenu) ? body : body - previousState.h_stickerBox })));
+    }
     render() {
-        let clientWidth = document.documentElement.clientWidth;
-        let clientHeight = document.documentElement.clientHeight;
-        let head = clientHeight * 0.1;
-        let body = clientHeight * 0.8;
-        let bottom = clientHeight * 0.1;
         let { chatroomReducer } = this.props;
-        return (React.createElement("div", { style: { height: clientHeight } },
-            React.createElement("div", { style: { height: head } },
+        return (React.createElement("div", { style: { height: document.documentElement.clientHeight } },
+            React.createElement("div", { style: { height: this.state.h_header } },
                 React.createElement(reflexbox_1.Flex, { flexAuto: true },
                     React.createElement(ToolbarSimple_1.default, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "" }))),
-            React.createElement("div", { style: { height: body } },
+            React.createElement("div", { style: { height: this.state.h_body } },
                 React.createElement(reflexbox_1.Flex, { flexColumn: true },
-                    React.createElement("div", { style: { height: body, overflowY: 'scroll' } },
+                    React.createElement("div", { style: { height: this.state.h_chatArea, overflowY: 'scroll' } },
                         (this.state.earlyMessageReady) ?
                             React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center' },
                                 React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))
                             :
                                 null,
                         React.createElement(ChatBox_1.default, __assign({}, this.props, { value: this.state.messages, onSelected: (message) => {
-                            } }))))),
+                            } })))),
+                (this.state.openButtomMenu) ?
+                    React.createElement(GridListSimple_1.default, { boxHeight: this.state.h_stickerBox, srcs: StickerPath_1.imagesPath, onSelected: (id) => {
+                            console.log("stickers :", id);
+                        } })
+                    : null),
             React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center', flexColumn: false },
                 React.createElement("div", { style: { bottom: '0%', position: 'absolute' } },
-                    React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitTextMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: () => {
-                        } }))),
+                    React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitTextMessage, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }))),
             React.createElement(UploadingDialog_1.default, null)));
     }
 }

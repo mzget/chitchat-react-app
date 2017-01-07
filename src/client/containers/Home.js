@@ -17,7 +17,6 @@ const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const chatroomActions = require("../redux/chatroom/chatroomActions");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 const UtilsBox_1 = require("./UtilsBox");
-const GridListExampleSimple_1 = require("../components/GridListExampleSimple");
 class IComponentNameProps {
 }
 ;
@@ -103,8 +102,7 @@ class Home extends React.Component {
                     React.createElement(react_router_1.Link, { to: `/chat/${userId}` }, username)),
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
             React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
-            React.createElement(UtilsBox_1.default, null),
-            React.createElement(GridListExampleSimple_1.default, null)));
+            React.createElement(UtilsBox_1.default, null)));
     }
     joinChatServer(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer } = nextProps;

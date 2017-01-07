@@ -14,6 +14,7 @@ import ChatBox from "./ChatBox";
 import Toolbar from "../components/ToolbarSimple";
 import UtilsBox from "./UtilsBox";
 import UploadingDialog from './UploadingDialog';
+import GridListSimple from "../components/GridListSimple";
 
 import { IComponentProps } from "../utils/IComponentProps";
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
@@ -22,6 +23,8 @@ import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 
 import { ContentType, IMessage } from "../chats/models/ChatDataModels";
 import { MessageImp } from "../chats/models/MessageImp";
+
+import { imagesPath } from '../consts/StickerPath';
 
 abstract class IComponentNameProps implements IComponentProps {
     location;
@@ -38,8 +41,22 @@ interface IComponentNameState {
     messages: any[],
     isLoadingEarlierMessages,
     typingText: string,
-    earlyMessageReady
+    earlyMessageReady,
+    openButtomMenu: boolean,
+    h_header: number,
+    h_body: number,
+    h_footer: number,
+    h_stickerBox: number,
+    h_chatArea: number
 };
+
+
+const clientWidth = document.documentElement.clientWidth;
+const clientHeight = document.documentElement.clientHeight;
+const head = clientHeight * 0.1;
+const body = clientHeight * 0.8;
+const bottom = clientHeight * 0.1;
+const stickersBox = clientHeight * 0.3;
 
 class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
     componentWillMount() {
@@ -49,12 +66,20 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
             messages: new Array(),
             typingText: '',
             isLoadingEarlierMessages: false,
-            earlyMessageReady: false
+            earlyMessageReady: false,
+            openButtomMenu: false,
+
+            h_header: head,
+            h_body: body,
+            h_footer: bottom,
+            h_chatArea: body,
+            h_stickerBox: stickersBox
         };
 
         this.onSubmitTextMessage = this.onSubmitTextMessage.bind(this);
         this.onTypingTextChange = this.onTypingTextChange.bind(this);
         this.roomInitialize = this.roomInitialize.bind(this);
+        this.onToggleSticker = this.onToggleSticker.bind(this);
 
         let { chatroomReducer, userReducer, params} = this.props;
 
@@ -320,25 +345,27 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         });
     }
 
-    render(): JSX.Element {
-        let clientWidth = document.documentElement.clientWidth;
-        let clientHeight = document.documentElement.clientHeight;
-        let head = clientHeight * 0.1;
-        let body = clientHeight * 0.8;
-        let bottom = clientHeight * 0.1;
+    onToggleSticker() {
+        this.setState(previousState => ({
+            ...previousState,
+            openButtomMenu: !previousState.openButtomMenu,
+            h_chatArea: (previousState.openButtomMenu) ? body : body - previousState.h_stickerBox
+        }));
+    }
 
+    render(): JSX.Element {
         let {chatroomReducer } = this.props;
 
         return (
-            <div style={{ height: clientHeight }}>
-                <div style={{ height: head }}>
+            <div style={{ height: document.documentElement.clientHeight }}>
+                <div style={{ height: this.state.h_header }}>
                     <Flex flexAuto>
                         <Toolbar title={(chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : ""} />
                     </Flex>
                 </div>
-                <div style={{ height: body }}>
+                <div style={{ height: this.state.h_body }}>
                     <Flex flexColumn={true}>
-                        <div style={{ height: body, overflowY: 'scroll' }}>
+                        <div style={{ height: this.state.h_chatArea, overflowY: 'scroll' }}>
                             {
                                 (this.state.earlyMessageReady) ?
                                     <Flex align='center' justify='center'>
@@ -352,6 +379,13 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                             } } />
                         </div>
                     </Flex>
+                    {
+                        (this.state.openButtomMenu) ?
+                            <GridListSimple boxHeight={this.state.h_stickerBox} srcs={imagesPath} onSelected={(id) => {
+                                console.log("stickers :", id);
+                            } } />
+                            : null
+                    }
                 </div>
                 <Flex align='center' justify='center' flexColumn={false}>
                     <div style={{ bottom: '0%', position: 'absolute' }} >
@@ -360,9 +394,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                             onValueChange={this.onTypingTextChange}
                             value={this.state.typingText}
                             fileReaderChange={this.fileReaderChange}
-                            onSticker={() => {
-
-                            } } />
+                            onSticker={this.onToggleSticker} />
                     </div>
                 </Flex>
                 <UploadingDialog />
