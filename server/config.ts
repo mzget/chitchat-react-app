@@ -8,8 +8,8 @@ type Config = {
 
 const dev: Config = {
     appDB: "mongodb://git.animation-genius.com:27017/smelink",
-    backendDB: "mongodb://git.animation-genius.com:27017/smelink-yii",
-    chatDB: "mongodb://git.animation-genius.com:27017/smelink-chat",
+    backendDB: "mongodb://rfl_dev:rfl1234@git.animation-genius.com:27017/smelink-yii",
+    chatDB: "mongodb://rfl_dev:rfl1234@git.animation-genius.com:27017/smelink-chat-dev",
     redis_port: 6379,
     redis_host: "http://smelink.animation-genius.com"
 }
@@ -37,7 +37,7 @@ export function getConfig(): Config {
 }
 
 export const DbClient = {
-    user: "user",
+    agentsCollection: "users",
     userContactColl: "users",
     chatroomCall: "rooms",
     chatUserCall: "users",

@@ -14,9 +14,12 @@ import ServerEventListener from "../libs/stalk/serverEventListener";
 import { absSpartan } from "../libs/stalk/spartanEvents";
 import SecureServiceFactory from "../libs/chitchat/services/secureServiceFactory";
 import { ContentType, IMember, IMessage } from "./models/ChatDataModels";
+import { MessageImp } from "./models/MessageImp";
 import { ISecureService } from "../libs/chitchat/services/ISecureService";
 
 import config from "../configs/config";
+import { imagesPath } from '../consts/StickerPath';
+
 let serverImp: ServerImplemented = null;
 
 export default class ChatRoomComponent implements absSpartan.IChatServerListener {
@@ -53,7 +56,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         this.dataManager = BackendFactory.getInstance().dataManager;
     }
 
-    onChat(message: IMessage) {
+    onChat(message: MessageImp) {
         let self = this;
 
         const saveMessages = (chatMessages: Array<IMessage>) => {
@@ -85,6 +88,12 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                     else {
                         saveMessages(chatMessages);
                     }
+                }
+                else if (message.type == ContentType[ContentType.Sticker]) {
+                    let sticker_id = parseInt(message.body);
+
+                    message.src = imagesPath[sticker_id].img;
+                    saveMessages(chatMessages);
                 }
                 else {
                     saveMessages(chatMessages);

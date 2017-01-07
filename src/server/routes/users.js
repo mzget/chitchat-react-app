@@ -73,7 +73,7 @@ router.get('/agent/:username', (req, res, next) => {
         return res.status(500).json({ success: false, message: errors });
     }
     MongoClient.connect(webConfig.backendDB).then(db => {
-        let collection = db.collection(config_1.DbClient.user);
+        let collection = db.collection(config_1.DbClient.agentsCollection);
         collection.find({ username: req.params.username }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
             if (docs.length >= 1) {
                 res.status(200).json({ success: true, result: docs });
@@ -85,7 +85,7 @@ router.get('/agent/:username', (req, res, next) => {
             }
         });
     }).catch(err => {
-        res.status(500).json({ success: false, message: err });
+        res.status(500).json({ success: false, message: err + ': Cannot connect db.' });
     });
 });
 module.exports = router;

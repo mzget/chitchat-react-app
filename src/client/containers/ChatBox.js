@@ -10,7 +10,6 @@ const CardVideoWithAvatar_1 = require("../components/CardVideoWithAvatar");
 class MyProps {
 }
 ;
-;
 class ChatBox extends React.Component {
     constructor() {
         super(...arguments);
@@ -28,10 +27,16 @@ class ChatBox extends React.Component {
                                 React.createElement(CardTextWithAvatar_1.default, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : '', avatar: (message.user.avatar) ?
                                         React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), cardText: message.body })));
                         }
+                    case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Sticker]:
+                        {
+                            return (React.createElement("div", { key: i },
+                                React.createElement(CardImageWithAvatar_1.CardStickerWithAvatar, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : '', avatar: (message.user.avatar) ?
+                                        React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), imageSrc: message.src })));
+                        }
                     case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image]:
                         {
                             return (React.createElement("div", { key: i },
-                                React.createElement(CardImageWithAvatar_1.default, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : '', avatar: (message.user.avatar) ?
+                                React.createElement(CardImageWithAvatar_1.CardImageWithAvatar, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : '', avatar: (message.user.avatar) ?
                                         React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), imageSrc: message.src })));
                         }
                     case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Video]:
@@ -45,9 +50,6 @@ class ChatBox extends React.Component {
                 }
             });
         };
-    }
-    componentWillMount() {
-        this.state = {};
     }
     render() {
         return (React.createElement(MuiThemeProvider_1.default, null,

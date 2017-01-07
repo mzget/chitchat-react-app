@@ -16,7 +16,7 @@ const styles = {
     }
 };
 
-const FileReaderBox = (props) => (
+const FileReaderBox = (props: ITypingBox) => (
     <FileReaderInput as='url' id="file-input" onChange={props.fileReaderChange}>
         <IconButton>
             <FontIcon className="material-icons">attachment</FontIcon>
@@ -24,14 +24,21 @@ const FileReaderBox = (props) => (
     </FileReaderInput>
 );
 
-const SendButton = (props) => (
+const SendButton = (props: ITypingBox) => (
     <IconButton onClick={props.onSubmit} >
         <FontIcon className="material-icons">send</FontIcon>
     </IconButton>
 );
 
+const StickerButton = (props: ITypingBox) => (
+    <IconButton onClick={props.onSticker} >
+        <FontIcon className="material-icons">insert_emoticon</FontIcon>
+    </IconButton>
+);
+
 interface ITypingBox {
     onSubmit: () => void;
+    onSticker?: () => void;
     value: string;
     onValueChange: (text) => void;
     fileReaderChange: (e, results) => void;
@@ -41,13 +48,14 @@ export const TypingBox = (props: ITypingBox) => {
     return (
         < MuiThemeProvider >
             <Flex>
+                <StickerButton {...props} />
                 <FileReaderBox {...props} />
                 <span style={styles.span} />
                 <TextField hintText="Type your message" value={props.value} onChange={props.onValueChange} onKeyDown={(e) => {
                     if (e.key === 'Enter') props.onSubmit();
                 } } />
                 <span style={styles.span} />
-                <SendButton onSubmit={props.onSubmit} />
+                <SendButton {...props} />
             </Flex>
         </MuiThemeProvider >
     );
