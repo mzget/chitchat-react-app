@@ -10,7 +10,7 @@ interface MyProps {
     imageSrc: string;
 }
 
-const CardImageWithAvatar = (props: MyProps) => (
+export const CardImageWithAvatar = (props: MyProps) => (
     <Card>
         <CardHeader
             title={<span style={{ color: "blue" }}>{props.title}</span>}
@@ -26,4 +26,15 @@ const CardImageWithAvatar = (props: MyProps) => (
     </Card>
 );
 
-export default CardImageWithAvatar;
+export const CardStickerWithAvatar = (props: MyProps) => (
+    <Card>
+        <CardHeader
+            title={<span style={{ color: "blue" }}>{props.title}</span>}
+            subtitle={<span>{props.subtitle}</span>}
+            avatar={props.avatar}
+            />
+        <CardMedia>
+            <img src={props.imageSrc} alt={`Image preview:`} style={{ padding: 4, width: '50%', minWidth: '128px', maxWidth: '160px' }} />
+        </CardMedia>
+    </Card>
+);

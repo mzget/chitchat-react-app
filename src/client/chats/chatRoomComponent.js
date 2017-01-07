@@ -19,6 +19,7 @@ const serverEventListener_1 = require("../libs/stalk/serverEventListener");
 const secureServiceFactory_1 = require("../libs/chitchat/services/secureServiceFactory");
 const ChatDataModels_1 = require("./models/ChatDataModels");
 const config_1 = require("../configs/config");
+const StickerPath_1 = require("../consts/StickerPath");
 let serverImp = null;
 class ChatRoomComponent {
     static getInstance() {
@@ -71,6 +72,11 @@ class ChatRoomComponent {
                     else {
                         saveMessages(chatMessages);
                     }
+                }
+                else if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Sticker]) {
+                    let sticker_id = parseInt(message.body);
+                    message.src = StickerPath_1.imagesPath[sticker_id].img;
+                    saveMessages(chatMessages);
                 }
                 else {
                     saveMessages(chatMessages);

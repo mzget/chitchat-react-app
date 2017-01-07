@@ -75,8 +75,9 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
             h_stickerBox: stickersBox
         };
 
-        this.onSubmitTextMessage = this.onSubmitTextMessage.bind(this);
+        this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
         this.onTypingTextChange = this.onTypingTextChange.bind(this);
+        this.onSubmitStickerChat = this.onSubmitStickerChat.bind(this);
         this.roomInitialize = this.roomInitialize.bind(this);
         this.onToggleSticker = this.onToggleSticker.bind(this);
 
@@ -120,10 +121,10 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                 let {responseUrl, fileInfo} = chatroomReducer;
 
                 if (fileInfo.type.match(FileType.imageType)) {
-                    this.onSubmitImageMessage(fileInfo, responseUrl);
+                    this.onSubmitImageChat(fileInfo, responseUrl);
                 }
                 else if (fileInfo.type.match(FileType.videoType)) {
-                    this.onSubmitVideoMessage(fileInfo, responseUrl);
+                    this.onSubmitVideoChat(fileInfo, responseUrl);
                 }
 
                 break;
@@ -258,21 +259,17 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         this.setState({ ...this.state, typingText: event.target.value });
     }
 
-    onSubmitTextMessage() {
+    onSubmitTextChat() {
         if (this.state.typingText.length <= 0) return;
 
         let msg = {
             text: this.state.typingText
         };
-        let message = this.prepareSendMessage(msg);
-        this.send(message);
 
-        let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
-        _messages.push(message);
-        this.setState(previousState => ({ ...previousState, typingText: "", messages: _messages }));
+        this.prepareSend(msg);
     }
 
-    onSubmitImageMessage(file: File, responseUrl: string) {
+    onSubmitImageChat(file: File, responseUrl: string) {
         let msg = {
             image: file.name,
             src: `${Config.api.host}/${responseUrl}`
@@ -281,7 +278,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         this.prepareSend(msg);
     }
 
-    onSubmitVideoMessage(file: File, responseUrl: string) {
+    onSubmitVideoChat(file: File, responseUrl: string) {
         let msg = {
             video: file.name,
             src: `${Config.api.host}/${responseUrl}`
@@ -290,8 +287,16 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         this.prepareSend(msg);
     }
 
+    onSubmitStickerChat(id: number) {
+        let msg = {
+            sticker: id
+        };
+        this.onToggleSticker();
+        this.prepareSend(msg);
+    }
+
     prepareSend(msg) {
-        let message = this.prepareSendMessage(msg);
+        let message = this.decorateMessage(msg);
         this.send(message);
 
         let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
@@ -299,7 +304,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         this.setState(previousState => ({ ...previousState, typingText: "", messages: _messages }));
     }
 
-    prepareSendMessage(msg): IMessage {
+    decorateMessage(msg): IMessage {
         let message = new MessageImp();
         if (msg.image) {
             message.body = msg.image;
@@ -314,6 +319,11 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
             message.body = msg.video;
             message.src = msg.src;
             message.type = ContentType[ContentType.Video];
+        }
+        else if (msg.sticker) {
+            message.body = msg.sticker;
+            message.src = imagesPath[msg.sticker].img;
+            message.type = ContentType[ContentType.Sticker];
         }
 
         message.rid = this.props.chatroomReducer.room._id;
@@ -380,16 +390,17 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                     </Flex>
                     {
                         (this.state.openButtomMenu) ?
-                            <GridListSimple boxHeight={this.state.h_stickerBox} srcs={imagesPath} onSelected={(id) => {
-                                console.log("stickers :", id);
-                            } } />
+                            <GridListSimple
+                                boxHeight={this.state.h_stickerBox}
+                                srcs={imagesPath}
+                                onSelected={this.onSubmitStickerChat} />
                             : null
                     }
                 </div>
                 <Flex align='center' justify='center' flexColumn={false}>
                     <div style={{ bottom: '0%', position: 'absolute' }} >
                         <TypingBox
-                            onSubmit={this.onSubmitTextMessage}
+                            onSubmit={this.onSubmitTextChat}
                             onValueChange={this.onTypingTextChange}
                             value={this.state.typingText}
                             fileReaderChange={this.fileReaderChange}
