@@ -89,6 +89,14 @@ class Home extends React.Component {
                 break;
         }
     }
+    joinChatServer(nextProps) {
+        let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer } = nextProps;
+        if (userReducer.user) {
+            if (stalkReducer.state != StalkBridgeActions.STALK_INIT) {
+                StalkBridgeActions.stalkLogin(userReducer.user);
+            }
+        }
+    }
     render() {
         let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, userReducer } = this.props;
         return (React.createElement("div", null,
@@ -103,14 +111,6 @@ class Home extends React.Component {
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
             React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
             React.createElement(UtilsBox_1.default, null)));
-    }
-    joinChatServer(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer } = nextProps;
-        if (userReducer.user) {
-            if (stalkReducer.state != StalkBridgeActions.STALK_INIT) {
-                StalkBridgeActions.stalkLogin(userReducer.user);
-            }
-        }
     }
 }
 /**

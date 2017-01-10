@@ -113,6 +113,20 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
         }
     }
 
+    fetch_privateChatRoom = (roommateId, owerId) => {
+        this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
+    };
+
+    joinChatServer(nextProps) {
+        let { location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer } = nextProps as IComponentNameProps;
+
+        if (userReducer.user) {
+            if (stalkReducer.state != StalkBridgeActions.STALK_INIT) {
+                StalkBridgeActions.stalkLogin(userReducer.user);
+            }
+        }
+    }
+
     public render(): JSX.Element {
         let { location: {query: {userId, username, roomId, contactId}}, chatroomReducer, userReducer } = this.props;
         return (
@@ -132,20 +146,6 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
                 <UtilsBox />
             </div>
         );
-    }
-
-    fetch_privateChatRoom = (roommateId, owerId) => {
-        this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
-    };
-
-    joinChatServer(nextProps) {
-        let { location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer } = nextProps as IComponentNameProps;
-
-        if (userReducer.user) {
-            if (stalkReducer.state != StalkBridgeActions.STALK_INIT) {
-                StalkBridgeActions.stalkLogin(userReducer.user);
-            }
-        }
     }
 }
 
