@@ -17,6 +17,7 @@ const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const chatroomActions = require("../redux/chatroom/chatroomActions");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 const UtilsBox_1 = require("./UtilsBox");
+const SampleLoginBox_1 = require("../components/demos/SampleLoginBox");
 class IComponentNameProps {
 }
 ;
@@ -108,6 +109,10 @@ class Home extends React.Component {
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
                 React.createElement("li", { key: userId },
                     React.createElement(react_router_1.Link, { to: `/chat/${userId}` }, username)),
+                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
+            React.createElement(reflexbox_1.Flex, { align: 'center' },
+                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
+                React.createElement(SampleLoginBox_1.default, null),
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
             React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
             React.createElement(UtilsBox_1.default, null)));

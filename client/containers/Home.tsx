@@ -18,6 +18,7 @@ import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 
 import ChatLogsBox from "./ChatLogsBox";
 import UtilsBox from "./UtilsBox";
+import SampleLoginBox from "../components/demos/SampleLoginBox";
 
 abstract class IComponentNameProps implements IComponentProps {
     location: {
@@ -141,7 +142,11 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
                     <li key={userId}><Link to={`/chat/${userId}`}>{username}</Link></li>
                     <Box p={2} flexAuto></Box>
                 </Flex>
-
+                <Flex align='center'>
+                    <Box p={2} flexAuto></Box>
+                    <SampleLoginBox />
+                    <Box p={2} flexAuto></Box>
+                </Flex>
                 <ChatLogsBox {...this.props} />
                 <UtilsBox />
             </div>
