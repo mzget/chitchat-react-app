@@ -1,0 +1,1 @@
+export const demoLogin = (username: string) => ({ type: "", payload: username });

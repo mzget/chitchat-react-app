@@ -17,7 +17,7 @@ const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const chatroomActions = require("../redux/chatroom/chatroomActions");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 const UtilsBox_1 = require("./UtilsBox");
-const SampleLoginBox_1 = require("../components/demos/SampleLoginBox");
+const SampleLoginBox_1 = require("../demos/SampleLoginBox");
 class IComponentNameProps {
 }
 ;
