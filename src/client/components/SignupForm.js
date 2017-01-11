@@ -33,12 +33,12 @@ exports.SignupForm = (props) => {
                         props.onSubmit();
                 } }),
             React.createElement("span", { style: styles.span }),
-            React.createElement(material_ui_1.TextField, { hintText: "Password", errorText: "This field is required", value: props.password, onChange: props.onPasswordChange, onKeyDown: (e) => {
+            React.createElement(material_ui_1.TextField, { hintText: "Password", type: "password", errorText: "This field is required", value: props.password, onChange: props.onPasswordChange, onKeyDown: (e) => {
                     if (e.key === 'Enter')
                         props.onSubmit();
                 } }),
             React.createElement("span", { style: styles.span }),
-            React.createElement(material_ui_1.TextField, { hintText: "Confirm password", errorText: "This field is required", value: props.confirmPassword, onChange: props.onConfirmPasswordChange, onKeyDown: (e) => {
+            React.createElement(material_ui_1.TextField, { hintText: "Confirm password", type: "password", errorText: "This field is required", value: props.confirmPassword, onChange: props.onConfirmPasswordChange, onKeyDown: (e) => {
                     if (e.key === 'Enter')
                         props.onSubmit();
                 } }),

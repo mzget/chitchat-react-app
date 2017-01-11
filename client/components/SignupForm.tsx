@@ -47,11 +47,11 @@ export const SignupForm = (props: ITypingBox) => {
                     if (e.key === 'Enter') props.onSubmit();
                 } } />
                 <span style={styles.span} />
-                <TextField hintText="Password" errorText="This field is required" value={props.password} onChange={props.onPasswordChange} onKeyDown={(e) => {
+                <TextField hintText="Password" type="password" errorText="This field is required" value={props.password} onChange={props.onPasswordChange} onKeyDown={(e) => {
                     if (e.key === 'Enter') props.onSubmit();
                 } } />
                 <span style={styles.span} />
-                <TextField hintText="Confirm password" errorText="This field is required" value={props.confirmPassword} onChange={props.onConfirmPasswordChange} onKeyDown={(e) => {
+                <TextField hintText="Confirm password" type="password" errorText="This field is required" value={props.confirmPassword} onChange={props.onConfirmPasswordChange} onKeyDown={(e) => {
                     if (e.key === 'Enter') props.onSubmit();
                 } } />
                 <span style={styles.span} />
