@@ -6,7 +6,7 @@ import FontIcon from 'material-ui/FontIcon';
 
 const styles = {
     span: {
-        padding: 4
+        padding: 8
     },
     button: {
     },
@@ -43,7 +43,6 @@ export const SignupForm = (props: ITypingBox) => {
                     <h3>Sign-up</h3>
                     <p>Enter your information</p>
                 </Box>
-                <span style={styles.span} />
                 <TextField hintText="Email address" errorText="This field is required" value={props.email} onChange={props.onEmailChange} onKeyDown={(e) => {
                     if (e.key === 'Enter') props.onSubmit();
                 } } />

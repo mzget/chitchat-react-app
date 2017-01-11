@@ -13,7 +13,7 @@ const material_ui_1 = require("material-ui");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const styles = {
     span: {
-        padding: 4
+        padding: 8
     },
     button: {},
     box: {
@@ -28,7 +28,6 @@ exports.SignupForm = (props) => {
             React.createElement(reflexbox_1.Box, { justify: 'center', align: 'center', p: 2 },
                 React.createElement("h3", null, "Sign-up"),
                 React.createElement("p", null, "Enter your information")),
-            React.createElement("span", { style: styles.span }),
             React.createElement(material_ui_1.TextField, { hintText: "Email address", errorText: "This field is required", value: props.email, onChange: props.onEmailChange, onKeyDown: (e) => {
                     if (e.key === 'Enter')
                         props.onSubmit();
