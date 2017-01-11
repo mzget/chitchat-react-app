@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "rootDirs": [
+            "client/"
+        ],
+        "outDir": "src",
+        "jsx": "react",
+        "target": "es2015",
+        "typeRoots": [
+            "node_modules/@types",
+            "node_modules/@reactivex/rxjs"
+        ],
+        "module": "commonjs"
+    },
+    "exclude": [
+        "node_modules",
+        "node_modules/@types"
+    ]
+}
