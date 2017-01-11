@@ -16,7 +16,7 @@ const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const chatroomActions = require("../redux/chatroom/chatroomActions");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 const UtilsBox_1 = require("./UtilsBox");
-const SigninBox_1 = require("../components/SigninBox");
+const AuthenBox_1 = require("../components/AuthenBox");
 class IComponentNameProps {
 }
 ;
@@ -102,7 +102,7 @@ class Home extends React.Component {
         return (React.createElement("div", { style: { backgroundColor: '#EEEEEE', height: '100%' } },
             React.createElement(reflexbox_1.Flex, { align: 'center' },
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
-                React.createElement(SigninBox_1.default, null),
+                React.createElement(AuthenBox_1.default, __assign({}, this.props)),
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
             React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
             React.createElement(UtilsBox_1.default, null),

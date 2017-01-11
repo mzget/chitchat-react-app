@@ -18,7 +18,7 @@ import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 
 import ChatLogsBox from "./ChatLogsBox";
 import UtilsBox from "./UtilsBox";
-import SigninBox from '../components/SigninBox';
+import AuthenBox from '../components/AuthenBox';
 
 abstract class IComponentNameProps implements IComponentProps {
     location: {
@@ -134,7 +134,7 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
             <div style={{ backgroundColor: '#EEEEEE', height: '100%' }}>
                 <Flex align='center'>
                     <Box p={2} flexAuto></Box>
-                    <SigninBox />
+                    <AuthenBox {...this.props} />
                     <Box p={2} flexAuto></Box>
                 </Flex>
                 <ChatLogsBox {...this.props} />
