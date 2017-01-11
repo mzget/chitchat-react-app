@@ -6,10 +6,9 @@ import FontIcon from 'material-ui/FontIcon';
 
 const styles = {
     span: {
-        paddingRight: 2
+        padding: 2
     },
     button: {
-        margin: 12
     },
     box: {
         bottom: 0,
@@ -24,19 +23,28 @@ const SubmitButton = (props: ITypingBox) => (
 
 interface ITypingBox {
     onSubmit: () => void;
-    value: string;
-    onValueChange: (event, text) => void;
+    username: string;
+    password: string;
+    onUsername: (event, text) => void;
+    onPassword: (event, text) => void;
 }
 
 export const SampleLoginForm = (props: ITypingBox) => {
     return (
         < MuiThemeProvider >
-            <Flex>
+            <Flex flexColumn  >
+                <Box justify='center' align='center' p={2}>
+                    <h3>Sign-in</h3>
+                    <p>Enter your email address and password</p>
+                </Box>
                 <span style={styles.span} />
-                <TextField hintText="Type username here." value={props.value} onChange={props.onValueChange} onKeyDown={(e) => {
+                <TextField hintText="Type username here." value={props.username} onChange={props.onUsername} onKeyDown={(e) => {
                     if (e.key === 'Enter') props.onSubmit();
                 } } />
                 <span style={styles.span} />
+                <TextField hintText="Password" value={props.password} onChange={props.onPassword} onKeyDown={(e) => {
+                    if (e.key === 'Enter') props.onSubmit();
+                } } />
                 <SubmitButton {...props} />
             </Flex>
         </MuiThemeProvider >

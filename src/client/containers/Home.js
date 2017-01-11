@@ -9,7 +9,6 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const react_redux_1 = require("react-redux");
-const react_router_1 = require("react-router");
 const reflexbox_1 = require("reflexbox");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 const userActions = require("../redux/user/userActions");
@@ -17,7 +16,7 @@ const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const chatroomActions = require("../redux/chatroom/chatroomActions");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 const UtilsBox_1 = require("./UtilsBox");
-const SampleLoginBox_1 = require("../demos/SampleLoginBox");
+const SigninBox_1 = require("../components/SigninBox");
 class IComponentNameProps {
 }
 ;
@@ -100,22 +99,17 @@ class Home extends React.Component {
     }
     render() {
         let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, userReducer } = this.props;
-        return (React.createElement("div", null,
-            React.createElement(reflexbox_1.Flex, { px: 2, align: 'center' },
-                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
-                React.createElement("h2", null, "Stalk realtime messaging service."),
-                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
+        return (React.createElement("div", { style: { backgroundColor: '#EEEEEE', height: '100%' } },
             React.createElement(reflexbox_1.Flex, { align: 'center' },
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
-                React.createElement("li", { key: userId },
-                    React.createElement(react_router_1.Link, { to: `/chat/${userId}` }, username)),
-                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
-            React.createElement(reflexbox_1.Flex, { align: 'center' },
-                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
-                React.createElement(SampleLoginBox_1.default, null),
+                React.createElement(SigninBox_1.default, null),
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
             React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
-            React.createElement(UtilsBox_1.default, null)));
+            React.createElement(UtilsBox_1.default, null),
+            React.createElement(reflexbox_1.Flex, { px: 2, align: 'center' },
+                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
+                React.createElement("p", null, "Stalk realtime messaging service."),
+                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }))));
     }
 }
 /**

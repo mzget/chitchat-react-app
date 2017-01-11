@@ -18,7 +18,7 @@ import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 
 import ChatLogsBox from "./ChatLogsBox";
 import UtilsBox from "./UtilsBox";
-import SampleLoginBox from "../demos/SampleLoginBox";
+import SigninBox from '../components/SigninBox';
 
 abstract class IComponentNameProps implements IComponentProps {
     location: {
@@ -131,24 +131,19 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
     public render(): JSX.Element {
         let { location: {query: {userId, username, roomId, contactId}}, chatroomReducer, userReducer } = this.props;
         return (
-            <div>
-                <Flex px={2} align='center'>
-                    <Box p={2} flexAuto></Box>
-                    <h2>Stalk realtime messaging service.</h2>
-                    <Box p={2} flexAuto></Box>
-                </Flex>
+            <div style={{ backgroundColor: '#EEEEEE', height: '100%' }}>
                 <Flex align='center'>
                     <Box p={2} flexAuto></Box>
-                    <li key={userId}><Link to={`/chat/${userId}`}>{username}</Link></li>
-                    <Box p={2} flexAuto></Box>
-                </Flex>
-                <Flex align='center'>
-                    <Box p={2} flexAuto></Box>
-                    <SampleLoginBox />
+                    <SigninBox />
                     <Box p={2} flexAuto></Box>
                 </Flex>
                 <ChatLogsBox {...this.props} />
                 <UtilsBox />
+                <Flex px={2} align='center'>
+                    <Box p={2} flexAuto></Box>
+                    <p>Stalk realtime messaging service.</p>
+                    <Box p={2} flexAuto></Box>
+                </Flex>
             </div>
         );
     }
