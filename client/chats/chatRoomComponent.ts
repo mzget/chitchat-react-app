@@ -75,14 +75,11 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
             if (this.roomId === message.rid) {
                 if (message.type == ContentType[ContentType.Text]) {
                     if (config.appConfig.encryption == true) {
-                        self.secure.decryptWithSecureRandom(message.body, (err, res) => {
-                            if (!err) {
-                                message.body = res;
-                                saveMessages(chatMessages);
-                            }
-                            else {
-                                saveMessages(chatMessages);
-                            }
+                        self.secure.decryption(message.body).then(res => {
+                            message.body = res;
+                            saveMessages(chatMessages);
+                        }).catch(err => {
+                            saveMessages(chatMessages);
                         });
                     }
                     else {
@@ -175,13 +172,11 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                 async.forEach(chats, function iterator(chat, result) {
                     if (chat.type === ContentType[ContentType.Text]) {
                         if (config.appConfig.encryption == true) {
-                            self.secure.decryptWithSecureRandom(chat.body, function (err, res) {
-                                if (!err) {
-                                    chat.body = res;
-                                }
+                            self.secure.decryption(chat.body).then(function (res) {
+                                chat.body = res;
 
                                 result(null);
-                            });
+                            }).catch(err => result(null));
                         }
                         else {
                             result(null);
@@ -256,11 +251,10 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                     async.forEach(messages, function (chat, cb) {
                         if (chat.type == ContentType[ContentType.Text]) {
                             if (config.appConfig.encryption == true) {
-                                self.secure.decryptWithSecureRandom(chat.body, function (err, res) {
-                                    if (!err) {
-                                        chat.body = res;
-                                    }
-
+                                self.secure.decryption(chat.body).then(function (res) {
+                                    chat.body = res;
+                                    cb(null);
+                                }).catch(err => {
                                     cb(null);
                                 });
                             }

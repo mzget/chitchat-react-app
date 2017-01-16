@@ -35,7 +35,7 @@ const devConfig = {
         port: "3010",
     },
     appConfig: {
-        encryption: false
+        encryption: true
     },
     api: {}
 };

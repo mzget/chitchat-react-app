@@ -1,29 +1,12 @@
 import { IDictionary } from "./serverImplemented";
 
-export interface IMetaFile {
-    thumbnail: string;
-    filename: string;
-    extension: string;
-    fileSize: string;
-}
-export interface IMessage {
-    rid: string;
-    content: string;
-    sender: string;
-    target: string;
-    type: string;
-    uuid: string;
-    mata: IMetaFile;
-}
-
-
 export default class ChatRoomApiProvider {
     pomelo: any;
     constructor(socket) {
         this.pomelo = socket;
     }
 
-    public chat(target: string, _message: IMessage, callback: (err, res) => void) {
+    public chat(target: string, _message: any, callback: (err, res) => void) {
         this.pomelo.request("chat.chatHandler.send", _message, (result) => {
             let data = JSON.parse(JSON.stringify(result));
 

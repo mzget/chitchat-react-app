@@ -31,13 +31,24 @@ const rest_api = (host) => ({
     fileUpload: `${host}/chats/upload`
 });
 
+interface IConfigFile {
+    Stalk: {
+        chat: string,
+        port: string,
+    },
+    appConfig: {
+        encryption: boolean
+    },
+    api: any
+}
+
 const devConfig = {
     Stalk: {
         chat: "localhost",
         port: "3010",
     },
     appConfig: {
-        encryption: false
+        encryption: true
     },
     api: {
 
@@ -70,7 +81,7 @@ const productionConfig = {
     }
 };
 
-const composeMyconfig = (config) => {
+const composeMyconfig = (config: IConfigFile) => {
     return (host) => {
         config.api = rest_api(host);
         return config;

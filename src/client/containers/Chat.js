@@ -187,18 +187,16 @@ class Chat extends React.Component {
         this.setState(__assign({}, this.state, { messages: messages }));
     }
     setMessageTemp(server_msg) {
-        console.log("server_response_msg", server_msg);
-        if (!server_msg.uuid)
-            return;
         let _messages = this.state.messages.slice();
         _messages.forEach((message) => {
             if (message.uuid == server_msg.uuid) {
+                message.body = server_msg.body;
                 message.createTime = server_msg.createTime;
-                message.uuid = server_msg.messageId;
+                message.uuid = server_msg._id;
                 message.status = "Sent";
             }
         });
-        this.setState(__assign({}, this.state, { messages: _messages }));
+        this.setState(__assign({}, this.state, { messages: _messages }), () => console.log(this.state.messages));
     }
     onTypingTextChange(event) {
         this.setState(__assign({}, this.state, { typingText: event.target.value }));

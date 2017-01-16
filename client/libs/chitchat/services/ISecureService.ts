@@ -1,3 +1,4 @@
 export interface ISecureService {
-    decryptWithSecureRandom(content, callback);
+    encryption(content): Promise<string>;
+    decryption(content): Promise<string>;
 }
