@@ -72,8 +72,8 @@ router.get('/agent/:username', (req, res, next) => {
     if (errors) {
         return res.status(500).json({ success: false, message: errors });
     }
-    MongoClient.connect(webConfig.backendDB).then(db => {
-        let collection = db.collection(config_1.DbClient.agentsCollection);
+    MongoClient.connect(webConfig.systemDB).then(db => {
+        let collection = db.collection(config_1.DbClient.systemUsersColl);
         collection.find({ username: req.params.username }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
             if (docs.length >= 1) {
                 res.status(200).json({ success: true, result: docs });
