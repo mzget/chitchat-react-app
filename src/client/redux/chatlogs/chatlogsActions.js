@@ -22,6 +22,17 @@ const listenerImp = (newMsg) => {
         onUnreadMessageMapChanged(unread);
     }
 };
+function updateLastAccessTimeEventHandler(newRoomAccess) {
+    let chatsLogComp = configureStore_1.default.getState().stalkReducer.chatslogComponent;
+    let token = BackendFactory_1.default.getInstance().dataManager.getSessionToken();
+    chatsLogComp.getUnreadMessage(token, newRoomAccess.roomAccess[0], function (err, unread) {
+        if (!!unread) {
+            chatsLogComp.addUnreadMessage(unread);
+            calculateUnreadCount();
+            onUnreadMessageMapChanged(unread);
+        }
+    });
+}
 function initChatsLog() {
     let dataManager = BackendFactory_1.default.getInstance().dataManager;
     let chatsLogComponent = new chatslogComponent_1.default();
@@ -42,10 +53,6 @@ function initChatsLog() {
     chatsLogComponent.addNewRoomAccessEvent = function (data) {
         getUnreadMessages();
     };
-    chatsLogComponent.onEditedGroupMember = function (newgroup) {
-        console.log('onEditedGroupMember: ', JSON.stringify(newgroup));
-        // $rootScope.$broadcast('onEditedGroupMember', []);
-    };
     let msg = {};
     msg["token"] = dataManager.getSessionToken();
     BackendFactory_1.default.getInstance().getServer().then(server => {
@@ -60,17 +67,6 @@ function initChatsLog() {
     });
 }
 exports.initChatsLog = initChatsLog;
-function updateLastAccessTimeEventHandler(newRoomAccess) {
-    let chatsLogComp = configureStore_1.default.getState().stalkReducer.chatslogComponent;
-    let token = BackendFactory_1.default.getInstance().dataManager.getSessionToken();
-    chatsLogComp.getUnreadMessage(token, newRoomAccess.roomAccess[0], function (err, unread) {
-        if (!!unread) {
-            chatsLogComp.addUnreadMessage(unread);
-            calculateUnreadCount();
-            onUnreadMessageMapChanged(unread);
-        }
-    });
-}
 function getUnreadMessages() {
     let chatsLogComp = configureStore_1.default.getState().stalkReducer.chatslogComponent;
     let dataManager = BackendFactory_1.default.getInstance().dataManager;

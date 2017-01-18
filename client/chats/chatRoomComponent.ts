@@ -78,7 +78,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                 if (message.type == ContentType[ContentType.Text]) {
                     DecryptionHelper.decryptionText(message).then(decoded => {
                         saveMessages(chatMessages);
-                    });
+                    }).catch(err => saveMessages(chatMessages));
                 }
                 else if (message.type == ContentType[ContentType.Sticker]) {
                     let sticker_id = parseInt(message.body);

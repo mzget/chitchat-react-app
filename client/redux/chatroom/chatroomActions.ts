@@ -301,8 +301,6 @@ export function leaveRoom() {
 
         BackendFactory.getInstance().getServer().then(server => {
             server.LeaveChatRoomRequest(token, room.getRoomId(), (err, res) => {
-                console.log("leaveRoom result", res);
-
                 BackendFactory.getInstance().dataListener.removeChatListenerImp(room);
                 ChatRoomComponent.getInstance().dispose();
                 NotificationManager.regisNotifyNewMessageEvent();

@@ -62,7 +62,7 @@ class ChatRoomComponent {
                 if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
                     DecryptionHelper.decryptionText(message).then(decoded => {
                         saveMessages(chatMessages);
-                    });
+                    }).catch(err => saveMessages(chatMessages));
                 }
                 else if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Sticker]) {
                     let sticker_id = parseInt(message.body);

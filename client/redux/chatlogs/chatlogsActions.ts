@@ -37,6 +37,20 @@ const listenerImp = (newMsg) => {
     }
 };
 
+function updateLastAccessTimeEventHandler(newRoomAccess) {
+    let chatsLogComp: ChatsLogComponent = Store.getState().stalkReducer.chatslogComponent;
+    let token = BackendFactory.getInstance().dataManager.getSessionToken();
+    chatsLogComp.getUnreadMessage(token, newRoomAccess.roomAccess[0], function (err, unread) {
+        if (!!unread) {
+            chatsLogComp.addUnreadMessage(unread);
+
+            calculateUnreadCount();
+            onUnreadMessageMapChanged(unread);
+            //chatLogDAL.savePersistedUnreadMsgMap(unread);
+        }
+    });
+}
+
 export function initChatsLog() {
     let dataManager = BackendFactory.getInstance().dataManager;
     let chatsLogComponent = new ChatsLogComponent();
@@ -59,11 +73,6 @@ export function initChatsLog() {
         getUnreadMessages();
     }
 
-    chatsLogComponent.onEditedGroupMember = function (newgroup) {
-        console.log('onEditedGroupMember: ', JSON.stringify(newgroup));
-        // $rootScope.$broadcast('onEditedGroupMember', []);
-    }
-
     let msg: IDictionary = {};
     msg["token"] = dataManager.getSessionToken();
     BackendFactory.getInstance().getServer().then(server => {
@@ -76,20 +85,6 @@ export function initChatsLog() {
 
     Store.dispatch({
         type: STALK_INIT_CHATSLOG, payload: chatsLogComponent
-    });
-}
-
-function updateLastAccessTimeEventHandler(newRoomAccess) {
-    let chatsLogComp: ChatsLogComponent = Store.getState().stalkReducer.chatslogComponent;
-    let token = BackendFactory.getInstance().dataManager.getSessionToken();
-    chatsLogComp.getUnreadMessage(token, newRoomAccess.roomAccess[0], function (err, unread) {
-        if (!!unread) {
-            chatsLogComp.addUnreadMessage(unread);
-
-            calculateUnreadCount();
-            onUnreadMessageMapChanged(unread);
-            //chatLogDAL.savePersistedUnreadMsgMap(unread);
-        }
     });
 }
 

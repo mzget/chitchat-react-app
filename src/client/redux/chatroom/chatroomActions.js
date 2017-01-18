@@ -278,7 +278,6 @@ function leaveRoom() {
         let room = chatRoomComponent_1.default.getInstance();
         BackendFactory_1.default.getInstance().getServer().then(server => {
             server.LeaveChatRoomRequest(token, room.getRoomId(), (err, res) => {
-                console.log("leaveRoom result", res);
                 BackendFactory_1.default.getInstance().dataListener.removeChatListenerImp(room);
                 chatRoomComponent_1.default.getInstance().dispose();
                 NotificationManager.regisNotifyNewMessageEvent();

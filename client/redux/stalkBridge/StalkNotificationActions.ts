@@ -10,6 +10,9 @@
 
 import BackendFactory from "../../chats/BackendFactory";
 import { IMessage, ContentType } from "../../chats/models/ChatDataModels";
+import { MessageImp } from "../../chats/models/MessageImp";
+import * as DecryptionHelper from '../../chats/utils/DecryptionHelper';
+
 
 import Store from "../configureStore";
 
@@ -34,13 +37,15 @@ export const unsubscribeGlobalNotifyMessageEvent = () => {
 export const notify = (messageImp: IMessage) => {
     console.log("notify", messageImp);
 
-    let message = messageImp.body;
-    if (messageImp.type == ContentType[ContentType.Location]) {
-        message = "Sent you location";
-    }
-    else if (messageImp.type == ContentType[ContentType.Image]) {
-        message = "Sent you image";
-    }
+    DecryptionHelper.decryptionText(messageImp as MessageImp).then(decoded => {
+        let message = decoded.body;
+        if (messageImp.type == ContentType[ContentType.Location]) {
+            message = "Sent you location";
+        }
+        else if (messageImp.type == ContentType[ContentType.Image]) {
+            message = "Sent you image";
+        }
 
-    Store.dispatch(stalkNotiNewMessage(message));
+        Store.dispatch(stalkNotiNewMessage(message));
+    });
 }

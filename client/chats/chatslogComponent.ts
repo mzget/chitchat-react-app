@@ -16,6 +16,7 @@ import * as DecryptionHelper from './utils/DecryptionHelper';
 import HttpCode from "../libs/stalk/utils/httpStatusCode";
 import ServerImplement, { IDictionary } from "../libs/stalk/serverImplemented";
 import { MemberRole } from "./models/ChatDataModels";
+import { MessageImp } from "./models/MessageImp";
 import * as ServiceProvider from './services/ServiceProvider';
 
 export interface ChatLogMap { [key: string]: ChatLog };
@@ -175,19 +176,18 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
     }
 
     public getUnreadMessage(token: string, roomAccess: DataModels.RoomAccessData, callback: (err, res: IUnread) => void) {
-        let msg: IDictionary = {};
-        msg["token"] = token;
-        msg["roomId"] = roomAccess.roomId;
-        msg["lastAccessTime"] = roomAccess.accessTime.toString();
-
         ServiceProvider.getUnreadMessage(this.dataManager.getMyProfile()._id, roomAccess.roomId, roomAccess.accessTime.toString())
             .then(response => response.json())
             .then(value => {
+                console.log("getUnreadMessage", value);
                 if (value.success) {
                     let unread: IUnread = JSON.parse(JSON.stringify(value.result));
                     unread.rid = roomAccess.roomId;
-
-                    callback(null, unread);
+                    DecryptionHelper.decryptionText(unread.message as MessageImp).then(decoded => {
+                        callback(null, unread);
+                    }).catch(err => {
+                        callback(null, unread);
+                    });
                 }
                 else {
                     callback(value.message, null);

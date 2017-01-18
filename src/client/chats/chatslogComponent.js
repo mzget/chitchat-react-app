@@ -145,17 +145,18 @@ class ChatsLogComponent {
         });
     }
     getUnreadMessage(token, roomAccess, callback) {
-        let msg = {};
-        msg["token"] = token;
-        msg["roomId"] = roomAccess.roomId;
-        msg["lastAccessTime"] = roomAccess.accessTime.toString();
         ServiceProvider.getUnreadMessage(this.dataManager.getMyProfile()._id, roomAccess.roomId, roomAccess.accessTime.toString())
             .then(response => response.json())
             .then(value => {
+            console.log("getUnreadMessage", value);
             if (value.success) {
                 let unread = JSON.parse(JSON.stringify(value.result));
                 unread.rid = roomAccess.roomId;
-                callback(null, unread);
+                DecryptionHelper.decryptionText(unread.message).then(decoded => {
+                    callback(null, unread);
+                }).catch(err => {
+                    callback(null, unread);
+                });
             }
             else {
                 callback(value.message, null);
