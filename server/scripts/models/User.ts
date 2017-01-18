@@ -19,7 +19,7 @@ export interface IOnlineUser {
     [uid: string]: OnlineUser;
 };
 
-export class StalkAccount {
+export class ChitChatUser {
     _id: string;
     displayname: string;
     username: string;
@@ -27,14 +27,13 @@ export class StalkAccount {
     firstname: string;
     lastname: string;
     tel: string;
-    mail: string;
+    email: string;
     image: string; //!-- mean image url.
     role: UserRole;
     department: string;
     jobLevel: JobLevel;
     jobPosition: string;
     status: string;
-    roomAccess: RoomAccessData[];
     memberOfRooms: string[];
     lastEditProfile: Date;
     favoriteUsers: string[]; // user_id

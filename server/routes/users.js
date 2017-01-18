@@ -4,6 +4,7 @@ const mongodb = require("mongodb");
 const router = express.Router();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
+const User_1 = require("../scripts/models/User");
 const config_1 = require("../config");
 const webConfig = config_1.getConfig();
 /* GET users listing. */
@@ -88,4 +89,137 @@ router.get('/agent/:username', (req, res, next) => {
         res.status(500).json({ success: false, message: err + ': Cannot connect db.' });
     });
 });
+router.post('/signin', function (req, res, next) {
+    if (!!req && !!req.body) {
+        console.warn(req.body);
+        let user = req.body;
+        let userModel = new User_1.ChitChatUser();
+        userModel.email = user.email.toLowerCase();
+        userModel.password = user.password;
+        MongoClient.connect(webConfig.chatDB, function (err, db) {
+            if (err) {
+                throw err;
+            }
+            var collection = db.collection(Mdb.DbClient.userColl);
+            collection.find({ mail: userModel.mail }).limit(1).toArray().then(function (docs) {
+                console.info(docs);
+                if (docs.length >= 1) {
+                    res.status(200).json({ success: true });
+                    db.close();
+                }
+                else {
+                    res.status(500).json({ success: false, message: "no user data." });
+                    db.close();
+                }
+            });
+        });
+    }
+    else {
+        res.json(500, { "success": false });
+    }
+});
+router.post('/signup', function (req, res, next) {
+    req.checkBody('user', 'request for user object').notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json({ success: false, message: errors });
+    }
+    let user = req.body.user;
+    let teamRootId = req.body.teamRegister;
+    let userModel = new User_1.ChitChatUser();
+    userModel.displayname = user.username;
+    userModel.username = user.email;
+    userModel.email = user.email;
+    userModel.password = user.password;
+    userModel.firstname = user.firstname;
+    userModel.lastname = user.lastname;
+    userModel.tel = user.tel;
+    MongoClient.connect(webConfig.chatDB).then(function (db) {
+        let collection = db.collection(config_1.DbClient.systemUsersColl);
+        collection.createIndex({ email: 1 }, { background: true });
+        collection.find({ email: user.email }).limit(1).toArray().then(function (docs) {
+            if (docs.length >= 1) {
+                res.status(500).json({ success: false, message: 'Account registed with your email is already used.' });
+                db.close();
+            }
+            else {
+                collection.insertOne(userModel).then(function onFulfilled(value) {
+                    res.status(200).json({ success: true, result: value });
+                    db.close();
+                    addGroupMember(teamRootId, userModel, null);
+                }).catch(function onRejected(error) {
+                    res.status(500).json({ success: false, message: error });
+                    db.close();
+                });
+            }
+        }).catch(err => {
+            db.close();
+            res.status(500).json({ success: false, message: err });
+        });
+    }).catch(err => {
+        console.error("Cannot connect db: ", err);
+        res.status(500).json({ success: false, message: err });
+    });
+});
+router.get('/getOrgMembers', function (req, res, next) {
+    MongoClient.connect(webConfig.chatDB, function (err, db) {
+        if (err) {
+            throw err;
+        }
+        var collection = db.collection(Mdb.DbClient.userColl);
+        collection.find({ "_id": { $exists: true } }).toArray().then(function (docs) {
+            res.status(200).jsonp({ "success": true, "result": docs });
+        });
+    });
+});
+var addGroupMember = function (roomId, user, done) {
+    var promise = new Promise(function (resolve, reject) {
+        MongoClient.connect(webConfig.chatDB, function (err, db) {
+            if (err) {
+                throw err;
+            }
+            var collection = db.collection(Mdb.DbClient.userColl);
+            collection.find({ mail: user.mail }).limit(1).toArray().then(function (docs) {
+                if (docs.length >= 1) {
+                    db.close();
+                    resolve(docs[0]);
+                }
+                else {
+                    db.close();
+                    reject(new Error('user account is no longer.'));
+                }
+            });
+        });
+    }).then(function onfulfilled(value) {
+        MongoClient.connect(webConfig.chatDB, function (err, db) {
+            if (err) {
+                return console.dir(err);
+            }
+            console.warn('account;', value);
+            var account = JSON.parse(JSON.stringify(value));
+            var member = new MroomModel.Member();
+            member.id = account._id;
+            // Get the documents collection
+            var collection = db.collection(Mdb.DbClient.roomColl);
+            // Find some documents
+            collection.updateOne({ _id: new mongodb.ObjectID(roomId) }, { $push: { members: member } }).then(function (result) {
+                console.info('addGroupMember;', result.result);
+                db.close();
+                if (!!done) {
+                    done();
+                }
+            }).catch(function (err) {
+                console.warn('addGroupMember;', err);
+                db.close();
+                if (!!done) {
+                    done();
+                }
+            });
+        });
+    }).catch(function onRejected(err) {
+        if (!!done) {
+            done();
+        }
+    });
+};
 module.exports = router;

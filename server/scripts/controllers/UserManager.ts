@@ -11,7 +11,7 @@ const ObjectID = mongodb.ObjectID;
 const config = getConfig();
 
 export interface IUserDict {
-    [id: string]: User.StalkAccount;
+    [id: string]: User.ChitChatUser;
 };
 
 
