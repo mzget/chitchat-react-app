@@ -5,7 +5,6 @@
  */
 import * as async from "async";
 
-import { IMessage } from "../libs/stalk/chatRoomApiProvider";
 import { IRoomAccessListenerImp } from "./abstracts/IRoomAccessListenerImp";
 import * as DataModels from "./models/ChatDataModels";
 import { Member } from "./models/Member";
@@ -13,7 +12,7 @@ import ChatLog from "./models/chatLog";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
 import BackendFactory from "./BackendFactory";
-
+import * as DecryptionHelper from './utils/DecryptionHelper';
 import HttpCode from "../libs/stalk/utils/httpStatusCode";
 import ServerImplement, { IDictionary } from "../libs/stalk/serverImplemented";
 import { MemberRole } from "./models/ChatDataModels";
@@ -38,7 +37,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         return this.chatslog;
     }
 
-    private unreadMessageMap: Map<string, IUnread> = new Map();
+    private unreadMessageMap: Map<string, IUnread> = new Map<string, IUnread>();
     public getUnreadMessageMap(): Map<string, IUnread> {
         return this.unreadMessageMap;
     }
@@ -48,7 +47,6 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
     public getUnreadItem(room_id: string): IUnread {
         return this.unreadMessageMap.get(room_id);
     }
-
 
     constructor(_convertDateService?) {
         this._isReady = false;
@@ -70,11 +68,15 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
     public addOnChatListener(listener) {
         this.chatListeners.push(listener);
     }
-    onChat(dataEvent) {
+    onChat(message) {
         console.log("ChatsLogComponent.onChat");
-        //<!-- Provide chatslog service.
-        this.chatListeners.map((v, i, a) => {
-            v(dataEvent);
+        let self = this;
+
+        DecryptionHelper.decryptionText(message).then((decoded) => {
+            //<!-- Provide chatslog service.
+            self.chatListeners.map((v, i, a) => {
+                v(decoded);
+            });
         });
     }
 
@@ -138,13 +140,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
             this.addNewRoomAccessEvent(dataEvent);
         }
     }
-    onUpdateMemberInfoInProjectBase(dataEvent) {
-        console.warn("ChatsLogComponent.onUpdateMemberInfoInProjectBase", JSON.stringify(dataEvent));
-    }
 
-    onEditedGroupMember(dataEvent) {
-        console.warn("ChatsLogComponent.onEditedGroupMember", JSON.stringify(dataEvent));
-    }
     public getUnreadMessages(token: string, roomAccess: DataModels.RoomAccessData[], callback: (err, logsData: Array<IUnread>) => void) {
         let self = this;
         let unreadLogs = new Array<IUnread>();

@@ -8,6 +8,7 @@ const async = require("async");
 const DataModels = require("./models/ChatDataModels");
 const chatLog_1 = require("./models/chatLog");
 const BackendFactory_1 = require("./BackendFactory");
+const DecryptionHelper = require("./utils/DecryptionHelper");
 const ServiceProvider = require("./services/ServiceProvider");
 ;
 ;
@@ -51,11 +52,14 @@ class ChatsLogComponent {
     addOnChatListener(listener) {
         this.chatListeners.push(listener);
     }
-    onChat(dataEvent) {
+    onChat(message) {
         console.log("ChatsLogComponent.onChat");
-        //<!-- Provide chatslog service.
-        this.chatListeners.map((v, i, a) => {
-            v(dataEvent);
+        let self = this;
+        DecryptionHelper.decryptionText(message).then((decoded) => {
+            //<!-- Provide chatslog service.
+            self.chatListeners.map((v, i, a) => {
+                v(decoded);
+            });
         });
     }
     onAccessRoom(dataEvent) {
@@ -108,12 +112,6 @@ class ChatsLogComponent {
         if (!!this.addNewRoomAccessEvent) {
             this.addNewRoomAccessEvent(dataEvent);
         }
-    }
-    onUpdateMemberInfoInProjectBase(dataEvent) {
-        console.warn("ChatsLogComponent.onUpdateMemberInfoInProjectBase", JSON.stringify(dataEvent));
-    }
-    onEditedGroupMember(dataEvent) {
-        console.warn("ChatsLogComponent.onEditedGroupMember", JSON.stringify(dataEvent));
     }
     getUnreadMessages(token, roomAccess, callback) {
         let self = this;

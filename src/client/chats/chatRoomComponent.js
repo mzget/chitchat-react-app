@@ -18,6 +18,7 @@ const serverImplemented_1 = require("../libs/stalk/serverImplemented");
 const serverEventListener_1 = require("../libs/stalk/serverEventListener");
 const secureServiceFactory_1 = require("../libs/chitchat/services/secureServiceFactory");
 const ChatDataModels_1 = require("./models/ChatDataModels");
+const DecryptionHelper = require("./utils/DecryptionHelper");
 const config_1 = require("../configs/config");
 const StickerPath_1 = require("../consts/StickerPath");
 let serverImp = null;
@@ -44,6 +45,7 @@ class ChatRoomComponent {
         this.dataManager = BackendFactory_1.default.getInstance().dataManager;
     }
     onChat(message) {
+        console.log("ChatRoomComponent.onChat");
         let self = this;
         const saveMessages = (chatMessages) => {
             chatMessages.push(message);
@@ -58,17 +60,9 @@ class ChatRoomComponent {
             let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
             if (this.roomId === message.rid) {
                 if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
-                    if (config_1.default.appConfig.encryption == true) {
-                        self.secure.decryption(message.body).then(res => {
-                            message.body = res;
-                            saveMessages(chatMessages);
-                        }).catch(err => {
-                            saveMessages(chatMessages);
-                        });
-                    }
-                    else {
+                    DecryptionHelper.decryptionText(message).then(decoded => {
                         saveMessages(chatMessages);
-                    }
+                    });
                 }
                 else if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Sticker]) {
                     let sticker_id = parseInt(message.body);

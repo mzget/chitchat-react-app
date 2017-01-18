@@ -16,6 +16,7 @@ import SecureServiceFactory from "../libs/chitchat/services/secureServiceFactory
 import { ContentType, IMember, IMessage } from "./models/ChatDataModels";
 import { MessageImp } from "./models/MessageImp";
 import { ISecureService } from "../libs/chitchat/services/ISecureService";
+import * as DecryptionHelper from './utils/DecryptionHelper';
 
 import config from "../configs/config";
 import { imagesPath } from '../consts/StickerPath';
@@ -57,6 +58,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
     }
 
     onChat(message: MessageImp) {
+        console.log("ChatRoomComponent.onChat");
         let self = this;
 
         const saveMessages = (chatMessages: Array<IMessage>) => {
@@ -74,17 +76,9 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
             let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
             if (this.roomId === message.rid) {
                 if (message.type == ContentType[ContentType.Text]) {
-                    if (config.appConfig.encryption == true) {
-                        self.secure.decryption(message.body).then(res => {
-                            message.body = res;
-                            saveMessages(chatMessages);
-                        }).catch(err => {
-                            saveMessages(chatMessages);
-                        });
-                    }
-                    else {
+                    DecryptionHelper.decryptionText(message).then(decoded => {
                         saveMessages(chatMessages);
-                    }
+                    });
                 }
                 else if (message.type == ContentType[ContentType.Sticker]) {
                     let sticker_id = parseInt(message.body);

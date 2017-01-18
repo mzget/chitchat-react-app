@@ -146,8 +146,6 @@ function getChatsLog() {
 }
 
 function onUnreadMessageMapChanged(unread: IUnread) {
-    console.log('UnreadMessageMapChanged: ', JSON.stringify(unread));
-
     Store.dispatch({
         type: STALK_UNREAD_MAP_CHANGED, payload: unread
     });

@@ -115,7 +115,6 @@ function getChatsLog() {
     });
 }
 function onUnreadMessageMapChanged(unread) {
-    console.log('UnreadMessageMapChanged: ', JSON.stringify(unread));
     configureStore_1.default.dispatch({
         type: exports.STALK_UNREAD_MAP_CHANGED, payload: unread
     });
