@@ -4,6 +4,14 @@
  * This is pure function action for redux app.
  */
 "use strict";
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 const chatRoomComponent_1 = require("../../chats/chatRoomComponent");
 const BackendFactory_1 = require("../../chats/BackendFactory");
 const secureServiceFactory_1 = require("../../libs/chitchat/services/secureServiceFactory");
@@ -13,6 +21,7 @@ const ChatDataModels_1 = require("../../chats/models/ChatDataModels");
 const NotificationManager = require("../stalkBridge/StalkNotificationActions");
 const configureStore_1 = require("../configureStore");
 const config_1 = require("../../configs/config");
+const secure = secureServiceFactory_1.default.getService();
 /**
  * ChatRoomActionsType
  */
@@ -175,7 +184,6 @@ function send_message_failure(data) {
 }
 function sendMessage(msg) {
     return (dispatch) => {
-        let secure = secureServiceFactory_1.default.getService();
         dispatch(send_message_request());
         if (msg.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location]) {
             BackendFactory_1.default.getInstance().getChatApi().chat("*", msg, (err, res) => {
@@ -183,17 +191,20 @@ function sendMessage(msg) {
             });
             return;
         }
-        if (config_1.default.appConfig.encryption == true) {
-            secure.decryptWithSecureRandom(msg.content, function (err, result) {
-                if (err) {
-                    console.error(err);
-                }
-                else {
-                    msg.content = result;
-                    BackendFactory_1.default.getInstance().getChatApi().chat("*", msg, (err, res) => {
-                        dispatch(sendMessageResponse(err, res));
-                    });
-                }
+        if (msg.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text] && config_1.default.appConfig.encryption == true) {
+            secure.encryption(msg.body).then(result => {
+                // secure.decryption(result).then(res => {
+                //     console.log(res);
+                // }).catch(err => {
+                //     console.error(err);
+                // });
+                msg.body = result;
+                BackendFactory_1.default.getInstance().getChatApi().chat("*", msg, (err, res) => {
+                    dispatch(sendMessageResponse(err, res));
+                });
+            }).catch(err => {
+                console.error(err);
+                dispatch(send_message_failure(err));
             });
         }
         else {
@@ -204,31 +215,32 @@ function sendMessage(msg) {
     };
 }
 exports.sendMessage = sendMessage;
-function sendFile(message) {
-    return (dispatch) => {
-        dispatch(send_message_request());
-        let msg = {};
-        msg.rid = message.rid;
-        msg.sender = message.sender;
-        msg.target = message.target;
-        msg.type = message.type;
-        msg.uuid = message.uniqueId;
-        msg.content = message.image;
-        BackendFactory_1.default.getInstance().getChatApi().chat("*", msg, (err, res) => {
-            dispatch(sendMessageResponse(err, res));
-        });
-    };
-}
-exports.sendFile = sendFile;
 function sendMessageResponse(err, res) {
     return dispatch => {
         if (!!err || res.code !== httpStatusCode_1.default.success) {
-            console.warn("send message fail.", err, res);
             dispatch(send_message_failure(res.body));
         }
         else {
-            console.log("sendMessageResponse", res);
-            dispatch(send_message_success(res.data));
+            console.log('server response!', res);
+            if (res.data.hasOwnProperty('resultMsg')) {
+                let _msg = __assign({}, res.data.resultMsg);
+                if (_msg.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text] && config_1.default.appConfig.encryption) {
+                    secure.decryption(_msg.body).then(res => {
+                        _msg.body = res;
+                        dispatch(send_message_success(_msg));
+                    }).catch(err => {
+                        console.error(err);
+                        _msg.body = err.toString();
+                        dispatch(send_message_success(_msg));
+                    });
+                }
+                else {
+                    dispatch(send_message_success(_msg));
+                }
+            }
+            else {
+                dispatch(send_message_failure(res.body));
+            }
         }
     };
 }
@@ -266,7 +278,6 @@ function leaveRoom() {
         let room = chatRoomComponent_1.default.getInstance();
         BackendFactory_1.default.getInstance().getServer().then(server => {
             server.LeaveChatRoomRequest(token, room.getRoomId(), (err, res) => {
-                console.log("leaveRoom result", res);
                 BackendFactory_1.default.getInstance().dataListener.removeChatListenerImp(room);
                 chatRoomComponent_1.default.getInstance().dispose();
                 NotificationManager.regisNotifyNewMessageEvent();

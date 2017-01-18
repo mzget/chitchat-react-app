@@ -8,6 +8,7 @@ const async = require("async");
 const DataModels = require("./models/ChatDataModels");
 const chatLog_1 = require("./models/chatLog");
 const BackendFactory_1 = require("./BackendFactory");
+const DecryptionHelper = require("./utils/DecryptionHelper");
 const ServiceProvider = require("./services/ServiceProvider");
 ;
 ;
@@ -51,11 +52,14 @@ class ChatsLogComponent {
     addOnChatListener(listener) {
         this.chatListeners.push(listener);
     }
-    onChat(dataEvent) {
+    onChat(message) {
         console.log("ChatsLogComponent.onChat");
-        //<!-- Provide chatslog service.
-        this.chatListeners.map((v, i, a) => {
-            v(dataEvent);
+        let self = this;
+        DecryptionHelper.decryptionText(message).then((decoded) => {
+            //<!-- Provide chatslog service.
+            self.chatListeners.map((v, i, a) => {
+                v(decoded);
+            });
         });
     }
     onAccessRoom(dataEvent) {
@@ -109,12 +113,6 @@ class ChatsLogComponent {
             this.addNewRoomAccessEvent(dataEvent);
         }
     }
-    onUpdateMemberInfoInProjectBase(dataEvent) {
-        console.warn("ChatsLogComponent.onUpdateMemberInfoInProjectBase", JSON.stringify(dataEvent));
-    }
-    onEditedGroupMember(dataEvent) {
-        console.warn("ChatsLogComponent.onEditedGroupMember", JSON.stringify(dataEvent));
-    }
     getUnreadMessages(token, roomAccess, callback) {
         let self = this;
         let unreadLogs = new Array();
@@ -147,17 +145,18 @@ class ChatsLogComponent {
         });
     }
     getUnreadMessage(token, roomAccess, callback) {
-        let msg = {};
-        msg["token"] = token;
-        msg["roomId"] = roomAccess.roomId;
-        msg["lastAccessTime"] = roomAccess.accessTime.toString();
         ServiceProvider.getUnreadMessage(this.dataManager.getMyProfile()._id, roomAccess.roomId, roomAccess.accessTime.toString())
             .then(response => response.json())
             .then(value => {
+            console.log("getUnreadMessage", value);
             if (value.success) {
                 let unread = JSON.parse(JSON.stringify(value.result));
                 unread.rid = roomAccess.roomId;
-                callback(null, unread);
+                DecryptionHelper.decryptionText(unread.message).then(decoded => {
+                    callback(null, unread);
+                }).catch(err => {
+                    callback(null, unread);
+                });
             }
             else {
                 callback(value.message, null);

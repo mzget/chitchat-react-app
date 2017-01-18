@@ -1,5 +1,5 @@
 "use strict";
-const CryptoJS = require('crypto-js');
+const CryptoJS = require("crypto-js");
 class NodeSecureService {
     constructor() {
         this.key = "CHITCHAT!@#$%^&*()_+|===";
@@ -7,20 +7,29 @@ class NodeSecureService {
     }
     hashCompute(content, callback) {
         let hash = CryptoJS.MD5(content);
-        let md = hash.toString(CryptoJS.enc.Hex);
-        callback(null, md);
+        callback(null, hash);
     }
-    encryption(content, callback) {
+    encryption(content) {
         let self = this;
-        let ciphertext = CryptoJS.AES.encrypt(content, self.key);
-        callback(null, ciphertext.toString());
+        return new Promise((resolve, reject) => {
+            let ciphertext = CryptoJS.AES.encrypt(content, self.key);
+            if (!!ciphertext) {
+                resolve(ciphertext.toString());
+            }
+            else
+                reject();
+        });
     }
-    decryption(content, callback) {
+    decryption(content) {
         let self = this;
-        //   var words = CryptoJS.enc.Base64.parse(content);
-        let bytes = CryptoJS.AES.decrypt(content, self.key);
-        let plaintext = bytes.toString(CryptoJS.enc.Utf8);
-        callback(null, plaintext);
+        return new Promise((resolve, reject) => {
+            let bytes = CryptoJS.AES.decrypt(content, self.key);
+            let plaintext = bytes.toString(CryptoJS.enc.Utf8);
+            if (!!plaintext)
+                resolve(plaintext);
+            else
+                reject();
+        });
     }
     encryptWithSecureRandom(content, callback) {
         let self = this;
@@ -29,22 +38,22 @@ class NodeSecureService {
         let ciphertext = CryptoJS.AES.encrypt(content, key, { iv: iv });
         callback(null, ciphertext.toString());
     }
-    decryptWithSecureRandom(content, callback) {
+    decryptWithSecureRandom(content) {
         let self = this;
-        let key = CryptoJS.enc.Utf8.parse(self.key);
-        let iv = CryptoJS.enc.Utf8.parse(self.passiv);
-        let bytes = CryptoJS.AES.decrypt(content, key, { iv: iv, padding: CryptoJS.pad.Pkcs7, mode: CryptoJS.mode.CBC });
-        let plaintext;
-        try {
-            plaintext = bytes.toString(CryptoJS.enc.Utf8);
-        }
-        catch (e) {
-            console.warn(e);
-        }
-        if (!!plaintext)
-            callback(null, plaintext);
-        else
-            callback(new Error("cannot decrypt content"), content);
+        return new Promise((resolve, rejected) => {
+            let key = CryptoJS.enc.Utf8.parse(self.key);
+            let iv = CryptoJS.enc.Utf8.parse(self.passiv);
+            let bytes = CryptoJS.AES.decrypt(content, key, { iv: iv, padding: CryptoJS.pad.Pkcs7, mode: CryptoJS.mode.CBC });
+            console.log(key, iv, bytes, content);
+            try {
+                let plaintext = bytes.toString(CryptoJS.enc.Utf8);
+                resolve(plaintext);
+            }
+            catch (e) {
+                console.error(e);
+                rejected(e);
+            }
+        });
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });

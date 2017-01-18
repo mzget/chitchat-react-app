@@ -19,6 +19,7 @@ import * as fetch from 'isomorphic-fetch';
 import Store from "../configureStore";
 
 import config from "../../configs/config";
+const secure = SecureServiceFactory.getService();
 
 /**
  * ChatRoomActionsType
@@ -186,7 +187,7 @@ export function getMessages() {
 function send_message_request() {
     return { type: ChatRoomActionsType.SEND_MESSAGE_REQUEST }
 }
-function send_message_success(data?: any) {
+function send_message_success(data: any) {
     return {
         type: ChatRoomActionsType.SEND_MESSAGE_SUCCESS,
         payload: data
@@ -198,10 +199,8 @@ function send_message_failure(data?: any) {
         payload: data
     }
 }
-export function sendMessage(msg: any) {
+export function sendMessage(msg: IMessage) {
     return (dispatch) => {
-        let secure = SecureServiceFactory.getService();
-
         dispatch(send_message_request());
 
         if (msg.type == ContentType[ContentType.Location]) {
@@ -211,17 +210,20 @@ export function sendMessage(msg: any) {
             return
         }
 
-        if (config.appConfig.encryption == true) {
-            secure.decryptWithSecureRandom(msg.content, function (err, result) {
-                if (err) {
-                    console.error(err);
-                }
-                else {
-                    msg.content = result;
-                    BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
-                        dispatch(sendMessageResponse(err, res));
-                    });
-                }
+        if (msg.type == ContentType[ContentType.Text] && config.appConfig.encryption == true) {
+            secure.encryption(msg.body).then(result => {
+                // secure.decryption(result).then(res => {
+                //     console.log(res);
+                // }).catch(err => {
+                //     console.error(err);
+                // });
+                msg.body = result;
+                BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
+                    dispatch(sendMessageResponse(err, res));
+                });
+            }).catch(err => {
+                console.error(err);
+                dispatch(send_message_failure(err));
             });
         }
         else {
@@ -232,33 +234,33 @@ export function sendMessage(msg: any) {
     }
 }
 
-export function sendFile(message: any) {
-    return (dispatch) => {
-        dispatch(send_message_request());
-
-        let msg: IMessage = {};
-        msg.rid = message.rid
-        msg.sender = message.sender
-        msg.target = message.target
-        msg.type = message.type
-        msg.uuid = message.uniqueId
-        msg.content = message.image
-
-        BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
-            dispatch(sendMessageResponse(err, res));
-        });
-    }
-}
-
 function sendMessageResponse(err, res) {
     return dispatch => {
         if (!!err || res.code !== HTTPStatus.success) {
-            console.warn("send message fail.", err, res);
             dispatch(send_message_failure(res.body));
         }
         else {
-            console.log("sendMessageResponse", res);
-            dispatch(send_message_success(res.data));
+            console.log('server response!', res);
+
+            if (res.data.hasOwnProperty('resultMsg')) {
+                let _msg = { ...res.data.resultMsg } as IMessage;
+                if (_msg.type == ContentType[ContentType.Text] && config.appConfig.encryption) {
+                    secure.decryption(_msg.body).then(res => {
+                        _msg.body = res;
+                        dispatch(send_message_success(_msg));
+                    }).catch(err => {
+                        console.error(err);
+                        _msg.body = err.toString();
+                        dispatch(send_message_success(_msg));
+                    });
+                }
+                else {
+                    dispatch(send_message_success(_msg));
+                }
+            }
+            else {
+                dispatch(send_message_failure(res.body));
+            }
         }
     }
 }
@@ -299,8 +301,6 @@ export function leaveRoom() {
 
         BackendFactory.getInstance().getServer().then(server => {
             server.LeaveChatRoomRequest(token, room.getRoomId(), (err, res) => {
-                console.log("leaveRoom result", res);
-
                 BackendFactory.getInstance().dataListener.removeChatListenerImp(room);
                 ChatRoomComponent.getInstance().dispose();
                 NotificationManager.regisNotifyNewMessageEvent();

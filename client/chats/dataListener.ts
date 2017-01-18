@@ -1,10 +1,8 @@
 ﻿import { absSpartan } from "../libs/stalk/spartanEvents";
-import * as IRoomAccessEvents from "../libs/stalk/IRoomAccessEvents";
 import { IMessage, RoomAccessData, Room, StalkAccount } from "./models/ChatDataModels";
+import { IRoomAccessListenerImp } from './abstracts/IRoomAccessListenerImp';
 
 import DataManager from "./dataManager";
-
-type RoomAccessEvents = IRoomAccessEvents.absSpartan.IRoomAccessListenerImp;
 
 export default class DataListener implements absSpartan.IServerListener, absSpartan.IChatServerListener {
     private dataManager: DataManager;
@@ -31,11 +29,11 @@ export default class DataListener implements absSpartan.IServerListener, absSpar
         console.log("chatListenerImps", this.chatListenerImps.length);
     }
 
-    private roomAccessListenerImps = new Array<RoomAccessEvents>();
-    public addRoomAccessListenerImp(listener: RoomAccessEvents) {
+    private roomAccessListenerImps = new Array<IRoomAccessListenerImp>();
+    public addRoomAccessListenerImp(listener: IRoomAccessListenerImp) {
         this.roomAccessListenerImps.push(listener);
     }
-    public removeRoomAccessListener(listener: RoomAccessEvents) {
+    public removeRoomAccessListener(listener: IRoomAccessListenerImp) {
         var id = this.roomAccessListenerImps.indexOf(listener);
         this.roomAccessListenerImps.splice(id, 1);
     }

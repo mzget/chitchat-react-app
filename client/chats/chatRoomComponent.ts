@@ -16,6 +16,7 @@ import SecureServiceFactory from "../libs/chitchat/services/secureServiceFactory
 import { ContentType, IMember, IMessage } from "./models/ChatDataModels";
 import { MessageImp } from "./models/MessageImp";
 import { ISecureService } from "../libs/chitchat/services/ISecureService";
+import * as DecryptionHelper from './utils/DecryptionHelper';
 
 import config from "../configs/config";
 import { imagesPath } from '../consts/StickerPath';
@@ -57,6 +58,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
     }
 
     onChat(message: MessageImp) {
+        console.log("ChatRoomComponent.onChat");
         let self = this;
 
         const saveMessages = (chatMessages: Array<IMessage>) => {
@@ -74,20 +76,9 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
             let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
             if (this.roomId === message.rid) {
                 if (message.type == ContentType[ContentType.Text]) {
-                    if (config.appConfig.encryption == true) {
-                        self.secure.decryptWithSecureRandom(message.body, (err, res) => {
-                            if (!err) {
-                                message.body = res;
-                                saveMessages(chatMessages);
-                            }
-                            else {
-                                saveMessages(chatMessages);
-                            }
-                        });
-                    }
-                    else {
+                    DecryptionHelper.decryptionText(message).then(decoded => {
                         saveMessages(chatMessages);
-                    }
+                    }).catch(err => saveMessages(chatMessages));
                 }
                 else if (message.type == ContentType[ContentType.Sticker]) {
                     let sticker_id = parseInt(message.body);
@@ -175,13 +166,11 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                 async.forEach(chats, function iterator(chat, result) {
                     if (chat.type === ContentType[ContentType.Text]) {
                         if (config.appConfig.encryption == true) {
-                            self.secure.decryptWithSecureRandom(chat.body, function (err, res) {
-                                if (!err) {
-                                    chat.body = res;
-                                }
+                            self.secure.decryption(chat.body).then(function (res) {
+                                chat.body = res;
 
                                 result(null);
-                            });
+                            }).catch(err => result(null));
                         }
                         else {
                             result(null);
@@ -256,11 +245,10 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                     async.forEach(messages, function (chat, cb) {
                         if (chat.type == ContentType[ContentType.Text]) {
                             if (config.appConfig.encryption == true) {
-                                self.secure.decryptWithSecureRandom(chat.body, function (err, res) {
-                                    if (!err) {
-                                        chat.body = res;
-                                    }
-
+                                self.secure.decryption(chat.body).then(function (res) {
+                                    chat.body = res;
+                                    cb(null);
+                                }).catch(err => {
                                     cb(null);
                                 });
                             }
