@@ -89,35 +89,6 @@ router.get('/agent/:username', (req, res, next) => {
         res.status(500).json({ success: false, message: err + ': Cannot connect db.' });
     });
 });
-router.post('/signin', function (req, res, next) {
-    if (!!req && !!req.body) {
-        console.warn(req.body);
-        let user = req.body;
-        let userModel = new User_1.ChitChatUser();
-        userModel.email = user.email.toLowerCase();
-        userModel.password = user.password;
-        MongoClient.connect(webConfig.chatDB, function (err, db) {
-            if (err) {
-                throw err;
-            }
-            var collection = db.collection(Mdb.DbClient.userColl);
-            collection.find({ mail: userModel.mail }).limit(1).toArray().then(function (docs) {
-                console.info(docs);
-                if (docs.length >= 1) {
-                    res.status(200).json({ success: true });
-                    db.close();
-                }
-                else {
-                    res.status(500).json({ success: false, message: "no user data." });
-                    db.close();
-                }
-            });
-        });
-    }
-    else {
-        res.json(500, { "success": false });
-    }
-});
 router.post('/signup', function (req, res, next) {
     req.checkBody('user', 'request for user object').notEmpty();
     let errors = req.validationErrors();

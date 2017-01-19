@@ -550,6 +550,10 @@ expand-range@^1.8.1:
   dependencies:
     fill-range "^2.1.0"
 
+express-useragent@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/express-useragent/-/express-useragent-1.0.6.tgz#0790068963ffe5cfbb8badc7e3cb7171c01724e0"
+
 express-validator@^3.1.0:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/express-validator/-/express-validator-3.1.2.tgz#bae23dfa11191398d5fcada3dd7c54f28428195a"
