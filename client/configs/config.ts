@@ -8,7 +8,7 @@ const rest_api = (host) => ({
     host: `${host}`,
     api: `${host}/api`,
     auth: `${host}/api/auth`,
-    usersApi: `${host}/users`,
+    users: `${host}/api/users`,
     imagePath: `${host}uploads/images/`,
     filePath: `${host}uploads/files/`,
     cardApi: `${host}api/card`,

@@ -13,7 +13,7 @@ const signupFailure = payload => ({ type: SIGN_UP_FAILURE, payload, error: true 
 const signupCancelled = () => ({ type: SIGN_UP_CANCELLED });
 exports.signupUserEpic = action$ => action$.ofType(SIGN_UP).mergeMap(action => ajax({
     method: 'POST',
-    url: `${config_1.default.api.usersApi}/signup`,
+    url: `${config_1.default.api.users}/signup`,
     body: JSON.stringify({ user: action.payload }),
     headers: { 'Content-Type': 'application/json' }
 })
@@ -21,11 +21,11 @@ exports.signupUserEpic = action$ => action$.ofType(SIGN_UP).mergeMap(action => a
     .takeUntil(action$.ofType(SIGN_UP_CANCELLED))
     .catch(error => Rx.Observable.of(signupFailure(error.xhr.response))));
 const AUTH_USER = "AUTH_USER";
-const AUTH_USER_SUCCESS = "AUTH_USER_SUCCESS";
+exports.AUTH_USER_SUCCESS = "AUTH_USER_SUCCESS";
 const AUTH_USER_FAILURE = "AUTH_USER_FAILURE";
 const AUTH_USER_CANCELLED = "AUTH_USER_CANCELLED";
 exports.authUser = (user) => ({ type: AUTH_USER, payload: user }); // username => ({ type: FETCH_USER, payload: username });
-const authUserSuccess = payload => ({ type: AUTH_USER_SUCCESS, payload });
+const authUserSuccess = payload => ({ type: exports.AUTH_USER_SUCCESS, payload });
 const authUserFailure = payload => ({ type: AUTH_USER_FAILURE, payload, error: true });
 const authUserCancelled = () => ({ type: AUTH_USER_CANCELLED });
 exports.authUserEpic = action$ => action$.ofType(AUTH_USER).mergeMap(action => ajax({
@@ -40,12 +40,25 @@ exports.authUserEpic = action$ => action$.ofType(AUTH_USER).mergeMap(action => a
 exports.AuthenInitState = immutable_1.Record({
     token: null,
     isFetching: false,
-    state: null
+    state: null,
+    user: null
 });
 exports.authReducer = (state = new exports.AuthenInitState(), action) => {
     switch (action.type) {
         case exports.SIGN_UP_SUCCESS:
             return state.set('state', exports.SIGN_UP_SUCCESS);
+        case AUTH_USER: {
+            return state.set('user', action.payload.email);
+        }
+        case exports.AUTH_USER_SUCCESS: {
+            return state.set('state', exports.AUTH_USER_SUCCESS)
+                .set('token', action.payload.result);
+        }
+        case AUTH_USER_FAILURE: {
+            return state.set('state', AUTH_USER_FAILURE)
+                .set('token', null)
+                .set('user', null);
+        }
         default:
             return state;
     }

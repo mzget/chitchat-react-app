@@ -15,8 +15,8 @@ import * as userActions from "../redux/user/userActions";
 import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 import * as chatroomActions from "../redux/chatroom/chatroomActions";
 import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
+import * as AuthRx from '../redux/authen/authRx';
 
-import ChatLogsBox from "./ChatLogsBox";
 import UtilsBox from "./UtilsBox";
 import AuthenBox from './authen/AuthenBox';
 
@@ -33,6 +33,7 @@ abstract class IComponentNameProps implements IComponentProps {
     params;
     router;
     dispatch;
+    authReducer;
     userReducer;
     chatroomReducer;
     chatlogReducer;
@@ -66,7 +67,17 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
     }
 
     componentWillReceiveProps(nextProps) {
-        let { location: {query: {userId, username, roomId, contactId}}, chatroomReducer, chatlogReducer, userReducer, stalkReducer } = nextProps as IComponentNameProps;
+        let { location: {query: {userId, username, roomId, contactId}},
+            chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer
+        } = nextProps as IComponentNameProps;
+
+        switch (authReducer.state) {
+            case AuthRx.AUTH_USER_SUCCESS: {
+                this.props.router.push(`/chatlist/${authReducer.user}`);
+            }
+            default:
+                break;
+        }
 
         switch (chatroomReducer.state) {
             case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS:
@@ -137,7 +148,6 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
                     <AuthenBox {...this.props} />
                     <Box p={2} flexAuto></Box>
                 </Flex>
-                <ChatLogsBox {...this.props} />
                 <UtilsBox />
                 <Flex px={2} align='center'>
                     <Box p={2} flexAuto></Box>

@@ -41,6 +41,7 @@
     <Content Include="client\containers\authen\SignupBox.tsx" />
     <Content Include="client\containers\Chat.tsx" />
     <Content Include="client\containers\ChatBox.tsx" />
+    <Content Include="client\containers\ChatList.tsx" />
     <Content Include="client\containers\ChatLogsBox.tsx" />
     <Content Include="client\containers\Home.tsx" />
     <Content Include="client\containers\ListChatLogs.tsx" />

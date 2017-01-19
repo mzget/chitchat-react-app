@@ -10,6 +10,7 @@ import Store from './client/redux/configureStore';
 
 import Home from "./client/containers/Home";
 import Chat from "./client/containers/Chat";
+import ChatList from "./client/containers/ChatList";
 
 class App extends Component {
     render() {
@@ -18,6 +19,7 @@ class App extends Component {
                 <Router history={browserHistory}>
                     <Route path="/(:filter)" component={Home} />
                     <Route path="/chat/(:filter)" component={Chat} />
+                    <Route path="/chatlist/(:filter)" component={ChatList} />
                 </Router>
             </Provider>
         );

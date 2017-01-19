@@ -18,7 +18,7 @@ const signupCancelled = () => ({ type: SIGN_UP_CANCELLED });
 export const signupUserEpic = action$ =>
     action$.ofType(SIGN_UP).mergeMap(action => ajax({
         method: 'POST',
-        url: `${config.api.usersApi}/signup`,
+        url: `${config.api.users}/signup`,
         body: JSON.stringify({ user: action.payload }),
         headers: { 'Content-Type': 'application/json' }
     })
@@ -28,7 +28,7 @@ export const signupUserEpic = action$ =>
     );
 
 const AUTH_USER = "AUTH_USER";
-const AUTH_USER_SUCCESS = "AUTH_USER_SUCCESS";
+export const AUTH_USER_SUCCESS = "AUTH_USER_SUCCESS";
 const AUTH_USER_FAILURE = "AUTH_USER_FAILURE";
 const AUTH_USER_CANCELLED = "AUTH_USER_CANCELLED";
 export const authUser = (user: { email: string, password: string }) => ({ type: AUTH_USER, payload: user }); // username => ({ type: FETCH_USER, payload: username });
@@ -50,12 +50,26 @@ export const authUserEpic = action$ =>
 export const AuthenInitState = Record({
     token: null,
     isFetching: false,
-    state: null
+    state: null,
+    user: null
 });
 export const authReducer = (state = new AuthenInitState(), action) => {
     switch (action.type) {
         case SIGN_UP_SUCCESS:
-            return state.set('state', SIGN_UP_SUCCESS)
+            return state.set('state', SIGN_UP_SUCCESS);
+
+        case AUTH_USER: {
+            return state.set('user', action.payload.email);
+        }
+        case AUTH_USER_SUCCESS: {
+            return state.set('state', AUTH_USER_SUCCESS)
+                .set('token', action.payload.result);
+        }
+        case AUTH_USER_FAILURE: {
+            return state.set('state', AUTH_USER_FAILURE)
+                .set('token', null)
+                .set('user', null);
+        }
 
         default:
             return state;

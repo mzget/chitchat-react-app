@@ -14,7 +14,7 @@ const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 const userActions = require("../redux/user/userActions");
 const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const chatroomActions = require("../redux/chatroom/chatroomActions");
-const ChatLogsBox_1 = require("./ChatLogsBox");
+const AuthRx = require("../redux/authen/authRx");
 const UtilsBox_1 = require("./UtilsBox");
 const AuthenBox_1 = require("./authen/AuthenBox");
 class IComponentNameProps {
@@ -45,7 +45,14 @@ class Home extends React.Component {
     componentDidMount() {
     }
     componentWillReceiveProps(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, chatlogReducer, userReducer, stalkReducer } = nextProps;
+        let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer } = nextProps;
+        switch (authReducer.state) {
+            case AuthRx.AUTH_USER_SUCCESS: {
+                this.props.router.push(`/chatlist/${authReducer.user}`);
+            }
+            default:
+                break;
+        }
         switch (chatroomReducer.state) {
             case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS:
                 if (chatroomReducer.room) {
@@ -104,7 +111,6 @@ class Home extends React.Component {
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
                 React.createElement(AuthenBox_1.default, __assign({}, this.props)),
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
-            React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
             React.createElement(UtilsBox_1.default, null),
             React.createElement(reflexbox_1.Flex, { px: 2, align: 'center' },
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
