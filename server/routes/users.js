@@ -1,6 +1,15 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments)).next());
+    });
+};
 const express = require("express");
 const mongodb = require("mongodb");
+const apiUtils = require("../scripts/utils/apiUtils");
 const router = express.Router();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
@@ -104,6 +113,7 @@ router.post('/signup', function (req, res, next) {
     userModel.firstname = user.firstname;
     userModel.lastname = user.lastname;
     userModel.tel = user.tel;
+    userModel.teams = new Array();
     MongoClient.connect(config.chatDB).then(function (db) {
         let collection = db.collection(config_1.DbClient.systemUsersColl);
         collection.createIndex({ email: 1 }, { background: true });
@@ -128,6 +138,47 @@ router.post('/signup', function (req, res, next) {
     }).catch(err => {
         console.error("Cannot connect db: ", err);
         res.status(500).json({ success: false, message: err });
+    });
+});
+router.get('/teams', (req, res, next) => {
+    req.checkQuery('user_id', 'request for user_id').isMongoId();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+    let user_id = new mongodb.ObjectID(req.query.user_id);
+    function findUserTeams() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let db = yield MongoClient.connect(config.chatDB);
+                let collection = db.collection(config_1.DbClient.systemUsersColl);
+                let user = yield collection.find({ _id: user_id }).project({ teams: 1 }).limit(1).toArray();
+                db.close();
+                return user[0];
+            }
+            catch (err) {
+                console.error('findUserTeams fail', err);
+            }
+        });
+    }
+    function findTeamsInfo(team_ids) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let db = yield MongoClient.connect(config.chatDB);
+                let collection = db.collection(config_1.DbClient.teamsColl);
+                let teams = yield collection.find({ _id: { $in: team_ids } }).limit(10).toArray();
+                db.close();
+                return teams;
+            }
+            catch (err) {
+                console.error('findTeamsInfo fail', err);
+            }
+        });
+    }
+    findUserTeams().then((user) => findTeamsInfo(user.teams)).then(teams => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, teams));
+    }).catch(err => {
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });
 router.get('/getOrgMembers', function (req, res, next) {

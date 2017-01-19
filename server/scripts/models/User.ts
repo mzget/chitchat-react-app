@@ -41,4 +41,5 @@ export class ChitChatUser {
     closedNoticeUsers: string[]; // user_id
     closedNoticeGroups: string[]; // room_id
     deviceTokens: string[];
+    teams: string[];
 };

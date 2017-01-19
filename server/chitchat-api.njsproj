@@ -32,7 +32,6 @@
     <TypeScriptCompile Include="routes\users.ts" />
     <Compile Include="routes\chatroom.js" />
     <Compile Include="routes\index.js" />
-    <Compile Include="routes\users.js" />
     <Content Include="public\stylesheets\style.css" />
     <TypeScriptCompile Include="routes\demos\users.ts" />
     <Compile Include="routes\demos\users.js" />
@@ -44,7 +43,7 @@
     <Compile Include="scripts\controllers\ChatRoomManager.js" />
     <Compile Include="scripts\controllers\CompanyManager.js" />
     <Compile Include="scripts\controllers\UserManager.js" />
-    <TypeScriptCompile Include="scripts\models\Company.ts" />
+    <TypeScriptCompile Include="scripts\models\ITeam.ts" />
     <TypeScriptCompile Include="scripts\models\IChatRoom.ts" />
     <TypeScriptCompile Include="scripts\models\IProfile.ts" />
     <TypeScriptCompile Include="scripts\models\JobLevel.ts" />
@@ -53,7 +52,6 @@
     <TypeScriptCompile Include="scripts\models\RoomAccessData.ts" />
     <TypeScriptCompile Include="scripts\models\User.ts" />
     <TypeScriptCompile Include="scripts\models\UserRole.ts" />
-    <Compile Include="scripts\models\Company.js" />
     <Compile Include="scripts\models\IChatRoom.js" />
     <Compile Include="scripts\models\IProfile.js" />
     <Compile Include="scripts\models\JobLevel.js" />

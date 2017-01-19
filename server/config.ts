@@ -35,7 +35,8 @@ export const DbClient = {
     systemUsersColl: "users",
     chatroomColl: "rooms",
     chatUserColl: "chatUsers",
-    messageColl: "messages"
+    messageColl: "messages",
+    teamsColl: "teams"
 }
 
 export const Paths = {

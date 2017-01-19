@@ -26,7 +26,8 @@ exports.DbClient = {
     systemUsersColl: "users",
     chatroomColl: "rooms",
     chatUserColl: "chatUsers",
-    messageColl: "messages"
+    messageColl: "messages",
+    teamsColl: "teams"
 };
 exports.Paths = {
     fileUpload: `./public/uploads/`
