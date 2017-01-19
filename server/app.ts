@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const cors = require('cors');
+import useragent = require('express-useragent');
 
 import { getConfig, Paths } from './config';
 
@@ -21,6 +22,7 @@ console.log("listen on ", process.env.PORT);
 
 const index = require('./routes/index');
 const users = require('./routes/users');
+const authen = require('./routes/authen');
 const chatroom = require('./routes/chatroom');
 const chat_upload = require('./routes/upload/uploadFile');
 
@@ -36,8 +38,10 @@ app.use(expressValidator()); // this line must be immediately after express.body
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('../build'));
+app.use(useragent.express());
 
 app.use('/', index);
+app.use('/api/auth', authen);
 app.use('/users', users);
 app.use('/chatroom', chatroom);
 app.use("/chats/upload", chat_upload);

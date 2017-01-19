@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const cors = require('cors');
+const useragent = require("express-useragent");
 process.env.NODE_ENV = 'development';
 const app = express();
 if (app.get('env') === 'development') {
@@ -18,6 +19,7 @@ else if (app.get('env') === 'production') {
 console.log("listen on ", process.env.PORT);
 const index = require('./routes/index');
 const users = require('./routes/users');
+const authen = require('./routes/authen');
 const chatroom = require('./routes/chatroom');
 const chat_upload = require('./routes/upload/uploadFile');
 app.use(cors());
@@ -32,7 +34,9 @@ app.use(expressValidator()); // this line must be immediately after express.body
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('../build'));
+app.use(useragent.express());
 app.use('/', index);
+app.use('/api/auth', authen);
 app.use('/users', users);
 app.use('/chatroom', chatroom);
 app.use("/chats/upload", chat_upload);

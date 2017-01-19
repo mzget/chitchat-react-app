@@ -125,7 +125,6 @@ router.post('/signup', function (req, res, next) {
         return res.status(500).json({ success: false, message: errors });
     }
     let user = req.body.user;
-    let teamRootId = req.body.teamRegister;
     let userModel = new User_1.ChitChatUser();
     userModel.displayname = user.username;
     userModel.username = user.email;
@@ -144,9 +143,8 @@ router.post('/signup', function (req, res, next) {
             }
             else {
                 collection.insertOne(userModel).then(function onFulfilled(value) {
-                    res.status(200).json({ success: true, result: value });
+                    res.status(200).json({ success: true, result: value.ops });
                     db.close();
-                    addGroupMember(teamRootId, userModel, null);
                 }).catch(function onRejected(error) {
                     res.status(500).json({ success: false, message: error });
                     db.close();

@@ -4,6 +4,7 @@ type Config = {
     chatDB: string;
     redis_port: number;
     redis_host: string;
+    token: { secret: string, expire: string }
 }
 
 const dev: Config = {
@@ -11,15 +12,11 @@ const dev: Config = {
     systemDB: "mongodb://rfl_dev:rfl1234@git.animation-genius.com:27017/smelink-yii",
     chatDB: "mongodb://rfl_dev:rfl1234@git.animation-genius.com:27017/chitchat-dev",
     redis_port: 6379,
-    redis_host: "smelink.animation-genius.com"
-}
-
-const master: Config = {
-    appDB: "mongodb://git.animation-genius.com:27017/smelink-master",
-    systemDB: "mongodb://git.animation-genius.com:27017/smelink-yii",
-    chatDB: "mongodb://git.animation-genius.com:27017/smelink-chat",
-    redis_port: 6379,
-    redis_host: "smelink.animation-genius.com"
+    redis_host: "smelink.animation-genius.com",
+    token: {
+        secret: 'chitchat1234',
+        expire: "1 days"
+    }
 }
 
 const production: Config = {
@@ -27,7 +24,11 @@ const production: Config = {
     systemDB: "mongodb://git.animation-genius.com:27017/smelink-yii",
     chatDB: "mongodb://rfl_dev:rfl1234@git.animation-genius.com:27017/chitchat-dev",
     redis_port: 6379,
-    redis_host: "smelink.animation-genius.com"
+    redis_host: "smelink.animation-genius.com",
+    token: {
+        secret: 'chitchat1234',
+        expire: "1 days"
+    }
 }
 
 export function getConfig(): Config {

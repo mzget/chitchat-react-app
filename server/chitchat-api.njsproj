@@ -25,6 +25,7 @@
     <TypeScriptCompile Include="config.ts" />
     <Compile Include="app.js" />
     <Compile Include="config.js" />
+    <TypeScriptCompile Include="routes\authen.ts" />
     <TypeScriptCompile Include="routes\chatroom.ts" />
     <TypeScriptCompile Include="routes\index.ts" />
     <TypeScriptCompile Include="routes\team.ts" />
@@ -68,6 +69,7 @@
     <Compile Include="scripts\services\AccountService.js" />
     <Compile Include="scripts\services\CachingSevice.js" />
     <Compile Include="scripts\services\RoomService.js" />
+    <TypeScriptCompile Include="scripts\utils\apiUtils.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin" />
@@ -80,6 +82,7 @@
     <Folder Include="scripts" />
     <Folder Include="scripts\controllers" />
     <Folder Include="scripts\models" />
+    <Folder Include="scripts\utils\" />
     <Folder Include="scripts\services" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
