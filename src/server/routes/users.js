@@ -76,15 +76,15 @@ router.get('/contact/', function (req, res, next) {
         res.status(500).json({ success: false, message: "missing query string" });
     }
 });
-router.get('/:username', (req, res, next) => {
-    req.checkParams("username", "Request for id as param").notEmpty();
+router.get('/', (req, res, next) => {
+    req.checkQuery("username", "Request for id as param").notEmpty();
     let errors = req.validationErrors();
     if (errors) {
         return res.status(500).json({ success: false, message: errors });
     }
     MongoClient.connect(config.chatDB).then(db => {
         let collection = db.collection(config_1.DbClient.systemUsersColl);
-        collection.find({ username: req.params.username }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
+        collection.find({ username: req.query.username }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
             if (docs.length >= 1) {
                 res.status(200).json({ success: true, result: docs });
                 db.close();
@@ -149,30 +149,20 @@ router.get('/teams', (req, res, next) => {
     let user_id = new mongodb.ObjectID(req.query.user_id);
     function findUserTeams() {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                let db = yield MongoClient.connect(config.chatDB);
-                let collection = db.collection(config_1.DbClient.systemUsersColl);
-                let user = yield collection.find({ _id: user_id }).project({ teams: 1 }).limit(1).toArray();
-                db.close();
-                return user[0];
-            }
-            catch (err) {
-                console.error('findUserTeams fail', err);
-            }
+            let db = yield MongoClient.connect(config.chatDB);
+            let collection = db.collection(config_1.DbClient.systemUsersColl);
+            let user = yield collection.find({ _id: user_id }).project({ teams: 1 }).limit(1).toArray();
+            db.close();
+            return user[0];
         });
     }
     function findTeamsInfo(team_ids) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                let db = yield MongoClient.connect(config.chatDB);
-                let collection = db.collection(config_1.DbClient.teamsColl);
-                let teams = yield collection.find({ _id: { $in: team_ids } }).limit(10).toArray();
-                db.close();
-                return teams;
-            }
-            catch (err) {
-                console.error('findTeamsInfo fail', err);
-            }
+            let db = yield MongoClient.connect(config.chatDB);
+            let collection = db.collection(config_1.DbClient.teamsColl);
+            let teams = yield collection.find({ _id: { $in: team_ids } }).limit(10).toArray();
+            db.close();
+            return teams;
         });
     }
     findUserTeams().then((user) => findTeamsInfo(user.teams)).then(teams => {
