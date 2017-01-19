@@ -16,9 +16,12 @@ class IComponentNameProps {
 }
 ;
 ;
-class ChatList extends React.Component {
+/**
+ * Containers of chatlist, chatlogs, etc...
+ */
+class Main extends React.Component {
     componentWillMount() {
-        console.log("ChatList", this.props);
+        console.log("Main", this.props);
         let { location: { query: { userId, username, roomId, contactId, agent_name } }, params } = this.props;
         if (params.filter) {
             this.props.dispatch(userActions.fetchUser(params.filter));
@@ -37,4 +40,4 @@ function mapStateToProps(state) {
     return __assign({}, state);
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapStateToProps)(ChatList);
+exports.default = react_redux_1.connect(mapStateToProps)(Main);

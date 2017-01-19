@@ -6,6 +6,7 @@ import { IComponentProps } from "../utils/IComponentProps";
 import * as userActions from "../redux/user/userActions";
 
 import ChatLogsBox from "./ChatLogsBox";
+import SimpleToolbar from '../components/Toolbar';
 
 abstract class IComponentNameProps implements IComponentProps {
     location: {
@@ -27,26 +28,19 @@ abstract class IComponentNameProps implements IComponentProps {
     stalkReducer;
 };
 
-interface IComponentNameState {};
+interface IComponentNameState { };
 
-class ChatList extends React.Component<IComponentNameProps, IComponentNameState> {
-    
+class ChatListBox extends React.Component<IComponentNameProps, IComponentNameState> {
+
     componentWillMount() {
         console.log("ChatList", this.props);
-
-        let { location: {query: {userId, username, roomId, contactId, agent_name}}, params } = this.props;
-
-        if (params.filter) {
-            this.props.dispatch(userActions.fetchUser(params.filter));
-        }
     }
-    
+
 
     public render(): JSX.Element {
         return (
             <div>
-                <ChatLogsBox {...this.props} />
-        </div>);
+            </div>);
     }
 }
 
@@ -58,4 +52,4 @@ function mapStateToProps(state) {
         ...state
     };
 }
-export default connect(mapStateToProps)(ChatList);
+export default connect(mapStateToProps)(ChatListBox);

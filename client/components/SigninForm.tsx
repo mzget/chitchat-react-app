@@ -9,7 +9,7 @@ const styles = {
         padding: 2
     },
     button: {
-        width:'100%'
+        width: '100%'
     },
     textfield: {
         width: '100%'
@@ -17,7 +17,7 @@ const styles = {
 };
 
 const SubmitButton = (props: ITypingBox) => (
-    <RaisedButton primary={true} label="submit" onClick={props.onSubmit} style={styles.button}>
+    <RaisedButton primary={true} label="Sign in" onClick={props.onSubmit} style={styles.button}>
     </RaisedButton>
 );
 
