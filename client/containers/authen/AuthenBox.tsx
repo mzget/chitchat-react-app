@@ -3,8 +3,9 @@ import { Flex, Box } from 'reflexbox';
 import { RaisedButton, TextField } from 'material-ui';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import SampleLoginBox from "./SampleLoginBox";
+import SigninBox from "./SigninBox";
 import SignupBox from "./SignupBox";
+import * as AuthRx from '../../redux/authen/authRx';
 
 interface IComponentNameProps {
 };
@@ -13,7 +14,7 @@ interface IComponentNameState {
     showSignin: boolean;
 };
 
-class AuthenBox extends React.Component<IComponentNameProps, IComponentNameState> {
+class AuthenBox extends React.Component<any, IComponentNameState> {
     componentWillMount() {
         this.state = {
             showSignin: true
@@ -21,6 +22,14 @@ class AuthenBox extends React.Component<IComponentNameProps, IComponentNameState
 
         this.onSignupPressed = this.onSignupPressed.bind(this);
         this.onSigninPressed = this.onSigninPressed.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        let { authReducer } = nextProps;
+
+        if (authReducer.state == AuthRx.SIGN_UP_SUCCESS) {
+            this.setState({ showSignin: true });
+        }
     }
 
     onSignupPressed() {
@@ -36,7 +45,7 @@ class AuthenBox extends React.Component<IComponentNameProps, IComponentNameState
                 <Flex flexColumn>
                     {
                         (this.state.showSignin) ?
-                            <SampleLoginBox /> : <SignupBox />
+                            <SigninBox {...this.props} /> : <SignupBox {...this.props} />
                     }
                     {
                         (this.state.showSignin) ?

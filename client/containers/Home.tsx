@@ -18,7 +18,7 @@ import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 
 import ChatLogsBox from "./ChatLogsBox";
 import UtilsBox from "./UtilsBox";
-import AuthenBox from '../components/AuthenBox';
+import AuthenBox from './authen/AuthenBox';
 
 abstract class IComponentNameProps implements IComponentProps {
     location: {

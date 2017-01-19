@@ -9,7 +9,7 @@
 "use strict";
 const BackendFactory_1 = require("../../chats/BackendFactory");
 const ChatDataModels_1 = require("../../chats/models/ChatDataModels");
-const DecryptionHelper = require("../../chats/utils/DecryptionHelper");
+const CryptoHelper = require("../../chats/utils/CryptoHelper");
 const configureStore_1 = require("../configureStore");
 exports.STALK_NOTICE_NEW_MESSAGE = "STALK_NOTICE_NEW_MESSAGE";
 const stalkNotiNewMessage = (payload) => ({ type: exports.STALK_NOTICE_NEW_MESSAGE, payload });
@@ -25,7 +25,7 @@ exports.unsubscribeGlobalNotifyMessageEvent = () => {
 };
 exports.notify = (messageImp) => {
     console.log("notify", messageImp);
-    DecryptionHelper.decryptionText(messageImp).then(decoded => {
+    CryptoHelper.decryptionText(messageImp).then(decoded => {
         let message = decoded.body;
         if (messageImp.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location]) {
             message = "Sent you location";

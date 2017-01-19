@@ -11,9 +11,9 @@ export default class NodeSecureService implements ISecureService {
         this.passiv = "ThisIsUrPassword";
     }
 
-    hashCompute(content, callback) {
+    hashCompute(content, callback: (err, res) => void) {
         let hash = CryptoJS.MD5(content);
-        callback(null, hash);
+        callback(null, hash.toString());
     }
 
     encryption(content): Promise<string> {

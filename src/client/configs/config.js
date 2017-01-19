@@ -6,7 +6,7 @@ const rest_api = (host) => ({
     apiKey: "smelink1234",
     host: `${host}`,
     api: `${host}/api`,
-    authenticate: `${host}api/authenticate`,
+    auth: `${host}/api/auth`,
     usersApi: `${host}/users`,
     imagePath: `${host}uploads/images/`,
     filePath: `${host}uploads/files/`,

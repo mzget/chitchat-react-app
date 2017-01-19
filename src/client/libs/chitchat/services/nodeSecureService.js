@@ -7,7 +7,7 @@ class NodeSecureService {
     }
     hashCompute(content, callback) {
         let hash = CryptoJS.MD5(content);
-        callback(null, hash);
+        callback(null, hash.toString());
     }
     encryption(content) {
         let self = this;

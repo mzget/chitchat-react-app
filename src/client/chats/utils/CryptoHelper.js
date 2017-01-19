@@ -26,3 +26,11 @@ exports.decryptionText = (message) => __awaiter(this, void 0, void 0, function* 
         return message;
     }
 });
+exports.hashComputation = (message) => {
+    let secure = secureServiceFactory_1.default.getService();
+    return new Promise((resolve, reject) => {
+        secure.hashCompute(message, (err, res) => {
+            resolve(res);
+        });
+    });
+};

@@ -17,6 +17,7 @@ import { combineReducers } from 'redux';
 import { deviceReducer, DeviceInitialState } from "./device/deviceReducer";
 // import { messageReducer, MessageInitState } from "./message/messageReducer";
 import { UserInitState, userReducer } from "./user/userActions";
+import { AuthenInitState, authReducer } from "./authen/authRx";
 import { stalkReducer, StalkInitState } from "./stalkBridge/stalkReducer";
 import { chatroomReducer, ChatRoomInitState } from "./chatroom/chatroomReducer";
 import { chatlogReducer, ChatLogInitState } from "./chatlogs/chatlogReducer";
@@ -29,6 +30,7 @@ import { chatlogReducer, ChatLogInitState } from "./chatlogs/chatlogReducer";
  */
 const appReducer = combineReducers({
     deviceReducer,
+    authReducer,
     // messageReducer,
     stalkReducer,
     chatroomReducer,
@@ -45,6 +47,7 @@ export function getInitialState() {
     const _initState = {
         deviceReducer: new DeviceInitialState(),
         // messageReducer: new MessageInitState,
+        authReducer: new AuthenInitState(),
         stalkReducer: new StalkInitState(),
         chatroomReducer: new ChatRoomInitState(),
         chatlogReducer: new ChatLogInitState(),

@@ -22,3 +22,12 @@ export const decryptionText = async (message: MessageImp) => {
         return message;
     }
 }
+
+export const hashComputation = (message) => {
+    let secure = SecureServiceFactory.getService();
+    return new Promise((resolve, reject) => {
+        secure.hashCompute(message, (err, res) => {
+            resolve(res);
+        });
+    });
+}

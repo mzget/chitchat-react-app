@@ -9,10 +9,10 @@ const styles = {
         padding: 2
     },
     button: {
+        width:'100%'
     },
-    box: {
-        bottom: 0,
-        position: 'absolute'
+    textfield: {
+        width: '100%'
     }
 };
 
@@ -29,10 +29,10 @@ interface ITypingBox {
     onPassword: (event, text) => void;
 }
 
-export const SampleLoginForm = (props: ITypingBox) => {
+export const SigninForm = (props: ITypingBox) => {
     return (
         < MuiThemeProvider >
-            <Flex flexColumn  >
+            <Flex flexColumn align='center' >
                 <Box justify='center' align='center' p={2}>
                     <h3>Sign-in</h3>
                     <p>Enter your email address and password</p>
@@ -40,11 +40,12 @@ export const SampleLoginForm = (props: ITypingBox) => {
                 <span style={styles.span} />
                 <TextField hintText="Type username here." value={props.username} onChange={props.onUsername} onKeyDown={(e) => {
                     if (e.key === 'Enter') props.onSubmit();
-                } } />
+                } } style={styles.textfield} />
                 <span style={styles.span} />
-                <TextField hintText="Password" value={props.password} onChange={props.onPassword} onKeyDown={(e) => {
+                <TextField type='password' hintText="Password" value={props.password} onChange={props.onPassword} onKeyDown={(e) => {
                     if (e.key === 'Enter') props.onSubmit();
-                } } />
+                } } style={styles.textfield} />
+                <span style={styles.span} />
                 <SubmitButton {...props} />
             </Flex>
         </MuiThemeProvider >

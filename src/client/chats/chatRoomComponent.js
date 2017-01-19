@@ -18,7 +18,7 @@ const serverImplemented_1 = require("../libs/stalk/serverImplemented");
 const serverEventListener_1 = require("../libs/stalk/serverEventListener");
 const secureServiceFactory_1 = require("../libs/chitchat/services/secureServiceFactory");
 const ChatDataModels_1 = require("./models/ChatDataModels");
-const DecryptionHelper = require("./utils/DecryptionHelper");
+const CryptoHelper = require("./utils/CryptoHelper");
 const config_1 = require("../configs/config");
 const StickerPath_1 = require("../consts/StickerPath");
 let serverImp = null;
@@ -60,7 +60,7 @@ class ChatRoomComponent {
             let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
             if (this.roomId === message.rid) {
                 if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
-                    DecryptionHelper.decryptionText(message).then(decoded => {
+                    CryptoHelper.decryptionText(message).then(decoded => {
                         saveMessages(chatMessages);
                     }).catch(err => saveMessages(chatMessages));
                 }

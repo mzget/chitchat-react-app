@@ -69,7 +69,6 @@ export const fetchContactEpic = action$ =>
         .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))
     );
 
-
 export const UserInitState = Record({
   token: null,
   isFetching: false,
@@ -92,7 +91,8 @@ export const userReducer = (state = new UserInitState(), action) => {
         .set("state", FETCH_CONTACT_SUCCESS);
     case FETCH_AGENT_SUCCESS:
       return state.set("contact", action.payload.result[0])
-        .set("state", FETCH_AGENT_SUCCESS);
+            .set("state", FETCH_AGENT_SUCCESS);
+
     default:
       return state;
   }

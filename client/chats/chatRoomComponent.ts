@@ -16,7 +16,7 @@ import SecureServiceFactory from "../libs/chitchat/services/secureServiceFactory
 import { ContentType, IMember, IMessage } from "./models/ChatDataModels";
 import { MessageImp } from "./models/MessageImp";
 import { ISecureService } from "../libs/chitchat/services/ISecureService";
-import * as DecryptionHelper from './utils/DecryptionHelper';
+import * as CryptoHelper from './utils/CryptoHelper';
 
 import config from "../configs/config";
 import { imagesPath } from '../consts/StickerPath';
@@ -76,7 +76,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
             let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
             if (this.roomId === message.rid) {
                 if (message.type == ContentType[ContentType.Text]) {
-                    DecryptionHelper.decryptionText(message).then(decoded => {
+                    CryptoHelper.decryptionText(message).then(decoded => {
                         saveMessages(chatMessages);
                     }).catch(err => saveMessages(chatMessages));
                 }

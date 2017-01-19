@@ -8,7 +8,10 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 const React = require("react");
-const SignupForm_1 = require("./SignupForm");
+const SignupForm_1 = require("../../components/SignupForm");
+const CryptoHelper = require("../../chats/utils/CryptoHelper");
+const ValidateUtils = require("../../utils/ValidationUtils");
+const AuthRx = require("../../redux/authen/authRx");
 ;
 ;
 class SignupBox extends React.Component {
@@ -24,6 +27,28 @@ class SignupBox extends React.Component {
     }
     onSubmitForm() {
         console.log("submit form", this.state);
+        if (this.state.password != this.state.confirmPassword) {
+            console.error('confirm password is not match!');
+        }
+        else if (this.state.email.length > 0 && this.state.password.length > 0) {
+            ValidateUtils.validateEmailPass(this.state.email, this.state.password, (result) => {
+                if (!result) {
+                    if (this.state.firstname.length > 0 && this.state.lastname.length > 0) {
+                        CryptoHelper.hashComputation(this.state.password).then((hash) => {
+                            this.setState(previous => (__assign({}, previous, { password: hash, confirmPassword: null })), () => {
+                                this.props.dispatch(AuthRx.signup(this.state));
+                            });
+                        });
+                    }
+                    else {
+                        console.error('The require fields is missing!');
+                    }
+                }
+                else {
+                    console.warn(JSON.stringify(result));
+                }
+            });
+        }
     }
     render() {
         return (React.createElement("span", null,

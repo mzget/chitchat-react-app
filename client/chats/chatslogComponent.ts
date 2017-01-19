@@ -12,7 +12,7 @@ import ChatLog from "./models/chatLog";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
 import BackendFactory from "./BackendFactory";
-import * as DecryptionHelper from './utils/DecryptionHelper';
+import * as CryptoHelper from './utils/CryptoHelper';
 import HttpCode from "../libs/stalk/utils/httpStatusCode";
 import ServerImplement, { IDictionary } from "../libs/stalk/serverImplemented";
 import { MemberRole } from "./models/ChatDataModels";
@@ -73,7 +73,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         console.log("ChatsLogComponent.onChat");
         let self = this;
 
-        DecryptionHelper.decryptionText(message).then((decoded) => {
+        CryptoHelper.decryptionText(message).then((decoded) => {
             //<!-- Provide chatslog service.
             self.chatListeners.map((v, i, a) => {
                 v(decoded);
@@ -183,7 +183,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
                 if (value.success) {
                     let unread: IUnread = JSON.parse(JSON.stringify(value.result));
                     unread.rid = roomAccess.roomId;
-                    DecryptionHelper.decryptionText(unread.message as MessageImp).then(decoded => {
+                    CryptoHelper.decryptionText(unread.message as MessageImp).then(decoded => {
                         callback(null, unread);
                     }).catch(err => {
                         callback(null, unread);

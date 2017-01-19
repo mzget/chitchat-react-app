@@ -8,7 +8,7 @@ const async = require("async");
 const DataModels = require("./models/ChatDataModels");
 const chatLog_1 = require("./models/chatLog");
 const BackendFactory_1 = require("./BackendFactory");
-const DecryptionHelper = require("./utils/DecryptionHelper");
+const CryptoHelper = require("./utils/CryptoHelper");
 const ServiceProvider = require("./services/ServiceProvider");
 ;
 ;
@@ -55,7 +55,7 @@ class ChatsLogComponent {
     onChat(message) {
         console.log("ChatsLogComponent.onChat");
         let self = this;
-        DecryptionHelper.decryptionText(message).then((decoded) => {
+        CryptoHelper.decryptionText(message).then((decoded) => {
             //<!-- Provide chatslog service.
             self.chatListeners.map((v, i, a) => {
                 v(decoded);
@@ -152,7 +152,7 @@ class ChatsLogComponent {
             if (value.success) {
                 let unread = JSON.parse(JSON.stringify(value.result));
                 unread.rid = roomAccess.roomId;
-                DecryptionHelper.decryptionText(unread.message).then(decoded => {
+                CryptoHelper.decryptionText(unread.message).then(decoded => {
                     callback(null, unread);
                 }).catch(err => {
                     callback(null, unread);
