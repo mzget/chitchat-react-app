@@ -102,7 +102,7 @@ const getLastMessageContentOfRoom = (rid: string, callback: (err, result) => voi
 export const GetChatRoomInfo = (room_id: string): Promise<any[]> => {
     return new Promise((resolve, reject) => {
         MongoClient.connect(config.chatDB).then(db => {
-            let roomColl = db.collection(DbClient.chatroomCall);
+            let roomColl = db.collection(DbClient.chatroomColl);
 
             roomColl.find({ _id: new ObjectID(room_id) }).limit(1).toArray().then(docs => {
                 db.close();
@@ -120,7 +120,7 @@ export const GetChatRoomInfo = (room_id: string): Promise<any[]> => {
 export const createPrivateChatRoom = (room: Room.Room): Promise<any> => {
     return new Promise((resolve, reject) => {
         MongoClient.connect(config.chatDB).then(db => {
-            let roomColl = db.collection(DbClient.chatroomCall);
+            let roomColl = db.collection(DbClient.chatroomColl);
 
             roomColl.insertOne(room).then(result => {
                 db.close();

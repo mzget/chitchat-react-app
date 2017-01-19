@@ -37,7 +37,7 @@ app.use(express.static('../build'));
 app.use(useragent.express());
 app.use('/', index);
 app.use('/api/auth', authen);
-app.use('/users', users);
+app.use('/api/users', users);
 app.use('/chatroom', chatroom);
 app.use("/chats/upload", chat_upload);
 // catch 404 and forward to error handler

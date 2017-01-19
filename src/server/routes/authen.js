@@ -76,27 +76,14 @@ router.post('/verify', (req, res, next) => {
         res.status(500).json({ success: false, message: errors });
         return;
     }
-    let useragent = req.useragent;
     let token = req.body.token;
     // verifies secret and checks exp
-    jwt.verify(token, config.session.secret, function (err, decoded) {
+    jwt.verify(token, config.token.secret, function (err, decoded) {
         if (err) {
             res.status(500).json({ success: false, message: 'Failed to authenticate token.' });
         }
         else {
             let user_id = decoded._id;
-            let session = new Log.SessionLog();
-            session.action = Log.LogActions[Log.LogActions.LOGIN_LOG];
-            session.useragent = useragent.source;
-            session.user_id = user_id;
-            session.browser = useragent.browser;
-            session.geoIp = req.headers[Constant.X_GEOIP];
-            session.os = useragent.os;
-            session.platform = useragent.platform;
-            session.version = useragent.version;
-            session.datetime = new Date();
-            session.deviceInfo = req.headers[Constant.X_DEVICE_INFO];
-            LogController.keepSessionLog(session);
             // if everything is good, save to request for use in other routes
             req.decoded = decoded;
             res.status(200).json({ success: true, decoded: decoded });
@@ -104,23 +91,10 @@ router.post('/verify', (req, res, next) => {
     });
 });
 router.post('/logout', (req, res, next) => {
-    let useragent = req.useragent;
     let token = req.decoded;
     let user_id = token._id;
     if (!user_id) {
         return res.status(500).json({ success: false, message: 'no have user_id...' });
     }
-    let session = new Log.SessionLog();
-    session.action = Log.LogActions[Log.LogActions.LOGOUT_LOG];
-    session.useragent = useragent.source;
-    session.user_id = user_id;
-    session.browser = useragent.browser;
-    session.geoIp = req.headers[Constant.X_GEOIP];
-    session.os = useragent.os;
-    session.platform = useragent.platform;
-    session.version = useragent.version;
-    session.datetime = new Date();
-    session.deviceInfo = req.headers[Constant.X_DEVICE_INFO];
-    LogController.keepSessionLog(session);
 });
 module.exports = router;

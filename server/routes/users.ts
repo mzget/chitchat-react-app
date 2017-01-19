@@ -8,7 +8,7 @@ const ObjectID = mongodb.ObjectID;
 
 import { ChitChatUser } from '../scripts/models/User';
 import { getConfig, DbClient } from '../config';
-const webConfig = getConfig();
+const config = getConfig();
 
 /* GET users listing. */
 router.get('/contact/', function (req, res, next) {
@@ -24,7 +24,7 @@ router.get('/contact/', function (req, res, next) {
   if (query.email) {
     let email = query.email.toLowerCase();
 
-    MongoClient.connect(webConfig.appDB).then(db => {
+    MongoClient.connect(config.appDB).then(db => {
       let collection = db.collection(DbClient.userContactColl);
 
       collection.find({ email: email }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
@@ -51,7 +51,7 @@ router.get('/contact/', function (req, res, next) {
       return;
     }
 
-    MongoClient.connect(webConfig.appDB).then(function (db) {
+    MongoClient.connect(config.appDB).then(function (db) {
       let collection = db.collection(DbClient.userContactColl);
 
       collection.find({ _id: user_id }).project({ password: 0 })
@@ -77,30 +77,30 @@ router.get('/contact/', function (req, res, next) {
   }
 });
 
-router.get('/agent/:username', (req, res, next) => {
-  req.checkParams("username", "Request for id as param").notEmpty();
+router.get('/:username', (req, res, next) => {
+    req.checkParams("username", "Request for id as param").notEmpty();
 
-  let errors = req.validationErrors();
-  if (errors) {
-    return res.status(500).json({ success: false, message: errors });
-  }
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json({ success: false, message: errors });
+    }
 
-  MongoClient.connect(webConfig.systemDB).then(db => {
-    let collection = db.collection(DbClient.systemUsersColl);
+    MongoClient.connect(config.chatDB).then(db => {
+        let collection = db.collection(DbClient.systemUsersColl);
 
-    collection.find({ username: req.params.username }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
-      if (docs.length >= 1) {
-        res.status(200).json({ success: true, result: docs });
-        db.close();
-      }
-      else {
-        res.status(500).json({ success: false, message: "no user data." });
-        db.close();
-      }
+        collection.find({ username: req.params.username }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
+            if (docs.length >= 1) {
+                res.status(200).json({ success: true, result: docs });
+                db.close();
+            }
+            else {
+                res.status(500).json({ success: false, message: "no user data." });
+                db.close();
+            }
+        });
+    }).catch(err => {
+        res.status(500).json({ success: false, message: err + ': Cannot connect db.' });
     });
-  }).catch(err => {
-    res.status(500).json({ success: false, message: err + ': Cannot connect db.' });
-  });
 });
 
 router.post('/signup', function (req: express.Request, res: express.Response, next) {
@@ -122,7 +122,7 @@ router.post('/signup', function (req: express.Request, res: express.Response, ne
     userModel.lastname = user.lastname;
     userModel.tel = user.tel;
 
-    MongoClient.connect(webConfig.chatDB).then(function (db) {
+    MongoClient.connect(config.chatDB).then(function (db) {
         let collection = db.collection(DbClient.systemUsersColl);
 
         collection.createIndex({ email: 1 }, { background: true });
@@ -153,7 +153,7 @@ router.post('/signup', function (req: express.Request, res: express.Response, ne
 
 router.get('/getOrgMembers', function (req, res, next) {
 
-    MongoClient.connect(webConfig.chatDB, function (err, db) {
+    MongoClient.connect(config.chatDB, function (err, db) {
         if (err) {
             throw err;
         }
@@ -166,7 +166,7 @@ router.get('/getOrgMembers', function (req, res, next) {
 
 var addGroupMember = function (roomId: string, user: ChitChatUser, done: () => void) {
     var promise = new Promise(function (resolve, reject) {
-        MongoClient.connect(webConfig.chatDB, function (err, db) {
+        MongoClient.connect(config.chatDB, function (err, db) {
             if (err) {
                 throw err;
             }
@@ -186,7 +186,7 @@ var addGroupMember = function (roomId: string, user: ChitChatUser, done: () => v
             });
         });
     }).then(function onfulfilled(value) {
-        MongoClient.connect(webConfig.chatDB, function (err, db) {
+        MongoClient.connect(config.chatDB, function (err, db) {
             if (err) { return console.dir(err); }
 
             console.warn('account;', value);
