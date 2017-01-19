@@ -49,6 +49,7 @@
     <Content Include="client\containers\Home.tsx" />
     <Content Include="client\containers\ListChatLogs.tsx" />
     <Content Include="client\containers\Main.tsx" />
+    <Content Include="client\containers\teams\TeamListBox.tsx" />
     <Content Include="client\containers\TypingBox.tsx" />
     <Content Include="client\containers\UploadingDialog.tsx" />
     <Content Include="client\containers\UtilsBox.tsx" />
@@ -367,6 +368,7 @@
     <Folder Include="client\containers" />
     <Folder Include="client\containers\authen\" />
     <Folder Include="client\containers\admins\" />
+    <Folder Include="client\containers\teams\" />
     <Folder Include="client\demos" />
     <Folder Include="client\demos\actions" />
     <Folder Include="client\libs" />

@@ -10,10 +10,6 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
-const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
-const userActions = require("../redux/user/userActions");
-const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
-const chatroomActions = require("../redux/chatroom/chatroomActions");
 const AuthRx = require("../redux/authen/authRx");
 const UtilsBox_1 = require("./UtilsBox");
 const AuthenBox_1 = require("./authen/AuthenBox");
@@ -22,25 +18,8 @@ class IComponentNameProps {
 ;
 ;
 class Home extends React.Component {
-    constructor() {
-        super(...arguments);
-        this.fetch_privateChatRoom = (roommateId, owerId) => {
-            this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
-        };
-    }
     componentWillMount() {
         console.log("Home", this.props);
-        this.state = {};
-        let { location: { query: { userId, username, roomId, contactId, agent_name } } } = this.props;
-        if (username) {
-            this.props.dispatch(userActions.fetchUser(username));
-        }
-        if (contactId) {
-            this.props.dispatch(userActions.fetchContact(contactId));
-        }
-        if (agent_name) {
-            this.props.dispatch(userActions.fetchAgent(agent_name));
-        }
     }
     componentDidMount() {
     }
@@ -52,56 +31,6 @@ class Home extends React.Component {
             }
             default:
                 break;
-        }
-        switch (chatroomReducer.state) {
-            case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS:
-                if (chatroomReducer.room) {
-                    this.props.router.push(`/chat/${chatroomReducer.room._id}`);
-                }
-                else {
-                    let members = chatroomActions.createChatRoom(userReducer);
-                    this.props.dispatch(chatroomRxEpic.createPrivateChatRoom(members.owner, members.contact));
-                }
-                break;
-            case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_SUCCESS: {
-                if (chatroomReducer.room) {
-                    this.props.router.push(`/chat/${chatroomReducer.room._id}`);
-                }
-            }
-            default:
-                break;
-        }
-        switch (userReducer.state) {
-            case userActions.FETCH_USER_SUCCESS:
-                this.joinChatServer(nextProps);
-                break;
-            case userActions.FETCH_AGENT_SUCCESS:
-                this.joinChatServer(nextProps);
-                break;
-            default:
-                break;
-        }
-        switch (stalkReducer.state) {
-            case StalkBridgeActions.STALK_INIT_SUCCESS:
-                if (this.props.stalkReducer.state != StalkBridgeActions.STALK_INIT_SUCCESS) {
-                    if (contactId) {
-                        this.fetch_privateChatRoom(contactId, userReducer.user._id);
-                    }
-                    else if (userReducer.contact) {
-                        this.fetch_privateChatRoom(userReducer.contact._id, userReducer.user._id);
-                    }
-                }
-                break;
-            default:
-                break;
-        }
-    }
-    joinChatServer(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer } = nextProps;
-        if (userReducer.user) {
-            if (stalkReducer.state != StalkBridgeActions.STALK_INIT) {
-                StalkBridgeActions.stalkLogin(userReducer.user);
-            }
         }
     }
     render() {
