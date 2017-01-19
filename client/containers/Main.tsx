@@ -6,6 +6,7 @@ import { IComponentProps } from "../utils/IComponentProps";
 import * as userActions from "../redux/user/userActions";
 import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 import * as chatroomActions from "../redux/chatroom/chatroomActions";
+import * as teamRx from "../redux/team/teamRx";
 
 import ChatLogsBox from "./ChatLogsBox";
 import ChatListBox from './ChatListBox';
@@ -58,7 +59,10 @@ class Main extends React.Component<IComponentNameProps, IComponentNameState> {
 
         switch (userReducer.state) {
             case userActions.FETCH_USER_SUCCESS:
-                this.joinChatServer(nextProps);
+                if (userReducer.state != this.props.userReducer.state) {
+                    this.joinChatServer(nextProps);
+                    this.props.dispatch(teamRx.fetchUserTeams(userReducer.user._id));
+                }
                 break;
             case userActions.FETCH_AGENT_SUCCESS:
                 this.joinChatServer(nextProps);

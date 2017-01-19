@@ -13,7 +13,7 @@ const signupFailure = payload => ({ type: SIGN_UP_FAILURE, payload, error: true 
 const signupCancelled = () => ({ type: SIGN_UP_CANCELLED });
 exports.signupUserEpic = action$ => action$.ofType(SIGN_UP).mergeMap(action => ajax({
     method: 'POST',
-    url: `${config_1.default.api.users}/signup`,
+    url: `${config_1.default.api.user}/signup`,
     body: JSON.stringify({ user: action.payload }),
     headers: { 'Content-Type': 'application/json' }
 })

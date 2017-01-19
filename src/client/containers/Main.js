@@ -12,6 +12,7 @@ const react_redux_1 = require("react-redux");
 const userActions = require("../redux/user/userActions");
 const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const chatroomActions = require("../redux/chatroom/chatroomActions");
+const teamRx = require("../redux/team/teamRx");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 const TeamListBox_1 = require("./teams/TeamListBox");
 const Toolbar_1 = require("../components/Toolbar");
@@ -41,7 +42,10 @@ class Main extends React.Component {
         let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer } = nextProps;
         switch (userReducer.state) {
             case userActions.FETCH_USER_SUCCESS:
-                this.joinChatServer(nextProps);
+                if (userReducer.state != this.props.userReducer.state) {
+                    this.joinChatServer(nextProps);
+                    this.props.dispatch(teamRx.fetchUserTeams(userReducer.user._id));
+                }
                 break;
             case userActions.FETCH_AGENT_SUCCESS:
                 this.joinChatServer(nextProps);

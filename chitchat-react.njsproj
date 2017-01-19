@@ -61,6 +61,7 @@
     <Content Include="server\package.json" />
     <Content Include="server\tsconfig.json" />
     <TypeScriptCompile Include="client\redux\authen\authRx.ts" />
+    <TypeScriptCompile Include="client\redux\team\teamRx.ts" />
     <TypeScriptCompile Include="client\utils\ValidationUtils.ts" />
     <TypeScriptCompile Include="server\app.ts" />
     <TypeScriptCompile Include="server\config.ts" />
@@ -388,6 +389,7 @@
     <Folder Include="client\redux\device" />
     <Folder Include="client\redux\message" />
     <Folder Include="client\redux\authen\" />
+    <Folder Include="client\redux\team\" />
     <Folder Include="client\redux\stalkBridge" />
     <Folder Include="client\redux\user" />
     <Folder Include="client\utils" />

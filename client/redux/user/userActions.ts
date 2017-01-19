@@ -17,7 +17,7 @@ const fetchUserRejected = payload => ({ type: FETCH_USER_FAILURE, payload, error
 export const fetchUserEpic = action$ =>
   action$.ofType(FETCH_USER)
     .mergeMap(action =>
-      ajax.getJSON(`${config.api.users}/${action.payload}`)
+      ajax.getJSON(`${config.api.user}/?username=${action.payload}`)
         .map(fetchUserFulfilled)
         .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
         .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))
@@ -33,7 +33,7 @@ const fetchAgentByIdFailure = (payload) => ({ type: FETCH_AGENT_BY_ID_FAILURE, p
 const fetchAgentByIdCancelled = () => ({ type: FETCH_AGENT_BY_ID_CANCELLED });
 export const fetchAgentIdEpic = action$ => (
   action$.ofType(FETCH_AGENT_BY_ID)
-    .margeMap(action => ajax.getJSON(`${config.api.users}/agent/${action.payload}`)
+    .margeMap(action => ajax.getJSON(`${config.api.user}/agent/${action.payload}`)
       .map(fetchAgentByIdSuccess)
       .takeUntil(action$.ofType(FETCH_AGENT_BY_ID_CANCELLED)).catch(error => Rx.Observable.of(fetchAgentByIdFailure(error.xhr.response))))
 );
@@ -49,7 +49,7 @@ const fetchAgentCancelled = () => ({ type: FETCH_AGENT_CANCELLED });
 export const fetchAgentEpic = action$ => (
   action$.ofType(FETCH_AGENT)
     .mergeMap(action =>
-      ajax.getJSON(`${config.api.users}/agent/${action.payload}`)
+      ajax.getJSON(`${config.api.user}/agent/${action.payload}`)
         .map(fetchAgentSuccess)
         .takeUntil(action$.ofType(FETCH_AGENT_CANCELLED))
         .catch(error => Rx.Observable.of(fetchAgentFailure(error.xhr.response))))
@@ -63,7 +63,7 @@ const fetchContactSuccess = payload => ({ type: FETCH_CONTACT_SUCCESS, payload }
 export const fetchContactEpic = action$ =>
   action$.ofType(FETCH_CONTACT)
     .mergeMap(action =>
-      ajax.getJSON(`${config.api.users}/contact/?id=${action.payload}`)
+      ajax.getJSON(`${config.api.user}/contact/?id=${action.payload}`)
         .map(fetchContactSuccess)
         .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
         .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))
