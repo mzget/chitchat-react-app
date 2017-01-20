@@ -8,13 +8,13 @@ import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 import * as chatroomActions from "../redux/chatroom/chatroomActions";
 import * as teamRx from "../redux/team/teamRx";
 
-import ChatLogsBox from "./ChatLogsBox";
 import ChatListBox from './ChatListBox';
 import TeamListBox from './teams/TeamListBox';
 import TeamCreateBox from './teams/TeamCreateBox';
 import SimpleToolbar from '../components/Toolbar';
 
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
+import { ITeam } from '../../server/scripts/models/ITeam';
 
 abstract class IComponentNameProps implements IComponentProps {
     location: {
@@ -48,6 +48,8 @@ class Team extends React.Component<IComponentNameProps, IComponentNameState> {
 
     componentWillMount() {
         console.log("Main", this.props);
+
+        this.onSelectTeam = this.onSelectTeam.bind(this);
 
         let { location: {query: {userId, username, roomId, contactId, agent_name}}, params } = this.props;
 
@@ -118,7 +120,7 @@ class Team extends React.Component<IComponentNameProps, IComponentNameState> {
     }
 
     joinChatServer(nextProps) {
-        let { location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer } = nextProps as IComponentNameProps;
+        let {stalkReducer, userReducer } = nextProps as IComponentNameProps;
 
         if (userReducer.user) {
             if (stalkReducer.state != StalkBridgeActions.STALK_INIT) {
@@ -131,15 +133,18 @@ class Team extends React.Component<IComponentNameProps, IComponentNameState> {
         this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
     };
 
+    onSelectTeam(team: ITeam) {
+        console.log("onSelected team", team._id);
+        this.props.router.push(`/chatslist/${team.name}`);
+    }
+
     public render(): JSX.Element {
         let { location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer, teamReducer } = this.props as IComponentNameProps;
 
         return (
             <div>
                 <SimpleToolbar title={this.state.toolbar} />
-                {(!!teamReducer.teams && teamReducer.teams.length > 0) ? <TeamListBox {...this.props} /> : <TeamCreateBox {...this.props} />}
-
-                <ChatLogsBox {...this.props} />
+                {(!!teamReducer.teams && teamReducer.teams.length > 0) ? <TeamListBox {...this.props} onSelectTeam={this.onSelectTeam} /> : <TeamCreateBox {...this.props} />}
             </div>);
     }
 }

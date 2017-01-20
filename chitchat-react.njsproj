@@ -48,8 +48,11 @@
     <Content Include="client\containers\ChatLogsBox.tsx" />
     <Content Include="client\containers\Home.tsx" />
     <Content Include="client\containers\ListChatLogs.tsx" />
-    <Content Include="client\containers\Main.tsx" />
+    <Content Include="client\containers\Team.tsx" />
+    <Content Include="client\containers\teams\TeamCreateBox.tsx" />
+    <Content Include="client\containers\teams\TeamCreateView.tsx" />
     <Content Include="client\containers\teams\TeamListBox.tsx" />
+    <Content Include="client\containers\teams\TeamListView.tsx" />
     <Content Include="client\containers\TypingBox.tsx" />
     <Content Include="client\containers\UploadingDialog.tsx" />
     <Content Include="client\containers\UtilsBox.tsx" />
@@ -60,6 +63,9 @@
     <Content Include="public\favicon.ico" />
     <Content Include="server\package.json" />
     <Content Include="server\tsconfig.json" />
+    <TypeScriptCompile Include="client\containers\Main.tsx" />
+    <TypeScriptCompile Include="client\libs\chitchat\dataAccessLayer\AppSessionToken.ts" />
+    <TypeScriptCompile Include="client\redux\app\persistentDataActions.ts" />
     <TypeScriptCompile Include="client\redux\authen\authRx.ts" />
     <TypeScriptCompile Include="client\redux\team\teamRx.ts" />
     <TypeScriptCompile Include="client\utils\ValidationUtils.ts" />
@@ -389,6 +395,7 @@
     <Folder Include="client\redux\device" />
     <Folder Include="client\redux\message" />
     <Folder Include="client\redux\authen\" />
+    <Folder Include="client\redux\app\" />
     <Folder Include="client\redux\team\" />
     <Folder Include="client\redux\stalkBridge" />
     <Folder Include="client\redux\user" />

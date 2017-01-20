@@ -13,7 +13,6 @@ const userActions = require("../redux/user/userActions");
 const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const chatroomActions = require("../redux/chatroom/chatroomActions");
 const teamRx = require("../redux/team/teamRx");
-const ChatLogsBox_1 = require("./ChatLogsBox");
 const TeamListBox_1 = require("./teams/TeamListBox");
 const TeamCreateBox_1 = require("./teams/TeamCreateBox");
 const Toolbar_1 = require("../components/Toolbar");
@@ -34,6 +33,7 @@ class Team extends React.Component {
     }
     componentWillMount() {
         console.log("Main", this.props);
+        this.onSelectTeam = this.onSelectTeam.bind(this);
         let { location: { query: { userId, username, roomId, contactId, agent_name } }, params } = this.props;
         this.state = {
             toolbar: 'Home'
@@ -93,19 +93,22 @@ class Team extends React.Component {
             this.setState({ toolbar: 'Your Teams' }) : this.setState({ toolbar: 'Create Team' });
     }
     joinChatServer(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer } = nextProps;
+        let { stalkReducer, userReducer } = nextProps;
         if (userReducer.user) {
             if (stalkReducer.state != StalkBridgeActions.STALK_INIT) {
                 StalkBridgeActions.stalkLogin(userReducer.user);
             }
         }
     }
+    onSelectTeam(team) {
+        console.log("onSelected team", team._id);
+        this.props.router.push(`/chatslist/${team.name}`);
+    }
     render() {
         let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, teamReducer } = this.props;
         return (React.createElement("div", null,
             React.createElement(Toolbar_1.default, { title: this.state.toolbar }),
-            (!!teamReducer.teams && teamReducer.teams.length > 0) ? React.createElement(TeamListBox_1.default, __assign({}, this.props)) : React.createElement(TeamCreateBox_1.default, __assign({}, this.props)),
-            React.createElement(ChatLogsBox_1.default, __assign({}, this.props))));
+            (!!teamReducer.teams && teamReducer.teams.length > 0) ? React.createElement(TeamListBox_1.default, __assign({}, this.props, { onSelectTeam: this.onSelectTeam })) : React.createElement(TeamCreateBox_1.default, __assign({}, this.props))));
     }
 }
 /**

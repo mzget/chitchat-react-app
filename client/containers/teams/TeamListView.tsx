@@ -12,12 +12,12 @@ import { ITeam } from '../../../server/scripts/models/ITeam';
 
 interface IComponentProps {
     items: ITeam[];
-    onSelectItem: (key: string) => void;
+    onSelectItem: (team: ITeam) => void;
 }
 
 const getItem = (props: IComponentProps) => {
     return props.items.map((item, i, arr) =>
-        <ListItem key={i} primaryText={item.name} leftIcon={<ActionGrade />} rightIcon={<ActionInfo />} onClick={() => props.onSelectItem(item._id)} />
+        <ListItem key={i} primaryText={item.name} leftIcon={<ActionGrade />} rightIcon={<ActionInfo />} onClick={() => props.onSelectItem(item)} />
     )
 };
 
