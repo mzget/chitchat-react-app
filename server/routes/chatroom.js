@@ -10,7 +10,7 @@ const CachingSevice_1 = require("../scripts/services/CachingSevice");
 const Room = require("../scripts/models/Room");
 const RoomService = require("../scripts/services/RoomService");
 const ChatRoomManager = require("../scripts/controllers/ChatRoomManager");
-const UserManager = require("../scripts/controllers/UserManager");
+const UserManager = require("../scripts/controllers/user/UserManager");
 /* GET home page. */
 router.get('/', function (req, res, next) {
     next();

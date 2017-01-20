@@ -12,7 +12,7 @@ import Message = require("../scripts/models/Message");
 import * as RoomService from "../scripts/services/RoomService";
 
 import * as ChatRoomManager from "../scripts/controllers/ChatRoomManager";
-import * as UserManager from "../scripts/controllers/UserManager";
+import * as UserManager from "../scripts/controllers/user/UserManager";
 
 /* GET home page. */
 router.get('/', function (req, res, next) {

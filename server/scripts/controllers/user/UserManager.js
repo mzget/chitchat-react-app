@@ -1,14 +1,32 @@
 "use strict";
-const Room = require("../models/Room");
-const RoomAccessData_1 = require("../models/RoomAccessData");
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments)).next());
+    });
+};
 const mongodb = require("mongodb");
 const async = require("async");
 const assert = require("assert");
-const config_1 = require("../../config");
+const config_1 = require("../../../config");
+const Room = require("../../models/Room");
+const RoomAccessData_1 = require("../../models/RoomAccessData");
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 const config = config_1.getConfig();
 ;
+function joinTeam(team, user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let db = yield MongoClient.connect(config.chatDB);
+        let collection = db.collection(config_1.DbClient.systemUsersColl);
+        let result = yield collection.updateOne({ _id: new mongodb.ObjectID(user_id) }, { $push: { teams: team._id.toString() } }, { upsert: false });
+        db.close();
+        return result;
+    });
+}
+exports.joinTeam = joinTeam;
 exports.getLastProfileChanged = (uid, callback) => {
 };
 exports.updateImageProfile = (uid, newUrl, callback) => {

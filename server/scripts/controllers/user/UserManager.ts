@@ -1,10 +1,13 @@
-﻿import * as  User from '../models/User';
-import *as Room from '../models/Room';
-import RoomAccessData from '../models/RoomAccessData';
+﻿
 import mongodb = require('mongodb');
 import async = require('async');
 import assert = require('assert');
-import { getConfig, DbClient } from "../../config";
+import { getConfig, DbClient } from "../../../config";
+
+import * as  User from '../../models/User';
+import *as Room from '../../models/Room';
+import RoomAccessData from '../../models/RoomAccessData';
+import { ITeam } from '../../models/ITeam';
 
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
@@ -13,6 +16,16 @@ const config = getConfig();
 export interface IUserDict {
     [id: string]: User.ChitChatUser;
 };
+
+export async function joinTeam(team: ITeam, user_id: string) {
+    let db = await MongoClient.connect(config.chatDB);
+    let collection = db.collection(DbClient.systemUsersColl);
+
+    let result = await collection.updateOne({ _id: new mongodb.ObjectID(user_id) }, { $push: { teams: team._id.toString() } }, { upsert: false });
+
+    db.close();
+    return result;
+}
 
 
 export const getLastProfileChanged = (uid: string, callback: (err, res) => void) => {

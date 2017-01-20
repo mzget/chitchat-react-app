@@ -7,6 +7,7 @@ const router = express.Router();
 const config_1 = require("../config");
 const config = config_1.getConfig();
 const TeamController = require("../scripts/controllers/team/TeamController");
+const UserManager = require("../scripts/controllers/user/UserManager");
 router.post('/teamInfo', function (req, res, next) {
     req.checkBody('team_id', 'request for team_id').isMongoId();
     let errors = req.validationErrors();
@@ -39,6 +40,7 @@ router.post('/create', (req, res, next) => {
         return res.status(500).json({ success: false, message: errors });
     }
     let team_name = req.body.team_name;
+    let user = req.decoded;
     //@ Find team_name for check it already used.
     TeamController.findTeamName(team_name).then(teams => {
         if (teams.length > 0)
@@ -47,8 +49,8 @@ router.post('/create', (req, res, next) => {
             return TeamController.createTeam(team_name);
     }).then(result => {
         res.status(200).json(new apiUtils.ApiResponse(true, null, result));
-    })
-        .catch(err => {
+        UserManager.joinTeam(result[0], user._id);
+    }).catch(err => {
         console.error("findTeamName fail: ", err);
         res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
