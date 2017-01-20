@@ -62,7 +62,7 @@ router.post('/create', (req, res, next) => {
         return res.status(500).json({ success: false, message: errors });
     }
     let team_name = req.body.team_name;
-    let user = req.decoded;
+    let user = req["decoded"];
     //@ Find team_name for check it already used.
     TeamController.findTeamName(team_name).then(teams => {
         if (teams.length > 0)
