@@ -86,7 +86,7 @@ router.post('/verify', (req, res, next) => {
             let user_id = decoded._id;
             // if everything is good, save to request for use in other routes
             req.decoded = decoded;
-            res.status(200).json({ success: true, decoded: decoded });
+            res.status(200).json(new apiUtils_1.ApiResponse(true, null, decoded));
         }
     });
 });

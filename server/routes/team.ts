@@ -44,6 +44,32 @@ router.post('/teamInfo', function (req, res, next) {
     });
 });
 
+router.post('/teamsInfo', function (req, res, next) {
+    req.checkBody('team_ids', 'request for team_ids').notEmpty();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json({ success: false, message: errors });
+    }
+
+    if (Array.isArray(req.body.team_ids)) {
+        let team_ids = req.body.team_ids as Array<string>;
+        let teams = team_ids.map(v => {
+            return new mongodb.ObjectID(v);
+        });
+
+        TeamController.findTeamsInfo(teams).then(teams => {
+            res.status(200).json(new apiUtils.ApiResponse(true, null, teams));
+        }).catch(err => {
+            console.error('/teamsInfo: ', err);
+            res.status(500).json(new apiUtils.ApiResponse(false, err));
+        });
+    }
+    else {
+        res.status(500).json(new apiUtils.ApiResponse(false, "request for array of team id"));
+    }
+});
+
 router.post('/create', (req, res, next) => {
     req.checkBody('team_name', 'request for team_name').notEmpty();
 
@@ -66,9 +92,9 @@ router.post('/create', (req, res, next) => {
 
         UserManager.joinTeam(result[0], user._id);
     }).catch(err => {
-            console.error("findTeamName fail: ", err);
-            res.status(500).json(new apiUtils.ApiResponse(false, err));
-        })
+        console.error("findTeamName fail: ", err);
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
+    })
 });
 
 module.exports = router;

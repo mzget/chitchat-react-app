@@ -1,6 +1,7 @@
 ﻿import mongodb = require( 'mongodb');
 
 const MongoClient = mongodb.MongoClient;
+type ObjectID = mongodb.ObjectID;
 import { getConfig, DbClient } from '../../../config';
 const config = getConfig();
 
@@ -8,13 +9,13 @@ import { ITeam } from '../../models/ITeam';
 
 
 
-export async function findTeamsInfo(team_ids: string[]) {
+export async function findTeamsInfo(team_ids: Array<ObjectID>) {
     let db = await MongoClient.connect(config.chatDB);
     let collection = db.collection(DbClient.teamsColl);
 
     let teams = await collection.find({ _id: { $in: team_ids } }).limit(10).toArray();
     db.close();
-    return teams;
+    return teams as Array<ITeam>;
 }
 
 export async function findTeamName(team_name: string) {
