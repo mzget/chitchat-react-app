@@ -54,7 +54,7 @@ class Team extends React.Component<IComponentNameProps, IComponentNameState> {
         let { location: {query: {userId, username, roomId, contactId, agent_name}}, params } = this.props;
 
         this.state = {
-            toolbar: 'Home'
+            toolbar: 'Teams'
         }
 
         if (params.filter) {

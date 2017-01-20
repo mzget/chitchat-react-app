@@ -36,7 +36,7 @@ class Team extends React.Component {
         this.onSelectTeam = this.onSelectTeam.bind(this);
         let { location: { query: { userId, username, roomId, contactId, agent_name } }, params } = this.props;
         this.state = {
-            toolbar: 'Home'
+            toolbar: 'Teams'
         };
         if (params.filter) {
             this.props.dispatch(userActions.fetchUser(params.filter));

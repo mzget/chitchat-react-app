@@ -1,19 +1,27 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
 
+import SimpleToolbar from '../components/Toolbar';
 import ChatLogsBox from "./ChatLogsBox";
 
 interface IComponentNameProps { };
 
-interface IComponentNameState { };
+interface IComponentNameState {
+    toolbar: string;
+};
 
 class Main extends React.Component<IComponentNameProps, IComponentNameState> {
+    componentWillMount() {
+        this.state = {
+            toolbar: 'Home'
+        }
+    }
     public render(): JSX.Element {
         return (
             <div>
-
-            <ChatLogsBox {...this.props} />
-        </div>);
+                <SimpleToolbar title={this.state.toolbar} />
+                <ChatLogsBox {...this.props} />
+            </div>);
     }
 }
 
