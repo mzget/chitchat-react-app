@@ -5,4 +5,5 @@
      image: string;
      jobPosition: string[];
      defaultRoom: string;
+     createAt: Date;
 }

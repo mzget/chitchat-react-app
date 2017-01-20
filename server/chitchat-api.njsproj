@@ -39,6 +39,7 @@
     <Compile Include="routes\upload\uploadFile.js" />
     <TypeScriptCompile Include="scripts\controllers\ChatRoomManager.ts" />
     <TypeScriptCompile Include="scripts\controllers\CompanyManager.ts" />
+    <TypeScriptCompile Include="scripts\controllers\team\TeamController.ts" />
     <TypeScriptCompile Include="scripts\controllers\UserManager.ts" />
     <Compile Include="scripts\controllers\ChatRoomManager.js" />
     <Compile Include="scripts\controllers\CompanyManager.js" />
@@ -79,6 +80,7 @@
     <Folder Include="routes\upload" />
     <Folder Include="scripts" />
     <Folder Include="scripts\controllers" />
+    <Folder Include="scripts\controllers\team\" />
     <Folder Include="scripts\models" />
     <Folder Include="scripts\utils\" />
     <Folder Include="scripts\services" />
