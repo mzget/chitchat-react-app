@@ -6,6 +6,6 @@ const authRx = require("./authen/authRx");
 const teamRx = require("./team/teamRx");
 exports.rootEpic = redux_observable_1.combineEpics(userActions.fetchUserEpic, userActions.fetchContactEpic, userActions.fetchAgentEpic, 
 ///@ Signup user.
-authRx.signupUserEpic, authRx.authUserEpic, 
+authRx.signupUserEpic, authRx.authUserEpic, authRx.tokenAuthUserEpic, 
 ///@Teams
-teamRx.fetchUserTeamsEpic, chatroomRxEpic.getPrivateChatRoomEpic, chatroomRxEpic.getPersistendMessageEpic, chatroomRxEpic.createPrivateChatRoomEpic, chatroomRxEpic.uploadFileEpic);
+teamRx.fetchUserTeamsEpic, teamRx.createNewTeamEpic, teamRx.getTeamsInfoEpic, chatroomRxEpic.getPrivateChatRoomEpic, chatroomRxEpic.getPersistendMessageEpic, chatroomRxEpic.createPrivateChatRoomEpic, chatroomRxEpic.uploadFileEpic);

@@ -11,6 +11,7 @@ const React = require("react");
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
 const AuthRx = require("../redux/authen/authRx");
+const AppActions = require("../redux/app/persistentDataActions");
 const UtilsBox_1 = require("./UtilsBox");
 const AuthenBox_1 = require("./authen/AuthenBox");
 class IComponentNameProps {
@@ -20,6 +21,7 @@ class IComponentNameProps {
 class Home extends React.Component {
     componentWillMount() {
         console.log("Home", this.props);
+        this.props.dispatch(AppActions.getSession());
     }
     componentDidMount() {
     }
@@ -27,7 +29,18 @@ class Home extends React.Component {
         let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer } = nextProps;
         switch (authReducer.state) {
             case AuthRx.AUTH_USER_SUCCESS: {
+                AppActions.saveSession();
                 this.props.router.push(`/chatlist/${authReducer.user}`);
+                break;
+            }
+            case AuthRx.TOKEN_AUTH_USER_SUCCESS: {
+                this.props.router.push(`/chatlist/${authReducer.user}`);
+                break;
+            }
+            case AppActions.GET_SESSION_TOKEN_SUCCESS: {
+                if (authReducer.state != this.props.authReducer.state)
+                    this.props.dispatch(AuthRx.tokenAuthUser(authReducer.token));
+                break;
             }
             default:
                 break;

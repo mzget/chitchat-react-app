@@ -9,16 +9,22 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const react_redux_1 = require("react-redux");
+const TeamListView_1 = require("./TeamListView");
 class IComponentNameProps {
 }
 ;
 ;
-class ChatListBox extends React.Component {
+class TeamListBox extends React.Component {
     componentWillMount() {
-        console.log("TeamList", this.props);
+        console.log("TeamList", this.props.teamReducer.teams);
+        this.onSelectTeam = this.onSelectTeam.bind(this);
+    }
+    onSelectTeam(teamId) {
+        console.log("onSelected team", teamId);
     }
     render() {
-        return (React.createElement("div", null));
+        return (React.createElement("div", null,
+            React.createElement(TeamListView_1.TeamListView, { items: this.props.teamReducer.teams, onSelectItem: this.onSelectTeam })));
     }
 }
 /**
@@ -28,4 +34,4 @@ function mapStateToProps(state) {
     return __assign({}, state);
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapStateToProps)(ChatListBox);
+exports.default = react_redux_1.connect(mapStateToProps)(TeamListBox);

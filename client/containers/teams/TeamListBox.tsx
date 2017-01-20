@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 
+import { TeamListView } from './TeamListView';
+
 abstract class IComponentNameProps implements IComponentProps {
     location: {
         query: {
@@ -21,21 +23,29 @@ abstract class IComponentNameProps implements IComponentProps {
     chatroomReducer;
     chatlogReducer;
     stalkReducer;
+    teamReducer;
 };
 
 interface IComponentNameState { };
 
-class ChatListBox extends React.Component<IComponentNameProps, IComponentNameState> {
+class TeamListBox extends React.Component<IComponentNameProps, IComponentNameState> {
 
     componentWillMount() {
-        console.log("TeamList", this.props);
+        console.log("TeamList", this.props.teamReducer.teams);
+
+        this.onSelectTeam = this.onSelectTeam.bind(this);
     }
 
+    onSelectTeam(teamId: string) {
+        console.log("onSelected team", teamId);
+    }
 
     public render(): JSX.Element {
         return (
             <div>
-            </div>);
+                <TeamListView items={this.props.teamReducer.teams} onSelectItem={this.onSelectTeam} />
+            </div>
+        );
     }
 }
 
@@ -47,4 +57,4 @@ function mapStateToProps(state) {
         ...state
     };
 }
-export default connect(mapStateToProps)(ChatListBox);
+export default connect(mapStateToProps)(TeamListBox);

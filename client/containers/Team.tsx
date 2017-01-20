@@ -1,49 +1,70 @@
-"use strict";
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
+import * as React from "react";
+import { connect } from "react-redux";
+
+import { IComponentProps } from "../utils/IComponentProps";
+
+import * as userActions from "../redux/user/userActions";
+import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
+import * as chatroomActions from "../redux/chatroom/chatroomActions";
+import * as teamRx from "../redux/team/teamRx";
+
+import ChatLogsBox from "./ChatLogsBox";
+import ChatListBox from './ChatListBox';
+import TeamListBox from './teams/TeamListBox';
+import TeamCreateBox from './teams/TeamCreateBox';
+import SimpleToolbar from '../components/Toolbar';
+
+import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
+
+abstract class IComponentNameProps implements IComponentProps {
+    location: {
+        query: {
+            contactId: string;
+            userId: string;
+            roomId: string;
+            username: string;
+            agent_name: string;
+        }
+    };
+    params;
+    router;
+    dispatch;
+    authReducer;
+    userReducer;
+    chatroomReducer;
+    chatlogReducer;
+    stalkReducer;
+    teamReducer;
 };
-const React = require("react");
-const react_redux_1 = require("react-redux");
-const userActions = require("../redux/user/userActions");
-const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
-const chatroomActions = require("../redux/chatroom/chatroomActions");
-const teamRx = require("../redux/team/teamRx");
-const ChatLogsBox_1 = require("./ChatLogsBox");
-const TeamListBox_1 = require("./teams/TeamListBox");
-const TeamCreateBox_1 = require("./teams/TeamCreateBox");
-const Toolbar_1 = require("../components/Toolbar");
-const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
-class IComponentNameProps {
-}
-;
-;
+
+interface IComponentNameState {
+    toolbar: string;
+};
+
 /**
  * Containers of chatlist, chatlogs, etc...
  */
-class Main extends React.Component {
-    constructor() {
-        super(...arguments);
-        this.fetch_privateChatRoom = (roommateId, owerId) => {
-            this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
-        };
-    }
+class Team extends React.Component<IComponentNameProps, IComponentNameState> {
+
     componentWillMount() {
         console.log("Main", this.props);
-        let { location: { query: { userId, username, roomId, contactId, agent_name } }, params } = this.props;
+
+        let { location: {query: {userId, username, roomId, contactId, agent_name}}, params } = this.props;
+
         this.state = {
             toolbar: 'Home'
-        };
+        }
+
         if (params.filter) {
             this.props.dispatch(userActions.fetchUser(params.filter));
         }
     }
-    componentWillReceiveProps(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer, teamReducer } = nextProps;
+
+    componentWillReceiveProps(nextProps: IComponentNameProps) {
+        let { location: {query: {userId, username, roomId, contactId}},
+            chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer, teamReducer
+        } = nextProps as IComponentNameProps;
+
         switch (userReducer.state) {
             case userActions.FETCH_USER_SUCCESS:
                 if (userReducer.state != this.props.userReducer.state) {
@@ -57,6 +78,7 @@ class Main extends React.Component {
             default:
                 break;
         }
+
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_INIT_SUCCESS:
                 if (this.props.stalkReducer.state != StalkBridgeActions.STALK_INIT_SUCCESS) {
@@ -71,6 +93,7 @@ class Main extends React.Component {
             default:
                 break;
         }
+
         switch (chatroomReducer.state) {
             case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS:
                 if (chatroomReducer.room) {
@@ -89,30 +112,44 @@ class Main extends React.Component {
             default:
                 break;
         }
+
         (!!teamReducer.teams && teamReducer.teams.length > 0) ?
             this.setState({ toolbar: 'Your Teams' }) : this.setState({ toolbar: 'Create Team' });
     }
+
     joinChatServer(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer } = nextProps;
+        let { location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer } = nextProps as IComponentNameProps;
+
         if (userReducer.user) {
             if (stalkReducer.state != StalkBridgeActions.STALK_INIT) {
                 StalkBridgeActions.stalkLogin(userReducer.user);
             }
         }
     }
-    render() {
-        let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, teamReducer } = this.props;
-        return (React.createElement("div", null,
-            React.createElement(Toolbar_1.default, { title: this.state.toolbar }),
-            (!!teamReducer.teams && teamReducer.teams.length > 0) ? React.createElement(TeamListBox_1.default, __assign({}, this.props)) : React.createElement(TeamCreateBox_1.default, __assign({}, this.props)),
-            React.createElement(ChatLogsBox_1.default, __assign({}, this.props))));
+
+    fetch_privateChatRoom = (roommateId, owerId) => {
+        this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
+    };
+
+    public render(): JSX.Element {
+        let { location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer, teamReducer } = this.props as IComponentNameProps;
+
+        return (
+            <div>
+                <SimpleToolbar title={this.state.toolbar} />
+                {(!!teamReducer.teams && teamReducer.teams.length > 0) ? <TeamListBox {...this.props} /> : <TeamCreateBox {...this.props} />}
+
+                <ChatLogsBox {...this.props} />
+            </div>);
     }
 }
+
 /**
  * ## Redux boilerplate
  */
 function mapStateToProps(state) {
-    return __assign({}, state);
+    return {
+        ...state
+    };
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapStateToProps)(Main);
+export default connect(mapStateToProps)(Team);

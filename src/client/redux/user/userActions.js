@@ -3,6 +3,7 @@ const config_1 = require("../../configs/config");
 const immutable_1 = require("immutable");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
+const configureStore_1 = require("../configureStore");
 const FETCH_USER = 'FETCH_USER';
 exports.FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
 const FETCH_USER_FAILURE = 'FETCH_USER_FAILURE';
@@ -12,7 +13,7 @@ const fetchUserFulfilled = payload => ({ type: exports.FETCH_USER_SUCCESS, paylo
 const cancelFetchUser = () => ({ type: FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: FETCH_USER_FAILURE, payload, error: true });
 exports.fetchUserEpic = action$ => action$.ofType(FETCH_USER)
-    .mergeMap(action => ajax.getJSON(`${config_1.default.api.user}/?username=${action.payload}`)
+    .mergeMap(action => ajax.getJSON(`${config_1.default.api.user}/?username=${action.payload}`, { 'x-access-token': configureStore_1.default.getState().authReducer.token })
     .map(fetchUserFulfilled)
     .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
     .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response))));

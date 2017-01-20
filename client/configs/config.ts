@@ -26,7 +26,7 @@ interface IApi {
 }
 
 const rest_api = (host) => ({
-    apiKey: "smelink1234",
+    apiKey: "chitchat1234",
     host: `${host}`,
     api: `${host}/api`,
     auth: `${host}/api/auth`,

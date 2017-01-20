@@ -25,7 +25,7 @@ class IComponentNameProps {
 /**
  * Containers of chatlist, chatlogs, etc...
  */
-class Main extends React.Component {
+class Team extends React.Component {
     constructor() {
         super(...arguments);
         this.fetch_privateChatRoom = (roommateId, owerId) => {
@@ -115,4 +115,4 @@ function mapStateToProps(state) {
     return __assign({}, state);
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapStateToProps)(Main);
+exports.default = react_redux_1.connect(mapStateToProps)(Team);

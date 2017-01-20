@@ -4,6 +4,8 @@ import { Record } from "immutable";
 import * as Rx from 'rxjs/Rx';
 const { ajax } = Rx.Observable;
 
+import Store from '../configureStore';
+
 const FETCH_USER = 'FETCH_USER';
 export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
 const FETCH_USER_FAILURE = 'FETCH_USER_FAILURE';
@@ -17,7 +19,7 @@ const fetchUserRejected = payload => ({ type: FETCH_USER_FAILURE, payload, error
 export const fetchUserEpic = action$ =>
   action$.ofType(FETCH_USER)
     .mergeMap(action =>
-      ajax.getJSON(`${config.api.user}/?username=${action.payload}`)
+      ajax.getJSON(`${config.api.user}/?username=${action.payload}`, { 'x-access-token': Store.getState().authReducer.token })
         .map(fetchUserFulfilled)
         .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
         .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))

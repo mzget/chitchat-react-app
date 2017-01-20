@@ -12,9 +12,12 @@ export const rootEpic = combineEpics(
     ///@ Signup user.
     authRx.signupUserEpic,
     authRx.authUserEpic,
+    authRx.tokenAuthUserEpic,
 
     ///@Teams
     teamRx.fetchUserTeamsEpic,
+    teamRx.createNewTeamEpic,
+    teamRx.getTeamsInfoEpic,
 
     chatroomRxEpic.getPrivateChatRoomEpic,
     chatroomRxEpic.getPersistendMessageEpic,
