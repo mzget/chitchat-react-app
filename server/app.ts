@@ -7,8 +7,11 @@ var bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const cors = require('cors');
 import useragent = require('express-useragent');
+import jwt = require('jsonwebtoken');
 
 import { getConfig, Paths } from './config';
+import * as Constant from './scripts/Constant';
+const config = getConfig();
 
 process.env.NODE_ENV = 'development';
 const app = express();
@@ -23,8 +26,47 @@ console.log("listen on ", process.env.PORT);
 const index = require('./routes/index');
 const users = require('./routes/users');
 const authen = require('./routes/authen');
+const team = require('./routes/team');
 const chatroom = require('./routes/chatroom');
 const chat_upload = require('./routes/upload/uploadFile');
+
+const apiRouteMiddleWare = express.Router();
+apiRouteMiddleWare.use(function (req, res, next) {
+    var apikey = req.headers[Constant.X_API_KEY];
+    var deviceInfo = req.headers[Constant.X_DEVICE_INFO];
+    var geoIp = req.headers[Constant.X_GEOIP]
+    // check header or url parameters or post parameters for token
+    var token = (!!req.headers[Constant.X_ACCESS_TOKEN]) ? req.headers[Constant.X_ACCESS_TOKEN] : req.body.token || req.query.token;
+
+    if (req.url == '/authenticate' || req.url == '/authenticate/verify') {
+        next();
+    }
+    else if (apikey == config.apikey) {
+        next();
+    }
+    else {
+        // decode token
+        if (token) {
+            // verifies secret and checks exp
+            jwt.verify(token, config.token.secret, function (err, decoded) {
+                if (err) {
+                    return res.status(500).json({ success: false, message: 'Failed to authenticate token.' + err });
+                } else {
+                    // if everything is good, save to request for use in other routes
+                    req.decoded = decoded;
+                    next();
+                }
+            });
+        } else {
+            // if there is no token
+            // return an error
+            return res.status(403).json({
+                success: false,
+                message: 'No token provided.'
+            });
+        }
+    }
+});
 
 app.use(cors());
 // uncomment after placing your favicon in /public
@@ -41,8 +83,10 @@ app.use(express.static('../build'));
 app.use(useragent.express());
 
 app.use('/', index);
+app.use('/api', apiRouteMiddleWare);
 app.use('/api/auth', authen);
 app.use('/api/users', users);
+app.use('/api/team', team);
 app.use('/chatroom', chatroom);
 app.use("/chats/upload", chat_upload);
 

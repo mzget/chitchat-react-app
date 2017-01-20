@@ -13,6 +13,7 @@ import { IComponentProps } from "../utils/IComponentProps";
 import * as userActions from "../redux/user/userActions";
 import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 import * as AuthRx from '../redux/authen/authRx';
+import * as AppActions from '../redux/app/persistentDataActions';
 
 import UtilsBox from "./UtilsBox";
 import AuthenBox from './authen/AuthenBox';
@@ -43,6 +44,8 @@ interface IComponentNameState {
 class Home extends React.Component<IComponentNameProps, IComponentNameState> {
     componentWillMount() {
         console.log("Home", this.props);
+
+        this.props.dispatch(AppActions.getSession());
     }
 
     componentDidMount() {
@@ -56,7 +59,18 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
 
         switch (authReducer.state) {
             case AuthRx.AUTH_USER_SUCCESS: {
-                this.props.router.push(`/chatlist/${authReducer.user}`);
+                AppActions.saveSession();
+                this.props.router.push(`/team/${authReducer.user}`);
+                break;
+            }
+            case AuthRx.TOKEN_AUTH_USER_SUCCESS: {
+                this.props.router.push(`/team/${authReducer.user}`);
+                break;
+            }
+            case AppActions.GET_SESSION_TOKEN_SUCCESS: {
+                if (authReducer.state != this.props.authReducer.state)
+                    this.props.dispatch(AuthRx.tokenAuthUser(authReducer.token));
+                break;
             }
             default:
                 break;

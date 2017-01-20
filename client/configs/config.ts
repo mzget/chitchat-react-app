@@ -3,34 +3,6 @@ const api_dev = "http://localhost:9000";
 const api_production = "http://203.148.250.152:3002/";
 
 
-const rest_api = (host) => ({
-    apiKey: "smelink1234",
-    host: `${host}`,
-    api: `${host}/api`,
-    auth: `${host}/api/auth`,
-    users: `${host}/api/users`,
-    imagePath: `${host}uploads/images/`,
-    filePath: `${host}uploads/files/`,
-    cardApi: `${host}api/card`,
-    cardUtils: `${host}api/card/utils`,
-    linkApi: `${host}api/link`,
-    adsApi: `${host}api/ads`,
-    businessLogos: `${host}api/businessLogos`,
-    businessApi: `${host}api/business/`,
-    otpApi: `${host}api/otp`,
-    officialInfo: `${host}api/officialInfo`,
-    exploreApi: `${host}api/content/explore/`,
-    newsApi: `${host}api/content/news/`,
-    howtoApi: `${host}api/content/tutorial/`,
-    lookup: `${host}api/lookup/`,
-    claim: `${host}api/business/claim/`,
-    support: `${host}api/support/`,
-    notifications: `${host}api/notification/`,
-    privacy: `${host}api/privacy/`,
-    chatroom: `${host}/chatroom`,
-    fileUpload: `${host}/chats/upload`
-});
-
 interface IConfigFile {
     Stalk: {
         chat: string,
@@ -39,8 +11,30 @@ interface IConfigFile {
     appConfig: {
         encryption: boolean
     },
-    api: any
+    api: IApi
 }
+
+interface IApi {
+    apiKey: string;
+    host: string;
+    api: string;
+    auth: string;
+    user: string;
+    team: string;
+    chatroom: string;
+    fileUpload: string;
+}
+
+const rest_api = (host) => ({
+    apiKey: "chitchat1234",
+    host: `${host}`,
+    api: `${host}/api`,
+    auth: `${host}/api/auth`,
+    user: `${host}/api/users`,
+    team: `${host}/api/team`,
+    chatroom: `${host}/chatroom`,
+    fileUpload: `${host}/chats/upload`
+}) as IApi;
 
 const devConfig = {
     Stalk: {
@@ -53,7 +47,7 @@ const devConfig = {
     api: {
 
     }
-};
+} as IConfigFile;
 
 const masterConfig = {
     Stalk: {
@@ -66,7 +60,7 @@ const masterConfig = {
     api: {
 
     }
-};
+} as IConfigFile;
 
 const productionConfig = {
     Stalk: {

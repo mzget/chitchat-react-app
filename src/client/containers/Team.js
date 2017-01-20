@@ -12,8 +12,9 @@ const react_redux_1 = require("react-redux");
 const userActions = require("../redux/user/userActions");
 const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const chatroomActions = require("../redux/chatroom/chatroomActions");
-const ChatLogsBox_1 = require("./ChatLogsBox");
+const teamRx = require("../redux/team/teamRx");
 const TeamListBox_1 = require("./teams/TeamListBox");
+const TeamCreateBox_1 = require("./teams/TeamCreateBox");
 const Toolbar_1 = require("../components/Toolbar");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 class IComponentNameProps {
@@ -23,7 +24,7 @@ class IComponentNameProps {
 /**
  * Containers of chatlist, chatlogs, etc...
  */
-class Main extends React.Component {
+class Team extends React.Component {
     constructor() {
         super(...arguments);
         this.fetch_privateChatRoom = (roommateId, owerId) => {
@@ -32,16 +33,23 @@ class Main extends React.Component {
     }
     componentWillMount() {
         console.log("Main", this.props);
+        this.onSelectTeam = this.onSelectTeam.bind(this);
         let { location: { query: { userId, username, roomId, contactId, agent_name } }, params } = this.props;
+        this.state = {
+            toolbar: 'Home'
+        };
         if (params.filter) {
             this.props.dispatch(userActions.fetchUser(params.filter));
         }
     }
     componentWillReceiveProps(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer } = nextProps;
+        let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer, teamReducer } = nextProps;
         switch (userReducer.state) {
             case userActions.FETCH_USER_SUCCESS:
-                this.joinChatServer(nextProps);
+                if (userReducer.state != this.props.userReducer.state) {
+                    this.joinChatServer(nextProps);
+                    this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
+                }
                 break;
             case userActions.FETCH_AGENT_SUCCESS:
                 this.joinChatServer(nextProps);
@@ -81,20 +89,26 @@ class Main extends React.Component {
             default:
                 break;
         }
+        (!!teamReducer.teams && teamReducer.teams.length > 0) ?
+            this.setState({ toolbar: 'Your Teams' }) : this.setState({ toolbar: 'Create Team' });
     }
     joinChatServer(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer } = nextProps;
+        let { stalkReducer, userReducer } = nextProps;
         if (userReducer.user) {
             if (stalkReducer.state != StalkBridgeActions.STALK_INIT) {
                 StalkBridgeActions.stalkLogin(userReducer.user);
             }
         }
     }
+    onSelectTeam(team) {
+        console.log("onSelected team", team._id);
+        this.props.router.push(`/chatslist/${team.name}`);
+    }
     render() {
+        let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, teamReducer } = this.props;
         return (React.createElement("div", null,
-            React.createElement(Toolbar_1.default, { title: 'ChatList' }),
-            React.createElement(TeamListBox_1.default, null),
-            React.createElement(ChatLogsBox_1.default, __assign({}, this.props))));
+            React.createElement(Toolbar_1.default, { title: this.state.toolbar }),
+            (!!teamReducer.teams && teamReducer.teams.length > 0) ? React.createElement(TeamListBox_1.default, __assign({}, this.props, { onSelectTeam: this.onSelectTeam })) : React.createElement(TeamCreateBox_1.default, __assign({}, this.props))));
     }
 }
 /**
@@ -104,4 +118,4 @@ function mapStateToProps(state) {
     return __assign({}, state);
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapStateToProps)(Main);
+exports.default = react_redux_1.connect(mapStateToProps)(Team);

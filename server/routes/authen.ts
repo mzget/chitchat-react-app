@@ -98,7 +98,7 @@ router.post('/verify', (req, res, next) => {
             
             // if everything is good, save to request for use in other routes
             req.decoded = decoded;
-            res.status(200).json({ success: true, decoded: decoded });
+            res.status(200).json(new ApiResponse(true, null, decoded));
         }
     });
 });

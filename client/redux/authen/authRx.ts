@@ -4,6 +4,8 @@ import { Record } from "immutable";
 import * as Rx from 'rxjs/Rx';
 const { ajax } = Rx.Observable;
 
+import * as AppActions from '../app/persistentDataActions';
+
 
 const SIGN_UP = 'SIGN_UP';
 export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS';
@@ -14,11 +16,10 @@ export const signup = (user) => ({ type: SIGN_UP, payload: user }); // username 
 const signupSuccess = payload => ({ type: SIGN_UP_SUCCESS, payload });
 const signupFailure = payload => ({ type: SIGN_UP_FAILURE, payload, error: true });
 const signupCancelled = () => ({ type: SIGN_UP_CANCELLED });
-
 export const signupUserEpic = action$ =>
     action$.ofType(SIGN_UP).mergeMap(action => ajax({
         method: 'POST',
-        url: `${config.api.users}/signup`,
+        url: `${config.api.user}/signup`,
         body: JSON.stringify({ user: action.payload }),
         headers: { 'Content-Type': 'application/json' }
     })
@@ -26,6 +27,7 @@ export const signupUserEpic = action$ =>
         .takeUntil(action$.ofType(SIGN_UP_CANCELLED))
         .catch(error => Rx.Observable.of(signupFailure(error.xhr.response)))
     );
+
 
 const AUTH_USER = "AUTH_USER";
 export const AUTH_USER_SUCCESS = "AUTH_USER_SUCCESS";
@@ -40,11 +42,32 @@ export const authUserEpic = action$ =>
         method: 'POST',
         url: `${config.api.auth}`,
         body: JSON.stringify(action.payload),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json', 'x-api-key': config.api.apiKey }
     })
         .map(response => authUserSuccess(response.xhr.response))
         .takeUntil(action$.ofType(AUTH_USER_CANCELLED))
         .catch(error => Rx.Observable.of(authUserFailure(error.xhr.response)))
+    );
+
+
+const TOKEN_AUTH_USER = "TOKEN_AUTH_USER";
+export const TOKEN_AUTH_USER_SUCCESS = "TOKEN_AUTH_USER_SUCCESS";
+const TOKEN_AUTH_USER_FAILURE = "TOKEN_AUTH_USER_FAILURE";
+const TOKEN_AUTH_USER_CANCELLED = "TOKEN_AUTH_USER_CANCELLED";
+export const tokenAuthUser = (token) => ({ type: TOKEN_AUTH_USER, payload: token }); // username => ({ type: FETCH_USER, payload: username });
+const tokenAuthUserSuccess = payload => ({ type: TOKEN_AUTH_USER_SUCCESS, payload });
+const tokenAuthUserFailure = payload => ({ type: TOKEN_AUTH_USER_FAILURE, payload, error: true });
+const tokenAuthUserCancelled = () => ({ type: TOKEN_AUTH_USER_CANCELLED });
+export const tokenAuthUserEpic = action$ =>
+    action$.ofType(TOKEN_AUTH_USER).mergeMap(action => ajax({
+        method: 'POST',
+        url: `${config.api.auth}/verify`,
+        body: JSON.stringify({ token: action.payload }),
+        headers: { 'Content-Type': 'application/json', 'x-api-key': config.api.apiKey }
+    })
+        .map(response => tokenAuthUserSuccess(response.xhr.response))
+        .takeUntil(action$.ofType(TOKEN_AUTH_USER_CANCELLED))
+        .catch(error => Rx.Observable.of(tokenAuthUserFailure(error.xhr.response)))
     );
 
 export const AuthenInitState = Record({
@@ -69,6 +92,16 @@ export const authReducer = (state = new AuthenInitState(), action) => {
             return state.set('state', AUTH_USER_FAILURE)
                 .set('token', null)
                 .set('user', null);
+        }
+
+        case AppActions.GET_SESSION_TOKEN_SUCCESS: {
+            return state.set('token', action.payload)
+                .set('state', AppActions.GET_SESSION_TOKEN_SUCCESS);
+        }
+
+        case TOKEN_AUTH_USER_SUCCESS: {
+            return state.set('state', TOKEN_AUTH_USER_SUCCESS)
+                .set('user', action.payload.result.email);
         }
 
         default:

@@ -1,6 +1,10 @@
 import express = require('express');
 import mongodb = require('mongodb');
 
+import * as apiUtils from '../scripts/utils/apiUtils';
+
+import * as TeamController from '../scripts/controllers/team/TeamController';
+
 const router = express.Router();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
@@ -77,8 +81,8 @@ router.get('/contact/', function (req, res, next) {
   }
 });
 
-router.get('/:username', (req, res, next) => {
-    req.checkParams("username", "Request for id as param").notEmpty();
+router.get('/', (req, res, next) => {
+    req.checkQuery("username", "Request for id as param").notEmpty();
 
     let errors = req.validationErrors();
     if (errors) {
@@ -88,7 +92,7 @@ router.get('/:username', (req, res, next) => {
     MongoClient.connect(config.chatDB).then(db => {
         let collection = db.collection(DbClient.systemUsersColl);
 
-        collection.find({ username: req.params.username }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
+        collection.find({ username: req.query.username }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
             if (docs.length >= 1) {
                 res.status(200).json({ success: true, result: docs });
                 db.close();
@@ -121,6 +125,7 @@ router.post('/signup', function (req: express.Request, res: express.Response, ne
     userModel.firstname = user.firstname;
     userModel.lastname = user.lastname;
     userModel.tel = user.tel;
+    userModel.teams = new Array();
 
     MongoClient.connect(config.chatDB).then(function (db) {
         let collection = db.collection(DbClient.systemUsersColl);
@@ -148,6 +153,34 @@ router.post('/signup', function (req: express.Request, res: express.Response, ne
     }).catch(err => {
         console.error("Cannot connect db: ", err);
         res.status(500).json({ success: false, message: err });
+    });
+});
+
+router.get('/teams', (req, res, next) => {
+    req.checkQuery('user_id', 'request for user_id').isMongoId();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let user_id = new mongodb.ObjectID(req.query.user_id);
+
+    async function findUserTeams() {
+        let db = await MongoClient.connect(config.chatDB);
+        let collection = db.collection(DbClient.systemUsersColl);
+
+        let user = await collection.find({ _id: user_id }).project({ teams: 1 }).limit(1).toArray();
+        db.close();
+        return user[0];
+    }
+
+    findUserTeams().then((user: ChitChatUser) =>
+        TeamController.findTeamsInfo(user.teams)
+    ).then(teams => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, teams));
+    }).catch(err => {
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });
 

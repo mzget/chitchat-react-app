@@ -2,7 +2,7 @@
 import async = require('async');
 import Room = require("../models/Room");
 import message = require("../models/Message");
-import * as UserManager from './UserManager';
+import * as UserManager from './user/UserManager';
 const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
 import { getConfig, DbClient } from "../../config";
