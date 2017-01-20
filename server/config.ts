@@ -3,6 +3,7 @@ type Config = {
     redis_port: number;
     redis_host: string;
     token: { secret: string, expire: string }
+    apikey: string;
 }
 
 const dev: Config = {
@@ -12,7 +13,8 @@ const dev: Config = {
     token: {
         secret: 'chitchat1234',
         expire: "1 days"
-    }
+    },
+    apikey: 'chitchat1234'
 }
 
 const production: Config = {
@@ -22,7 +24,8 @@ const production: Config = {
     token: {
         secret: 'chitchat1234',
         expire: "1 days"
-    }
+    },
+    apikey: 'chitchat1234'
 }
 
 export function getConfig(): Config {

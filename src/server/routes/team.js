@@ -42,7 +42,7 @@ router.post('/create', (req, res, next) => {
     //@ Find team_name for check it already used.
     TeamController.findTeamName(team_name).then(teams => {
         if (teams.length > 0)
-            res.status(500).json(new apiUtils.ApiResponse(false, "team name already used.", teams));
+            throw new Error("team name already used.");
         else
             return TeamController.createTeam(team_name);
     }).then(result => {

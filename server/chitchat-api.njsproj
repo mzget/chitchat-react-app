@@ -37,6 +37,7 @@
     <Compile Include="routes\demos\users.js" />
     <TypeScriptCompile Include="routes\upload\uploadFile.ts" />
     <Compile Include="routes\upload\uploadFile.js" />
+    <TypeScriptCompile Include="scripts\Constant.ts" />
     <TypeScriptCompile Include="scripts\controllers\ChatRoomManager.ts" />
     <TypeScriptCompile Include="scripts\controllers\CompanyManager.ts" />
     <TypeScriptCompile Include="scripts\controllers\team\TeamController.ts" />

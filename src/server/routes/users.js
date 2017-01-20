@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const express = require("express");
 const mongodb = require("mongodb");
 const apiUtils = require("../scripts/utils/apiUtils");
+const TeamController = require("../scripts/controllers/team/TeamController");
 const router = express.Router();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
@@ -156,16 +157,7 @@ router.get('/teams', (req, res, next) => {
             return user[0];
         });
     }
-    function findTeamsInfo(team_ids) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let db = yield MongoClient.connect(config.chatDB);
-            let collection = db.collection(config_1.DbClient.teamsColl);
-            let teams = yield collection.find({ _id: { $in: team_ids } }).limit(10).toArray();
-            db.close();
-            return teams;
-        });
-    }
-    findUserTeams().then((user) => findTeamsInfo(user.teams)).then(teams => {
+    findUserTeams().then((user) => TeamController.findTeamsInfo(user.teams)).then(teams => {
         res.status(200).json(new apiUtils.ApiResponse(true, null, teams));
     }).catch(err => {
         res.status(500).json(new apiUtils.ApiResponse(false, err));

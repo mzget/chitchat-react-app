@@ -6,7 +6,8 @@ const dev = {
     token: {
         secret: 'chitchat1234',
         expire: "1 days"
-    }
+    },
+    apikey: 'chitchat1234'
 };
 const production = {
     chatDB: "mongodb://rfl_dev:rfl1234@git.animation-genius.com:27017/chitchat-dev",
@@ -15,7 +16,8 @@ const production = {
     token: {
         secret: 'chitchat1234',
         expire: "1 days"
-    }
+    },
+    apikey: 'chitchat1234'
 };
 function getConfig() {
     let conf = (process.env.NODE_ENV === `production`) ? production : dev;

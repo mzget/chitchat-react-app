@@ -6,6 +6,17 @@ const config = getConfig();
 
 import { ITeam } from '../../models/ITeam';
 
+
+
+export async function findTeamsInfo(team_ids: string[]) {
+    let db = await MongoClient.connect(config.chatDB);
+    let collection = db.collection(DbClient.teamsColl);
+
+    let teams = await collection.find({ _id: { $in: team_ids } }).limit(10).toArray();
+    db.close();
+    return teams;
+}
+
 export async function findTeamName(team_name: string) {
 
     let _team = team_name.toLowerCase();

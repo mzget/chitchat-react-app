@@ -3,6 +3,8 @@ import mongodb = require('mongodb');
 
 import * as apiUtils from '../scripts/utils/apiUtils';
 
+import * as TeamController from '../scripts/controllers/team/TeamController';
+
 const router = express.Router();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
@@ -173,17 +175,8 @@ router.get('/teams', (req, res, next) => {
         return user[0];
     }
 
-    async function findTeamsInfo(team_ids: string[]) {
-        let db = await MongoClient.connect(config.chatDB);
-        let collection = db.collection(DbClient.teamsColl);
-
-        let teams = await collection.find({ _id: { $in: team_ids } }).limit(10).toArray();
-        db.close();
-        return teams;
-    }
-
     findUserTeams().then((user: ChitChatUser) =>
-        findTeamsInfo(user.teams)
+        TeamController.findTeamsInfo(user.teams)
     ).then(teams => {
         res.status(200).json(new apiUtils.ApiResponse(true, null, teams));
     }).catch(err => {
