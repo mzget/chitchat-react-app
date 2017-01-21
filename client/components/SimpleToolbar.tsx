@@ -9,8 +9,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 interface IComponentProps {
     title: string;
-    menus: string[];
-    onSelectedMenuItem: (id, value) => void;
+    menus?: string[];
+    onSelectedMenuItem?: (id, value) => void;
 }
 
 interface IComponentState {

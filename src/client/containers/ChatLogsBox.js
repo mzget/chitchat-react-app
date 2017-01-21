@@ -15,7 +15,8 @@ const ListChatLogs_1 = require("./ListChatLogs");
 class ChatLogsBox extends React.Component {
     componentWillMount() {
         this.state = {
-            search: "", chatsLog: null
+            search: "",
+            chatsLog: null
         };
         this.convertObjToArr = this.convertObjToArr.bind(this);
     }

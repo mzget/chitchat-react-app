@@ -3,12 +3,12 @@ import { connect } from "react-redux";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
-import * as userActions from "../redux/user/userActions";
+import * as userRx from "../redux/user/userRx";
 import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 import * as chatroomActions from "../redux/chatroom/chatroomActions";
 import * as teamRx from "../redux/team/teamRx";
+import * as authRx from "../redux/authen/authRx";
 
-import ChatListBox from './ChatListBox';
 import TeamListBox from './teams/TeamListBox';
 import TeamCreateBox from './teams/TeamCreateBox';
 import SimpleToolbar from '../components/SimpleToolbar';
@@ -50,6 +50,7 @@ class Team extends React.Component<IComponentNameProps, IComponentNameState> {
         console.log("Main", this.props);
 
         this.onSelectTeam = this.onSelectTeam.bind(this);
+        this.onToolbarMenuItem = this.onToolbarMenuItem.bind(this);
 
         let { location: {query: {userId, username, roomId, contactId, agent_name}}, params } = this.props;
 
@@ -58,7 +59,7 @@ class Team extends React.Component<IComponentNameProps, IComponentNameState> {
         }
 
         if (params.filter) {
-            this.props.dispatch(userActions.fetchUser(params.filter));
+            this.props.dispatch(userRx.fetchUser(params.filter));
         }
     }
 
@@ -68,17 +69,25 @@ class Team extends React.Component<IComponentNameProps, IComponentNameState> {
         } = nextProps as IComponentNameProps;
 
         switch (userReducer.state) {
-            case userActions.FETCH_USER_SUCCESS:
+            case userRx.FETCH_USER_SUCCESS:
                 if (userReducer.state != this.props.userReducer.state) {
                     this.joinChatServer(nextProps);
                     this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
                 }
                 break;
-            case userActions.FETCH_AGENT_SUCCESS:
+            case userRx.FETCH_USER_FAILURE: {
+                this.props.router.push(`/`);
+                break;
+            }
+            case userRx.FETCH_AGENT_SUCCESS:
                 this.joinChatServer(nextProps);
                 break;
-            default:
+            default: {
+                if (!userReducer.user) {
+                    this.props.router.push(`/`);
+                }
                 break;
+            }
         }
 
         switch (stalkReducer.state) {
@@ -138,12 +147,18 @@ class Team extends React.Component<IComponentNameProps, IComponentNameState> {
         this.props.router.push(`/chatslist/${team.name}`);
     }
 
+    onToolbarMenuItem(id, value) {
+        if (value == 'logout') {
+            this.props.dispatch(authRx.logout(this.props.authReducer.token));
+        }
+    }
+
     public render(): JSX.Element {
         let { location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer, teamReducer } = this.props as IComponentNameProps;
 
         return (
             <div>
-                <SimpleToolbar title={this.state.toolbar} />
+                <SimpleToolbar title={this.state.toolbar} menus={["logout"]} onSelectedMenuItem={this.onToolbarMenuItem} />
                 {(!!teamReducer.teams && teamReducer.teams.length > 0) ? <TeamListBox {...this.props} onSelectTeam={this.onSelectTeam} /> : <TeamCreateBox {...this.props} />}
             </div>);
     }

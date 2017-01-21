@@ -14,10 +14,11 @@ const AdminBox_1 = require("./admins/AdminBox");
 ;
 ;
 class Admin extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.menus = ["create-org-group", "create-projectbase-group", "create-group"];
+    }
     componentWillMount() {
-        this.state = {
-            menu: ["create-org-group", "create-projectbase-group", "create-group"]
-        };
     }
     onAdminMenuSelected(key) {
         console.log('onAdminMenuSelected', key);
@@ -25,7 +26,7 @@ class Admin extends React.Component {
     render() {
         return (React.createElement("span", null,
             React.createElement(SimpleToolbar_1.default, { title: 'Admin' }),
-            React.createElement(AdminBox_1.default, { itemName: this.state.menu, onSelectItem: this.onAdminMenuSelected })));
+            React.createElement(AdminBox_1.default, { itemName: this.menus, onSelectItem: this.onAdminMenuSelected })));
     }
 }
 const mapstateToProps = (state) => {

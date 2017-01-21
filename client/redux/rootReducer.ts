@@ -16,7 +16,7 @@ import { combineReducers } from 'redux';
 */
 import { deviceReducer, DeviceInitialState } from "./device/deviceReducer";
 import { teamReducer, TeamInitState } from "./team/teamRx";
-import { UserInitState, userReducer } from "./user/userActions";
+import { UserInitState, userReducer } from "./user/userRx";
 import { AuthenInitState, authReducer } from "./authen/authRx";
 import { stalkReducer, StalkInitState } from "./stalkBridge/stalkReducer";
 import { chatroomReducer, ChatRoomInitState } from "./chatroom/chatroomReducer";

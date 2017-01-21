@@ -1,6 +1,7 @@
 "use strict";
 const config_1 = require("../../configs/config");
 const immutable_1 = require("immutable");
+const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 const AppActions = require("../app/persistentDataActions");
@@ -55,6 +56,25 @@ exports.tokenAuthUserEpic = action$ => action$.ofType(TOKEN_AUTH_USER).mergeMap(
     .map(response => tokenAuthUserSuccess(response.xhr.response))
     .takeUntil(action$.ofType(TOKEN_AUTH_USER_CANCELLED))
     .catch(error => Rx.Observable.of(tokenAuthUserFailure(error.xhr.response))));
+const LOG_OUT = "LOG_OUT";
+exports.LOG_OUT_SUCCESS = "LOG_OUT_SUCCESS";
+const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
+const LOG_OUT_CANCELLED = "LOG_OUT_CANCELLED";
+exports.logout = redux_actions_1.createAction(LOG_OUT, payload => payload);
+const logoutSuccess = redux_actions_1.createAction(exports.LOG_OUT_SUCCESS, payload => payload);
+const logoutFailure = redux_actions_1.createAction(LOG_OUT_FAILURE, payload => payload);
+const logoutCancelled = redux_actions_1.createAction(LOG_OUT_CANCELLED);
+exports.logoutUserEpic = action$ => action$.ofType(LOG_OUT).mergeMap(action => ajax({
+    method: 'POST',
+    url: `${config_1.default.api.auth}/logout`,
+    headers: { 'Content-Type': 'application/json', 'x-access-token': action.payload }
+})
+    .map(response => {
+    AppActions.removeSession();
+    return logoutSuccess(response.xhr.response);
+})
+    .takeUntil(action$.ofType(LOG_OUT_CANCELLED))
+    .catch(error => Rx.Observable.of(logoutFailure(error.xhr.response))));
 exports.AuthenInitState = immutable_1.Record({
     token: null,
     isFetching: false,
@@ -84,6 +104,15 @@ exports.authReducer = (state = new exports.AuthenInitState(), action) => {
         case exports.TOKEN_AUTH_USER_SUCCESS: {
             return state.set('state', exports.TOKEN_AUTH_USER_SUCCESS)
                 .set('user', action.payload.result.email);
+        }
+        case TOKEN_AUTH_USER_FAILURE: {
+            return state.set("token", null)
+                .set("state", TOKEN_AUTH_USER_FAILURE);
+        }
+        case exports.LOG_OUT_SUCCESS: {
+            return state.set("state", exports.LOG_OUT_SUCCESS)
+                .set("token", null)
+                .set("user", null);
         }
         default:
             return state;

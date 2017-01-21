@@ -10,7 +10,6 @@ import { Flex, Box } from 'reflexbox';
 
 import { IComponentProps } from "../utils/IComponentProps";
 
-import * as userActions from "../redux/user/userActions";
 import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 import * as AuthRx from '../redux/authen/authRx';
 import * as AppActions from '../redux/app/persistentDataActions';

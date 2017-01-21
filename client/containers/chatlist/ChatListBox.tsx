@@ -1,12 +1,11 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
 
-import { IComponentProps } from "../utils/IComponentProps";
+import { IComponentProps } from "../../utils/IComponentProps";
 
-import * as userActions from "../redux/user/userActions";
+import * as userRx from "../../redux/user/userRx";
 
-import ChatLogsBox from "./ChatLogsBox";
-import SimpleToolbar from '../components/Toolbar';
+import SimpleToolbar from '../../components/SimpleToolbar';
 
 abstract class IComponentNameProps implements IComponentProps {
     location: {

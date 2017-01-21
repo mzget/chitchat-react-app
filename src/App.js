@@ -6,7 +6,7 @@ import { Router, Route, browserHistory } from 'react-router';
  * ### configureStore
  *  ```configureStore``` will connect the ```reducers```,
  */
-import Store from './client/redux/configureStore';
+import Store from "./client/redux/configureStore";
 
 import Home from "./client/containers/Home";
 import Chat from "./client/containers/Chat";

@@ -5,6 +5,7 @@ import { IComponentProps } from '../utils/IComponentProps';
 
 import SimpleToolbar from '../components/SimpleToolbar';
 import ChatLogsBox from "./ChatLogsBox";
+import ChatListBox from './chatlist/ChatListBox';
 
 interface IComponentNameState {
     toolbar: string;

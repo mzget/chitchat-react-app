@@ -32,7 +32,8 @@ interface IComponentNameState {
 class ChatLogsBox extends React.Component<IComponentNameProps, IComponentNameState> {
     componentWillMount() {
         this.state = {
-            search: "", chatsLog: null
+            search: "",
+            chatsLog: null
         }
 
         this.convertObjToArr = this.convertObjToArr.bind(this);
@@ -78,9 +79,11 @@ class ChatLogsBox extends React.Component<IComponentNameProps, IComponentNameSta
     }
 
     public render(): JSX.Element {
-        return (<ListChatLogs value={this.state.chatsLog} onSelected={(data) => {
-            this.props.router.push(`/chat/${data.id}`);
-        } } />);
+        return (
+            <ListChatLogs value={this.state.chatsLog} onSelected={(data) => {
+                this.props.router.push(`/chat/${data.id}`);
+            } } />
+        );
     }
 }
 
