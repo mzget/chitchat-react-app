@@ -9,6 +9,7 @@ export interface IComponentProps {
     };
     params;
     router;
+    dispatch;
     authReducer;
     userReducer;
     chatroomReducer;

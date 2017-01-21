@@ -35,9 +35,9 @@
     <Content Include="client\components\SimpleCardImage.tsx" />
     <Content Include="client\components\SimpleCardVideo.tsx" />
     <Content Include="client\components\SnackbarSimple.tsx" />
-    <Content Include="client\components\Toolbar.tsx" />
-    <Content Include="client\components\ToolbarSimple.tsx" />
-    <Content Include="client\containers\admins\Admin.tsx" />
+    <Content Include="client\components\SimpleToolbar.tsx" />
+    <Content Include="client\components\AppBar.tsx" />
+    <Content Include="client\containers\Admin.tsx" />
     <Content Include="client\containers\admins\AdminBox.tsx" />
     <Content Include="client\containers\authen\AuthenBox.tsx" />
     <Content Include="client\containers\authen\SigninBox.tsx" />

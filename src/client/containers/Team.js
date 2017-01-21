@@ -15,7 +15,7 @@ const chatroomActions = require("../redux/chatroom/chatroomActions");
 const teamRx = require("../redux/team/teamRx");
 const TeamListBox_1 = require("./teams/TeamListBox");
 const TeamCreateBox_1 = require("./teams/TeamCreateBox");
-const Toolbar_1 = require("../components/Toolbar");
+const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 class IComponentNameProps {
 }
@@ -107,7 +107,7 @@ class Team extends React.Component {
     render() {
         let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, teamReducer } = this.props;
         return (React.createElement("div", null,
-            React.createElement(Toolbar_1.default, { title: this.state.toolbar }),
+            React.createElement(SimpleToolbar_1.default, { title: this.state.toolbar }),
             (!!teamReducer.teams && teamReducer.teams.length > 0) ? React.createElement(TeamListBox_1.default, __assign({}, this.props, { onSelectTeam: this.onSelectTeam })) : React.createElement(TeamCreateBox_1.default, __assign({}, this.props))));
     }
 }

@@ -1,8 +1,8 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
 
-import SimpleToolbar from '../../components/Toolbar';
-import AdminBox from './AdminBox';
+import SimpleToolbar from '../components/SimpleToolbar';
+import AdminBox from './admins/AdminBox';
 
 interface IComponentNameProps {};
 

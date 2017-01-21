@@ -12,7 +12,7 @@ import Home from "./client/containers/Home";
 import Chat from "./client/containers/Chat";
 import Team from "./client/containers/Team";
 import Main from "./client/containers/Main";
-import Admin from "./client/containers/admins/Admin";
+import Admin from "./client/containers/Admin";
 
 class App extends Component {
     render() {

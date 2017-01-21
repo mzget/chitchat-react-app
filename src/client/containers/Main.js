@@ -9,19 +9,28 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const react_redux_1 = require("react-redux");
-const Toolbar_1 = require("../components/Toolbar");
+const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 ;
-;
 class Main extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.menus = ["admin"];
+    }
     componentWillMount() {
         this.state = {
             toolbar: 'Home'
         };
+        this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
+    }
+    onSelectMenuItem(id, value) {
+        console.log(this.menus[id]);
+        let { authReducer } = this.props;
+        this.props.router.push(`/admin/${authReducer.user}`);
     }
     render() {
         return (React.createElement("div", null,
-            React.createElement(Toolbar_1.default, { title: this.state.toolbar }),
+            React.createElement(SimpleToolbar_1.default, { title: this.state.toolbar, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem }),
             React.createElement(ChatLogsBox_1.default, __assign({}, this.props))));
     }
 }

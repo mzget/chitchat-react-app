@@ -11,7 +11,7 @@ import * as FileType from '../consts/FileType';
 
 import { TypingBox } from './TypingBox';
 import ChatBox from "./ChatBox";
-import Toolbar from "../components/ToolbarSimple";
+import Toolbar from "../components/SimpleToolbar";
 import UtilsBox from "./UtilsBox";
 import UploadingDialog from './UploadingDialog';
 import GridListSimple from "../components/GridListSimple";

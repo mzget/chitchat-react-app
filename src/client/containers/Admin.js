@@ -9,8 +9,8 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const react_redux_1 = require("react-redux");
-const SimpleToolbar_1 = require("../../components/SimpleToolbar");
-const AdminBox_1 = require("./AdminBox");
+const SimpleToolbar_1 = require("../components/SimpleToolbar");
+const AdminBox_1 = require("./admins/AdminBox");
 ;
 ;
 class Admin extends React.Component {

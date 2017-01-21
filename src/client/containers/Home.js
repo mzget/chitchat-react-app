@@ -14,9 +14,6 @@ const AuthRx = require("../redux/authen/authRx");
 const AppActions = require("../redux/app/persistentDataActions");
 const UtilsBox_1 = require("./UtilsBox");
 const AuthenBox_1 = require("./authen/AuthenBox");
-class IComponentNameProps {
-}
-;
 ;
 class Home extends React.Component {
     componentWillMount() {

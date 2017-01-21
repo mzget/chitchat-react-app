@@ -26,6 +26,7 @@ const users = require('./routes/users');
 const authen = require('./routes/authen');
 const team = require('./routes/team');
 const chatroom = require('./routes/chatroom');
+const group = require('./routes/group/group');
 const chat_upload = require('./routes/upload/uploadFile');
 const apiRouteMiddleWare = express.Router();
 apiRouteMiddleWare.use(function (req, res, next) {
@@ -83,6 +84,7 @@ app.use('/api', apiRouteMiddleWare);
 app.use('/api/auth', authen);
 app.use('/api/users', users);
 app.use('/api/team', team);
+app.use('/api/group', group);
 app.use('/chatroom', chatroom);
 app.use("/chats/upload", chat_upload);
 // catch 404 and forward to error handler

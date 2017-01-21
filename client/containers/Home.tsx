@@ -18,30 +18,10 @@ import * as AppActions from '../redux/app/persistentDataActions';
 import UtilsBox from "./UtilsBox";
 import AuthenBox from './authen/AuthenBox';
 
-abstract class IComponentNameProps implements IComponentProps {
-    location: {
-        query: {
-            contactId: string;
-            userId: string;
-            roomId: string;
-            username: string;
-            agent_name: string;
-        }
-    };
-    params;
-    router;
-    dispatch;
-    authReducer;
-    userReducer;
-    chatroomReducer;
-    chatlogReducer;
-    stalkReducer;
-};
-
 interface IComponentNameState {
 };
 
-class Home extends React.Component<IComponentNameProps, IComponentNameState> {
+class Home extends React.Component<IComponentProps, IComponentNameState> {
     componentWillMount() {
         console.log("Home", this.props);
 
@@ -55,7 +35,7 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
     componentWillReceiveProps(nextProps) {
         let { location: {query: {userId, username, roomId, contactId}},
             chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer
-        } = nextProps as IComponentNameProps;
+        } = nextProps as IComponentProps;
 
         switch (authReducer.state) {
             case AuthRx.AUTH_USER_SUCCESS: {

@@ -17,7 +17,7 @@ const config_1 = require("../configs/config");
 const FileType = require("../consts/FileType");
 const TypingBox_1 = require("./TypingBox");
 const ChatBox_1 = require("./ChatBox");
-const ToolbarSimple_1 = require("../components/ToolbarSimple");
+const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const UploadingDialog_1 = require("./UploadingDialog");
 const GridListSimple_1 = require("../components/GridListSimple");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
@@ -287,7 +287,7 @@ class Chat extends React.Component {
         return (React.createElement("div", { style: { height: document.documentElement.clientHeight } },
             React.createElement("div", { style: { height: this.state.h_header } },
                 React.createElement(reflexbox_1.Flex, { flexAuto: true },
-                    React.createElement(ToolbarSimple_1.default, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "" }))),
+                    React.createElement(SimpleToolbar_1.default, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "" }))),
             React.createElement("div", { style: { height: this.state.h_body } },
                 React.createElement(reflexbox_1.Flex, { flexColumn: true },
                     React.createElement("div", { style: { height: this.state.h_chatArea, overflowY: 'scroll' }, id: 'h_chatArea' },
