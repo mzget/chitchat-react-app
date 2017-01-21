@@ -3,7 +3,10 @@ const express = require("express");
 const mongodb = require("mongodb");
 const router = express.Router();
 const ObjectID = mongodb.ObjectID;
+const MongoClient = mongodb.MongoClient;
 const apiUtils = require("../../scripts/utils/apiUtils");
+const config_1 = require("../../config");
+const webConfig = config_1.getConfig();
 router.get('/getOrg', function (req, res, next) {
     MongoClient.connect(webConfig.chatDB, function (err, db) {
         if (err) {
@@ -21,7 +24,7 @@ router.post('/createOrg', function (req, res, next) {
     if (errors) {
         return res.status(500).json(new apiUtils.ApiResponse(false, errors));
     }
-    var room = req.body;
+    let room = req.body;
     var roomModel = new MroomModel.RoomModel();
     roomModel.nodeId = room.nodeId;
     roomModel.name = room.name;

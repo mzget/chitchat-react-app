@@ -4,13 +4,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments)).next());
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 const mongodb = require("mongodb");
 const MongoClient = mongodb.MongoClient;
 const config_1 = require("../../../config");
 const config = config_1.getConfig();
+const GroupController = require("../group/GroupController");
 function findTeamsInfo(team_ids) {
     return __awaiter(this, void 0, void 0, function* () {
         let db = yield MongoClient.connect(config.chatDB);
@@ -38,9 +39,12 @@ function createTeam(team_name) {
         let db = yield MongoClient.connect(config.chatDB);
         let collection = db.collection(config_1.DbClient.teamsColl);
         collection.createIndex({ name: 1 }, { background: true });
+        let defaultGroup = yield GroupController.createDefaultGroup();
         let team = {};
         team.name = team_name.toLowerCase();
         team.createAt = new Date();
+        team.defaultGroup = defaultGroup[0];
+        team.groups = new Array(defaultGroup[0]);
         let result = yield collection.insert(team);
         db.close();
         return result.ops;

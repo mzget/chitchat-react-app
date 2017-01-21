@@ -80,21 +80,22 @@ router.post('/verify', (req, res, next) => {
     // verifies secret and checks exp
     jwt.verify(token, config.token.secret, function (err, decoded) {
         if (err) {
-            res.status(500).json({ success: false, message: 'Failed to authenticate token.' });
+            res.status(500).json({ success: false, message: 'Failed to authenticate token.' + err });
         }
         else {
             let user_id = decoded._id;
             // if everything is good, save to request for use in other routes
-            req.decoded = decoded;
+            req['decoded'] = decoded;
             res.status(200).json(new apiUtils_1.ApiResponse(true, null, decoded));
         }
     });
 });
 router.post('/logout', (req, res, next) => {
-    let token = req.decoded;
+    let token = req['decoded'];
     let user_id = token._id;
     if (!user_id) {
         return res.status(500).json({ success: false, message: 'no have user_id...' });
     }
+    res.status(200).json(new apiUtils_1.ApiResponse(true));
 });
 module.exports = router;
