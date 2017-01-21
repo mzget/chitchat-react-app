@@ -11,11 +11,12 @@ const React = require("react");
 const react_redux_1 = require("react-redux");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const ChatLogsBox_1 = require("./ChatLogsBox");
+const authRx = require("../redux/authen/authRx");
 ;
 class Main extends React.Component {
     constructor() {
         super(...arguments);
-        this.menus = ["admin"];
+        this.menus = ["admin", "log out"];
     }
     componentWillMount() {
         this.state = {
@@ -23,10 +24,29 @@ class Main extends React.Component {
         };
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
     }
+    componentWillReceiveProps(nextProps) {
+        let { userReducer } = nextProps;
+        switch (userReducer.state) {
+            default:
+                if (!userReducer.user) {
+                    this.props.router.push('/');
+                }
+                break;
+        }
+    }
     onSelectMenuItem(id, value) {
         console.log(this.menus[id]);
         let { authReducer } = this.props;
-        this.props.router.push(`/admin/${authReducer.user}`);
+        switch (id) {
+            case 0:
+                this.props.router.push(`/admin/${authReducer.user}`);
+                break;
+            case 1:
+                this.props.dispatch(authRx.logout(this.props.authReducer.token));
+                break;
+            default:
+                break;
+        }
     }
     render() {
         return (React.createElement("div", null,

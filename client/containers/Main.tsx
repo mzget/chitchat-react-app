@@ -7,13 +7,15 @@ import SimpleToolbar from '../components/SimpleToolbar';
 import ChatLogsBox from "./ChatLogsBox";
 import ChatListBox from './chatlist/ChatListBox';
 
+import * as authRx from "../redux/authen/authRx";
+
 interface IComponentNameState {
     toolbar: string;
 };
 
 class Main extends React.Component<IComponentProps, IComponentNameState> {
     
-    menus = ["admin"];
+    menus = ["admin", "log out"];
 
     componentWillMount() {
         this.state = {
@@ -23,12 +25,33 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
     }
 
+    componentWillReceiveProps(nextProps: IComponentProps) {
+        let { userReducer } = nextProps;
+
+        switch (userReducer.state) {
+
+            default:
+                if (!userReducer.user) {
+                    this.props.router.push('/');
+                }
+                break;
+        }
+    }
+
     onSelectMenuItem(id, value) {
         console.log(this.menus[id]);
 
         let {authReducer} = this.props;
-
-        this.props.router.push(`/admin/${authReducer.user}`);
+        switch (id) {
+            case 0:
+                this.props.router.push(`/admin/${authReducer.user}`);
+                break;
+            case 1:
+                this.props.dispatch(authRx.logout(this.props.authReducer.token));
+                break;
+            default:
+                break;
+        }
     }
 
     public render(): JSX.Element {
