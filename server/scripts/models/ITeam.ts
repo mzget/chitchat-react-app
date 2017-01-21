@@ -4,6 +4,7 @@
      detail: string;
      image: string;
      jobPosition: string[];
-     defaultRoom: string;
+     defaultGroup: string;
+     groups: string[];
      createAt: Date;
 }

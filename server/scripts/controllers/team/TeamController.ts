@@ -6,7 +6,7 @@ import { getConfig, DbClient } from '../../../config';
 const config = getConfig();
 
 import { ITeam } from '../../models/ITeam';
-
+import * as GroupController from '../group/GroupController';
 
 
 export async function findTeamsInfo(team_ids: Array<ObjectID>) {
@@ -39,9 +39,13 @@ export async function createTeam(team_name: string) {
 
     collection.createIndex({ name: 1 }, { background: true });
 
+    let defaultGroup = await GroupController.createDefaultGroup();
+
     let team = {} as ITeam;
     team.name = team_name.toLowerCase();
     team.createAt = new Date();
+    team.defaultGroup = defaultGroup[0];
+    team.groups = new Array(defaultGroup[0]);
 
     let result = await collection.insert(team);
 

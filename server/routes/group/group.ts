@@ -2,9 +2,11 @@
 import crypto = require('crypto');
 import mongodb = require('mongodb');
 import async = require('async');
-const router = express.Router();
 import redis = require('redis');
+
+const router = express.Router();
 const ObjectID = mongodb.ObjectID;
+const MongoClient = mongodb.MongoClient;
 import redisClient, { ROOM_KEY } from "../scripts/services/CachingSevice";
 
 import Room = require("../scripts/models/Room");
@@ -14,6 +16,9 @@ import * as RoomService from "../scripts/services/RoomService";
 import * as ChatRoomManager from "../scripts/controllers/ChatRoomManager";
 import * as UserManager from "../scripts/controllers/user/UserManager";
 import * as apiUtils from '../../scripts/utils/apiUtils';
+
+import { getConfig, DbClient } from '../../config';
+const webConfig = getConfig();
 
 router.get('/getOrg', function (req, res, next) {
 
@@ -37,7 +42,7 @@ router.post('/createOrg', function (req, res, next) {
         return res.status(500).json(new apiUtils.ApiResponse(false, errors));
     }
 
-    var room = req.body;
+    let room = req.body;
     var roomModel = new MroomModel.RoomModel();
     roomModel.nodeId = room.nodeId;
     roomModel.name = room.name;
