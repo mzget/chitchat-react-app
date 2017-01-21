@@ -111,7 +111,7 @@ class Team extends React.Component {
         }
     }
     onSelectTeam(team) {
-        console.log("onSelected team", team._id);
+        this.props.dispatch(teamRx.selectTeam(team));
         this.props.router.push(`/chatslist/${team.name}`);
     }
     onToolbarMenuItem(id, value) {

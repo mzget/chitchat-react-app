@@ -70,11 +70,14 @@ export const getTeamsInfoEpic = action$ =>
         .catch(error => Rx.Observable.of(getTeamsInfoFailure(error.xhr.response)))
     );
 
+const TEAM_SELECTED = "TEAM_SELECTED";
+export const selectTeam = (team) => ({ type: TEAM_SELECTED, payload: team });
 
 export const TeamInitState = Record({
     isFetching: false,
     state: null,
-    teams: null
+    teams: null,
+    team: null
 });
 export const teamReducer = (state = new TeamInitState(), action) => {
     switch (action.type) {
@@ -88,6 +91,11 @@ export const teamReducer = (state = new TeamInitState(), action) => {
 
         case GET_TEAMS_INFO_SUCCESS: {
             return state.set('teams', action.payload.result)
+        }
+
+        case TEAM_SELECTED: {
+            return state.set("team", action.payload)
+                .set("teams", null);
         }
         default:
             return state;

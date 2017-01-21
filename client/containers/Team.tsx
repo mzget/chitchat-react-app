@@ -143,7 +143,7 @@ class Team extends React.Component<IComponentNameProps, IComponentNameState> {
     };
 
     onSelectTeam(team: ITeam) {
-        console.log("onSelected team", team._id);
+        this.props.dispatch(teamRx.selectTeam(team));
         this.props.router.push(`/chatslist/${team.name}`);
     }
 

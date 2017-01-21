@@ -55,10 +55,13 @@ exports.getTeamsInfoEpic = action$ => action$.ofType(GET_TEAMS_INFO).mergeMap(ac
 }).map(response => exports.getTeamsInfoSuccess(response.xhr.response))
     .takeUntil(action$.ofType(GET_TEAMS_INFO_CANCELLED))
     .catch(error => Rx.Observable.of(exports.getTeamsInfoFailure(error.xhr.response))));
+const TEAM_SELECTED = "TEAM_SELECTED";
+exports.selectTeam = (team) => ({ type: TEAM_SELECTED, payload: team });
 exports.TeamInitState = immutable_1.Record({
     isFetching: false,
     state: null,
-    teams: null
+    teams: null,
+    team: null
 });
 exports.teamReducer = (state = new exports.TeamInitState(), action) => {
     switch (action.type) {
@@ -70,6 +73,10 @@ exports.teamReducer = (state = new exports.TeamInitState(), action) => {
         }
         case GET_TEAMS_INFO_SUCCESS: {
             return state.set('teams', action.payload.result);
+        }
+        case TEAM_SELECTED: {
+            return state.set("team", action.payload)
+                .set("teams", null);
         }
         default:
             return state;
