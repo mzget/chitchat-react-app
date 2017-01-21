@@ -184,19 +184,6 @@ router.get('/teams', (req, res, next) => {
     });
 });
 
-router.get('/getOrgMembers', function (req, res, next) {
-
-    MongoClient.connect(config.chatDB, function (err, db) {
-        if (err) {
-            throw err;
-        }
-        var collection = db.collection(Mdb.DbClient.userColl);
-        collection.find({ "_id": { $exists: true } }).toArray().then(function (docs) {
-            res.status(200).jsonp({ "success": true, "result": docs });
-        });
-    });
-});
-
 var addGroupMember = function (roomId: string, user: ChitChatUser, done: () => void) {
     var promise = new Promise(function (resolve, reject) {
         MongoClient.connect(config.chatDB, function (err, db) {

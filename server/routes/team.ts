@@ -6,6 +6,7 @@ import * as apiUtils from '../scripts/utils/apiUtils';
 import { ITeam } from '../scripts/models/ITeam';
 
 const MongoClient = mongodb.MongoClient;
+const ObjectID = mongodb.ObjectID;
 const router = express.Router();
 import { getConfig, DbClient } from '../config';
 const config = getConfig();
@@ -93,6 +94,34 @@ router.post('/create', (req, res, next) => {
         UserManager.joinTeam(result[0], user._id);
     }).catch(err => {
         console.error("findTeamName fail: ", err);
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
+    })
+});
+
+router.get('/teamMembers', function (req, res, next) {
+    req.checkQuery("id", "request for team_id").isMongoId()
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let team_id = new ObjectID(req.query.id);
+
+    async function findTeamMembers(team_id: mongodb.ObjectID) {
+        let db = await MongoClient.connect(config.chatDB);
+        let collection = db.collection(DbClient.systemUsersColl);
+
+        let results = await collection.find({}).project({ username: 1, firstname: 1, lastname: 1, image: 1 }).limit(100).toArray();
+
+        db.close();
+        return results;
+    }
+
+    findTeamMembers(team_id).then(docs => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
+    }).catch(err => {
+        console.error("findTeamMembers failt", err);
         res.status(500).json(new apiUtils.ApiResponse(false, err));
     })
 });
