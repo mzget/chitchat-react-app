@@ -5,7 +5,7 @@ import { IComponentProps } from '../utils/IComponentProps';
 
 import SimpleToolbar from '../components/SimpleToolbar';
 import ChatLogsBox from "./ChatLogsBox";
-import ChatListBox from './chatlist/ChatListBox';
+import ChatListBox from "./chatlist/ChatListBox";
 
 import * as authRx from "../redux/authen/authRx";
 
@@ -14,13 +14,13 @@ interface IComponentNameState {
 };
 
 class Main extends React.Component<IComponentProps, IComponentNameState> {
-    
+
     menus = ["admin", "log out"];
 
     componentWillMount() {
         this.state = {
-            toolbar: 'Home'
-        }
+            toolbar: "Home"
+        };
 
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
     }
@@ -58,6 +58,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
         return (
             <div>
                 <SimpleToolbar title={this.state.toolbar} menus={this.menus} onSelectedMenuItem={this.onSelectMenuItem} />
+                <ChatListBox />
                 <ChatLogsBox {...this.props} />
             </div>);
     }

@@ -9,13 +9,12 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const react_redux_1 = require("react-redux");
-class IComponentNameProps {
-}
-;
+const teamRx = require("../../redux/team/teamRx");
 ;
 class ChatListBox extends React.Component {
     componentWillMount() {
         console.log("ChatList", this.props);
+        this.props.dispatch(teamRx.getTeamMembers(this.props.teamReducer.team._id));
     }
     render() {
         return (React.createElement("div", null));
@@ -24,8 +23,6 @@ class ChatListBox extends React.Component {
 /**
  * ## Redux boilerplate
  */
-function mapStateToProps(state) {
-    return __assign({}, state);
-}
+const mapStateToProps = (state) => (__assign({}, state));
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = react_redux_1.connect(mapStateToProps)(ChatListBox);

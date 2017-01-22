@@ -11,6 +11,7 @@ const React = require("react");
 const react_redux_1 = require("react-redux");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const ChatLogsBox_1 = require("./ChatLogsBox");
+const ChatListBox_1 = require("./chatlist/ChatListBox");
 const authRx = require("../redux/authen/authRx");
 ;
 class Main extends React.Component {
@@ -20,7 +21,7 @@ class Main extends React.Component {
     }
     componentWillMount() {
         this.state = {
-            toolbar: 'Home'
+            toolbar: "Home"
         };
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
     }
@@ -51,6 +52,7 @@ class Main extends React.Component {
     render() {
         return (React.createElement("div", null,
             React.createElement(SimpleToolbar_1.default, { title: this.state.toolbar, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem }),
+            React.createElement(ChatListBox_1.default, null),
             React.createElement(ChatLogsBox_1.default, __assign({}, this.props))));
     }
 }

@@ -7,11 +7,11 @@ interface IConfigFile {
     Stalk: {
         chat: string,
         port: string,
-    },
+    };
     appConfig: {
         encryption: boolean
-    },
-    api: IApi
+    };
+    api: IApi;
 }
 
 interface IApi {
@@ -79,8 +79,8 @@ const composeMyconfig = (config: IConfigFile) => {
     return (host) => {
         config.api = rest_api(host);
         return config;
-    }
-}
+    };
+};
 
 const getConfig = () => {
     if (process.env.NODE_ENV === `development`) {
@@ -89,7 +89,7 @@ const getConfig = () => {
     else if (process.env.NODE_ENV === `production`) {
         return composeMyconfig(masterConfig)(api_master);
     }
-}
+};
 
 const config = getConfig();
 export default config;

@@ -19,6 +19,7 @@ export const rootEpic = combineEpics(
     teamRx.fetchUserTeamsEpic,
     teamRx.createNewTeamEpic,
     teamRx.getTeamsInfoEpic,
+    teamRx.getTeamMembersEpic,
 
     chatroomRxEpic.getPrivateChatRoomEpic,
     chatroomRxEpic.getPersistendMessageEpic,

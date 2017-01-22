@@ -4,35 +4,16 @@ import { connect } from "react-redux";
 import { IComponentProps } from "../../utils/IComponentProps";
 
 import * as userRx from "../../redux/user/userRx";
-
-import SimpleToolbar from '../../components/SimpleToolbar';
-
-abstract class IComponentNameProps implements IComponentProps {
-    location: {
-        query: {
-            contactId: string;
-            userId: string;
-            roomId: string;
-            username: string;
-            agent_name: string;
-        }
-    };
-    params;
-    router;
-    dispatch;
-    authReducer;
-    userReducer;
-    chatroomReducer;
-    chatlogReducer;
-    stalkReducer;
-};
+import * as teamRx from "../../redux/team/teamRx";
 
 interface IComponentNameState { };
 
-class ChatListBox extends React.Component<IComponentNameProps, IComponentNameState> {
+class ChatListBox extends React.Component<IComponentProps, IComponentNameState> {
 
     componentWillMount() {
         console.log("ChatList", this.props);
+
+        this.props.dispatch(teamRx.getTeamMembers(this.props.teamReducer.team._id));
     }
 
 
@@ -46,9 +27,7 @@ class ChatListBox extends React.Component<IComponentNameProps, IComponentNameSta
 /**
  * ## Redux boilerplate
  */
-function mapStateToProps(state) {
-    return {
-        ...state
-    };
-}
+const mapStateToProps = (state) => ({
+    ...state
+});
 export default connect(mapStateToProps)(ChatListBox);

@@ -55,13 +55,43 @@ exports.getTeamsInfoEpic = action$ => action$.ofType(GET_TEAMS_INFO).mergeMap(ac
 }).map(response => exports.getTeamsInfoSuccess(response.xhr.response))
     .takeUntil(action$.ofType(GET_TEAMS_INFO_CANCELLED))
     .catch(error => Rx.Observable.of(exports.getTeamsInfoFailure(error.xhr.response))));
+const GET_TEAM_MEMBERS = "GET_TEAM_MEMBERS";
+const GET_TEAM_MEMBERS_SUCCESS = "GET_TEAM_MEMBERS_SUCCESS";
+const GET_TEAM_MEMBERS_FAILURE = "GET_TEAM_MEMBERS_FAILURE";
+const GET_TEAM_MEMBERS_CANCELLED = "GET_TEAM_MEMBERS_CANCELLED";
+function getTeamMembers(team_id) {
+    return { type: GET_TEAM_MEMBERS, payload: team_id };
+}
+exports.getTeamMembers = getTeamMembers;
+function getTeamMembersSuccess(payload) {
+    return { type: GET_TEAM_MEMBERS_SUCCESS, payload };
+}
+function getTeamMembersFailure(payload) {
+    return { type: GET_TEAM_MEMBERS_FAILURE, payload };
+}
+function getTeamMembersCancelled() {
+    return { type: GET_TEAM_MEMBERS_CANCELLED };
+}
+function getTeamMembersEpic(action$) {
+    return action$.ofType(GET_TEAM_MEMBERS).mergeMap(action => ajax({
+        method: "GET",
+        url: `${config_1.default.api.team}/teamMembers/?id=${action.payload}`,
+        headers: {
+            "Content-Type": "application/json", "x-access-token": configureStore_1.default.getState().authReducer.token
+        }
+    }).map(response => getTeamMembersSuccess(response.xhr.response))
+        .takeUntil(action$.ofType(GET_TEAM_MEMBERS_CANCELLED))
+        .catch(error => Rx.Observable.of(getTeamMembersFailure(error.xhr.response))));
+}
+exports.getTeamMembersEpic = getTeamMembersEpic;
 const TEAM_SELECTED = "TEAM_SELECTED";
 exports.selectTeam = (team) => ({ type: TEAM_SELECTED, payload: team });
 exports.TeamInitState = immutable_1.Record({
     isFetching: false,
     state: null,
     teams: null,
-    team: null
+    team: null,
+    members: null
 });
 exports.teamReducer = (state = new exports.TeamInitState(), action) => {
     switch (action.type) {
@@ -77,6 +107,9 @@ exports.teamReducer = (state = new exports.TeamInitState(), action) => {
         case TEAM_SELECTED: {
             return state.set("team", action.payload)
                 .set("teams", null);
+        }
+        case GET_TEAM_MEMBERS_SUCCESS: {
+            return state.set("members", action.payload.result);
         }
         default:
             return state;
