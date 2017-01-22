@@ -42,7 +42,7 @@ router.post('/teamInfo', function (req, res, next) {
         res.status(500).json({ success: false, message: req.url + err });
     });
 });
-router.post('/teamsInfo', function (req, res, next) {
+router.post("/teamsInfo", function (req, res, next) {
     req.checkBody('team_ids', 'request for team_ids').notEmpty();
     let errors = req.validationErrors();
     if (errors) {
@@ -86,7 +86,7 @@ router.post('/create', (req, res, next) => {
         res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });
-router.get('/teamMembers', function (req, res, next) {
+router.get("/teamMembers", function (req, res, next) {
     req.checkQuery("id", "request for team_id").isMongoId();
     let errors = req.validationErrors();
     if (errors) {

@@ -45,7 +45,7 @@ router.post('/teamInfo', function (req, res, next) {
     });
 });
 
-router.post('/teamsInfo', function (req, res, next) {
+router.post("/teamsInfo", function (req, res, next) {
     req.checkBody('team_ids', 'request for team_ids').notEmpty();
 
     let errors = req.validationErrors();
@@ -98,8 +98,8 @@ router.post('/create', (req, res, next) => {
     })
 });
 
-router.get('/teamMembers', function (req, res, next) {
-    req.checkQuery("id", "request for team_id").isMongoId()
+router.get("/teamMembers", function (req, res, next) {
+    req.checkQuery("id", "request for team_id").isMongoId();
 
     let errors = req.validationErrors();
     if (errors) {
@@ -123,7 +123,7 @@ router.get('/teamMembers', function (req, res, next) {
     }).catch(err => {
         console.error("findTeamMembers failt", err);
         res.status(500).json(new apiUtils.ApiResponse(false, err));
-    })
+    });
 });
 
 module.exports = router;
