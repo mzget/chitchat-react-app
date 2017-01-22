@@ -31,6 +31,8 @@ const chatroom = require('./routes/chatroom');
 const group = require('./routes/group/group');
 const chat_upload = require('./routes/upload/uploadFile');
 
+const stalk_user = require("./routes/stalk/user");
+
 const apiRouteMiddleWare = express.Router();
 apiRouteMiddleWare.use(function (req, res, next) {
     var apikey = req.headers[Constant.X_API_KEY];
@@ -91,6 +93,8 @@ app.use('/api/team', team);
 app.use('/api/group', group);
 app.use('/chatroom', chatroom);
 app.use("/chats/upload", chat_upload);
+
+app.use("/api/stalk/user", stalk_user);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
