@@ -103,6 +103,7 @@ class Main extends React.Component {
         }
     }
     render() {
+        let { stalkReducer } = this.props;
         return (React.createElement("div", null,
             React.createElement("div", { style: { height: this.headerHeight } },
                 React.createElement(SimpleToolbar_1.default, { title: this.state.toolbar, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
@@ -110,10 +111,11 @@ class Main extends React.Component {
                 React.createElement(ChatListBox_1.default, __assign({}, this.props)),
                 React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
                 React.createElement(UtilsBox_1.default, null)),
-            React.createElement(reflexbox_1.Flex, { style: { height: this.footerHeight, backgroundColor: Colors.red500 }, align: 'center', justify: 'center', flexColumn: true },
-                React.createElement(reflexbox_1.Flex, { flexColumn: true },
-                    React.createElement("span", { style: { color: Colors.white } }, "Unable to connect whit chat service."),
-                    React.createElement("span", { style: { color: Colors.white } }, "Check your Internet connection.")))));
+            (stalkReducer.state == StalkBridgeActions.STALK_INIT_FAILURE) ?
+                (React.createElement(reflexbox_1.Flex, { style: { height: this.footerHeight, backgroundColor: Colors.red500 }, align: 'center', justify: 'center', flexColumn: true },
+                    React.createElement(reflexbox_1.Flex, { flexColumn: true },
+                        React.createElement("span", { style: { color: Colors.white } }, "Unable to connect whit chat service."),
+                        React.createElement("span", { style: { color: Colors.white } }, "Check your Internet connection.")))) : null));
     }
 }
 const mapStateToProps = (state) => (__assign({}, state));

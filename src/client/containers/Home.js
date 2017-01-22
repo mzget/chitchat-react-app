@@ -16,7 +16,7 @@ const AuthenBox_1 = require("./authen/AuthenBox");
 ;
 class Home extends React.Component {
     componentWillMount() {
-        console.log("Home", this.props);
+        console.log("Home", global.userAgent);
         this.props.dispatch(AppActions.getSession());
     }
     componentDidMount() {

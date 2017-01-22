@@ -21,7 +21,7 @@ interface IComponentNameState {
 
 class Home extends React.Component<IComponentProps, IComponentNameState> {
     componentWillMount() {
-        console.log("Home", this.props);
+        console.log("Home", global.userAgent);
 
         this.props.dispatch(AppActions.getSession());
     }

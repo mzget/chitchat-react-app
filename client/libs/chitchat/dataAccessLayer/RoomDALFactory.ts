@@ -6,8 +6,6 @@
  */
 export class RoomDALFactory {
     static getObject() {
-        console.log(global.userAgent);
-
         if (!!global.userAgent) {
             const { RoomDAL } = require("./RoomDAL");
             return new RoomDAL();

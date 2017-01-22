@@ -113,6 +113,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     public render(): JSX.Element {
+        let {stalkReducer} = this.props;
         return (
             <div>
                 <div style={{ height: this.headerHeight }}>
@@ -123,12 +124,17 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                     <ChatLogsBox {...this.props} />
                     <UtilsBox />
                 </div>
-                <Flex style={{ height: this.footerHeight, backgroundColor: Colors.red500 }} align='center' justify='center' flexColumn={true}>
-                    <Flex flexColumn={true}>
-                        <span style={{ color: Colors.white }}>Unable to connect whit chat service.</span>
-                        <span style={{ color: Colors.white }}>Check your Internet connection.</span>
-                    </Flex>
-                </Flex>
+                {
+                    (stalkReducer.state == StalkBridgeActions.STALK_INIT_FAILURE) ?
+                        (
+                            <Flex style={{ height: this.footerHeight, backgroundColor: Colors.red500 }} align='center' justify='center' flexColumn={true}>
+                                <Flex flexColumn={true}>
+                                    <span style={{ color: Colors.white }}>Unable to connect whit chat service.</span>
+                                    <span style={{ color: Colors.white }}>Check your Internet connection.</span>
+                                </Flex>
+                            </Flex>
+                        ) : null
+                }
             </div>);
     }
 }
