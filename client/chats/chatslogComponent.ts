@@ -12,12 +12,14 @@ import ChatLog from "./models/chatLog";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
 import BackendFactory from "./BackendFactory";
-import * as CryptoHelper from './utils/CryptoHelper';
+import * as CryptoHelper from "./utils/CryptoHelper";
 import HttpCode from "../libs/stalk/utils/httpStatusCode";
 import ServerImplement, { IDictionary } from "../libs/stalk/serverImplemented";
 import { MemberRole } from "./models/ChatDataModels";
 import { MessageImp } from "./models/MessageImp";
-import * as ServiceProvider from './services/ServiceProvider';
+import * as ServiceProvider from "./services/ServiceProvider";
+
+import * as contactActions from "../redux/app/contactActions";
 
 export interface ChatLogMap { [key: string]: ChatLog };
 export interface IUnread { message: DataModels.IMessage; rid: string; count: number };
@@ -303,7 +305,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         });
     }
 
-    private organizeChatLogMap(unread: IUnread, roomInfo: DataModels.Room, done) {
+    private async organizeChatLogMap(unread: IUnread, roomInfo: DataModels.Room, done) {
         let self = this;
         let log = new ChatLog(roomInfo);
         log.setNotiCount(unread.count);
@@ -311,8 +313,8 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         if (!!unread.message) {
             log.setLastMessageTime(unread.message.createTime.toString());
 
-            let contact = self.dataManager.getContactProfile(unread.message.sender);
-            let sender = (contact != null) ? contact.displayname : "";
+            let contacts = await contactActions.getContactProfile(unread.message.sender);
+            let sender = (contacts != null) ? contacts[0].username : "";
             if (unread.message.body != null) {
                 let displayMsg = unread.message.body;
                 switch (`${unread.message.type}`) {

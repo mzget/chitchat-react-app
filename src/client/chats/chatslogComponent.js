@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
@@ -10,6 +18,7 @@ const chatLog_1 = require("./models/chatLog");
 const BackendFactory_1 = require("./BackendFactory");
 const CryptoHelper = require("./utils/CryptoHelper");
 const ServiceProvider = require("./services/ServiceProvider");
+const contactActions = require("../redux/app/contactActions");
 ;
 ;
 class Unread {
@@ -260,75 +269,77 @@ class ChatsLogComponent {
         });
     }
     organizeChatLogMap(unread, roomInfo, done) {
-        let self = this;
-        let log = new chatLog_1.default(roomInfo);
-        log.setNotiCount(unread.count);
-        if (!!unread.message) {
-            log.setLastMessageTime(unread.message.createTime.toString());
-            let contact = self.dataManager.getContactProfile(unread.message.sender);
-            let sender = (contact != null) ? contact.displayname : "";
-            if (unread.message.body != null) {
-                let displayMsg = unread.message.body;
-                switch (`${unread.message.type}`) {
-                    case DataModels.ContentType[DataModels.ContentType.Text]:
-                        /*
-                            self.main.decodeService(displayMsg, function (err, res) {
-                                if (!err) {
-                                    displayMsg = res;
-                                } else { console.warn(err, res); }
+        return __awaiter(this, void 0, void 0, function* () {
+            let self = this;
+            let log = new chatLog_1.default(roomInfo);
+            log.setNotiCount(unread.count);
+            if (!!unread.message) {
+                log.setLastMessageTime(unread.message.createTime.toString());
+                let contacts = yield contactActions.getContactProfile(unread.message.sender);
+                let sender = (contacts != null) ? contacts[0].username : "";
+                if (unread.message.body != null) {
+                    let displayMsg = unread.message.body;
+                    switch (`${unread.message.type}`) {
+                        case DataModels.ContentType[DataModels.ContentType.Text]:
+                            /*
+                                self.main.decodeService(displayMsg, function (err, res) {
+                                    if (!err) {
+                                        displayMsg = res;
+                                    } else { console.warn(err, res); }
+                                });
+                            */
+                            self.setLogProp(log, displayMsg, function (log) {
+                                self.addChatLog(log, done);
                             });
-                        */
-                        self.setLogProp(log, displayMsg, function (log) {
-                            self.addChatLog(log, done);
-                        });
-                        break;
-                    case DataModels.ContentType[DataModels.ContentType.Sticker]:
-                        displayMsg = sender + " sent a sticker.";
-                        self.setLogProp(log, displayMsg, function (log) {
-                            self.addChatLog(log, done);
-                        });
-                        break;
-                    case DataModels.ContentType[DataModels.ContentType.Voice]:
-                        displayMsg = sender + " sent a voice message.";
-                        self.setLogProp(log, displayMsg, function (log) {
-                            self.addChatLog(log, done);
-                        });
-                        break;
-                    case DataModels.ContentType[DataModels.ContentType.Image]:
-                        displayMsg = sender + " sent a image.";
-                        self.setLogProp(log, displayMsg, function (log) {
-                            self.addChatLog(log, done);
-                        });
-                        break;
-                    case DataModels.ContentType[DataModels.ContentType.Video]:
-                        displayMsg = sender + " sent a video.";
-                        self.setLogProp(log, displayMsg, function (log) {
-                            self.addChatLog(log, done);
-                        });
-                        break;
-                    case DataModels.ContentType[DataModels.ContentType.Location]:
-                        displayMsg = sender + " sent a location.";
-                        self.setLogProp(log, displayMsg, function (log) {
-                            self.addChatLog(log, done);
-                        });
-                        break;
-                    case DataModels.ContentType[DataModels.ContentType.File]:
-                        self.setLogProp(log, displayMsg, function (log) {
-                            self.addChatLog(log, done);
-                        });
-                        break;
-                    default:
-                        console.log("bobo");
-                        break;
+                            break;
+                        case DataModels.ContentType[DataModels.ContentType.Sticker]:
+                            displayMsg = sender + " sent a sticker.";
+                            self.setLogProp(log, displayMsg, function (log) {
+                                self.addChatLog(log, done);
+                            });
+                            break;
+                        case DataModels.ContentType[DataModels.ContentType.Voice]:
+                            displayMsg = sender + " sent a voice message.";
+                            self.setLogProp(log, displayMsg, function (log) {
+                                self.addChatLog(log, done);
+                            });
+                            break;
+                        case DataModels.ContentType[DataModels.ContentType.Image]:
+                            displayMsg = sender + " sent a image.";
+                            self.setLogProp(log, displayMsg, function (log) {
+                                self.addChatLog(log, done);
+                            });
+                            break;
+                        case DataModels.ContentType[DataModels.ContentType.Video]:
+                            displayMsg = sender + " sent a video.";
+                            self.setLogProp(log, displayMsg, function (log) {
+                                self.addChatLog(log, done);
+                            });
+                            break;
+                        case DataModels.ContentType[DataModels.ContentType.Location]:
+                            displayMsg = sender + " sent a location.";
+                            self.setLogProp(log, displayMsg, function (log) {
+                                self.addChatLog(log, done);
+                            });
+                            break;
+                        case DataModels.ContentType[DataModels.ContentType.File]:
+                            self.setLogProp(log, displayMsg, function (log) {
+                                self.addChatLog(log, done);
+                            });
+                            break;
+                        default:
+                            console.log("bobo");
+                            break;
+                    }
                 }
             }
-        }
-        else {
-            let displayMsg = "Start Chatting Now!";
-            self.setLogProp(log, displayMsg, function (log) {
-                self.addChatLog(log, done);
-            });
-        }
+            else {
+                let displayMsg = "Start Chatting Now!";
+                self.setLogProp(log, displayMsg, function (log) {
+                    self.addChatLog(log, done);
+                });
+            }
+        });
     }
     setLogProp(log, displayMessage, callback) {
         log.setLastMessage(displayMessage);

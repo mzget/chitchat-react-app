@@ -30,6 +30,7 @@ const StickerPath_1 = require("../consts/StickerPath");
 class Chat extends React.Component {
     constructor() {
         super(...arguments);
+        this.toolbarMenus = ["Favorite"];
         this.fileReaderChange = (e, results) => {
             results.forEach(result => {
                 const [progressEvent, file] = result;
@@ -268,7 +269,7 @@ class Chat extends React.Component {
         };
         message.target = "*";
         message.uuid = Math.round(Math.random() * 10000); // simulating server-side unique id generation
-        message.status = 'Sending...';
+        message.status = "Sending...";
         return message;
     }
     send(message) {
@@ -279,10 +280,9 @@ class Chat extends React.Component {
     }
     render() {
         let { chatroomReducer } = this.props;
-        return (React.createElement("div", { style: { height: document.documentElement.clientHeight } },
+        return (React.createElement("div", null,
             React.createElement("div", { style: { height: this.state.h_header } },
-                React.createElement(reflexbox_1.Flex, { flexAuto: true },
-                    React.createElement(SimpleToolbar_1.default, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "" }))),
+                React.createElement(SimpleToolbar_1.default, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty", menus: this.toolbarMenus, onSelectedMenuItem: (id, value) => console.log(value) })),
             React.createElement("div", { style: { height: this.state.h_body } },
                 React.createElement(reflexbox_1.Flex, { flexColumn: true },
                     React.createElement("div", { style: { height: this.state.h_chatArea, overflowY: 'scroll' }, id: 'h_chatArea' },
@@ -305,8 +305,6 @@ class Chat extends React.Component {
 /**
  * ## Redux boilerplate
  */
-function mapStateToProps(state) {
-    return __assign({}, state);
-}
+const mapStateToProps = (state) => (__assign({}, state));
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = react_redux_1.connect(mapStateToProps)(Chat);

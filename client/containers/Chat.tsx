@@ -3,7 +3,7 @@ import * as React from "react";
  * Redux + Immutable
  */
 import { connect } from "react-redux";
-import * as async from 'async';
+import * as async from "async";
 import { Flex, Box } from 'reflexbox';
 
 import Config from '../configs/config';
@@ -11,7 +11,7 @@ import * as FileType from '../consts/FileType';
 
 import { TypingBox } from './TypingBox';
 import ChatBox from "./ChatBox";
-import Toolbar from "../components/SimpleToolbar";
+import SimpleToolbar from "../components/SimpleToolbar";
 import UtilsBox from "./UtilsBox";
 import UploadingDialog from './UploadingDialog';
 import GridListSimple from "../components/GridListSimple";
@@ -40,6 +40,8 @@ interface IComponentNameState {
 };
 
 class Chat extends React.Component<IComponentProps, IComponentNameState> {
+    toolbarMenus = ["Favorite"];
+
     componentWillMount() {
         console.log("Chat", this.props, this.state);
 
@@ -329,7 +331,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         };
         message.target = "*";
         message.uuid = Math.round(Math.random() * 10000); // simulating server-side unique id generation
-        message.status = 'Sending...';
+        message.status = "Sending...";
 
         return message;
     }
@@ -360,11 +362,11 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         let {chatroomReducer } = this.props;
 
         return (
-            <div style={{ height: document.documentElement.clientHeight }}>
-                <div style={{ height: this.state.h_header }}>
-                    <Flex flexAuto>
-                        <Toolbar title={(chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : ""} />
-                    </Flex>
+            <div>
+                <div style={{ height: this.state.h_header }} >
+                    <SimpleToolbar
+                        title={(chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty"}
+                        menus={this.toolbarMenus} onSelectedMenuItem={(id, value) => console.log(value)} />
                 </div>
                 <div style={{ height: this.state.h_body }}>
                     <Flex flexColumn={true}>
@@ -410,9 +412,5 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 /**
  * ## Redux boilerplate
  */
-function mapStateToProps(state) {
-    return {
-        ...state
-    };
-}
+const mapStateToProps = (state) => ({ ...state });
 export default connect(mapStateToProps)(Chat);
