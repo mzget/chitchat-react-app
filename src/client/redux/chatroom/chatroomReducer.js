@@ -31,7 +31,8 @@ exports.chatroomReducer = (state = new exports.ChatRoomInitState(), action) => {
         case ChatRoomRx.FETCH_PRIVATE_CHATROOM_CANCELLED:
             return state;
         case ChatRoomRx.FETCH_PRIVATE_CHATROOM_FAILURE:
-            return state;
+            return state.set("state", ChatRoomRx.FETCH_PRIVATE_CHATROOM_FAILURE)
+                .set("room", null);
         case ChatRoomRx.CHATROOM_UPLOAD_FILE: {
             return state.set("state", ChatRoomRx.CHATROOM_UPLOAD_FILE)
                 .set("uploadingFile", action.payload.data.target.result)

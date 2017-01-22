@@ -31,7 +31,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let {location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer, chatroomReducer} = nextProps;
+        let {location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer, chatroomReducer, teamReducer} = nextProps;
 
         switch (userReducer.state) {
             case userRx.FETCH_USER_SUCCESS: {
@@ -64,25 +64,6 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
             case chatlogsActions.STALK_INIT_CHATSLOG: {
                 this.props.dispatch(StalkBridgeActions.getLastAccessRoom());
                 break;
-            }
-            default:
-                break;
-        }
-
-        switch (chatroomReducer.state) {
-            case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS:
-                if (chatroomReducer.room) {
-                    this.props.router.push(`/chat/${chatroomReducer.room._id}`);
-                }
-                else {
-                    let members = chatroomActions.createChatRoom(userReducer);
-                    this.props.dispatch(chatroomRxEpic.createPrivateChatRoom(members.owner, members.contact));
-                }
-                break;
-            case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_SUCCESS: {
-                if (chatroomReducer.room) {
-                    this.props.router.push(`/chat/${chatroomReducer.room._id}`);
-                }
             }
             default:
                 break;

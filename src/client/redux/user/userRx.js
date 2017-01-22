@@ -56,8 +56,7 @@ exports.fetchContactEpic = action$ => action$.ofType(FETCH_CONTACT)
 exports.UserInitState = immutable_1.Record({
     isFetching: false,
     state: null,
-    user: null,
-    contact: null
+    user: null
 });
 const userInitState = new exports.UserInitState();
 exports.userReducer = (state = userInitState, action) => {
@@ -69,12 +68,6 @@ exports.userReducer = (state = userInitState, action) => {
             return state;
         case exports.FETCH_USER_FAILURE:
             return state.set('state', exports.FETCH_USER_FAILURE);
-        case FETCH_CONTACT_SUCCESS:
-            return state.set("contact", action.payload.result[0])
-                .set("state", FETCH_CONTACT_SUCCESS);
-        case exports.FETCH_AGENT_SUCCESS:
-            return state.set("contact", action.payload.result[0])
-                .set("state", exports.FETCH_AGENT_SUCCESS);
         case authRx.LOG_OUT_SUCCESS: {
             return userInitState;
         }

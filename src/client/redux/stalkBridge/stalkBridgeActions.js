@@ -124,6 +124,7 @@ function getLastAccessRoom() {
             .then(result => {
             if (result.success) {
                 dispatch(getLastAccessRoomSuccess(result.result));
+                BackendFactory_1.default.getInstance().dataListener.onAccessRoom(result.result);
             }
             else {
                 dispatch(getLastAccessRoomFailure(result.message));

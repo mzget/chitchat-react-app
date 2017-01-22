@@ -72,8 +72,7 @@ export const fetchContactEpic = action$ => action$.ofType(FETCH_CONTACT)
 export const UserInitState = Record({
     isFetching: false,
     state: null,
-    user: null,
-    contact: null
+    user: null
 });
 const userInitState = new UserInitState();
 export const userReducer = (state = userInitState, action) => {
@@ -85,15 +84,7 @@ export const userReducer = (state = userInitState, action) => {
             return state;
         case FETCH_USER_FAILURE:
             return state.set('state', FETCH_USER_FAILURE);
-
-        case FETCH_CONTACT_SUCCESS:
-            return state.set("contact", action.payload.result[0])
-                .set("state", FETCH_CONTACT_SUCCESS);
-        case FETCH_AGENT_SUCCESS:
-            return state.set("contact", action.payload.result[0])
-                .set("state", FETCH_AGENT_SUCCESS);
-
-
+           
         case authRx.LOG_OUT_SUCCESS: {
             return userInitState;
         }

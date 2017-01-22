@@ -31,8 +31,8 @@ class DataListener {
         this.roomAccessListenerImps.splice(id, 1);
     }
     onAccessRoom(dataEvent) {
+        console.info('onAccessRoom: ', dataEvent);
         let data = dataEvent[0];
-        console.info('onAccessRoom: ', data);
         this.dataManager.setRoomAccessForUser(data);
         if (!!this.roomAccessListenerImps) {
             this.roomAccessListenerImps.map(value => {

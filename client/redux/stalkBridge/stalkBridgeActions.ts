@@ -147,6 +147,8 @@ export function getLastAccessRoom() {
             .then(result => {
                 if (result.success) {
                     dispatch(getLastAccessRoomSuccess(result.result));
+
+                    BackendFactory.getInstance().dataListener.onAccessRoom(result.result);
                 }
                 else {
                     dispatch(getLastAccessRoomFailure(result.message));

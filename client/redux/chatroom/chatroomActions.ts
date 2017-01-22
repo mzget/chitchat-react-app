@@ -342,17 +342,17 @@ export const getPersistendChatroom = (roomId: string) => (dispatch => {
     });
 });
 
-export const createChatRoom = (userReducer) => {
-    if (userReducer.user && userReducer.contact) {
+export const createChatRoom = (myUser, contactUser) => {
+    if (myUser && contactUser) {
         let owner = {} as Member;
-        owner._id = userReducer.user._id;
-        owner.user_role = (userReducer.user.role) ? userReducer.user.role : "user";
-        owner.username = userReducer.user.username;
+        owner._id = myUser._id;
+        owner.user_role = (myUser.role) ? myUser.role : "user";
+        owner.username = myUser.username;
 
         let contact = {} as Member;
-        contact._id = userReducer.contact._id;
-        contact.user_role = (userReducer.contact.role) ? userReducer.contact.role : "user";
-        contact.username = userReducer.contact.username;
+        contact._id = contactUser._id;
+        contact.user_role = (contactUser.role) ? contactUser.role : "user";
+        contact.username = contactUser.username;
 
         let members = { owner, contact };
 
