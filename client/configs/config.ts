@@ -7,6 +7,9 @@ interface IConfigFile {
     Stalk: {
         chat: string,
         port: string,
+        api: {
+            user: string;
+        },
     };
     appConfig: {
         encryption: boolean
@@ -40,6 +43,9 @@ const devConfig = {
     Stalk: {
         chat: "localhost",
         port: "3010",
+        api: {
+            user: "http://localhost:9000/api/stalk/user"
+        }
     },
     appConfig: {
         encryption: true
@@ -53,6 +59,9 @@ const masterConfig = {
     Stalk: {
         chat: "git.animation-genius.com",
         port: "3010",
+        api: {
+            user: "http://localhost:9000/api/stalk/user"
+        }
     },
     appConfig: {
         encryption: false
@@ -61,19 +70,6 @@ const masterConfig = {
 
     }
 } as IConfigFile;
-
-const productionConfig = {
-    Stalk: {
-        chat: "git.animation-genius.com",
-        port: "3010",
-    },
-    appConfig: {
-        encryption: false
-    },
-    api: {
-
-    }
-};
 
 const composeMyconfig = (config: IConfigFile) => {
     return (host) => {

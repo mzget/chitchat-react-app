@@ -199,7 +199,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.props.dispatch(chatRoomActions.loadEarlyMessageChunk());
     }
 
-    roomInitialize(props: IComponentNameProps) {
+    roomInitialize(props: IComponentProps) {
         let { chatroomReducer, userReducer, params} = props;
         if (!userReducer.user) {
             return this.props.dispatch(chatRoomActions.leaveRoom());

@@ -7,3 +7,13 @@ exports.getRoomInfo = (user_id, room_id) => {
 exports.getUnreadMessage = (user_id, room_id, lastAccessTime) => {
     return fetch(`${config_1.default.api.chatroom}/unreadMessage?user_id=${user_id}&room_id=${room_id}&lastAccessTime=${lastAccessTime}`);
 };
+function getLastAccessRoomInfo(token) {
+    return fetch(`${config_1.default.Stalk.api.user}/lastAccessRoom`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            "x-access-token": token
+        }
+    });
+}
+exports.getLastAccessRoomInfo = getLastAccessRoomInfo;

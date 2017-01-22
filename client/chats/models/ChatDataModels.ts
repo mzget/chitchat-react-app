@@ -100,13 +100,12 @@ export interface IMessageMeta {
  */
 export class StalkAccount {
     _id: string;
-    displayname: string;
     username: string;
     password: string;
     firstname: string;
     lastname: string;
     tel: string;
-    mail: string;
+    email: string;
     image: string; //!-- mean image url.
     status: string;
     roomAccess: RoomAccessData[];

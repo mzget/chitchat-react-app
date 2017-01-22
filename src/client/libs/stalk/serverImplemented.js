@@ -265,15 +265,6 @@ class ServerImplemented {
             }
         });
     }
-    getLastAccessRoomsInfo(msg, callback) {
-        let self = this;
-        //<!-- Get user info.
-        self.pomelo.request("connector.entryHandler.getLastAccessRooms", msg, (result) => {
-            if (callback !== null) {
-                callback(null, result);
-            }
-        });
-    }
     getMe(msg, callback) {
         let self = this;
         //<!-- Get user info.

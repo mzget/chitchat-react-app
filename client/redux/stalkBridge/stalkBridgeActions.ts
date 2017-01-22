@@ -9,6 +9,7 @@ import * as StalkNotificationAction from "./StalkNotificationActions";
 import * as DataModels from "../../chats/models/ChatDataModels";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
 import StalkImp, { IDictionary } from "../../libs/stalk/serverImplemented";
+import * as ServiceProvider from "../../chats/services/ServiceProvider";
 
 import config from "../../configs/config";
 import Store from "../configureStore";
@@ -63,7 +64,7 @@ export function stalkLoginWithToken(uid: string, token: string) {
                         console.log("MyChat-Profile", res);
                         let account = new DataModels.StalkAccount();
                         account._id = result.decoded._id;
-                        account.displayname = result.decoded.email;
+                        account.username = result.decoded.email;
 
                         let data = (!!res.data) ? res.data : account;
                         backendFactory.dataManager.setProfile(data).then(profile => {
@@ -98,18 +99,17 @@ export function stalkLogin(user: any) {
     const backendFactory = BackendFactory.getInstance();
     backendFactory.stalkInit().then(value => {
         backendFactory.checkIn(user._id, null, user).then(value => {
-            console.log("Joined chat-server success", value);
             let result: { success: boolean, token: any } = JSON.parse(JSON.stringify(value.data));
             if (result.success) {
+                console.log("Joined chat-server success", result);
                 backendFactory.getServerListener();
                 backendFactory.startChatServerListener();
 
                 StalkNotificationAction.regisNotifyNewMessageEvent();
-
-                console.log("MyChat-Profile", user);
+                
                 let account = new DataModels.StalkAccount();
                 account._id = user._id;
-                account.displayname = user.username;
+                account.username = user.username;
 
                 backendFactory.dataManager.setProfile(account).then(profile => {
                     console.log("set chat profile success", profile);
@@ -122,7 +122,7 @@ export function stalkLogin(user: any) {
                 Store.dispatch({ type: STALK_INIT_SUCCESS });
             }
             else {
-                console.warn("Cannot joined chat server.");
+                console.warn("Joined chat-server fail: ", result);
             }
         }).catch(err => {
             console.warn("Cannot checkIn", err);
@@ -132,4 +132,27 @@ export function stalkLogin(user: any) {
 
         Store.dispatch({ type: STALK_INIT_FAILURE });
     });
+}
+
+const GET_LAST_ACCESS_ROOM_SUCCESS = "GET_LAST_ACCESS_ROOM_SUCCESS";
+const GET_LAST_ACCESS_ROOM_FAILURE = "GET_LAST_ACCESS_ROOM_FAILURE";
+const getLastAccessRoomSuccess = (payload) => ({ type: GET_LAST_ACCESS_ROOM_SUCCESS, payload });
+const getLastAccessRoomFailure = (err) => ({ type: GET_LAST_ACCESS_ROOM_FAILURE, payload: err });
+export function getLastAccessRoom() {
+    return dispatch => {
+        let token = Store.getState().authReducer.token;
+
+        ServiceProvider.getLastAccessRoomInfo(token)
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    dispatch(getLastAccessRoomSuccess(result.result));
+                }
+                else {
+                    dispatch(getLastAccessRoomFailure(result.message));
+                }
+            }).catch(err => {
+                dispatch(getLastAccessRoomFailure(err));
+            });
+    }
 }

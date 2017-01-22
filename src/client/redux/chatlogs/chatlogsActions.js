@@ -53,15 +53,6 @@ function initChatsLog() {
     chatsLogComponent.addNewRoomAccessEvent = function (data) {
         getUnreadMessages();
     };
-    let msg = {};
-    msg["token"] = dataManager.getSessionToken();
-    BackendFactory_1.default.getInstance().getServer().then(server => {
-        server.getLastAccessRoomsInfo(msg, function (err, res) {
-            console.log("getLastAccessRoomsInfo:", JSON.stringify(res));
-        });
-    }).catch(err => {
-        console.warn("Cannot getLastAccessRoomsInfo", err);
-    });
     configureStore_1.default.dispatch({
         type: exports.STALK_INIT_CHATSLOG, payload: chatsLogComponent
     });

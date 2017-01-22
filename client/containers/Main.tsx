@@ -7,7 +7,12 @@ import SimpleToolbar from '../components/SimpleToolbar';
 import ChatLogsBox from "./ChatLogsBox";
 import ChatListBox from "./chatlist/ChatListBox";
 
+import * as chatroomActions from "../redux/chatroom/chatroomActions";
+import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
+import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
+import * as userRx from "../redux/user/userRx";
 import * as authRx from "../redux/authen/authRx";
+import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 
 interface IComponentNameState {
     toolbar: string;
@@ -26,17 +31,77 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let { userReducer } = nextProps;
+        let {location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer, chatroomReducer} = nextProps;
 
         switch (userReducer.state) {
-
+            case userRx.FETCH_USER_SUCCESS: {
+                if (userReducer.user) {
+                    this.joinChatServer(nextProps);
+                }
+                break;
+            }
+            case userRx.FETCH_AGENT_SUCCESS:
+                this.joinChatServer(nextProps);
+                break;
             default:
                 if (!userReducer.user) {
                     this.props.router.push('/');
                 }
                 break;
         }
+
+        switch (stalkReducer.state) {
+            case StalkBridgeActions.STALK_INIT_SUCCESS:
+                if (this.props.stalkReducer.state != StalkBridgeActions.STALK_INIT_SUCCESS) {
+                    if (contactId) {
+                        this.fetch_privateChatRoom(contactId, userReducer.user._id);
+                    }
+                    else if (userReducer.contact) {
+                        this.fetch_privateChatRoom(userReducer.contact._id, userReducer.user._id);
+                    }
+                }
+                break;
+            case chatlogsActions.STALK_INIT_CHATSLOG: {
+                this.props.dispatch(StalkBridgeActions.getLastAccessRoom());
+                break;
+            }
+            default:
+                break;
+        }
+
+        switch (chatroomReducer.state) {
+            case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS:
+                if (chatroomReducer.room) {
+                    this.props.router.push(`/chat/${chatroomReducer.room._id}`);
+                }
+                else {
+                    let members = chatroomActions.createChatRoom(userReducer);
+                    this.props.dispatch(chatroomRxEpic.createPrivateChatRoom(members.owner, members.contact));
+                }
+                break;
+            case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_SUCCESS: {
+                if (chatroomReducer.room) {
+                    this.props.router.push(`/chat/${chatroomReducer.room._id}`);
+                }
+            }
+            default:
+                break;
+        }
     }
+
+    joinChatServer(nextProps: IComponentProps) {
+        let {stalkReducer, userReducer } = nextProps;
+
+        if (userReducer.user) {
+            if (stalkReducer.state != StalkBridgeActions.STALK_INIT) {
+                StalkBridgeActions.stalkLogin(userReducer.user);
+            }
+        }
+    }
+
+    fetch_privateChatRoom = (roommateId, owerId) => {
+        this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
+    };
 
     onSelectMenuItem(id, value) {
         console.log(this.menus[id]);

@@ -32,17 +32,21 @@ export function stalkReducer(state = initialState, action) {
 
     switch (action.type) {
         case ChatlogsActions.STALK_INIT_CHATSLOG: {
-            return state.set("chatslogComponent", action.payload);
+            return state.set("chatslogComponent", action.payload)
+                .set("state", ChatlogsActions.STALK_INIT_CHATSLOG);
         }
 
         case StalkBridgeActions.STALK_INIT: {
-            return state.set("isInit", false).set("state", StalkBridgeActions.STALK_INIT);
+            return state.set("isInit", false)
+                .set("state", StalkBridgeActions.STALK_INIT);
         }
         case StalkBridgeActions.STALK_INIT_SUCCESS: {
-            return state.set("isInit", true).set("state", StalkBridgeActions.STALK_INIT_SUCCESS);
+            return state.set("isInit", true)
+                .set("state", StalkBridgeActions.STALK_INIT_SUCCESS);
         }
         case StalkBridgeActions.STALK_INIT_FAILURE: {
-            return state.set("isInit", true).set("state", StalkBridgeActions.STALK_INIT_FAILURE);
+            return state.set("isInit", true)
+                .set("state", StalkBridgeActions.STALK_INIT_FAILURE);
         }
 
         case StalkNotificationActions.STALK_NOTICE_NEW_MESSAGE: {

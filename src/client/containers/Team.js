@@ -10,14 +10,11 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const userRx = require("../redux/user/userRx");
-const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
-const chatroomActions = require("../redux/chatroom/chatroomActions");
 const teamRx = require("../redux/team/teamRx");
 const authRx = require("../redux/authen/authRx");
 const TeamListBox_1 = require("./teams/TeamListBox");
 const TeamCreateBox_1 = require("./teams/TeamCreateBox");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
-const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 class IComponentNameProps {
 }
 ;
@@ -26,12 +23,6 @@ class IComponentNameProps {
  * Containers of chatlist, chatlogs, etc...
  */
 class Team extends React.Component {
-    constructor() {
-        super(...arguments);
-        this.fetch_privateChatRoom = (roommateId, owerId) => {
-            this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
-        };
-    }
     componentWillMount() {
         console.log("Main", this.props);
         this.onSelectTeam = this.onSelectTeam.bind(this);
@@ -45,11 +36,10 @@ class Team extends React.Component {
         }
     }
     componentWillReceiveProps(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer, teamReducer } = nextProps;
+        let { location: { query: { userId, username, roomId, contactId } }, userReducer, authReducer, teamReducer } = nextProps;
         switch (userReducer.state) {
             case userRx.FETCH_USER_SUCCESS:
                 if (userReducer.state != this.props.userReducer.state) {
-                    this.joinChatServer(nextProps);
                     this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
                 }
                 break;
@@ -57,9 +47,6 @@ class Team extends React.Component {
                 this.props.router.push(`/`);
                 break;
             }
-            case userRx.FETCH_AGENT_SUCCESS:
-                this.joinChatServer(nextProps);
-                break;
             default: {
                 if (!userReducer.user) {
                     this.props.router.push(`/`);
@@ -67,48 +54,8 @@ class Team extends React.Component {
                 break;
             }
         }
-        switch (stalkReducer.state) {
-            case StalkBridgeActions.STALK_INIT_SUCCESS:
-                if (this.props.stalkReducer.state != StalkBridgeActions.STALK_INIT_SUCCESS) {
-                    if (contactId) {
-                        this.fetch_privateChatRoom(contactId, userReducer.user._id);
-                    }
-                    else if (userReducer.contact) {
-                        this.fetch_privateChatRoom(userReducer.contact._id, userReducer.user._id);
-                    }
-                }
-                break;
-            default:
-                break;
-        }
-        switch (chatroomReducer.state) {
-            case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS:
-                if (chatroomReducer.room) {
-                    this.props.router.push(`/chat/${chatroomReducer.room._id}`);
-                }
-                else {
-                    let members = chatroomActions.createChatRoom(userReducer);
-                    this.props.dispatch(chatroomRxEpic.createPrivateChatRoom(members.owner, members.contact));
-                }
-                break;
-            case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_SUCCESS: {
-                if (chatroomReducer.room) {
-                    this.props.router.push(`/chat/${chatroomReducer.room._id}`);
-                }
-            }
-            default:
-                break;
-        }
         (!!teamReducer.teams && teamReducer.teams.length > 0) ?
             this.setState({ toolbar: 'Your Teams' }) : this.setState({ toolbar: 'Create Team' });
-    }
-    joinChatServer(nextProps) {
-        let { stalkReducer, userReducer } = nextProps;
-        if (userReducer.user) {
-            if (stalkReducer.state != StalkBridgeActions.STALK_INIT) {
-                StalkBridgeActions.stalkLogin(userReducer.user);
-            }
-        }
     }
     onSelectTeam(team) {
         this.props.dispatch(teamRx.selectTeam(team));
@@ -123,7 +70,9 @@ class Team extends React.Component {
         let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, teamReducer } = this.props;
         return (React.createElement("div", null,
             React.createElement(SimpleToolbar_1.default, { title: this.state.toolbar, menus: ["logout"], onSelectedMenuItem: this.onToolbarMenuItem }),
-            (!!teamReducer.teams && teamReducer.teams.length > 0) ? React.createElement(TeamListBox_1.default, __assign({}, this.props, { onSelectTeam: this.onSelectTeam })) : React.createElement(TeamCreateBox_1.default, __assign({}, this.props))));
+            (!!teamReducer.teams && teamReducer.teams.length > 0) ?
+                React.createElement(TeamListBox_1.default, __assign({}, this.props, { onSelectTeam: this.onSelectTeam })) :
+                React.createElement(TeamCreateBox_1.default, __assign({}, this.props))));
     }
 }
 /**

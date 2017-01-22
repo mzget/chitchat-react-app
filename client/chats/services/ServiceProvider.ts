@@ -9,3 +9,13 @@ export const getRoomInfo = (user_id: string, room_id: string): Promise<any> => {
 export const getUnreadMessage = (user_id: string, room_id: string, lastAccessTime: string): Promise<any> => {
     return fetch(`${config.api.chatroom}/unreadMessage?user_id=${user_id}&room_id=${room_id}&lastAccessTime=${lastAccessTime}`);
 }
+
+export function getLastAccessRoomInfo(token: string) {
+    return fetch(`${config.Stalk.api.user}/lastAccessRoom`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            "x-access-token": token
+        }
+    });
+}
