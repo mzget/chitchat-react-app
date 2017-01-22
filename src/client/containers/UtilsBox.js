@@ -14,7 +14,6 @@ const SnackbarSimple_1 = require("../components/SnackbarSimple");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 const AlertMsg = require("../consts/AlertMsg");
 ;
-;
 class UtilsBox extends React.Component {
     componentWillMount() {
         this.state = {

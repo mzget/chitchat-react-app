@@ -100,7 +100,6 @@
     <TypeScriptCompile Include="client\chats\services\ServiceProvider.ts" />
     <TypeScriptCompile Include="client\chats\services\UploadServiceHelper.ts" />
     <TypeScriptCompile Include="client\chats\utils\CryptoHelper.ts" />
-    <TypeScriptCompile Include="client\demos\actions\SampleLoginActions.ts" />
     <Compile Include="client\libs\chitchat\webRtcCallState.js" />
     <Compile Include="client\libs\chitchat\webRtcComponent.js" />
     <TypeScriptCompile Include="client\libs\pomelo\EventEmitter.ts" />
@@ -329,8 +328,6 @@
     <Folder Include="client\containers\admins\" />
     <Folder Include="client\containers\chatlist\" />
     <Folder Include="client\containers\teams\" />
-    <Folder Include="client\demos" />
-    <Folder Include="client\demos\actions" />
     <Folder Include="client\libs" />
     <Folder Include="client\libs\chitchat" />
     <Folder Include="client\libs\chitchat\abstraction" />

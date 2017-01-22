@@ -1,11 +1,14 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
+import { Flex, Box } from 'reflexbox';
+import * as Colors from 'material-ui/styles/colors';
 
 import { IComponentProps } from '../utils/IComponentProps';
 
 import SimpleToolbar from '../components/SimpleToolbar';
 import ChatLogsBox from "./ChatLogsBox";
 import ChatListBox from "./chatlist/ChatListBox";
+import UtilsBox from "./UtilsBox";
 
 import * as chatroomActions from "../redux/chatroom/chatroomActions";
 import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
@@ -21,11 +24,20 @@ interface IComponentNameState {
 class Main extends React.Component<IComponentProps, IComponentNameState> {
 
     menus = ["admin", "log out"];
+    clientWidth = document.documentElement.clientWidth;
+    clientHeight = document.documentElement.clientHeight;
+    headerHeight = null;
+    bodyHeight = null;
+    footerHeight = null;
 
     componentWillMount() {
         this.state = {
             toolbar: "Home"
         };
+
+        this.headerHeight = this.clientHeight * 0.1;
+        this.bodyHeight = (this.clientHeight * 0.9) - 50;
+        this.footerHeight = 50;
 
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
     }
@@ -103,13 +115,23 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     public render(): JSX.Element {
         return (
             <div>
-                <SimpleToolbar title={this.state.toolbar} menus={this.menus} onSelectedMenuItem={this.onSelectMenuItem} />
-                <ChatListBox {...this.props} />
-                <ChatLogsBox {...this.props} />
+                <div style={{ height: this.headerHeight }}>
+                    <SimpleToolbar title={this.state.toolbar} menus={this.menus} onSelectedMenuItem={this.onSelectMenuItem} />
+                </div>
+                <div style={{ height: this.bodyHeight }}>
+                    <ChatListBox {...this.props} />
+                    <ChatLogsBox {...this.props} />
+                    <UtilsBox />
+                </div>
+                <Flex style={{ height: this.footerHeight, backgroundColor: Colors.red500 }} align='center' justify='center' flexColumn={true}>
+                    <Flex flexColumn={true}>
+                        <span style={{ color: Colors.white }}>Unable to connect whit chat service.</span>
+                        <span style={{ color: Colors.white }}>Check your Internet connection.</span>
+                    </Flex>
+                </Flex>
             </div>);
     }
 }
-
 
 const mapStateToProps = (state) => ({ ...state });
 export default connect(mapStateToProps)(Main);

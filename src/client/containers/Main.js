@@ -9,9 +9,12 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const react_redux_1 = require("react-redux");
+const reflexbox_1 = require("reflexbox");
+const Colors = require("material-ui/styles/colors");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 const ChatListBox_1 = require("./chatlist/ChatListBox");
+const UtilsBox_1 = require("./UtilsBox");
 const chatlogsActions = require("../redux/chatlogs/chatlogsActions");
 const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const userRx = require("../redux/user/userRx");
@@ -22,6 +25,11 @@ class Main extends React.Component {
     constructor() {
         super(...arguments);
         this.menus = ["admin", "log out"];
+        this.clientWidth = document.documentElement.clientWidth;
+        this.clientHeight = document.documentElement.clientHeight;
+        this.headerHeight = null;
+        this.bodyHeight = null;
+        this.footerHeight = null;
         this.fetch_privateChatRoom = (roommateId, owerId) => {
             this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
         };
@@ -30,6 +38,9 @@ class Main extends React.Component {
         this.state = {
             toolbar: "Home"
         };
+        this.headerHeight = this.clientHeight * 0.1;
+        this.bodyHeight = (this.clientHeight * 0.9) - 50;
+        this.footerHeight = 50;
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
     }
     componentWillReceiveProps(nextProps) {
@@ -93,9 +104,16 @@ class Main extends React.Component {
     }
     render() {
         return (React.createElement("div", null,
-            React.createElement(SimpleToolbar_1.default, { title: this.state.toolbar, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem }),
-            React.createElement(ChatListBox_1.default, __assign({}, this.props)),
-            React.createElement(ChatLogsBox_1.default, __assign({}, this.props))));
+            React.createElement("div", { style: { height: this.headerHeight } },
+                React.createElement(SimpleToolbar_1.default, { title: this.state.toolbar, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
+            React.createElement("div", { style: { height: this.bodyHeight } },
+                React.createElement(ChatListBox_1.default, __assign({}, this.props)),
+                React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
+                React.createElement(UtilsBox_1.default, null)),
+            React.createElement(reflexbox_1.Flex, { style: { height: this.footerHeight, backgroundColor: Colors.red500 }, align: 'center', justify: 'center', flexColumn: true },
+                React.createElement(reflexbox_1.Flex, { flexColumn: true },
+                    React.createElement("span", { style: { color: Colors.white } }, "Unable to connect whit chat service."),
+                    React.createElement("span", { style: { color: Colors.white } }, "Check your Internet connection.")))));
     }
 }
 const mapStateToProps = (state) => (__assign({}, state));

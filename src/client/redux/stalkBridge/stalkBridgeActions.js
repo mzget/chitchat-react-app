@@ -102,9 +102,11 @@ function stalkLogin(user) {
             }
             else {
                 console.warn("Joined chat-server fail: ", result);
+                configureStore_1.default.dispatch({ type: exports.STALK_INIT_FAILURE });
             }
         }).catch(err => {
             console.warn("Cannot checkIn", err);
+            configureStore_1.default.dispatch({ type: exports.STALK_INIT_FAILURE });
         });
     }).catch(err => {
         console.warn("StalkInit Fail.");

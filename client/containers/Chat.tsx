@@ -404,6 +404,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                     </div>
                 </Flex>
                 <UploadingDialog />
+                <UtilsBox />
             </div>
         );
     }

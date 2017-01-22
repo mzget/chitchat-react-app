@@ -14,7 +14,6 @@ import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 import * as AuthRx from '../redux/authen/authRx';
 import * as AppActions from '../redux/app/persistentDataActions';
 
-import UtilsBox from "./UtilsBox";
 import AuthenBox from './authen/AuthenBox';
 
 interface IComponentNameState {
@@ -65,7 +64,6 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
                     <AuthenBox {...this.props} />
                     <Box p={2} flexAuto></Box>
                 </Flex>
-                <UtilsBox />
                 <Flex px={2} align='center'>
                     <Box p={2} flexAuto></Box>
                     <p>Stalk realtime messaging service.</p>

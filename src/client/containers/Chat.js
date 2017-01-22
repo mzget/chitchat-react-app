@@ -18,6 +18,7 @@ const FileType = require("../consts/FileType");
 const TypingBox_1 = require("./TypingBox");
 const ChatBox_1 = require("./ChatBox");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
+const UtilsBox_1 = require("./UtilsBox");
 const UploadingDialog_1 = require("./UploadingDialog");
 const GridListSimple_1 = require("../components/GridListSimple");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
@@ -299,7 +300,8 @@ class Chat extends React.Component {
             React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center', flexColumn: false },
                 React.createElement("div", { style: { bottom: '0%', position: 'absolute' } },
                     React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }))),
-            React.createElement(UploadingDialog_1.default, null)));
+            React.createElement(UploadingDialog_1.default, null),
+            React.createElement(UtilsBox_1.default, null)));
     }
 }
 /**

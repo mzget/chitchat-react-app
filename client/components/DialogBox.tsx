@@ -12,11 +12,6 @@ interface ICompProps {
 }
 const actions = (props: ICompProps) => [
     <FlatButton
-        label="Cancel"
-        primary={true}
-        onMouseUp={props.handleClose}
-        />,
-    <FlatButton
         label="OK"
         primary={true}
         onMouseUp={props.handleClose}
@@ -24,7 +19,7 @@ const actions = (props: ICompProps) => [
 ];
 export const DialogBox = (props: ICompProps) => {
     return (
-        < MuiThemeProvider >
+        <MuiThemeProvider>
             <div>
                 <Dialog
                     title={props.title}
@@ -36,6 +31,6 @@ export const DialogBox = (props: ICompProps) => {
                     {props.message}
                 </Dialog>
             </div>
-        </MuiThemeProvider >
+        </MuiThemeProvider>
     );
 }

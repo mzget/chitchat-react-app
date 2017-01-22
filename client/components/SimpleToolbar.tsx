@@ -5,7 +5,24 @@ import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-mo
 import MenuItem from 'material-ui/MenuItem';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar';
+import * as Colors from 'material-ui/styles/colors';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+
+const muiTheme = getMuiTheme({
+    palette: {
+        textColor: Colors.darkBlack,
+        alternateTextColor: Colors.darkWhite,
+        primary1Color: Colors.indigo200,
+        primary2Color: Colors.indigo700,
+        accent1Color: Colors.redA200,
+        pickerHeaderColor: Colors.darkBlack,
+    },
+    toolbar: {
+        color: Colors.white,
+        backgroundColor: Colors.lightBlue500,
+    },
+});
 
 interface IComponentProps {
     title: string;
@@ -26,7 +43,7 @@ class SimpleToolbar extends React.Component<IComponentProps, IComponentState> {
 
     render() {
         return (
-            <MuiThemeProvider>
+            <MuiThemeProvider muiTheme={muiTheme}>
                 <Toolbar>
                     <ToolbarTitle text={this.props.title} />
                     {

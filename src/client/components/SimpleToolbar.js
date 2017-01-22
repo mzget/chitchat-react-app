@@ -5,7 +5,23 @@ const IconButton_1 = require("material-ui/IconButton");
 const expand_more_1 = require("material-ui/svg-icons/navigation/expand-more");
 const MenuItem_1 = require("material-ui/MenuItem");
 const Toolbar_1 = require("material-ui/Toolbar");
+const Colors = require("material-ui/styles/colors");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
+const getMuiTheme_1 = require("material-ui/styles/getMuiTheme");
+const muiTheme = getMuiTheme_1.default({
+    palette: {
+        textColor: Colors.darkBlack,
+        alternateTextColor: Colors.darkWhite,
+        primary1Color: Colors.indigo200,
+        primary2Color: Colors.indigo700,
+        accent1Color: Colors.redA200,
+        pickerHeaderColor: Colors.darkBlack,
+    },
+    toolbar: {
+        color: Colors.white,
+        backgroundColor: Colors.lightBlue500,
+    },
+});
 class SimpleToolbar extends React.Component {
     componentWillMount() {
         this.state = {
@@ -13,7 +29,7 @@ class SimpleToolbar extends React.Component {
         };
     }
     render() {
-        return (React.createElement(MuiThemeProvider_1.default, null,
+        return (React.createElement(MuiThemeProvider_1.default, { muiTheme: muiTheme },
             React.createElement(Toolbar_1.Toolbar, null,
                 React.createElement(Toolbar_1.ToolbarTitle, { text: this.props.title }),
                 (this.props.menus && this.props.menus.length > 0) ?
