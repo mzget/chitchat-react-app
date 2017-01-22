@@ -56,6 +56,7 @@
     <Content Include="client\containers\TypingBox.tsx" />
     <Content Include="client\containers\UploadingDialog.tsx" />
     <Content Include="client\containers\UtilsBox.tsx" />
+    <Content Include="client\containers\chatlist\MemberList.tsx" />
     <Content Include="package.json" />
     <Content Include="tsconfig.json" />
     <Content Include="README.md" />
@@ -354,6 +355,8 @@
     <Folder Include="client\utils" />
     <Folder Include="public" />
     <Folder Include="src" />
+    <Folder Include="src\client\" />
+    <Folder Include="src\client\chats\" />
     <Folder Include="src\client\chats\models" />
     <Folder Include="src\client\chats\services" />
     <Folder Include="src\client\chats\utils" />

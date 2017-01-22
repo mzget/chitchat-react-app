@@ -26,17 +26,6 @@ import { MessageImp } from "../chats/models/MessageImp";
 
 import { imagesPath } from '../consts/StickerPath';
 
-abstract class IComponentNameProps implements IComponentProps {
-    location;
-    params;
-    router;
-    dispatch;
-    chatroomReducer;
-    userReducer;
-    chatlogReducer;
-    stalkReducer;
-};
-
 interface IComponentNameState {
     messages: any[],
     isLoadingEarlierMessages,
@@ -50,7 +39,7 @@ interface IComponentNameState {
     h_chatArea: number
 };
 
-class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
+class Chat extends React.Component<IComponentProps, IComponentNameState> {
     componentWillMount() {
         console.log("Chat", this.props, this.state);
 
@@ -100,8 +89,8 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         this.props.dispatch(chatRoomActions.leaveRoom());
     }
 
-    componentWillReceiveProps(nextProps) {
-        let { chatroomReducer} = nextProps as IComponentNameProps;
+    componentWillReceiveProps(nextProps: IComponentProps) {
+        let { chatroomReducer} = nextProps;
 
         switch (chatroomReducer.state) {
             case chatRoomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {

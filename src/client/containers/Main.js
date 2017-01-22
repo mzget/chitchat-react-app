@@ -52,7 +52,7 @@ class Main extends React.Component {
     render() {
         return (React.createElement("div", null,
             React.createElement(SimpleToolbar_1.default, { title: this.state.toolbar, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem }),
-            React.createElement(ChatListBox_1.default, null),
+            React.createElement(ChatListBox_1.default, __assign({}, this.props)),
             React.createElement(ChatLogsBox_1.default, __assign({}, this.props))));
     }
 }

@@ -58,7 +58,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
         return (
             <div>
                 <SimpleToolbar title={this.state.toolbar} menus={this.menus} onSelectedMenuItem={this.onSelectMenuItem} />
-                <ChatListBox />
+                <ChatListBox {...this.props} />
                 <ChatLogsBox {...this.props} />
             </div>);
     }
