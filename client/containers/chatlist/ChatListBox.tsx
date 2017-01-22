@@ -1,4 +1,5 @@
 ﻿import * as React from "react";
+import Subheader from 'material-ui/Subheader';
 
 import { IComponentProps } from "../../utils/IComponentProps";
 
@@ -66,6 +67,7 @@ class ChatListBox extends React.Component<IComponentProps, IComponentNameState> 
     public render(): JSX.Element {
         return (
             <div>
+                <Subheader>Chats</Subheader>
                 <MemberList value={this.props.teamReducer.members} onSelected={this.onselectMember} />
             </div>);
     }

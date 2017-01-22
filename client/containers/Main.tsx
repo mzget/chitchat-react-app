@@ -1,7 +1,9 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
 import { Flex, Box } from 'reflexbox';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import * as Colors from 'material-ui/styles/colors';
+import Subheader from 'material-ui/Subheader';
 
 import { IComponentProps } from '../utils/IComponentProps';
 
@@ -18,7 +20,7 @@ import * as authRx from "../redux/authen/authRx";
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 
 interface IComponentNameState {
-    toolbar: string;
+    header: string;
 };
 
 class Main extends React.Component<IComponentProps, IComponentNameState> {
@@ -32,7 +34,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
 
     componentWillMount() {
         this.state = {
-            toolbar: "Home"
+            header: "Home"
         };
 
         this.headerHeight = this.clientHeight * 0.1;
@@ -113,29 +115,33 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     public render(): JSX.Element {
-        let {stalkReducer} = this.props;
+        let {stalkReducer, teamReducer} = this.props;
         return (
-            <div>
-                <div style={{ height: this.headerHeight }}>
-                    <SimpleToolbar title={this.state.toolbar} menus={this.menus} onSelectedMenuItem={this.onSelectMenuItem} />
-                </div>
-                <div style={{ height: this.bodyHeight }}>
-                    <ChatListBox {...this.props} />
-                    <ChatLogsBox {...this.props} />
-                    <UtilsBox />
-                </div>
-                {
-                    (stalkReducer.state == StalkBridgeActions.STALK_INIT_FAILURE) ?
-                        (
-                            <Flex style={{ height: this.footerHeight, backgroundColor: Colors.red500 }} align='center' justify='center' flexColumn={true}>
-                                <Flex flexColumn={true}>
-                                    <span style={{ color: Colors.white }}>Unable to connect whit chat service.</span>
-                                    <span style={{ color: Colors.white }}>Check your Internet connection.</span>
+            <MuiThemeProvider>
+                <div>
+                    <div style={{ height: this.headerHeight }}>
+                        <SimpleToolbar title={teamReducer.team.name} menus={this.menus} onSelectedMenuItem={this.onSelectMenuItem} />
+                        <Subheader>{this.state.header}</Subheader>
+                    </div>
+                    <div style={{ height: this.bodyHeight }}>
+                        <ChatListBox {...this.props} />
+                        <ChatLogsBox {...this.props} />
+                        <UtilsBox />
+                    </div>
+                    {
+                        (stalkReducer.state == StalkBridgeActions.STALK_INIT_FAILURE) ?
+                            (
+                                <Flex style={{ height: this.footerHeight, backgroundColor: Colors.red500 }} align='center' justify='center' flexColumn={true}>
+                                    <Flex flexColumn={true}>
+                                        <span style={{ color: Colors.white }}>Unable to connect whit chat service.</span>
+                                        <span style={{ color: Colors.white }}>Check your Internet connection.</span>
+                                    </Flex>
                                 </Flex>
-                            </Flex>
-                        ) : null
-                }
-            </div>);
+                            ) : null
+                    }
+                </div>
+            </MuiThemeProvider>
+        );
     }
 }
 

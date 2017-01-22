@@ -1,11 +1,12 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import Subheader from 'material-ui/Subheader';
 
 import ChatsLogComponent, { ChatLogMap, IUnread, Unread } from "../chats/chatslogComponent";
 import ChatLog from "../chats/models/chatLog";
 
 import Store from "../redux/configureStore";
-import * as userActions from '../redux/user/userActions';
+import * as userRx from '../redux/user/userRx';
 import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
 import * as chatroomActions from "../redux/chatroom/chatroomActions";
 import * as ChatLogsActions from "../redux/chatlogs/chatlogsActions";
@@ -80,9 +81,12 @@ class ChatLogsBox extends React.Component<IComponentNameProps, IComponentNameSta
 
     public render(): JSX.Element {
         return (
-            <ListChatLogs value={this.state.chatsLog} onSelected={(data) => {
-                this.props.router.push(`/chat/${data.id}`);
-            } } />
+            <div>
+                <Subheader>Recent chats</Subheader>
+                <ListChatLogs value={this.state.chatsLog} onSelected={(data) => {
+                    this.props.router.push(`/chat/${data.id}`);
+                } } />
+            </div>
         );
     }
 }

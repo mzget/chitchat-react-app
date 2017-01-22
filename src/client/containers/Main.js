@@ -10,7 +10,9 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
+const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const Colors = require("material-ui/styles/colors");
+const Subheader_1 = require("material-ui/Subheader");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 const ChatListBox_1 = require("./chatlist/ChatListBox");
@@ -36,7 +38,7 @@ class Main extends React.Component {
     }
     componentWillMount() {
         this.state = {
-            toolbar: "Home"
+            header: "Home"
         };
         this.headerHeight = this.clientHeight * 0.1;
         this.bodyHeight = (this.clientHeight * 0.9) - 50;
@@ -103,19 +105,21 @@ class Main extends React.Component {
         }
     }
     render() {
-        let { stalkReducer } = this.props;
-        return (React.createElement("div", null,
-            React.createElement("div", { style: { height: this.headerHeight } },
-                React.createElement(SimpleToolbar_1.default, { title: this.state.toolbar, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
-            React.createElement("div", { style: { height: this.bodyHeight } },
-                React.createElement(ChatListBox_1.default, __assign({}, this.props)),
-                React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
-                React.createElement(UtilsBox_1.default, null)),
-            (stalkReducer.state == StalkBridgeActions.STALK_INIT_FAILURE) ?
-                (React.createElement(reflexbox_1.Flex, { style: { height: this.footerHeight, backgroundColor: Colors.red500 }, align: 'center', justify: 'center', flexColumn: true },
-                    React.createElement(reflexbox_1.Flex, { flexColumn: true },
-                        React.createElement("span", { style: { color: Colors.white } }, "Unable to connect whit chat service."),
-                        React.createElement("span", { style: { color: Colors.white } }, "Check your Internet connection.")))) : null));
+        let { stalkReducer, teamReducer } = this.props;
+        return (React.createElement(MuiThemeProvider_1.default, null,
+            React.createElement("div", null,
+                React.createElement("div", { style: { height: this.headerHeight } },
+                    React.createElement(SimpleToolbar_1.default, { title: teamReducer.team.name, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem }),
+                    React.createElement(Subheader_1.default, null, this.state.header)),
+                React.createElement("div", { style: { height: this.bodyHeight } },
+                    React.createElement(ChatListBox_1.default, __assign({}, this.props)),
+                    React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
+                    React.createElement(UtilsBox_1.default, null)),
+                (stalkReducer.state == StalkBridgeActions.STALK_INIT_FAILURE) ?
+                    (React.createElement(reflexbox_1.Flex, { style: { height: this.footerHeight, backgroundColor: Colors.red500 }, align: 'center', justify: 'center', flexColumn: true },
+                        React.createElement(reflexbox_1.Flex, { flexColumn: true },
+                            React.createElement("span", { style: { color: Colors.white } }, "Unable to connect whit chat service."),
+                            React.createElement("span", { style: { color: Colors.white } }, "Check your Internet connection.")))) : null)));
     }
 }
 const mapStateToProps = (state) => (__assign({}, state));
