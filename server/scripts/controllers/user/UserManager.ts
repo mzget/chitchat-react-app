@@ -35,7 +35,7 @@ export const getLastProfileChanged = (uid: string, callback: (err, res) => void)
 export const updateImageProfile = (uid: string, newUrl: string, callback: (err, res) => void) => {
 }
 
-export const getRoomAccessForUser = async (uid: string) => {
+export async function getRoomAccessForUser(uid: string) : Promise < any[] > {
     let db = await MongoClient.connect(config.chatDB);
     let userColl = db.collection(DbClient.chatUserColl);
 

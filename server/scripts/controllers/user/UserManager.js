@@ -31,13 +31,16 @@ exports.getLastProfileChanged = (uid, callback) => {
 };
 exports.updateImageProfile = (uid, newUrl, callback) => {
 };
-exports.getRoomAccessForUser = (uid) => __awaiter(this, void 0, void 0, function* () {
-    let db = yield MongoClient.connect(config.chatDB);
-    let userColl = db.collection(config_1.DbClient.chatUserColl);
-    let docs = yield userColl.find({ _id: new ObjectID(uid) }).project({ roomAccess: 1 }).limit(1).toArray();
-    db.close();
-    return docs;
-});
+function getRoomAccessForUser(uid) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let db = yield MongoClient.connect(config.chatDB);
+        let userColl = db.collection(config_1.DbClient.chatUserColl);
+        let docs = yield userColl.find({ _id: new ObjectID(uid) }).project({ roomAccess: 1 }).limit(1).toArray();
+        db.close();
+        return docs;
+    });
+}
+exports.getRoomAccessForUser = getRoomAccessForUser;
 exports.getRoomAccessOfRoom = (uid, rid) => {
     return new Promise((resolve, reject) => {
         MongoClient.connect(config.chatDB).then(db => {

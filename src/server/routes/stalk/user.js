@@ -9,7 +9,7 @@ const ObjectID = mongodb.ObjectID;
 const config_1 = require("../../config");
 const config = config_1.getConfig();
 /* GET users listing. */
-router.get('/lastRoomAccess', function (req, res, next) {
+router.get('/lastAccessRoom', function (req, res, next) {
     let token = req['decoded'];
     let user_id = token._id;
     UserManager.getRoomAccessForUser(user_id).then(docs => {

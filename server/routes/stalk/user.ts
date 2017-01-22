@@ -18,7 +18,10 @@ router.get('/lastAccessRoom', function (req, res, next) {
     let user_id: string = token._id;
 
     UserManager.getRoomAccessForUser(user_id).then(docs => {
-        res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
+        if (docs.length > 0)
+            res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
+        else
+            res.status(500).json(new apiUtils.ApiResponse(false, docs));
     }).catch(err => {
         console.error("getRoomAccessForUser Fail: ", err);
         res.status(500).json(new apiUtils.ApiResponse(false, err));
