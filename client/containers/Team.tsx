@@ -1,5 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import * as Colors from 'material-ui/styles/colors';
 
 import { IComponentProps } from "../utils/IComponentProps";
 
@@ -14,27 +16,6 @@ import SimpleToolbar from '../components/SimpleToolbar';
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import { ITeam } from '../../server/scripts/models/ITeam';
 
-abstract class IComponentNameProps implements IComponentProps {
-    location: {
-        query: {
-            contactId: string;
-            userId: string;
-            roomId: string;
-            username: string;
-            agent_name: string;
-        }
-    };
-    params;
-    router;
-    dispatch;
-    authReducer;
-    userReducer;
-    chatroomReducer;
-    chatlogReducer;
-    stalkReducer;
-    teamReducer;
-};
-
 interface IComponentNameState {
     toolbar: string;
 };
@@ -42,7 +23,7 @@ interface IComponentNameState {
 /**
  * Containers of chatlist, chatlogs, etc...
  */
-class Team extends React.Component<IComponentNameProps, IComponentNameState> {
+class Team extends React.Component<IComponentProps, IComponentNameState> {
 
     componentWillMount() {
         console.log("Main", this.props);
@@ -50,7 +31,7 @@ class Team extends React.Component<IComponentNameProps, IComponentNameState> {
         this.onSelectTeam = this.onSelectTeam.bind(this);
         this.onToolbarMenuItem = this.onToolbarMenuItem.bind(this);
 
-        let { location: {query: {userId, username, roomId, contactId, agent_name}}, params } = this.props;
+        let { location: {query: {userId, username, roomId, contactId }}, params } = this.props;
 
         this.state = {
             toolbar: 'Teams'
@@ -61,14 +42,14 @@ class Team extends React.Component<IComponentNameProps, IComponentNameState> {
         }
     }
 
-    componentWillReceiveProps(nextProps: IComponentNameProps) {
+    componentWillReceiveProps(nextProps: IComponentProps) {
         let { location: {query: {userId, username, roomId, contactId}},
             userReducer, authReducer, teamReducer
         } = nextProps;
 
         switch (userReducer.state) {
             case userRx.FETCH_USER_SUCCESS:
-                if (userReducer.state != this.props.userReducer.state) {
+                if (userReducer.state !== this.props.userReducer.state) {
                     this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
                 }
                 break;
@@ -100,15 +81,16 @@ class Team extends React.Component<IComponentNameProps, IComponentNameState> {
     }
 
     public render(): JSX.Element {
-        let { location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer, teamReducer } = this.props as IComponentNameProps;
+        let { location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer, teamReducer } = this.props;
 
         return (
-            <div>
-                <SimpleToolbar title={this.state.toolbar} menus={["logout"]} onSelectedMenuItem={this.onToolbarMenuItem} />
-                {(!!teamReducer.teams && teamReducer.teams.length > 0) ?
-                    <TeamListBox {...this.props} onSelectTeam={this.onSelectTeam} /> :
-                    <TeamCreateBox {...this.props} />}
-            </div>);
+            <MuiThemeProvider>
+                <div>
+                    <SimpleToolbar title={this.state.toolbar} menus={["logout"]} onSelectedMenuItem={this.onToolbarMenuItem} />
+                    <TeamListBox {...this.props} onSelectTeam={this.onSelectTeam} />
+                    <TeamCreateBox {...this.props} />
+                </div>
+            </MuiThemeProvider>);
     }
 }
 

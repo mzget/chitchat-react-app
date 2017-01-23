@@ -1,5 +1,6 @@
 "use strict";
 const React = require("react");
+const Subheader_1 = require("material-ui/Subheader");
 const TeamListView_1 = require("./TeamListView");
 class IComponentNameProps {
 }
@@ -11,6 +12,7 @@ class TeamListBox extends React.Component {
     }
     render() {
         return (React.createElement("div", null,
+            React.createElement(Subheader_1.default, null, "Your Teams"),
             React.createElement(TeamListView_1.TeamListView, { items: this.props.teamReducer.teams, onSelectItem: this.props.onSelectTeam })));
     }
 }

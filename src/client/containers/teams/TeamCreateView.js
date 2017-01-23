@@ -23,19 +23,21 @@ const styles = {
         position: 'absolute'
     }
 };
-const SubmitButton = (props) => (React.createElement(material_ui_1.RaisedButton, { primary: true, label: "submit", onClick: props.onSubmit, style: styles.button }));
+const SubmitButton = (props) => (React.createElement(material_ui_1.RaisedButton, { primary: true, label: "Create Team", onClick: props.onCreateTeam }));
+const FindButton = (props) => (React.createElement(material_ui_1.RaisedButton, { primary: true, label: "Find Team", onClick: props.onFindTeam }));
 exports.TeamCreateView = (props) => {
     return (React.createElement(MuiThemeProvider_1.default, null,
         React.createElement(reflexbox_1.Flex, { flexColumn: true, align: 'center', justify: 'center' },
-            React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
-            React.createElement("div", null,
-                React.createElement("h3", null, "Create a new team"),
-                React.createElement(material_ui_1.TextField, { hintText: "team name", errorText: "This field is required", value: props.team_name, onChange: props.onNameChange, onKeyDown: (e) => {
-                        if (e.key === 'Enter')
-                            props.onSubmit();
-                    } }),
+            React.createElement("h3", null, "Create a new team"),
+            React.createElement(material_ui_1.TextField, { hintText: "team name", value: props.team_name, onChange: props.onNameChange, onKeyDown: (e) => {
+                    if (e.key === 'Enter')
+                        props.onFindTeam();
+                } }),
+            React.createElement("span", { style: styles.span }),
+            React.createElement(SubmitButton, __assign({}, props)),
+            React.createElement("span", { style: styles.span }),
+            React.createElement(reflexbox_1.Flex, { flexColumn: false, align: 'center', justify: 'center' },
+                React.createElement("p", null, "Looking for existing team?"),
                 React.createElement("span", { style: styles.span }),
-                React.createElement(SubmitButton, __assign({}, props)),
-                React.createElement("span", { style: styles.span })),
-            React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }))));
+                React.createElement(FindButton, __assign({}, props))))));
 };

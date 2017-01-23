@@ -15,10 +15,11 @@ class TeamCreateBox extends React.Component<any, IComponentNameState> {
     componentWillMount() {
         this.state = {
             team_name: ''
-        }
+        };
 
         this.onNameChange = this.onNameChange.bind(this);
         this.onSubmitTeam = this.onSubmitTeam.bind(this);
+        this.onFindTeam = this.onFindTeam.bind(this);
     }
 
     onNameChange(e, text) {
@@ -34,10 +35,20 @@ class TeamCreateBox extends React.Component<any, IComponentNameState> {
         }
     }
 
+    onFindTeam() {
+
+    }
+
     public render(): JSX.Element {
-        return (<div>
-            <TeamCreateView team_name={this.state.team_name} onNameChange={this.onNameChange} onSubmit={this.onSubmitTeam} />
-        </div>);
+        return (
+            <div>
+                <TeamCreateView
+                    team_name={this.state.team_name}
+                    onNameChange={this.onNameChange}
+                    onCreateTeam={this.onSubmitTeam}
+                    onFindTeam={this.onFindTeam}
+                    />
+            </div>);
     }
 }
 

@@ -20,6 +20,7 @@ class TeamCreateBox extends React.Component {
         };
         this.onNameChange = this.onNameChange.bind(this);
         this.onSubmitTeam = this.onSubmitTeam.bind(this);
+        this.onFindTeam = this.onFindTeam.bind(this);
     }
     onNameChange(e, text) {
         this.setState({ team_name: text });
@@ -32,9 +33,11 @@ class TeamCreateBox extends React.Component {
             console.warn("Empty team name!");
         }
     }
+    onFindTeam() {
+    }
     render() {
         return (React.createElement("div", null,
-            React.createElement(TeamCreateView_1.TeamCreateView, { team_name: this.state.team_name, onNameChange: this.onNameChange, onSubmit: this.onSubmitTeam })));
+            React.createElement(TeamCreateView_1.TeamCreateView, { team_name: this.state.team_name, onNameChange: this.onNameChange, onCreateTeam: this.onSubmitTeam, onFindTeam: this.onFindTeam })));
     }
 }
 const mapStateToProps = (state) => {
