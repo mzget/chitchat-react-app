@@ -3,17 +3,18 @@ import { connect } from "react-redux";
 
 import { TeamCreateView } from './TeamCreateView';
 import { FindTeamView } from './FindTeamView';
+import { FindTeamListBox } from './FindTeamListBox';
 
 import * as TeamRx from '../../redux/team/teamRx';
+import { IComponentProps } from "../../utils/IComponentProps";
 
-interface IComponentNameProps { };
 
 interface IComponentNameState {
     team_name: string;
     is_FindTeam: boolean;
 };
 
-class TeamCreateBox extends React.Component<any, IComponentNameState> {
+class TeamCreateBox extends React.Component<IComponentProps, IComponentNameState> {
     componentWillMount() {
         this.state = {
             team_name: '',
@@ -45,10 +46,15 @@ class TeamCreateBox extends React.Component<any, IComponentNameState> {
 
     onFindTeamPress() {
         if (this.state.team_name.length > 0) {
+            this.props.dispatch(TeamRx.findTeam(this.state.team_name));
         }
         else {
             console.warn("Empty team name!");
         }
+    }
+
+    onSelectTeam(team) {
+
     }
 
     public render(): JSX.Element {
@@ -70,6 +76,7 @@ class TeamCreateBox extends React.Component<any, IComponentNameState> {
                             team_name={this.state.team_name}
                             />
                 }
+                <FindTeamListBox findingTeams={this.props.teamReducer.findingTeams} onSelectTeam={this.onSelectTeam} />
             </div>);
     }
 }

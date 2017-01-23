@@ -1,6 +1,6 @@
 ﻿import config from "../../configs/config";
 import { Record } from "immutable";
-
+import { createAction, Reducer } from "redux-actions";
 import * as Rx from 'rxjs/Rx';
 const { ajax } = Rx.Observable;
 
@@ -47,6 +47,30 @@ export const createNewTeamEpic = action$ =>
             .map(response => createNewTeamSuccess(response.xhr.response))
             .takeUntil(action$.ofType(CREATE_TEAM_CANCELLED))
             .catch(error => Rx.Observable.of(createNewTeamFailure(error.xhr.response)))
+        );
+
+const FIND_TEAM = "FIND_TEAM";
+const FIND_TEAM_SUCCESS = "FIND_TEAM_SUCCESS";
+const FIND_TEAM_FAILURE = "FIND_TEAM_FAILURE";
+const FIND_TEAM_CANCELLED = "FIND_TEAM_CANCELLED";
+
+export const findTeam = createAction(FIND_TEAM, team_name => team_name);
+const findTeamSuccess = createAction(FIND_TEAM_SUCCESS, payload => payload);
+const findTeamFailure = createAction(FIND_TEAM_FAILURE, error => error);
+const findTeamCancelled = createAction(FIND_TEAM_CANCELLED);
+
+export const findTeamEpic = action$ =>
+    action$.ofType(FIND_TEAM)
+        .mergeMap(action => ajax({
+            method: 'GET',
+            url: `${config.api.team}?name=${action.payload}`,
+            headers: {
+                'Content-Type': 'application/json',
+                'x-access-token': Store.getState().authReducer.token
+            }
+        }).map(response => findTeamSuccess(response.xhr.response))
+            .takeUntil(action$.ofType(FIND_TEAM_CANCELLED))
+            .catch(error => Rx.Observable.of(findTeamFailure(error.xhr.response)))
         );
 
 const GET_TEAMS_INFO = "GET_TEAMS_INFO";
@@ -107,20 +131,25 @@ export const TeamInitState = Record({
     state: null,
     teams: null,
     team: null,
-    members: null
+    members: null,
+    findingTeams: null
 });
-export const teamReducer = (state = new TeamInitState(), action) => {
+export const teamReducer = (state = new TeamInitState(), action: ReduxActions.Action<any>) => {
     switch (action.type) {
         case CREATE_TEAM_SUCCESS: {
             return state.set('teams', action.payload.result);
         }
 
+        case FIND_TEAM_SUCCESS: {
+            return state.set("findingTeams", action.payload.result);
+        }
+
         case FETCH_USER_TEAMS_SUCCESS: {
-            return state.set('teams', action.payload.result)
+            return state.set('teams', action.payload.result);
         }
 
         case GET_TEAMS_INFO_SUCCESS: {
-            return state.set('teams', action.payload.result)
+            return state.set('teams', action.payload.result);
         }
 
         case TEAM_SELECTED: {

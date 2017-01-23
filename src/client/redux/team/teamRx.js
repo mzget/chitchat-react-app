@@ -1,6 +1,7 @@
 "use strict";
 const config_1 = require("../../configs/config");
 const immutable_1 = require("immutable");
+const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 const configureStore_1 = require("../configureStore");
@@ -37,6 +38,25 @@ exports.createNewTeamEpic = action$ => action$.ofType(CREATE_TEAM)
     .map(response => exports.createNewTeamSuccess(response.xhr.response))
     .takeUntil(action$.ofType(CREATE_TEAM_CANCELLED))
     .catch(error => Rx.Observable.of(exports.createNewTeamFailure(error.xhr.response))));
+const FIND_TEAM = "FIND_TEAM";
+const FIND_TEAM_SUCCESS = "FIND_TEAM_SUCCESS";
+const FIND_TEAM_FAILURE = "FIND_TEAM_FAILURE";
+const FIND_TEAM_CANCELLED = "FIND_TEAM_CANCELLED";
+exports.findTeam = redux_actions_1.createAction(FIND_TEAM, team_name => team_name);
+const findTeamSuccess = redux_actions_1.createAction(FIND_TEAM_SUCCESS, payload => payload);
+const findTeamFailure = redux_actions_1.createAction(FIND_TEAM_FAILURE, error => error);
+const findTeamCancelled = redux_actions_1.createAction(FIND_TEAM_CANCELLED);
+exports.findTeamEpic = action$ => action$.ofType(FIND_TEAM)
+    .mergeMap(action => ajax({
+    method: 'GET',
+    url: `${config_1.default.api.team}?name=${action.payload}`,
+    headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': configureStore_1.default.getState().authReducer.token
+    }
+}).map(response => findTeamSuccess(response.xhr.response))
+    .takeUntil(action$.ofType(FIND_TEAM_CANCELLED))
+    .catch(error => Rx.Observable.of(findTeamFailure(error.xhr.response))));
 const GET_TEAMS_INFO = "GET_TEAMS_INFO";
 const GET_TEAMS_INFO_SUCCESS = "GET_TEAMS_INFO_SUCCESS";
 const GET_TEAMS_INFO_FAILURE = "GET_TEAMS_INFO_FAILURE";
@@ -91,12 +111,16 @@ exports.TeamInitState = immutable_1.Record({
     state: null,
     teams: null,
     team: null,
-    members: null
+    members: null,
+    findingTeams: null
 });
 exports.teamReducer = (state = new exports.TeamInitState(), action) => {
     switch (action.type) {
         case CREATE_TEAM_SUCCESS: {
             return state.set('teams', action.payload.result);
+        }
+        case FIND_TEAM_SUCCESS: {
+            return state.set("findingTeams", action.payload.result);
         }
         case FETCH_USER_TEAMS_SUCCESS: {
             return state.set('teams', action.payload.result);

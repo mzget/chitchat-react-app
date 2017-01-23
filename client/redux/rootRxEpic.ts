@@ -21,6 +21,7 @@ export const rootEpic = combineEpics(
     teamRx.createNewTeamEpic,
     teamRx.getTeamsInfoEpic,
     teamRx.getTeamMembersEpic,
+    teamRx.findTeamEpic,
 
     ///@Group
     groupRx.getOrgGroupEpic,

@@ -10,8 +10,8 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 const React = require("react");
 const TeamCreateView_1 = require("./TeamCreateView");
 const FindTeamView_1 = require("./FindTeamView");
+const FindTeamListBox_1 = require("./FindTeamListBox");
 const TeamRx = require("../../redux/team/teamRx");
-;
 ;
 class TeamCreateBox extends React.Component {
     componentWillMount() {
@@ -40,16 +40,21 @@ class TeamCreateBox extends React.Component {
     }
     onFindTeamPress() {
         if (this.state.team_name.length > 0) {
+            this.props.dispatch(TeamRx.findTeam(this.state.team_name));
         }
         else {
             console.warn("Empty team name!");
         }
     }
+    onSelectTeam(team) {
+    }
     render() {
-        return (React.createElement("div", null, (!this.state.is_FindTeam) ?
-            React.createElement(TeamCreateView_1.TeamCreateView, { team_name: this.state.team_name, onNameChange: this.onNameChange, onCreateTeam: this.onSubmitTeam, onFindTeam: this.onToggleView })
-            :
-                React.createElement(FindTeamView_1.FindTeamView, { onSubmit: this.onFindTeamPress, onNameChange: this.onNameChange, onCreateNewPress: this.onToggleView, team_name: this.state.team_name })));
+        return (React.createElement("div", null,
+            (!this.state.is_FindTeam) ?
+                React.createElement(TeamCreateView_1.TeamCreateView, { team_name: this.state.team_name, onNameChange: this.onNameChange, onCreateTeam: this.onSubmitTeam, onFindTeam: this.onToggleView })
+                :
+                    React.createElement(FindTeamView_1.FindTeamView, { onSubmit: this.onFindTeamPress, onNameChange: this.onNameChange, onCreateNewPress: this.onToggleView, team_name: this.state.team_name }),
+            React.createElement(FindTeamListBox_1.FindTeamListBox, { findingTeams: this.props.teamReducer.findingTeams, onSelectTeam: this.onSelectTeam })));
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
