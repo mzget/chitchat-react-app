@@ -41,10 +41,10 @@ apiRouteMiddleWare.use(function (req, res, next) {
     // check header or url parameters or post parameters for token
     var token = (!!req.headers[Constant.X_ACCESS_TOKEN]) ? req.headers[Constant.X_ACCESS_TOKEN] : req.body.token || req.query.token;
 
-    if (req.url == '/authenticate' || req.url == '/authenticate/verify') {
+    if (req.url === '/authenticate' || req.url === '/authenticate/verify') {
         next();
     }
-    else if (apikey == config.apikey) {
+    else if (apikey === config.apikey) {
         next();
     }
     else {

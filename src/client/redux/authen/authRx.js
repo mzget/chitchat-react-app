@@ -13,11 +13,12 @@ exports.signup = (user) => ({ type: SIGN_UP, payload: user }); // username => ({
 const signupSuccess = payload => ({ type: exports.SIGN_UP_SUCCESS, payload });
 const signupFailure = payload => ({ type: SIGN_UP_FAILURE, payload, error: true });
 const signupCancelled = () => ({ type: SIGN_UP_CANCELLED });
-exports.signupUserEpic = action$ => action$.ofType(SIGN_UP).mergeMap(action => ajax({
-    method: 'POST',
+exports.signupUserEpic = action$ => action$.ofType(SIGN_UP)
+    .mergeMap(action => ajax({
+    method: "POST",
     url: `${config_1.default.api.user}/signup`,
     body: JSON.stringify({ user: action.payload }),
-    headers: { 'Content-Type': 'application/json' }
+    headers: { "Content-Type": "application/json", "x-api-key": config_1.default.api.apiKey }
 })
     .map(response => signupSuccess(response.xhr.response))
     .takeUntil(action$.ofType(SIGN_UP_CANCELLED))
