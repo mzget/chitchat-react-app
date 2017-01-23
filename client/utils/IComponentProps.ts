@@ -16,4 +16,5 @@ export interface IComponentProps {
     chatlogReducer;
     stalkReducer;
     teamReducer;
+    groupReducer;
 };

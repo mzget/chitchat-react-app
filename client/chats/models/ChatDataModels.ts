@@ -8,31 +8,6 @@ type IMembersStatus = {
 export enum RoomType { organizationGroup = 0, projectBaseGroup, privateGroup, privateChat };
 enum RoomStatus { active, disable, delete };
 
-export class Room {
-    _id: string;
-    nodeId: number;
-    name: string;
-    type: RoomType;
-    members: IMember[];
-    image: string;
-    description: string;
-    status: RoomStatus;
-    createTime: Date;
-
-    public _visibility: boolean = true;
-
-    set visibility(_boo: boolean) {
-        this._visibility = _boo;
-    }
-    get visibilty(): boolean {
-        return this._visibility;
-    }
-
-    public setName(name: string) {
-        this.name = name;
-    }
-}
-
 export type RoomAccessData = {
     roomId: string;
     accessTime: Date;

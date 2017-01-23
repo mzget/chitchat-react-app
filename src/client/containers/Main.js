@@ -14,6 +14,7 @@ const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const Colors = require("material-ui/styles/colors");
 const Subheader_1 = require("material-ui/Subheader");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
+const OrgGroupListBox_1 = require("./group/OrgGroupListBox");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 const ChatListBox_1 = require("./chatlist/ChatListBox");
 const UtilsBox_1 = require("./UtilsBox");
@@ -112,10 +113,11 @@ class Main extends React.Component {
                     React.createElement(SimpleToolbar_1.default, { title: teamReducer.team.name, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem }),
                     React.createElement(Subheader_1.default, null, this.state.header)),
                 React.createElement("div", { style: { height: this.bodyHeight } },
+                    React.createElement(OrgGroupListBox_1.default, __assign({}, this.props)),
                     React.createElement(ChatListBox_1.default, __assign({}, this.props)),
                     React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
                     React.createElement(UtilsBox_1.default, null)),
-                (stalkReducer.state == StalkBridgeActions.STALK_INIT_FAILURE) ?
+                (stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
                     (React.createElement(reflexbox_1.Flex, { style: { height: this.footerHeight, backgroundColor: Colors.red500 }, align: 'center', justify: 'center', flexColumn: true },
                         React.createElement(reflexbox_1.Flex, { flexColumn: true },
                             React.createElement("span", { style: { color: Colors.white } }, "Unable to connect whit chat service."),

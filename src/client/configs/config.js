@@ -9,6 +9,7 @@ const rest_api = (host) => ({
     auth: `${host}/api/auth`,
     user: `${host}/api/users`,
     team: `${host}/api/team`,
+    group: `${host}/api/group`,
     chatroom: `${host}/chatroom`,
     fileUpload: `${host}/chats/upload`
 });

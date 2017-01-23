@@ -306,7 +306,7 @@ exports.GET_PERSISTEND_CHATROOM_FAILURE = "GET_PERSISTEND_CHATROOM_FAILURE";
 const getPersistChatroomFail = () => ({ type: exports.GET_PERSISTEND_CHATROOM_FAILURE });
 const getPersistChatroomSuccess = (roomInfo) => ({ type: exports.GET_PERSISTEND_CHATROOM_SUCCESS, payload: roomInfo });
 exports.getPersistendChatroom = (roomId) => (dispatch => {
-    dispatch({ type: GET_PERSISTEND_CHATROOM });
+    dispatch({ type: GET_PERSISTEND_CHATROOM, payload: roomId });
     const dataManager = BackendFactory_1.default.getInstance().dataManager;
     dataManager.roomDAL.get(roomId).then(room => {
         if (room)

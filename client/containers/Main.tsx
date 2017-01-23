@@ -7,7 +7,8 @@ import Subheader from 'material-ui/Subheader';
 
 import { IComponentProps } from '../utils/IComponentProps';
 
-import SimpleToolbar from '../components/SimpleToolbar';
+import SimpleToolbar from "../components/SimpleToolbar";
+import OrgGroupListBox from "./group/OrgGroupListBox";
 import ChatLogsBox from "./ChatLogsBox";
 import ChatListBox from "./chatlist/ChatListBox";
 import UtilsBox from "./UtilsBox";
@@ -17,7 +18,7 @@ import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 import * as userRx from "../redux/user/userRx";
 import * as authRx from "../redux/authen/authRx";
-import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
+import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
 
 interface IComponentNameState {
     header: string;
@@ -116,6 +117,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
 
     public render(): JSX.Element {
         let {stalkReducer, teamReducer} = this.props;
+
         return (
             <MuiThemeProvider>
                 <div>
@@ -124,12 +126,13 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                         <Subheader>{this.state.header}</Subheader>
                     </div>
                     <div style={{ height: this.bodyHeight }}>
+                        <OrgGroupListBox {...this.props} />
                         <ChatListBox {...this.props} />
                         <ChatLogsBox {...this.props} />
                         <UtilsBox />
                     </div>
                     {
-                        (stalkReducer.state == StalkBridgeActions.STALK_INIT_FAILURE) ?
+                        (stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
                             (
                                 <Flex style={{ height: this.footerHeight, backgroundColor: Colors.red500 }} align='center' justify='center' flexColumn={true}>
                                     <Flex flexColumn={true}>

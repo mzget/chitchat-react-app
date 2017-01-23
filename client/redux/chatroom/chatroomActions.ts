@@ -10,7 +10,7 @@ import BackendFactory from "../../chats/BackendFactory";
 import SecureServiceFactory from "../../libs/chitchat/services/secureServiceFactory";
 import ServerEventListener from "../../libs/stalk/serverEventListener";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
-import { ContentType, IMessage, Room, RoomType } from "../../chats/models/ChatDataModels";
+import { ContentType, IMessage, RoomType } from "../../chats/models/ChatDataModels";
 import * as NotificationManager from '../stalkBridge/StalkNotificationActions';
 import { Member } from '../../chats/models/Member';
 
@@ -18,6 +18,7 @@ import * as fetch from 'isomorphic-fetch';
 
 import Store from "../configureStore";
 
+import { Room } from "../../../server/scripts/models/Room";
 import config from "../../configs/config";
 const secure = SecureServiceFactory.getService();
 
@@ -331,7 +332,7 @@ export const GET_PERSISTEND_CHATROOM_FAILURE = "GET_PERSISTEND_CHATROOM_FAILURE"
 const getPersistChatroomFail = () => ({ type: GET_PERSISTEND_CHATROOM_FAILURE });
 const getPersistChatroomSuccess = (roomInfo: Room) => ({ type: GET_PERSISTEND_CHATROOM_SUCCESS, payload: roomInfo });
 export const getPersistendChatroom = (roomId: string) => (dispatch => {
-    dispatch({ type: GET_PERSISTEND_CHATROOM });
+    dispatch({ type: GET_PERSISTEND_CHATROOM, payload: roomId });
 
     const dataManager = BackendFactory.getInstance().dataManager;
     dataManager.roomDAL.get(roomId).then(room => {

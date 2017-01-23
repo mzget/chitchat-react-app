@@ -9,7 +9,7 @@
  *
  */
 
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
 
 /**
 * ## Reducers
@@ -18,6 +18,7 @@ import { deviceReducer, DeviceInitialState } from "./device/deviceReducer";
 import { teamReducer, TeamInitState } from "./team/teamRx";
 import { UserInitState, userReducer } from "./user/userRx";
 import { AuthenInitState, authReducer } from "./authen/authRx";
+import { GroupInitState, groupReducer } from "./group/groupRx";
 import { stalkReducer, StalkInitState } from "./stalkBridge/stalkReducer";
 import { chatroomReducer, ChatRoomInitState } from "./chatroom/chatroomReducer";
 import { chatlogReducer, ChatLogInitState } from "./chatlogs/chatlogReducer";
@@ -32,6 +33,7 @@ const appReducer = combineReducers({
     deviceReducer,
     authReducer,
     teamReducer,
+    groupReducer,
     stalkReducer,
     chatroomReducer,
     chatlogReducer,
@@ -47,6 +49,7 @@ export function getInitialState() {
     const _initState = {
         deviceReducer: new DeviceInitialState(),
         teamReducer: new TeamInitState(),
+        groupReducer: new GroupInitState(),
         authReducer: new AuthenInitState(),
         stalkReducer: new StalkInitState(),
         chatroomReducer: new ChatRoomInitState(),
@@ -57,5 +60,5 @@ export function getInitialState() {
 }
 
 export const rootReducer = (state, action) => {
-    return appReducer(state, action)
+    return appReducer(state, action);
 }
