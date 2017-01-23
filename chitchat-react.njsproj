@@ -46,6 +46,8 @@
     <Content Include="client\containers\ChatBox.tsx" />
     <Content Include="client\containers\chatlist\ChatListBox.tsx" />
     <Content Include="client\containers\ChatLogsBox.tsx" />
+    <Content Include="client\containers\group\GroupList.tsx" />
+    <Content Include="client\containers\group\OrgGroupListBox.tsx" />
     <Content Include="client\containers\Home.tsx" />
     <Content Include="client\containers\ListChatLogs.tsx" />
     <Content Include="client\containers\Team.tsx" />
@@ -327,6 +329,7 @@
     <Folder Include="client\containers\authen\" />
     <Folder Include="client\containers\admins\" />
     <Folder Include="client\containers\chatlist\" />
+    <Folder Include="client\containers\group\" />
     <Folder Include="client\containers\teams\" />
     <Folder Include="client\libs" />
     <Folder Include="client\libs\chitchat" />
