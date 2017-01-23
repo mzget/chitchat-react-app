@@ -40,10 +40,12 @@
     <TypeScriptCompile Include="scripts\Constant.ts" />
     <TypeScriptCompile Include="scripts\controllers\ChatRoomManager.ts" />
     <TypeScriptCompile Include="scripts\controllers\CompanyManager.ts" />
+    <TypeScriptCompile Include="scripts\controllers\group\GroupController.ts" />
     <TypeScriptCompile Include="scripts\controllers\team\TeamController.ts" />
     <TypeScriptCompile Include="scripts\controllers\user\UserManager.ts" />
     <Compile Include="scripts\controllers\ChatRoomManager.js" />
     <Compile Include="scripts\controllers\CompanyManager.js" />
+    <Compile Include="scripts\controllers\group\GroupController.js" />
     <Compile Include="scripts\controllers\user\UserManager.js" />
     <TypeScriptCompile Include="scripts\models\ITeam.ts" />
     <TypeScriptCompile Include="scripts\models\IChatRoom.ts" />
@@ -83,6 +85,7 @@
     <Folder Include="routes\upload" />
     <Folder Include="scripts" />
     <Folder Include="scripts\controllers" />
+    <Folder Include="scripts\controllers\group\" />
     <Folder Include="scripts\controllers\user\" />
     <Folder Include="scripts\controllers\team\" />
     <Folder Include="scripts\models" />

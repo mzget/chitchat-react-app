@@ -14,6 +14,26 @@ const config = getConfig();
 import * as TeamController from '../scripts/controllers/team/TeamController';
 import * as UserManager from '../scripts/controllers/user/UserManager';
 
+router.get("/", (req, res, next) => {
+    req.checkQuery("name", "request for name param").notEmpty();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let team_name = req.query.name;
+    TeamController.findTeamName(team_name).then(value => {
+        if (value.length > 0)
+            res.status(200).json(new apiUtils.ApiResponse(true, null, value));
+        else
+            res.status(500).json(new apiUtils.ApiResponse(false, value));
+    }).catch(err => {
+        console.error("Find team name fail: ", err);
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
+    });
+});
+
 router.post('/teamInfo', function (req, res, next) {
     req.checkBody('team_id', 'request for team_id').isMongoId();
 

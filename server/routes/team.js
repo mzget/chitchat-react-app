@@ -4,7 +4,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
 const express = require("express");
@@ -17,6 +17,23 @@ const config_1 = require("../config");
 const config = config_1.getConfig();
 const TeamController = require("../scripts/controllers/team/TeamController");
 const UserManager = require("../scripts/controllers/user/UserManager");
+router.get("/", (req, res, next) => {
+    req.checkQuery("name", "request for name param").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+    let team_name = req.query.name;
+    TeamController.findTeamName(team_name).then(value => {
+        if (value.length > 0)
+            res.status(200).json(new apiUtils.ApiResponse(true, null, value));
+        else
+            res.status(500).json(new apiUtils.ApiResponse(false, value));
+    }).catch(err => {
+        console.error("Find team name fail: ", err);
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
+    });
+});
 router.post('/teamInfo', function (req, res, next) {
     req.checkBody('team_id', 'request for team_id').isMongoId();
     let errors = req.validationErrors();
