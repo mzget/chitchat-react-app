@@ -23,21 +23,21 @@ const styles = {
         position: 'absolute'
     }
 };
-const SubmitButton = (props) => (React.createElement(material_ui_1.RaisedButton, { primary: true, label: "Create Team", onClick: props.onCreateTeam }));
-const FindButton = (props) => (React.createElement(material_ui_1.RaisedButton, { primary: true, label: "Find Team", onClick: props.onFindTeam }));
-exports.TeamCreateView = (props) => {
+const FindButton = (props) => (React.createElement(material_ui_1.RaisedButton, { primary: true, label: "Find Now", onClick: props.onSubmit }));
+const CreateNewButton = (props) => (React.createElement(material_ui_1.RaisedButton, { primary: true, label: "Create New", onClick: props.onCreateNewPress }));
+exports.FindTeamView = (props) => {
     return (React.createElement(MuiThemeProvider_1.default, null,
         React.createElement(reflexbox_1.Flex, { flexColumn: true, align: 'center', justify: 'center' },
-            React.createElement("h3", null, "Create a new team"),
-            React.createElement(material_ui_1.TextField, { hintText: "Team name", value: props.team_name, onChange: props.onNameChange, onKeyDown: (e) => {
+            React.createElement("h3", null, "Find your team"),
+            React.createElement(material_ui_1.TextField, { hintText: "Enter your team name", value: props.team_name, onChange: props.onNameChange, onKeyDown: (e) => {
                     if (e.key === 'Enter')
-                        props.onCreateTeam();
+                        props.onSubmit();
                 } }),
             React.createElement("span", { style: styles.span }),
-            React.createElement(SubmitButton, __assign({}, props)),
+            React.createElement(FindButton, __assign({}, props)),
             React.createElement("span", { style: styles.span }),
             React.createElement(reflexbox_1.Flex, { flexColumn: false, align: 'center', justify: 'center' },
-                React.createElement("p", null, "Looking for existing team?"),
+                React.createElement("p", null, "Create new team?"),
                 React.createElement("span", { style: styles.span }),
-                React.createElement(FindButton, __assign({}, props))))));
+                React.createElement(CreateNewButton, __assign({}, props))))));
 };

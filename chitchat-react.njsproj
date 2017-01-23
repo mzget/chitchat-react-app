@@ -52,6 +52,7 @@
     <Content Include="client\containers\ListChatLogs.tsx" />
     <Content Include="client\containers\Team.tsx" />
     <Content Include="client\containers\teams\TeamCreateBox.tsx" />
+    <Content Include="client\containers\teams\FindTeamView.tsx" />
     <Content Include="client\containers\teams\TeamCreateView.tsx" />
     <Content Include="client\containers\teams\TeamListBox.tsx" />
     <Content Include="client\containers\teams\TeamListView.tsx" />
