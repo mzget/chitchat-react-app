@@ -28,4 +28,5 @@ export class Room {
     description: string;
     status: RoomStatus;
     createTime: Date;
+    team_id: any;
 }

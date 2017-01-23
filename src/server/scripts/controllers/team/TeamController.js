@@ -40,12 +40,17 @@ function createTeam(team_name) {
         let collection = db.collection(config_1.DbClient.teamsColl);
         collection.createIndex({ name: 1 }, { background: true });
         let defaultGroup = yield GroupController.createDefaultGroup();
+        let _group = defaultGroup[0];
         let team = {};
         team.name = team_name.toLowerCase();
         team.createAt = new Date();
-        team.defaultGroup = defaultGroup[0];
-        team.groups = new Array(defaultGroup[0]);
+        team.defaultGroup = _group;
+        team.groups = new Array(_group);
         let result = yield collection.insert(team);
+        let newTeam = result.ops;
+        if (newTeam.length > 0) {
+            GroupController.addTeamToGroup(_group, newTeam[0]);
+        }
         db.close();
         return result.ops;
     });

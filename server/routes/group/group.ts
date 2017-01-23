@@ -13,24 +13,33 @@ import Room = require("../scripts/models/Room");
 import Message = require("../scripts/models/Message");
 import * as RoomService from "../scripts/services/RoomService";
 
-import * as ChatRoomManager from "../scripts/controllers/ChatRoomManager";
-import * as UserManager from "../scripts/controllers/user/UserManager";
-import * as apiUtils from '../../scripts/utils/apiUtils';
+import * as GroupController from "../../scripts/controllers/group/GroupController";
+import * as ChatRoomManager from "../../scripts/controllers/ChatRoomManager";
+import * as UserManager from "../../scripts/controllers/user/UserManager";
+import * as apiUtils from "../../scripts/utils/apiUtils";
 
-import { getConfig, DbClient } from '../../config';
+import { getConfig, DbClient } from "../../config";
 const webConfig = getConfig();
 
-router.get('/getOrg', function (req, res, next) {
+router.get("/org", function (req, res, next) {
+    req.checkQuery("team_id", "request for team_id").isMongoId();
 
-    MongoClient.connect(webConfig.chatDB, function (err, db) {
-        if (err) {
-            throw err;
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let team_id = new mongodb.ObjectID(req.query.team_id);
+
+    GroupController.getOrgGroups(team_id).then(docs => {
+        if (docs.length > 0) {
+            res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
         }
-        var collection = db.collection(Mdb.DbClient.roomColl);
-        collection.find({ type: 0 }).toArray().then(function (docs) {
-            res.status(200).jsonp({ "success": true, "result": docs });
-        });
-
+        else {
+            res.status(500).json(new apiUtils.ApiResponse(false, docs));
+        }
+    }).catch(err => {
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });
 

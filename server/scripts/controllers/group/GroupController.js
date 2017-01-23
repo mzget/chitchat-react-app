@@ -30,3 +30,28 @@ function createDefaultGroup() {
     });
 }
 exports.createDefaultGroup = createDefaultGroup;
+function addTeamToGroup(group, team) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let db = yield MongoClient.connect(config.chatDB);
+        let collection = db.collection(config_1.DbClient.chatroomColl);
+        let result = yield collection.update({ _id: new mongodb.ObjectID(group._id) }, {
+            $set: {
+                team_id: team._id
+            }
+        });
+        db.close();
+        return result.ops;
+    });
+}
+exports.addTeamToGroup = addTeamToGroup;
+function getOrgGroups(team_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let db = yield MongoClient.connect(config.chatDB);
+        let collection = db.collection(config_1.DbClient.chatroomColl);
+        collection.createIndex({ team_id: 1 }, { background: true });
+        let docs = yield collection.find({ team_id: team_id, type: 0 }).toArray();
+        db.close();
+        return docs;
+    });
+}
+exports.getOrgGroups = getOrgGroups;

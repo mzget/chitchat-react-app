@@ -4,18 +4,26 @@ const mongodb = require("mongodb");
 const router = express.Router();
 const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
+const GroupController = require("../../scripts/controllers/group/GroupController");
 const apiUtils = require("../../scripts/utils/apiUtils");
 const config_1 = require("../../config");
 const webConfig = config_1.getConfig();
-router.get('/getOrg', function (req, res, next) {
-    MongoClient.connect(webConfig.chatDB, function (err, db) {
-        if (err) {
-            throw err;
+router.get("/org", function (req, res, next) {
+    req.checkQuery("team_id", "request for team_id").isMongoId();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+    let team_id = new mongodb.ObjectID(req.query.team_id);
+    GroupController.getOrgGroups(team_id).then(docs => {
+        if (docs.length > 0) {
+            res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
         }
-        var collection = db.collection(Mdb.DbClient.roomColl);
-        collection.find({ type: 0 }).toArray().then(function (docs) {
-            res.status(200).jsonp({ "success": true, "result": docs });
-        });
+        else {
+            res.status(500).json(new apiUtils.ApiResponse(false, docs));
+        }
+    }).catch(err => {
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });
 router.post('/createOrg', function (req, res, next) {
