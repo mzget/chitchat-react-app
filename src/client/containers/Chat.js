@@ -17,7 +17,8 @@ const config_1 = require("../configs/config");
 const FileType = require("../consts/FileType");
 const TypingBox_1 = require("./TypingBox");
 const ChatBox_1 = require("./ChatBox");
-const ToolbarSimple_1 = require("../components/ToolbarSimple");
+const SimpleToolbar_1 = require("../components/SimpleToolbar");
+const UtilsBox_1 = require("./UtilsBox");
 const UploadingDialog_1 = require("./UploadingDialog");
 const GridListSimple_1 = require("../components/GridListSimple");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
@@ -26,13 +27,11 @@ const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const ChatDataModels_1 = require("../chats/models/ChatDataModels");
 const MessageImp_1 = require("../chats/models/MessageImp");
 const StickerPath_1 = require("../consts/StickerPath");
-class IComponentNameProps {
-}
-;
 ;
 class Chat extends React.Component {
     constructor() {
         super(...arguments);
+        this.toolbarMenus = ["Favorite"];
         this.fileReaderChange = (e, results) => {
             results.forEach(result => {
                 const [progressEvent, file] = result;
@@ -74,8 +73,6 @@ class Chat extends React.Component {
         if (!chatroomReducer.room) {
             this.props.dispatch(chatRoomActions.getPersistendChatroom(params.filter));
         }
-    }
-    componentDidMount() {
     }
     componentWillUnmount() {
         console.log("Chat: leaveRoom");
@@ -273,7 +270,7 @@ class Chat extends React.Component {
         };
         message.target = "*";
         message.uuid = Math.round(Math.random() * 10000); // simulating server-side unique id generation
-        message.status = 'Sending...';
+        message.status = "Sending...";
         return message;
     }
     send(message) {
@@ -284,10 +281,9 @@ class Chat extends React.Component {
     }
     render() {
         let { chatroomReducer } = this.props;
-        return (React.createElement("div", { style: { height: document.documentElement.clientHeight } },
+        return (React.createElement("div", null,
             React.createElement("div", { style: { height: this.state.h_header } },
-                React.createElement(reflexbox_1.Flex, { flexAuto: true },
-                    React.createElement(ToolbarSimple_1.default, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "" }))),
+                React.createElement(SimpleToolbar_1.default, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty", menus: this.toolbarMenus, onSelectedMenuItem: (id, value) => console.log(value) })),
             React.createElement("div", { style: { height: this.state.h_body } },
                 React.createElement(reflexbox_1.Flex, { flexColumn: true },
                     React.createElement("div", { style: { height: this.state.h_chatArea, overflowY: 'scroll' }, id: 'h_chatArea' },
@@ -304,14 +300,13 @@ class Chat extends React.Component {
             React.createElement(reflexbox_1.Flex, { align: 'center', justify: 'center', flexColumn: false },
                 React.createElement("div", { style: { bottom: '0%', position: 'absolute' } },
                     React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }))),
-            React.createElement(UploadingDialog_1.default, null)));
+            React.createElement(UploadingDialog_1.default, null),
+            React.createElement(UtilsBox_1.default, null)));
     }
 }
 /**
  * ## Redux boilerplate
  */
-function mapStateToProps(state) {
-    return __assign({}, state);
-}
+const mapStateToProps = (state) => (__assign({}, state));
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = react_redux_1.connect(mapStateToProps)(Chat);

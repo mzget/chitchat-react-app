@@ -6,13 +6,13 @@ import { Router, Route, browserHistory } from 'react-router';
  * ### configureStore
  *  ```configureStore``` will connect the ```reducers```,
  */
-import Store from './client/redux/configureStore';
+import Store from "./client/redux/configureStore";
 
 import Home from "./client/containers/Home";
 import Chat from "./client/containers/Chat";
 import Team from "./client/containers/Team";
 import Main from "./client/containers/Main";
-import Admin from "./client/containers/admins/Admin";
+import Admin from "./client/containers/Admin";
 
 class App extends Component {
     render() {

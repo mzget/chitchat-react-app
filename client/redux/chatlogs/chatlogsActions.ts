@@ -73,16 +73,6 @@ export function initChatsLog() {
         getUnreadMessages();
     }
 
-    let msg: IDictionary = {};
-    msg["token"] = dataManager.getSessionToken();
-    BackendFactory.getInstance().getServer().then(server => {
-        server.getLastAccessRoomsInfo(msg, function (err, res) {
-            console.log("getLastAccessRoomsInfo:", JSON.stringify(res));
-        });
-    }).catch(err => {
-        console.warn("Cannot getLastAccessRoomsInfo", err);
-    });
-
     Store.dispatch({
         type: STALK_INIT_CHATSLOG, payload: chatsLogComponent
     });

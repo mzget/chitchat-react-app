@@ -48,12 +48,19 @@ router.post('/', function (req, res, next) {
     let roomId = hexCode.slice(0, 24);
 
     redisClient.hmget(ROOM_KEY, roomId, (err, result) => {
-        console.log("get room from cache", result);
-        if (err || result == null) {
+        let room = JSON.parse(JSON.stringify(result[0]));
+        console.log("get room from cache", room);
+        if (err || room == null || room == "undefined") {
             //@find from db..
+            console.log("find room from db...");
             ChatRoomManager.GetChatRoomInfo(roomId).then(function (results) {
-                redisClient.hmset(ROOM_KEY, roomId, JSON.stringify(results[0]), redis.print);
-                res.status(200).json({ success: true, result: results });
+                if (results.length > 0) {
+                    redisClient.hmset(ROOM_KEY, roomId, JSON.stringify(results[0]), redis.print);
+                    res.status(200).json({ success: true, result: results });
+                }
+                else {
+                    res.status(500).json({ success: false, message: results });
+                }
             }).catch(err => {
                 res.status(500).json({ success: false, message: err });
             });

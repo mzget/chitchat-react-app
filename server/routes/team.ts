@@ -6,6 +6,7 @@ import * as apiUtils from '../scripts/utils/apiUtils';
 import { ITeam } from '../scripts/models/ITeam';
 
 const MongoClient = mongodb.MongoClient;
+const ObjectID = mongodb.ObjectID;
 const router = express.Router();
 import { getConfig, DbClient } from '../config';
 const config = getConfig();
@@ -44,7 +45,7 @@ router.post('/teamInfo', function (req, res, next) {
     });
 });
 
-router.post('/teamsInfo', function (req, res, next) {
+router.post("/teamsInfo", function (req, res, next) {
     req.checkBody('team_ids', 'request for team_ids').notEmpty();
 
     let errors = req.validationErrors();
@@ -79,7 +80,7 @@ router.post('/create', (req, res, next) => {
     }
 
     let team_name = req.body.team_name as string;
-    let user = req.decoded;
+    let user = req["decoded"];
 
     //@ Find team_name for check it already used.
     TeamController.findTeamName(team_name).then(teams => {
@@ -95,6 +96,34 @@ router.post('/create', (req, res, next) => {
         console.error("findTeamName fail: ", err);
         res.status(500).json(new apiUtils.ApiResponse(false, err));
     })
+});
+
+router.get("/teamMembers", function (req, res, next) {
+    req.checkQuery("id", "request for team_id").isMongoId();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let team_id = new ObjectID(req.query.id);
+
+    async function findTeamMembers(team_id: mongodb.ObjectID) {
+        let db = await MongoClient.connect(config.chatDB);
+        let collection = db.collection(DbClient.systemUsersColl);
+
+        let results = await collection.find({}).project({ username: 1, firstname: 1, lastname: 1, image: 1 }).limit(100).toArray();
+
+        db.close();
+        return results;
+    }
+
+    findTeamMembers(team_id).then(docs => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
+    }).catch(err => {
+        console.error("findTeamMembers failt", err);
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
+    });
 });
 
 module.exports = router;

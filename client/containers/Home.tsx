@@ -10,40 +10,18 @@ import { Flex, Box } from 'reflexbox';
 
 import { IComponentProps } from "../utils/IComponentProps";
 
-import * as userActions from "../redux/user/userActions";
 import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 import * as AuthRx from '../redux/authen/authRx';
 import * as AppActions from '../redux/app/persistentDataActions';
 
-import UtilsBox from "./UtilsBox";
 import AuthenBox from './authen/AuthenBox';
-
-abstract class IComponentNameProps implements IComponentProps {
-    location: {
-        query: {
-            contactId: string;
-            userId: string;
-            roomId: string;
-            username: string;
-            agent_name: string;
-        }
-    };
-    params;
-    router;
-    dispatch;
-    authReducer;
-    userReducer;
-    chatroomReducer;
-    chatlogReducer;
-    stalkReducer;
-};
 
 interface IComponentNameState {
 };
 
-class Home extends React.Component<IComponentNameProps, IComponentNameState> {
+class Home extends React.Component<IComponentProps, IComponentNameState> {
     componentWillMount() {
-        console.log("Home", this.props);
+        console.log("Home", global.userAgent);
 
         this.props.dispatch(AppActions.getSession());
     }
@@ -55,7 +33,7 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
     componentWillReceiveProps(nextProps) {
         let { location: {query: {userId, username, roomId, contactId}},
             chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer
-        } = nextProps as IComponentNameProps;
+        } = nextProps as IComponentProps;
 
         switch (authReducer.state) {
             case AuthRx.AUTH_USER_SUCCESS: {
@@ -86,7 +64,6 @@ class Home extends React.Component<IComponentNameProps, IComponentNameState> {
                     <AuthenBox {...this.props} />
                     <Box p={2} flexAuto></Box>
                 </Flex>
-                <UtilsBox />
                 <Flex px={2} align='center'>
                     <Box p={2} flexAuto></Box>
                     <p>Stalk realtime messaging service.</p>

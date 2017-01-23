@@ -15,8 +15,9 @@ const redux_1 = require("redux");
 */
 const deviceReducer_1 = require("./device/deviceReducer");
 const teamRx_1 = require("./team/teamRx");
-const userActions_1 = require("./user/userActions");
+const userRx_1 = require("./user/userRx");
 const authRx_1 = require("./authen/authRx");
+const groupRx_1 = require("./group/groupRx");
 const stalkReducer_1 = require("./stalkBridge/stalkReducer");
 const chatroomReducer_1 = require("./chatroom/chatroomReducer");
 const chatlogReducer_1 = require("./chatlogs/chatlogReducer");
@@ -30,10 +31,11 @@ const appReducer = redux_1.combineReducers({
     deviceReducer: deviceReducer_1.deviceReducer,
     authReducer: authRx_1.authReducer,
     teamReducer: teamRx_1.teamReducer,
+    groupReducer: groupRx_1.groupReducer,
     stalkReducer: stalkReducer_1.stalkReducer,
     chatroomReducer: chatroomReducer_1.chatroomReducer,
     chatlogReducer: chatlogReducer_1.chatlogReducer,
-    userReducer: userActions_1.userReducer
+    userReducer: userRx_1.userReducer
 });
 /*
  *
@@ -44,11 +46,12 @@ function getInitialState() {
     const _initState = {
         deviceReducer: new deviceReducer_1.DeviceInitialState(),
         teamReducer: new teamRx_1.TeamInitState(),
+        groupReducer: new groupRx_1.GroupInitState(),
         authReducer: new authRx_1.AuthenInitState(),
         stalkReducer: new stalkReducer_1.StalkInitState(),
         chatroomReducer: new chatroomReducer_1.ChatRoomInitState(),
         chatlogReducer: new chatlogReducer_1.ChatLogInitState(),
-        userReducer: new userActions_1.UserInitState()
+        userReducer: new userRx_1.UserInitState()
     };
     return _initState;
 }

@@ -7,11 +7,14 @@ interface IConfigFile {
     Stalk: {
         chat: string,
         port: string,
-    },
+        api: {
+            user: string;
+        },
+    };
     appConfig: {
         encryption: boolean
-    },
-    api: IApi
+    };
+    api: IApi;
 }
 
 interface IApi {
@@ -21,6 +24,7 @@ interface IApi {
     auth: string;
     user: string;
     team: string;
+    group: string;
     chatroom: string;
     fileUpload: string;
 }
@@ -32,6 +36,7 @@ const rest_api = (host) => ({
     auth: `${host}/api/auth`,
     user: `${host}/api/users`,
     team: `${host}/api/team`,
+    group: `${host}/api/group`,
     chatroom: `${host}/chatroom`,
     fileUpload: `${host}/chats/upload`
 }) as IApi;
@@ -40,6 +45,9 @@ const devConfig = {
     Stalk: {
         chat: "localhost",
         port: "3010",
+        api: {
+            user: "http://localhost:9000/api/stalk/user"
+        }
     },
     appConfig: {
         encryption: true
@@ -53,6 +61,9 @@ const masterConfig = {
     Stalk: {
         chat: "git.animation-genius.com",
         port: "3010",
+        api: {
+            user: "http://localhost:9000/api/stalk/user"
+        }
     },
     appConfig: {
         encryption: false
@@ -62,25 +73,12 @@ const masterConfig = {
     }
 } as IConfigFile;
 
-const productionConfig = {
-    Stalk: {
-        chat: "git.animation-genius.com",
-        port: "3010",
-    },
-    appConfig: {
-        encryption: false
-    },
-    api: {
-
-    }
-};
-
 const composeMyconfig = (config: IConfigFile) => {
     return (host) => {
         config.api = rest_api(host);
         return config;
-    }
-}
+    };
+};
 
 const getConfig = () => {
     if (process.env.NODE_ENV === `development`) {
@@ -89,7 +87,7 @@ const getConfig = () => {
     else if (process.env.NODE_ENV === `production`) {
         return composeMyconfig(masterConfig)(api_master);
     }
-}
+};
 
 const config = getConfig();
 export default config;

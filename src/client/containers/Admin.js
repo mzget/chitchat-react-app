@@ -9,23 +9,24 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const react_redux_1 = require("react-redux");
-const Toolbar_1 = require("../../components/Toolbar");
-const AdminBox_1 = require("./AdminBox");
+const SimpleToolbar_1 = require("../components/SimpleToolbar");
+const AdminBox_1 = require("./admins/AdminBox");
 ;
 ;
 class Admin extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.menus = ["create-org-group", "create-projectbase-group", "create-group"];
+    }
     componentWillMount() {
-        this.state = {
-            menu: ["create-org-group", "create-projectbase-group", "create-group"]
-        };
     }
     onAdminMenuSelected(key) {
         console.log('onAdminMenuSelected', key);
     }
     render() {
         return (React.createElement("span", null,
-            React.createElement(Toolbar_1.default, { title: 'Admin' }),
-            React.createElement(AdminBox_1.default, { itemName: this.state.menu, onSelectItem: this.onAdminMenuSelected })));
+            React.createElement(SimpleToolbar_1.default, { title: 'Admin' }),
+            React.createElement(AdminBox_1.default, { itemName: this.menus, onSelectItem: this.onAdminMenuSelected })));
     }
 }
 const mapstateToProps = (state) => {

@@ -2,6 +2,8 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Flex, Box } from 'reflexbox';
 
+import { IComponentProps } from "../utils/IComponentProps";
+
 import { DialogBox } from "../components/DialogBox";
 import { AlertBox } from "../components/AlertBox";
 import { SnackbarSimple } from "../components/SnackbarSimple";
@@ -10,13 +12,6 @@ import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import * as StalkNotificationActions from '../redux/stalkBridge/StalkNotificationActions';
 
 import * as AlertMsg from "../consts/AlertMsg";
-
-interface IComponentNameProps {
-    userReducer;
-    chatroomReducer;
-    chatlogReducer;
-    stalkReducer;
-};
 
 interface IComponentNameState {
     openDialog: boolean,
@@ -28,7 +23,7 @@ interface IComponentNameState {
     snackbarClose: (reason: string) => void
 };
 
-class UtilsBox extends React.Component<IComponentNameProps, IComponentNameState> {
+class UtilsBox extends React.Component<IComponentProps, IComponentNameState> {
     componentWillMount() {
         this.state = {
             openDialog: false,
@@ -43,8 +38,8 @@ class UtilsBox extends React.Component<IComponentNameProps, IComponentNameState>
         this.closeSnackbar = this.closeSnackbar.bind(this);
     }
 
-    componentWillReceiveProps(nextProps: IComponentNameProps) {
-        let {  chatroomReducer, chatlogReducer, userReducer, stalkReducer } = nextProps as IComponentNameProps;
+    componentWillReceiveProps(nextProps: IComponentProps) {
+        let {  chatroomReducer, chatlogReducer, userReducer, stalkReducer } = nextProps;
 
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_INIT_FAILURE:
@@ -78,13 +73,18 @@ class UtilsBox extends React.Component<IComponentNameProps, IComponentNameState>
     public render(): JSX.Element {
         return (
             <div>
-                <DialogBox handleClose={() => { this.setState({ ...this.state, openDialog: false }) } }
+                <DialogBox
+                    handleClose={() => { this.setState({ ...this.state, openDialog: false }) } }
                     open={this.state.openDialog}
                     title={this.state.dialogTitle}
                     message={this.state.dialogMessage}
                     />
 
-                <SnackbarSimple open={this.state.openSnackbar} message={this.state.snackbarMessage} handleRequestClose={this.closeSnackbar} hideDuration={2000} />
+                <SnackbarSimple
+                    open={this.state.openSnackbar}
+                    message={this.state.snackbarMessage}
+                    handleRequestClose={this.closeSnackbar}
+                    hideDuration={2000} />
             </div>
         );
     }

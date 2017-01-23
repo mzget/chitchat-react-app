@@ -254,17 +254,6 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
             }
         }
     }
-    public getContactProfile(contactId: string): ContactInfo {
-        if (!!this.contactsMember[contactId]) {
-            return this.contactsMember[contactId];
-        }
-        else {
-            console.warn('this contactId is invalid. Maybe it not contain in list of contacts.');
-            this.getContactInfoFailEvents.forEach(value => {
-                value(contactId);
-            });
-        }
-    }
     public setContactProfile(contactId: string, contact: ContactInfo) {
         if (!this.contactsMember)
             this.contactsMember = {};

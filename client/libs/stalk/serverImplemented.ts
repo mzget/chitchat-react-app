@@ -349,16 +349,6 @@ export default class ServerImplemented {
         });
     }
 
-    public getLastAccessRoomsInfo(msg: IDictionary, callback: Function) {
-        let self = this;
-        //<!-- Get user info.
-        self.pomelo.request("connector.entryHandler.getLastAccessRooms", msg, (result) => {
-            if (callback !== null) {
-                callback(null, result);
-            }
-        });
-    }
-
     public getMe(msg: IDictionary, callback: (err, res) => void) {
         let self = this;
         //<!-- Get user info.

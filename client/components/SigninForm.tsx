@@ -2,7 +2,6 @@ import * as React from "react";
 import { Flex, Box } from 'reflexbox';
 import { RaisedButton, TextField } from 'material-ui';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import FontIcon from 'material-ui/FontIcon';
 
 const styles = {
     span: {
@@ -17,8 +16,7 @@ const styles = {
 };
 
 const SubmitButton = (props: ITypingBox) => (
-    <RaisedButton primary={true} label="Sign in" onClick={props.onSubmit} style={styles.button}>
-    </RaisedButton>
+    <RaisedButton primary={true} label="Sign in" onClick={props.onSubmit} style={styles.button}> </RaisedButton>
 );
 
 interface ITypingBox {

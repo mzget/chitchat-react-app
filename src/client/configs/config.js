@@ -9,6 +9,7 @@ const rest_api = (host) => ({
     auth: `${host}/api/auth`,
     user: `${host}/api/users`,
     team: `${host}/api/team`,
+    group: `${host}/api/group`,
     chatroom: `${host}/chatroom`,
     fileUpload: `${host}/chats/upload`
 });
@@ -16,6 +17,9 @@ const devConfig = {
     Stalk: {
         chat: "localhost",
         port: "3010",
+        api: {
+            user: "http://localhost:9000/api/stalk/user"
+        }
     },
     appConfig: {
         encryption: true
@@ -26,16 +30,9 @@ const masterConfig = {
     Stalk: {
         chat: "git.animation-genius.com",
         port: "3010",
-    },
-    appConfig: {
-        encryption: false
-    },
-    api: {}
-};
-const productionConfig = {
-    Stalk: {
-        chat: "git.animation-genius.com",
-        port: "3010",
+        api: {
+            user: "http://localhost:9000/api/stalk/user"
+        }
     },
     appConfig: {
         encryption: false

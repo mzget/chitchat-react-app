@@ -306,7 +306,7 @@ exports.GET_PERSISTEND_CHATROOM_FAILURE = "GET_PERSISTEND_CHATROOM_FAILURE";
 const getPersistChatroomFail = () => ({ type: exports.GET_PERSISTEND_CHATROOM_FAILURE });
 const getPersistChatroomSuccess = (roomInfo) => ({ type: exports.GET_PERSISTEND_CHATROOM_SUCCESS, payload: roomInfo });
 exports.getPersistendChatroom = (roomId) => (dispatch => {
-    dispatch({ type: GET_PERSISTEND_CHATROOM });
+    dispatch({ type: GET_PERSISTEND_CHATROOM, payload: roomId });
     const dataManager = BackendFactory_1.default.getInstance().dataManager;
     dataManager.roomDAL.get(roomId).then(room => {
         if (room)
@@ -315,16 +315,16 @@ exports.getPersistendChatroom = (roomId) => (dispatch => {
             dispatch(getPersistChatroomFail());
     });
 });
-exports.createChatRoom = (userReducer) => {
-    if (userReducer.user && userReducer.contact) {
+exports.createChatRoom = (myUser, contactUser) => {
+    if (myUser && contactUser) {
         let owner = {};
-        owner._id = userReducer.user._id;
-        owner.user_role = (userReducer.user.role) ? userReducer.user.role : "user";
-        owner.username = userReducer.user.username;
+        owner._id = myUser._id;
+        owner.user_role = (myUser.role) ? myUser.role : "user";
+        owner.username = myUser.username;
         let contact = {};
-        contact._id = userReducer.contact._id;
-        contact.user_role = (userReducer.contact.role) ? userReducer.contact.role : "user";
-        contact.username = userReducer.contact.username;
+        contact._id = contactUser._id;
+        contact.user_role = (contactUser.role) ? contactUser.role : "user";
+        contact.username = contactUser.username;
         let members = { owner, contact };
         return members;
     }

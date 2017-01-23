@@ -14,21 +14,6 @@ var RoomStatus;
     RoomStatus[RoomStatus["delete"] = 2] = "delete";
 })(RoomStatus || (RoomStatus = {}));
 ;
-class Room {
-    constructor() {
-        this._visibility = true;
-    }
-    set visibility(_boo) {
-        this._visibility = _boo;
-    }
-    get visibilty() {
-        return this._visibility;
-    }
-    setName(name) {
-        this.name = name;
-    }
-}
-exports.Room = Room;
 var MemberRole;
 (function (MemberRole) {
     MemberRole[MemberRole["member"] = 0] = "member";

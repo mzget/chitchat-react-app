@@ -8,6 +8,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 const React = require("react");
+const Subheader_1 = require("material-ui/Subheader");
 const ChatLogsActions = require("../redux/chatlogs/chatlogsActions");
 const ListChatLogs_1 = require("./ListChatLogs");
 ;
@@ -15,7 +16,8 @@ const ListChatLogs_1 = require("./ListChatLogs");
 class ChatLogsBox extends React.Component {
     componentWillMount() {
         this.state = {
-            search: "", chatsLog: null
+            search: "",
+            chatsLog: null
         };
         this.convertObjToArr = this.convertObjToArr.bind(this);
     }
@@ -54,9 +56,11 @@ class ChatLogsBox extends React.Component {
         this.setState(__assign({}, this.state, { chatsLog: arr }), () => console.log("chatsLog convertObjToArr", this.state));
     }
     render() {
-        return (React.createElement(ListChatLogs_1.default, { value: this.state.chatsLog, onSelected: (data) => {
-                this.props.router.push(`/chat/${data.id}`);
-            } }));
+        return (React.createElement("div", null,
+            React.createElement(Subheader_1.default, null, "Recent chats"),
+            React.createElement(ListChatLogs_1.default, { value: this.state.chatsLog, onSelected: (data) => {
+                    this.props.router.push(`/chat/${data.id}`);
+                } })));
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });

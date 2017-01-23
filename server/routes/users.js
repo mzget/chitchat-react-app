@@ -4,7 +4,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments)).next());
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 const express = require("express");
@@ -161,17 +161,6 @@ router.get('/teams', (req, res, next) => {
         res.status(200).json(new apiUtils.ApiResponse(true, null, teams));
     }).catch(err => {
         res.status(500).json(new apiUtils.ApiResponse(false, err));
-    });
-});
-router.get('/getOrgMembers', function (req, res, next) {
-    MongoClient.connect(config.chatDB, function (err, db) {
-        if (err) {
-            throw err;
-        }
-        var collection = db.collection(Mdb.DbClient.userColl);
-        collection.find({ "_id": { $exists: true } }).toArray().then(function (docs) {
-            res.status(200).jsonp({ "success": true, "result": docs });
-        });
     });
 });
 var addGroupMember = function (roomId, user, done) {

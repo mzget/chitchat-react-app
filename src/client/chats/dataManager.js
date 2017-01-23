@@ -192,17 +192,6 @@ class DataManager {
             }
         }
     }
-    getContactProfile(contactId) {
-        if (!!this.contactsMember[contactId]) {
-            return this.contactsMember[contactId];
-        }
-        else {
-            console.warn('this contactId is invalid. Maybe it not contain in list of contacts.');
-            this.getContactInfoFailEvents.forEach(value => {
-                value(contactId);
-            });
-        }
-    }
     setContactProfile(contactId, contact) {
         if (!this.contactsMember)
             this.contactsMember = {};

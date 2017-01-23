@@ -53,10 +53,10 @@ const GET_TEAMS_INFO = "GET_TEAMS_INFO";
 const GET_TEAMS_INFO_SUCCESS = "GET_TEAMS_INFO_SUCCESS";
 const GET_TEAMS_INFO_FAILURE = "GET_TEAMS_INFO_FAILURE";
 const GET_TEAMS_INFO_CANCELLED = "GET_TEAMS_INFO_CANCELLED";
-export const getTeamsInfo = (params) => ({ type: GET_TEAMS_INFO, payload: params })
-export const getTeamsInfoSuccess = (payload) => ({ type: GET_TEAMS_INFO_SUCCESS, payload })
-export const getTeamsInfoFailure = (error) => ({ type: GET_TEAMS_INFO_FAILURE, payload: error })
-export const getTeamsInfoCancelled = () => ({ type: GET_TEAMS_INFO_CANCELLED })
+export const getTeamsInfo = (params) => ({ type: GET_TEAMS_INFO, payload: params });
+export const getTeamsInfoSuccess = (payload) => ({ type: GET_TEAMS_INFO_SUCCESS, payload });
+export const getTeamsInfoFailure = (error) => ({ type: GET_TEAMS_INFO_FAILURE, payload: error });
+export const getTeamsInfoCancelled = () => ({ type: GET_TEAMS_INFO_CANCELLED });
 export const getTeamsInfoEpic = action$ =>
     action$.ofType(GET_TEAMS_INFO).mergeMap(action => ajax({
         method: 'POST',
@@ -70,11 +70,44 @@ export const getTeamsInfoEpic = action$ =>
         .catch(error => Rx.Observable.of(getTeamsInfoFailure(error.xhr.response)))
     );
 
+const GET_TEAM_MEMBERS = "GET_TEAM_MEMBERS";
+const GET_TEAM_MEMBERS_SUCCESS = "GET_TEAM_MEMBERS_SUCCESS";
+const GET_TEAM_MEMBERS_FAILURE = "GET_TEAM_MEMBERS_FAILURE";
+const GET_TEAM_MEMBERS_CANCELLED = "GET_TEAM_MEMBERS_CANCELLED";
+export function getTeamMembers(team_id: string) {
+    return { type: GET_TEAM_MEMBERS, payload: team_id };
+}
+function getTeamMembersSuccess(payload) {
+    return { type: GET_TEAM_MEMBERS_SUCCESS, payload };
+}
+function getTeamMembersFailure(payload) {
+    return { type: GET_TEAM_MEMBERS_FAILURE, payload };
+}
+function getTeamMembersCancelled() {
+    return { type: GET_TEAM_MEMBERS_CANCELLED };
+}
+export function getTeamMembersEpic(action$) {
+    return action$.ofType(GET_TEAM_MEMBERS).mergeMap(action => ajax({
+        method: "GET",
+        url: `${config.api.team}/teamMembers/?id=${action.payload}`,
+        headers: {
+            "Content-Type": "application/json", "x-access-token": Store.getState().authReducer.token
+        }
+    }).map(response => getTeamMembersSuccess(response.xhr.response))
+        .takeUntil(action$.ofType(GET_TEAM_MEMBERS_CANCELLED))
+        .catch(error => Rx.Observable.of(getTeamMembersFailure(error.xhr.response)))
+    );
+}
+
+const TEAM_SELECTED = "TEAM_SELECTED";
+export const selectTeam = (team) => ({ type: TEAM_SELECTED, payload: team });
 
 export const TeamInitState = Record({
     isFetching: false,
     state: null,
-    teams: null
+    teams: null,
+    team: null,
+    members: null
 });
 export const teamReducer = (state = new TeamInitState(), action) => {
     switch (action.type) {
@@ -88,6 +121,14 @@ export const teamReducer = (state = new TeamInitState(), action) => {
 
         case GET_TEAMS_INFO_SUCCESS: {
             return state.set('teams', action.payload.result)
+        }
+
+        case TEAM_SELECTED: {
+            return state.set("team", action.payload)
+                .set("teams", null);
+        }
+        case GET_TEAM_MEMBERS_SUCCESS: {
+            return state.set("members", action.payload.result);
         }
         default:
             return state;

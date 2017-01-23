@@ -12,15 +12,11 @@ const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
 const AuthRx = require("../redux/authen/authRx");
 const AppActions = require("../redux/app/persistentDataActions");
-const UtilsBox_1 = require("./UtilsBox");
 const AuthenBox_1 = require("./authen/AuthenBox");
-class IComponentNameProps {
-}
-;
 ;
 class Home extends React.Component {
     componentWillMount() {
-        console.log("Home", this.props);
+        console.log("Home", global.userAgent);
         this.props.dispatch(AppActions.getSession());
     }
     componentDidMount() {
@@ -53,7 +49,6 @@ class Home extends React.Component {
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
                 React.createElement(AuthenBox_1.default, __assign({}, this.props)),
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
-            React.createElement(UtilsBox_1.default, null),
             React.createElement(reflexbox_1.Flex, { px: 2, align: 'center' },
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
                 React.createElement("p", null, "Stalk realtime messaging service."),

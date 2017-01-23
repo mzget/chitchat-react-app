@@ -22,7 +22,7 @@ const styles = {
         width: '100%'
     }
 };
-const SubmitButton = (props) => (React.createElement(material_ui_1.RaisedButton, { primary: true, label: "Sign in", onClick: props.onSubmit, style: styles.button }));
+const SubmitButton = (props) => (React.createElement(material_ui_1.RaisedButton, { primary: true, label: "Sign in", onClick: props.onSubmit, style: styles.button }, " "));
 exports.SigninForm = (props) => {
     return (React.createElement(MuiThemeProvider_1.default, null,
         React.createElement(reflexbox_1.Flex, { flexColumn: true, align: 'center' },

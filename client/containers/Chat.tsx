@@ -3,7 +3,7 @@ import * as React from "react";
  * Redux + Immutable
  */
 import { connect } from "react-redux";
-import * as async from 'async';
+import * as async from "async";
 import { Flex, Box } from 'reflexbox';
 
 import Config from '../configs/config';
@@ -11,7 +11,7 @@ import * as FileType from '../consts/FileType';
 
 import { TypingBox } from './TypingBox';
 import ChatBox from "./ChatBox";
-import Toolbar from "../components/ToolbarSimple";
+import SimpleToolbar from "../components/SimpleToolbar";
 import UtilsBox from "./UtilsBox";
 import UploadingDialog from './UploadingDialog';
 import GridListSimple from "../components/GridListSimple";
@@ -26,17 +26,6 @@ import { MessageImp } from "../chats/models/MessageImp";
 
 import { imagesPath } from '../consts/StickerPath';
 
-abstract class IComponentNameProps implements IComponentProps {
-    location;
-    params;
-    router;
-    dispatch;
-    chatroomReducer;
-    userReducer;
-    chatlogReducer;
-    stalkReducer;
-};
-
 interface IComponentNameState {
     messages: any[],
     isLoadingEarlierMessages,
@@ -50,7 +39,9 @@ interface IComponentNameState {
     h_chatArea: number
 };
 
-class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
+class Chat extends React.Component<IComponentProps, IComponentNameState> {
+    toolbarMenus = ["Favorite"];
+
     componentWillMount() {
         console.log("Chat", this.props, this.state);
 
@@ -92,16 +83,13 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         }
     }
 
-    componentDidMount() {
-    }
-
     componentWillUnmount() {
         console.log("Chat: leaveRoom");
         this.props.dispatch(chatRoomActions.leaveRoom());
     }
 
-    componentWillReceiveProps(nextProps) {
-        let { chatroomReducer} = nextProps as IComponentNameProps;
+    componentWillReceiveProps(nextProps: IComponentProps) {
+        let { chatroomReducer} = nextProps;
 
         switch (chatroomReducer.state) {
             case chatRoomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
@@ -210,7 +198,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         this.props.dispatch(chatRoomActions.loadEarlyMessageChunk());
     }
 
-    roomInitialize(props: IComponentNameProps) {
+    roomInitialize(props: IComponentProps) {
         let { chatroomReducer, userReducer, params} = props;
         if (!userReducer.user) {
             return this.props.dispatch(chatRoomActions.leaveRoom());
@@ -343,7 +331,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         };
         message.target = "*";
         message.uuid = Math.round(Math.random() * 10000); // simulating server-side unique id generation
-        message.status = 'Sending...';
+        message.status = "Sending...";
 
         return message;
     }
@@ -374,11 +362,11 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
         let {chatroomReducer } = this.props;
 
         return (
-            <div style={{ height: document.documentElement.clientHeight }}>
-                <div style={{ height: this.state.h_header }}>
-                    <Flex flexAuto>
-                        <Toolbar title={(chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : ""} />
-                    </Flex>
+            <div>
+                <div style={{ height: this.state.h_header }} >
+                    <SimpleToolbar
+                        title={(chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty"}
+                        menus={this.toolbarMenus} onSelectedMenuItem={(id, value) => console.log(value)} />
                 </div>
                 <div style={{ height: this.state.h_body }}>
                     <Flex flexColumn={true}>
@@ -416,6 +404,7 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
                     </div>
                 </Flex>
                 <UploadingDialog />
+                <UtilsBox />
             </div>
         );
     }
@@ -424,9 +413,5 @@ class Chat extends React.Component<IComponentNameProps, IComponentNameState> {
 /**
  * ## Redux boilerplate
  */
-function mapStateToProps(state) {
-    return {
-        ...state
-    };
-}
+const mapStateToProps = (state) => ({ ...state });
 export default connect(mapStateToProps)(Chat);

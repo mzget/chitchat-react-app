@@ -31,9 +31,16 @@ exports.getLastProfileChanged = (uid, callback) => {
 };
 exports.updateImageProfile = (uid, newUrl, callback) => {
 };
-exports.getRoomAccessForUser = (uid, callback) => {
-    this.userDataAccess.getRoomAccessForUser(uid, callback);
-};
+function getRoomAccessForUser(uid) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let db = yield MongoClient.connect(config.chatDB);
+        let userColl = db.collection(config_1.DbClient.chatUserColl);
+        let docs = yield userColl.find({ _id: new ObjectID(uid) }).project({ roomAccess: 1 }).limit(1).toArray();
+        db.close();
+        return docs;
+    });
+}
+exports.getRoomAccessForUser = getRoomAccessForUser;
 exports.getRoomAccessOfRoom = (uid, rid) => {
     return new Promise((resolve, reject) => {
         MongoClient.connect(config.chatDB).then(db => {
@@ -113,43 +120,22 @@ exports.AddRoomIdToRoomAccessField = (roomId, memberIds, date, callback) => {
         }
     });
 };
-exports.AddRoomIdToRoomAccessFieldForUser = (roomId, userId, date) => {
-    return new Promise((resolve, reject) => {
-        MongoClient.connect(config.chatDB).then(db => {
-            let chatUserCollection = db.collection(config_1.DbClient.chatUserColl);
-            chatUserCollection.find({ _id: new ObjectID(userId) }, { roomAccess: 1 }).limit(1).toArray().then(docs => {
-                if (docs.length > 0 && !!docs[0].roomAccess) {
-                    //<!-- add rid to MembersFields.
-                    findRoomAccessDataMatchWithRoomId(userId, roomId, date, (err, res) => {
-                        if (err) {
-                            db.close();
-                            reject(err);
-                        }
-                        else {
-                            db.close();
-                            resolve(res.result);
-                        }
-                    });
-                }
-                else {
-                    db.close();
-                    InsertMembersFieldsToUserModel(userId, roomId, date, (err, res) => {
-                        if (err)
-                            reject(err);
-                        else
-                            resolve(res);
-                    });
-                }
-            }).catch(err => {
-                db.close();
-                reject(err);
-            });
-        }).catch(err => {
-            console.warn("AddRoomIdToRoomAccessFieldForUser fail", err);
-            reject(err);
-        });
-    });
-};
+exports.AddRoomIdToRoomAccessFieldForUser = (roomId, userId, date) => __awaiter(this, void 0, void 0, function* () {
+    let db = yield MongoClient.connect(config.chatDB);
+    let chatUserCollection = db.collection(config_1.DbClient.chatUserColl);
+    let docs = yield chatUserCollection.find({ _id: new ObjectID(userId) }, { roomAccess: 1 }).limit(1).toArray();
+    if (docs.length > 0 && !!docs[0].roomAccess) {
+        //<!-- add rid to MembersFields.
+        let result = yield findRoomAccessDataMatchWithRoomId(userId, roomId, date);
+        db.close();
+        return result.result;
+    }
+    else {
+        db.close();
+        let result = yield InsertMembersFieldsToUserModel(userId, roomId, date);
+        return result;
+    }
+});
 exports.updateFavoriteMembers = (editType, member, uid, callback) => {
     if (editType === "add") {
         this.userDataAccess.addFavoriteMembers(member, uid, callback);
@@ -229,65 +215,45 @@ exports.checkUnsubscribeRoom = (userId, roomType, roomId, callback) => {
         });
     }
 };
-const InsertMembersFieldsToUserModel = (uid, roomId, date, callback) => {
+const InsertMembersFieldsToUserModel = (uid, roomId, date) => __awaiter(this, void 0, void 0, function* () {
     let newRoomAccessInfos = new Array();
     newRoomAccessInfos[0] = new RoomAccessData_1.default();
     newRoomAccessInfos[0].roomId = roomId;
     newRoomAccessInfos[0].accessTime = date;
-    MongoClient.connect(config.chatDB).then(db => {
-        let chatUserColl = db.collection(config_1.DbClient.chatUserColl);
-        chatUserColl.updateOne({ _id: new ObjectID(uid) }, { $set: { roomAccess: newRoomAccessInfos } }).then(result => {
-            db.close();
-            callback(null, result.result);
-        }).catch(err => {
-            db.close();
-            callback(err, null);
-        });
-    }).catch(err => {
-        console.warn("InsertMembersFieldsToUserModel faile", err);
-        callback(err, null);
-    });
-};
-const findRoomAccessDataMatchWithRoomId = function (uid, rid, date, callback) {
+    let db = yield MongoClient.connect(config.chatDB);
+    let chatUserColl = db.collection(config_1.DbClient.chatUserColl);
+    let result = yield chatUserColl.updateOne({ _id: new ObjectID(uid) }, { $set: { roomAccess: newRoomAccessInfos } }, { upsert: true });
+    db.close();
+    return result.result;
+});
+const findRoomAccessDataMatchWithRoomId = (uid, rid, date) => __awaiter(this, void 0, void 0, function* () {
     if (rid === null) {
         console.warn("rid is invalid: careful for use this func: ", rid);
     }
-    MongoClient.connect(config.chatDB).then(db => {
-        let collection = db.collection(config_1.DbClient.chatUserColl);
-        // Peform a simple find and return all the documents
-        collection.find({ _id: new ObjectID(uid) }).project({ roomAccess: { $elemMatch: { roomId: rid.toString() } } }).toArray(function (err, docs) {
-            let printR = (docs) ? docs : null;
-            console.log("find roomAccessInfo of uid: %s match with rid: %s :: ", uid, rid, printR);
-            if (!docs || !docs[0].roomAccess) {
-                //<!-- Push new roomAccess data. 
-                let newRoomAccessInfo = new RoomAccessData_1.default();
-                newRoomAccessInfo.roomId = rid.toString();
-                newRoomAccessInfo.accessTime = date;
-                collection.updateOne({ _id: new ObjectID(uid) }, { $push: { roomAccess: newRoomAccessInfo } }, { w: 1 }).then(result => {
-                    console.log("Push new roomAccess.: ", result.result);
-                    db.close();
-                    callback(null, result);
-                }).catch(err => {
-                    db.close();
-                    callback(new Error("cannot update roomAccess.accessTime."), null);
-                });
-            }
-            else {
-                //<!-- Update if data exist.
-                collection.updateOne({ _id: new ObjectID(uid), "roomAccess.roomId": rid }, { $set: { "roomAccess.$.accessTime": date } }, { w: 1 }).then(result => {
-                    console.log("Updated roomAccess.accessTime: ", result.result);
-                    db.close();
-                    callback(null, result);
-                }).catch(err => {
-                    db.close();
-                    callback(new Error("cannot update roomAccess.accessTime."), null);
-                });
-            }
-        });
-    }).catch(err => {
-        console.warn("findRoomAccessDataMatchWithRoomId fail", err);
-    });
-};
+    let db = yield MongoClient.connect(config.chatDB);
+    let collection = db.collection(config_1.DbClient.chatUserColl);
+    // Peform a simple find and return all the documents
+    let docs = yield collection.find({ _id: new ObjectID(uid) }).project({ roomAccess: { $elemMatch: { roomId: rid.toString() } } }).toArray();
+    let printR = (docs) ? docs : null;
+    console.log("find roomAccessInfo of uid: %s match with rid: %s :: ", uid, rid, printR);
+    if (!docs || !docs[0].roomAccess) {
+        //<!-- Push new roomAccess data. 
+        let newRoomAccessInfo = new RoomAccessData_1.default();
+        newRoomAccessInfo.roomId = rid.toString();
+        newRoomAccessInfo.accessTime = date;
+        let result = yield collection.updateOne({ _id: new ObjectID(uid) }, { $push: { roomAccess: newRoomAccessInfo } }, { w: 1 });
+        db.close();
+        console.log("Push new roomAccess.: ", result.result);
+        return result;
+    }
+    else {
+        //<!-- Update if data exist.
+        let result = yield collection.updateOne({ _id: new ObjectID(uid), "roomAccess.roomId": rid }, { $set: { "roomAccess.$.accessTime": date } }, { w: 1 });
+        db.close();
+        console.log("Updated roomAccess.accessTime: ", result.result);
+        return result;
+    }
+});
 const insertRoomAccessInfoField = function (uid, rid, callback) {
     let newRoomAccessInfos = new Array();
     newRoomAccessInfos[0] = new RoomAccessData_1.default();

@@ -5,7 +5,7 @@
  */
 
 export interface IRoomDAL {
-    save(key, data);
+    save(key, data): Promise<any>;
     get(key): Promise<any>;
     getKeys(): Promise<string[]>;
     remove(key);

@@ -28,7 +28,10 @@ const users = require('./routes/users');
 const authen = require('./routes/authen');
 const team = require('./routes/team');
 const chatroom = require('./routes/chatroom');
+const group = require('./routes/group/group');
 const chat_upload = require('./routes/upload/uploadFile');
+
+const stalk_user = require("./routes/stalk/user");
 
 const apiRouteMiddleWare = express.Router();
 apiRouteMiddleWare.use(function (req, res, next) {
@@ -38,10 +41,10 @@ apiRouteMiddleWare.use(function (req, res, next) {
     // check header or url parameters or post parameters for token
     var token = (!!req.headers[Constant.X_ACCESS_TOKEN]) ? req.headers[Constant.X_ACCESS_TOKEN] : req.body.token || req.query.token;
 
-    if (req.url == '/authenticate' || req.url == '/authenticate/verify') {
+    if (req.url === '/authenticate' || req.url === '/authenticate/verify') {
         next();
     }
-    else if (apikey == config.apikey) {
+    else if (apikey === config.apikey) {
         next();
     }
     else {
@@ -87,8 +90,11 @@ app.use('/api', apiRouteMiddleWare);
 app.use('/api/auth', authen);
 app.use('/api/users', users);
 app.use('/api/team', team);
+app.use('/api/group', group);
 app.use('/chatroom', chatroom);
 app.use("/chats/upload", chat_upload);
+
+app.use("/api/stalk/user", stalk_user);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
