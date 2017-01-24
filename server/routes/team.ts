@@ -112,10 +112,41 @@ router.post('/create', (req, res, next) => {
         res.status(200).json(new apiUtils.ApiResponse(true, null, result));
 
         UserManager.joinTeam(result[0], user._id);
-    }).catch(err => {
+    }).catch((err: Error) => {
         console.error("findTeamName fail: ", err);
+        res.status(500).json(new apiUtils.ApiResponse(false, err.message));
+    });
+});
+
+router.post("/join", (req, res, next) => {
+    req.checkBody("name", "request for team name").notEmpty();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let name: string = req.body.name;
+    let token = req["decoded"];
+    let user_id = token["_id"];
+
+    TeamController.findTeamName(name).then(teams => {
+        if (teams.length > 0) {
+            let team = teams[0];
+            UserManager.joinTeam(team, user_id).then(value => {
+                res.status(200).json(new apiUtils.ApiResponse(true, null, value));
+            }).catch(err => {
+                res.status(500).json(new apiUtils.ApiResponse(false, err));
+            });
+        }
+        else {
+            console.error("Cannot find this team name");
+            res.status(500).json(new apiUtils.ApiResponse(false, teams));
+        }
+    }).catch(err => {
+        console.error("Cannot find this team name");
         res.status(500).json(new apiUtils.ApiResponse(false, err));
-    })
+    });
 });
 
 router.get("/teamMembers", function (req, res, next) {

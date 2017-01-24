@@ -62,7 +62,6 @@
     <Compile Include="scripts\models\Message.js" />
     <Compile Include="scripts\models\Room.js" />
     <Compile Include="scripts\models\RoomAccessData.js" />
-    <Compile Include="scripts\models\User.js" />
     <Compile Include="scripts\models\UserRole.js" />
     <Compile Include="scripts\models\userService.js" />
     <TypeScriptCompile Include="scripts\services\AccountService.ts" />

@@ -21,7 +21,7 @@ export async function joinTeam(team: ITeam, user_id: string) {
     let db = await MongoClient.connect(config.chatDB);
     let collection = db.collection(DbClient.systemUsersColl);
 
-    let result = await collection.updateOne({ _id: new mongodb.ObjectID(user_id) }, { $push: { teams: team._id.toString() } }, { upsert: false });
+    let result = await collection.updateOne({ _id: new mongodb.ObjectID(user_id) }, { $addToSet: { teams: team._id.toString() } }, { upsert: false });
 
     db.close();
     return result;
