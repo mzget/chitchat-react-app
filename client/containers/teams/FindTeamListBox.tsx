@@ -3,7 +3,7 @@ import Subheader from "material-ui/Subheader";
 import RaisedButton from "material-ui/RaisedButton";
 
 const style = {
-    margin: 6,
+    margin: 4,
 };
 
 import { TeamListView } from './TeamListView';

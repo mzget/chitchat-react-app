@@ -7,6 +7,7 @@ import { FindTeamListBox } from './FindTeamListBox';
 
 import * as TeamRx from '../../redux/team/teamRx';
 import { IComponentProps } from "../../utils/IComponentProps";
+import { ITeam } from '../../../server/scripts/models/ITeam';
 
 
 interface IComponentNameState {
@@ -17,7 +18,7 @@ interface IComponentNameState {
 class TeamCreateBox extends React.Component<IComponentProps, IComponentNameState> {
     componentWillMount() {
         this.state = {
-            team_name: '',
+            team_name: "",
             is_FindTeam: false
         };
 
@@ -25,6 +26,7 @@ class TeamCreateBox extends React.Component<IComponentProps, IComponentNameState
         this.onSubmitTeam = this.onSubmitTeam.bind(this);
         this.onToggleView = this.onToggleView.bind(this);
         this.onFindTeamPress = this.onFindTeamPress.bind(this);
+        this.onSelectTeam = this.onSelectTeam.bind(this);
     }
 
     onNameChange(e, text) {
@@ -53,8 +55,9 @@ class TeamCreateBox extends React.Component<IComponentProps, IComponentNameState
         }
     }
 
-    onSelectTeam(team) {
+    onSelectTeam(team: ITeam) {
         console.log("request to join team", team);
+        this.props.dispatch(TeamRx.joinTeam(team.name));
     }
 
     public render(): JSX.Element {

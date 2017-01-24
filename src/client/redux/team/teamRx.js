@@ -5,6 +5,7 @@ const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 const configureStore_1 = require("../configureStore");
+const userRx = require("../user/userRx");
 const FETCH_USER_TEAMS = "FETCH_USER_TEAMS";
 const FETCH_USER_TEAMS_SUCCESS = "FETCH_USER_TEAMS_SUCCESS";
 const FETCH_USER_TEAMS_FAILURE = "FETCH_USER_TEAMS_FAILURE";
@@ -32,7 +33,8 @@ exports.createNewTeamEpic = action$ => action$.ofType(CREATE_TEAM)
     url: `${config_1.default.api.team}/create`,
     body: JSON.stringify({ team_name: action.payload }),
     headers: {
-        'Content-Type': 'application/json', 'x-access-token': configureStore_1.default.getState().authReducer.token
+        'Content-Type': 'application/json',
+        'x-access-token': configureStore_1.default.getState().authReducer.token
     }
 })
     .map(response => exports.createNewTeamSuccess(response.xhr.response))
@@ -57,6 +59,29 @@ exports.findTeamEpic = action$ => action$.ofType(FIND_TEAM)
 }).map(response => findTeamSuccess(response.xhr.response))
     .takeUntil(action$.ofType(FIND_TEAM_CANCELLED))
     .catch(error => Rx.Observable.of(findTeamFailure(error.xhr.response))));
+const JOIN_TEAM = "JOIN_TEAM";
+const JOIN_TEAM_SUCCESS = "JOIN_TEAM_SUCCESS";
+const JOIN_TEAM_FAILURE = "JOIN_TEAM_FAILURE";
+const JOIN_TEAM_CANCELLED = "JOIN_TEAM_CANCELLED";
+exports.joinTeam = redux_actions_1.createAction(JOIN_TEAM, team_name => team_name);
+const joinTeamSuccess = redux_actions_1.createAction(JOIN_TEAM_SUCCESS, payload => payload);
+const joinTeamFailure = redux_actions_1.createAction(JOIN_TEAM_FAILURE, payload => payload);
+const joinTeamCancelled = redux_actions_1.createAction(JOIN_TEAM_CANCELLED);
+exports.joinTeamEpic = action$ => action$.ofType(JOIN_TEAM).mergeMap(action => ajax({
+    method: 'POST',
+    url: `${config_1.default.api.team}/join`,
+    body: JSON.stringify({ name: action.payload }),
+    headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': configureStore_1.default.getState().authReducer.token
+    }
+}).map(response => joinTeamSuccess(response.xhr.response))
+    .takeUntil(action$.ofType(JOIN_TEAM_CANCELLED))
+    .catch(error => Rx.Observable.of(joinTeamFailure(error.xhr.response)))
+    .do((x) => {
+    if (x.type === JOIN_TEAM_SUCCESS)
+        configureStore_1.default.dispatch(userRx.fetchUser(configureStore_1.default.getState().userReducer.user.username));
+}));
 const GET_TEAMS_INFO = "GET_TEAMS_INFO";
 const GET_TEAMS_INFO_SUCCESS = "GET_TEAMS_INFO_SUCCESS";
 const GET_TEAMS_INFO_FAILURE = "GET_TEAMS_INFO_FAILURE";
@@ -117,7 +142,9 @@ exports.TeamInitState = immutable_1.Record({
 exports.teamReducer = (state = new exports.TeamInitState(), action) => {
     switch (action.type) {
         case CREATE_TEAM_SUCCESS: {
-            return state.set('teams', action.payload.result);
+            let teams = state.get("teams");
+            let newItems = teams.concat(action.payload.result);
+            return state.set('teams', newItems);
         }
         case FIND_TEAM_SUCCESS: {
             return state.set("findingTeams", action.payload.result);

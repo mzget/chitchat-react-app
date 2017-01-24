@@ -3,7 +3,7 @@ const React = require("react");
 const Subheader_1 = require("material-ui/Subheader");
 const RaisedButton_1 = require("material-ui/RaisedButton");
 const style = {
-    margin: 6,
+    margin: 4,
 };
 const TeamListView_1 = require("./TeamListView");
 ;

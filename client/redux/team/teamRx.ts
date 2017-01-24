@@ -5,6 +5,7 @@ import * as Rx from 'rxjs/Rx';
 const { ajax } = Rx.Observable;
 
 import Store from '../configureStore';
+import * as userRx from "../user/userRx";
 
 
 const FETCH_USER_TEAMS = "FETCH_USER_TEAMS";
@@ -24,8 +25,6 @@ export const fetchUserTeamsEpic = action$ =>
             .catch(error => Rx.Observable.of(fetchUserTeamsFailure(error.xhr.response)))
         );
 
-
-
 const CREATE_TEAM = "CREATE_TEAM";
 const CREATE_TEAM_SUCCESS = "CREATE_TEAM_SUCCESS";
 const CREATE_TEAM_FAILURE = "CREATE_TEAM_FAILURE";
@@ -41,7 +40,8 @@ export const createNewTeamEpic = action$ =>
             url: `${config.api.team}/create`,
             body: JSON.stringify({ team_name: action.payload }),
             headers: {
-                'Content-Type': 'application/json', 'x-access-token': Store.getState().authReducer.token
+                'Content-Type': 'application/json',
+                'x-access-token': Store.getState().authReducer.token
             }
         })
             .map(response => createNewTeamSuccess(response.xhr.response))
@@ -59,19 +59,47 @@ const findTeamSuccess = createAction(FIND_TEAM_SUCCESS, payload => payload);
 const findTeamFailure = createAction(FIND_TEAM_FAILURE, error => error);
 const findTeamCancelled = createAction(FIND_TEAM_CANCELLED);
 
-export const findTeamEpic = action$ =>
-    action$.ofType(FIND_TEAM)
-        .mergeMap(action => ajax({
-            method: 'GET',
-            url: `${config.api.team}?name=${action.payload}`,
-            headers: {
-                'Content-Type': 'application/json',
-                'x-access-token': Store.getState().authReducer.token
-            }
-        }).map(response => findTeamSuccess(response.xhr.response))
-            .takeUntil(action$.ofType(FIND_TEAM_CANCELLED))
-            .catch(error => Rx.Observable.of(findTeamFailure(error.xhr.response)))
-        );
+export const findTeamEpic = action$ => action$.ofType(FIND_TEAM)
+    .mergeMap(action => ajax({
+        method: 'GET',
+        url: `${config.api.team}?name=${action.payload}`,
+        headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': Store.getState().authReducer.token
+        }
+    }).map(response => findTeamSuccess(response.xhr.response))
+        .takeUntil(action$.ofType(FIND_TEAM_CANCELLED))
+        .catch(error => Rx.Observable.of(findTeamFailure(error.xhr.response)))
+    );
+
+const JOIN_TEAM = "JOIN_TEAM";
+const JOIN_TEAM_SUCCESS = "JOIN_TEAM_SUCCESS";
+const JOIN_TEAM_FAILURE = "JOIN_TEAM_FAILURE";
+const JOIN_TEAM_CANCELLED = "JOIN_TEAM_CANCELLED";
+
+export const joinTeam = createAction(JOIN_TEAM, team_name => team_name);
+const joinTeamSuccess = createAction(JOIN_TEAM_SUCCESS, payload => payload);
+const joinTeamFailure = createAction(JOIN_TEAM_FAILURE, payload => payload);
+const joinTeamCancelled = createAction(JOIN_TEAM_CANCELLED);
+
+export const joinTeamEpic = action$ =>
+    action$.ofType(JOIN_TEAM).mergeMap(action => ajax({
+        method: 'POST',
+        url: `${config.api.team}/join`,
+        body: JSON.stringify({ name: action.payload }),
+        headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': Store.getState().authReducer.token
+        }
+    }).map(response => joinTeamSuccess(response.xhr.response))
+        .takeUntil(action$.ofType(JOIN_TEAM_CANCELLED))
+        .catch(error => Rx.Observable.of(joinTeamFailure(error.xhr.response)))
+        .do((x) => {
+            if (x.type === JOIN_TEAM_SUCCESS)
+                Store.dispatch(userRx.fetchUser(Store.getState().userReducer.user.username));
+        })
+    );
+
 
 const GET_TEAMS_INFO = "GET_TEAMS_INFO";
 const GET_TEAMS_INFO_SUCCESS = "GET_TEAMS_INFO_SUCCESS";
@@ -137,7 +165,10 @@ export const TeamInitState = Record({
 export const teamReducer = (state = new TeamInitState(), action: ReduxActions.Action<any>) => {
     switch (action.type) {
         case CREATE_TEAM_SUCCESS: {
-            return state.set('teams', action.payload.result);
+            let teams = state.get("teams") as Array<any>;
+            let newItems = teams.concat(action.payload.result);
+
+            return state.set('teams', newItems);
         }
 
         case FIND_TEAM_SUCCESS: {

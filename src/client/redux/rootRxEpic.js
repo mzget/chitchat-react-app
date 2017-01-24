@@ -9,7 +9,7 @@ exports.rootEpic = redux_observable_1.combineEpics(userRx.fetchUserEpic, userRx.
 ///@ Signup user.
 authRx.signupUserEpic, authRx.authUserEpic, authRx.tokenAuthUserEpic, authRx.logoutUserEpic, 
 ///@Teams
-teamRx.fetchUserTeamsEpic, teamRx.createNewTeamEpic, teamRx.getTeamsInfoEpic, teamRx.getTeamMembersEpic, teamRx.findTeamEpic, 
+teamRx.fetchUserTeamsEpic, teamRx.createNewTeamEpic, teamRx.getTeamsInfoEpic, teamRx.getTeamMembersEpic, teamRx.findTeamEpic, teamRx.joinTeamEpic, 
 ///@Group
 groupRx.getOrgGroupEpic, 
 ///@ChatRoom

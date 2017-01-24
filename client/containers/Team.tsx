@@ -2,6 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import * as Colors from 'material-ui/styles/colors';
+import * as immutable from "immutable";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
@@ -49,7 +50,15 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
 
         switch (userReducer.state) {
             case userRx.FETCH_USER_SUCCESS:
-                if (userReducer.state !== this.props.userReducer.state) {
+                if (!!this.props.userReducer.user) {
+                    let nextRed = immutable.fromJS(userReducer);
+                    let red = immutable.fromJS(this.props.userReducer);
+                    if (!red.equals(nextRed)) {
+                        this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
+                    }
+                }
+                else {
+                    if (userReducer.user.teams.length > 0)
                     this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
                 }
                 break;

@@ -16,13 +16,14 @@ const TeamRx = require("../../redux/team/teamRx");
 class TeamCreateBox extends React.Component {
     componentWillMount() {
         this.state = {
-            team_name: '',
+            team_name: "",
             is_FindTeam: false
         };
         this.onNameChange = this.onNameChange.bind(this);
         this.onSubmitTeam = this.onSubmitTeam.bind(this);
         this.onToggleView = this.onToggleView.bind(this);
         this.onFindTeamPress = this.onFindTeamPress.bind(this);
+        this.onSelectTeam = this.onSelectTeam.bind(this);
     }
     onNameChange(e, text) {
         this.setState(previous => (__assign({}, previous, { team_name: text })));
@@ -48,6 +49,7 @@ class TeamCreateBox extends React.Component {
     }
     onSelectTeam(team) {
         console.log("request to join team", team);
+        this.props.dispatch(TeamRx.joinTeam(team.name));
     }
     render() {
         return (React.createElement("div", null,
