@@ -8,7 +8,7 @@ const ObjectID = mongodb.ObjectID;
 import { getConfig, DbClient } from '../../config';
 const webConfig = getConfig();
 
-router.post('/username', (req, res, next) => {
+router.post("/username", (req, res, next) => {
     req.checkBody("username", "Request for id as body").notEmpty();
 
     let errors = req.validationErrors();
