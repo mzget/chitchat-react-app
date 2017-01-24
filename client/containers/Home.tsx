@@ -14,20 +14,34 @@ import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 import * as AuthRx from '../redux/authen/authRx';
 import * as AppActions from '../redux/app/persistentDataActions';
 
+import { DialogBox } from "../components/DialogBox";
 import AuthenBox from './authen/AuthenBox';
 
 interface IComponentNameState {
+    alert: boolean;
 };
 
 class Home extends React.Component<IComponentProps, IComponentNameState> {
+    alertMessage: string = "";
+    alertTitle: string = "";
+
+    closeAlert() {
+        this.alertTitle = "";
+        this.alertMessage = "";
+        this.setState(prevState => ({ ...prevState, alert: false }), () =>
+            this.props.dispatch(AuthRx.clearError())
+        );
+    }
+
     componentWillMount() {
         console.log("Home", global.userAgent);
 
+        this.state = {
+            alert: false
+        };
+        this.closeAlert = this.closeAlert.bind(this);
+
         this.props.dispatch(AppActions.getSession());
-    }
-
-    componentDidMount() {
-
     }
 
     componentWillReceiveProps(nextProps) {
@@ -39,6 +53,12 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
             case AuthRx.AUTH_USER_SUCCESS: {
                 AppActions.saveSession();
                 this.props.router.push(`/team/${authReducer.user}`);
+                break;
+            }
+            case AuthRx.AUTH_USER_FAILURE: {
+                this.alertTitle = AuthRx.AUTH_USER_FAILURE;
+                this.alertMessage = authReducer.error;
+                this.setState(previous => ({ ...previous, alert: true }));
                 break;
             }
             case AuthRx.TOKEN_AUTH_USER_SUCCESS: {
@@ -69,6 +89,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
                     <p>Stalk realtime messaging service.</p>
                     <Box p={2} flexAuto></Box>
                 </Flex>
+                <DialogBox title={this.alertTitle} message={this.alertMessage} open={this.state.alert} handleClose={this.closeAlert} />
             </div>
         );
     }
@@ -77,10 +98,5 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
 /**
  * ## Redux boilerplate
  */
-function mapStateToProps(state) {
-    return {
-        ...state
-    };
-}
-
+const mapStateToProps = (state) => ({ ...state });
 export default connect(mapStateToProps)(Home);

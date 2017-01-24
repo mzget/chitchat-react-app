@@ -54,8 +54,9 @@ class Team extends React.Component {
                     }
                 }
                 else {
-                    if (userReducer.user.teams.length > 0)
+                    if (!!userReducer.user.teams && userReducer.user.teams.length > 0) {
                         this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
+                    }
                 }
                 break;
             case userRx.FETCH_USER_FAILURE: {

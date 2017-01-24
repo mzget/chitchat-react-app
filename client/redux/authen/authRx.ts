@@ -32,11 +32,11 @@ export const signupUserEpic = action$ =>
 
 const AUTH_USER = "AUTH_USER";
 export const AUTH_USER_SUCCESS = "AUTH_USER_SUCCESS";
-const AUTH_USER_FAILURE = "AUTH_USER_FAILURE";
+export const AUTH_USER_FAILURE = "AUTH_USER_FAILURE";
 const AUTH_USER_CANCELLED = "AUTH_USER_CANCELLED";
 export const authUser = (user: { email: string, password: string }) => ({ type: AUTH_USER, payload: user }); // username => ({ type: FETCH_USER, payload: username });
 const authUserSuccess = payload => ({ type: AUTH_USER_SUCCESS, payload });
-const authUserFailure = payload => ({ type: AUTH_USER_FAILURE, payload, error: true });
+const authUserFailure = payload => ({ type: AUTH_USER_FAILURE, payload });
 const authUserCancelled = () => ({ type: AUTH_USER_CANCELLED });
 export const authUserEpic = action$ => action$.ofType(AUTH_USER).mergeMap(action => ajax({
     method: 'POST',
@@ -90,9 +90,13 @@ export const logoutUserEpic = action$ => action$.ofType(LOG_OUT).mergeMap(action
     .catch(error => Rx.Observable.of(logoutFailure(error.xhr.response)))
 );
 
+const AUTH_REDUCER_CLEAR_ERROR = "AUTH_REDUCER_CLEAR_ERROR";
+export const clearError = createAction(AUTH_REDUCER_CLEAR_ERROR);
+
 export const AuthenInitState = Record({
     token: null,
     isFetching: false,
+    error: null,
     state: null,
     user: null
 });
@@ -111,7 +115,8 @@ export const authReducer = (state = new AuthenInitState(), action) => {
         case AUTH_USER_FAILURE: {
             return state.set('state', AUTH_USER_FAILURE)
                 .set('token', null)
-                .set('user', null);
+                .set('user', null)
+                .set("error", JSON.stringify(action.payload.message));
         }
 
         case AppActions.GET_SESSION_TOKEN_SUCCESS: {
@@ -134,6 +139,9 @@ export const authReducer = (state = new AuthenInitState(), action) => {
                 .set("user", null);
         }
 
+        case AUTH_REDUCER_CLEAR_ERROR: {
+            return state.set("error", null).set("state", AUTH_REDUCER_CLEAR_ERROR);
+        }
         default:
             return state;
     }

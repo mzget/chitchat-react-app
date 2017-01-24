@@ -25,11 +25,11 @@ exports.signupUserEpic = action$ => action$.ofType(SIGN_UP)
     .catch(error => Rx.Observable.of(signupFailure(error.xhr.response))));
 const AUTH_USER = "AUTH_USER";
 exports.AUTH_USER_SUCCESS = "AUTH_USER_SUCCESS";
-const AUTH_USER_FAILURE = "AUTH_USER_FAILURE";
+exports.AUTH_USER_FAILURE = "AUTH_USER_FAILURE";
 const AUTH_USER_CANCELLED = "AUTH_USER_CANCELLED";
 exports.authUser = (user) => ({ type: AUTH_USER, payload: user }); // username => ({ type: FETCH_USER, payload: username });
 const authUserSuccess = payload => ({ type: exports.AUTH_USER_SUCCESS, payload });
-const authUserFailure = payload => ({ type: AUTH_USER_FAILURE, payload, error: true });
+const authUserFailure = payload => ({ type: exports.AUTH_USER_FAILURE, payload });
 const authUserCancelled = () => ({ type: AUTH_USER_CANCELLED });
 exports.authUserEpic = action$ => action$.ofType(AUTH_USER).mergeMap(action => ajax({
     method: 'POST',
@@ -76,9 +76,12 @@ exports.logoutUserEpic = action$ => action$.ofType(LOG_OUT).mergeMap(action => a
 })
     .takeUntil(action$.ofType(LOG_OUT_CANCELLED))
     .catch(error => Rx.Observable.of(logoutFailure(error.xhr.response))));
+const AUTH_REDUCER_CLEAR_ERROR = "AUTH_REDUCER_CLEAR_ERROR";
+exports.clearError = redux_actions_1.createAction(AUTH_REDUCER_CLEAR_ERROR);
 exports.AuthenInitState = immutable_1.Record({
     token: null,
     isFetching: false,
+    error: null,
     state: null,
     user: null
 });
@@ -93,10 +96,11 @@ exports.authReducer = (state = new exports.AuthenInitState(), action) => {
             return state.set('state', exports.AUTH_USER_SUCCESS)
                 .set('token', action.payload.result);
         }
-        case AUTH_USER_FAILURE: {
-            return state.set('state', AUTH_USER_FAILURE)
+        case exports.AUTH_USER_FAILURE: {
+            return state.set('state', exports.AUTH_USER_FAILURE)
                 .set('token', null)
-                .set('user', null);
+                .set('user', null)
+                .set("error", JSON.stringify(action.payload.message));
         }
         case AppActions.GET_SESSION_TOKEN_SUCCESS: {
             return state.set('token', action.payload)
@@ -114,6 +118,9 @@ exports.authReducer = (state = new exports.AuthenInitState(), action) => {
             return state.set("state", exports.LOG_OUT_SUCCESS)
                 .set("token", null)
                 .set("user", null);
+        }
+        case AUTH_REDUCER_CLEAR_ERROR: {
+            return state.set("error", null).set("state", AUTH_REDUCER_CLEAR_ERROR);
         }
         default:
             return state;

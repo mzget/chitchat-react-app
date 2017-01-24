@@ -1,6 +1,6 @@
 "use strict";
 const api_master = "http://git.animation-genius.com:9000";
-const api_dev = "http://203.150.55.129:9000";
+const api_dev = "http://git.animation-genius.com:9000";
 const api_production = "http://203.148.250.152:3002/";
 const rest_api = (host) => ({
     apiKey: "chitchat1234",
@@ -15,10 +15,10 @@ const rest_api = (host) => ({
 });
 const devConfig = {
     Stalk: {
-        chat: "203.150.55.129",
+        chat: "git.animation-genius.com",
         port: "3010",
         api: {
-            user: "http://203.150.55.129:9000/api/stalk/user"
+            user: "http://git.animation-genius.com:9000/api/stalk/user"
         }
     },
     appConfig: {

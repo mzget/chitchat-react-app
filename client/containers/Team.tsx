@@ -41,9 +41,9 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
         let { location: {query: {userId, username, roomId, contactId }}, params } = this.props;
 
         this.toolbar = "Teams",
-        this.state = {
-            openDialog: false
-        };
+            this.state = {
+                openDialog: false
+            };
 
         if (params.filter) {
             this.props.dispatch(userRx.fetchUser(params.filter));
@@ -65,8 +65,9 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
                     }
                 }
                 else {
-                    if (userReducer.user.teams.length > 0)
-                    this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
+                    if (!!userReducer.user.teams && userReducer.user.teams.length > 0) {
+                        this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
+                    }
                 }
                 break;
             case userRx.FETCH_USER_FAILURE: {

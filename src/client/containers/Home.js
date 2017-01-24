@@ -12,14 +12,27 @@ const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
 const AuthRx = require("../redux/authen/authRx");
 const AppActions = require("../redux/app/persistentDataActions");
+const DialogBox_1 = require("../components/DialogBox");
 const AuthenBox_1 = require("./authen/AuthenBox");
 ;
 class Home extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.alertMessage = "";
+        this.alertTitle = "";
+    }
+    closeAlert() {
+        this.alertTitle = "";
+        this.alertMessage = "";
+        this.setState(prevState => (__assign({}, prevState, { alert: false })), () => this.props.dispatch(AuthRx.clearError()));
+    }
     componentWillMount() {
         console.log("Home", global.userAgent);
+        this.state = {
+            alert: false
+        };
+        this.closeAlert = this.closeAlert.bind(this);
         this.props.dispatch(AppActions.getSession());
-    }
-    componentDidMount() {
     }
     componentWillReceiveProps(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer } = nextProps;
@@ -27,6 +40,12 @@ class Home extends React.Component {
             case AuthRx.AUTH_USER_SUCCESS: {
                 AppActions.saveSession();
                 this.props.router.push(`/team/${authReducer.user}`);
+                break;
+            }
+            case AuthRx.AUTH_USER_FAILURE: {
+                this.alertTitle = AuthRx.AUTH_USER_FAILURE;
+                this.alertMessage = authReducer.error;
+                this.setState(previous => (__assign({}, previous, { alert: true })));
                 break;
             }
             case AuthRx.TOKEN_AUTH_USER_SUCCESS: {
@@ -52,14 +71,13 @@ class Home extends React.Component {
             React.createElement(reflexbox_1.Flex, { px: 2, align: 'center' },
                 React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
                 React.createElement("p", null, "Stalk realtime messaging service."),
-                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }))));
+                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
+            React.createElement(DialogBox_1.DialogBox, { title: this.alertTitle, message: this.alertMessage, open: this.state.alert, handleClose: this.closeAlert })));
     }
 }
 /**
  * ## Redux boilerplate
  */
-function mapStateToProps(state) {
-    return __assign({}, state);
-}
+const mapStateToProps = (state) => (__assign({}, state));
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = react_redux_1.connect(mapStateToProps)(Home);
