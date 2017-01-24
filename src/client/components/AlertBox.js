@@ -1,19 +1,8 @@
 "use strict";
 const React = require("react");
-const dialog_1 = require("react-toolbox/lib/dialog");
+const Dialog_1 = require("material-ui/Dialog");
 const actions = (props) => [
-    { label: "Cancel", onClick: props.handleToggle },
-    { label: "Save", onClick: props.handleToggle }
+    { label: "OK", onClick: props.onClose }
 ];
 exports.AlertBox = (props) => (React.createElement("div", null,
-    React.createElement(dialog_1.default, null,
-        "actions=",
-        actions(props),
-        "active=",
-        props.active,
-        "onEscKeyDown=",
-        props.handleToggle,
-        "onOverlayClick=",
-        props.handleToggle,
-        "title='My awesome dialog'" + " " + ">",
-        React.createElement("p", null, "Here you can add arbitrary content. Components like Pickers are using dialogs now."))));
+    React.createElement(Dialog_1.default, { title: props.alertTitle, actions: actions(props), open: props.active, modal: true, onRequestClose: props.onClose }, props.alertMessage)));

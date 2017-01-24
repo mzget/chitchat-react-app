@@ -5,7 +5,6 @@ import { Flex, Box } from 'reflexbox';
 import { IComponentProps } from "../utils/IComponentProps";
 
 import { DialogBox } from "../components/DialogBox";
-import { AlertBox } from "../components/AlertBox";
 import { SnackbarSimple } from "../components/SnackbarSimple";
 
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';

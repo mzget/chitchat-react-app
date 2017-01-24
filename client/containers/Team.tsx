@@ -10,6 +10,7 @@ import * as userRx from "../redux/user/userRx";
 import * as teamRx from "../redux/team/teamRx";
 import * as authRx from "../redux/authen/authRx";
 
+import { DialogBox } from "../components/DialogBox";
 import TeamListBox from './teams/TeamListBox';
 import TeamCreateBox from './teams/TeamCreateBox';
 import SimpleToolbar from '../components/SimpleToolbar';
@@ -18,7 +19,7 @@ import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import { ITeam } from '../../server/scripts/models/ITeam';
 
 interface IComponentNameState {
-    toolbar: string;
+    openDialog: boolean;
 };
 
 /**
@@ -26,17 +27,23 @@ interface IComponentNameState {
  */
 class Team extends React.Component<IComponentProps, IComponentNameState> {
 
+    toolbar: string;
+    alertBoxMessage: string = "";
+    alertBoxTitle: string = "";
+
     componentWillMount() {
         console.log("Main", this.props);
 
         this.onSelectTeam = this.onSelectTeam.bind(this);
         this.onToolbarMenuItem = this.onToolbarMenuItem.bind(this);
+        this.onCloseDialog = this.onCloseDialog.bind(this);
 
         let { location: {query: {userId, username, roomId, contactId }}, params } = this.props;
 
+        this.toolbar = "Teams",
         this.state = {
-            toolbar: 'Teams'
-        }
+            openDialog: false
+        };
 
         if (params.filter) {
             this.props.dispatch(userRx.fetchUser(params.filter));
@@ -74,8 +81,18 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
             }
         }
 
-        (!!teamReducer.teams && teamReducer.teams.length > 0) ?
-            this.setState({ toolbar: 'Your Teams' }) : this.setState({ toolbar: 'Create Team' });
+        this.toolbar = (!!teamReducer.teams && teamReducer.teams.length > 0) ? 'Your Teams' : 'Create Team';
+
+        switch (teamReducer.state) {
+            case teamRx.CREATE_TEAM_FAILURE: {
+                this.alertBoxTitle = teamRx.CREATE_TEAM_FAILURE;
+                this.alertBoxMessage = teamReducer.error;
+                this.setState(previous => ({ ...previous, openDialog: true }));
+                break;
+            }
+            default:
+                break;
+        }
     }
 
     onSelectTeam(team: ITeam) {
@@ -89,17 +106,33 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
         }
     }
 
+    onCloseDialog() {
+        this.alertBoxTitle = "";
+        this.alertBoxMessage = "";
+
+        this.setState(previous => ({ ...previous, openDialog: false }), () => {
+            this.props.dispatch(teamRx.clearError());
+        });
+    }
+
     public render(): JSX.Element {
         let { location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer, teamReducer } = this.props;
 
         return (
             <MuiThemeProvider>
                 <div>
-                    <SimpleToolbar title={this.state.toolbar} menus={["logout"]} onSelectedMenuItem={this.onToolbarMenuItem} />
+                    <SimpleToolbar title={this.toolbar} menus={["logout"]} onSelectedMenuItem={this.onToolbarMenuItem} />
                     <TeamListBox {...this.props} onSelectTeam={this.onSelectTeam} />
                     <TeamCreateBox {...this.props} />
+                    <DialogBox
+                        title={this.alertBoxTitle}
+                        message={this.alertBoxMessage}
+                        open={this.state.openDialog}
+                        handleClose={this.onCloseDialog}
+                        />
                 </div>
-            </MuiThemeProvider>);
+            </MuiThemeProvider>
+        );
     }
 }
 

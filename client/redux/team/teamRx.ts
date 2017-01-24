@@ -27,7 +27,7 @@ export const fetchUserTeamsEpic = action$ =>
 
 const CREATE_TEAM = "CREATE_TEAM";
 const CREATE_TEAM_SUCCESS = "CREATE_TEAM_SUCCESS";
-const CREATE_TEAM_FAILURE = "CREATE_TEAM_FAILURE";
+export const CREATE_TEAM_FAILURE = "CREATE_TEAM_FAILURE";
 const CREATE_TEAM_CANCELLED = "CREATE_TEAM_CANCELLED";
 export const createNewTeam = (params) => ({ type: CREATE_TEAM, payload: params })
 export const createNewTeamSuccess = (payload) => ({ type: CREATE_TEAM_SUCCESS, payload })
@@ -154,13 +154,17 @@ export function getTeamMembersEpic(action$) {
 const TEAM_SELECTED = "TEAM_SELECTED";
 export const selectTeam = (team) => ({ type: TEAM_SELECTED, payload: team });
 
+const TEAM_REDUCER_CLEAR_ERROR = "TEAM_REDUCER_CLEAR_ERROR";
+export const clearError = createAction(TEAM_REDUCER_CLEAR_ERROR);
+
 export const TeamInitState = Record({
     isFetching: false,
     state: null,
     teams: null,
     team: null,
     members: null,
-    findingTeams: null
+    findingTeams: null,
+    error: null
 });
 export const teamReducer = (state = new TeamInitState(), action: ReduxActions.Action<any>) => {
     switch (action.type) {
@@ -169,6 +173,10 @@ export const teamReducer = (state = new TeamInitState(), action: ReduxActions.Ac
             let newItems = teams.concat(action.payload.result);
 
             return state.set('teams', newItems);
+        }
+        case CREATE_TEAM_FAILURE: {
+            return state.set("state", CREATE_TEAM_FAILURE)
+                .set("error", action.payload.message);
         }
 
         case FIND_TEAM_SUCCESS: {
@@ -192,6 +200,11 @@ export const teamReducer = (state = new TeamInitState(), action: ReduxActions.Ac
         }
         case GET_TEAM_MEMBERS_SUCCESS: {
             return state.set("members", action.payload.result);
+        }
+
+        case TEAM_REDUCER_CLEAR_ERROR: {
+            return state.set("state", null)
+                .set("error", null);
         }
         default:
             return state;

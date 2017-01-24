@@ -21,11 +21,11 @@ exports.fetchUserTeamsEpic = action$ => action$.ofType(FETCH_USER_TEAMS)
     .catch(error => Rx.Observable.of(exports.fetchUserTeamsFailure(error.xhr.response))));
 const CREATE_TEAM = "CREATE_TEAM";
 const CREATE_TEAM_SUCCESS = "CREATE_TEAM_SUCCESS";
-const CREATE_TEAM_FAILURE = "CREATE_TEAM_FAILURE";
+exports.CREATE_TEAM_FAILURE = "CREATE_TEAM_FAILURE";
 const CREATE_TEAM_CANCELLED = "CREATE_TEAM_CANCELLED";
 exports.createNewTeam = (params) => ({ type: CREATE_TEAM, payload: params });
 exports.createNewTeamSuccess = (payload) => ({ type: CREATE_TEAM_SUCCESS, payload });
-exports.createNewTeamFailure = (error) => ({ type: CREATE_TEAM_FAILURE, payload: error });
+exports.createNewTeamFailure = (error) => ({ type: exports.CREATE_TEAM_FAILURE, payload: error });
 exports.createNewTeamCancelled = () => ({ type: CREATE_TEAM_CANCELLED });
 exports.createNewTeamEpic = action$ => action$.ofType(CREATE_TEAM)
     .mergeMap(action => ajax({
@@ -131,13 +131,16 @@ function getTeamMembersEpic(action$) {
 exports.getTeamMembersEpic = getTeamMembersEpic;
 const TEAM_SELECTED = "TEAM_SELECTED";
 exports.selectTeam = (team) => ({ type: TEAM_SELECTED, payload: team });
+const TEAM_REDUCER_CLEAR_ERROR = "TEAM_REDUCER_CLEAR_ERROR";
+exports.clearError = redux_actions_1.createAction(TEAM_REDUCER_CLEAR_ERROR);
 exports.TeamInitState = immutable_1.Record({
     isFetching: false,
     state: null,
     teams: null,
     team: null,
     members: null,
-    findingTeams: null
+    findingTeams: null,
+    error: null
 });
 exports.teamReducer = (state = new exports.TeamInitState(), action) => {
     switch (action.type) {
@@ -145,6 +148,10 @@ exports.teamReducer = (state = new exports.TeamInitState(), action) => {
             let teams = state.get("teams");
             let newItems = teams.concat(action.payload.result);
             return state.set('teams', newItems);
+        }
+        case exports.CREATE_TEAM_FAILURE: {
+            return state.set("state", exports.CREATE_TEAM_FAILURE)
+                .set("error", action.payload.message);
         }
         case FIND_TEAM_SUCCESS: {
             return state.set("findingTeams", action.payload.result);
@@ -164,6 +171,10 @@ exports.teamReducer = (state = new exports.TeamInitState(), action) => {
         }
         case GET_TEAM_MEMBERS_SUCCESS: {
             return state.set("members", action.payload.result);
+        }
+        case TEAM_REDUCER_CLEAR_ERROR: {
+            return state.set("state", null)
+                .set("error", null);
         }
         default:
             return state;

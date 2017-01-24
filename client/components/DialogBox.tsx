@@ -6,9 +6,9 @@ import FlatButton from 'material-ui/FlatButton';
 
 interface ICompProps {
     title: string;
-    open: boolean;
-    handleClose;
     message: string;
+    open: boolean;
+    handleClose: () => void;
 }
 const actions = (props: ICompProps) => [
     <FlatButton
