@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "@types/": "reactivex/rxjs",
+    "@reactivex/rxjs": "^5.0.3",
     "@types/async": "^2.0.37",
     "@types/crypto-js": "^3.1.32",
     "@types/es6-shim": "^0.31.32",
@@ -16,7 +16,6 @@
     "@types/react-router": "^2.0.41",
     "@types/redux-actions": "^1.2.2",
     "@types/redux-logger": "^2.6.32",
-    "@types/redux-thunk": "^2.1.0",
     "react-scripts": "0.8.4",
     "redux-devtools": "^3.3.1",
     "redux-devtools-dock-monitor": "^1.1.1",
