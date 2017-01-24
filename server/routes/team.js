@@ -24,7 +24,7 @@ router.get("/", (req, res, next) => {
         return res.status(500).json(new apiUtils.ApiResponse(false, errors));
     }
     let team_name = req.query.name;
-    TeamController.findTeamName(team_name).then(value => {
+    TeamController.searchTeam(team_name).then(value => {
         if (value.length > 0)
             res.status(200).json(new apiUtils.ApiResponse(true, null, value));
         else
