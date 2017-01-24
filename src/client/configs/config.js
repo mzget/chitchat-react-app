@@ -1,6 +1,6 @@
 "use strict";
-const api_master = "http://smelink.animation-genius.com:3002/";
-const api_dev = "http://localhost:9000";
+const api_master = "http://git.animation-genius.com:9000";
+const api_dev = "http://203.150.55.129:9000";
 const api_production = "http://203.148.250.152:3002/";
 const rest_api = (host) => ({
     apiKey: "chitchat1234",
@@ -15,10 +15,10 @@ const rest_api = (host) => ({
 });
 const devConfig = {
     Stalk: {
-        chat: "localhost",
+        chat: "203.150.55.129",
         port: "3010",
         api: {
-            user: "http://localhost:9000/api/stalk/user"
+            user: "http://203.150.55.129:9000/api/stalk/user"
         }
     },
     appConfig: {
@@ -31,7 +31,7 @@ const masterConfig = {
         chat: "git.animation-genius.com",
         port: "3010",
         api: {
-            user: "http://localhost:9000/api/stalk/user"
+            user: "http://git.animation-genius.com:9000/api/stalk/user"
         }
     },
     appConfig: {
