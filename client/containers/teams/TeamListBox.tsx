@@ -1,4 +1,9 @@
 ﻿import * as React from "react";
+import Subheader from "material-ui/Subheader"; import RaisedButton from "material-ui/RaisedButton";
+
+const style = {
+    margin: 6,
+};
 
 import { TeamListView } from './TeamListView';
 import { ITeam } from '../../../server/scripts/models/ITeam';
@@ -19,7 +24,11 @@ class TeamListBox extends React.Component<IComponentNameProps, IComponentNameSta
     public render(): JSX.Element {
         return (
             <div>
-                <TeamListView items={this.props.teamReducer.teams} onSelectItem={this.props.onSelectTeam} />
+                <Subheader>Your Teams</Subheader>
+                <TeamListView
+                    items={this.props.teamReducer.teams}
+                    onSelectItem={this.props.onSelectTeam}
+                    actionChild={<RaisedButton label="Enter" primary={true} style={style} />} />
             </div>
         );
     }

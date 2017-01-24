@@ -33,6 +33,22 @@ export async function findTeamName(team_name: string) {
     return teams;
 }
 
+export async function searchTeam(team_name: string) {
+
+    let _team = team_name.toLowerCase();
+
+    let db = await MongoClient.connect(config.chatDB);
+    let collection = db.collection(DbClient.teamsColl);
+
+    collection.createIndex({ name: 1 }, { background: true });
+
+    let _key = new RegExp("^" + _team);
+    let teams: Array<ITeam> = await collection.find({ name: { $regex: _key, $options: "i" } }).limit(100).toArray();
+
+    db.close();
+    return teams;
+}
+
 export async function createTeam(team_name: string) {
     let db = await MongoClient.connect(config.chatDB);
     let collection = db.collection(DbClient.teamsColl);

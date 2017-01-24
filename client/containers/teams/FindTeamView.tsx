@@ -16,39 +16,38 @@ const styles = {
         position: 'absolute'
     }
 };
-
-const SubmitButton = (props: ITypingBox) => (
-    <RaisedButton primary={true} label="Create Team" onClick={props.onCreateTeam}>
+const FindButton = (props: ITypingBox) => (
+    <RaisedButton primary={true} label="Find Now" onClick={props.onSubmit}>
     </RaisedButton>
 );
-const FindButton = (props: ITypingBox) => (
-    <RaisedButton primary={true} label="Find Team" onClick={props.onFindTeam}>
+const CreateNewButton = (props: ITypingBox) => (
+    <RaisedButton primary={true} label="Create New" onClick={props.onCreateNewPress}>
     </RaisedButton>
 );
 
 interface ITypingBox {
-    onCreateTeam: () => void;
-    onFindTeam: () => void;
     team_name: string;
+    onSubmit: () => void;
     onNameChange: (e, text) => void;
+    onCreateNewPress: () => void;
 }
 
-export const TeamCreateView = (props: ITypingBox) => {
+export const FindTeamView = (props: ITypingBox) => {
     return (
         < MuiThemeProvider >
             <Flex flexColumn align='center' justify='center' >
-                <h3>Create a new team</h3>
-                <TextField hintText="Team name" value={props.team_name} onChange={props.onNameChange} onKeyDown={(e) => {
-                    if (e.key === 'Enter') props.onCreateTeam();
+                <h3>Find your team</h3>
+                <TextField hintText="Enter your team name" value={props.team_name} onChange={props.onNameChange} onKeyDown={(e) => {
+                    if (e.key === 'Enter') props.onSubmit();
                 } } />
                 <span style={styles.span} />
-                <SubmitButton {...props} />
+                <FindButton {...props} />
                 <span style={styles.span} />
 
                 <Flex flexColumn={false} align='center' justify='center' >
-                    <p>Looking for existing team?</p>
+                    <p>Create new team?</p>
                     <span style={styles.span} />
-                    <FindButton {...props} />
+                    <CreateNewButton {...props} />
                 </Flex>
             </Flex>
         </MuiThemeProvider >

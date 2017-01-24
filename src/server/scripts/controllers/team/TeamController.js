@@ -34,6 +34,19 @@ function findTeamName(team_name) {
     });
 }
 exports.findTeamName = findTeamName;
+function searchTeam(team_name) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let _team = team_name.toLowerCase();
+        let db = yield MongoClient.connect(config.chatDB);
+        let collection = db.collection(config_1.DbClient.teamsColl);
+        collection.createIndex({ name: 1 }, { background: true });
+        let _key = new RegExp("^" + _team);
+        let teams = yield collection.find({ name: { $regex: _key, $options: "i" } }).limit(100).toArray();
+        db.close();
+        return teams;
+    });
+}
+exports.searchTeam = searchTeam;
 function createTeam(team_name) {
     return __awaiter(this, void 0, void 0, function* () {
         let db = yield MongoClient.connect(config.chatDB);

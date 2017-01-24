@@ -13,11 +13,18 @@ import { ITeam } from '../../../server/scripts/models/ITeam';
 interface IComponentProps {
     items: ITeam[];
     onSelectItem: (team: ITeam) => void;
+    actionChild?: any;
 }
 
 const getItem = (props: IComponentProps) => {
     return props.items.map((item, i, arr) =>
-        <ListItem key={i} primaryText={item.name} leftIcon={<ActionGrade />} rightIcon={<ActionInfo />} onClick={() => props.onSelectItem(item)} />
+        <ListItem
+            key={i}
+            primaryText={item.name}
+            leftIcon={<ActionGrade />}
+            rightIcon={(props.actionChild) ? props.actionChild : < ActionInfo />}
+            onClick={() => props.onSelectItem(item)}
+            />
     )
 };
 

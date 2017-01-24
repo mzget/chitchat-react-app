@@ -1,10 +1,11 @@
 ﻿import config from "../../configs/config";
 import { Record } from "immutable";
-
+import { createAction, Reducer } from "redux-actions";
 import * as Rx from 'rxjs/Rx';
 const { ajax } = Rx.Observable;
 
 import Store from '../configureStore';
+import * as userRx from "../user/userRx";
 
 
 const FETCH_USER_TEAMS = "FETCH_USER_TEAMS";
@@ -24,11 +25,9 @@ export const fetchUserTeamsEpic = action$ =>
             .catch(error => Rx.Observable.of(fetchUserTeamsFailure(error.xhr.response)))
         );
 
-
-
 const CREATE_TEAM = "CREATE_TEAM";
 const CREATE_TEAM_SUCCESS = "CREATE_TEAM_SUCCESS";
-const CREATE_TEAM_FAILURE = "CREATE_TEAM_FAILURE";
+export const CREATE_TEAM_FAILURE = "CREATE_TEAM_FAILURE";
 const CREATE_TEAM_CANCELLED = "CREATE_TEAM_CANCELLED";
 export const createNewTeam = (params) => ({ type: CREATE_TEAM, payload: params })
 export const createNewTeamSuccess = (payload) => ({ type: CREATE_TEAM_SUCCESS, payload })
@@ -41,13 +40,66 @@ export const createNewTeamEpic = action$ =>
             url: `${config.api.team}/create`,
             body: JSON.stringify({ team_name: action.payload }),
             headers: {
-                'Content-Type': 'application/json', 'x-access-token': Store.getState().authReducer.token
+                'Content-Type': 'application/json',
+                'x-access-token': Store.getState().authReducer.token
             }
         })
             .map(response => createNewTeamSuccess(response.xhr.response))
             .takeUntil(action$.ofType(CREATE_TEAM_CANCELLED))
             .catch(error => Rx.Observable.of(createNewTeamFailure(error.xhr.response)))
         );
+
+const FIND_TEAM = "FIND_TEAM";
+const FIND_TEAM_SUCCESS = "FIND_TEAM_SUCCESS";
+const FIND_TEAM_FAILURE = "FIND_TEAM_FAILURE";
+const FIND_TEAM_CANCELLED = "FIND_TEAM_CANCELLED";
+
+export const findTeam = createAction(FIND_TEAM, team_name => team_name);
+const findTeamSuccess = createAction(FIND_TEAM_SUCCESS, payload => payload);
+const findTeamFailure = createAction(FIND_TEAM_FAILURE, error => error);
+const findTeamCancelled = createAction(FIND_TEAM_CANCELLED);
+
+export const findTeamEpic = action$ => action$.ofType(FIND_TEAM)
+    .mergeMap(action => ajax({
+        method: 'GET',
+        url: `${config.api.team}?name=${action.payload}`,
+        headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': Store.getState().authReducer.token
+        }
+    }).map(response => findTeamSuccess(response.xhr.response))
+        .takeUntil(action$.ofType(FIND_TEAM_CANCELLED))
+        .catch(error => Rx.Observable.of(findTeamFailure(error.xhr.response)))
+    );
+
+const JOIN_TEAM = "JOIN_TEAM";
+const JOIN_TEAM_SUCCESS = "JOIN_TEAM_SUCCESS";
+const JOIN_TEAM_FAILURE = "JOIN_TEAM_FAILURE";
+const JOIN_TEAM_CANCELLED = "JOIN_TEAM_CANCELLED";
+
+export const joinTeam = createAction(JOIN_TEAM, team_name => team_name);
+const joinTeamSuccess = createAction(JOIN_TEAM_SUCCESS, payload => payload);
+const joinTeamFailure = createAction(JOIN_TEAM_FAILURE, payload => payload);
+const joinTeamCancelled = createAction(JOIN_TEAM_CANCELLED);
+
+export const joinTeamEpic = action$ =>
+    action$.ofType(JOIN_TEAM).mergeMap(action => ajax({
+        method: 'POST',
+        url: `${config.api.team}/join`,
+        body: JSON.stringify({ name: action.payload }),
+        headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': Store.getState().authReducer.token
+        }
+    }).map(response => joinTeamSuccess(response.xhr.response))
+        .takeUntil(action$.ofType(JOIN_TEAM_CANCELLED))
+        .catch(error => Rx.Observable.of(joinTeamFailure(error.xhr.response)))
+        .do((x) => {
+            if (x.type === JOIN_TEAM_SUCCESS)
+                Store.dispatch(userRx.fetchUser(Store.getState().userReducer.user.username));
+        })
+    );
+
 
 const GET_TEAMS_INFO = "GET_TEAMS_INFO";
 const GET_TEAMS_INFO_SUCCESS = "GET_TEAMS_INFO_SUCCESS";
@@ -102,25 +154,44 @@ export function getTeamMembersEpic(action$) {
 const TEAM_SELECTED = "TEAM_SELECTED";
 export const selectTeam = (team) => ({ type: TEAM_SELECTED, payload: team });
 
+const TEAM_REDUCER_CLEAR_ERROR = "TEAM_REDUCER_CLEAR_ERROR";
+export const clearError = createAction(TEAM_REDUCER_CLEAR_ERROR);
+
 export const TeamInitState = Record({
     isFetching: false,
     state: null,
     teams: null,
     team: null,
-    members: null
+    members: null,
+    findingTeams: null,
+    error: null
 });
-export const teamReducer = (state = new TeamInitState(), action) => {
+export const teamReducer = (state = new TeamInitState(), action: ReduxActions.Action<any>) => {
     switch (action.type) {
         case CREATE_TEAM_SUCCESS: {
-            return state.set('teams', action.payload.result);
+            let teams = state.get("teams") as Array<any>;
+            let newItems = teams.concat(action.payload.result);
+
+            return state.set('teams', newItems);
+        }
+        case CREATE_TEAM_FAILURE: {
+            return state.set("state", CREATE_TEAM_FAILURE)
+                .set("error", action.payload.message);
+        }
+
+        case FIND_TEAM_SUCCESS: {
+            return state.set("findingTeams", action.payload.result);
+        }
+        case FIND_TEAM_FAILURE: {
+            return state.set("findingTeams", null);
         }
 
         case FETCH_USER_TEAMS_SUCCESS: {
-            return state.set('teams', action.payload.result)
+            return state.set('teams', action.payload.result);
         }
 
         case GET_TEAMS_INFO_SUCCESS: {
-            return state.set('teams', action.payload.result)
+            return state.set('teams', action.payload.result);
         }
 
         case TEAM_SELECTED: {
@@ -129,6 +200,11 @@ export const teamReducer = (state = new TeamInitState(), action) => {
         }
         case GET_TEAM_MEMBERS_SUCCESS: {
             return state.set("members", action.payload.result);
+        }
+
+        case TEAM_REDUCER_CLEAR_ERROR: {
+            return state.set("state", null)
+                .set("error", null);
         }
         default:
             return state;

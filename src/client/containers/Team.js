@@ -9,28 +9,35 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const react_redux_1 = require("react-redux");
+const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
+const immutable = require("immutable");
 const userRx = require("../redux/user/userRx");
 const teamRx = require("../redux/team/teamRx");
 const authRx = require("../redux/authen/authRx");
+const DialogBox_1 = require("../components/DialogBox");
 const TeamListBox_1 = require("./teams/TeamListBox");
 const TeamCreateBox_1 = require("./teams/TeamCreateBox");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
-class IComponentNameProps {
-}
-;
 ;
 /**
  * Containers of chatlist, chatlogs, etc...
  */
 class Team extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.alertBoxMessage = "";
+        this.alertBoxTitle = "";
+    }
     componentWillMount() {
         console.log("Main", this.props);
         this.onSelectTeam = this.onSelectTeam.bind(this);
         this.onToolbarMenuItem = this.onToolbarMenuItem.bind(this);
-        let { location: { query: { userId, username, roomId, contactId, agent_name } }, params } = this.props;
-        this.state = {
-            toolbar: 'Teams'
-        };
+        this.onCloseDialog = this.onCloseDialog.bind(this);
+        let { location: { query: { userId, username, roomId, contactId } }, params } = this.props;
+        this.toolbar = "Teams",
+            this.state = {
+                openDialog: false
+            };
         if (params.filter) {
             this.props.dispatch(userRx.fetchUser(params.filter));
         }
@@ -39,8 +46,16 @@ class Team extends React.Component {
         let { location: { query: { userId, username, roomId, contactId } }, userReducer, authReducer, teamReducer } = nextProps;
         switch (userReducer.state) {
             case userRx.FETCH_USER_SUCCESS:
-                if (userReducer.state != this.props.userReducer.state) {
-                    this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
+                if (!!this.props.userReducer.user) {
+                    let nextRed = immutable.fromJS(userReducer);
+                    let red = immutable.fromJS(this.props.userReducer);
+                    if (!red.equals(nextRed)) {
+                        this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
+                    }
+                }
+                else {
+                    if (userReducer.user.teams.length > 0)
+                        this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
                 }
                 break;
             case userRx.FETCH_USER_FAILURE: {
@@ -54,8 +69,17 @@ class Team extends React.Component {
                 break;
             }
         }
-        (!!teamReducer.teams && teamReducer.teams.length > 0) ?
-            this.setState({ toolbar: 'Your Teams' }) : this.setState({ toolbar: 'Create Team' });
+        this.toolbar = (!!teamReducer.teams && teamReducer.teams.length > 0) ? 'Your Teams' : 'Create Team';
+        switch (teamReducer.state) {
+            case teamRx.CREATE_TEAM_FAILURE: {
+                this.alertBoxTitle = teamRx.CREATE_TEAM_FAILURE;
+                this.alertBoxMessage = teamReducer.error;
+                this.setState(previous => (__assign({}, previous, { openDialog: true })));
+                break;
+            }
+            default:
+                break;
+        }
     }
     onSelectTeam(team) {
         this.props.dispatch(teamRx.selectTeam(team));
@@ -66,13 +90,21 @@ class Team extends React.Component {
             this.props.dispatch(authRx.logout(this.props.authReducer.token));
         }
     }
+    onCloseDialog() {
+        this.alertBoxTitle = "";
+        this.alertBoxMessage = "";
+        this.setState(previous => (__assign({}, previous, { openDialog: false })), () => {
+            this.props.dispatch(teamRx.clearError());
+        });
+    }
     render() {
         let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, teamReducer } = this.props;
-        return (React.createElement("div", null,
-            React.createElement(SimpleToolbar_1.default, { title: this.state.toolbar, menus: ["logout"], onSelectedMenuItem: this.onToolbarMenuItem }),
-            (!!teamReducer.teams && teamReducer.teams.length > 0) ?
-                React.createElement(TeamListBox_1.default, __assign({}, this.props, { onSelectTeam: this.onSelectTeam })) :
-                React.createElement(TeamCreateBox_1.default, __assign({}, this.props))));
+        return (React.createElement(MuiThemeProvider_1.default, null,
+            React.createElement("div", null,
+                React.createElement(SimpleToolbar_1.default, { title: this.toolbar, menus: ["logout"], onSelectedMenuItem: this.onToolbarMenuItem }),
+                React.createElement(TeamListBox_1.default, __assign({}, this.props, { onSelectTeam: this.onSelectTeam })),
+                React.createElement(TeamCreateBox_1.default, __assign({}, this.props)),
+                React.createElement(DialogBox_1.DialogBox, { title: this.alertBoxTitle, message: this.alertBoxMessage, open: this.state.openDialog, handleClose: this.onCloseDialog }))));
     }
 }
 /**

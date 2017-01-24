@@ -14,6 +14,26 @@ const config = getConfig();
 import * as TeamController from '../scripts/controllers/team/TeamController';
 import * as UserManager from '../scripts/controllers/user/UserManager';
 
+router.get("/", (req, res, next) => {
+    req.checkQuery("name", "request for name param").notEmpty();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let team_name = req.query.name;
+    TeamController.searchTeam(team_name).then(value => {
+        if (value.length > 0)
+            res.status(200).json(new apiUtils.ApiResponse(true, null, value));
+        else
+            res.status(500).json(new apiUtils.ApiResponse(false, value));
+    }).catch(err => {
+        console.error("Find team name fail: ", err);
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
+    });
+});
+
 router.post('/teamInfo', function (req, res, next) {
     req.checkBody('team_id', 'request for team_id').isMongoId();
 
@@ -92,10 +112,41 @@ router.post('/create', (req, res, next) => {
         res.status(200).json(new apiUtils.ApiResponse(true, null, result));
 
         UserManager.joinTeam(result[0], user._id);
-    }).catch(err => {
+    }).catch((err: Error) => {
         console.error("findTeamName fail: ", err);
+        res.status(500).json(new apiUtils.ApiResponse(false, err.message));
+    });
+});
+
+router.post("/join", (req, res, next) => {
+    req.checkBody("name", "request for team name").notEmpty();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let name: string = req.body.name;
+    let token = req["decoded"];
+    let user_id = token["_id"];
+
+    TeamController.findTeamName(name).then(teams => {
+        if (teams.length > 0) {
+            let team = teams[0];
+            UserManager.joinTeam(team, user_id).then(value => {
+                res.status(200).json(new apiUtils.ApiResponse(true, null, value));
+            }).catch(err => {
+                res.status(500).json(new apiUtils.ApiResponse(false, err));
+            });
+        }
+        else {
+            console.error("Cannot find this team name");
+            res.status(500).json(new apiUtils.ApiResponse(false, teams));
+        }
+    }).catch(err => {
+        console.error("Cannot find this team name");
         res.status(500).json(new apiUtils.ApiResponse(false, err));
-    })
+    });
 });
 
 router.get("/teamMembers", function (req, res, next) {

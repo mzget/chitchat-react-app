@@ -52,7 +52,9 @@
     <Content Include="client\containers\ListChatLogs.tsx" />
     <Content Include="client\containers\Team.tsx" />
     <Content Include="client\containers\teams\TeamCreateBox.tsx" />
+    <Content Include="client\containers\teams\FindTeamView.tsx" />
     <Content Include="client\containers\teams\TeamCreateView.tsx" />
+    <Content Include="client\containers\teams\FindTeamListBox.tsx" />
     <Content Include="client\containers\teams\TeamListBox.tsx" />
     <Content Include="client\containers\teams\TeamListView.tsx" />
     <Content Include="client\containers\TypingBox.tsx" />
@@ -68,6 +70,7 @@
     <TypeScriptCompile Include="client\libs\chitchat\dataAccessLayer\AppSessionToken.ts" />
     <TypeScriptCompile Include="client\redux\app\persistentDataActions.ts" />
     <TypeScriptCompile Include="client\redux\authen\authRx.ts" />
+    <TypeScriptCompile Include="client\redux\group\groupRx.ts" />
     <TypeScriptCompile Include="client\redux\team\teamRx.ts" />
     <TypeScriptCompile Include="client\redux\user\userRx.ts" />
     <TypeScriptCompile Include="client\utils\ValidationUtils.ts" />
@@ -346,6 +349,7 @@
     <Folder Include="client\redux\chatlogs" />
     <Folder Include="client\redux\chatroom" />
     <Folder Include="client\redux\device" />
+    <Folder Include="client\redux\group\" />
     <Folder Include="client\redux\message" />
     <Folder Include="client\redux\authen\" />
     <Folder Include="client\redux\app\" />

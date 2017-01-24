@@ -6,7 +6,7 @@ const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 const config_1 = require("../../config");
 const webConfig = config_1.getConfig();
-router.post('/username', (req, res, next) => {
+router.post("/username", (req, res, next) => {
     req.checkBody("username", "Request for id as body").notEmpty();
     let errors = req.validationErrors();
     if (errors) {
