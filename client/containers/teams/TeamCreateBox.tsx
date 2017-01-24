@@ -54,7 +54,7 @@ class TeamCreateBox extends React.Component<IComponentProps, IComponentNameState
     }
 
     onSelectTeam(team) {
-
+        console.log("request to join team", team);
     }
 
     public render(): JSX.Element {

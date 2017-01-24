@@ -47,6 +47,7 @@ class TeamCreateBox extends React.Component {
         }
     }
     onSelectTeam(team) {
+        console.log("request to join team", team);
     }
     render() {
         return (React.createElement("div", null,

@@ -143,6 +143,9 @@ export const teamReducer = (state = new TeamInitState(), action: ReduxActions.Ac
         case FIND_TEAM_SUCCESS: {
             return state.set("findingTeams", action.payload.result);
         }
+        case FIND_TEAM_FAILURE: {
+            return state.set("findingTeams", null);
+        }
 
         case FETCH_USER_TEAMS_SUCCESS: {
             return state.set('teams', action.payload.result);
