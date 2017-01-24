@@ -1,7 +1,4 @@
 import * as React from "react";
-/**
- * Redux + Immutable
- */
 import { connect } from "react-redux";
 import * as async from "async";
 import { Flex, Box } from 'reflexbox';
@@ -27,24 +24,22 @@ import { MessageImp } from "../chats/models/MessageImp";
 import { imagesPath } from '../consts/StickerPath';
 
 interface IComponentNameState {
-    messages: any[],
-    isLoadingEarlierMessages,
-    typingText: string,
-    earlyMessageReady,
-    openButtomMenu: boolean,
-    h_header: number,
-    h_body: number,
-    h_footer: number,
-    h_stickerBox: number,
-    h_chatArea: number
+    messages: any[];
+    isLoadingEarlierMessages;
+    typingText: string;
+    earlyMessageReady;
+    openButtomMenu: boolean;
+    h_header: number;
+    h_body: number;
+    h_footer: number;
+    h_stickerBox: number;
+    h_chatArea: number;
 };
 
 class Chat extends React.Component<IComponentProps, IComponentNameState> {
     toolbarMenus = ["Favorite"];
 
     componentWillMount() {
-        console.log("Chat", this.props, this.state);
-
         const clientWidth = document.documentElement.clientWidth;
         const clientHeight = document.documentElement.clientHeight;
         const head = clientHeight * 0.1;
@@ -74,12 +69,11 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
         let { chatroomReducer, userReducer, params} = this.props;
 
-        if (chatroomReducer.state == chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS
-            || chatroomReducer.state == chatroomRxEpic.CREATE_PRIVATE_CHATROOM_SUCCESS) {
-            this.roomInitialize(this.props);
-        }
         if (!chatroomReducer.room) {
             this.props.dispatch(chatRoomActions.getPersistendChatroom(params.filter));
+        }
+        else {
+            this.roomInitialize(this.props);
         }
     }
 

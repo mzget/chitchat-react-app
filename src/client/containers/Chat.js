@@ -8,9 +8,6 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 const React = require("react");
-/**
- * Redux + Immutable
- */
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
 const config_1 = require("../configs/config");
@@ -41,7 +38,6 @@ class Chat extends React.Component {
         };
     }
     componentWillMount() {
-        console.log("Chat", this.props, this.state);
         const clientWidth = document.documentElement.clientWidth;
         const clientHeight = document.documentElement.clientHeight;
         const head = clientHeight * 0.1;
@@ -66,12 +62,11 @@ class Chat extends React.Component {
         this.roomInitialize = this.roomInitialize.bind(this);
         this.onToggleSticker = this.onToggleSticker.bind(this);
         let { chatroomReducer, userReducer, params } = this.props;
-        if (chatroomReducer.state == chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS
-            || chatroomReducer.state == chatroomRxEpic.CREATE_PRIVATE_CHATROOM_SUCCESS) {
-            this.roomInitialize(this.props);
-        }
         if (!chatroomReducer.room) {
             this.props.dispatch(chatRoomActions.getPersistendChatroom(params.filter));
+        }
+        else {
+            this.roomInitialize(this.props);
         }
     }
     componentWillUnmount() {

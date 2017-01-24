@@ -16,10 +16,11 @@ const Subheader_1 = require("material-ui/Subheader");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const OrgGroupListBox_1 = require("./group/OrgGroupListBox");
 const ChatLogsBox_1 = require("./ChatLogsBox");
-const ChatListBox_1 = require("./chatlist/ChatListBox");
+const ContactBox_1 = require("./chatlist/ContactBox");
 const UtilsBox_1 = require("./UtilsBox");
+const chatroomActions = require("../redux/chatroom/chatroomActions");
 const chatlogsActions = require("../redux/chatlogs/chatlogsActions");
-const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
+const chatroomRx = require("../redux/chatroom/chatroomRxEpic");
 const userRx = require("../redux/user/userRx");
 const authRx = require("../redux/authen/authRx");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
@@ -34,7 +35,7 @@ class Main extends React.Component {
         this.bodyHeight = null;
         this.footerHeight = null;
         this.fetch_privateChatRoom = (roommateId, owerId) => {
-            this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
+            this.props.dispatch(chatroomRx.fetchPrivateChatRoom(owerId, roommateId));
         };
     }
     componentWillMount() {
@@ -66,7 +67,7 @@ class Main extends React.Component {
         }
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_INIT_SUCCESS:
-                if (this.props.stalkReducer.state != StalkBridgeActions.STALK_INIT_SUCCESS) {
+                if (this.props.stalkReducer.state !== StalkBridgeActions.STALK_INIT_SUCCESS) {
                     if (contactId) {
                         this.fetch_privateChatRoom(contactId, userReducer.user._id);
                     }
@@ -82,11 +83,19 @@ class Main extends React.Component {
             default:
                 break;
         }
+        switch (chatroomReducer.state) {
+            case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
+                this.props.router.push(`/chat/${chatroomReducer.room._id}`);
+                break;
+            }
+            default:
+                break;
+        }
     }
     joinChatServer(nextProps) {
         let { stalkReducer, userReducer } = nextProps;
         if (userReducer.user) {
-            if (stalkReducer.state != StalkBridgeActions.STALK_INIT) {
+            if (stalkReducer.state !== StalkBridgeActions.STALK_INIT) {
                 StalkBridgeActions.stalkLogin(userReducer.user);
             }
         }
@@ -114,7 +123,7 @@ class Main extends React.Component {
                     React.createElement(Subheader_1.default, null, this.state.header)),
                 React.createElement("div", { style: { height: this.bodyHeight } },
                     React.createElement(OrgGroupListBox_1.default, __assign({}, this.props)),
-                    React.createElement(ChatListBox_1.default, __assign({}, this.props)),
+                    React.createElement(ContactBox_1.default, __assign({}, this.props)),
                     React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
                     React.createElement(UtilsBox_1.default, null)),
                 (stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?

@@ -1,6 +1,5 @@
 const api_master = "http://git.animation-genius.com:9000";
-const api_dev = "http://git.animation-genius.com:9000";
-const api_production = "http://203.148.250.152:3002/";
+const api_dev = "http://localhost:9000";
 
 
 interface IConfigFile {
@@ -43,10 +42,10 @@ const rest_api = (host) => ({
 
 const devConfig = {
     Stalk: {
-        chat: "git.animation-genius.com",
+        chat: "localhost",
         port: "3010",
         api: {
-            user: "http://git.animation-genius.com:9000/api/stalk/user"
+            user: "http://localhost:9000/api/stalk/user"
         }
     },
     appConfig: {

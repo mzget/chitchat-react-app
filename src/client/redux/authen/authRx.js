@@ -39,14 +39,14 @@ exports.authUserEpic = action$ => action$.ofType(AUTH_USER).mergeMap(action => a
 })
     .map(response => authUserSuccess(response.xhr.response))
     .takeUntil(action$.ofType(AUTH_USER_CANCELLED))
-    .catch(error => Rx.Observable.of(authUserFailure(error.xhr.response))));
+    .catch(error => Rx.Observable.of(authUserFailure((error.xhr.response) ? error.xhr.response.message : error.message))));
 const TOKEN_AUTH_USER = "TOKEN_AUTH_USER";
 exports.TOKEN_AUTH_USER_SUCCESS = "TOKEN_AUTH_USER_SUCCESS";
 const TOKEN_AUTH_USER_FAILURE = "TOKEN_AUTH_USER_FAILURE";
 const TOKEN_AUTH_USER_CANCELLED = "TOKEN_AUTH_USER_CANCELLED";
 exports.tokenAuthUser = (token) => ({ type: TOKEN_AUTH_USER, payload: token }); // username => ({ type: FETCH_USER, payload: username });
 const tokenAuthUserSuccess = payload => ({ type: exports.TOKEN_AUTH_USER_SUCCESS, payload });
-const tokenAuthUserFailure = payload => ({ type: TOKEN_AUTH_USER_FAILURE, payload, error: true });
+const tokenAuthUserFailure = payload => ({ type: TOKEN_AUTH_USER_FAILURE, payload });
 const tokenAuthUserCancelled = () => ({ type: TOKEN_AUTH_USER_CANCELLED });
 exports.tokenAuthUserEpic = action$ => action$.ofType(TOKEN_AUTH_USER).mergeMap(action => ajax({
     method: 'POST',
@@ -56,7 +56,7 @@ exports.tokenAuthUserEpic = action$ => action$.ofType(TOKEN_AUTH_USER).mergeMap(
 })
     .map(response => tokenAuthUserSuccess(response.xhr.response))
     .takeUntil(action$.ofType(TOKEN_AUTH_USER_CANCELLED))
-    .catch(error => Rx.Observable.of(tokenAuthUserFailure(error.xhr.response))));
+    .catch(error => Rx.Observable.of(tokenAuthUserFailure((error.xhr.response) ? error.xhr.response.message : error.message))));
 const LOG_OUT = "LOG_OUT";
 exports.LOG_OUT_SUCCESS = "LOG_OUT_SUCCESS";
 const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
@@ -100,7 +100,7 @@ exports.authReducer = (state = new exports.AuthenInitState(), action) => {
             return state.set('state', exports.AUTH_USER_FAILURE)
                 .set('token', null)
                 .set('user', null)
-                .set("error", JSON.stringify(action.payload.message));
+                .set("error", JSON.stringify(action.payload));
         }
         case AppActions.GET_SESSION_TOKEN_SUCCESS: {
             return state.set('token', action.payload)
@@ -112,6 +112,7 @@ exports.authReducer = (state = new exports.AuthenInitState(), action) => {
         }
         case TOKEN_AUTH_USER_FAILURE: {
             return state.set("token", null)
+                .set("error", JSON.stringify(action.payload))
                 .set("state", TOKEN_AUTH_USER_FAILURE);
         }
         case exports.LOG_OUT_SUCCESS: {

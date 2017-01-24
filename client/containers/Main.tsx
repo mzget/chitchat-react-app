@@ -10,12 +10,12 @@ import { IComponentProps } from '../utils/IComponentProps';
 import SimpleToolbar from "../components/SimpleToolbar";
 import OrgGroupListBox from "./group/OrgGroupListBox";
 import ChatLogsBox from "./ChatLogsBox";
-import ChatListBox from "./chatlist/ChatListBox";
+import ContactBox from "./chatlist/ContactBox";
 import UtilsBox from "./UtilsBox";
 
 import * as chatroomActions from "../redux/chatroom/chatroomActions";
 import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
-import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
+import * as chatroomRx from "../redux/chatroom/chatroomRxEpic";
 import * as userRx from "../redux/user/userRx";
 import * as authRx from "../redux/authen/authRx";
 import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
@@ -67,7 +67,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
 
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_INIT_SUCCESS:
-                if (this.props.stalkReducer.state != StalkBridgeActions.STALK_INIT_SUCCESS) {
+                if (this.props.stalkReducer.state !== StalkBridgeActions.STALK_INIT_SUCCESS) {
                     if (contactId) {
                         this.fetch_privateChatRoom(contactId, userReducer.user._id);
                     }
@@ -83,21 +83,30 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
             default:
                 break;
         }
+
+        switch (chatroomReducer.state) {
+            case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
+                this.props.router.push(`/chat/${chatroomReducer.room._id}`);
+                break;
+            }
+            default:
+                break;
+        }
     }
 
     joinChatServer(nextProps: IComponentProps) {
         let {stalkReducer, userReducer } = nextProps;
 
         if (userReducer.user) {
-            if (stalkReducer.state != StalkBridgeActions.STALK_INIT) {
+            if (stalkReducer.state !== StalkBridgeActions.STALK_INIT) {
                 StalkBridgeActions.stalkLogin(userReducer.user);
             }
         }
     }
 
     fetch_privateChatRoom = (roommateId, owerId) => {
-        this.props.dispatch(chatroomRxEpic.fetchPrivateChatRoom(owerId, roommateId));
-    };
+        this.props.dispatch(chatroomRx.fetchPrivateChatRoom(owerId, roommateId));
+    }
 
     onSelectMenuItem(id, value) {
         console.log(this.menus[id]);
@@ -127,7 +136,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                     </div>
                     <div style={{ height: this.bodyHeight }}>
                         <OrgGroupListBox {...this.props} />
-                        <ChatListBox {...this.props} />
+                        <ContactBox {...this.props} />
                         <ChatLogsBox {...this.props} />
                         <UtilsBox />
                     </div>

@@ -38,16 +38,17 @@ export const authUser = (user: { email: string, password: string }) => ({ type: 
 const authUserSuccess = payload => ({ type: AUTH_USER_SUCCESS, payload });
 const authUserFailure = payload => ({ type: AUTH_USER_FAILURE, payload });
 const authUserCancelled = () => ({ type: AUTH_USER_CANCELLED });
-export const authUserEpic = action$ => action$.ofType(AUTH_USER).mergeMap(action => ajax({
-    method: 'POST',
-    url: `${config.api.auth}`,
-    body: JSON.stringify(action.payload),
-    headers: { 'Content-Type': 'application/json', 'x-api-key': config.api.apiKey }
-})
-    .map(response => authUserSuccess(response.xhr.response))
-    .takeUntil(action$.ofType(AUTH_USER_CANCELLED))
-    .catch(error => Rx.Observable.of(authUserFailure(error.xhr.response)))
-);
+export const authUserEpic = action$ =>
+    action$.ofType(AUTH_USER).mergeMap(action => ajax({
+        method: 'POST',
+        url: `${config.api.auth}`,
+        body: JSON.stringify(action.payload),
+        headers: { 'Content-Type': 'application/json', 'x-api-key': config.api.apiKey }
+    })
+        .map(response => authUserSuccess(response.xhr.response))
+        .takeUntil(action$.ofType(AUTH_USER_CANCELLED))
+        .catch(error => Rx.Observable.of(authUserFailure((error.xhr.response) ? error.xhr.response.message : error.message)))
+    );
 
 
 const TOKEN_AUTH_USER = "TOKEN_AUTH_USER";
@@ -56,7 +57,7 @@ const TOKEN_AUTH_USER_FAILURE = "TOKEN_AUTH_USER_FAILURE";
 const TOKEN_AUTH_USER_CANCELLED = "TOKEN_AUTH_USER_CANCELLED";
 export const tokenAuthUser = (token) => ({ type: TOKEN_AUTH_USER, payload: token }); // username => ({ type: FETCH_USER, payload: username });
 const tokenAuthUserSuccess = payload => ({ type: TOKEN_AUTH_USER_SUCCESS, payload });
-const tokenAuthUserFailure = payload => ({ type: TOKEN_AUTH_USER_FAILURE, payload, error: true });
+const tokenAuthUserFailure = payload => ({ type: TOKEN_AUTH_USER_FAILURE, payload });
 const tokenAuthUserCancelled = () => ({ type: TOKEN_AUTH_USER_CANCELLED });
 export const tokenAuthUserEpic = action$ => action$.ofType(TOKEN_AUTH_USER).mergeMap(action => ajax({
     method: 'POST',
@@ -66,7 +67,7 @@ export const tokenAuthUserEpic = action$ => action$.ofType(TOKEN_AUTH_USER).merg
 })
     .map(response => tokenAuthUserSuccess(response.xhr.response))
     .takeUntil(action$.ofType(TOKEN_AUTH_USER_CANCELLED))
-    .catch(error => Rx.Observable.of(tokenAuthUserFailure(error.xhr.response)))
+    .catch(error => Rx.Observable.of(tokenAuthUserFailure((error.xhr.response) ? error.xhr.response.message : error.message)))
 );
 
 const LOG_OUT = "LOG_OUT";
@@ -116,7 +117,7 @@ export const authReducer = (state = new AuthenInitState(), action) => {
             return state.set('state', AUTH_USER_FAILURE)
                 .set('token', null)
                 .set('user', null)
-                .set("error", JSON.stringify(action.payload.message));
+                .set("error", JSON.stringify(action.payload));
         }
 
         case AppActions.GET_SESSION_TOKEN_SUCCESS: {
@@ -130,6 +131,7 @@ export const authReducer = (state = new AuthenInitState(), action) => {
         }
         case TOKEN_AUTH_USER_FAILURE: {
             return state.set("token", null)
+                .set("error", JSON.stringify(action.payload))
                 .set("state", TOKEN_AUTH_USER_FAILURE);
         }
 

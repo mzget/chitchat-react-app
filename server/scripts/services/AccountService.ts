@@ -8,7 +8,7 @@ interface IRoomsMap {
     [rid: string]: Room.Room;
 }
 interface IUsersMap {
-    [uid: string]: User.UserTransaction
+    [uid: string]: User.UserTransaction;
 }
 
 export default class AccountService {

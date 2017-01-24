@@ -5,7 +5,7 @@ import { IComponentProps } from "../../utils/IComponentProps";
 
 import * as userRx from "../../redux/user/userRx";
 import * as teamRx from "../../redux/team/teamRx";
-import * as chatRoomActions from "../../redux/chatroom/chatroomActions";
+import * as chatroomActions from "../../redux/chatroom/chatroomActions";
 import * as chatroomRx from "../../redux/chatroom/chatroomRxEpic";
 import * as groupRx from "../../redux/group/groupRx";
 
@@ -23,13 +23,22 @@ class OrgGroupListBox extends React.Component<IComponentProps, IComponentNameSta
         this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
     }
 
-    componentWillReceiveProps(nextProps: IComponentProps) {
-        let {location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer, chatroomReducer, teamReducer} = nextProps;
 
+    componentWillReceiveProps(nextProps: IComponentProps) {
+        let {chatroomReducer, teamReducer, userReducer} = nextProps;
+
+        switch (chatroomReducer.state) {
+            case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
+                //     this.props.dispatch(WTF);
+                break;
+            }
+            default:
+                break;
+        }
     }
 
     onselectGroup(data) {
-        this.props.dispatch(chatRoomActions.getPersistendChatroom(data._id));
+        this.props.dispatch(chatroomActions.getPersistendChatroom(data._id));
     }
 
     public render(): JSX.Element {

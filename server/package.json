@@ -1,10 +1,11 @@
 {
-  "name": "chitchat-rest-api",
+  "name": "chitchat-app",
   "version": "0.0.1",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "dev": "nodemon ./bin/www",
+    "deploy": "pm2 start ./bin/www --name chitchat-app"
   },
   "dependencies": {
     "body-parser": "~1.15.2",

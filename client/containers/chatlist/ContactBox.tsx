@@ -5,14 +5,14 @@ import { IComponentProps } from "../../utils/IComponentProps";
 
 import * as userRx from "../../redux/user/userRx";
 import * as teamRx from "../../redux/team/teamRx";
-import * as chatRoomActions from "../../redux/chatroom/chatroomActions";
+import * as chatroomActions from "../../redux/chatroom/chatroomActions";
 import * as chatroomRx from "../../redux/chatroom/chatroomRxEpic";
 
 import { MemberList } from "./MemberList";
 
 interface IComponentNameState { };
 
-class ChatListBox extends React.Component<IComponentProps, IComponentNameState> {
+class ContactBox extends React.Component<IComponentProps, IComponentNameState> {
 
     _tempContact_id: string;
 
@@ -25,17 +25,9 @@ class ChatListBox extends React.Component<IComponentProps, IComponentNameState> 
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let {location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer, chatroomReducer, teamReducer} = nextProps;
+        let {chatroomReducer, teamReducer, userReducer} = nextProps;
 
         switch (chatroomReducer.state) {
-            case chatRoomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
-                this.props.router.push(`/chat/${chatroomReducer.room._id}`);
-                break;
-            }
-            case chatRoomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
-                this.props.dispatch(chatroomRx.fetchPrivateChatRoom(userReducer.user._id, this._tempContact_id));
-                break;
-            }
             case chatroomRx.FETCH_PRIVATE_CHATROOM_SUCCESS:
                 if (chatroomReducer.room) {
                     this.props.router.push(`/chat/${chatroomReducer.room._id}`);
@@ -43,9 +35,9 @@ class ChatListBox extends React.Component<IComponentProps, IComponentNameState> 
                 break;
             case chatroomRx.FETCH_PRIVATE_CHATROOM_FAILURE: {
                 let contacts = teamReducer.members.filter((v, i) => {
-                    return v._id == this._tempContact_id;
+                    return v._id === this._tempContact_id;
                 });
-                let members = chatRoomActions.createChatRoom(userReducer.user, contacts[0]);
+                let members = chatroomActions.createChatRoom(userReducer.user, contacts[0]);
                 this.props.dispatch(chatroomRx.createPrivateChatRoom(members.owner, members.contact));
                 break;
             }
@@ -54,6 +46,10 @@ class ChatListBox extends React.Component<IComponentProps, IComponentNameState> 
                     this.props.router.push(`/chat/${chatroomReducer.room._id}`);
                 }
             }
+            case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
+                this.props.dispatch(chatroomRx.fetchPrivateChatRoom(userReducer.user._id, this._tempContact_id));
+                break;
+            }
             default:
                 break;
         }
@@ -61,7 +57,7 @@ class ChatListBox extends React.Component<IComponentProps, IComponentNameState> 
 
     onselectMember(data) {
         this._tempContact_id = data._id;
-        this.props.dispatch(chatRoomActions.getPersistendChatroom(data._id));
+        this.props.dispatch(chatroomActions.getPersistendChatroom(data._id));
     }
 
     public render(): JSX.Element {
@@ -73,4 +69,4 @@ class ChatListBox extends React.Component<IComponentProps, IComponentNameState> 
     }
 }
 
-export default ChatListBox;
+export default ContactBox;

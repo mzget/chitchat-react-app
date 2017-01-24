@@ -1,7 +1,7 @@
 "use strict";
 const React = require("react");
 const Subheader_1 = require("material-ui/Subheader");
-const chatRoomActions = require("../../redux/chatroom/chatroomActions");
+const chatroomActions = require("../../redux/chatroom/chatroomActions");
 const groupRx = require("../../redux/group/groupRx");
 const GroupList_1 = require("./GroupList");
 ;
@@ -12,10 +12,18 @@ class OrgGroupListBox extends React.Component {
         this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
     }
     componentWillReceiveProps(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, chatroomReducer, teamReducer } = nextProps;
+        let { chatroomReducer, teamReducer, userReducer } = nextProps;
+        switch (chatroomReducer.state) {
+            case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
+                //     this.props.dispatch(WTF);
+                break;
+            }
+            default:
+                break;
+        }
     }
     onselectGroup(data) {
-        this.props.dispatch(chatRoomActions.getPersistendChatroom(data._id));
+        this.props.dispatch(chatroomActions.getPersistendChatroom(data._id));
     }
     render() {
         return (React.createElement("div", null,
