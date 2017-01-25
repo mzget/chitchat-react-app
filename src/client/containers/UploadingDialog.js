@@ -17,10 +17,7 @@ const ChatroomRx = require("../redux/chatroom/chatroomRxEpic");
 const SimpleCardImage_1 = require("../components/SimpleCardImage");
 const SimpleCardVideo_1 = require("../components/SimpleCardVideo");
 const LinearProgressSimple_1 = require("../components/LinearProgressSimple");
-const FileType = require("../consts/FileType");
-class IComponentNameProps {
-}
-;
+const FileType = require("../../server/scripts/FileType");
 ;
 class UploadingDialog extends React.Component {
     constructor() {

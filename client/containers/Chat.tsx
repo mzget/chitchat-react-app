@@ -4,7 +4,6 @@ import * as async from "async";
 import { Flex, Box } from 'reflexbox';
 
 import Config from '../configs/config';
-import * as FileType from '../consts/FileType';
 
 import { TypingBox } from './TypingBox';
 import ChatBox from "./ChatBox";
@@ -22,6 +21,7 @@ import { ContentType, IMessage } from "../chats/models/ChatDataModels";
 import { MessageImp } from "../chats/models/MessageImp";
 
 import { imagesPath } from '../consts/StickerPath';
+import * as FileType from "../../server/scripts/FileType";
 
 interface IComponentNameState {
     messages: any[];
@@ -100,13 +100,13 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             }
 
             case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
-                let {responseUrl, fileInfo} = chatroomReducer;
+                let {responseFile, fileInfo} = chatroomReducer;
 
                 if (fileInfo.type.match(FileType.imageType)) {
-                    this.onSubmitImageChat(fileInfo, responseUrl);
+                    this.onSubmitImageChat(fileInfo, responseFile.path);
                 }
                 else if (fileInfo.type.match(FileType.videoType)) {
-                    this.onSubmitVideoChat(fileInfo, responseUrl);
+                    this.onSubmitVideoChat(fileInfo, responseFile.path);
                 }
 
                 break;

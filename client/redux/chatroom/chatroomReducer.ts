@@ -17,7 +17,7 @@ export const ChatRoomInitState = Record({
     state: null,
     room: null,
     responseMessage: null,
-    responseUrl: null,
+    responseFile: null,
     newMessage: null,
     earlyMessageReady: false,
     uploadingFile: null,
@@ -46,7 +46,7 @@ export const chatroomReducer = (state = new ChatRoomInitState(), action) => {
         }
         case ChatRoomRx.CHATROOM_UPLOAD_FILE_SUCCESS: {
             return state.set("state", ChatRoomRx.CHATROOM_UPLOAD_FILE_SUCCESS)
-                .set("responseUrl", action.payload);
+                .set("responseFile", action.payload);
         }
 
         case ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {

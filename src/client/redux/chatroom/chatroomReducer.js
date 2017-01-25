@@ -16,7 +16,7 @@ exports.ChatRoomInitState = immutable_1.Record({
     state: null,
     room: null,
     responseMessage: null,
-    responseUrl: null,
+    responseFile: null,
     newMessage: null,
     earlyMessageReady: false,
     uploadingFile: null,
@@ -43,7 +43,7 @@ exports.chatroomReducer = (state = new exports.ChatRoomInitState(), action) => {
         }
         case ChatRoomRx.CHATROOM_UPLOAD_FILE_SUCCESS: {
             return state.set("state", ChatRoomRx.CHATROOM_UPLOAD_FILE_SUCCESS)
-                .set("responseUrl", action.payload);
+                .set("responseFile", action.payload);
         }
         case chatroomActions_1.ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
             let payload = action.payload;

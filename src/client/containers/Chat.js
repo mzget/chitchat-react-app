@@ -11,7 +11,6 @@ const React = require("react");
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
 const config_1 = require("../configs/config");
-const FileType = require("../consts/FileType");
 const TypingBox_1 = require("./TypingBox");
 const ChatBox_1 = require("./ChatBox");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
@@ -24,6 +23,7 @@ const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const ChatDataModels_1 = require("../chats/models/ChatDataModels");
 const MessageImp_1 = require("../chats/models/MessageImp");
 const StickerPath_1 = require("../consts/StickerPath");
+const FileType = require("../../server/scripts/FileType");
 ;
 class Chat extends React.Component {
     constructor() {
@@ -89,12 +89,12 @@ class Chat extends React.Component {
                 break;
             }
             case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
-                let { responseUrl, fileInfo } = chatroomReducer;
+                let { responseFile, fileInfo } = chatroomReducer;
                 if (fileInfo.type.match(FileType.imageType)) {
-                    this.onSubmitImageChat(fileInfo, responseUrl);
+                    this.onSubmitImageChat(fileInfo, responseFile.path);
                 }
                 else if (fileInfo.type.match(FileType.videoType)) {
-                    this.onSubmitVideoChat(fileInfo, responseUrl);
+                    this.onSubmitVideoChat(fileInfo, responseFile.path);
                 }
                 break;
             }

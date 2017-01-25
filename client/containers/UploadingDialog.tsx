@@ -15,25 +15,7 @@ import SimpleCardImage from '../components/SimpleCardImage';
 import SimpleCardVideo from '../components/SimpleCardVideo';
 import LinearProgressSimple from "../components/LinearProgressSimple";
 
-import * as FileType from '../consts/FileType';
-
-abstract class IComponentNameProps implements IComponentProps {
-    location: {
-        query: {
-            contactId: string;
-            userId: string;
-            roomId: string;
-            username: string;
-        }
-    };
-    params;
-    router;
-    dispatch;
-    userReducer;
-    chatroomReducer;
-    chatlogReducer;
-    stalkReducer;
-};
+import * as FileType from "../../server/scripts/FileType";
 
 interface IComponentNameState {
     dialogTitle: string;
@@ -41,7 +23,7 @@ interface IComponentNameState {
     closeLabel: string;
 };
 
-class UploadingDialog extends React.Component<IComponentNameProps, IComponentNameState> {
+class UploadingDialog extends React.Component<IComponentProps, IComponentNameState> {
     componentWillMount() {
         this.state = {
             dialogTitle: "Uploading...",
@@ -52,8 +34,8 @@ class UploadingDialog extends React.Component<IComponentNameProps, IComponentNam
         this.closeDialog = this.closeDialog.bind(this);
     }
 
-    componentWillReceiveProps(nextProps: IComponentNameProps) {
-        let {chatroomReducer} = nextProps as IComponentNameProps;
+    componentWillReceiveProps(nextProps: IComponentProps) {
+        let {chatroomReducer} = nextProps;
         let self = this;
 
         switch (chatroomReducer.state) {
@@ -84,7 +66,7 @@ class UploadingDialog extends React.Component<IComponentNameProps, IComponentNam
     }
 
     cancelFileUpload = () => {
-        let {chatroomReducer} = this.props as IComponentNameProps;
+        let {chatroomReducer} = this.props as IComponentProps;
 
         if (chatroomReducer.state == ChatroomRx.CHATROOM_UPLOAD_FILE) {
             this.props.dispatch(ChatroomRx.uploadFileCanceled());
@@ -94,7 +76,7 @@ class UploadingDialog extends React.Component<IComponentNameProps, IComponentNam
     }
 
     public render(): JSX.Element {
-        let {chatroomReducer} = this.props as IComponentNameProps;
+        let {chatroomReducer} = this.props as IComponentProps;
 
         const actions = [
             <FlatButton
