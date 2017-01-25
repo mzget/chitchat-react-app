@@ -305,14 +305,6 @@ class ChatRoomComponent {
             });
         });
     }
-    checkOlderMessages(callback) {
-        let self = this;
-        self.getTopEdgeMessageTime(function done(err, res) {
-            self.chatRoomApi.checkOlderMessagesCount(self.roomId, res, function response(err, res) {
-                callback(err, res);
-            });
-        });
-    }
     getTopEdgeMessageTime(callback) {
         let self = this;
         let topEdgeMessageTime = new Date();

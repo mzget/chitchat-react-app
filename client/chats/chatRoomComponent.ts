@@ -357,16 +357,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         });
     }
 
-    public checkOlderMessages(callback: (err, res) => void) {
-        let self = this;
-        self.getTopEdgeMessageTime(function done(err, res) {
-            self.chatRoomApi.checkOlderMessagesCount(self.roomId, res, function response(err, res) {
-                callback(err, res);
-            });
-        });
-    }
-
-    private getTopEdgeMessageTime(callback: (err, res) => void) {
+    public getTopEdgeMessageTime(callback: (err, res) => void) {
         let self = this;
         let topEdgeMessageTime: Date = new Date();
 

@@ -19,6 +19,8 @@ const serverEventListener_1 = require("../../libs/stalk/serverEventListener");
 const httpStatusCode_1 = require("../../libs/stalk/utils/httpStatusCode");
 const ChatDataModels_1 = require("../../chats/models/ChatDataModels");
 const NotificationManager = require("../stalkBridge/StalkNotificationActions");
+const ServiceProvider = require("../../chats/services/ServiceProvider");
+const redux_actions_1 = require("redux-actions");
 const configureStore_1 = require("../configureStore");
 const config_1 = require("../../configs/config");
 const secure = secureServiceFactory_1.default.getService();
@@ -120,24 +122,25 @@ function getPersistendMessage(currentRid) {
     };
 }
 exports.getPersistendMessage = getPersistendMessage;
-function onEarlyMessageReady(data) {
-    return {
-        type: ChatRoomActionsType.ON_EARLY_MESSAGE_READY,
-        payload: data
-    };
-}
+const onEarlyMessageReady = redux_actions_1.createAction(ChatRoomActionsType.ON_EARLY_MESSAGE_READY, (data) => data);
 function checkOlderMessages() {
     return dispatch => {
-        chatRoomComponent_1.default.getInstance().checkOlderMessages(function done(err, res) {
-            if (!err && res.data > 0) {
-                console.info('has olderMessage => %s', res.data);
-                //               console.log("onOlderMessageReady is true ! Show load earlier message on top view.");
-                dispatch(onEarlyMessageReady(true));
-            }
-            else {
-                //                console.log("onOlderMessageReady is false ! Don't show load earlier message on top view.");
+        let token = configureStore_1.default.getState().authReducer.token;
+        let room = configureStore_1.default.getState().chatroomReducer.room;
+        chatRoomComponent_1.default.getInstance().getTopEdgeMessageTime(function done(err, res) {
+            ServiceProvider.checkOlderMessagesCount(room._id, res, token).then(response => response.json()).then(result => {
+                console.log("checkOlderMessagesCount", result);
+                if (result.success && result.result > 0) {
+                    //               console.log("onOlderMessageReady is true ! Show load earlier message on top view.");
+                    dispatch(onEarlyMessageReady(true));
+                }
+                else {
+                    //                console.log("onOlderMessageReady is false ! Don't show load earlier message on top view.");
+                    dispatch(onEarlyMessageReady(false));
+                }
+            }).catch(err => {
                 dispatch(onEarlyMessageReady(false));
-            }
+            });
         });
     };
 }

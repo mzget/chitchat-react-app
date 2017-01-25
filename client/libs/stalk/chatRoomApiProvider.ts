@@ -89,17 +89,6 @@ export default class ChatRoomApiProvider {
         });
     }
 
-    public checkOlderMessagesCount(roomId: string, topEdgeMessageTime: Date, callback: (err, res) => void) {
-        let message: IDictionary = {};
-        message["rid"] = roomId;
-        message["topEdgeMessageTime"] = topEdgeMessageTime.toString();
-
-        this.pomelo.request("chat.chatHandler.checkOlderMessagesCount", message, (result) => {
-            if (callback !== null)
-                callback(null, result);
-        });
-    }
-
     public getMessagesReaders(topEdgeMessageTime: string) {
         var message: IDictionary = {};
         message["topEdgeMessageTime"] = topEdgeMessageTime;
