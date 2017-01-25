@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const mongodb = require("mongodb");
 const async = require("async");
 const Room = require("../models/Room");
@@ -7,6 +15,19 @@ const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
 const config_1 = require("../../config");
 const config = config_1.getConfig();
+function getOlderMessageChunkOfRid(rid, topEdgeMessageTime) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let utc = new Date(topEdgeMessageTime);
+        let db = yield MongoClient.connect(config.chatDB);
+        // Get the documents collection
+        let collection = db.collection(config_1.DbClient.messageColl);
+        // Find some documents
+        let docs = yield collection.find({ rid: rid, createTime: { $lt: new Date(utc.toISOString()) } }).limit(100).sort({ createTime: -1 }).toArray();
+        db.close();
+        return docs;
+    });
+}
+exports.getOlderMessageChunkOfRid = getOlderMessageChunkOfRid;
 exports.getUnreadMsgCountAndLastMsgContentInRoom = (roomId, lastAccessTime, callback) => {
     let isoDate = new Date(lastAccessTime).toISOString();
     // Use connect method to connect to the Server
@@ -197,27 +218,6 @@ class ChatRoomManager {
             });
         }).catch(err => {
             console.error("Cannot connect database", err);
-        });
-    }
-    getOlderMessageChunkOfRid(rid, topEdgeMessageTime, callback) {
-        let utc = new Date(topEdgeMessageTime);
-        MongoClient.connect(MDb.DbController.chatDB, function (err, db) {
-            if (err) {
-                return console.dir(err);
-            }
-            // Get the documents collection
-            var collection = db.collection(MDb.DbController.messageColl);
-            // Find some documents
-            collection.find({ rid: rid, createTime: { $lt: new Date(utc.toISOString()) } }).limit(100).sort({ createTime: -1 }).toArray(function (err, docs) {
-                assert.equal(null, err);
-                if (err) {
-                    callback(new Error(err.message), docs);
-                }
-                else {
-                    callback(null, docs);
-                }
-                db.close();
-            });
         });
     }
     updateChatRecordContent(messageId, content, callback) {

@@ -9,6 +9,19 @@ import { getConfig, DbClient } from "../../config";
 const config = getConfig();
 
 
+export async function getOlderMessageChunkOfRid(rid: string, topEdgeMessageTime: string) {
+    let utc = new Date(topEdgeMessageTime);
+
+    let db = await MongoClient.connect(config.chatDB);
+    // Get the documents collection
+    let collection = db.collection(DbClient.messageColl);
+
+    // Find some documents
+    let docs = await collection.find({ rid: rid, createTime: { $lt: new Date(utc.toISOString()) } }).limit(100).sort({ createTime: -1 }).toArray();
+
+    db.close();
+    return docs;
+}
 
 export const getUnreadMsgCountAndLastMsgContentInRoom = (roomId: string, lastAccessTime: string, callback: (err, result) => void) => {
     let isoDate = new Date(lastAccessTime).toISOString();
@@ -223,28 +236,6 @@ export class ChatRoomManager {
             });
         }).catch(err => {
             console.error("Cannot connect database", err);
-        });
-    }
-
-    public getOlderMessageChunkOfRid(rid: string, topEdgeMessageTime: string, callback: (err, res) => void) {
-        let utc = new Date(topEdgeMessageTime);
-
-        MongoClient.connect(MDb.DbController.chatDB, function (err, db) {
-            if (err) { return console.dir(err); }
-
-            // Get the documents collection
-            var collection = db.collection(MDb.DbController.messageColl);
-            // Find some documents
-            collection.find({ rid: rid, createTime: { $lt: new Date(utc.toISOString()) } }).limit(100).sort({ createTime: -1 }).toArray(function (err, docs) {
-                assert.equal(null, err);
-                if (err) {
-                    callback(new Error(err.message), docs);
-                }
-                else {
-                    callback(null, docs);
-                }
-                db.close();
-            });
         });
     }
 

@@ -7,6 +7,7 @@ const router = express.Router();
 const redis = require("redis");
 const ObjectID = mongodb.ObjectID;
 const CachingSevice_1 = require("../scripts/services/CachingSevice");
+const apiUtils = require("../scripts/utils/apiUtils");
 const Room = require("../scripts/models/Room");
 const RoomService = require("../scripts/services/RoomService");
 const ChatRoomManager = require("../scripts/controllers/ChatRoomManager");
@@ -66,7 +67,7 @@ router.post('/', function (req, res, next) {
 /**
  * Create chatroom.
  */
-router.post('/createPrivateRoom', function (req, res, next) {
+router.post("/createPrivateRoom", function (req, res, next) {
     req.checkBody("owner", "request for owner user").notEmpty();
     req.checkBody("roommate", "request for roommate user").notEmpty();
     let errors = req.validationErrors();
@@ -172,6 +173,22 @@ router.get('/unreadMessage', (req, res, next) => {
                 }
             });
         }
+    });
+});
+router.post("/checkOlderMessagesCount", (req, res, next) => {
+    req.checkBody("room_id", "request for room_id").notEmpty();
+    req.checkBody("topEdgeMessageTime", "request for topEdgeMessageTime").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+    let room_id = req.body.room_id;
+    let topEdgeMessageTime = req.body.topEdgeMessageTime;
+    ChatRoomManager.getOlderMessageChunkOfRid(room_id, topEdgeMessageTime).then(docs => {
+        res.status(200).json(new apiUtils.ApiResponse(false, null, docs));
+    }).catch(err => {
+        console.error("getOlderMessageChunkOfRid fail", err);
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });
 router.post('/clear_cache', (req, res, next) => {
