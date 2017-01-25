@@ -8,6 +8,19 @@ const MongoClient = mongodb.MongoClient;
 import { getConfig, DbClient } from "../../config";
 const config = getConfig();
 
+export async function getOlderMessageChunkCount(rid: string, topEdgeMessageTime: string) {
+    let utc = new Date(topEdgeMessageTime);
+
+    let db = await MongoClient.connect(config.chatDB);
+    // Get the documents collection
+    let collection = db.collection(DbClient.messageColl);
+
+    // Find some documents
+    let docs = await collection.count({ rid: rid, createTime: { $lt: new Date(utc.toISOString()) } });
+
+    db.close();
+    return docs;
+}
 
 export async function getOlderMessageChunkOfRid(rid: string, topEdgeMessageTime: string) {
     let utc = new Date(topEdgeMessageTime);

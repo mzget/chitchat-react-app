@@ -15,6 +15,19 @@ const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
 const config_1 = require("../../config");
 const config = config_1.getConfig();
+function getOlderMessageChunkCount(rid, topEdgeMessageTime) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let utc = new Date(topEdgeMessageTime);
+        let db = yield MongoClient.connect(config.chatDB);
+        // Get the documents collection
+        let collection = db.collection(config_1.DbClient.messageColl);
+        // Find some documents
+        let docs = yield collection.count({ rid: rid, createTime: { $lt: new Date(utc.toISOString()) } });
+        db.close();
+        return docs;
+    });
+}
+exports.getOlderMessageChunkCount = getOlderMessageChunkCount;
 function getOlderMessageChunkOfRid(rid, topEdgeMessageTime) {
     return __awaiter(this, void 0, void 0, function* () {
         let utc = new Date(topEdgeMessageTime);

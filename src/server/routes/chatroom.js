@@ -184,8 +184,8 @@ router.post("/checkOlderMessagesCount", (req, res, next) => {
     }
     let room_id = req.body.room_id;
     let topEdgeMessageTime = req.body.topEdgeMessageTime;
-    ChatRoomManager.getOlderMessageChunkOfRid(room_id, topEdgeMessageTime).then(docs => {
-        res.status(200).json(new apiUtils.ApiResponse(false, null, docs));
+    ChatRoomManager.getOlderMessageChunkCount(room_id, topEdgeMessageTime).then(docs => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
     }).catch(err => {
         console.error("getOlderMessageChunkOfRid fail", err);
         res.status(500).json(new apiUtils.ApiResponse(false, err));
