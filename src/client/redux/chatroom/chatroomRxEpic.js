@@ -5,6 +5,7 @@
  * This is pure function action for redux app.
  */
 const chatRoomComponent_1 = require("../../chats/chatRoomComponent");
+const configureStore_1 = require("../configureStore");
 const config_1 = require("../../configs/config");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
@@ -18,7 +19,15 @@ const cancelFetchPrivateChatRoom = () => ({ type: exports.FETCH_PRIVATE_CHATROOM
 const fetchPrivateChatRoomFailure = payload => ({ type: exports.FETCH_PRIVATE_CHATROOM_FAILURE, payload, error: true });
 exports.getPrivateChatRoomEpic = action$ => {
     return action$.ofType(exports.FETCH_PRIVATE_CHATROOM)
-        .mergeMap(action => ajax.post(`${config_1.default.api.chatroom}`, action.payload))
+        .mergeMap(action => ajax({
+        url: `${config_1.default.api.chatroom}`,
+        method: "POST",
+        body: JSON.stringify(action.payload),
+        headers: {
+            "Content-Type": "application/json",
+            "x-access-token": configureStore_1.default.getState().authReducer.token
+        }
+    }))
         .map(json => fetchPrivateChatRoomSuccess(json.response))
         .takeUntil(action$.ofType(exports.FETCH_PRIVATE_CHATROOM_CANCELLED))
         .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.xhr.response)));
@@ -65,9 +74,9 @@ exports.getPersistendMessageEpic = action$ => {
         .map(json => getPersistendMessage_success(json))
         .takeUntil(action$.ofType(GET_PERSISTEND_MESSAGE_CANCELLED))
         .catch(error => Rx.Observable.of(getPersistendMessage_failure(error)));
-    //@ Next call 2 method below. -->
-    //getNewerMessageFromNet();
-    //checkOlderMessages();
+    // Next call 2 method below. -->
+    // getNewerMessageFromNet();
+    // checkOlderMessages();
 };
 exports.CHATROOM_UPLOAD_FILE = "CHATROOM_UPLOAD_FILE";
 exports.CHATROOM_UPLOAD_FILE_SUCCESS = "CHATROOM_UPLOAD_FILE_SUCCESS";

@@ -4,10 +4,10 @@
  * This is pure function action for redux app.
  */
 import ChatRoomComponent from "../../chats/chatRoomComponent";
-
+import Store from "../configureStore";
 import config from "../../configs/config";
 
-import Rx = require('rxjs/Rx');
+import Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 
 export const FETCH_PRIVATE_CHATROOM = "FETCH_PRIVATE_CHATROOM";
@@ -21,7 +21,15 @@ const cancelFetchPrivateChatRoom = () => ({ type: FETCH_PRIVATE_CHATROOM_CANCELL
 const fetchPrivateChatRoomFailure = payload => ({ type: FETCH_PRIVATE_CHATROOM_FAILURE, payload, error: true });
 export const getPrivateChatRoomEpic = action$ => {
     return action$.ofType(FETCH_PRIVATE_CHATROOM)
-        .mergeMap(action => ajax.post(`${config.api.chatroom}`, action.payload))
+        .mergeMap(action => ajax({
+            url: `${config.api.chatroom}`,
+            method: "POST",
+            body: JSON.stringify(action.payload),
+            headers: {
+                "Content-Type": "application/json",
+                "x-access-token": Store.getState().authReducer.token
+            }
+        }))
         .map(json => fetchPrivateChatRoomSuccess(json.response))
         .takeUntil(action$.ofType(FETCH_PRIVATE_CHATROOM_CANCELLED))
         .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.xhr.response)))
@@ -64,7 +72,6 @@ const getPersistendMessage_cancel = () => ({ type: GET_PERSISTEND_MESSAGE_CANCEL
 const getPersistendMessage_success = (payload) => ({ type: GET_PERSISTEND_MESSAGE_SUCCESS, payload: payload });
 const getPersistendMessage_failure = (error) => ({ type: GET_PERSISTEND_MESSAGE_FAILURE, payload: error });
 export const getPersistendMessage = (currentRid: string) => ({ type: GET_PERSISTEND_MESSAGE, payload: currentRid });
-
 export const getPersistendMessageEpic = action$ => {
     return action$.ofType(GET_PERSISTEND_MESSAGE)
         .mergeMap(action => ChatRoomComponent.getInstance().getPersistentMessage(action.payload))
@@ -72,10 +79,10 @@ export const getPersistendMessageEpic = action$ => {
         .takeUntil(action$.ofType(GET_PERSISTEND_MESSAGE_CANCELLED))
         .catch(error => Rx.Observable.of(getPersistendMessage_failure(error)))
 
-    //@ Next call 2 method below. -->
-    //getNewerMessageFromNet();
-    //checkOlderMessages();
-}
+    // Next call 2 method below. -->
+    // getNewerMessageFromNet();
+    // checkOlderMessages();
+};
 
 export const CHATROOM_UPLOAD_FILE = "CHATROOM_UPLOAD_FILE";
 export const CHATROOM_UPLOAD_FILE_SUCCESS = "CHATROOM_UPLOAD_FILE_SUCCESS";
