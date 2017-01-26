@@ -15,6 +15,24 @@ const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
 const config_1 = require("../../config");
 const config = config_1.getConfig();
+/*
+* Require
+*@roomId for query chat record in room.
+*@lastAccessTime for query only message who newer than lastAccessTime.
+*/
+function getNewerMessageOfChatRoom(roomId, isoDate) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let db = yield MongoClient.connect(config.chatDB);
+        // Get the documents collection
+        let collection = db.collection(config_1.DbClient.messageColl);
+        // Create an index on the a field
+        yield collection.createIndex({ rid: 1, createTime: 1 }, { background: true, w: 1 });
+        let docs = yield collection.find({ rid: roomId, createTime: { $gt: new Date(isoDate.toISOString()) } }).limit(100).sort({ createTime: 1 }).toArray();
+        db.close();
+        return docs;
+    });
+}
+exports.getNewerMessageOfChatRoom = getNewerMessageOfChatRoom;
 function getOlderMessageChunkCount(rid, topEdgeMessageTime) {
     return __awaiter(this, void 0, void 0, function* () {
         let utc = new Date(topEdgeMessageTime);
@@ -202,36 +220,6 @@ class ChatRoomManager {
     }
     editMemberInfoInProjectBase(roomId, member, callback) {
         this.roomDAL.editMemberInfoInProjectBase(roomId, member, callback);
-    }
-    /*
-    * Require
-    *@roomId for query chat record in room.
-    *@lastAccessTime for query only message who newer than lastAccessTime.
-    */
-    getNewerMessageOfChatRoom(roomId, isoDate, callback) {
-        MongoClient.connect(MDb.DbController.chatDB).then(db => {
-            // Get the documents collection
-            let collection = db.collection(MDb.DbController.messageColl);
-            // Create an index on the a field
-            collection.createIndex({ rid: 1, createTime: 1 }, { background: true, w: 1 }).then(function (indexName) {
-                // Find some documents
-                collection.find({ rid: roomId, createTime: { $gt: new Date(isoDate.toISOString()) } })
-                    .limit(100).sort({ createTime: 1 }).toArray(function (err, docs) {
-                    if (err) {
-                        callback(new Error(err.message), docs);
-                    }
-                    else {
-                        callback(null, docs);
-                    }
-                    db.close();
-                });
-            }).catch(function (err) {
-                db.close();
-                console.error("Create index fail.", err);
-            });
-        }).catch(err => {
-            console.error("Cannot connect database", err);
-        });
     }
     updateChatRecordContent(messageId, content, callback) {
         dbClient.UpdateDocument(MDb.DbController.messageColl, (res) => {

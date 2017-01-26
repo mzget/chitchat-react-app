@@ -8,6 +8,24 @@ const MongoClient = mongodb.MongoClient;
 import { getConfig, DbClient } from "../../config";
 const config = getConfig();
 
+
+/*
+* Require 
+*@roomId for query chat record in room.
+*@lastAccessTime for query only message who newer than lastAccessTime.
+*/
+export async function getNewerMessageOfChatRoom(roomId: string, isoDate: Date) {
+    let db = await MongoClient.connect(config.chatDB);
+    // Get the documents collection
+    let collection = db.collection(DbClient.messageColl);
+    // Create an index on the a field
+    await collection.createIndex({ rid: 1, createTime: 1 }, { background: true, w: 1 });
+
+    let docs = await collection.find({ rid: roomId, createTime: { $gt: new Date(isoDate.toISOString()) } }).limit(100).sort({ createTime: 1 }).toArray();
+    db.close();
+    return docs;
+}
+
 export async function getOlderMessageChunkCount(rid: string, topEdgeMessageTime: string) {
     let utc = new Date(topEdgeMessageTime);
 
@@ -219,37 +237,6 @@ export class ChatRoomManager {
 
     public editMemberInfoInProjectBase(roomId: string, member: Room.Member, callback: (Error, res) => void) {
         this.roomDAL.editMemberInfoInProjectBase(roomId, member, callback);
-    }
-
-    /*
-    * Require 
-    *@roomId for query chat record in room.
-    *@lastAccessTime for query only message who newer than lastAccessTime.
-    */
-    public getNewerMessageOfChatRoom(roomId: string, isoDate: Date, callback: (err, res) => void) {
-        MongoClient.connect(MDb.DbController.chatDB).then(db => {
-            // Get the documents collection
-            let collection = db.collection(MDb.DbController.messageColl);
-            // Create an index on the a field
-            collection.createIndex({ rid: 1, createTime: 1 }, { background: true, w: 1 }).then(function (indexName) {
-                // Find some documents
-                collection.find({ rid: roomId, createTime: { $gt: new Date(isoDate.toISOString()) } })
-                    .limit(100).sort({ createTime: 1 }).toArray(function (err, docs) {
-                        if (err) {
-                            callback(new Error(err.message), docs);
-                        }
-                        else {
-                            callback(null, docs);
-                        }
-                        db.close();
-                    });
-            }).catch(function (err) {
-                db.close();
-                console.error("Create index fail.", err);
-            });
-        }).catch(err => {
-            console.error("Cannot connect database", err);
-        });
     }
 
     public updateChatRecordContent(messageId: string, content: string, callback: (err, res) => void) {

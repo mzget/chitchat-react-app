@@ -16,10 +16,10 @@ const config = getConfig();
 process.env.NODE_ENV = 'development';
 const app = express();
 if (app.get('env') === 'development') {
-  process.env.PORT = 9000;
+    process.env.PORT = 9000;
 }
 else if (app.get('env') === 'production') {
-  process.env.PORT = 9000;
+    process.env.PORT = 9000;
 }
 console.log("listen on ", process.env.PORT);
 
@@ -77,7 +77,7 @@ app.use(cors());
 app.use(logger('dev'));
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({
-  extended: true,
+    extended: true,
 }));
 app.use(expressValidator()); // this line must be immediately after express.bodyParser()!
 app.use(cookieParser());
@@ -91,26 +91,26 @@ app.use('/api/auth', authen);
 app.use('/api/users', users);
 app.use('/api/team', team);
 app.use('/api/group', group);
-app.use('/chatroom', chatroom);
+app.use("/api/chatroom", chatroom);
 app.use("/chats/upload", chat_upload);
 
 app.use("/api/stalk/user", stalk_user);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500).json(err);
+    // render the error page
+    res.status(err.status || 500).json(err);
 });
 
 module.exports = app;

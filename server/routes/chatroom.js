@@ -20,7 +20,7 @@ router.get('/', function (req, res, next) {
 /* Require owner memberId and roommate id.
 * For get one-to-one chat room.
 */
-router.post('/', function (req, res, next) {
+router.post("/", function (req, res, next) {
     req.checkBody("ownerId", "request for ownerId").isMongoId();
     req.checkBody("roommateId", "request for roommateId").isMongoId();
     let errors = req.validationErrors();
@@ -117,13 +117,12 @@ router.post("/createPrivateRoom", function (req, res, next) {
 });
 router.get("/roomInfo", (req, res, next) => {
     req.checkQuery("room_id", "request for room_id").isMongoId();
-    req.checkQuery("user_id", "request for user_id").isMongoId();
     let errors = req.validationErrors();
     if (errors) {
         return res.status(500).json({ success: false, message: errors });
     }
     let room_id = req.query.room_id;
-    let user_id = req.query.user_id;
+    let user_id = req["decoded"]._id;
     RoomService.checkedCanAccessRoom(room_id, user_id, function (err, result) {
         if (err || result === false) {
             res.status(500).json({ success: false, message: "cannot access your request room." });
@@ -148,16 +147,15 @@ router.get("/roomInfo", (req, res, next) => {
  *@return : unread message count of room.
  *@return : last message of room.
  */
-router.get('/unreadMessage', (req, res, next) => {
+router.get("/unreadMessage", (req, res, next) => {
     req.checkQuery("room_id", "request for room_id").isMongoId();
-    req.checkQuery("user_id", "request for user_id").isMongoId();
-    req.checkQuery('lastAccessTime', "request for lastAccessTime").notEmpty();
+    req.checkQuery("lastAccessTime", "request for lastAccessTime").notEmpty();
     let errors = req.validationErrors();
     if (errors) {
-        return res.status(500).json({ success: false, message: errors });
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
     }
     let room_id = req.query.room_id;
-    let user_id = req.query.user_id;
+    let user_id = req["decoded"]._id;
     let lastAccessTime = req.query.lastAccessTime;
     RoomService.checkedCanAccessRoom(room_id, user_id, function (err, result) {
         if (err || result === false) {
@@ -188,6 +186,29 @@ router.post("/checkOlderMessagesCount", (req, res, next) => {
         res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
     }).catch(err => {
         console.error("getOlderMessageChunkOfRid fail", err);
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
+    });
+});
+router.post("/getChatHistory", (req, res, next) => {
+    req.checkBody("room_id", "request for room_id").notEmpty();
+    req.checkBody("lastMessageTime", "request for lastMessageTime").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+    let room_id = req.body.room_id;
+    let lastMessageTime = req.body.lastMessageTime;
+    let token = req["decoded"];
+    let user_id = token._id;
+    let utc = new Date(lastMessageTime);
+    ChatRoomManager.getNewerMessageOfChatRoom(room_id, utc).then(docs => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
+        //<!-- When get chat history complete. System will update roomAccess data for user.
+        UserManager.updateLastAccessTimeOfRoom(user_id, room_id, new Date(), function (err, accessInfo) {
+            console.log("updateLastAccessRoom rid is %s: ", room_id, accessInfo.result);
+        });
+    }).catch(err => {
+        console.error("getChatHistory fail: ", err);
         res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });

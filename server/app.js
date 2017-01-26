@@ -86,7 +86,7 @@ app.use('/api/auth', authen);
 app.use('/api/users', users);
 app.use('/api/team', team);
 app.use('/api/group', group);
-app.use('/chatroom', chatroom);
+app.use("/api/chatroom", chatroom);
 app.use("/chats/upload", chat_upload);
 app.use("/api/stalk/user", stalk_user);
 // catch 404 and forward to error handler
