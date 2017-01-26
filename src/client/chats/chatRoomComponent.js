@@ -19,6 +19,7 @@ const serverEventListener_1 = require("../libs/stalk/serverEventListener");
 const secureServiceFactory_1 = require("../libs/chitchat/services/secureServiceFactory");
 const ChatDataModels_1 = require("./models/ChatDataModels");
 const CryptoHelper = require("./utils/CryptoHelper");
+const ServiceProvider = require("./services/ServiceProvider");
 const config_1 = require("../configs/config");
 const StickerPath_1 = require("../consts/StickerPath");
 let serverImp = null;
@@ -59,12 +60,12 @@ class ChatRoomComponent {
         }).then((chats) => {
             let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
             if (this.roomId === message.rid) {
-                if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
+                if (message.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
                     CryptoHelper.decryptionText(message).then(decoded => {
                         saveMessages(chatMessages);
                     }).catch(err => saveMessages(chatMessages));
                 }
-                else if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Sticker]) {
+                else if (message.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Sticker]) {
                     let sticker_id = parseInt(message.body);
                     message.src = StickerPath_1.imagesPath[sticker_id].img;
                     saveMessages(chatMessages);
@@ -128,7 +129,7 @@ class ChatRoomComponent {
                 let chats = messages.slice(0);
                 async.forEach(chats, function iterator(chat, result) {
                     if (chat.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
-                        if (config_1.default.appConfig.encryption == true) {
+                        if (config_1.default.appConfig.encryption === true) {
                             self.secure.decryption(chat.body).then(function (res) {
                                 chat.body = res;
                                 result(null);
@@ -152,7 +153,7 @@ class ChatRoomComponent {
             });
         });
     }
-    getNewerMessageRecord(callback) {
+    getNewerMessageRecord(sessionToken, callback) {
         let self = this;
         let lastMessageTime = new Date();
         const getLastMessageTime = (cb) => {
@@ -172,73 +173,72 @@ class ChatRoomComponent {
             if (messages && messages.length > 0) {
                 if (messages[messages.length - 1] != null) {
                     lastMessageTime = messages[messages.length - 1].createTime;
-                    self.getNewerMessageFromNet(lastMessageTime, callback);
+                    callback(self.getNewerMessageFromNet(lastMessageTime, sessionToken));
                 }
                 else {
                     getLastMessageTime((boo) => {
-                        self.getNewerMessageFromNet(lastMessageTime, callback);
+                        callback(self.getNewerMessageFromNet(lastMessageTime, sessionToken));
                     });
                 }
             }
             else {
                 getLastMessageTime((boo) => {
-                    self.getNewerMessageFromNet(lastMessageTime, callback);
+                    callback(self.getNewerMessageFromNet(lastMessageTime, sessionToken));
                 });
             }
         }).catch(err => {
             console.error(err + ": Cannot get persistend message of room");
         });
     }
-    getNewerMessageFromNet(lastMessageTime, callback) {
-        let self = this;
-        self.chatRoomApi.getChatHistory(self.roomId, lastMessageTime, function (err, result) {
-            let histories = [];
-            if (result.code === 200) {
-                histories = result.data;
-                console.info("Newer message counts.", histories.length);
-                if (histories.length > 0) {
-                    let messages = JSON.parse(JSON.stringify(histories));
-                    async.forEach(messages, function (chat, cb) {
-                        if (chat.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
-                            if (config_1.default.appConfig.encryption == true) {
-                                self.secure.decryption(chat.body).then(function (res) {
-                                    chat.body = res;
+    getNewerMessageFromNet(lastMessageTime, sessionToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let self = this;
+            let response = yield ServiceProvider.getChatHistory(self.roomId, lastMessageTime, sessionToken);
+            let value = yield response.json();
+            return new Promise((resolve, reject) => {
+                console.log("getChatHistory: ", value);
+                if (value.success) {
+                    let histories = [];
+                    histories = value.result;
+                    console.info("Newer message counts.", histories.length);
+                    if (histories.length > 0) {
+                        let messages = JSON.parse(JSON.stringify(histories));
+                        async.forEach(messages, function (chat, cb) {
+                            if (chat.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
+                                if (config_1.default.appConfig.encryption === true) {
+                                    self.secure.decryption(chat.body).then(function (res) {
+                                        chat.body = res;
+                                        cb(null);
+                                    }).catch(err => {
+                                        cb(null);
+                                    });
+                                }
+                                else {
                                     cb(null);
-                                }).catch(err => {
-                                    cb(null);
-                                });
+                                }
                             }
                             else {
                                 cb(null);
                             }
-                        }
-                        else {
-                            cb(null);
-                        }
-                    }, function done(err) {
-                        if (!!err) {
-                            console.error('get newer message error', err);
-                        }
-                        //<!-- Save persistent chats log here.
-                        self.dataManager.messageDAL.saveData(self.roomId, messages);
-                        if (callback !== null) {
-                            callback(null, result.code);
-                        }
-                    });
-                }
-                else {
-                    console.log("Have no newer message.");
-                    if (callback !== null) {
-                        callback(null, result.code);
+                        }, function done(err) {
+                            if (!!err) {
+                                console.error('get newer message error', err);
+                            }
+                            // Save persistent chats log here.
+                            self.dataManager.messageDAL.saveData(self.roomId, messages);
+                            resolve();
+                        });
+                    }
+                    else {
+                        console.log("Have no newer message.");
+                        resolve();
                     }
                 }
-            }
-            else {
-                console.warn("WTF god only know.", result.message);
-                if (callback !== null) {
-                    callback(null, result.code);
+                else {
+                    console.warn("WTF god only know.", value.message);
+                    reject();
                 }
-            }
+            });
         });
     }
     getOlderMessageChunk(callback) {
@@ -251,12 +251,12 @@ class ChatRoomComponent {
         }
         self.getTopEdgeMessageTime(function done(err, res) {
             self.chatRoomApi.getOlderMessageChunk(self.roomId, res, function response(err, res) {
-                //@ todo.
+                // todo
                 /**
                  * Merge messages record to chatMessages array.
                  * Never save message to persistend layer.
                  */
-                if (res.code == 200) {
+                if (res.code === 200) {
                     let datas = res.data;
                     let earlyMessages = datas;
                     if (earlyMessages.length > 0) {
@@ -267,11 +267,11 @@ class ChatRoomComponent {
                                 let resultsArray = [];
                                 async.map(mergedArray, function iterator(item, cb) {
                                     let hasMessage = resultsArray.some(function itor(value, id, arr) {
-                                        if (!!value && value._id == item._id) {
+                                        if (!!value && value._id === item._id) {
                                             return true;
                                         }
                                     });
-                                    if (hasMessage == false) {
+                                    if (hasMessage === false) {
                                         resultsArray.push(item);
                                         cb(null, null);
                                     }
@@ -343,7 +343,7 @@ class ChatRoomComponent {
             }
             resultCb(null, null);
         }, function done(err) {
-            //@ done.
+            // done.
         });
     }
     updateWhoReadMyMessages() {

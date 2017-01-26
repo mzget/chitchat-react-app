@@ -42,18 +42,10 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
 
     public roomDAL: IRoomDAL;
     public messageDAL: IMessageDAL;
-    private sessionToken: string;
 
     constructor() {
         this.roomDAL = RoomDALFactory.getObject();
         this.messageDAL = MessageDALFactory.getObject();
-    }
-
-    public getSessionToken(): string {
-        return this.sessionToken;
-    }
-    public setSessionToken(token: string) {
-        this.sessionToken = token;
     }
 
     //@ Profile...

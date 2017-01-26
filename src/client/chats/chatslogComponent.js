@@ -13,12 +13,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
  * ChatRoomComponent for handle some business logic of chat room.
  */
 const async = require("async");
-const DataModels = require("./models/ChatDataModels");
 const chatLog_1 = require("./models/chatLog");
 const BackendFactory_1 = require("./BackendFactory");
 const CryptoHelper = require("./utils/CryptoHelper");
+const DataModels = require("./models/ChatDataModels");
 const ServiceProvider = require("./services/ServiceProvider");
 const contactActions = require("../redux/app/contactActions");
+const configureStore_1 = require("../redux/configureStore");
 ;
 ;
 class Unread {
@@ -65,7 +66,7 @@ class ChatsLogComponent {
         console.log("ChatsLogComponent.onChat");
         let self = this;
         CryptoHelper.decryptionText(message).then((decoded) => {
-            //<!-- Provide chatslog service.
+            // Provide chatslog service.
             self.chatListeners.map((v, i, a) => {
                 v(decoded);
             });
@@ -93,11 +94,12 @@ class ChatsLogComponent {
             async.map(roomAccess, function iterator(item, resultCallback) {
                 self.getRoomInfo(item.roomId, (err, room) => {
                     if (err) {
+                        resultCallback(null, null);
                     }
                     else {
                         self.dataManager.roomDAL.save(room._id, room);
+                        resultCallback(null, null);
                     }
-                    resultCallback(null, null);
                 });
             }, (err, results) => {
                 done();
@@ -127,11 +129,7 @@ class ChatsLogComponent {
         let unreadLogs = new Array();
         async.mapSeries(roomAccess, function iterator(item, cb) {
             if (!!item.roomId && !!item.accessTime) {
-                let msg = {};
-                msg["token"] = token;
-                msg["roomId"] = item.roomId;
-                msg["lastAccessTime"] = item.accessTime.toString();
-                ServiceProvider.getUnreadMessage(self.dataManager.getMyProfile()._id, item.roomId, item.accessTime.toString())
+                ServiceProvider.getUnreadMessage(item.roomId, item.accessTime.toString(), token)
                     .then(response => response.json())
                     .then(value => {
                     console.log("getUnreadMessage: ", value);
@@ -154,7 +152,7 @@ class ChatsLogComponent {
         });
     }
     getUnreadMessage(token, roomAccess, callback) {
-        ServiceProvider.getUnreadMessage(this.dataManager.getMyProfile()._id, roomAccess.roomId, roomAccess.accessTime.toString())
+        ServiceProvider.getUnreadMessage(roomAccess.roomId, roomAccess.accessTime.toString(), token)
             .then(response => response.json())
             .then(value => {
             console.log("getUnreadMessage", value);
@@ -176,18 +174,23 @@ class ChatsLogComponent {
     }
     decorateRoomInfoData(roomInfo) {
         if (roomInfo.type === DataModels.RoomType.privateChat) {
-            let others = roomInfo.members.filter((value) => !this.dataManager.isMySelf(value._id));
-            if (others.length > 0) {
-                let contact = others[0];
-                roomInfo.name = (contact.username) ? contact.username : "EMPTY ROOM";
-                roomInfo.image = (contact.avatar) ? contact.avatar : null;
+            if (Array.isArray(roomInfo.members)) {
+                let others = roomInfo.members.filter((value) => !this.dataManager.isMySelf(value._id));
+                if (others.length > 0) {
+                    let contact = others[0];
+                    roomInfo.name = (contact.username) ? contact.username : "EMPTY ROOM";
+                    roomInfo.image = (contact.avatar) ? contact.avatar : null;
+                }
             }
         }
         return roomInfo;
     }
     getRoomInfo(room_id, callback) {
         let self = this;
-        ServiceProvider.getRoomInfo(self.dataManager.getMyProfile()._id, room_id).then(response => response.json()).then(function (res) {
+        let token = configureStore_1.default.getState().authReducer.token;
+        ServiceProvider.getRoomInfo(room_id, token)
+            .then(response => response.json())
+            .then(function (res) {
             console.log("getRoomInfo result", res);
             if (res.success) {
                 let roomInfos = JSON.parse(JSON.stringify(res.result));
@@ -198,7 +201,8 @@ class ChatsLogComponent {
                 callback(res.message, null);
             }
         }).catch(err => {
-            callback("Cannot get roomInfo" + err, null);
+            console.warn("getRoomInfo fail: ", err);
+            callback(err, null);
         });
     }
     getRoomsInfo() {
@@ -208,7 +212,6 @@ class ChatsLogComponent {
         let q = async.queue(function (task, callback) {
             let value = task;
             self.dataManager.roomDAL.get(value.rid).then(roomInfo => {
-                console.dir(roomInfo);
                 if (!!roomInfo) {
                     let room = self.decorateRoomInfoData(roomInfo);
                     self.dataManager.roomDAL.save(room._id, room);

@@ -13,7 +13,7 @@ const ChatLogsActions = require("../chatlogs/chatlogsActions");
 const StalkPushActions = require("./stalkPushActions");
 exports.getSessionToken = () => {
     const backendFactory = BackendFactory_1.default.getInstance();
-    return backendFactory.dataManager.getSessionToken();
+    return configureStore_1.default.getState().stalkReducer.stalkToken;
 };
 exports.getRoomDAL = () => {
     const backendFactory = BackendFactory_1.default.getInstance();
@@ -55,7 +55,6 @@ function stalkLoginWithToken(uid, token) {
                             console.log("set chat profile success", profile);
                             ChatLogsActions.initChatsLog();
                         });
-                        backendFactory.dataManager.setSessionToken(token);
                         backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
                         StalkPushActions.stalkPushInit();
                     });
@@ -95,10 +94,9 @@ function stalkLogin(user) {
                     console.log("set chat profile success", profile);
                     ChatLogsActions.initChatsLog();
                 });
-                backendFactory.dataManager.setSessionToken(result.token);
                 backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
                 StalkPushActions.stalkPushInit();
-                configureStore_1.default.dispatch({ type: exports.STALK_INIT_SUCCESS });
+                configureStore_1.default.dispatch({ type: exports.STALK_INIT_SUCCESS, payload: result.token });
             }
             else {
                 console.warn("Joined chat-server fail: ", result);

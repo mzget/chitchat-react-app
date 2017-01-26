@@ -2,19 +2,45 @@ import config from "../../configs/config";
 
 import "isomorphic-fetch";
 
-export const getRoomInfo = (user_id: string, room_id: string): Promise<any> => {
-    return fetch(`${config.api.chatroom}/roomInfo?user_id=${user_id}&room_id=${room_id}`);
-}
+export const getRoomInfo = (room_id: string, token: string): Promise<any> => {
+    return fetch(`${config.api.chatroom}/roomInfo?room_id=${room_id}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "x-access-token": token
+        }
+    });
+};
 
-export const getUnreadMessage = (user_id: string, room_id: string, lastAccessTime: string): Promise<any> => {
-    return fetch(`${config.api.chatroom}/unreadMessage?user_id=${user_id}&room_id=${room_id}&lastAccessTime=${lastAccessTime}`);
-}
+export const getUnreadMessage = (room_id: string, lastAccessTime: string, token: string): Promise<any> => {
+    return fetch(`${config.api.chatroom}/unreadMessage?room_id=${room_id}&lastAccessTime=${lastAccessTime}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "x-access-token": token
+        }
+    });
+};
 
 export const checkOlderMessagesCount = (room_id: string, topEdgeMessageTime: string, token: string) => {
     return fetch(`${config.api.chatroom}/checkOlderMessagesCount`, {
         body: JSON.stringify({
             room_id: room_id,
             topEdgeMessageTime: topEdgeMessageTime
+        }),
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "x-access-token": token
+        }
+    });
+}
+
+export const getChatHistory = (room_id: string, lastMessageTime: Date, token: string) => {
+    return fetch(`${config.api.chatroom}/getChatHistory`, {
+        body: JSON.stringify({
+            room_id: room_id,
+            lastMessageTime: lastMessageTime
         }),
         method: "POST",
         headers: {

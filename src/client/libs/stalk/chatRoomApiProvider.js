@@ -44,25 +44,6 @@ class ChatRoomApiProvider {
         });
     }
     /**
-     * getChatHistory function used for pull history chat record...
-     * Beware!!! please call before JoinChatRoom.
-     * @param room_id
-     * @param lastAccessTime
-     * @param callback
-     */
-    getChatHistory(room_id, lastAccessTime, callback) {
-        var message = {};
-        message["rid"] = room_id;
-        if (lastAccessTime != null) {
-            //<!-- Only first communication is has a problem.
-            message["lastAccessTime"] = lastAccessTime.toString();
-        }
-        this.pomelo.request("chat.chatHandler.getChatHistory", message, (result) => {
-            if (callback !== null)
-                callback(null, result);
-        });
-    }
-    /**
      * get older message histories.
      */
     getOlderMessageChunk(roomId, topEdgeMessageTime, callback) {

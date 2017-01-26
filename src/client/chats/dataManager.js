@@ -22,12 +22,6 @@ class DataManager {
         let id = this.getContactInfoFailEvents.indexOf(func);
         this.getContactInfoFailEvents.splice(id, 1);
     }
-    getSessionToken() {
-        return this.sessionToken;
-    }
-    setSessionToken(token) {
-        this.sessionToken = token;
-    }
     //@ Profile...
     getMyProfile() {
         return this.myProfile;

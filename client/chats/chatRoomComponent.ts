@@ -16,10 +16,11 @@ import SecureServiceFactory from "../libs/chitchat/services/secureServiceFactory
 import { ContentType, IMember, IMessage } from "./models/ChatDataModels";
 import { MessageImp } from "./models/MessageImp";
 import { ISecureService } from "../libs/chitchat/services/ISecureService";
-import * as CryptoHelper from './utils/CryptoHelper';
+import * as CryptoHelper from "./utils/CryptoHelper";
+import * as ServiceProvider from "./services/ServiceProvider";
 
 import config from "../configs/config";
-import { imagesPath } from '../consts/StickerPath';
+import { imagesPath } from "../consts/StickerPath";
 
 let serverImp: ServerImplemented = null;
 
@@ -68,19 +69,19 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                 if (!!this.chatroomDelegate)
                     this.chatroomDelegate(ServerEventListener.ON_CHAT, message);
             });
-        }
+        };
 
         this.dataManager.messageDAL.getData(this.roomId).then((chats: Array<any>) => {
             return chats;
         }).then((chats: IMessage[]) => {
             let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
             if (this.roomId === message.rid) {
-                if (message.type == ContentType[ContentType.Text]) {
+                if (message.type === ContentType[ContentType.Text]) {
                     CryptoHelper.decryptionText(message).then(decoded => {
                         saveMessages(chatMessages);
                     }).catch(err => saveMessages(chatMessages));
                 }
-                else if (message.type == ContentType[ContentType.Sticker]) {
+                else if (message.type === ContentType[ContentType.Sticker]) {
                     let sticker_id = parseInt(message.body);
 
                     message.src = imagesPath[sticker_id].img;
@@ -165,7 +166,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                 let chats = messages.slice(0) as Array<IMessage>;
                 async.forEach(chats, function iterator(chat, result) {
                     if (chat.type === ContentType[ContentType.Text]) {
-                        if (config.appConfig.encryption == true) {
+                        if (config.appConfig.encryption === true) {
                             self.secure.decryption(chat.body).then(function (res) {
                                 chat.body = res;
 
@@ -191,7 +192,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         });
     }
 
-    public getNewerMessageRecord(callback: (err, res) => void) {
+    public getNewerMessageRecord(sessionToken: string, callback: (p: Promise<any>) => void) {
         let self = this;
         let lastMessageTime = new Date();
 
@@ -206,23 +207,23 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
             }, (err, result) => {
                 cb(result);
             });
-        }
+        };
 
         self.dataManager.messageDAL.getData(this.roomId).then((messages: IMessage[]) => {
             if (messages && messages.length > 0) {
                 if (messages[messages.length - 1] != null) {
                     lastMessageTime = messages[messages.length - 1].createTime;
-                    self.getNewerMessageFromNet(lastMessageTime, callback);
+                    callback(self.getNewerMessageFromNet(lastMessageTime, sessionToken));
                 }
                 else {
                     getLastMessageTime((boo) => {
-                        self.getNewerMessageFromNet(lastMessageTime, callback);
+                        callback(self.getNewerMessageFromNet(lastMessageTime, sessionToken));
                     });
                 }
             }
             else {
                 getLastMessageTime((boo) => {
-                    self.getNewerMessageFromNet(lastMessageTime, callback);
+                    callback(self.getNewerMessageFromNet(lastMessageTime, sessionToken));
                 });
             }
         }).catch(err => {
@@ -230,21 +231,24 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         });
     }
 
-    private getNewerMessageFromNet(lastMessageTime: Date, callback: (err, res) => void) {
+    private async getNewerMessageFromNet(lastMessageTime: Date, sessionToken: string) {
         let self = this;
 
-        self.chatRoomApi.getChatHistory(self.roomId, lastMessageTime, function (err, result) {
-            let histories = [];
-            if (result.code === 200) {
-                histories = result.data;
+        let response = await ServiceProvider.getChatHistory(self.roomId, lastMessageTime, sessionToken);
+        let value = await response.json();
+
+        return new Promise((resolve, reject) => {
+            console.log("getChatHistory: ", value);
+            if (value.success) {
+                let histories = [];
+                histories = value.result;
                 console.info("Newer message counts.", histories.length);
                 if (histories.length > 0) {
-
                     let messages: Array<IMessage> = JSON.parse(JSON.stringify(histories));
 
                     async.forEach(messages, function (chat, cb) {
-                        if (chat.type == ContentType[ContentType.Text]) {
-                            if (config.appConfig.encryption == true) {
+                        if (chat.type === ContentType[ContentType.Text]) {
+                            if (config.appConfig.encryption === true) {
                                 self.secure.decryption(chat.body).then(function (res) {
                                     chat.body = res;
                                     cb(null);
@@ -264,28 +268,19 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                             console.error('get newer message error', err);
                         }
 
-                        //<!-- Save persistent chats log here.
+                        // Save persistent chats log here.
                         self.dataManager.messageDAL.saveData(self.roomId, messages);
-
-                        if (callback !== null) {
-                            callback(null, result.code);
-                        }
+                        resolve();
                     });
                 }
                 else {
                     console.log("Have no newer message.");
-
-                    if (callback !== null) {
-                        callback(null, result.code);
-                    }
+                    resolve();
                 }
             }
             else {
-                console.warn("WTF god only know.", result.message);
-
-                if (callback !== null) {
-                    callback(null, result.code);
-                }
+                console.warn("WTF god only know.", value.message);
+                reject();
             }
         });
     }
@@ -300,12 +295,12 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         }
         self.getTopEdgeMessageTime(function done(err, res) {
             self.chatRoomApi.getOlderMessageChunk(self.roomId, res, function response(err, res) {
-                //@ todo.
+                // todo
                 /**
                  * Merge messages record to chatMessages array.
                  * Never save message to persistend layer.
                  */
-                if (res.code == 200) {
+                if (res.code === 200) {
                     let datas = res.data as Array<IMessage>;
                     let earlyMessages: Array<IMessage> = datas;
                     if (earlyMessages.length > 0) {
@@ -317,12 +312,12 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                                 let resultsArray: Array<IMessage> = [];
                                 async.map(mergedArray, function iterator(item, cb) {
                                     let hasMessage = resultsArray.some(function itor(value, id, arr) {
-                                        if (!!value && value._id == item._id) {
+                                        if (!!value && value._id === item._id) {
                                             return true;
                                         }
                                     });
 
-                                    if (hasMessage == false) {
+                                    if (hasMessage === false) {
                                         resultsArray.push(item);
                                         cb(null, null);
                                     }
@@ -400,8 +395,8 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
 
             resultCb(null, null);
         }, function done(err) {
-            //@ done.
-        })
+            // done.
+        });
     }
 
     public updateWhoReadMyMessages() {

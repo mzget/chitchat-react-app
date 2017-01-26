@@ -6,7 +6,6 @@
 import * as async from "async";
 
 import { IRoomAccessListenerImp } from "./abstracts/IRoomAccessListenerImp";
-import * as DataModels from "./models/ChatDataModels";
 import { Member } from "./models/Member";
 import ChatLog from "./models/chatLog";
 import DataManager from "./dataManager";
@@ -15,15 +14,18 @@ import BackendFactory from "./BackendFactory";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import HttpCode from "../libs/stalk/utils/httpStatusCode";
 import ServerImplement, { IDictionary } from "../libs/stalk/serverImplemented";
+import * as DataModels from "./models/ChatDataModels";
 import { MemberRole } from "./models/ChatDataModels";
 import { MessageImp } from "./models/MessageImp";
 import * as ServiceProvider from "./services/ServiceProvider";
 
 import * as contactActions from "../redux/app/contactActions";
+import Store from "../redux/configureStore";
+import { Room } from "../../server/scripts/models/Room";
 
-export interface ChatLogMap { [key: string]: ChatLog };
-export interface IUnread { message: DataModels.IMessage; rid: string; count: number };
-export class Unread { message: DataModels.IMessage; rid: string; count: number };
+export interface ChatLogMap { [key: string]: ChatLog; };
+export interface IUnread { message: DataModels.IMessage; rid: string; count: number; };
+export class Unread { message: DataModels.IMessage; rid: string; count: number; };
 
 export default class ChatsLogComponent implements IRoomAccessListenerImp {
     serverImp: ServerImplement = null;
@@ -76,7 +78,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         let self = this;
 
         CryptoHelper.decryptionText(message).then((decoded) => {
-            //<!-- Provide chatslog service.
+            // Provide chatslog service.
             self.chatListeners.map((v, i, a) => {
                 v(decoded);
             });
@@ -106,23 +108,24 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
             async.map(roomAccess, function iterator(item, resultCallback) {
                 self.getRoomInfo(item.roomId, (err, room) => {
                     if (err) {
+                        resultCallback(null, null);
                     }
                     else {
                         self.dataManager.roomDAL.save(room._id, room);
+                        resultCallback(null, null);
                     }
-                    resultCallback(null, null);
-                })
+                });
             }, (err, results) => {
-                done()
+                done();
             });
-        }
+        };
 
         const done = () => {
             self._isReady = true;
 
             if (!!self.onReady)
                 self.onReady();
-        }
+        };
 
         addRoomData();
     }
@@ -149,11 +152,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         let unreadLogs = new Array<IUnread>();
         async.mapSeries(roomAccess, function iterator(item, cb) {
             if (!!item.roomId && !!item.accessTime) {
-                let msg: IDictionary = {};
-                msg["token"] = token;
-                msg["roomId"] = item.roomId;
-                msg["lastAccessTime"] = item.accessTime.toString();
-                ServiceProvider.getUnreadMessage(self.dataManager.getMyProfile()._id, item.roomId, item.accessTime.toString())
+                ServiceProvider.getUnreadMessage(item.roomId, item.accessTime.toString(), token)
                     .then(response => response.json())
                     .then(value => {
                         console.log("getUnreadMessage: ", value);
@@ -178,7 +177,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
     }
 
     public getUnreadMessage(token: string, roomAccess: DataModels.RoomAccessData, callback: (err, res: IUnread) => void) {
-        ServiceProvider.getUnreadMessage(this.dataManager.getMyProfile()._id, roomAccess.roomId, roomAccess.accessTime.toString())
+        ServiceProvider.getUnreadMessage(roomAccess.roomId, roomAccess.accessTime.toString(), token)
             .then(response => response.json())
             .then(value => {
                 console.log("getUnreadMessage", value);
@@ -199,45 +198,50 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
             });
     }
 
-    private decorateRoomInfoData(roomInfo: DataModels.Room) {
+    private decorateRoomInfoData(roomInfo: Room) {
         if (roomInfo.type === DataModels.RoomType.privateChat) {
-            let others = roomInfo.members.filter((value) => !this.dataManager.isMySelf(value._id)) as Array<Member>;
-            if (others.length > 0) {
-                let contact = others[0];
+            if (Array.isArray(roomInfo.members)) {
+                let others = roomInfo.members.filter((value) => !this.dataManager.isMySelf(value._id)) as Array<Member>;
+                if (others.length > 0) {
+                    let contact = others[0];
 
-                roomInfo.name = (contact.username) ? contact.username : "EMPTY ROOM";
-                roomInfo.image = (contact.avatar) ? contact.avatar : null;
+                    roomInfo.name = (contact.username) ? contact.username : "EMPTY ROOM";
+                    roomInfo.image = (contact.avatar) ? contact.avatar : null;
+                }
             }
         }
         return roomInfo;
     }
 
-    private getRoomInfo(room_id: string, callback: (err, room: DataModels.Room) => void) {
+    private getRoomInfo(room_id: string, callback: (err, room: Room) => void) {
         let self = this;
-        ServiceProvider.getRoomInfo(self.dataManager.getMyProfile()._id, room_id).then(response => response.json()).then(function (res) {
-            console.log("getRoomInfo result", res);
-            if (res.success) {
-                let roomInfos: Array<DataModels.Room> = JSON.parse(JSON.stringify(res.result));
-                let room = self.decorateRoomInfoData(roomInfos[0]);
-                callback(null, room);
-            }
-            else {
-                callback(res.message, null);
-            }
-        }).catch(err => {
-            callback("Cannot get roomInfo" + err, null);
-        });
+        let token = Store.getState().authReducer.token;
+        ServiceProvider.getRoomInfo(room_id, token)
+            .then(response => response.json())
+            .then(function (res) {
+                console.log("getRoomInfo result", res);
+                if (res.success) {
+                    let roomInfos: Array<Room> = JSON.parse(JSON.stringify(res.result));
+                    let room = self.decorateRoomInfoData(roomInfos[0]);
+                    callback(null, room);
+                }
+                else {
+                    callback(res.message, null);
+                }
+            }).catch(err => {
+                console.warn("getRoomInfo fail: ", err);
+                callback(err, null);
+            });
     }
 
     public getRoomsInfo() {
         let self = this;
-        let results = new Array<DataModels.Room>();
+        let results = new Array<Room>();
 
         // create a queue object with concurrency 2
         let q = async.queue(function (task, callback) {
             let value = task as IUnread;
             self.dataManager.roomDAL.get(value.rid).then(roomInfo => {
-                console.dir(roomInfo);
                 if (!!roomInfo) {
                     let room = self.decorateRoomInfoData(roomInfo);
                     self.dataManager.roomDAL.save(room._id, room);
@@ -305,7 +309,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         });
     }
 
-    private async organizeChatLogMap(unread: IUnread, roomInfo: DataModels.Room, done) {
+    private async organizeChatLogMap(unread: IUnread, roomInfo: Room, done) {
         let self = this;
         let log = new ChatLog(roomInfo);
         log.setNotiCount(unread.count);

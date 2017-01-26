@@ -19,7 +19,7 @@ import * as StalkPushActions from "./stalkPushActions";
 
 export const getSessionToken = () => {
     const backendFactory = BackendFactory.getInstance();
-    return backendFactory.dataManager.getSessionToken();
+    return Store.getState().stalkReducer.stalkToken;
 }
 export const getRoomDAL = () => {
     const backendFactory = BackendFactory.getInstance();
@@ -71,7 +71,6 @@ export function stalkLoginWithToken(uid: string, token: string) {
                             console.log("set chat profile success", profile);
                             ChatLogsActions.initChatsLog();
                         });
-                        backendFactory.dataManager.setSessionToken(token);
                         backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
                         StalkPushActions.stalkPushInit();
                     });
@@ -106,7 +105,7 @@ export function stalkLogin(user: any) {
                 backendFactory.startChatServerListener();
 
                 StalkNotificationAction.regisNotifyNewMessageEvent();
-                
+
                 let account = new DataModels.StalkAccount();
                 account._id = user._id;
                 account.username = user.username;
@@ -115,11 +114,10 @@ export function stalkLogin(user: any) {
                     console.log("set chat profile success", profile);
                     ChatLogsActions.initChatsLog();
                 });
-                backendFactory.dataManager.setSessionToken(result.token);
                 backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
                 StalkPushActions.stalkPushInit();
 
-                Store.dispatch({ type: STALK_INIT_SUCCESS });
+                Store.dispatch({ type: STALK_INIT_SUCCESS, payload: result.token });
             }
             else {
                 console.warn("Joined chat-server fail: ", result);

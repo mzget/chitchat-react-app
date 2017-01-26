@@ -9,7 +9,7 @@ const rest_api = (host) => ({
     user: `${host}/api/users`,
     team: `${host}/api/team`,
     group: `${host}/api/group`,
-    chatroom: `${host}/chatroom`,
+    chatroom: `${host}/api/chatroom`,
     fileUpload: `${host}/chats/upload`
 });
 const devConfig = {

@@ -20,10 +20,11 @@ import { Record } from 'immutable';
  */
 export const StalkInitState = Record({
     isInit: false,
-    chatslogComponent: null,
     isFetching: false,
     state: null,
+    chatslogComponent: null,
     notiMessage: "",
+    stalkToken: ""
 });
 const initialState = new StalkInitState();
 
@@ -42,6 +43,7 @@ export function stalkReducer(state = initialState, action) {
         }
         case StalkBridgeActions.STALK_INIT_SUCCESS: {
             return state.set("isInit", true)
+                .set("stalkToken", action.payload)
                 .set("state", StalkBridgeActions.STALK_INIT_SUCCESS);
         }
         case StalkBridgeActions.STALK_INIT_FAILURE: {

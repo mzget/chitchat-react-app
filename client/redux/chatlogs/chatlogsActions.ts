@@ -39,7 +39,7 @@ const listenerImp = (newMsg) => {
 
 function updateLastAccessTimeEventHandler(newRoomAccess) {
     let chatsLogComp: ChatsLogComponent = Store.getState().stalkReducer.chatslogComponent;
-    let token = BackendFactory.getInstance().dataManager.getSessionToken();
+    let token = Store.getState().authReducer.token;
     chatsLogComp.getUnreadMessage(token, newRoomAccess.roomAccess[0], function (err, unread) {
         if (!!unread) {
             chatsLogComp.addUnreadMessage(unread);
@@ -81,7 +81,7 @@ export function initChatsLog() {
 function getUnreadMessages() {
     let chatsLogComp = Store.getState().stalkReducer.chatslogComponent as ChatsLogComponent;
     let dataManager = BackendFactory.getInstance().dataManager;
-    let token = dataManager.getSessionToken();
+    let token = Store.getState().authReducer.token;
     chatsLogComp.getUnreadMessages(token, dataManager.getRoomAccess(), function done(err, unreadLogs) {
         if (!!unreadLogs) {
             unreadLogs.map(function element(unread) {

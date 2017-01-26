@@ -170,13 +170,13 @@ function getNewerMessage_success() {
 }
 export function getNewerMessageFromNet() {
     return dispatch => {
-        ChatRoomComponent.getInstance().getNewerMessageRecord(function done(err, result) {
-            if (err) {
-                dispatch(getNewerMessage_failure());
-            }
-            else {
+        let token = Store.getState().authReducer.token;
+        ChatRoomComponent.getInstance().getNewerMessageRecord(token, function done(promise) {
+            promise.then(value => {
                 dispatch(getNewerMessage_success());
-            }
+            }).catch(err => {
+                dispatch(getNewerMessage_failure());
+            })
 
             //@ Todo next joinroom function is ready to call.
         });
@@ -300,7 +300,7 @@ export function joinRoom(roomId: string, token: string, username: string) {
 export const LEAVE_ROOM_SUCCESS = "LEAVE_ROOM_SUCCESS";
 export function leaveRoom() {
     return (dispatch) => {
-        let token = BackendFactory.getInstance().dataManager.getSessionToken();
+        let token = Store.getState().authReducer.token;
         let room = ChatRoomComponent.getInstance();
 
         BackendFactory.getInstance().getServer().then(server => {
