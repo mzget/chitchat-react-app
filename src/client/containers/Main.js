@@ -88,6 +88,10 @@ class Main extends React.Component {
                 this.props.router.push(`/chat/${chatroomReducer.room._id}`);
                 break;
             }
+            case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
+                console.warn("GET_PERSISTEND_CHATROOM_FAILURE");
+                break;
+            }
             default:
                 break;
         }

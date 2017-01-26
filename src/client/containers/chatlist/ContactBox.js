@@ -33,17 +33,14 @@ class ContactBox extends React.Component {
                     this.props.router.push(`/chat/${chatroomReducer.room._id}`);
                 }
             }
-            case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
-                this.props.dispatch(chatroomRx.fetchPrivateChatRoom(userReducer.user._id, this._tempContact_id));
-                break;
-            }
             default:
                 break;
         }
     }
     onselectMember(data) {
+        let { userReducer } = this.props;
         this._tempContact_id = data._id;
-        this.props.dispatch(chatroomActions.getPersistendChatroom(data._id));
+        this.props.dispatch(chatroomRx.fetchPrivateChatRoom(userReducer.user._id, this._tempContact_id));
     }
     render() {
         return (React.createElement("div", null,

@@ -47,18 +47,18 @@ function searchTeam(team_name) {
     });
 }
 exports.searchTeam = searchTeam;
-function createTeam(team_name) {
+function createTeam(team_name, owner) {
     return __awaiter(this, void 0, void 0, function* () {
         let db = yield MongoClient.connect(config.chatDB);
         let collection = db.collection(config_1.DbClient.teamsColl);
         collection.createIndex({ name: 1 }, { background: true });
-        let defaultGroup = yield GroupController.createDefaultGroup();
+        let defaultGroup = yield GroupController.createDefaultGroup(owner);
         let _group = defaultGroup[0];
         let team = {};
         team.name = team_name.toLowerCase();
         team.createAt = new Date();
         team.defaultGroup = _group;
-        team.groups = new Array(_group);
+        team.groups = new Array(_group._id.toString());
         let result = yield collection.insert(team);
         let newTeam = result.ops;
         if (newTeam.length > 0) {

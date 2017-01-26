@@ -318,7 +318,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
             log.setLastMessageTime(unread.message.createTime.toString());
 
             let contacts = await contactActions.getContactProfile(unread.message.sender);
-            let sender = (contacts != null) ? contacts[0].username : "";
+            let sender = (!!contacts && contacts.length > 0) ? contacts[0].username : "";
             if (unread.message.body != null) {
                 let displayMsg = unread.message.body;
                 switch (`${unread.message.type}`) {

@@ -1,12 +1,12 @@
 ﻿import config from "../../configs/config";
 import { Record } from "immutable";
 import { createAction, Reducer } from "redux-actions";
-import * as Rx from 'rxjs/Rx';
+import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
-import Store from '../configureStore';
+import Store from "../configureStore";
 import * as userRx from "../user/userRx";
-
+import { ChitChatUser } from "../../../server/scripts/models/User";
 
 const FETCH_USER_TEAMS = "FETCH_USER_TEAMS";
 const FETCH_USER_TEAMS_SUCCESS = "FETCH_USER_TEAMS_SUCCESS";
@@ -83,22 +83,24 @@ const joinTeamFailure = createAction(JOIN_TEAM_FAILURE, payload => payload);
 const joinTeamCancelled = createAction(JOIN_TEAM_CANCELLED);
 
 export const joinTeamEpic = action$ =>
-    action$.ofType(JOIN_TEAM).mergeMap(action => ajax({
-        method: 'POST',
-        url: `${config.api.team}/join`,
-        body: JSON.stringify({ name: action.payload }),
-        headers: {
-            'Content-Type': 'application/json',
-            'x-access-token': Store.getState().authReducer.token
-        }
-    }).map(response => joinTeamSuccess(response.xhr.response))
-        .takeUntil(action$.ofType(JOIN_TEAM_CANCELLED))
-        .catch(error => Rx.Observable.of(joinTeamFailure(error.xhr.response)))
-        .do((x) => {
-            if (x.type === JOIN_TEAM_SUCCESS)
-                Store.dispatch(userRx.fetchUser(Store.getState().userReducer.user.username));
+    action$.ofType(JOIN_TEAM)
+        .mergeMap(action => ajax({
+            method: "POST",
+            url: `${config.api.team}/join`,
+            body: JSON.stringify({ name: action.payload }),
+            headers: {
+                "Content-Type": "application/json",
+                "x-access-token": Store.getState().authReducer.token
+            }
         })
-    );
+            .map(response => joinTeamSuccess(response.xhr.response))
+            .takeUntil(action$.ofType(JOIN_TEAM_CANCELLED))
+            .catch(error => Rx.Observable.of(joinTeamFailure(error.xhr.response)))
+            .do((x) => {
+                if (x.type === JOIN_TEAM_SUCCESS)
+                    Store.dispatch(userRx.fetchUser(Store.getState().userReducer.user.username));
+            })
+        );
 
 
 const GET_TEAMS_INFO = "GET_TEAMS_INFO";
@@ -139,16 +141,35 @@ function getTeamMembersCancelled() {
     return { type: GET_TEAM_MEMBERS_CANCELLED };
 }
 export function getTeamMembersEpic(action$) {
-    return action$.ofType(GET_TEAM_MEMBERS).mergeMap(action => ajax({
-        method: "GET",
-        url: `${config.api.team}/teamMembers/?id=${action.payload}`,
-        headers: {
-            "Content-Type": "application/json", "x-access-token": Store.getState().authReducer.token
-        }
-    }).map(response => getTeamMembersSuccess(response.xhr.response))
-        .takeUntil(action$.ofType(GET_TEAM_MEMBERS_CANCELLED))
-        .catch(error => Rx.Observable.of(getTeamMembersFailure(error.xhr.response)))
-    );
+    return action$.ofType(GET_TEAM_MEMBERS)
+        .mergeMap(action => ajax({
+            method: "GET",
+            url: `${config.api.team}/teamMembers/?id=${action.payload}`,
+            headers: {
+                "Content-Type": "application/json",
+                "x-access-token": Store.getState().authReducer.token
+            }
+        })
+            .map((x) => {
+                let res = x.xhr.response;
+                let results = res.result as Array<ChitChatUser>;
+                let user_id = Store.getState().userReducer.user._id;
+                let members = new Array<ChitChatUser>();
+                Rx.Observable.from(results)
+                    .filter((x, i) => x._id !== user_id)
+                    .subscribe(x => members.push(x));
+                return members;
+            })
+            .map(members => getTeamMembersSuccess(members))
+            .takeUntil(action$.ofType(GET_TEAM_MEMBERS_CANCELLED))
+            .catch(error => Rx.Observable.of(getTeamMembersFailure(error.xhr.response)))
+            .do(x => {
+                if (x.type === GET_TEAM_MEMBERS_SUCCESS) {
+                    let arr = x.payload as Array<ChitChatUser>;
+
+                }
+            })
+        );
 }
 
 const TEAM_SELECTED = "TEAM_SELECTED";
@@ -160,7 +181,7 @@ export const clearError = createAction(TEAM_REDUCER_CLEAR_ERROR);
 export const TeamInitState = Record({
     isFetching: false,
     state: null,
-    teams: null,
+    teams: new Array<any>(),
     team: null,
     members: null,
     findingTeams: null,
@@ -199,7 +220,7 @@ export const teamReducer = (state = new TeamInitState(), action: ReduxActions.Ac
                 .set("teams", null);
         }
         case GET_TEAM_MEMBERS_SUCCESS: {
-            return state.set("members", action.payload.result);
+            return state.set("members", action.payload);
         }
 
         case TEAM_REDUCER_CLEAR_ERROR: {

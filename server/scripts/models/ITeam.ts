@@ -1,10 +1,12 @@
-﻿export interface ITeam {
-     _id: string;
-     name: string;
-     detail: string;
-     image: string;
-     jobPosition: string[];
-     defaultGroup: string;
-     groups: string[];
-     createAt: Date;
+﻿import { Room } from "./Room";
+
+export interface ITeam {
+    _id: string;
+    name: string;
+    detail: string;
+    image: string;
+    jobPosition: string[];
+    defaultGroup: Room;
+    groups: string[];
+    createAt: Date;
 }

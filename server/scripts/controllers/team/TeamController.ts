@@ -1,4 +1,4 @@
-﻿import mongodb = require( 'mongodb');
+﻿import mongodb = require('mongodb');
 
 const MongoClient = mongodb.MongoClient;
 type ObjectID = mongodb.ObjectID;
@@ -6,6 +6,7 @@ import { getConfig, DbClient } from '../../../config';
 const config = getConfig();
 
 import { ITeam } from '../../models/ITeam';
+import { ChitChatUser } from "../../models/User";
 import * as GroupController from '../group/GroupController';
 
 
@@ -49,25 +50,25 @@ export async function searchTeam(team_name: string) {
     return teams;
 }
 
-export async function createTeam(team_name: string) {
+export async function createTeam(team_name: string, owner: ChitChatUser) {
     let db = await MongoClient.connect(config.chatDB);
     let collection = db.collection(DbClient.teamsColl);
 
     collection.createIndex({ name: 1 }, { background: true });
 
-    let defaultGroup = await GroupController.createDefaultGroup();
+    let defaultGroup = await GroupController.createDefaultGroup(owner);
     let _group = defaultGroup[0];
 
     let team = {} as ITeam;
     team.name = team_name.toLowerCase();
     team.createAt = new Date();
     team.defaultGroup = _group;
-    team.groups = new Array(_group);
+    team.groups = new Array(_group._id.toString());
 
     let result = await collection.insert(team);
 
     let newTeam = result.ops;
-    if(newTeam.length > 0) {
+    if (newTeam.length > 0) {
         GroupController.addTeamToGroup(_group, newTeam[0]);
     }
 

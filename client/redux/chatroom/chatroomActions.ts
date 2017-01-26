@@ -67,7 +67,7 @@ export function initChatRoom(currentRoom: Room) {
 }
 
 function onChatRoomDelegate(event, newMsg: IMessage) {
-    if (event == ServerEventListener.ON_CHAT) {
+    if (event === ServerEventListener.ON_CHAT) {
         console.log("onChatRoomDelegate: ", ServerEventListener.ON_CHAT, newMsg);
         /**
          * Todo **

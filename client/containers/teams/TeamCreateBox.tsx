@@ -36,6 +36,7 @@ class TeamCreateBox extends React.Component<IComponentProps, IComponentNameState
     onSubmitTeam() {
         if (this.state.team_name.length > 0) {
             this.props.dispatch(TeamRx.createNewTeam(this.state.team_name));
+            this.setState(previous => ({ ...previous, team_name: "" }));
         }
         else {
             console.warn("Empty team name!");
@@ -69,7 +70,7 @@ class TeamCreateBox extends React.Component<IComponentProps, IComponentNameState
                             team_name={this.state.team_name}
                             onNameChange={this.onNameChange}
                             onCreateTeam={this.onSubmitTeam}
-                            onFindTeam={this.onToggleView} 
+                            onFindTeam={this.onToggleView}
                             />
                         :
                         <FindTeamView

@@ -67,15 +67,17 @@ exports.joinTeam = redux_actions_1.createAction(JOIN_TEAM, team_name => team_nam
 const joinTeamSuccess = redux_actions_1.createAction(JOIN_TEAM_SUCCESS, payload => payload);
 const joinTeamFailure = redux_actions_1.createAction(JOIN_TEAM_FAILURE, payload => payload);
 const joinTeamCancelled = redux_actions_1.createAction(JOIN_TEAM_CANCELLED);
-exports.joinTeamEpic = action$ => action$.ofType(JOIN_TEAM).mergeMap(action => ajax({
-    method: 'POST',
+exports.joinTeamEpic = action$ => action$.ofType(JOIN_TEAM)
+    .mergeMap(action => ajax({
+    method: "POST",
     url: `${config_1.default.api.team}/join`,
     body: JSON.stringify({ name: action.payload }),
     headers: {
-        'Content-Type': 'application/json',
-        'x-access-token': configureStore_1.default.getState().authReducer.token
+        "Content-Type": "application/json",
+        "x-access-token": configureStore_1.default.getState().authReducer.token
     }
-}).map(response => joinTeamSuccess(response.xhr.response))
+})
+    .map(response => joinTeamSuccess(response.xhr.response))
     .takeUntil(action$.ofType(JOIN_TEAM_CANCELLED))
     .catch(error => Rx.Observable.of(joinTeamFailure(error.xhr.response)))
     .do((x) => {
@@ -118,15 +120,33 @@ function getTeamMembersCancelled() {
     return { type: GET_TEAM_MEMBERS_CANCELLED };
 }
 function getTeamMembersEpic(action$) {
-    return action$.ofType(GET_TEAM_MEMBERS).mergeMap(action => ajax({
+    return action$.ofType(GET_TEAM_MEMBERS)
+        .mergeMap(action => ajax({
         method: "GET",
         url: `${config_1.default.api.team}/teamMembers/?id=${action.payload}`,
         headers: {
-            "Content-Type": "application/json", "x-access-token": configureStore_1.default.getState().authReducer.token
+            "Content-Type": "application/json",
+            "x-access-token": configureStore_1.default.getState().authReducer.token
         }
-    }).map(response => getTeamMembersSuccess(response.xhr.response))
+    })
+        .map((x) => {
+        let res = x.xhr.response;
+        let results = res.result;
+        let user_id = configureStore_1.default.getState().userReducer.user._id;
+        let members = new Array();
+        Rx.Observable.from(results)
+            .filter((x, i) => x._id !== user_id)
+            .subscribe(x => members.push(x));
+        return members;
+    })
+        .map(members => getTeamMembersSuccess(members))
         .takeUntil(action$.ofType(GET_TEAM_MEMBERS_CANCELLED))
-        .catch(error => Rx.Observable.of(getTeamMembersFailure(error.xhr.response))));
+        .catch(error => Rx.Observable.of(getTeamMembersFailure(error.xhr.response)))
+        .do(x => {
+        if (x.type === GET_TEAM_MEMBERS_SUCCESS) {
+            let arr = x.payload;
+        }
+    }));
 }
 exports.getTeamMembersEpic = getTeamMembersEpic;
 const TEAM_SELECTED = "TEAM_SELECTED";
@@ -136,7 +156,7 @@ exports.clearError = redux_actions_1.createAction(TEAM_REDUCER_CLEAR_ERROR);
 exports.TeamInitState = immutable_1.Record({
     isFetching: false,
     state: null,
-    teams: null,
+    teams: new Array(),
     team: null,
     members: null,
     findingTeams: null,
@@ -170,7 +190,7 @@ exports.teamReducer = (state = new exports.TeamInitState(), action) => {
                 .set("teams", null);
         }
         case GET_TEAM_MEMBERS_SUCCESS: {
-            return state.set("members", action.payload.result);
+            return state.set("members", action.payload);
         }
         case TEAM_REDUCER_CLEAR_ERROR: {
             return state.set("state", null)

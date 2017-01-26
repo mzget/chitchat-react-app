@@ -326,7 +326,7 @@ class RoomDataAccess {
             member.id = val;
             members.push(member);
         });
-        var newRoom = new Room.Room();
+        let newRoom = new Room.Room();
         newRoom.name = groupName;
         newRoom.type = Room.RoomType.privateGroup;
         newRoom.members = members;

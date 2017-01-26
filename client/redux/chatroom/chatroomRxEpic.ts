@@ -57,7 +57,10 @@ export const createPrivateChatRoomEpic = action$ => {
             method: 'POST',
             url: `${config.api.chatroom}/createPrivateRoom`,
             body: action.payload,
-            headers: { 'Content-Type': 'application/json' }
+            headers: {
+                "Content-Type": "application/json",
+                "x-access-token": Store.getState().authReducer.token
+            }
         }))
         .map(json => createPrivateChatRoomSuccess(json.response))
         .takeUntil(action$.ofType(CREATE_PRIVATE_CHATROOM_CANCELLED))

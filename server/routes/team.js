@@ -17,6 +17,7 @@ const config_1 = require("../config");
 const config = config_1.getConfig();
 const TeamController = require("../scripts/controllers/team/TeamController");
 const UserManager = require("../scripts/controllers/user/UserManager");
+const GroupController = require("../scripts/controllers/group/GroupController");
 router.get("/", (req, res, next) => {
     req.checkQuery("name", "request for name param").notEmpty();
     let errors = req.validationErrors();
@@ -94,7 +95,7 @@ router.post('/create', (req, res, next) => {
         if (teams.length > 0)
             throw new Error("team name already used.");
         else
-            return TeamController.createTeam(team_name);
+            return TeamController.createTeam(team_name, user);
     }).then(result => {
         res.status(200).json(new apiUtils.ApiResponse(true, null, result));
         UserManager.joinTeam(result[0], user._id);
@@ -117,6 +118,10 @@ router.post("/join", (req, res, next) => {
             let team = teams[0];
             UserManager.joinTeam(team, user_id).then(value => {
                 res.status(200).json(new apiUtils.ApiResponse(true, null, value));
+                let group_id = team.defaultGroup._id;
+                GroupController.addMember(group_id, token).then(value => {
+                    console.log("addMember success", value);
+                });
             }).catch(err => {
                 res.status(500).json(new apiUtils.ApiResponse(false, err));
             });

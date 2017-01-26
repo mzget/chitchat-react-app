@@ -1,21 +1,28 @@
 import mongodb = require('mongodb');
 
 import { getConfig, DbClient } from "../../../config";
-import { Room, RoomStatus, RoomType } from "../../models/Room";
+import { Room, RoomStatus, RoomType, Member, MemberRole } from "../../models/Room";
 import { ITeam } from "../../models/ITeam";
+import { ChitChatUser } from "../../models/User";
 
 const config = getConfig();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 
-export async function createDefaultGroup() {
+export async function createDefaultGroup(owner: ChitChatUser) {
     let db = await MongoClient.connect(config.chatDB);
     let collection = db.collection(DbClient.chatroomColl);
+
+    let member = new Member();
+    member._id = owner._id;
+    member.joinTime = new Date();
+    member.room_role = MemberRole.owner;
+    member.username = owner.username;
 
     let group = new Room();
     group.createTime = new Date();
     group.description = "Default group";
-    group.members = "*";
+    group.members = [member];
     group.name = "General";
     group.status = RoomStatus.active;
     group.type = RoomType.organizationGroup;
@@ -24,7 +31,7 @@ export async function createDefaultGroup() {
 
     db.close();
 
-    return result.ops;
+    return result.ops as Room[];
 }
 
 export async function addTeamToGroup(group: Room, team: ITeam) {
@@ -44,10 +51,28 @@ export async function addTeamToGroup(group: Room, team: ITeam) {
 export async function getOrgGroups(team_id: mongodb.ObjectID) {
     let db = await MongoClient.connect(config.chatDB);
     let collection = db.collection(DbClient.chatroomColl);
-    
+
     collection.createIndex({ team_id: 1 }, { background: true });
 
     let docs = await collection.find({ team_id: team_id, type: 0 }).toArray();
     db.close();
     return docs;
+}
+
+export async function addMember(group_id: string, user: ChitChatUser) {
+    let db = await MongoClient.connect(config.chatDB);
+    let collection = db.collection(DbClient.chatroomColl);
+
+    let member = new Member();
+    member._id = user._id;
+    member.joinTime = new Date();
+    member.room_role = MemberRole.member;
+    member.username = user.username;
+
+    let results = await collection.update({ _id: new mongodb.ObjectID(group_id) },
+        { $addToSet: { members: member } },
+        { upsert: false });
+
+    db.close();
+    return results.result;
 }

@@ -13,14 +13,19 @@ const Room_1 = require("../../models/Room");
 const config = config_1.getConfig();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
-function createDefaultGroup() {
+function createDefaultGroup(owner) {
     return __awaiter(this, void 0, void 0, function* () {
         let db = yield MongoClient.connect(config.chatDB);
         let collection = db.collection(config_1.DbClient.chatroomColl);
+        let member = new Room_1.Member();
+        member._id = owner._id;
+        member.joinTime = new Date();
+        member.room_role = Room_1.MemberRole.owner;
+        member.username = owner.username;
         let group = new Room_1.Room();
         group.createTime = new Date();
         group.description = "Default group";
-        group.members = "*";
+        group.members = [member];
         group.name = "General";
         group.status = Room_1.RoomStatus.active;
         group.type = Room_1.RoomType.organizationGroup;
@@ -55,3 +60,18 @@ function getOrgGroups(team_id) {
     });
 }
 exports.getOrgGroups = getOrgGroups;
+function addMember(group_id, user) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let db = yield MongoClient.connect(config.chatDB);
+        let collection = db.collection(config_1.DbClient.chatroomColl);
+        let member = new Room_1.Member();
+        member._id = user._id;
+        member.joinTime = new Date();
+        member.room_role = Room_1.MemberRole.member;
+        member.username = user.username;
+        let results = yield collection.update({ _id: new mongodb.ObjectID(group_id) }, { $addToSet: { members: member } }, { upsert: false });
+        db.close();
+        return results.result;
+    });
+}
+exports.addMember = addMember;
