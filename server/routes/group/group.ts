@@ -9,7 +9,7 @@ const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
 import redisClient, { ROOM_KEY } from "../scripts/services/CachingSevice";
 
-import Room = require("../scripts/models/Room");
+import { Room, RoomType, RoomStatus, Member } from "../../scripts/models/Room";
 import Message = require("../scripts/models/Message");
 import * as RoomService from "../scripts/services/RoomService";
 
@@ -43,39 +43,39 @@ router.get("/org", function (req, res, next) {
     });
 });
 
-router.post('/createOrg', function (req, res, next) {
-    req.checkBody('room', 'request for room object').notEmpty();
+router.post("/createOrg", function (req, res, next) {
+    req.checkBody("room", "request for room object").notEmpty();
 
     let errors = req.validationErrors();
     if (errors) {
         return res.status(500).json(new apiUtils.ApiResponse(false, errors));
     }
 
-    let room = req.body;
-    var roomModel = new MroomModel.RoomModel();
+    let room = req.body.room as Room;
+    let roomModel = new Room();
     roomModel.nodeId = room.nodeId;
     roomModel.name = room.name;
-    roomModel.type = MroomModel.RoomType.organizationGroup;
-    var members = JSON.stringify(room.members);
-    roomModel.members = JSON.parse(members);
+    roomModel.type = RoomType.organizationGroup;
+    roomModel.members = room.members;
     roomModel.image = room.image;
     roomModel.description = room.description;
-    roomModel.status = MroomModel.RoomStatus.active;
+    roomModel.status = RoomStatus.active;
     roomModel.createTime = new Date();
-    MongoClient.connect(webConfig.chatDB, function (err, db) {
-        if (err) {
-            throw err;
-        }
-        var collection = db.collection(Mdb.DbClient.roomColl);
-        collection.insertOne(roomModel)
-            .then(function onFulfilled(value) {
-                res.status(200).json({ success: true, result: value });
-                db.close();
-            })
-            .catch(function onRejected(error) {
-                res.status(500).json({ success: false, message: error });
-                db.close();
-            });
+    roomModel.team_id = room.team_id;
+
+    async function createGroup() {
+        let db = await MongoClient.connect(webConfig.chatDB);
+        let collection = db.collection(DbClient.chatroomColl);
+
+        let result = await collection.insertOne(roomModel);
+        db.close();
+        return result.ops;
+    };
+
+    createGroup().then(ops => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, ops));
+    }).catch(err => {
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });
 

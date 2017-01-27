@@ -35,7 +35,7 @@ router.get("/", (req, res, next) => {
         res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });
-router.post('/teamInfo', function (req, res, next) {
+router.post("/teamInfo", function (req, res, next) {
     req.checkBody('team_id', 'request for team_id').isMongoId();
     let errors = req.validationErrors();
     if (errors) {
@@ -82,7 +82,7 @@ router.post("/teamsInfo", function (req, res, next) {
         res.status(500).json(new apiUtils.ApiResponse(false, "request for array of team id"));
     }
 });
-router.post('/create', (req, res, next) => {
+router.post("/create", (req, res, next) => {
     req.checkBody('team_name', 'request for team_name').notEmpty();
     let errors = req.validationErrors();
     if (errors) {
@@ -146,7 +146,9 @@ router.get("/teamMembers", function (req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             let db = yield MongoClient.connect(config.chatDB);
             let collection = db.collection(config_1.DbClient.systemUsersColl);
-            let results = yield collection.find({}).project({ username: 1, firstname: 1, lastname: 1, image: 1 }).limit(100).toArray();
+            let results = yield collection.find({ teams: { $in: [team_id.toString()] } })
+                .project({ username: 1, firstname: 1, lastname: 1, image: 1 })
+                .limit(100).toArray();
             db.close();
             return results;
         });

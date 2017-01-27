@@ -1,6 +1,7 @@
 "use strict";
 const config_1 = require("../../configs/config");
 const immutable_1 = require("immutable");
+const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 const configureStore_1 = require("../configureStore");
@@ -27,6 +28,21 @@ exports.getOrgGroupEpic = action$ => (action$.ofType(GET_ORG_GROUP)
         }).subscribe();
     }
 })));
+const CREATE_ORG_GROUP = "CREATE_ORG_GROUP";
+const CREATE_ORG_GROUP_FAILURE = "CREATE_ORG_GROUP_FAILURE";
+const CREATE_ORG_GROUP_SUCCESS = "CREATE_ORG_GROUP_SUCCESS";
+const CREATE_ORG_GROUP_CANCELLED = "CREATE_ORG_GROUP_CANCELLED";
+const createOrgGroup = redux_actions_1.createAction(CREATE_ORG_GROUP, group => group);
+const createOrgGroupSuccess = redux_actions_1.createAction(CREATE_ORG_GROUP_SUCCESS, payload => payload);
+const createOrgGroupFailure = redux_actions_1.createAction(CREATE_ORG_GROUP_FAILURE, err => err);
+const createOrgGroupCancelled = redux_actions_1.createAction(CREATE_ORG_GROUP_CANCELLED);
+// export const createOrgGroupEpic = action$ => (
+//     action$.ofType(FETCH_AGENT_BY_ID)
+//         .margeMap(action => ajax.getJSON(`${config.api.user}/agent/${action.payload}`)
+//             .map(fetchAgentByIdSuccess)
+//             .takeUntil(action$.ofType(FETCH_AGENT_BY_ID_CANCELLED))
+//             .catch(error => Rx.Observable.of(fetchAgentByIdFailure(error.xhr.response))))
+// );
 exports.GroupInitState = immutable_1.Record({
     isFetching: false,
     state: null,

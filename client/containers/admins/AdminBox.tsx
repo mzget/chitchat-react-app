@@ -16,7 +16,7 @@ interface IComponentProps {
 const getItem = (props: IComponentProps) => {
     return props.itemName.map((item, i, arr) =>
         <ListItem key={i} primaryText={item} leftIcon={<ActionGrade />} rightIcon={<ActionInfo />} onClick={() => props.onSelectItem(item)} />
-    )
+    );
 };
 
 const AdminBox = (props: IComponentProps) => (

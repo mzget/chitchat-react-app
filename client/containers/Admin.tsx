@@ -20,7 +20,6 @@ class Admin extends React.Component<IComponentNameProps, IComponentNameState> {
     onAdminMenuSelected(key: string) {
         console.log('onAdminMenuSelected', key);
 
-        
     }
 
     public render(): JSX.Element {
