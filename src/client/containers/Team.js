@@ -33,11 +33,11 @@ class Team extends React.Component {
         this.onSelectTeam = this.onSelectTeam.bind(this);
         this.onToolbarMenuItem = this.onToolbarMenuItem.bind(this);
         this.onCloseDialog = this.onCloseDialog.bind(this);
-        let { location: { query: { userId, username, roomId, contactId } }, params } = this.props;
-        this.toolbar = "Teams",
-            this.state = {
-                openDialog: false
-            };
+        let { location: { query: { userId, username, roomId, contactId } }, params, userReducer } = this.props;
+        this.toolbar = "Teams";
+        this.state = {
+            openDialog: false
+        };
         if (params.filter) {
             this.props.dispatch(userRx.fetchUser(params.filter));
         }
@@ -45,7 +45,9 @@ class Team extends React.Component {
     componentWillReceiveProps(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } }, userReducer, authReducer, teamReducer } = nextProps;
         switch (userReducer.state) {
-            case userRx.FETCH_USER_SUCCESS:
+            case userRx.FETCH_USER_SUCCESS: {
+                this.toolbar = (!!userReducer.user)
+                    ? userReducer.user.username : "Fail username";
                 if (!!this.props.userReducer.user) {
                     let nextRed = immutable.fromJS(userReducer);
                     let red = immutable.fromJS(this.props.userReducer);
@@ -59,6 +61,7 @@ class Team extends React.Component {
                     }
                 }
                 break;
+            }
             case userRx.FETCH_USER_FAILURE: {
                 this.props.router.push(`/`);
                 break;
@@ -70,7 +73,6 @@ class Team extends React.Component {
                 break;
             }
         }
-        this.toolbar = (!!teamReducer.teams && teamReducer.teams.length > 0) ? 'Your Teams' : 'Create Team';
         switch (teamReducer.state) {
             case teamRx.CREATE_TEAM_FAILURE: {
                 this.alertBoxTitle = teamRx.CREATE_TEAM_FAILURE;

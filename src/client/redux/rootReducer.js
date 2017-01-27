@@ -57,5 +57,8 @@ function getInitialState() {
 }
 exports.getInitialState = getInitialState;
 exports.rootReducer = (state, action) => {
+    if (state.authReducer.state === authRx_1.LOG_OUT_SUCCESS) {
+        state = getInitialState();
+    }
     return appReducer(state, action);
 };

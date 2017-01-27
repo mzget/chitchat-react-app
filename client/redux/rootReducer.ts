@@ -17,7 +17,7 @@ import { combineReducers } from "redux";
 import { deviceReducer, DeviceInitialState } from "./device/deviceReducer";
 import { teamReducer, TeamInitState } from "./team/teamRx";
 import { UserInitState, userReducer } from "./user/userRx";
-import { AuthenInitState, authReducer } from "./authen/authRx";
+import { AuthenInitState, authReducer, LOG_OUT_SUCCESS } from "./authen/authRx";
 import { GroupInitState, groupReducer } from "./group/groupRx";
 import { stalkReducer, StalkInitState } from "./stalkBridge/stalkReducer";
 import { chatroomReducer, ChatRoomInitState } from "./chatroom/chatroomReducer";
@@ -60,5 +60,9 @@ export function getInitialState() {
 }
 
 export const rootReducer = (state, action) => {
+    if (state.authReducer.state === LOG_OUT_SUCCESS) {
+        state = getInitialState();
+    }
+
     return appReducer(state, action);
-}
+};
