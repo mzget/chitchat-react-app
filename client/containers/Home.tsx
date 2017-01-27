@@ -7,6 +7,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from "react-redux";
 import { Link } from 'react-router';
 import { Flex, Box } from 'reflexbox';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import * as Colors from 'material-ui/styles/colors';
+import Subheader from 'material-ui/Subheader';
 
 import { IComponentProps } from "../utils/IComponentProps";
 
@@ -14,6 +17,7 @@ import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 import * as AuthRx from '../redux/authen/authRx';
 import * as AppActions from '../redux/app/persistentDataActions';
 
+import SimpleToolbar from "../components/SimpleToolbar";
 import { DialogBox } from "../components/DialogBox";
 import AuthenBox from './authen/AuthenBox';
 
@@ -33,6 +37,12 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
         );
     }
 
+    onAuthBoxError(error: string) {
+        this.alertTitle = "Authentication!";
+        this.alertMessage = error;
+        this.setState(prevState => ({ ...prevState, alert: true }));
+    }
+
     componentWillMount() {
         console.log("Home", global.userAgent);
 
@@ -40,6 +50,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
             alert: false
         };
         this.closeAlert = this.closeAlert.bind(this);
+        this.onAuthBoxError = this.onAuthBoxError.bind(this);
 
         this.props.dispatch(AppActions.getSession());
     }
@@ -66,7 +77,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
                 break;
             }
             case AppActions.GET_SESSION_TOKEN_SUCCESS: {
-                if (authReducer.state != this.props.authReducer.state)
+                if (authReducer.state !== this.props.authReducer.state)
                     this.props.dispatch(AuthRx.tokenAuthUser(authReducer.token));
                 break;
             }
@@ -78,19 +89,25 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
     public render(): JSX.Element {
         let { location: {query: {userId, username, roomId, contactId}}, chatroomReducer, userReducer } = this.props;
         return (
-            <div style={{ backgroundColor: '#EEEEEE', height: '100%' }}>
-                <Flex align='center'>
-                    <Box p={2} flexAuto></Box>
-                    <AuthenBox {...this.props} />
-                    <Box p={2} flexAuto></Box>
+            <MuiThemeProvider>
+                <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn={true}>
+                    <div>
+                        <SimpleToolbar title={"ChitChat team communication."} />
+                        <Subheader>{null}</Subheader>
+                    </div>
+                    <Flex align='center'>
+                        <Box p={2} flexAuto></Box>
+                        <AuthenBox {...this.props} onError={this.onAuthBoxError} />
+                        <Box p={2} flexAuto></Box>
+                    </Flex>
+                    <Flex px={2} align='center'>
+                        <Box p={2} flexAuto></Box>
+                        <p>Stalk realtime messaging service.</p>
+                        <Box p={2} flexAuto></Box>
+                    </Flex>
+                    <DialogBox title={this.alertTitle} message={this.alertMessage} open={this.state.alert} handleClose={this.closeAlert} />
                 </Flex>
-                <Flex px={2} align='center'>
-                    <Box p={2} flexAuto></Box>
-                    <p>Stalk realtime messaging service.</p>
-                    <Box p={2} flexAuto></Box>
-                </Flex>
-                <DialogBox title={this.alertTitle} message={this.alertMessage} open={this.state.alert} handleClose={this.closeAlert} />
-            </div>
+            </MuiThemeProvider>
         );
     }
 }

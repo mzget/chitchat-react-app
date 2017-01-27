@@ -10,8 +10,12 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
+const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
+const Colors = require("material-ui/styles/colors");
+const Subheader_1 = require("material-ui/Subheader");
 const AuthRx = require("../redux/authen/authRx");
 const AppActions = require("../redux/app/persistentDataActions");
+const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const DialogBox_1 = require("../components/DialogBox");
 const AuthenBox_1 = require("./authen/AuthenBox");
 ;
@@ -26,12 +30,18 @@ class Home extends React.Component {
         this.alertMessage = "";
         this.setState(prevState => (__assign({}, prevState, { alert: false })), () => this.props.dispatch(AuthRx.clearError()));
     }
+    onAuthBoxError(error) {
+        this.alertTitle = "Authentication!";
+        this.alertMessage = error;
+        this.setState(prevState => (__assign({}, prevState, { alert: true })));
+    }
     componentWillMount() {
         console.log("Home", global.userAgent);
         this.state = {
             alert: false
         };
         this.closeAlert = this.closeAlert.bind(this);
+        this.onAuthBoxError = this.onAuthBoxError.bind(this);
         this.props.dispatch(AppActions.getSession());
     }
     componentWillReceiveProps(nextProps) {
@@ -53,7 +63,7 @@ class Home extends React.Component {
                 break;
             }
             case AppActions.GET_SESSION_TOKEN_SUCCESS: {
-                if (authReducer.state != this.props.authReducer.state)
+                if (authReducer.state !== this.props.authReducer.state)
                     this.props.dispatch(AuthRx.tokenAuthUser(authReducer.token));
                 break;
             }
@@ -63,16 +73,20 @@ class Home extends React.Component {
     }
     render() {
         let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, userReducer } = this.props;
-        return (React.createElement("div", { style: { backgroundColor: '#EEEEEE', height: '100%' } },
-            React.createElement(reflexbox_1.Flex, { align: 'center' },
-                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
-                React.createElement(AuthenBox_1.default, __assign({}, this.props)),
-                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
-            React.createElement(reflexbox_1.Flex, { px: 2, align: 'center' },
-                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
-                React.createElement("p", null, "Stalk realtime messaging service."),
-                React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
-            React.createElement(DialogBox_1.DialogBox, { title: this.alertTitle, message: this.alertMessage, open: this.state.alert, handleClose: this.closeAlert })));
+        return (React.createElement(MuiThemeProvider_1.default, null,
+            React.createElement(reflexbox_1.Flex, { style: { backgroundColor: Colors.indigo50 }, flexColumn: true },
+                React.createElement("div", null,
+                    React.createElement(SimpleToolbar_1.default, { title: "ChitChat team communication." }),
+                    React.createElement(Subheader_1.default, null, null)),
+                React.createElement(reflexbox_1.Flex, { align: 'center' },
+                    React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
+                    React.createElement(AuthenBox_1.default, __assign({}, this.props, { onError: this.onAuthBoxError })),
+                    React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
+                React.createElement(reflexbox_1.Flex, { px: 2, align: 'center' },
+                    React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
+                    React.createElement("p", null, "Stalk realtime messaging service."),
+                    React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
+                React.createElement(DialogBox_1.DialogBox, { title: this.alertTitle, message: this.alertMessage, open: this.state.alert, handleClose: this.closeAlert }))));
     }
 }
 /**

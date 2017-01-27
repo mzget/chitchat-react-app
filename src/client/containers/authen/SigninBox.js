@@ -16,7 +16,8 @@ const AuthRx = require("../../redux/authen/authRx");
 class SigninBox extends React.Component {
     componentWillMount() {
         this.state = {
-            username: '', password: ''
+            username: "",
+            password: ""
         };
         this.onUsername = this.onUsername.bind(this);
         this.onPassword = this.onPassword.bind(this);
@@ -31,7 +32,7 @@ class SigninBox extends React.Component {
     onSubmitForm() {
         let username = this.state.username;
         let password = this.state.password;
-        this.setState({ username: '', password: '' });
+        this.setState({ username: "", password: "" });
         if (username.length > 0 && password.length > 0) {
             CryptoHelper.hashComputation(password).then((hash) => {
                 this.props.dispatch(AuthRx.authUser({ email: username, password: hash }));
@@ -39,6 +40,7 @@ class SigninBox extends React.Component {
         }
         else {
             console.error("Require fields is missing!");
+            this.props.onError("Require fields is missing!");
         }
     }
     render() {

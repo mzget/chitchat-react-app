@@ -6,18 +6,22 @@ import * as CryptoHelper from '../../chats/utils/CryptoHelper';
 import * as ValidateUtils from '../../utils/ValidationUtils';
 import * as AuthRx from '../../redux/authen/authRx';
 
-interface IComponentNameProps { };
+interface IComponentNameProps {
+    onError: (error: string) => void;
+    dispatch;
+};
 
 interface IComponentNameState {
     username: string;
     password: string;
 };
 
-class SigninBox extends React.Component<any, IComponentNameState> {
+class SigninBox extends React.Component<IComponentNameProps, IComponentNameState> {
     componentWillMount() {
         this.state = {
-            username: '', password: ''
-        }
+            username: "",
+            password: ""
+        };
 
         this.onUsername = this.onUsername.bind(this);
         this.onPassword = this.onPassword.bind(this);
@@ -35,15 +39,16 @@ class SigninBox extends React.Component<any, IComponentNameState> {
         let username = this.state.username;
         let password = this.state.password;
 
-        this.setState({ username: '', password: '' });
+        this.setState({ username: "", password: "" });
 
         if (username.length > 0 && password.length > 0) {
             CryptoHelper.hashComputation(password).then((hash: string) => {
                 this.props.dispatch(AuthRx.authUser({ email: username, password: hash }));
-            })
+            });
         }
         else {
             console.error("Require fields is missing!");
+            this.props.onError("Require fields is missing!");
         }
     }
 

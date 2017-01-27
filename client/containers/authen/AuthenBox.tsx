@@ -8,17 +8,19 @@ import SignupBox from "./SignupBox";
 import * as AuthRx from '../../redux/authen/authRx';
 
 interface IComponentNameProps {
+    onError: (error: string) => void;
+    dispatch;
 };
 
 interface IComponentNameState {
     showSignin: boolean;
 };
 
-class AuthenBox extends React.Component<any, IComponentNameState> {
+class AuthenBox extends React.Component<IComponentNameProps, IComponentNameState> {
     componentWillMount() {
         this.state = {
             showSignin: true
-        }
+        };
 
         this.onSignupPressed = this.onSignupPressed.bind(this);
         this.onSigninPressed = this.onSigninPressed.bind(this);
@@ -27,7 +29,7 @@ class AuthenBox extends React.Component<any, IComponentNameState> {
     componentWillReceiveProps(nextProps) {
         let { authReducer } = nextProps;
 
-        if (authReducer.state == AuthRx.SIGN_UP_SUCCESS) {
+        if (authReducer.state === AuthRx.SIGN_UP_SUCCESS) {
             this.setState({ showSignin: true });
         }
     }
@@ -45,7 +47,7 @@ class AuthenBox extends React.Component<any, IComponentNameState> {
                 <Flex flexColumn>
                     {
                         (this.state.showSignin) ?
-                            <SigninBox {...this.props} /> : <SignupBox {...this.props} />
+                            <SigninBox dispatch={this.props.dispatch} onError={this.props.onError} /> : <SignupBox {...this.props} />
                     }
                     {
                         (this.state.showSignin) ?
