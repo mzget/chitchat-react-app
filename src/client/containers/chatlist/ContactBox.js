@@ -8,7 +8,7 @@ const MemberList_1 = require("./MemberList");
 ;
 class ContactBox extends React.Component {
     componentWillMount() {
-        console.log("ChatList", this.props);
+        console.log("ContactBox", this.props);
         this.onselectMember = this.onselectMember.bind(this);
         this.props.dispatch(teamRx.getTeamMembers(this.props.teamReducer.team._id));
     }

@@ -149,18 +149,16 @@ export function getTeamMembersEpic(action$) {
                 "Content-Type": "application/json",
                 "x-access-token": Store.getState().authReducer.token
             }
-        })
-            .map((x) => {
-                let res = x.xhr.response;
-                let results = res.result as Array<ChitChatUser>;
-                let user_id = Store.getState().userReducer.user._id;
-                let members = new Array<ChitChatUser>();
-                Rx.Observable.from(results)
-                    .filter((x, i) => x._id !== user_id)
-                    .subscribe(x => members.push(x));
-                return members;
-            })
-            .map(members => getTeamMembersSuccess(members))
+        }).map((x) => {
+            let res = x.xhr.response;
+            let results = res.result as Array<ChitChatUser>;
+            let user_id = Store.getState().userReducer.user._id;
+            let members = new Array<ChitChatUser>();
+            Rx.Observable.from(results)
+                .filter((x, i) => x._id !== user_id)
+                .subscribe(x => members.push(x));
+            return members;
+        }).map(members => getTeamMembersSuccess(members))
             .takeUntil(action$.ofType(GET_TEAM_MEMBERS_CANCELLED))
             .catch(error => Rx.Observable.of(getTeamMembersFailure(error.xhr.response)))
             .do(x => {
