@@ -49,7 +49,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
         this.state = {
             messages: new Array(),
-            typingText: '',
+            typingText: "",
             isLoadingEarlierMessages: false,
             earlyMessageReady: false,
             openButtomMenu: false,
@@ -198,7 +198,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             return this.props.dispatch(chatRoomActions.leaveRoom());
         }
 
-        //@ todo
+        // todo
         // - Init chatroom service.
         // - getPersistedMessage.
         // - Request join room.

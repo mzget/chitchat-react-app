@@ -50,6 +50,15 @@ exports.emptyState = () => ({ type: exports.CHATROOM_REDUCER_EMPTY_STATE });
 function initChatRoom(currentRoom) {
     if (!currentRoom)
         throw new Error("Empty roomInfo");
+    let room_name = currentRoom.name;
+    if (!room_name && currentRoom.type === ChatDataModels_1.RoomType.privateChat) {
+        currentRoom.members.some((v, id, arr) => {
+            if (v._id !== configureStore_1.default.getState().userReducer.user._id) {
+                currentRoom.name = v.username;
+                return true;
+            }
+        });
+    }
     let chatroomComp = chatRoomComponent_1.default.getInstance();
     chatroomComp.setRoomId(currentRoom._id);
     BackendFactory_1.default.getInstance().dataListener.addChatListenerImp(chatroomComp);
