@@ -28,7 +28,7 @@ interface IComponentProps {
     title: string;
     menus?: string[];
     onSelectedMenuItem?: (id, value) => void;
-    onBackPressed: () => void;
+    onBackPressed?: () => void;
 }
 
 interface IComponentState {

@@ -13,9 +13,29 @@ const CreateGroupForm_1 = require("./CreateGroupForm");
 ;
 ;
 class CreateGroupBox extends React.Component {
+    componentWillMount() {
+        this.state = {
+            groupImage: "",
+            groupName: "",
+            groupDescription: ""
+        };
+        this.onSubmitGroup = this.onSubmitGroup.bind(this);
+    }
+    onSubmitGroup() {
+        console.log("submit group", this.state);
+        if (this.state.groupName.length > 0) {
+        }
+        else {
+            this.props.onError("Missing some require field");
+        }
+    }
     render() {
         return (React.createElement("div", null,
-            React.createElement(CreateGroupForm_1.CreateGroupForm, __assign({}, this.props))));
+            React.createElement(CreateGroupForm_1.CreateGroupForm, { image: this.state.groupImage, group_name: this.state.groupName, onGroupNameChange: (e, text) => {
+                    this.setState(previous => (__assign({}, previous, { groupName: text })));
+                }, group_description: this.state.groupDescription, onGroupDescriptionChange: (e, text) => {
+                    this.setState(previous => (__assign({}, previous, { groupDescription: text })));
+                }, onSubmit: this.onSubmitGroup })));
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });

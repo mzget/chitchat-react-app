@@ -13,18 +13,24 @@ const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const AdminBox_1 = require("./admins/AdminBox");
 const CreateGroupBox_1 = require("./group/CreateGroupBox");
+const DialogBox_1 = require("../components/DialogBox");
 ;
 class Admin extends React.Component {
     constructor() {
         super(...arguments);
+        this.alertTitle = "";
+        this.alertMessage = "";
         this.menus = ["create-org-group", "create-projectbase-group", "create-group"];
     }
     componentWillMount() {
         this.state = {
-            isCreateGroup: false
+            isCreateGroup: false,
+            alert: false,
         };
         this.onBackPressed = this.onBackPressed.bind(this);
         this.onAdminMenuSelected = this.onAdminMenuSelected.bind(this);
+        this.onAlert = this.onAlert.bind(this);
+        this.closeAlert = this.closeAlert.bind(this);
     }
     onAdminMenuSelected(key) {
         console.log('onAdminMenuSelected', key);
@@ -41,6 +47,16 @@ class Admin extends React.Component {
             this.props.router.goBack();
         }
     }
+    closeAlert() {
+        this.alertTitle = "";
+        this.alertMessage = "";
+        this.setState(prevState => (__assign({}, prevState, { alert: false })));
+    }
+    onAlert(error) {
+        this.alertTitle = "Alert!";
+        this.alertMessage = error;
+        this.setState(previous => (__assign({}, previous, { alert: true })));
+    }
     render() {
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement("div", null,
@@ -48,7 +64,8 @@ class Admin extends React.Component {
                 (!this.state.isCreateGroup) ?
                     React.createElement(AdminBox_1.default, { itemName: this.menus, onSelectItem: this.onAdminMenuSelected })
                     :
-                        React.createElement(CreateGroupBox_1.default, __assign({}, this.props)))));
+                        React.createElement(CreateGroupBox_1.default, __assign({}, this.props, { onError: this.onAlert })),
+                React.createElement(DialogBox_1.DialogBox, { title: this.alertTitle, message: this.alertMessage, open: this.state.alert, handleClose: this.closeAlert }))));
     }
 }
 const mapstateToProps = (state) => {
