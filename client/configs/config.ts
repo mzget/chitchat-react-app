@@ -2,7 +2,20 @@ const api_master = "http://git.animation-genius.com:9000";
 const api_dev = "http://localhost:9000";
 
 
-interface IConfigFile {
+
+type IApi = {
+    apiKey: string;
+    host: string;
+    api: string;
+    auth: string;
+    user: string;
+    team: string;
+    group: string;
+    orgChart: string;
+    chatroom: string;
+    fileUpload: string;
+}
+type IConfigFile = {
     Stalk: {
         chat: string,
         port: string,
@@ -16,18 +29,6 @@ interface IConfigFile {
     api: IApi;
 }
 
-interface IApi {
-    apiKey: string;
-    host: string;
-    api: string;
-    auth: string;
-    user: string;
-    team: string;
-    group: string;
-    chatroom: string;
-    fileUpload: string;
-}
-
 const rest_api = (host) => ({
     apiKey: "chitchat1234",
     host: `${host}`,
@@ -36,6 +37,7 @@ const rest_api = (host) => ({
     user: `${host}/api/users`,
     team: `${host}/api/team`,
     group: `${host}/api/group`,
+    orgChart: `${host}/api/orgChart`,
     chatroom: `${host}/api/chatroom`,
     fileUpload: `${host}/chats/upload`
 }) as IApi;

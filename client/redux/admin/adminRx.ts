@@ -17,10 +17,16 @@ export const createNewOrgChartFailure = createAction(CREATE_NEW_ORG_CHART_FAILUR
 export const createNewOrgChartCancelled = createAction(CREATE_NEW_ORG_CHART_CANCELLED);
 export const createNewOrgChartEpic = action$ =>
     action$.ofType(CREATE_NEW_ORG_CHART)
-        .mergeMap(action =>
-            ajax.getJSON(`${config.api.user}/?username=${action.payload}`, { 'x-access-token': Store.getState().authReducer.token })
-                .map(createNewOrgChartSuccess)
-                .takeUntil(action$.ofType(CREATE_NEW_ORG_CHART_CANCELLED))
-                .catch(error => Rx.Observable.of(createNewOrgChartFailure(error.xhr.response)))
+        .mergeMap(action => ajax({
+            method: "POST",
+            url: `${config.api.orgChart}/create`,
+            body: JSON.stringify({ chart: action.payload }),
+            headers: {
+                "Content-Type": "application/json",
+                "x-access-token": Store.getState().authReducer.token
+            }
+        }).map(result => createNewOrgChartSuccess(result.response.result))
+            .takeUntil(action$.ofType(CREATE_NEW_ORG_CHART_CANCELLED))
+            .catch(error => Rx.Observable.of(createNewOrgChartFailure(error.xhr.response)))
         );
 

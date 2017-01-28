@@ -73,6 +73,7 @@
     <Content Include="public\favicon.ico" />
     <TypeScriptCompile Include="client\containers\Main.tsx" />
     <TypeScriptCompile Include="client\libs\chitchat\dataAccessLayer\AppSessionToken.ts" />
+    <TypeScriptCompile Include="client\redux\admin\adminRx.ts" />
     <TypeScriptCompile Include="client\redux\app\persistentDataActions.ts" />
     <TypeScriptCompile Include="client\redux\authen\authRx.ts" />
     <TypeScriptCompile Include="client\redux\group\groupRx.ts" />
@@ -351,6 +352,7 @@
     <Folder Include="client\libs\stalk" />
     <Folder Include="client\libs\stalk\utils" />
     <Folder Include="client\redux" />
+    <Folder Include="client\redux\admin\" />
     <Folder Include="client\redux\chatlogs" />
     <Folder Include="client\redux\chatroom" />
     <Folder Include="client\redux\device" />

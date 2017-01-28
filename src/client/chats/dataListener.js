@@ -31,13 +31,15 @@ class DataListener {
         this.roomAccessListenerImps.splice(id, 1);
     }
     onAccessRoom(dataEvent) {
-        console.info('onAccessRoom: ', dataEvent);
-        let data = dataEvent[0];
-        this.dataManager.setRoomAccessForUser(data);
-        if (!!this.roomAccessListenerImps) {
-            this.roomAccessListenerImps.map(value => {
-                value.onAccessRoom(data);
-            });
+        console.info('DataListener.onAccessRoom: ', dataEvent);
+        if (Array.isArray(dataEvent) && dataEvent.length > 0) {
+            let data = dataEvent[0];
+            this.dataManager.setRoomAccessForUser(data);
+            if (!!this.roomAccessListenerImps) {
+                this.roomAccessListenerImps.map(value => {
+                    value.onAccessRoom(data);
+                });
+            }
         }
     }
     onUpdatedLastAccessTime(dataEvent) {

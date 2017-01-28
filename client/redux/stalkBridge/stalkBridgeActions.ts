@@ -137,21 +137,21 @@ export function stalkLogin(user: any) {
 const GET_LAST_ACCESS_ROOM_SUCCESS = "GET_LAST_ACCESS_ROOM_SUCCESS";
 const GET_LAST_ACCESS_ROOM_FAILURE = "GET_LAST_ACCESS_ROOM_FAILURE";
 const getLastAccessRoomSuccess = (payload) => ({ type: GET_LAST_ACCESS_ROOM_SUCCESS, payload });
-const getLastAccessRoomFailure = (err) => ({ type: GET_LAST_ACCESS_ROOM_FAILURE, payload: err });
+const getLastAccessRoomFailure = (error) => ({ type: GET_LAST_ACCESS_ROOM_FAILURE, payload: error });
 export function getLastAccessRoom() {
     return dispatch => {
         let token = Store.getState().authReducer.token;
 
         ServiceProvider.getLastAccessRoomInfo(token)
             .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    dispatch(getLastAccessRoomSuccess(result.result));
+            .then(json => {
+                if (json.success) {
+                    dispatch(getLastAccessRoomSuccess(json.result));
 
-                    BackendFactory.getInstance().dataListener.onAccessRoom(result.result);
+                    BackendFactory.getInstance().dataListener.onAccessRoom(json.result);
                 }
                 else {
-                    dispatch(getLastAccessRoomFailure(result.message));
+                    dispatch(getLastAccessRoomFailure(json.message));
                 }
             }).catch(err => {
                 dispatch(getLastAccessRoomFailure(err));

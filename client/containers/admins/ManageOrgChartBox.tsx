@@ -15,6 +15,8 @@ interface IComponentNameProps {
 
 interface IComponentNameState {
     dropdownValue: number;
+    chart_name: string;
+    chart_description: string;
 };
 
 export class ManageOrgChartBox extends React.Component<IComponentNameProps, IComponentNameState> {
@@ -27,20 +29,22 @@ export class ManageOrgChartBox extends React.Component<IComponentNameProps, ICom
         this.orgLevels = [OrgLevel[OrgLevel.department], OrgLevel[OrgLevel.division], OrgLevel[OrgLevel.section], OrgLevel[OrgLevel.unit]];
 
         this.state = {
-            dropdownValue : 0
+            dropdownValue: 0,
+            chart_name: "",
+            chart_description: ""
         };
 
         this.onSubmit = this.onSubmit.bind(this);
     }
 
     onSubmit() {
-        console.log(this.orgChart, this.orgLevels[this.state.dropdownValue]);
-
         const {teamReducer} = this.props;
 
-        if (this.orgChart.chart_name.length > 0) {
+        if (this.state.chart_name.length > 0) {
             this.orgChart.chart_level = this.state.dropdownValue;
             this.orgChart.team_id = teamReducer.team._id;
+            this.orgChart.chart_name = this.state.chart_name;
+            this.orgChart.chart_description = this.state.chart_description;
 
             this.props.dispatch(adminRx.createNewOrgChart(this.orgChart));
         }
@@ -53,10 +57,10 @@ export class ManageOrgChartBox extends React.Component<IComponentNameProps, ICom
         return (
             <div>
                 <CreateOrgChartForm
-                    orgChartName={this.orgChart.chart_name}
-                    orgChart_description={this.orgChart.chart_description}
-                    onOrgChartNameChange={(e, text) => { this.orgChart.chart_name = text }}
-                    onOrgChartDescriptionChange={(e, text) => { this.orgChart.chart_description = text }}
+                    orgChartName={this.state.chart_name}
+                    orgChart_description={this.state.chart_description}
+                    onOrgChartNameChange={(e, text) => { this.setState(previous => ({ ...previous, chart_name: text })) }}
+                    onOrgChartDescriptionChange={(e, text) => { this.setState(previous => ({ ...previous, chart_description: text })) }}
 
                     dropdownItems={this.orgLevels}
                     dropdownValue={this.state.dropdownValue}

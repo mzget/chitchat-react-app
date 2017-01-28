@@ -43,15 +43,18 @@ export default class DataListener implements absSpartan.IServerListener, absSpar
     }
 
     onAccessRoom(dataEvent) {
-        console.info('onAccessRoom: ', dataEvent);
-        let data = dataEvent[0];
+        console.info('DataListener.onAccessRoom: ', dataEvent);
 
-        this.dataManager.setRoomAccessForUser(data);
+        if (Array.isArray(dataEvent) && dataEvent.length > 0) {
+            let data = dataEvent[0];
 
-        if (!!this.roomAccessListenerImps) {
-            this.roomAccessListenerImps.map(value => {
-                value.onAccessRoom(data);
-            });
+            this.dataManager.setRoomAccessForUser(data);
+
+            if (!!this.roomAccessListenerImps) {
+                this.roomAccessListenerImps.map(value => {
+                    value.onAccessRoom(data);
+                });
+            }
         }
     }
 
