@@ -55,7 +55,7 @@ class ManageOrgChartBox extends React.Component {
     }
     render() {
         return (React.createElement("div", null,
-            React.createElement(OrgChartListView_1.OrgChartListView, { items: null }),
+            React.createElement(OrgChartListView_1.OrgChartListView, { items: this.props.adminReducer.orgCharts }),
             React.createElement(CreateOrgChartForm_1.CreateOrgChartForm, { orgChartName: this.state.chart_name, orgChart_description: this.state.chart_description, onOrgChartNameChange: (e, text) => { this.setState(previous => (__assign({}, previous, { chart_name: text }))); }, onOrgChartDescriptionChange: (e, text) => { this.setState(previous => (__assign({}, previous, { chart_description: text }))); }, dropdownItems: this.orgLevels, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => { this.setState(previous => (__assign({}, previous, { dropdownValue: value }))); }, onSubmit: this.onSubmit })));
     }
 }

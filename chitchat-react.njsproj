@@ -19,7 +19,6 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
-    <Content Include="client\components\AlertBox.tsx" />
     <Content Include="client\components\AvartarSimple.tsx" />
     <Content Include="client\components\BadgeSimple.tsx" />
     <Content Include="client\components\CardImageWithAvatar.tsx" />
@@ -99,7 +98,6 @@
     <TypeScriptCompile Include="client\chats\pushDataListener.ts" />
     <TypeScriptCompile Include="client\configs\config.ts" />
     <TypeScriptCompile Include="client\consts\AlertMsg.ts" />
-    <TypeScriptCompile Include="client\consts\FileType.ts" />
     <TypeScriptCompile Include="client\consts\StickerPath.ts" />
     <TypeScriptCompile Include="client\redux\configureStore.ts" />
     <TypeScriptCompile Include="client\redux\rootReducer.ts" />

@@ -16,6 +16,7 @@ abstract class IComponentNameProps implements IComponentProps {
     dispatch;
     routing;
     authReducer;
+    adminReducer;
     userReducer;
     chatroomReducer;
     chatlogReducer;
@@ -77,7 +78,7 @@ export class ManageOrgChartBox extends React.Component<IComponentNameProps, ICom
     public render(): JSX.Element {
         return (
             <div>
-                <OrgChartListView items={null} />
+                <OrgChartListView items={this.props.adminReducer.orgCharts} />
                 <CreateOrgChartForm
                     orgChartName={this.state.chart_name}
                     orgChart_description={this.state.chart_description}

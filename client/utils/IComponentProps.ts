@@ -13,6 +13,7 @@ export interface IComponentProps {
     router: Router.InjectedRouter;
     dispatch;
     routing;
+    adminReducer;
     authReducer;
     userReducer;
     chatroomReducer;
