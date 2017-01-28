@@ -11,12 +11,11 @@ import Avatar from 'material-ui/Avatar';
 
 import BadgeSimple from "../../components/BadgeSimple";
 
-import { ChitChatUser } from "../../../server/scripts/models/User";
-type Member = ChitChatUser;
+import { ChitChatAccount } from "../../../server/scripts/models/User";
 
 interface IComponentProps {
-    value: Array<Member>;
-    onSelected: (item: Member) => void;
+    value: Array<ChitChatAccount>;
+    onSelected: (item: ChitChatAccount) => void;
 }
 
 const renderList = (props: IComponentProps) => (props.value.map((item, i) => {

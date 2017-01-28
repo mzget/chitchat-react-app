@@ -18,6 +18,7 @@ import { routerReducer } from "react-router-redux";
 import { deviceReducer, DeviceInitialState } from "./device/deviceReducer";
 import { teamReducer, TeamInitState } from "./team/teamRx";
 import { UserInitState, userReducer } from "./user/userRx";
+import { AdminInitState, adminReducer } from "./admin/adminReducer";
 import { AuthenInitState, authReducer, LOG_OUT_SUCCESS } from "./authen/authRx";
 import { GroupInitState, groupReducer } from "./group/groupRx";
 import { stalkReducer, StalkInitState } from "./stalkBridge/stalkReducer";
@@ -39,7 +40,8 @@ const appReducer = combineReducers({
     stalkReducer,
     chatroomReducer,
     chatlogReducer,
-    userReducer
+    userReducer,
+    adminReducer,
 });
 
 /*
@@ -56,7 +58,8 @@ export function getInitialState() {
         stalkReducer: new StalkInitState(),
         chatroomReducer: new ChatRoomInitState(),
         chatlogReducer: new ChatLogInitState(),
-        userReducer: new UserInitState()
+        userReducer: new UserInitState(),
+        adminReducer: new AdminInitState(),
     };
     return _initState;
 }

@@ -190,15 +190,15 @@ class ChatsLogComponent {
         let token = configureStore_1.default.getState().authReducer.token;
         ServiceProvider.getRoomInfo(room_id, token)
             .then(response => response.json())
-            .then(function (res) {
-            console.log("getRoomInfo result", res);
-            if (res.success) {
-                let roomInfos = JSON.parse(JSON.stringify(res.result));
+            .then(function (json) {
+            console.log("getRoomInfo result", json);
+            if (json.success) {
+                let roomInfos = JSON.parse(JSON.stringify(json.result));
                 let room = self.decorateRoomInfoData(roomInfos[0]);
                 callback(null, room);
             }
             else {
-                callback(res.message, null);
+                callback(json.message, null);
             }
         }).catch(err => {
             console.warn("getRoomInfo fail: ", err);

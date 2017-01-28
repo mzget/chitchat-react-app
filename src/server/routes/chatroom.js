@@ -119,7 +119,7 @@ router.get("/roomInfo", (req, res, next) => {
     req.checkQuery("room_id", "request for room_id").isMongoId();
     let errors = req.validationErrors();
     if (errors) {
-        return res.status(500).json({ success: false, message: errors });
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
     }
     let room_id = req.query.room_id;
     let user_id = req["decoded"]._id;

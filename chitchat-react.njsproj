@@ -38,7 +38,7 @@
     <Content Include="client\components\SimpleToolbar.tsx" />
     <Content Include="client\components\AppBar.tsx" />
     <Content Include="client\containers\Admin.tsx" />
-    <Content Include="client\containers\admins\AdminBox.tsx" />
+    <Content Include="client\containers\admins\AdminMenu.tsx" />
     <Content Include="client\containers\admins\CreateGroupBox.tsx" />
     <Content Include="client\containers\admins\CreateGroupForm.tsx" />
     <Content Include="client\containers\admins\ManageOrgChartBox.tsx" />
@@ -49,7 +49,7 @@
     <Content Include="client\containers\authen\SignupBox.tsx" />
     <Content Include="client\containers\Chat.tsx" />
     <Content Include="client\containers\ChatBox.tsx" />
-    <Content Include="client\containers\chatlist\ChatListBox.tsx" />
+    <Content Include="client\containers\chatlist\ContactBox.tsx" />
     <Content Include="client\containers\ChatLogsBox.tsx" />
     <Content Include="client\containers\group\GroupList.tsx" />
     <Content Include="client\containers\group\OrgGroupListBox.tsx" />
@@ -71,8 +71,10 @@
     <Content Include="README.md" />
     <Content Include="public\index.html" />
     <Content Include="public\favicon.ico" />
+    <TypeScriptCompile Include="client\containers\admins\OrgChartListView.tsx" />
     <TypeScriptCompile Include="client\containers\Main.tsx" />
     <TypeScriptCompile Include="client\libs\chitchat\dataAccessLayer\AppSessionToken.ts" />
+    <TypeScriptCompile Include="client\redux\admin\adminReducer.ts" />
     <TypeScriptCompile Include="client\redux\admin\adminRx.ts" />
     <TypeScriptCompile Include="client\redux\app\persistentDataActions.ts" />
     <TypeScriptCompile Include="client\redux\authen\authRx.ts" />

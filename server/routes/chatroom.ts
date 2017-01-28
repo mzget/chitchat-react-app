@@ -135,11 +135,11 @@ router.get("/roomInfo", (req, res, next) => {
 
     let errors = req.validationErrors();
     if (errors) {
-        return res.status(500).json({ success: false, message: errors });
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
     }
 
-    let room_id = req.query.room_id;
-    let user_id = req["decoded"]._id;
+    let room_id = req.query.room_id as string;
+    let user_id = req["decoded"]._id as string;
 
     RoomService.checkedCanAccessRoom(room_id, user_id, function (err, result) {
         if (err || result === false) {

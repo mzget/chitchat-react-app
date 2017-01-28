@@ -10,6 +10,7 @@ import * as adminRx from "./admin/adminRx";
 export const rootEpic = combineEpics(
     // @Admin
     adminRx.createNewOrgChartEpic,
+    adminRx.getOrgChartEpic,
 
     userRx.fetchUserEpic,
     userRx.fetchContactEpic,

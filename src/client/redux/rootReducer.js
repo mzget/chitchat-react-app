@@ -17,6 +17,7 @@ const react_router_redux_1 = require("react-router-redux");
 const deviceReducer_1 = require("./device/deviceReducer");
 const teamRx_1 = require("./team/teamRx");
 const userRx_1 = require("./user/userRx");
+const adminReducer_1 = require("./admin/adminReducer");
 const authRx_1 = require("./authen/authRx");
 const groupRx_1 = require("./group/groupRx");
 const stalkReducer_1 = require("./stalkBridge/stalkReducer");
@@ -37,7 +38,8 @@ const appReducer = redux_1.combineReducers({
     stalkReducer: stalkReducer_1.stalkReducer,
     chatroomReducer: chatroomReducer_1.chatroomReducer,
     chatlogReducer: chatlogReducer_1.chatlogReducer,
-    userReducer: userRx_1.userReducer
+    userReducer: userRx_1.userReducer,
+    adminReducer: adminReducer_1.adminReducer,
 });
 /*
  *
@@ -53,7 +55,8 @@ function getInitialState() {
         stalkReducer: new stalkReducer_1.StalkInitState(),
         chatroomReducer: new chatroomReducer_1.ChatRoomInitState(),
         chatlogReducer: new chatlogReducer_1.ChatLogInitState(),
-        userReducer: new userRx_1.UserInitState()
+        userReducer: new userRx_1.UserInitState(),
+        adminReducer: new adminReducer_1.AdminInitState(),
     };
     return _initState;
 }

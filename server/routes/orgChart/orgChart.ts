@@ -28,4 +28,21 @@ router.post("/create", function (req, res, next) {
     });
 });
 
+router.get("/team/:id", function (req, res, next) {
+    req.checkParams("id", "request for team_id params").isMongoId();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let team_id = req.params.id as string;
+    adminController.getOrgChart(team_id).then(docs => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
+    }).catch(err => {
+        console.error("get org chart  fail!", err);
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
+    });
+});
+
 module.exports = router;

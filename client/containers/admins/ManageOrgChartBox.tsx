@@ -3,14 +3,25 @@ import { connect } from "react-redux";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 import { CreateOrgChartForm } from "./CreateOrgChartForm";
+import { OrgChartListView } from "./OrgChartListView";
 import { IOrgChart, OrgLevel } from "../../../server/scripts/models/OrgChart";
 
 import * as adminRx from "../../redux/admin/adminRx";
 
-interface IComponentNameProps {
+abstract class IComponentNameProps implements IComponentProps {
     onError?: (error: string) => void;
-    dispatch: any;
-    teamReducer: any;
+    location;
+    params;
+    router;
+    dispatch;
+    routing;
+    authReducer;
+    userReducer;
+    chatroomReducer;
+    chatlogReducer;
+    stalkReducer;
+    teamReducer;
+    groupReducer;
 };
 
 interface IComponentNameState {
@@ -37,6 +48,16 @@ export class ManageOrgChartBox extends React.Component<IComponentNameProps, ICom
         this.onSubmit = this.onSubmit.bind(this);
     }
 
+    componentDidMount() {
+        const { teamReducer } = this.props;
+
+        if (!teamReducer.team) {
+            this.props.router.replace("/");
+        }
+
+        this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
+    }
+
     onSubmit() {
         const {teamReducer} = this.props;
 
@@ -56,6 +77,7 @@ export class ManageOrgChartBox extends React.Component<IComponentNameProps, ICom
     public render(): JSX.Element {
         return (
             <div>
+                <OrgChartListView items={null} />
                 <CreateOrgChartForm
                     orgChartName={this.state.chart_name}
                     orgChart_description={this.state.chart_description}

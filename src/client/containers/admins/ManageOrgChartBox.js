@@ -9,8 +9,11 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const CreateOrgChartForm_1 = require("./CreateOrgChartForm");
+const OrgChartListView_1 = require("./OrgChartListView");
 const OrgChart_1 = require("../../../server/scripts/models/OrgChart");
 const adminRx = require("../../redux/admin/adminRx");
+class IComponentNameProps {
+}
 ;
 ;
 class ManageOrgChartBox extends React.Component {
@@ -30,6 +33,13 @@ class ManageOrgChartBox extends React.Component {
         };
         this.onSubmit = this.onSubmit.bind(this);
     }
+    componentDidMount() {
+        const { teamReducer } = this.props;
+        if (!teamReducer.team) {
+            this.props.router.replace("/");
+        }
+        this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
+    }
     onSubmit() {
         const { teamReducer } = this.props;
         if (this.state.chart_name.length > 0) {
@@ -45,6 +55,7 @@ class ManageOrgChartBox extends React.Component {
     }
     render() {
         return (React.createElement("div", null,
+            React.createElement(OrgChartListView_1.OrgChartListView, { items: null }),
             React.createElement(CreateOrgChartForm_1.CreateOrgChartForm, { orgChartName: this.state.chart_name, orgChart_description: this.state.chart_description, onOrgChartNameChange: (e, text) => { this.setState(previous => (__assign({}, previous, { chart_name: text }))); }, onOrgChartDescriptionChange: (e, text) => { this.setState(previous => (__assign({}, previous, { chart_description: text }))); }, dropdownItems: this.orgLevels, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => { this.setState(previous => (__assign({}, previous, { dropdownValue: value }))); }, onSubmit: this.onSubmit })));
     }
 }

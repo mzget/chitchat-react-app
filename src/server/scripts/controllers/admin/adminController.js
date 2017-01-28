@@ -15,9 +15,20 @@ function createOrgChart(chart) {
     return __awaiter(this, void 0, void 0, function* () {
         let db = yield MongoClient.connect(config.chatDB);
         let collection = db.collection(config_1.DbClient.orgChartCollection);
+        yield collection.createIndex({ team_id: 1 }, { background: true });
         let results = yield collection.insertOne(chart);
         db.close();
         return results.ops;
     });
 }
 exports.createOrgChart = createOrgChart;
+function getOrgChart(team_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let db = yield MongoClient.connect(config.chatDB);
+        let collection = db.collection(config_1.DbClient.orgChartCollection);
+        let docs = yield collection.find({ team_id: team_id }).toArray();
+        db.close();
+        return docs;
+    });
+}
+exports.getOrgChart = getOrgChart;
