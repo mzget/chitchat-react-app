@@ -28,6 +28,7 @@ interface IComponentProps {
     title: string;
     menus?: string[];
     onSelectedMenuItem?: (id, value) => void;
+    onBackPressed: () => void;
 }
 
 interface IComponentState {
@@ -45,7 +46,17 @@ class SimpleToolbar extends React.Component<IComponentProps, IComponentState> {
         return (
             <MuiThemeProvider muiTheme={muiTheme}>
                 <Toolbar>
-                    <ToolbarTitle text={this.props.title} />
+                    <ToolbarGroup firstChild={true}>
+                        {
+                            (this.props.onBackPressed) ?
+                                <IconButton iconClassName="material-icons" onClick={this.props.onBackPressed}>
+                                    chevron_left
+                                </IconButton>
+                                :
+                                <span style={{ margin:8 }} />
+                        }
+                        <ToolbarTitle text={this.props.title} />
+                    </ToolbarGroup>
                     {
                         (this.props.menus && this.props.menus.length > 0) ?
                             (

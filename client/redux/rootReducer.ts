@@ -10,6 +10,7 @@
  */
 
 import { combineReducers } from "redux";
+import { routerReducer } from "react-router-redux";
 
 /**
 * ## Reducers
@@ -30,6 +31,7 @@ import { chatlogReducer, ChatLogInitState } from "./chatlogs/chatlogReducer";
  * EVERY TIME there is a basic action
  */
 const appReducer = combineReducers({
+    routing: routerReducer,
     deviceReducer,
     authReducer,
     teamReducer,

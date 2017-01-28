@@ -22,11 +22,10 @@ const getItem = (props: IComponentProps) => {
 const AdminBox = (props: IComponentProps) => (
     <MuiThemeProvider >
         <div>
-            <List>
-                {
-                    (props.itemName && props.itemName.length > 0) ?
-                        getItem(props) : null
-                }
+            <List> {
+                (props.itemName && props.itemName.length > 0) ?
+                    getItem(props) : null
+            }
             </List>
             <Divider />
         </div>

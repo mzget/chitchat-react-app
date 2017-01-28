@@ -10,8 +10,10 @@ const getItem = (props) => {
 };
 const AdminBox = (props) => (React.createElement(MuiThemeProvider_1.default, null,
     React.createElement("div", null,
-        React.createElement(List_1.List, null, (props.itemName && props.itemName.length > 0) ?
-            getItem(props) : null),
+        React.createElement(List_1.List, null,
+            " ",
+            (props.itemName && props.itemName.length > 0) ?
+                getItem(props) : null),
         React.createElement(Divider_1.default, null))));
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = AdminBox;

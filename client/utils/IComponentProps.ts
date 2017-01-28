@@ -1,3 +1,5 @@
+import { Router } from "react-router";
+
 export interface IComponentProps {
     location: {
         query: {
@@ -8,8 +10,9 @@ export interface IComponentProps {
         }
     };
     params;
-    router;
+    router: Router.InjectedRouter;
     dispatch;
+    routing;
     authReducer;
     userReducer;
     chatroomReducer;

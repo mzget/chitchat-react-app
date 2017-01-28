@@ -31,7 +31,12 @@ class SimpleToolbar extends React.Component {
     render() {
         return (React.createElement(MuiThemeProvider_1.default, { muiTheme: muiTheme },
             React.createElement(Toolbar_1.Toolbar, null,
-                React.createElement(Toolbar_1.ToolbarTitle, { text: this.props.title }),
+                React.createElement(Toolbar_1.ToolbarGroup, { firstChild: true },
+                    (this.props.onBackPressed) ?
+                        React.createElement(IconButton_1.default, { iconClassName: "material-icons", onClick: this.props.onBackPressed }, "chevron_left")
+                        :
+                            React.createElement("span", { style: { margin: 8 } }),
+                    React.createElement(Toolbar_1.ToolbarTitle, { text: this.props.title })),
                 (this.props.menus && this.props.menus.length > 0) ?
                     (React.createElement(Toolbar_1.ToolbarGroup, null,
                         React.createElement(Toolbar_1.ToolbarSeparator, null),

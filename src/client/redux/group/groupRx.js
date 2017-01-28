@@ -36,13 +36,11 @@ const createOrgGroup = redux_actions_1.createAction(CREATE_ORG_GROUP, group => g
 const createOrgGroupSuccess = redux_actions_1.createAction(CREATE_ORG_GROUP_SUCCESS, payload => payload);
 const createOrgGroupFailure = redux_actions_1.createAction(CREATE_ORG_GROUP_FAILURE, err => err);
 const createOrgGroupCancelled = redux_actions_1.createAction(CREATE_ORG_GROUP_CANCELLED);
-// export const createOrgGroupEpic = action$ => (
-//     action$.ofType(FETCH_AGENT_BY_ID)
-//         .margeMap(action => ajax.getJSON(`${config.api.user}/agent/${action.payload}`)
-//             .map(fetchAgentByIdSuccess)
-//             .takeUntil(action$.ofType(FETCH_AGENT_BY_ID_CANCELLED))
-//             .catch(error => Rx.Observable.of(fetchAgentByIdFailure(error.xhr.response))))
-// );
+exports.createOrgGroupEpic = action$ => (action$.ofType(CREATE_ORG_GROUP)
+    .margeMap(action => ajax.getJSON(`${config_1.default.api.group}/createOrg/${action.payload}`)
+    .map(createOrgGroupSuccess)
+    .takeUntil(action$.ofType(CREATE_ORG_GROUP_CANCELLED))
+    .catch(error => Rx.Observable.of(createOrgGroupFailure(error.xhr.response)))));
 exports.GroupInitState = immutable_1.Record({
     isFetching: false,
     state: null,

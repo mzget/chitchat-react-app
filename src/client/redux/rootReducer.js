@@ -10,6 +10,7 @@
  */
 "use strict";
 const redux_1 = require("redux");
+const react_router_redux_1 = require("react-router-redux");
 /**
 * ## Reducers
 */
@@ -28,6 +29,7 @@ const chatlogReducer_1 = require("./chatlogs/chatlogReducer");
  * EVERY TIME there is a basic action
  */
 const appReducer = redux_1.combineReducers({
+    routing: react_router_redux_1.routerReducer,
     deviceReducer: deviceReducer_1.deviceReducer,
     authReducer: authRx_1.authReducer,
     teamReducer: teamRx_1.teamReducer,
