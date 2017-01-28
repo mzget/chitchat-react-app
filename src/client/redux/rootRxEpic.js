@@ -5,7 +5,10 @@ const chatroomRxEpic = require("./chatroom/chatroomRxEpic");
 const authRx = require("./authen/authRx");
 const teamRx = require("./team/teamRx");
 const groupRx = require("./group/groupRx");
-exports.rootEpic = redux_observable_1.combineEpics(userRx.fetchUserEpic, userRx.fetchContactEpic, userRx.fetchAgentEpic, 
+const adminRx = require("./admin/adminRx");
+exports.rootEpic = redux_observable_1.combineEpics(
+// @Admin
+adminRx.createNewOrgChartEpic, userRx.fetchUserEpic, userRx.fetchContactEpic, userRx.fetchAgentEpic, 
 ///@ Signup user.
 authRx.signupUserEpic, authRx.authUserEpic, authRx.tokenAuthUserEpic, authRx.logoutUserEpic, 
 ///@Teams

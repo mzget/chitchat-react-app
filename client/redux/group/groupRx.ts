@@ -1,7 +1,7 @@
 import config from "../../configs/config";
 import { Record } from "immutable";
 import { createAction } from "redux-actions";
-import * as Rx from "rxjs/Rx";
+import * as Rx from "@reactivex/rxjs";
 const { ajax } = Rx.Observable;
 
 import Store from "../configureStore";

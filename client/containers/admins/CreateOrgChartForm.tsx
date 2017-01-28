@@ -3,7 +3,7 @@ import { Flex, Box } from 'reflexbox';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import * as Colors from 'material-ui/styles/colors';
 import { RaisedButton, TextField } from 'material-ui';
-import DropDownMenu from 'material-ui/DropDownMenu';
+import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
 const styles = {
@@ -38,13 +38,17 @@ const SubmitButton = (props: IComponentProps) => (
 );
 
 const ChartLevel = (props: IComponentProps) => (
-    <DropDownMenu value={props.dropdownValue} onChange={props.dropdownChange} autoWidth={false} style={styles.customWidth}>
+    <SelectField
+        floatingLabelText="Org Level"
+        value={props.dropdownValue}
+        onChange={props.dropdownChange}
+    >
         {
             (props.dropdownItems.length > 0) ?
                 props.dropdownItems.map((value, id) =>
                     <MenuItem key={id} value={id} primaryText={value} />) : null
         }
-    </DropDownMenu>
+    </SelectField>
 );
 
 export const CreateOrgChartForm = (props: IComponentProps) => (
@@ -66,7 +70,7 @@ export const CreateOrgChartForm = (props: IComponentProps) => (
             <TextField
                 hintText="Description"
                 value={props.orgChart_description}
-                onChange={props.onOrgChartNameChange}
+                onChange={props.onOrgChartDescriptionChange}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter') props.onSubmit();
                 }} />

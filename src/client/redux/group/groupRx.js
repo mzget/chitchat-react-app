@@ -2,7 +2,7 @@
 const config_1 = require("../../configs/config");
 const immutable_1 = require("immutable");
 const redux_actions_1 = require("redux-actions");
-const Rx = require("rxjs/Rx");
+const Rx = require("@reactivex/rxjs");
 const { ajax } = Rx.Observable;
 const configureStore_1 = require("../configureStore");
 const BackendFactory_1 = require("../../chats/BackendFactory");

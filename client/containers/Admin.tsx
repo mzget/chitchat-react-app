@@ -7,8 +7,8 @@ import Subheader from 'material-ui/Subheader';
 import { IComponentProps } from "../utils/IComponentProps";
 
 import SimpleToolbar from '../components/SimpleToolbar';
-import AdminBox from './admins/AdminBox';
-import ManageOrgChartBox from "./admins/ManageOrgChartBox";
+import { AdminMenu } from './admins/AdminMenu';
+import { ManageOrgChartBox } from "./admins/ManageOrgChartBox";
 import CreateGroupBox from "./admins/CreateGroupBox";
 import { DialogBox } from "../components/DialogBox";
  
@@ -85,7 +85,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             case BoxState.isCreateGroup:
                 return <CreateGroupBox {...this.props} onError={this.onAlert} />
             default:
-                return <AdminBox itemName={this.menus} onSelectItem={this.onAdminMenuSelected} />;
+                return <AdminMenu itemName={this.menus} onSelectItem={this.onAdminMenuSelected} />;
         }
     }
 

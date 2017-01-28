@@ -13,4 +13,5 @@ export interface IOrgChart {
     chart_description: string;
     chart_manager_id: string;
     report_to_id: string;
+    team_id: string;
 }

@@ -12,7 +12,7 @@ const reflexbox_1 = require("reflexbox");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const Colors = require("material-ui/styles/colors");
 const material_ui_1 = require("material-ui");
-const DropDownMenu_1 = require("material-ui/DropDownMenu");
+const SelectField_1 = require("material-ui/SelectField");
 const MenuItem_1 = require("material-ui/MenuItem");
 const styles = {
     span: {
@@ -28,7 +28,7 @@ const styles = {
     }
 };
 const SubmitButton = (props) => (React.createElement(material_ui_1.RaisedButton, { primary: true, label: "submit", onClick: props.onSubmit }));
-const ChartLevel = (props) => (React.createElement(DropDownMenu_1.default, { value: props.dropdownValue, onChange: props.dropdownChange, autoWidth: false, style: styles.customWidth }, (props.dropdownItems.length > 0) ?
+const ChartLevel = (props) => (React.createElement(SelectField_1.default, { floatingLabelText: "Org Level", value: props.dropdownValue, onChange: props.dropdownChange }, (props.dropdownItems.length > 0) ?
     props.dropdownItems.map((value, id) => React.createElement(MenuItem_1.default, { key: id, value: id, primaryText: value })) : null));
 exports.CreateOrgChartForm = (props) => (React.createElement(MuiThemeProvider_1.default, null,
     React.createElement(reflexbox_1.Flex, { style: { backgroundColor: Colors.indigo50 }, flexColumn: true, align: 'center' },
@@ -40,7 +40,7 @@ exports.CreateOrgChartForm = (props) => (React.createElement(MuiThemeProvider_1.
                     props.onSubmit();
             } }),
         React.createElement("span", { style: styles.span }),
-        React.createElement(material_ui_1.TextField, { hintText: "Description", value: props.orgChart_description, onChange: props.onOrgChartNameChange, onKeyDown: (e) => {
+        React.createElement(material_ui_1.TextField, { hintText: "Description", value: props.orgChart_description, onChange: props.onOrgChartDescriptionChange, onKeyDown: (e) => {
                 if (e.key === 'Enter')
                     props.onSubmit();
             } }),

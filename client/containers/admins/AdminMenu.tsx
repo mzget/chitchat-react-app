@@ -19,7 +19,7 @@ const getItem = (props: IComponentProps) => {
     );
 };
 
-const AdminBox = (props: IComponentProps) => (
+export const AdminMenu = (props: IComponentProps) => (
     <MuiThemeProvider >
         <div>
             <List> {
@@ -31,5 +31,3 @@ const AdminBox = (props: IComponentProps) => (
         </div>
     </MuiThemeProvider >
 );
-
-export default AdminBox;

@@ -5,8 +5,12 @@ import * as chatroomRxEpic from "./chatroom/chatroomRxEpic";
 import * as authRx from "./authen/authRx";
 import * as teamRx from "./team/teamRx";
 import * as groupRx from "./group/groupRx";
+import * as adminRx from "./admin/adminRx";
 
 export const rootEpic = combineEpics(
+    // @Admin
+    adminRx.createNewOrgChartEpic,
+
     userRx.fetchUserEpic,
     userRx.fetchContactEpic,
     userRx.fetchAgentEpic,
