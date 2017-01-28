@@ -1,5 +1,4 @@
-﻿import RoomAccessData from './RoomAccessData';
-import UserRole from './UserRole';
+﻿import UserRole from './UserRole';
 import JobLevel from './JobLevel';
 
 interface IUser {
@@ -19,7 +18,7 @@ export interface IOnlineUser {
     [uid: string]: OnlineUser;
 };
 
-export class ChitChatUser {
+export class ChitChatAccount {
     _id: string;
     displayname: string;
     username: string;

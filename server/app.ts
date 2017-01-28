@@ -29,6 +29,7 @@ const authen = require('./routes/authen');
 const team = require('./routes/team');
 const chatroom = require('./routes/chatroom');
 const group = require('./routes/group/group');
+const orgChart = require("./routes/orgChart/orgChart");
 const chat_upload = require('./routes/upload/uploadFile');
 
 const stalk_user = require("./routes/stalk/user");
@@ -91,6 +92,7 @@ app.use('/api/auth', authen);
 app.use('/api/users', users);
 app.use('/api/team', team);
 app.use('/api/group', group);
+app.use("/api/orgChart", orgChart);
 app.use("/api/chatroom", chatroom);
 app.use("/chats/upload", chat_upload);
 

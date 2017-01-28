@@ -10,7 +10,7 @@ const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 
 
-import { ChitChatUser } from '../scripts/models/User';
+import { ChitChatAccount } from '../scripts/models/User';
 import { getConfig, DbClient } from '../config';
 const config = getConfig();
 
@@ -117,7 +117,7 @@ router.post('/signup', function (req: express.Request, res: express.Response, ne
 
     let user = req.body.user;
 
-    let userModel = new ChitChatUser();
+    let userModel = new ChitChatAccount();
     userModel.displayname = user.username;
     userModel.username = user.email;
     userModel.email = user.email;
@@ -175,7 +175,7 @@ router.get('/teams', (req, res, next) => {
         return user[0];
     }
 
-    findUserTeams().then((user: ChitChatUser) =>
+    findUserTeams().then((user: ChitChatAccount) =>
         TeamController.findTeamsInfo(user.teams)
     ).then(teams => {
         res.status(200).json(new apiUtils.ApiResponse(true, null, teams));
@@ -184,7 +184,7 @@ router.get('/teams', (req, res, next) => {
     });
 });
 
-var addGroupMember = function (roomId: string, user: ChitChatUser, done: () => void) {
+var addGroupMember = function (roomId: string, user: ChitChatAccount, done: () => void) {
     var promise = new Promise(function (resolve, reject) {
         MongoClient.connect(config.chatDB, function (err, db) {
             if (err) {

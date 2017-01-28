@@ -12,7 +12,7 @@ import jwt = require('jsonwebtoken');
 import { getConfig, DbClient } from '../config';
 import { ApiStatus, ApiResponse } from "../scripts/utils/apiUtils";
 
-import { ChitChatUser } from '../scripts/models/User';
+import { ChitChatAccount } from '../scripts/models/User';
 const config = getConfig();
 const MongoClient = mongodb.MongoClient;
 const router = express.Router();
@@ -35,7 +35,7 @@ router.post('/', function (req, res, next) {
 
         userColl.find({ email: email }).project({ email: 1, password: 1 }).limit(1).toArray().then(docs => {
             if (docs.length > 0) {
-                let user = docs[0] as ChitChatUser;
+                let user = docs[0] as ChitChatAccount;
                 if (user.password == pass) {
                     // if user is found and password is right
                     // create a token

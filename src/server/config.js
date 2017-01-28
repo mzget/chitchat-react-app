@@ -29,7 +29,8 @@ exports.DbClient = {
     chatroomColl: "rooms",
     chatUserColl: "chatUsers",
     messageColl: "messages",
-    teamsColl: "teams"
+    teamsColl: "teams",
+    orgChartCollection: "orgCharts"
 };
 exports.Paths = {
     fileUpload: `./public/uploads/`

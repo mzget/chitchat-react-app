@@ -3,13 +3,13 @@ import mongodb = require('mongodb');
 import { getConfig, DbClient } from "../../../config";
 import { Room, RoomStatus, RoomType, Member, MemberRole } from "../../models/Room";
 import { ITeam } from "../../models/ITeam";
-import { ChitChatUser } from "../../models/User";
+import { ChitChatAccount } from "../../models/User";
 
 const config = getConfig();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 
-export async function createDefaultGroup(owner: ChitChatUser) {
+export async function createDefaultGroup(owner: ChitChatAccount) {
     let db = await MongoClient.connect(config.chatDB);
     let collection = db.collection(DbClient.chatroomColl);
 
@@ -59,7 +59,7 @@ export async function getOrgGroups(team_id: mongodb.ObjectID) {
     return docs;
 }
 
-export async function addMember(group_id: string, user: ChitChatUser) {
+export async function addMember(group_id: string, user: ChitChatAccount) {
     let db = await MongoClient.connect(config.chatDB);
     let collection = db.collection(DbClient.chatroomColl);
 

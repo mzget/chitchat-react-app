@@ -8,7 +8,7 @@ class UserTransaction {
 }
 exports.UserTransaction = UserTransaction;
 ;
-class ChitChatUser {
+class ChitChatAccount {
 }
-exports.ChitChatUser = ChitChatUser;
+exports.ChitChatAccount = ChitChatAccount;
 ;

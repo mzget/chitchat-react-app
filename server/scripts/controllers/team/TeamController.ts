@@ -6,7 +6,7 @@ import { getConfig, DbClient } from '../../../config';
 const config = getConfig();
 
 import { ITeam } from '../../models/ITeam';
-import { ChitChatUser } from "../../models/User";
+import { ChitChatAccount } from "../../models/User";
 import * as GroupController from '../group/GroupController';
 
 
@@ -50,7 +50,7 @@ export async function searchTeam(team_name: string) {
     return teams;
 }
 
-export async function createTeam(team_name: string, owner: ChitChatUser) {
+export async function createTeam(team_name: string, owner: ChitChatAccount) {
     let db = await MongoClient.connect(config.chatDB);
     let collection = db.collection(DbClient.teamsColl);
 

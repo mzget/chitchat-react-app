@@ -106,7 +106,7 @@ router.post('/signup', function (req, res, next) {
         return res.status(500).json({ success: false, message: errors });
     }
     let user = req.body.user;
-    let userModel = new User_1.ChitChatUser();
+    let userModel = new User_1.ChitChatAccount();
     userModel.displayname = user.username;
     userModel.username = user.email;
     userModel.email = user.email;

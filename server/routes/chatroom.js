@@ -204,8 +204,8 @@ router.post("/getChatHistory", (req, res, next) => {
     ChatRoomManager.getNewerMessageOfChatRoom(room_id, utc).then(docs => {
         res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
         //<!-- When get chat history complete. System will update roomAccess data for user.
-        UserManager.updateLastAccessTimeOfRoom(user_id, room_id, new Date(), function (err, accessInfo) {
-            console.log("updateLastAccessRoom rid is %s: ", room_id, accessInfo.result);
+        UserManager.updateLastAccessTimeOfRoom(user_id, room_id, new Date()).then(accessInfo => {
+            console.log("updateLastAccessTimeOfRoom rid is %s: ", room_id, accessInfo.nModified);
         });
     }).catch(err => {
         console.error("getChatHistory fail: ", err);
