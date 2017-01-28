@@ -53,7 +53,7 @@ class SimpleToolbar extends React.Component<IComponentProps, IComponentState> {
                                     chevron_left
                                 </IconButton>
                                 :
-                                <span style={{ margin:8 }} />
+                                <span style={{ margin: 8 }} />
                         }
                         <ToolbarTitle text={this.props.title} />
                     </ToolbarGroup>
@@ -64,9 +64,7 @@ class SimpleToolbar extends React.Component<IComponentProps, IComponentState> {
                                     <ToolbarSeparator />
                                     <IconMenu
                                         iconButtonElement={
-                                            <IconButton
-                                                onClick={() => this.setState({ openState: !this.state.openState })}
-                                                >
+                                            <IconButton>
                                                 <NavigationExpandMoreIcon />
                                             </IconButton>
                                         }
@@ -74,12 +72,15 @@ class SimpleToolbar extends React.Component<IComponentProps, IComponentState> {
                                         targetOrigin={{ horizontal: 'right', vertical: 'top' }}
                                         onRequestChange={(open, reason) => this.setState({ openState: open })}
                                         onItemTouchTap={(event, child) => console.log('item touch tap', event, child)}
-                                        onTouchTap={(event) => console.log("ontouch tap", event)}
+                                        onTouchTap={(event) => this.setState({ openState: !this.state.openState })}
                                         open={this.state.openState}
                                         >
-                                        {this.props.menus.map((value, i, arr) => {
-                                            return <MenuItem key={i} primaryText={value} onClick={() => this.props.onSelectedMenuItem(i, value)} />
-                                        })}
+                                        {
+                                            this.props.menus.map((value, i, arr) => {
+                                                return <MenuItem key={i} primaryText={value}
+                                                    onClick={() => this.props.onSelectedMenuItem(i, value)}
+                                                    />
+                                            })}
                                     </IconMenu>
                                 </ToolbarGroup>
                             ) : null

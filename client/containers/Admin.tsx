@@ -8,24 +8,33 @@ import { IComponentProps } from "../utils/IComponentProps";
 
 import SimpleToolbar from '../components/SimpleToolbar';
 import AdminBox from './admins/AdminBox';
-import CreateGroupBox from "./group/CreateGroupBox";
+import ManageOrgChartBox from "./admins/ManageOrgChartBox";
+import CreateGroupBox from "./admins/CreateGroupBox";
 import { DialogBox } from "../components/DialogBox";
  
 import { Room, RoomType, RoomStatus } from "../../server/scripts/models/Room";
 
+enum BoxState {
+    idle = 0, isCreateGroup = 1, isManageTeam,
+};
 interface IComponentNameState {
-    isCreateGroup: boolean;
+    boxState: BoxState;
     alert: boolean;
 };
 
 class Admin extends React.Component<IComponentProps, IComponentNameState> {
     alertTitle = "";
     alertMessage = "";
-    menus = ["create-org-group", "create-projectbase-group", "create-group"];
+
+    manageOrgChart: string = "Manage ORG Chart";
+    createOrgGroup: string = "create-org-group";
+    createPjbGroup: string = "create-projectbase-group";
+    createPvGroup: string = "create-group";
+    menus = [this.manageOrgChart, this.createOrgGroup, this.createPjbGroup, this.createPvGroup];
 
     componentWillMount() {
         this.state = {
-            isCreateGroup: false,
+            boxState: BoxState.idle,
             alert : false,
         };
 
@@ -38,14 +47,18 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     onAdminMenuSelected(key: string) {
         console.log('onAdminMenuSelected', key);
 
-        if (key === this.menus[0]) {
-            this.setState(previous => ({ ...previous, isCreateGroup: true }));
+        if (key === this.createOrgGroup || key === this.createPjbGroup || key === this.createPvGroup) {
+            this.setState(previous => ({ ...previous, boxState: BoxState.isCreateGroup }));
+        }
+
+        else if(key === this.manageOrgChart) {
+            this.setState(previous => ({ ...previous, boxState: BoxState.isManageTeam }));
         }
     }
 
     onBackPressed() {
-        if (this.state.isCreateGroup) {
-            this.setState(previous => ({ ...previous, isCreateGroup: false }));
+        if (this.state.boxState) {
+            this.setState(previous => ({ ...previous, boxState: BoxState.idle }));
         }
         else {
             // Jump to main menu.
@@ -65,16 +78,24 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
         this.setState(previous => ({ ...previous, alert: true }));
     }
 
+    getAdminPanel() {
+        switch (this.state.boxState) {
+            case BoxState.isManageTeam:
+                return <ManageOrgChartBox {...this.props} onError={this.onAlert} />
+            case BoxState.isCreateGroup:
+                return <CreateGroupBox {...this.props} onError={this.onAlert} />
+            default:
+                return <AdminBox itemName={this.menus} onSelectItem={this.onAdminMenuSelected} />;
+        }
+    }
+
     public render(): JSX.Element {
         return (
             <MuiThemeProvider>
                 <div>
                     <SimpleToolbar title={'Admin'} onBackPressed={this.onBackPressed} />
                     {
-                        (!this.state.isCreateGroup) ?
-                        <AdminBox itemName={this.menus} onSelectItem={this.onAdminMenuSelected} />
-                            :
-                            <CreateGroupBox {...this.props} onError={this.onAlert} />
+                        this.getAdminPanel()
                     }
                     <DialogBox title={this.alertTitle} message={this.alertMessage} open={this.state.alert} handleClose={this.closeAlert} />
                 </div>

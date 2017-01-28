@@ -39,6 +39,11 @@
     <Content Include="client\components\AppBar.tsx" />
     <Content Include="client\containers\Admin.tsx" />
     <Content Include="client\containers\admins\AdminBox.tsx" />
+    <Content Include="client\containers\admins\CreateGroupBox.tsx" />
+    <Content Include="client\containers\admins\CreateGroupForm.tsx" />
+    <Content Include="client\containers\admins\ManageOrgChartBox.tsx" />
+    <Content Include="client\containers\admins\CreateOrgChartForm.tsx" />
+    <Content Include="client\containers\admins\TeamRoleListView.tsx" />
     <Content Include="client\containers\authen\AuthenBox.tsx" />
     <Content Include="client\containers\authen\SigninBox.tsx" />
     <Content Include="client\containers\authen\SignupBox.tsx" />
