@@ -10,14 +10,18 @@ export const checkedCanAccessRoom = (roomId: string, userId: string, callback: (
             callback(null, result);
         }
         else {
-            let members = room.members as Array<any>;
-            result = members.some(value => {
-                if (value._id === userId) {
-                    return true;
-                }
-            });
+            if (room.members && Array.isArray(room.members)) {
+                let members = room.members as Array<any>;
+                result = members.some(value => {
+                    if (value._id === userId) {
+                        return true;
+                    }
+                });
 
-            callback(null, result);
+                callback(null, result);
+            }
+            else
+                callback(null, result);
         }
     });
 };

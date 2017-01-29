@@ -30,14 +30,10 @@ router.get("/org", function (req, res, next) {
     }
 
     let team_id = req.query.team_id as string;
+    let user_id = req["decoded"]._id;
 
-    GroupController.getOrgGroups(team_id).then(docs => {
-        if (docs.length > 0) {
-            res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
-        }
-        else {
-            res.status(500).json(new apiUtils.ApiResponse(false, docs));
-        }
+    GroupController.getOrgGroups(team_id, user_id).then(docs => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
     }).catch(err => {
         res.status(500).json(new apiUtils.ApiResponse(false, err));
     });

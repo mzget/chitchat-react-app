@@ -48,13 +48,17 @@ export async function addTeamToGroup(group: Room, team: ITeam) {
     return result.ops;
 }
 
-export async function getOrgGroups(team_id: string) {
+export async function getOrgGroups(team_id: string, user_id: string) {
     let db = await MongoClient.connect(config.chatDB);
     let collection = db.collection(DbClient.chatroomColl);
 
     collection.createIndex({ team_id: 1 }, { background: true });
 
-    let docs = await collection.find({ team_id: team_id, type: 0 }).toArray();
+    let docs = await collection.find({
+        team_id: team_id,
+        "members._id": { $in: [user_id] },
+        type: RoomType.organizationGroup
+    }).toArray();
     db.close();
     return docs;
 }

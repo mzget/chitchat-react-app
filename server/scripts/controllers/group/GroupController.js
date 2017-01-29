@@ -49,12 +49,16 @@ function addTeamToGroup(group, team) {
     });
 }
 exports.addTeamToGroup = addTeamToGroup;
-function getOrgGroups(team_id) {
+function getOrgGroups(team_id, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         let db = yield MongoClient.connect(config.chatDB);
         let collection = db.collection(config_1.DbClient.chatroomColl);
         collection.createIndex({ team_id: 1 }, { background: true });
-        let docs = yield collection.find({ team_id: team_id, type: 0 }).toArray();
+        let docs = yield collection.find({
+            team_id: team_id,
+            "members._id": { $in: [user_id] },
+            type: Room_1.RoomType.organizationGroup
+        }).toArray();
         db.close();
         return docs;
     });

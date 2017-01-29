@@ -9,13 +9,17 @@ exports.checkedCanAccessRoom = (roomId, userId, callback) => {
             callback(null, result);
         }
         else {
-            let members = room.members;
-            result = members.some(value => {
-                if (value._id === userId) {
-                    return true;
-                }
-            });
-            callback(null, result);
+            if (room.members && Array.isArray(room.members)) {
+                let members = room.members;
+                result = members.some(value => {
+                    if (value._id === userId) {
+                        return true;
+                    }
+                });
+                callback(null, result);
+            }
+            else
+                callback(null, result);
         }
     });
 };
