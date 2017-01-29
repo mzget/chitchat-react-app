@@ -15,6 +15,7 @@ const AdminMenu_1 = require("./admins/AdminMenu");
 const ManageOrgChartBox_1 = require("./admins/ManageOrgChartBox");
 const CreateGroupBox_1 = require("./admins/CreateGroupBox");
 const DialogBox_1 = require("../components/DialogBox");
+const adminRx = require("../redux/admin/adminRx");
 var BoxState;
 (function (BoxState) {
     BoxState[BoxState["idle"] = 0] = "idle";
@@ -43,6 +44,13 @@ class Admin extends React.Component {
         this.onAdminMenuSelected = this.onAdminMenuSelected.bind(this);
         this.onAlert = this.onAlert.bind(this);
         this.closeAlert = this.closeAlert.bind(this);
+    }
+    componentDidMount() {
+        const { teamReducer } = this.props;
+        if (!teamReducer.team) {
+            this.props.router.replace("/");
+        }
+        this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
     }
     onAdminMenuSelected(key) {
         console.log('onAdminMenuSelected', key);

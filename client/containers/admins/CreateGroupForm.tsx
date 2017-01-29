@@ -4,6 +4,10 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import * as Colors from 'material-ui/styles/colors';
 import { RaisedButton, TextField } from 'material-ui';
 import Avatar from 'material-ui/Avatar';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+
+import { IOrgChart } from "../../../server/scripts/models/OrgChart";
 
 const styles = {
     span: {
@@ -25,11 +29,28 @@ interface IComponentProps {
     onGroupNameChange: (e, text) => void;
     group_description?: string;
     onGroupDescriptionChange?: (e, text) => void;
+
+    dropdownItems: Array<IOrgChart>;
+    dropdownValue: number;
+    dropdownChange: (event, id, value) => void;
 }
 
 const SubmitButton = (props: IComponentProps) => (
-    <RaisedButton primary={true} label="submit" onClick={props.onSubmit} >
-    </RaisedButton>
+    <RaisedButton primary={true} label="submit" onClick={props.onSubmit} ></RaisedButton>
+);
+
+const SelectChart = (props: IComponentProps) => (
+    <SelectField
+        floatingLabelText="Org Charts"
+        value={props.dropdownValue}
+        onChange={props.dropdownChange}
+        >
+        {
+            (props.dropdownItems.length > 0) ?
+                props.dropdownItems.map((value, id) =>
+                    <MenuItem key={id} value={id} primaryText={value.chart_name} />) : null
+        }
+    </SelectField>
 );
 
 export const CreateGroupForm = (props: IComponentProps) => (
@@ -61,6 +82,7 @@ export const CreateGroupForm = (props: IComponentProps) => (
                     if (e.key === 'Enter') props.onSubmit();
                 } } />
             <span style={styles.span} />
+            <SelectChart {...props} />
             <SubmitButton {...props} />
         </Flex>
     </MuiThemeProvider >

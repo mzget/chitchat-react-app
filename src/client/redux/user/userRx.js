@@ -67,7 +67,7 @@ exports.userReducer = (state = userInitState, action) => {
         case FETCH_USER_CANCELLED:
             return state;
         case exports.FETCH_USER_FAILURE:
-            return state.set('state', exports.FETCH_USER_FAILURE);
+            return state.set("state", exports.FETCH_USER_FAILURE);
         case authRx.LOG_OUT_SUCCESS: {
             return userInitState;
         }

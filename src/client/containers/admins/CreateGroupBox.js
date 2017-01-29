@@ -10,20 +10,36 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const CreateGroupForm_1 = require("./CreateGroupForm");
+const Room_1 = require("../../../server/scripts/models/Room");
+class IComponentNameProps {
+}
 ;
 ;
 class CreateGroupBox extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.group = {};
+    }
     componentWillMount() {
         this.state = {
             groupImage: "",
             groupName: "",
-            groupDescription: ""
+            groupDescription: "",
+            dropdownValue: 0
         };
         this.onSubmitGroup = this.onSubmitGroup.bind(this);
     }
     onSubmitGroup() {
         console.log("submit group", this.state);
+        const { teamReducer, adminReducer: { orgCharts } } = this.props;
         if (this.state.groupName.length > 0) {
+            this.group.name = this.state.groupName;
+            this.group.image = this.state.groupImage;
+            this.group.description = this.state.groupDescription;
+            this.group.type = Room_1.RoomType.organizationGroup;
+            this.group.team_id = teamReducer.team._id;
+            this.group.nodeId = orgCharts[this.state.dropdownValue]._id;
+            console.log(this.group);
         }
         else {
             this.props.onError("Missing some require field");
@@ -35,7 +51,7 @@ class CreateGroupBox extends React.Component {
                     this.setState(previous => (__assign({}, previous, { groupName: text })));
                 }, group_description: this.state.groupDescription, onGroupDescriptionChange: (e, text) => {
                     this.setState(previous => (__assign({}, previous, { groupDescription: text })));
-                }, onSubmit: this.onSubmitGroup })));
+                }, dropdownItems: this.props.adminReducer.orgCharts, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => { this.setState(previous => (__assign({}, previous, { dropdownValue: value }))); }, onSubmit: this.onSubmitGroup })));
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });

@@ -38,13 +38,6 @@ class ManageOrgChartBox extends React.Component {
         this.onSubmit = this.onSubmit.bind(this);
         this.onCreateNew = this.onCreateNew.bind(this);
     }
-    componentDidMount() {
-        const { teamReducer } = this.props;
-        if (!teamReducer.team) {
-            this.props.router.replace("/");
-        }
-        this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
-    }
     componentWillReceiveProps(nextProps) {
         const { adminReducer } = nextProps;
         switch (adminReducer.state) {

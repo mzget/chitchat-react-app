@@ -16,13 +16,13 @@ const fetchUserFulfilled = payload => ({ type: FETCH_USER_SUCCESS, payload });
 const cancelFetchUser = () => ({ type: FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: FETCH_USER_FAILURE, payload, error: true });
 export const fetchUserEpic = action$ =>
-  action$.ofType(FETCH_USER)
-    .mergeMap(action =>
-      ajax.getJSON(`${config.api.user}/?username=${action.payload}`, { 'x-access-token': Store.getState().authReducer.token })
-        .map(fetchUserFulfilled)
-        .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
-        .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))
-    );
+    action$.ofType(FETCH_USER)
+        .mergeMap(action =>
+            ajax.getJSON(`${config.api.user}/?username=${action.payload}`, { 'x-access-token': Store.getState().authReducer.token })
+                .map(fetchUserFulfilled)
+                .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
+                .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))
+        );
 
 const FETCH_AGENT_BY_ID = "FETCH_AGENT_BY_ID";
 const FETCH_AGENT_BY_ID_SUCCESS = "FETCH_AGENT_BY_ID_SUCCESS";
@@ -48,12 +48,12 @@ const fetchAgentSuccess = (payload) => ({ type: FETCH_AGENT_SUCCESS, payload });
 const fetchAgentFailure = (payload) => ({ type: FETCH_AGENT_FAILURE, payload });
 const fetchAgentCancelled = () => ({ type: FETCH_AGENT_CANCELLED });
 export const fetchAgentEpic = action$ => (
-  action$.ofType(FETCH_AGENT)
-    .mergeMap(action =>
-      ajax.getJSON(`${config.api.user}/agent/${action.payload}`)
-        .map(fetchAgentSuccess)
-        .takeUntil(action$.ofType(FETCH_AGENT_CANCELLED))
-        .catch(error => Rx.Observable.of(fetchAgentFailure(error.xhr.response))))
+    action$.ofType(FETCH_AGENT)
+        .mergeMap(action =>
+            ajax.getJSON(`${config.api.user}/agent/${action.payload}`)
+                .map(fetchAgentSuccess)
+                .takeUntil(action$.ofType(FETCH_AGENT_CANCELLED))
+                .catch(error => Rx.Observable.of(fetchAgentFailure(error.xhr.response))))
 );
 
 const FETCH_CONTACT = "FETCH_CONTACT";
@@ -83,8 +83,8 @@ export const userReducer = (state = userInitState, action) => {
         case FETCH_USER_CANCELLED:
             return state;
         case FETCH_USER_FAILURE:
-            return state.set('state', FETCH_USER_FAILURE);
-           
+            return state.set("state", FETCH_USER_FAILURE);
+
         case authRx.LOG_OUT_SUCCESS: {
             return userInitState;
         }

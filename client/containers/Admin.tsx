@@ -12,6 +12,8 @@ import ManageOrgChartBox from "./admins/ManageOrgChartBox";
 import CreateGroupBox from "./admins/CreateGroupBox";
 import { DialogBox } from "../components/DialogBox";
 
+import * as adminRx from "../redux/admin/adminRx";
+
 import { Room, RoomType, RoomStatus } from "../../server/scripts/models/Room";
 
 enum BoxState {
@@ -42,6 +44,16 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
         this.onAdminMenuSelected = this.onAdminMenuSelected.bind(this);
         this.onAlert = this.onAlert.bind(this);
         this.closeAlert = this.closeAlert.bind(this);
+    }
+
+    componentDidMount() {
+        const { teamReducer } = this.props;
+
+        if (!teamReducer.team) {
+            this.props.router.replace("/");
+        }
+
+        this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
     }
 
     onAdminMenuSelected(key: string) {
