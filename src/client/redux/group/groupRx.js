@@ -16,8 +16,7 @@ const getOrgGroupSuccess = (payload) => ({ type: GET_ORG_GROUP_SUCCESS, payload 
 const getOrgGroupFailure = (err) => ({ type: GET_ORG_GROUP_FAILURE, payload: err });
 const getOrgGroupCancelled = () => ({ type: GET_ORG_GROUP_CANCELLED });
 exports.getOrgGroupEpic = action$ => (action$.ofType(GET_ORG_GROUP)
-    .mergeMap(action => ajax.getJSON(`${config_1.default.api.group}/org?team_id=${action.payload}`, { "x-access-token": configureStore_1.default.getState().authReducer.token })
-    .map(response => getOrgGroupSuccess(response))
+    .mergeMap(action => ajax.getJSON(`${config_1.default.api.group}/org?team_id=${action.payload}`, { "x-access-token": configureStore_1.default.getState().authReducer.token }).map(response => getOrgGroupSuccess(response))
     .takeUntil(action$.ofType(GET_ORG_GROUP_CANCELLED))
     .catch(error => Rx.Observable.of(getOrgGroupFailure(error.xhr.response)))
     .do(response => {

@@ -19,21 +19,23 @@ const getOrgGroupFailure = (err) => ({ type: GET_ORG_GROUP_FAILURE, payload: err
 const getOrgGroupCancelled = () => ({ type: GET_ORG_GROUP_CANCELLED });
 export const getOrgGroupEpic = action$ => (
     action$.ofType(GET_ORG_GROUP)
-        .mergeMap(action => ajax.getJSON(`${config.api.group}/org?team_id=${action.payload}`,
-            { "x-access-token": Store.getState().authReducer.token })
-            .map(response => getOrgGroupSuccess(response))
-            .takeUntil(action$.ofType(GET_ORG_GROUP_CANCELLED))
-            .catch(error => Rx.Observable.of(getOrgGroupFailure(error.xhr.response)))
-            .do(response => {
-                if (response.type === GET_ORG_GROUP_SUCCESS) {
-                    const dataManager = BackendFactory.getInstance().dataManager;
-                    let rooms = response.payload.result as Array<Room>;
+        .mergeMap(action =>
+            ajax.getJSON(
+                `${config.api.group}/org?team_id=${action.payload}`,
+                { "x-access-token": Store.getState().authReducer.token }
+            ).map(response => getOrgGroupSuccess(response))
+                .takeUntil(action$.ofType(GET_ORG_GROUP_CANCELLED))
+                .catch(error => Rx.Observable.of(getOrgGroupFailure(error.xhr.response)))
+                .do(response => {
+                    if (response.type === GET_ORG_GROUP_SUCCESS) {
+                        const dataManager = BackendFactory.getInstance().dataManager;
+                        let rooms = response.payload.result as Array<Room>;
 
-                    Rx.Observable.from(rooms)._do(x => {
-                        dataManager.roomDAL.save(x._id, x);
-                    }).subscribe();
-                }
-            })
+                        Rx.Observable.from(rooms)._do(x => {
+                            dataManager.roomDAL.save(x._id, x);
+                        }).subscribe();
+                    }
+                })
         ));
 
 const CREATE_GROUP = "CREATE_GROUP";

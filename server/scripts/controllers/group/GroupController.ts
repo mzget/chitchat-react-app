@@ -48,7 +48,7 @@ export async function addTeamToGroup(group: Room, team: ITeam) {
     return result.ops;
 }
 
-export async function getOrgGroups(team_id: mongodb.ObjectID) {
+export async function getOrgGroups(team_id: string) {
     let db = await MongoClient.connect(config.chatDB);
     let collection = db.collection(DbClient.chatroomColl);
 

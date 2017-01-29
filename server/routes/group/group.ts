@@ -29,7 +29,7 @@ router.get("/org", function (req, res, next) {
         return res.status(500).json(new apiUtils.ApiResponse(false, errors));
     }
 
-    let team_id = new mongodb.ObjectID(req.query.team_id);
+    let team_id = req.query.team_id as string;
 
     GroupController.getOrgGroups(team_id).then(docs => {
         if (docs.length > 0) {

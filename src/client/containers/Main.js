@@ -39,6 +39,9 @@ class Main extends React.Component {
         };
     }
     componentWillMount() {
+        const { teamReducer } = this.props;
+        if (!teamReducer.team)
+            this.props.router.replace("/");
         this.state = {
             header: "Home"
         };

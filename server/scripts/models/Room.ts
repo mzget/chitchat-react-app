@@ -28,5 +28,5 @@ export class Room {
     status: RoomStatus;
     createTime: Date;
     org_chart_id: string;
-    team_id: any;
+    team_id: string;
 }

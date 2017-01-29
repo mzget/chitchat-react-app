@@ -34,6 +34,11 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     footerHeight = null;
 
     componentWillMount() {
+        const {teamReducer } = this.props;
+
+        if (!teamReducer.team)
+            this.props.router.replace("/");
+
         this.state = {
             header: "Home"
         };
