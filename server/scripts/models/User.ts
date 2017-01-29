@@ -1,5 +1,5 @@
-﻿import UserRole from './UserRole';
-import JobLevel from './JobLevel';
+﻿import UserRole from "./UserRole";
+import JobLevel from "./JobLevel";
 
 interface IUser {
     uid: string;
@@ -27,9 +27,9 @@ export class ChitChatAccount {
     lastname: string;
     tel: string;
     email: string;
-    image: string; //!-- mean image url.
+    avatar: string;
     role: UserRole;
-    department: string;
+    org_chart_id: string;
     jobLevel: JobLevel;
     jobPosition: string;
     status: string;

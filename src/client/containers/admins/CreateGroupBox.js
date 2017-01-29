@@ -11,6 +11,7 @@ const React = require("react");
 const react_redux_1 = require("react-redux");
 const CreateGroupForm_1 = require("./CreateGroupForm");
 const Room_1 = require("../../../server/scripts/models/Room");
+const groupRx = require("../../redux/group/groupRx");
 class IComponentNameProps {
 }
 ;
@@ -38,8 +39,8 @@ class CreateGroupBox extends React.Component {
             this.group.description = this.state.groupDescription;
             this.group.type = Room_1.RoomType.organizationGroup;
             this.group.team_id = teamReducer.team._id;
-            this.group.nodeId = orgCharts[this.state.dropdownValue]._id;
-            console.log(this.group);
+            this.group.org_chart_id = orgCharts[this.state.dropdownValue]._id;
+            this.props.dispatch(groupRx.createGroup(this.group));
         }
         else {
             this.props.onError("Missing some require field");

@@ -14,6 +14,6 @@ authRx.signupUserEpic, authRx.authUserEpic, authRx.tokenAuthUserEpic, authRx.log
 ///@Teams
 teamRx.fetchUserTeamsEpic, teamRx.createNewTeamEpic, teamRx.getTeamsInfoEpic, teamRx.getTeamMembersEpic, teamRx.findTeamEpic, teamRx.joinTeamEpic, 
 ///@Group
-groupRx.getOrgGroupEpic, 
+groupRx.getOrgGroupEpic, groupRx.createGroupEpic, 
 ///@ChatRoom
 chatroomRxEpic.getPrivateChatRoomEpic, chatroomRxEpic.getPersistendMessageEpic, chatroomRxEpic.createPrivateChatRoomEpic, chatroomRxEpic.uploadFileEpic);

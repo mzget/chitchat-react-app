@@ -1,4 +1,12 @@
 "use strict";
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -35,7 +43,7 @@ router.get("/org", function (req, res, next) {
         res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });
-router.post("/createOrg", function (req, res, next) {
+router.post("/create", function (req, res, next) {
     req.checkBody("room", "request for room object").notEmpty();
     let errors = req.validationErrors();
     if (errors) {
@@ -43,15 +51,9 @@ router.post("/createOrg", function (req, res, next) {
     }
     let room = req.body.room;
     let roomModel = new Room_1.Room();
-    roomModel.nodeId = room.nodeId;
-    roomModel.name = room.name;
-    roomModel.type = Room_1.RoomType.organizationGroup;
-    roomModel.members = room.members;
-    roomModel.image = room.image;
-    roomModel.description = room.description;
-    roomModel.status = Room_1.RoomStatus.active;
+    roomModel = __assign({}, room);
     roomModel.createTime = new Date();
-    roomModel.team_id = room.team_id;
+    roomModel.status = Room_1.RoomStatus.active;
     function createGroup() {
         return __awaiter(this, void 0, void 0, function* () {
             let db = yield MongoClient.connect(webConfig.chatDB);

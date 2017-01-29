@@ -103,7 +103,7 @@ router.post("/create", (req, res, next) => {
     let team_name = req.body.team_name as string;
     let user = req["decoded"];
 
-    //@ Find team_name for check it already used.
+    // @Find team_name for check it already used.
     TeamController.findTeamName(team_name).then(teams => {
         if (teams.length > 0)
             throw new Error("team name already used.");

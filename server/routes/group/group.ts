@@ -43,7 +43,7 @@ router.get("/org", function (req, res, next) {
     });
 });
 
-router.post("/createOrg", function (req, res, next) {
+router.post("/create", function (req, res, next) {
     req.checkBody("room", "request for room object").notEmpty();
 
     let errors = req.validationErrors();
@@ -53,15 +53,9 @@ router.post("/createOrg", function (req, res, next) {
 
     let room = req.body.room as Room;
     let roomModel = new Room();
-    roomModel.nodeId = room.nodeId;
-    roomModel.name = room.name;
-    roomModel.type = RoomType.organizationGroup;
-    roomModel.members = room.members;
-    roomModel.image = room.image;
-    roomModel.description = room.description;
-    roomModel.status = RoomStatus.active;
+    roomModel = { ...room } as Room;
     roomModel.createTime = new Date();
-    roomModel.team_id = room.team_id;
+    roomModel.status = RoomStatus.active;
 
     async function createGroup() {
         let db = await MongoClient.connect(webConfig.chatDB);

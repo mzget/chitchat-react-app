@@ -348,7 +348,7 @@ class RoomDataAccess {
         newRoom.members = members;
         newRoom.createTime = new Date();
         newRoom.status = Room.RoomStatus.active;
-        newRoom.nodeId = 0;
+        newRoom.org_chart_id = 0;
         MongoClient.connect(MDb.DbController.chatDB, function (err, db) {
             if (err) {
                 return console.dir(err);

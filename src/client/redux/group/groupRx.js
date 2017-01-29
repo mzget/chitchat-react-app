@@ -2,10 +2,11 @@
 const config_1 = require("../../configs/config");
 const immutable_1 = require("immutable");
 const redux_actions_1 = require("redux-actions");
-const Rx = require("@reactivex/rxjs");
+const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 const configureStore_1 = require("../configureStore");
 const BackendFactory_1 = require("../../chats/BackendFactory");
+const Room_1 = require("../../../server/scripts/models/Room");
 const GET_ORG_GROUP = "GET_ORG_GROUP";
 const GET_ORG_GROUP_SUCCESS = "GET_ORG_GROUP_SUCCESS";
 const GET_ORG_GROUP_FAILURE = "GET_ORG_GROUP_FAILURE";
@@ -28,19 +29,26 @@ exports.getOrgGroupEpic = action$ => (action$.ofType(GET_ORG_GROUP)
         }).subscribe();
     }
 })));
-const CREATE_ORG_GROUP = "CREATE_ORG_GROUP";
-const CREATE_ORG_GROUP_FAILURE = "CREATE_ORG_GROUP_FAILURE";
-const CREATE_ORG_GROUP_SUCCESS = "CREATE_ORG_GROUP_SUCCESS";
-const CREATE_ORG_GROUP_CANCELLED = "CREATE_ORG_GROUP_CANCELLED";
-const createOrgGroup = redux_actions_1.createAction(CREATE_ORG_GROUP, group => group);
-const createOrgGroupSuccess = redux_actions_1.createAction(CREATE_ORG_GROUP_SUCCESS, payload => payload);
-const createOrgGroupFailure = redux_actions_1.createAction(CREATE_ORG_GROUP_FAILURE, err => err);
-const createOrgGroupCancelled = redux_actions_1.createAction(CREATE_ORG_GROUP_CANCELLED);
-exports.createOrgGroupEpic = action$ => (action$.ofType(CREATE_ORG_GROUP)
-    .margeMap(action => ajax.getJSON(`${config_1.default.api.group}/createOrg/${action.payload}`)
-    .map(createOrgGroupSuccess)
-    .takeUntil(action$.ofType(CREATE_ORG_GROUP_CANCELLED))
-    .catch(error => Rx.Observable.of(createOrgGroupFailure(error.xhr.response)))));
+const CREATE_GROUP = "CREATE_GROUP";
+const CREATE_GROUP_FAILURE = "CREATE_GROUP_FAILURE";
+exports.CREATE_GROUP_SUCCESS = "CREATE_GROUP_SUCCESS";
+const CREATE_GROUP_CANCELLED = "CREATE_GROUP_CANCELLED";
+exports.createGroup = redux_actions_1.createAction(CREATE_GROUP, group => group);
+const createGroupSuccess = redux_actions_1.createAction(exports.CREATE_GROUP_SUCCESS, payload => payload);
+const createGroupFailure = redux_actions_1.createAction(CREATE_GROUP_FAILURE, err => err);
+const createGroupCancelled = redux_actions_1.createAction(CREATE_GROUP_CANCELLED);
+exports.createGroupEpic = action$ => (action$.ofType(CREATE_GROUP)
+    .mergeMap(action => ajax({
+    method: "POST",
+    url: `${config_1.default.api.group}/create`,
+    body: JSON.stringify({ room: action.payload }),
+    headers: {
+        "Content-Type": "application/json",
+        "x-access-token": configureStore_1.default.getState().authReducer.token
+    }
+}).map(json => createGroupSuccess(json.response.result))
+    .takeUntil(action$.ofType(CREATE_GROUP_CANCELLED))
+    .catch(error => Rx.Observable.of(createGroupFailure(error.xhr.response)))));
 exports.GroupInitState = immutable_1.Record({
     isFetching: false,
     state: null,
@@ -50,6 +58,19 @@ exports.groupReducer = (state = new exports.GroupInitState(), action) => {
     switch (action.type) {
         case GET_ORG_GROUP_SUCCESS: {
             return state.set("orgGroups", action.payload.result);
+        }
+        case exports.CREATE_GROUP_SUCCESS: {
+            let group = action.payload;
+            if (group && group.length > 0) {
+                if (group[0].type === Room_1.RoomType.organizationGroup) {
+                    let prev = state.get("orgGroups");
+                    let _next = prev.concat(group);
+                    return state.set("orgGroups", _next);
+                }
+                else
+                    return state;
+            }
+            return state;
         }
         default:
             return state;

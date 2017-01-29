@@ -7,6 +7,8 @@ import { CreateGroupForm } from "./CreateGroupForm";
 import { Room, RoomType, RoomStatus } from "../../../server/scripts/models/Room";
 import { IOrgChart } from "../../../server/scripts/models/OrgChart";
 
+import * as groupRx from "../../redux/group/groupRx";
+
 abstract class IComponentNameProps implements IComponentProps {
     onError?: (error: string) => void;
     location;
@@ -58,10 +60,9 @@ class CreateGroupBox extends React.Component<IComponentNameProps, IComponentName
             this.group.description = this.state.groupDescription;
             this.group.type = RoomType.organizationGroup;
             this.group.team_id = teamReducer.team._id;
-            this.group.nodeId = orgCharts[this.state.dropdownValue]._id;
+            this.group.org_chart_id = orgCharts[this.state.dropdownValue]._id;
 
-            console.log(this.group);
-
+            this.props.dispatch(groupRx.createGroup(this.group));
         }
         else {
             this.props.onError("Missing some require field");

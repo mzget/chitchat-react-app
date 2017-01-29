@@ -23,8 +23,8 @@ const renderList = (props: IComponentProps) => (props.value.map((item, i) => {
         <div key={i}>
             <ListItem
                 onClick={() => props.onSelected(item)}
-                leftAvatar={(!!item.image) ?
-                    <Avatar src={item.image} /> : <Avatar>{item.username.charAt(0)}</Avatar>
+                leftAvatar={(!!item.avatar) ?
+                    <Avatar src={item.avatar} /> : <Avatar>{item.username.charAt(0)}</Avatar>
                 }
                 rightIcon={null}
                 primaryText={item.username}

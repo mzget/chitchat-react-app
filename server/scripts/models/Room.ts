@@ -20,7 +20,6 @@ export enum RoomType { organizationGroup, projectBaseGroup, privateGroup, privat
 export enum RoomStatus { active, disable, delete };
 export class Room {
     _id: any;
-    nodeId: number;
     name: string;
     type: RoomType;
     members: Member[];
@@ -28,5 +27,6 @@ export class Room {
     description: string;
     status: RoomStatus;
     createTime: Date;
+    org_chart_id: string;
     team_id: any;
 }
