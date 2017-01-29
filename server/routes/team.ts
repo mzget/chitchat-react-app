@@ -67,7 +67,7 @@ router.post("/teamInfo", function (req, res, next) {
 });
 
 router.post("/teamsInfo", function (req, res, next) {
-    req.checkBody('team_ids', 'request for team_ids').notEmpty();
+    req.checkBody("team_ids", "request for team_ids").notEmpty();
 
     let errors = req.validationErrors();
     if (errors) {
@@ -83,7 +83,7 @@ router.post("/teamsInfo", function (req, res, next) {
         TeamController.findTeamsInfo(teams).then(teams => {
             res.status(200).json(new apiUtils.ApiResponse(true, null, teams));
         }).catch(err => {
-            console.error('/teamsInfo: ', err);
+            console.error("/teamsInfo: ", err);
             res.status(500).json(new apiUtils.ApiResponse(false, err));
         });
     }
@@ -93,7 +93,7 @@ router.post("/teamsInfo", function (req, res, next) {
 });
 
 router.post("/create", (req, res, next) => {
-    req.checkBody('team_name', 'request for team_name').notEmpty();
+    req.checkBody("team_name", "request for team_name").notEmpty();
 
     let errors = req.validationErrors();
     if (errors) {
