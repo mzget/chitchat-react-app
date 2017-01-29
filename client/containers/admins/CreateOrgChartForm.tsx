@@ -42,7 +42,7 @@ const ChartLevel = (props: IComponentProps) => (
         floatingLabelText="Org Level"
         value={props.dropdownValue}
         onChange={props.dropdownChange}
-    >
+        >
         {
             (props.dropdownItems.length > 0) ?
                 props.dropdownItems.map((value, id) =>
@@ -55,8 +55,7 @@ export const CreateOrgChartForm = (props: IComponentProps) => (
     <MuiThemeProvider>
         <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align='center'>
             <Box justify='center' align='center' p={2}>
-                <h3>ORG chart management</h3>
-                <p>Enter a new ORG chart name</p>
+                <h3>Create new ORG chart</h3>
             </Box>
             <TextField
                 hintText="Name"
@@ -73,7 +72,7 @@ export const CreateOrgChartForm = (props: IComponentProps) => (
                 onChange={props.onOrgChartDescriptionChange}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter') props.onSubmit();
-                }} />
+                } } />
             <span style={styles.span} />
             <ChartLevel {...props} />
             <span style={styles.span} />

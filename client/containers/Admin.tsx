@@ -8,10 +8,10 @@ import { IComponentProps } from "../utils/IComponentProps";
 
 import SimpleToolbar from '../components/SimpleToolbar';
 import { AdminMenu } from './admins/AdminMenu';
-import { ManageOrgChartBox } from "./admins/ManageOrgChartBox";
+import ManageOrgChartBox from "./admins/ManageOrgChartBox";
 import CreateGroupBox from "./admins/CreateGroupBox";
 import { DialogBox } from "../components/DialogBox";
- 
+
 import { Room, RoomType, RoomStatus } from "../../server/scripts/models/Room";
 
 enum BoxState {
@@ -35,7 +35,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     componentWillMount() {
         this.state = {
             boxState: BoxState.idle,
-            alert : false,
+            alert: false,
         };
 
         this.onBackPressed = this.onBackPressed.bind(this);
@@ -50,8 +50,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
         if (key === this.createOrgGroup || key === this.createPjbGroup || key === this.createPvGroup) {
             this.setState(previous => ({ ...previous, boxState: BoxState.isCreateGroup }));
         }
-
-        else if(key === this.manageOrgChart) {
+        else if (key === this.manageOrgChart) {
             this.setState(previous => ({ ...previous, boxState: BoxState.isManageTeam }));
         }
     }

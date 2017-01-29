@@ -1,5 +1,8 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
+import { Flex, Box } from "reflexbox";
+import FlatButton from "material-ui/FlatButton";
+import * as Colors from 'material-ui/styles/colors';
 
 import { IComponentProps } from "../../utils/IComponentProps";
 import { CreateOrgChartForm } from "./CreateOrgChartForm";
@@ -29,9 +32,11 @@ interface IComponentNameState {
     dropdownValue: number;
     chart_name: string;
     chart_description: string;
+
+    isOpenCreateNewForm: boolean;
 };
 
-export class ManageOrgChartBox extends React.Component<IComponentNameProps, IComponentNameState> {
+class ManageOrgChartBox extends React.Component<IComponentNameProps, IComponentNameState> {
     orgChart: IOrgChart = {} as IOrgChart;
     orgLevels: Array<string> = new Array();
 
@@ -43,10 +48,13 @@ export class ManageOrgChartBox extends React.Component<IComponentNameProps, ICom
         this.state = {
             dropdownValue: 0,
             chart_name: "",
-            chart_description: ""
+            chart_description: "",
+
+            isOpenCreateNewForm: false
         };
 
         this.onSubmit = this.onSubmit.bind(this);
+        this.onCreateNew = this.onCreateNew.bind(this);
     }
 
     componentDidMount() {
@@ -57,6 +65,19 @@ export class ManageOrgChartBox extends React.Component<IComponentNameProps, ICom
         }
 
         this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
+    }
+
+    componentWillReceiveProps(nextProps: IComponentProps) {
+        const {adminReducer} = nextProps;
+
+        switch (adminReducer.state) {
+            case adminRx.CREATE_NEW_ORG_CHART_SUCCESS:
+                this.setState(prevState => ({ ...prevState, isOpenCreateNewForm: false }));
+                break;
+
+            default:
+                break;
+        }
     }
 
     onSubmit() {
@@ -75,22 +96,36 @@ export class ManageOrgChartBox extends React.Component<IComponentNameProps, ICom
         }
     }
 
+    onCreateNew() {
+        this.setState(prevState => ({ ...prevState, isOpenCreateNewForm: !this.state.isOpenCreateNewForm }));
+    }
+
     public render(): JSX.Element {
         return (
-            <div>
-                <OrgChartListView items={this.props.adminReducer.orgCharts} />
-                <CreateOrgChartForm
-                    orgChartName={this.state.chart_name}
-                    orgChart_description={this.state.chart_description}
-                    onOrgChartNameChange={(e, text) => { this.setState(previous => ({ ...previous, chart_name: text })) }}
-                    onOrgChartDescriptionChange={(e, text) => { this.setState(previous => ({ ...previous, chart_description: text })) }}
+            <Flex flexColumn justify='center' style={{ backgroundColor: Colors.indigo50 }}>
+                {
+                    (this.state.isOpenCreateNewForm) ? (
+                        <CreateOrgChartForm
+                            orgChartName={this.state.chart_name}
+                            orgChart_description={this.state.chart_description}
+                            onOrgChartNameChange={(e, text) => { this.setState(previous => ({ ...previous, chart_name: text })) } }
+                            onOrgChartDescriptionChange={(e, text) => { this.setState(previous => ({ ...previous, chart_description: text })) } }
 
-                    dropdownItems={this.orgLevels}
-                    dropdownValue={this.state.dropdownValue}
-                    dropdownChange={(event, id, value) => { this.setState(previous => ({ ...previous, dropdownValue: value })) }}
-                    onSubmit={this.onSubmit}
-                />
-            </div>
+                            dropdownItems={this.orgLevels}
+                            dropdownValue={this.state.dropdownValue}
+                            dropdownChange={(event, id, value) => { this.setState(previous => ({ ...previous, dropdownValue: value })) } }
+                            onSubmit={this.onSubmit}
+                            />
+                    ) : (
+                            <div>
+                                <OrgChartListView items={this.props.adminReducer.orgCharts} />
+                                <FlatButton label="Create New" primary={true} onClick={this.onCreateNew} />
+                            </div>
+                        )
+                }
+            </Flex>
         );
     }
 }
+
+export default ManageOrgChartBox;

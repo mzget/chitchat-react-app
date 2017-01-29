@@ -33,8 +33,7 @@ const ChartLevel = (props) => (React.createElement(SelectField_1.default, { floa
 exports.CreateOrgChartForm = (props) => (React.createElement(MuiThemeProvider_1.default, null,
     React.createElement(reflexbox_1.Flex, { style: { backgroundColor: Colors.indigo50 }, flexColumn: true, align: 'center' },
         React.createElement(reflexbox_1.Box, { justify: 'center', align: 'center', p: 2 },
-            React.createElement("h3", null, "ORG chart management"),
-            React.createElement("p", null, "Enter a new ORG chart name")),
+            React.createElement("h3", null, "Create new ORG chart")),
         React.createElement(material_ui_1.TextField, { hintText: "Name", errorText: "This field is required", value: props.orgChartName, onChange: props.onOrgChartNameChange, onKeyDown: (e) => {
                 if (e.key === 'Enter')
                     props.onSubmit();

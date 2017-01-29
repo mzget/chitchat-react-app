@@ -5,11 +5,11 @@ const { ajax } = Rx.Observable;
 const configureStore_1 = require("../configureStore");
 const config_1 = require("../../configs/config");
 const CREATE_NEW_ORG_CHART = "CREATE_NEW_ORG_CHART";
-const CREATE_NEW_ORG_CHART_SUCCESS = "CREATE_NEW_ORG_CHART_SUCCESS";
+exports.CREATE_NEW_ORG_CHART_SUCCESS = "CREATE_NEW_ORG_CHART_SUCCESS";
 const CREATE_NEW_ORG_CHART_FAILURE = "CREATE_NEW_ORG_CHART_FAILURE";
 const CREATE_NEW_ORG_CHART_CANCELLED = "CREATE_NEW_ORG_CHART_CANCELLED";
 exports.createNewOrgChart = redux_actions_1.createAction(CREATE_NEW_ORG_CHART, payload => payload);
-const createNewOrgChartSuccess = redux_actions_1.createAction(CREATE_NEW_ORG_CHART_SUCCESS, payload => payload);
+const createNewOrgChartSuccess = redux_actions_1.createAction(exports.CREATE_NEW_ORG_CHART_SUCCESS, payload => payload);
 const createNewOrgChartFailure = redux_actions_1.createAction(CREATE_NEW_ORG_CHART_FAILURE, error => error);
 const createNewOrgChartCancelled = redux_actions_1.createAction(CREATE_NEW_ORG_CHART_CANCELLED);
 exports.createNewOrgChartEpic = action$ => action$.ofType(CREATE_NEW_ORG_CHART)

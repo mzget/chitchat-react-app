@@ -75,7 +75,7 @@ class Admin extends React.Component {
     getAdminPanel() {
         switch (this.state.boxState) {
             case BoxState.isManageTeam:
-                return React.createElement(ManageOrgChartBox_1.ManageOrgChartBox, __assign({}, this.props, { onError: this.onAlert }));
+                return React.createElement(ManageOrgChartBox_1.default, __assign({}, this.props, { onError: this.onAlert }));
             case BoxState.isCreateGroup:
                 return React.createElement(CreateGroupBox_1.default, __assign({}, this.props, { onError: this.onAlert }));
             default:
