@@ -76,18 +76,18 @@ class CreateGroupBox extends React.Component<IComponentNameProps, IComponentName
                     image={this.state.groupImage}
                     group_name={this.state.groupName} onGroupNameChange={(e, text) => {
                         this.setState(previous => ({ ...previous, groupName: text }));
-                    } }
+                    }}
                     group_description={this.state.groupDescription} onGroupDescriptionChange={(e, text) => {
                         this.setState(previous => ({ ...previous, groupDescription: text }));
-                    } }
+                    }}
                     dropdownItems={this.props.adminReducer.orgCharts}
                     dropdownValue={this.state.dropdownValue}
-                    dropdownChange={(event, id, value) => { this.setState(previous => ({ ...previous, dropdownValue: value })) } }
+                    dropdownChange={(event, id, value) => { this.setState(previous => ({ ...previous, dropdownValue: value })) }}
                     onSubmit={this.onSubmitGroup}
-                    />
+                />
             </div>
         );
     }
 }
 
-export default connect()(CreateGroupBox);
+export default CreateGroupBox;

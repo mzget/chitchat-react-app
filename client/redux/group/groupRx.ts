@@ -76,7 +76,8 @@ export const groupReducer = (state = new GroupInitState(), action) => {
                     let prev = state.get("orgGroups") as Array<Room>;
                     let _next = prev.concat(group);
 
-                    return state.set("orgGroups", _next);
+                    return state.set("orgGroups", _next)
+                        .set("state", CREATE_GROUP_SUCCESS);
                 }
                 else return state;
             }

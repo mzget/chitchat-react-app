@@ -8,7 +8,6 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 const React = require("react");
-const react_redux_1 = require("react-redux");
 const CreateGroupForm_1 = require("./CreateGroupForm");
 const Room_1 = require("../../../server/scripts/models/Room");
 const groupRx = require("../../redux/group/groupRx");
@@ -56,4 +55,4 @@ class CreateGroupBox extends React.Component {
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect()(CreateGroupBox);
+exports.default = CreateGroupBox;

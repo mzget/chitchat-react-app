@@ -65,7 +65,8 @@ exports.groupReducer = (state = new exports.GroupInitState(), action) => {
                 if (group[0].type === Room_1.RoomType.organizationGroup) {
                     let prev = state.get("orgGroups");
                     let _next = prev.concat(group);
-                    return state.set("orgGroups", _next);
+                    return state.set("orgGroups", _next)
+                        .set("state", exports.CREATE_GROUP_SUCCESS);
                 }
                 else
                     return state;

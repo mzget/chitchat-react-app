@@ -13,6 +13,7 @@ import CreateGroupBox from "./admins/CreateGroupBox";
 import { DialogBox } from "../components/DialogBox";
 
 import * as adminRx from "../redux/admin/adminRx";
+import * as groupRx from "../redux/group/groupRx";
 
 import { Room, RoomType, RoomStatus } from "../../server/scripts/models/Room";
 
@@ -54,6 +55,19 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
         }
 
         this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
+    }
+
+    componentWillReceiveProps(nextProps: IComponentProps) {
+        const { groupReducer } = nextProps;
+
+        switch (groupReducer.state) {
+            case groupRx.CREATE_GROUP_SUCCESS: {
+                this.setState(prevState => ({ ...prevState, boxState: BoxState.idle }));
+                break;
+            }
+            default:
+                break;
+        }
     }
 
     onAdminMenuSelected(key: string) {

@@ -16,6 +16,7 @@ const ManageOrgChartBox_1 = require("./admins/ManageOrgChartBox");
 const CreateGroupBox_1 = require("./admins/CreateGroupBox");
 const DialogBox_1 = require("../components/DialogBox");
 const adminRx = require("../redux/admin/adminRx");
+const groupRx = require("../redux/group/groupRx");
 var BoxState;
 (function (BoxState) {
     BoxState[BoxState["idle"] = 0] = "idle";
@@ -51,6 +52,17 @@ class Admin extends React.Component {
             this.props.router.replace("/");
         }
         this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
+    }
+    componentWillReceiveProps(nextProps) {
+        const { groupReducer } = nextProps;
+        switch (groupReducer.state) {
+            case groupRx.CREATE_GROUP_SUCCESS: {
+                this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.idle })));
+                break;
+            }
+            default:
+                break;
+        }
     }
     onAdminMenuSelected(key) {
         console.log('onAdminMenuSelected', key);
