@@ -7,26 +7,33 @@ import ContentDrafts from 'material-ui/svg-icons/content/drafts';
 import Divider from 'material-ui/Divider';
 import ActionInfo from 'material-ui/svg-icons/action/info';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import Subheader from 'material-ui/Subheader';
 
 interface IComponentProps {
-    itemName: string[];
+    menus: string[];
     onSelectItem: (key: string) => void;
 }
 
 const getItem = (props: IComponentProps) => {
-    return props.itemName.map((item, i, arr) =>
-        <ListItem key={i} primaryText={item} leftIcon={<ActionGrade />} rightIcon={<ActionInfo />} onClick={() => props.onSelectItem(item)} />
+    return props.menus.map((item, i, arr) =>
+        <ListItem key={i}
+            primaryText={item}
+            leftIcon={<ActionGrade />}
+            rightIcon={<ActionInfo />}
+            onClick={() => props.onSelectItem(item)} />
     );
 };
 
 export const AdminMenu = (props: IComponentProps) => (
     <MuiThemeProvider >
         <div>
+            <Subheader>Menus</Subheader>
             <List> {
-                (props.itemName && props.itemName.length > 0) ?
+                (props.menus && props.menus.length > 0) ?
                     getItem(props) : null
             }
             </List>
+            <Divider />
             <Divider />
         </div>
     </MuiThemeProvider >

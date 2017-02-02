@@ -14,6 +14,7 @@ const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const AdminMenu_1 = require("./admins/AdminMenu");
 const ManageOrgChartBox_1 = require("./admins/ManageOrgChartBox");
 const CreateGroupBox_1 = require("./admins/CreateGroupBox");
+const TeamMemberBox_1 = require("./admins/TeamMemberBox");
 const DialogBox_1 = require("../components/DialogBox");
 const adminRx = require("../redux/admin/adminRx");
 const groupRx = require("../redux/group/groupRx");
@@ -22,6 +23,7 @@ var BoxState;
     BoxState[BoxState["idle"] = 0] = "idle";
     BoxState[BoxState["isCreateGroup"] = 1] = "isCreateGroup";
     BoxState[BoxState["isManageTeam"] = 2] = "isManageTeam";
+    BoxState[BoxState["isManageMember"] = 3] = "isManageMember";
 })(BoxState || (BoxState = {}));
 ;
 ;
@@ -34,7 +36,8 @@ class Admin extends React.Component {
         this.createOrgGroup = "create-org-group";
         this.createPjbGroup = "create-projectbase-group";
         this.createPvGroup = "create-group";
-        this.menus = [this.manageOrgChart, this.createOrgGroup, this.createPjbGroup, this.createPvGroup];
+        this.teamMember = "team-member";
+        this.menus = [this.manageOrgChart, this.createOrgGroup, this.createPjbGroup, this.createPvGroup, this.teamMember];
     }
     componentWillMount() {
         this.state = {
@@ -72,6 +75,9 @@ class Admin extends React.Component {
         else if (key === this.manageOrgChart) {
             this.setState(previous => (__assign({}, previous, { boxState: BoxState.isManageTeam })));
         }
+        else if (key === this.teamMember) {
+            this.setState(previous => (__assign({}, previous, { boxState: BoxState.isManageMember })));
+        }
     }
     onBackPressed() {
         if (this.state.boxState) {
@@ -98,8 +104,10 @@ class Admin extends React.Component {
                 return React.createElement(ManageOrgChartBox_1.default, __assign({}, this.props, { onError: this.onAlert }));
             case BoxState.isCreateGroup:
                 return React.createElement(CreateGroupBox_1.default, __assign({}, this.props, { onError: this.onAlert }));
+            case BoxState.isManageMember:
+                return React.createElement(TeamMemberBox_1.TeamMemberBox, __assign({}, this.props));
             default:
-                return React.createElement(AdminMenu_1.AdminMenu, { itemName: this.menus, onSelectItem: this.onAdminMenuSelected });
+                return React.createElement(AdminMenu_1.AdminMenu, { menus: this.menus, onSelectItem: this.onAdminMenuSelected });
         }
     }
     render() {
@@ -110,8 +118,6 @@ class Admin extends React.Component {
                 React.createElement(DialogBox_1.DialogBox, { title: this.alertTitle, message: this.alertMessage, open: this.state.alert, handleClose: this.closeAlert }))));
     }
 }
-const mapstateToProps = (state) => {
-    return __assign({}, state);
-};
+const mapstateToProps = (state) => (__assign({}, state));
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = react_redux_1.connect(mapstateToProps)(Admin);

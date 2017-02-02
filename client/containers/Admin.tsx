@@ -10,6 +10,7 @@ import SimpleToolbar from '../components/SimpleToolbar';
 import { AdminMenu } from './admins/AdminMenu';
 import ManageOrgChartBox from "./admins/ManageOrgChartBox";
 import CreateGroupBox from "./admins/CreateGroupBox";
+import { TeamMemberBox } from "./admins/TeamMemberBox";
 import { DialogBox } from "../components/DialogBox";
 
 import * as adminRx from "../redux/admin/adminRx";
@@ -18,7 +19,7 @@ import * as groupRx from "../redux/group/groupRx";
 import { Room, RoomType, RoomStatus } from "../../server/scripts/models/Room";
 
 enum BoxState {
-    idle = 0, isCreateGroup = 1, isManageTeam,
+    idle = 0, isCreateGroup = 1, isManageTeam, isManageMember
 };
 interface IComponentNameState {
     boxState: BoxState;
@@ -33,7 +34,8 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     createOrgGroup: string = "create-org-group";
     createPjbGroup: string = "create-projectbase-group";
     createPvGroup: string = "create-group";
-    menus = [this.manageOrgChart, this.createOrgGroup, this.createPjbGroup, this.createPvGroup];
+    teamMember: string = "team-member";
+    menus = [this.manageOrgChart, this.createOrgGroup, this.createPjbGroup, this.createPvGroup, this.teamMember];
 
     componentWillMount() {
         this.state = {
@@ -79,6 +81,9 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
         else if (key === this.manageOrgChart) {
             this.setState(previous => ({ ...previous, boxState: BoxState.isManageTeam }));
         }
+        else if (key === this.teamMember) {
+            this.setState(previous => ({ ...previous, boxState: BoxState.isManageMember }));
+        }
     }
 
     onBackPressed() {
@@ -106,11 +111,13 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     getAdminPanel() {
         switch (this.state.boxState) {
             case BoxState.isManageTeam:
-                return <ManageOrgChartBox {...this.props} onError={this.onAlert} />
+                return <ManageOrgChartBox {...this.props} onError={this.onAlert} />;
             case BoxState.isCreateGroup:
-                return <CreateGroupBox {...this.props} onError={this.onAlert} />
+                return <CreateGroupBox {...this.props} onError={this.onAlert} />;
+            case BoxState.isManageMember:
+                return <TeamMemberBox {...this.props} />;
             default:
-                return <AdminMenu itemName={this.menus} onSelectItem={this.onAdminMenuSelected} />;
+                return <AdminMenu menus={this.menus} onSelectItem={this.onAdminMenuSelected} />;
         }
     }
 
@@ -129,7 +136,5 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     }
 }
 
-const mapstateToProps = (state) => {
-    return { ...state };
-}
+const mapstateToProps = (state) => ({ ...state });
 export default connect(mapstateToProps)(Admin);

@@ -18,25 +18,23 @@ interface IComponentProps {
     onSelected: (item: ChitChatAccount) => void;
 }
 
-const renderList = (props: IComponentProps) => (props.value.map((item, i) => {
-    return (
-        <div key={i}>
-            <ListItem
-                onClick={() => props.onSelected(item)}
-                leftAvatar={(!!item.avatar) ?
-                    <Avatar src={item.avatar} /> : <Avatar>{item.username.charAt(0)}</Avatar>
-                }
-                rightIcon={null}
-                primaryText={item.username}
-                secondaryText={
-                    <p>
-                        <span style={{ color: darkBlack }}>{item.email}</span>
-                    </p>
-                }
-                />
-            <Divider inset={true} />
-        </div>)
-})
+const renderList = (props: IComponentProps) => props.value.map((item, i) =>
+    <div key={i}>
+        <ListItem
+            onClick={() => props.onSelected(item)}
+            leftAvatar={(!!item.avatar) ?
+                <Avatar src={item.avatar} /> : <Avatar>{item.username.charAt(0)}</Avatar>
+            }
+            rightIcon={null}
+            primaryText={item.username}
+            secondaryText={
+                <p>
+                    <span style={{ color: darkBlack }}>{item.email}</span>
+                </p>
+            }
+        />
+        <Divider inset={true} />
+    </div>
 );
 
 export const MemberList = (props: IComponentProps) => (
