@@ -1,6 +1,7 @@
 import { Router } from "react-router";
 
 export interface IComponentProps {
+    onError?: (error: string) => void;
     location: {
         query: {
             contactId: string;

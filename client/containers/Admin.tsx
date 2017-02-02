@@ -115,7 +115,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             case BoxState.isCreateGroup:
                 return <CreateGroupBox {...this.props} onError={this.onAlert} />;
             case BoxState.isManageMember:
-                return <TeamMemberBox {...this.props} />;
+                return <TeamMemberBox {...this.props} onError={this.onAlert} />;
             default:
                 return <AdminMenu menus={this.menus} onSelectItem={this.onAdminMenuSelected} />;
         }
