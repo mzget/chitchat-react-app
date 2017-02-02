@@ -3,12 +3,11 @@ import mongodb = require('mongodb');
 
 import * as apiUtils from '../scripts/utils/apiUtils';
 
-import * as TeamController from '../scripts/controllers/team/TeamController';
-
+import * as TeamController from "../scripts/controllers/team/TeamController";
+import * as UserManager from "../scripts/controllers/user/UserManager";
 const router = express.Router();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
-
 
 import { ChitChatAccount } from '../scripts/models/User';
 import { getConfig, DbClient } from '../config';
@@ -90,7 +89,7 @@ router.get('/', (req, res, next) => {
     }
 
     MongoClient.connect(config.chatDB).then(db => {
-        let collection = db.collection(DbClient.systemUsersColl);
+        let collection = db.collection(DbClient.chitchatUserColl);
 
         collection.find({ username: req.query.username }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
             if (docs.length >= 1) {
@@ -128,7 +127,7 @@ router.post("/signup", function (req: express.Request, res: express.Response, ne
     userModel.teams = new Array();
 
     MongoClient.connect(config.chatDB).then(function (db) {
-        let collection = db.collection(DbClient.systemUsersColl);
+        let collection = db.collection(DbClient.chitchatUserColl);
 
         collection.createIndex({ email: 1 }, { background: true });
 
@@ -242,5 +241,23 @@ var addGroupMember = function (roomId: string, user: ChitChatAccount, done: () =
         }
     });
 }
+
+router.post("/setOrgChartId", (req, res, next) => {
+    req.checkBody("user", "request for user object as body params").notEmpty();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let user = req.body.user as ChitChatAccount;
+
+    UserManager.updateOrgChart(user).then(result => {
+        res.status(200).json(new apiUtils.ApiResponse(false, null, result));
+    }).catch(err => {
+        console.error("Fail to updateOrgChart", err);
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
+    });
+});
 
 module.exports = router;

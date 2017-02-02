@@ -167,7 +167,7 @@ router.get("/teamMembers", function (req, res, next) {
 
     async function findTeamMembers(team_id: mongodb.ObjectID) {
         let db = await MongoClient.connect(config.chatDB);
-        let collection = db.collection(DbClient.systemUsersColl);
+        let collection = db.collection(DbClient.chitchatUserColl);
 
         let results = await collection.find({ teams: { $in: [team_id.toString()] } })
             .project({ username: 1, firstname: 1, lastname: 1, image: 1 })

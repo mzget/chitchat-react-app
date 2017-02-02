@@ -24,7 +24,7 @@ router.post('/', function (req, res, next) {
     let email = req.body.email.toLowerCase();
     let pass = req.body.password;
     MongoClient.connect(config.chatDB).then(db => {
-        let userColl = db.collection(config_1.DbClient.systemUsersColl);
+        let userColl = db.collection(config_1.DbClient.chitchatUserColl);
         userColl.find({ email: email }).project({ email: 1, password: 1 }).limit(1).toArray().then(docs => {
             if (docs.length > 0) {
                 let user = docs[0];

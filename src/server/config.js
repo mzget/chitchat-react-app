@@ -24,10 +24,11 @@ function getConfig() {
     return conf;
 }
 exports.getConfig = getConfig;
+exports.config = getConfig();
 exports.DbClient = {
-    systemUsersColl: "users",
+    chitchatUserColl: "users",
     chatroomColl: "rooms",
-    chatUserColl: "chatUsers",
+    stalkUserColl: "chatUsers",
     messageColl: "messages",
     teamsColl: "teams",
     orgChartCollection: "orgCharts"

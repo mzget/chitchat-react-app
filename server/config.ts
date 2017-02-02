@@ -33,11 +33,12 @@ export function getConfig(): Config {
 
     return conf;
 }
+export const config = getConfig();
 
 export const DbClient = {
-    systemUsersColl: "users",
+    chitchatUserColl: "users",
     chatroomColl: "rooms",
-    chatUserColl: "chatUsers",
+    stalkUserColl: "chatUsers",
     messageColl: "messages",
     teamsColl: "teams",
     orgChartCollection: "orgCharts"

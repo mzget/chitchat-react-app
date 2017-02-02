@@ -145,7 +145,7 @@ router.get("/teamMembers", function (req, res, next) {
     function findTeamMembers(team_id) {
         return __awaiter(this, void 0, void 0, function* () {
             let db = yield MongoClient.connect(config.chatDB);
-            let collection = db.collection(config_1.DbClient.systemUsersColl);
+            let collection = db.collection(config_1.DbClient.chitchatUserColl);
             let results = yield collection.find({ teams: { $in: [team_id.toString()] } })
                 .project({ username: 1, firstname: 1, lastname: 1, image: 1 })
                 .limit(100).toArray();

@@ -31,7 +31,7 @@ router.post('/', function (req, res, next) {
     let pass = req.body.password;
 
     MongoClient.connect(config.chatDB).then(db => {
-        let userColl = db.collection(DbClient.systemUsersColl);
+        let userColl = db.collection(DbClient.chitchatUserColl);
 
         userColl.find({ email: email }).project({ email: 1, password: 1 }).limit(1).toArray().then(docs => {
             if (docs.length > 0) {
@@ -95,7 +95,7 @@ router.post('/verify', (req, res, next) => {
         }
         else {
             let user_id = decoded._id;
-            
+
             // if everything is good, save to request for use in other routes
             req['decoded'] = decoded;
             res.status(200).json(new ApiResponse(true, null, decoded));

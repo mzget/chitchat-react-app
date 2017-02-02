@@ -17,7 +17,7 @@ router.post("/username", (req, res, next) => {
     }
 
     MongoClient.connect(webConfig.systemDB).then(db => {
-        let collection = db.collection(DbClient.systemUsersColl);
+        let collection = db.collection(DbClient.chitchatUserColl);
 
         collection.find({ username: req.body.username }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
             if (docs.length >= 1) {
