@@ -1,8 +1,17 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const express = require("express");
 const mongodb = require("mongodb");
 const apiUtils = require("../scripts/utils/apiUtils");
 const UserManager = require("../scripts/controllers/user/UserManager");
+const GroupController = require("../scripts/controllers/group/GroupController");
 const router = express.Router();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
@@ -218,8 +227,25 @@ router.post("/setOrgChartId", (req, res, next) => {
     if (errors) {
         return res.status(500).json(new apiUtils.ApiResponse(false, errors));
     }
+    // @todo..
+    // find old org_chart.
+    // remove user out of members list from all group of old org_chart.  
+    // add user to member of all group of new org_chart. 
     let user = req.body.user;
-    UserManager.updateOrgChart(user).then(result => {
+    let old_org_chart_id = "";
+    function setOrgChartId() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let docs = yield UserManager.getUserOrgChart(user._id.toString());
+            if (docs.length > 0 && !!docs[0].org_chart_id) {
+                old_org_chart_id = docs[0].org_chart_id;
+                let removeResult = yield GroupController.removeUserOutOfOrgChartGroups(user._id.toString(), old_org_chart_id.toString());
+            }
+            let addResult = yield GroupController.addUserToOrgChartGroups(user, user.org_chart_id.toString());
+            let result = yield UserManager.updateOrgChart(user);
+            return result;
+        });
+    }
+    setOrgChartId().then(result => {
         res.status(200).json(new apiUtils.ApiResponse(false, null, result));
     }).catch(err => {
         console.error("Fail to updateOrgChart", err);

@@ -8,7 +8,7 @@ const groupRx = require("./group/groupRx");
 const adminRx = require("./admin/adminRx");
 exports.rootEpic = redux_observable_1.combineEpics(
 // @Admin
-adminRx.createNewOrgChartEpic, adminRx.getOrgChartEpic, userRx.fetchUserEpic, userRx.fetchContactEpic, userRx.fetchAgentEpic, 
+adminRx.createNewOrgChartEpic, adminRx.getOrgChartEpic, adminRx.updateUserOrgChartEpic, userRx.fetchUserEpic, userRx.fetchContactEpic, userRx.fetchAgentEpic, 
 ///@ Signup user.
 authRx.signupUserEpic, authRx.authUserEpic, authRx.tokenAuthUserEpic, authRx.logoutUserEpic, 
 ///@Teams

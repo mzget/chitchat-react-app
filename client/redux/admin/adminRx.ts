@@ -46,3 +46,26 @@ export const getOrgChartEpic = action$ =>
             .takeUntil(action$.ofType(GET_ORG_CHART_CANCELLED))
             .catch(error => Rx.Observable.of(getOrgChartFailure(error.xhr.response)))
         );
+
+const UPDATE_USER_ORG_CHART = "UPDATE_USER_ORG_CHART";
+export const UPDATE_USER_ORG_CHART_SUCCESS = "UPDATE_USER_ORG_CHART_SUCCESS";
+const UPDATE_USER_ORG_CHART_FAILURE = "UPDATE_USER_ORG_CHART_FAILURE";
+const UPDATE_USER_ORG_CHART_CANCELLED = "UPDATE_USER_ORG_CHART_CANCELLED";
+export const updateUserOrgChart = createAction(UPDATE_USER_ORG_CHART, user => user);
+const updateUserOrgChartSuccess = createAction(UPDATE_USER_ORG_CHART_SUCCESS, payload => payload);
+const updateUserOrgChartFailure = createAction(UPDATE_USER_ORG_CHART_FAILURE, error => error);
+export const updateUserOrgChartCancelled = createAction(UPDATE_USER_ORG_CHART_CANCELLED);
+export const updateUserOrgChartEpic = action$ =>
+    action$.ofType(UPDATE_USER_ORG_CHART)
+        .mergeMap(action => ajax({
+            method: "POST",
+            url: `${config.api.user}/setOrgChartId`,
+            body: JSON.stringify({ user: action.payload }),
+            headers: {
+                "Content-Type": "application/json",
+                "x-access-token": Store.getState().authReducer.token
+            }
+        }).map(result => updateUserOrgChartSuccess(result.response.result))
+            .takeUntil(action$.ofType(UPDATE_USER_ORG_CHART_CANCELLED))
+            .catch(error => Rx.Observable.of(updateUserOrgChartFailure(error.xhr.response)))
+        );

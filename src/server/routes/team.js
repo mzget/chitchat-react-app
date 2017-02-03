@@ -147,7 +147,7 @@ router.get("/teamMembers", function (req, res, next) {
             let db = yield MongoClient.connect(config.chatDB);
             let collection = db.collection(config_1.DbClient.chitchatUserColl);
             let results = yield collection.find({ teams: { $in: [team_id.toString()] } })
-                .project({ username: 1, firstname: 1, lastname: 1, image: 1 })
+                .project({ username: 1, firstname: 1, lastname: 1, image: 1, org_chart_id: 1 })
                 .limit(100).toArray();
             db.close();
             return results;

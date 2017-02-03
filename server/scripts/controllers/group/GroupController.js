@@ -79,3 +79,28 @@ function addMember(group_id, user) {
     });
 }
 exports.addMember = addMember;
+function removeUserOutOfOrgChartGroups(user_id, orgChart_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let db = yield MongoClient.connect(config.chatDB);
+        let groupCollection = db.collection(config_1.DbClient.chatroomColl);
+        let results = yield groupCollection.updateMany({ org_chart_id: orgChart_id }, { $pull: { members: { $elemMatch: { _id: user_id } } } }, { upsert: false });
+        db.close();
+        return results.result;
+    });
+}
+exports.removeUserOutOfOrgChartGroups = removeUserOutOfOrgChartGroups;
+function addUserToOrgChartGroups(user, orgChart_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let db = yield MongoClient.connect(config.chatDB);
+        let groupCollection = db.collection(config_1.DbClient.chatroomColl);
+        let member = new Room_1.Member();
+        member._id = user._id;
+        member.joinTime = new Date();
+        member.room_role = Room_1.MemberRole.member;
+        member.username = user.username;
+        let results = yield groupCollection.updateMany({ org_chart_id: orgChart_id }, { $addToSet: { members: member } }, { upsert: false });
+        db.close();
+        return results.result;
+    });
+}
+exports.addUserToOrgChartGroups = addUserToOrgChartGroups;

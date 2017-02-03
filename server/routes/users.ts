@@ -5,12 +5,13 @@ import * as apiUtils from '../scripts/utils/apiUtils';
 
 import * as TeamController from "../scripts/controllers/team/TeamController";
 import * as UserManager from "../scripts/controllers/user/UserManager";
+import * as GroupController from "../scripts/controllers/group/GroupController";
 const router = express.Router();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 
-import { ChitChatAccount } from '../scripts/models/User';
-import { getConfig, DbClient } from '../config';
+import { ChitChatAccount } from "../scripts/models/User";
+import { getConfig, DbClient } from "../config";
 const config = getConfig();
 
 /* GET users listing. */
@@ -250,9 +251,29 @@ router.post("/setOrgChartId", (req, res, next) => {
         return res.status(500).json(new apiUtils.ApiResponse(false, errors));
     }
 
+    // @todo..
+    // find old org_chart.
+    // remove user out of members list from all group of old org_chart.  
+    // add user to member of all group of new org_chart. 
     let user = req.body.user as ChitChatAccount;
+    let old_org_chart_id = "";
 
-    UserManager.updateOrgChart(user).then(result => {
+    async function setOrgChartId() {
+        let docs: Array<ChitChatAccount> = await UserManager.getUserOrgChart(user._id.toString());
+
+        if (docs.length > 0 && !!docs[0].org_chart_id) {
+            old_org_chart_id = docs[0].org_chart_id;
+
+            let removeResult = await GroupController.removeUserOutOfOrgChartGroups(user._id.toString(), old_org_chart_id.toString());
+        }
+
+        let addResult = await GroupController.addUserToOrgChartGroups(user, user.org_chart_id.toString());
+        let result = await UserManager.updateOrgChart(user);
+
+        return result;
+    }
+
+    setOrgChartId().then(result => {
         res.status(200).json(new apiUtils.ApiResponse(false, null, result));
     }).catch(err => {
         console.error("Fail to updateOrgChart", err);

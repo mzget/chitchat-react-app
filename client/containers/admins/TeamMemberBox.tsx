@@ -6,7 +6,10 @@ import { IComponentProps } from "../../utils/IComponentProps";
 import { MemberList } from "../chatlist/MemberList";
 import { ContactProfile } from "./ContactProfile";
 
+import * as adminRx from "../../redux/admin/adminRx";
+
 import { ChitChatAccount } from "../../../server/scripts/models/User";
+import { IOrgChart } from "../../../server/scripts/models/OrgChart";
 
 interface IComponentState {
     member: ChitChatAccount;
@@ -24,13 +27,34 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
         this.onSubmit = this.onSubmit.bind(this);
     }
 
+    componentWillReceiveProps(nextProps: IComponentProps) {
+        let {adminReducer} = nextProps;
 
-    componentWillReceiveProps(nextProps) {
+        switch (adminReducer.state) {
+            case adminRx.UPDATE_USER_ORG_CHART_SUCCESS:
+                this.setState(previous => ({ ...previous, member: null }));
+                break;
 
+            default:
+                break;
+        }
     }
 
+
     onSelectMember(item: ChitChatAccount) {
-        this.setState(previous => ({ ...previous, member: item }));
+        let {adminReducer: {orgCharts}} = this.props;
+
+        console.info(item);
+        if (!item.org_chart_id) {
+            this.setState(previous => ({ ...previous, member: item, dropdownValue: -1 }));
+        }
+        else {
+            let charts = orgCharts as Array<IOrgChart>;
+            let chart_ids = charts.findIndex((v, i, arr) => {
+                return v._id.toString() === item.org_chart_id;
+            });
+            this.setState(previous => ({ ...previous, member: item, dropdownValue: chart_ids }));
+        }
     }
 
     onSubmit() {
@@ -40,7 +64,7 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
         _member.org_chart_id = orgCharts[this.state.dropdownValue]._id;
 
         if (_member) {
-            console.log(_member);
+            this.props.dispatch(adminRx.updateUserOrgChart(_member));
         }
         else {
             if (this.props.onError) {

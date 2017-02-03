@@ -6,6 +6,7 @@ export enum OrgLevel {
 }
 
 export interface IOrgChart {
+    _id: string;
     node_id: number;
     chart_id: number;
     chart_level: OrgLevel;

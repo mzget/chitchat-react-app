@@ -4,6 +4,7 @@ import mongodb = require('mongodb');
 import * as apiUtils from '../scripts/utils/apiUtils';
 
 import { ITeam } from '../scripts/models/ITeam';
+import { ChitChatAccount } from "../scripts/models/User";
 
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
@@ -170,11 +171,11 @@ router.get("/teamMembers", function (req, res, next) {
         let collection = db.collection(DbClient.chitchatUserColl);
 
         let results = await collection.find({ teams: { $in: [team_id.toString()] } })
-            .project({ username: 1, firstname: 1, lastname: 1, image: 1 })
+            .project({ username: 1, firstname: 1, lastname: 1, image: 1, org_chart_id: 1 })
             .limit(100).toArray();
 
         db.close();
-        return results;
+        return results as Array<ChitChatAccount>;
     }
 
     findTeamMembers(team_id).then(docs => {

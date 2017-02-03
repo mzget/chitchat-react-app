@@ -11,6 +11,7 @@ export const rootEpic = combineEpics(
     // @Admin
     adminRx.createNewOrgChartEpic,
     adminRx.getOrgChartEpic,
+    adminRx.updateUserOrgChartEpic,
 
     userRx.fetchUserEpic,
     userRx.fetchContactEpic,

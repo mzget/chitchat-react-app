@@ -500,3 +500,13 @@ export async function updateOrgChart(user: ChitChatAccount) {
     db.close();
     return result.result;
 }
+
+export async function getUserOrgChart(user_id: string) {
+    let db = await MongoClient.connect(config.chatDB);
+    let chitchatUserColl = db.collection(DbClient.chitchatUserColl);
+
+    let docs = await chitchatUserColl.find(
+        { _id: new ObjectID(user_id) }).project({ org_chart_id: 1 }).limit(1).toArray();
+    db.close();
+    return docs;
+}

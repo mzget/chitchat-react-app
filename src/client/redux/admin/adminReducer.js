@@ -18,6 +18,9 @@ exports.adminReducer = (state = adminInitState, action) => {
             return state.set("orgCharts", _orgCharts)
                 .set("state", adminRx.CREATE_NEW_ORG_CHART_SUCCESS);
         }
+        case adminRx.UPDATE_USER_ORG_CHART_SUCCESS: {
+            return state.set("state", adminRx.UPDATE_USER_ORG_CHART_SUCCESS);
+        }
         default:
             return state;
     }

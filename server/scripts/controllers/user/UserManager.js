@@ -431,3 +431,13 @@ function updateOrgChart(user) {
     });
 }
 exports.updateOrgChart = updateOrgChart;
+function getUserOrgChart(user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let db = yield MongoClient.connect(config.chatDB);
+        let chitchatUserColl = db.collection(config_1.DbClient.chitchatUserColl);
+        let docs = yield chitchatUserColl.find({ _id: new ObjectID(user_id) }).project({ org_chart_id: 1 }).limit(1).toArray();
+        db.close();
+        return docs;
+    });
+}
+exports.getUserOrgChart = getUserOrgChart;

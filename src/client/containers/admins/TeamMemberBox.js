@@ -11,6 +11,7 @@ const React = require("react");
 const reflexbox_1 = require("reflexbox");
 const MemberList_1 = require("../chatlist/MemberList");
 const ContactProfile_1 = require("./ContactProfile");
+const adminRx = require("../../redux/admin/adminRx");
 ;
 class TeamMemberBox extends React.Component {
     componentWillMount() {
@@ -22,16 +23,35 @@ class TeamMemberBox extends React.Component {
         this.onSubmit = this.onSubmit.bind(this);
     }
     componentWillReceiveProps(nextProps) {
+        let { adminReducer } = nextProps;
+        switch (adminReducer.state) {
+            case adminRx.UPDATE_USER_ORG_CHART_SUCCESS:
+                this.setState(previous => (__assign({}, previous, { member: null })));
+                break;
+            default:
+                break;
+        }
     }
     onSelectMember(item) {
-        this.setState(previous => (__assign({}, previous, { member: item })));
+        let { adminReducer: { orgCharts } } = this.props;
+        console.info(item);
+        if (!item.org_chart_id) {
+            this.setState(previous => (__assign({}, previous, { member: item, dropdownValue: -1 })));
+        }
+        else {
+            let charts = orgCharts;
+            let chart_ids = charts.findIndex((v, i, arr) => {
+                return v._id.toString() === item.org_chart_id;
+            });
+            this.setState(previous => (__assign({}, previous, { member: item, dropdownValue: chart_ids })));
+        }
     }
     onSubmit() {
         let { adminReducer: { orgCharts } } = this.props;
         let _member = this.state.member;
         _member.org_chart_id = orgCharts[this.state.dropdownValue]._id;
         if (_member) {
-            console.log(_member);
+            this.props.dispatch(adminRx.updateUserOrgChart(_member));
         }
         else {
             if (this.props.onError) {
