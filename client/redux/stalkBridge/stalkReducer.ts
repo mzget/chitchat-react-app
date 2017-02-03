@@ -4,11 +4,10 @@
  * This is pure function for redux app.
  */
 
-import * as ChatlogsActions from "../chatlogs/chatlogsActions";
 import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
 import * as StalkNotificationActions from "./StalkNotificationActions";
 
-import { Record } from 'immutable';
+import { Record } from "immutable";
 
 /**
  * ## Initial State
@@ -22,7 +21,6 @@ export const StalkInitState = Record({
     isInit: false,
     isFetching: false,
     state: null,
-    chatslogComponent: null,
     notiMessage: "",
     stalkToken: ""
 });
@@ -32,11 +30,6 @@ export function stalkReducer(state = initialState, action) {
     if (!(state instanceof StalkInitState)) return initialState.mergeDeep(state);
 
     switch (action.type) {
-        case ChatlogsActions.STALK_INIT_CHATSLOG: {
-            return state.set("chatslogComponent", action.payload)
-                .set("state", ChatlogsActions.STALK_INIT_CHATSLOG);
-        }
-
         case StalkBridgeActions.STALK_INIT: {
             return state.set("isInit", false)
                 .set("state", StalkBridgeActions.STALK_INIT);

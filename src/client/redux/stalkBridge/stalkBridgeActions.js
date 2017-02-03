@@ -7,7 +7,6 @@
 const BackendFactory_1 = require("../../chats/BackendFactory");
 const StalkNotificationAction = require("./StalkNotificationActions");
 const DataModels = require("../../chats/models/ChatDataModels");
-const ServiceProvider = require("../../chats/services/ServiceProvider");
 const configureStore_1 = require("../configureStore");
 const ChatLogsActions = require("../chatlogs/chatlogsActions");
 const StalkPushActions = require("./stalkPushActions");
@@ -112,26 +111,3 @@ function stalkLogin(user) {
     });
 }
 exports.stalkLogin = stalkLogin;
-const GET_LAST_ACCESS_ROOM_SUCCESS = "GET_LAST_ACCESS_ROOM_SUCCESS";
-const GET_LAST_ACCESS_ROOM_FAILURE = "GET_LAST_ACCESS_ROOM_FAILURE";
-const getLastAccessRoomSuccess = (payload) => ({ type: GET_LAST_ACCESS_ROOM_SUCCESS, payload });
-const getLastAccessRoomFailure = (error) => ({ type: GET_LAST_ACCESS_ROOM_FAILURE, payload: error });
-function getLastAccessRoom() {
-    return dispatch => {
-        let token = configureStore_1.default.getState().authReducer.token;
-        ServiceProvider.getLastAccessRoomInfo(token)
-            .then(response => response.json())
-            .then(json => {
-            if (json.success) {
-                dispatch(getLastAccessRoomSuccess(json.result));
-                BackendFactory_1.default.getInstance().dataListener.onAccessRoom(json.result);
-            }
-            else {
-                dispatch(getLastAccessRoomFailure(json.message));
-            }
-        }).catch(err => {
-            dispatch(getLastAccessRoomFailure(err));
-        });
-    };
-}
-exports.getLastAccessRoom = getLastAccessRoom;

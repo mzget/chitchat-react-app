@@ -51,7 +51,7 @@ class Main extends React.Component {
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
     }
     componentWillReceiveProps(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, chatroomReducer, teamReducer } = nextProps;
+        let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer } = nextProps;
         switch (userReducer.state) {
             case userRx.FETCH_USER_SUCCESS: {
                 if (userReducer.user) {
@@ -64,7 +64,7 @@ class Main extends React.Component {
                 break;
             default:
                 if (!userReducer.user) {
-                    this.props.router.push('/');
+                    this.props.router.push("/");
                 }
                 break;
         }
@@ -79,8 +79,12 @@ class Main extends React.Component {
                     }
                 }
                 break;
+            default:
+                break;
+        }
+        switch (chatlogReducer.state) {
             case chatlogsActions.STALK_INIT_CHATSLOG: {
-                this.props.dispatch(StalkBridgeActions.getLastAccessRoom());
+                this.props.dispatch(chatlogsActions.getLastAccessRoom());
                 break;
             }
             default:

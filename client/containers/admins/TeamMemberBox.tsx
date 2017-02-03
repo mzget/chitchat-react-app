@@ -85,7 +85,7 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
                                 onSubmit={this.onSubmit}
                                 dropdownItems={this.props.adminReducer.orgCharts}
                                 dropdownValue={this.state.dropdownValue}
-                                dropdownChange={(event, id, value) => { this.setState(previous => ({ ...previous, dropdownValue: value })) }}
+                                dropdownChange={(event, id, value) => { this.setState(previous => ({ ...previous, dropdownValue: value })); }}
                             />
                             :
                             <MemberList onSelected={this.onSelectMember} value={this.props.teamReducer.members} />

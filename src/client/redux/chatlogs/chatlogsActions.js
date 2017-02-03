@@ -1,33 +1,33 @@
 "use strict";
 const BackendFactory_1 = require("../../chats/BackendFactory");
 const chatslogComponent_1 = require("../../chats/chatslogComponent");
+const ServiceProvider = require("../../chats/services/ServiceProvider");
 const configureStore_1 = require("../configureStore");
-exports.STALK_INIT_CHATSLOG = 'STALK_INIT_CHATSLOG';
-exports.STALK_GET_CHATSLOG_COMPLETE = 'STALK_GET_CHATSLOG_COMPLETE';
-exports.STALK_UNREAD_MAP_CHANGED = 'STALK_UNREAD_MAP_CHANGED';
-exports.STALK_CHATLOG_MAP_CHANGED = 'STALK_CHATLOG_MAP_CHANGED';
-exports.STALK_CHATLOG_CONTACT_COMPLETE = 'STALK_CHATLOG_CONTACT_COMPLETE';
+const chatsLogComp = () => configureStore_1.default.getState().chatlogReducer.chatslogComponent;
+exports.STALK_INIT_CHATSLOG = "STALK_INIT_CHATSLOG";
+exports.STALK_GET_CHATSLOG_COMPLETE = "STALK_GET_CHATSLOG_COMPLETE";
+exports.STALK_UNREAD_MAP_CHANGED = "STALK_UNREAD_MAP_CHANGED";
+exports.STALK_CHATLOG_MAP_CHANGED = "STALK_CHATLOG_MAP_CHANGED";
+exports.STALK_CHATLOG_CONTACT_COMPLETE = "STALK_CHATLOG_CONTACT_COMPLETE";
 const listenerImp = (newMsg) => {
-    let chatsLogComp = configureStore_1.default.getState().stalkReducer.chatslogComponent;
     let dataManager = BackendFactory_1.default.getInstance().dataManager;
     if (!dataManager.isMySelf(newMsg.sender)) {
-        chatsLogComp.increaseChatsLogCount(1);
+        chatsLogComp().increaseChatsLogCount(1);
         let unread = new chatslogComponent_1.Unread();
         unread.message = newMsg;
         unread.rid = newMsg.rid;
-        let count = (!!chatsLogComp.getUnreadItem(newMsg.rid)) ? chatsLogComp.getUnreadItem(newMsg.rid).count : 0;
+        let count = (!!chatsLogComp().getUnreadItem(newMsg.rid)) ? chatsLogComp().getUnreadItem(newMsg.rid).count : 0;
         count++;
         unread.count = count;
-        chatsLogComp.addUnreadMessage(unread);
+        chatsLogComp().addUnreadMessage(unread);
         onUnreadMessageMapChanged(unread);
     }
 };
 function updateLastAccessTimeEventHandler(newRoomAccess) {
-    let chatsLogComp = configureStore_1.default.getState().stalkReducer.chatslogComponent;
     let token = configureStore_1.default.getState().authReducer.token;
-    chatsLogComp.getUnreadMessage(token, newRoomAccess.roomAccess[0], function (err, unread) {
+    chatsLogComp().getUnreadMessage(token, newRoomAccess.roomAccess[0], function (err, unread) {
         if (!!unread) {
-            chatsLogComp.addUnreadMessage(unread);
+            chatsLogComp().addUnreadMessage(unread);
             calculateUnreadCount();
             onUnreadMessageMapChanged(unread);
         }
@@ -59,13 +59,12 @@ function initChatsLog() {
 }
 exports.initChatsLog = initChatsLog;
 function getUnreadMessages() {
-    let chatsLogComp = configureStore_1.default.getState().stalkReducer.chatslogComponent;
     let dataManager = BackendFactory_1.default.getInstance().dataManager;
     let token = configureStore_1.default.getState().authReducer.token;
-    chatsLogComp.getUnreadMessages(token, dataManager.getRoomAccess(), function done(err, unreadLogs) {
+    chatsLogComp().getUnreadMessages(token, dataManager.getRoomAccess(), function done(err, unreadLogs) {
         if (!!unreadLogs) {
             unreadLogs.map(function element(unread) {
-                chatsLogComp.addUnreadMessage(unread);
+                chatsLogComp().addUnreadMessage(unread);
             });
             calculateUnreadCount();
         }
@@ -73,29 +72,23 @@ function getUnreadMessages() {
     });
 }
 function calculateUnreadCount() {
-    let chatsLogComp = configureStore_1.default.getState().stalkReducer.chatslogComponent;
-    chatsLogComp.calculateChatsLogCount();
+    chatsLogComp().calculateChatsLogCount();
 }
 function increaseLogsCount(count) {
-    let chatsLogComp = configureStore_1.default.getState().stalkReducer.chatslogComponent;
-    chatsLogComp.increaseChatsLogCount(count);
+    chatsLogComp().increaseChatsLogCount(count);
 }
 function decreaseLogsCount(count) {
-    let chatsLogComp = configureStore_1.default.getState().stalkReducer.chatslogComponent;
-    chatsLogComp.decreaseChatsLogCount(count);
+    chatsLogComp().decreaseChatsLogCount(count);
 }
 function getChatsLogCount() {
-    let chatsLogComp = configureStore_1.default.getState().stalkReducer.chatslogComponent;
-    return chatsLogComp ? chatsLogComp.getChatsLogCount() : null;
+    return chatsLogComp ? chatsLogComp().getChatsLogCount() : null;
 }
 exports.getChatsLogCount = getChatsLogCount;
 function getUnreadMessageMap() {
-    let chatsLogComp = configureStore_1.default.getState().stalkReducer.chatslogComponent;
-    return chatsLogComp.getUnreadMessageMap();
+    return chatsLogComp().getUnreadMessageMap();
 }
 function getChatsLog() {
-    let chatsLogComp = configureStore_1.default.getState().stalkReducer.chatslogComponent;
-    let chatsLog = chatsLogComp.getChatsLog();
+    let chatsLog = chatsLogComp().getChatsLog();
     configureStore_1.default.dispatch({
         type: exports.STALK_GET_CHATSLOG_COMPLETE,
         payload: chatsLog
@@ -105,9 +98,8 @@ function onUnreadMessageMapChanged(unread) {
     configureStore_1.default.dispatch({
         type: exports.STALK_UNREAD_MAP_CHANGED, payload: unread
     });
-    let chatsLogComp = configureStore_1.default.getState().stalkReducer.chatslogComponent;
-    chatsLogComp.checkRoomInfo(unread).then(function () {
-        let chatsLog = chatsLogComp.getChatsLog();
+    chatsLogComp().checkRoomInfo(unread).then(function () {
+        let chatsLog = chatsLogComp().getChatsLog();
         configureStore_1.default.dispatch({
             type: exports.STALK_CHATLOG_MAP_CHANGED,
             payload: chatsLog
@@ -117,8 +109,7 @@ function onUnreadMessageMapChanged(unread) {
     });
 }
 function getUnreadMessageComplete() {
-    let chatsLogComp = configureStore_1.default.getState().stalkReducer.chatslogComponent;
-    chatsLogComp.getRoomsInfo();
+    chatsLogComp().getRoomsInfo();
 }
 const getChatLogContact = (chatlog) => {
     let dataManager = BackendFactory_1.default.getInstance().dataManager;
@@ -127,3 +118,25 @@ const getChatLogContact = (chatlog) => {
     });
     return (contacts.length > 0) ? contacts[0].id : null;
 };
+exports.GET_LAST_ACCESS_ROOM_SUCCESS = "GET_LAST_ACCESS_ROOM_SUCCESS";
+exports.GET_LAST_ACCESS_ROOM_FAILURE = "GET_LAST_ACCESS_ROOM_FAILURE";
+const getLastAccessRoomSuccess = (payload) => ({ type: exports.GET_LAST_ACCESS_ROOM_SUCCESS, payload });
+const getLastAccessRoomFailure = (error) => ({ type: exports.GET_LAST_ACCESS_ROOM_FAILURE, payload: error });
+function getLastAccessRoom() {
+    return dispatch => {
+        let token = configureStore_1.default.getState().authReducer.token;
+        ServiceProvider.getLastAccessRoomInfo(token).then(response => response.json())
+            .then(json => {
+            if (json.success) {
+                dispatch(getLastAccessRoomSuccess(json.result));
+                BackendFactory_1.default.getInstance().dataListener.onAccessRoom(json.result);
+            }
+            else {
+                dispatch(getLastAccessRoomFailure(json.message));
+            }
+        }).catch(err => {
+            dispatch(getLastAccessRoomFailure(err));
+        });
+    };
+}
+exports.getLastAccessRoom = getLastAccessRoom;

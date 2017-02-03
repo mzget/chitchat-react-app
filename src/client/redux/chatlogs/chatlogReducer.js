@@ -15,15 +15,20 @@ const immutable_1 = require("immutable");
  * fields it contains.
  */
 exports.ChatLogInitState = immutable_1.Record({
-    chatsLog: null,
     isFetching: false,
-    state: null
+    state: null,
+    chatsLog: null,
+    chatslogComponent: null
 });
 const initialState = new exports.ChatLogInitState();
 function chatlogReducer(state = initialState, action) {
     if (!(state instanceof exports.ChatLogInitState))
         return initialState.mergeDeep(state);
     switch (action.type) {
+        case ChatlogsActions.STALK_INIT_CHATSLOG: {
+            return state.set("chatslogComponent", action.payload)
+                .set("state", ChatlogsActions.STALK_INIT_CHATSLOG);
+        }
         case ChatlogsActions.STALK_GET_CHATSLOG_COMPLETE: {
             return state.set("chatsLog", action.payload).set("state", ChatlogsActions.STALK_GET_CHATSLOG_COMPLETE);
         }
@@ -39,6 +44,9 @@ function chatlogReducer(state = initialState, action) {
             let nextState = state.set("chatsLog", action.payload)
                 .set("state", ChatlogsActions.STALK_CHATLOG_MAP_CHANGED);
             return nextState;
+        }
+        case ChatlogsActions.GET_LAST_ACCESS_ROOM_SUCCESS: {
+            return state.set("state", ChatlogsActions.GET_LAST_ACCESS_ROOM_SUCCESS);
         }
         default:
             return state;

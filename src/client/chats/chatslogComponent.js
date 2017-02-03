@@ -127,7 +127,7 @@ class ChatsLogComponent {
     getUnreadMessages(token, roomAccess, callback) {
         let self = this;
         let unreadLogs = new Array();
-        async.mapSeries(roomAccess, function iterator(item, cb) {
+        async.map(roomAccess, function iterator(item, cb) {
             if (!!item.roomId && !!item.accessTime) {
                 ServiceProvider.getUnreadMessage(item.roomId, item.accessTime.toString(), token)
                     .then(response => response.json())
@@ -138,8 +138,6 @@ class ChatsLogComponent {
                         unread.rid = item.roomId;
                         unreadLogs.push(unread);
                     }
-                    cb(null, null);
-                }).catch(err => {
                     cb(null, null);
                 });
             }

@@ -9,7 +9,6 @@ import * as StalkNotificationAction from "./StalkNotificationActions";
 import * as DataModels from "../../chats/models/ChatDataModels";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
 import StalkImp, { IDictionary } from "../../libs/stalk/serverImplemented";
-import * as ServiceProvider from "../../chats/services/ServiceProvider";
 
 import config from "../../configs/config";
 import Store from "../configureStore";
@@ -132,29 +131,4 @@ export function stalkLogin(user: any) {
 
         Store.dispatch({ type: STALK_INIT_FAILURE });
     });
-}
-
-const GET_LAST_ACCESS_ROOM_SUCCESS = "GET_LAST_ACCESS_ROOM_SUCCESS";
-const GET_LAST_ACCESS_ROOM_FAILURE = "GET_LAST_ACCESS_ROOM_FAILURE";
-const getLastAccessRoomSuccess = (payload) => ({ type: GET_LAST_ACCESS_ROOM_SUCCESS, payload });
-const getLastAccessRoomFailure = (error) => ({ type: GET_LAST_ACCESS_ROOM_FAILURE, payload: error });
-export function getLastAccessRoom() {
-    return dispatch => {
-        let token = Store.getState().authReducer.token;
-
-        ServiceProvider.getLastAccessRoomInfo(token)
-            .then(response => response.json())
-            .then(json => {
-                if (json.success) {
-                    dispatch(getLastAccessRoomSuccess(json.result));
-
-                    BackendFactory.getInstance().dataListener.onAccessRoom(json.result);
-                }
-                else {
-                    dispatch(getLastAccessRoomFailure(json.message));
-                }
-            }).catch(err => {
-                dispatch(getLastAccessRoomFailure(err));
-            });
-    }
 }

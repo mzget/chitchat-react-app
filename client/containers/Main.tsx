@@ -34,7 +34,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     footerHeight = null;
 
     componentWillMount() {
-        const {teamReducer } = this.props;
+        const { teamReducer } = this.props;
 
         if (!teamReducer.team)
             this.props.router.replace("/");
@@ -51,7 +51,10 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let {location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer, chatroomReducer, teamReducer} = nextProps;
+        let {
+            location: {query: {userId, username, roomId, contactId}},
+            userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer
+        } = nextProps;
 
         switch (userReducer.state) {
             case userRx.FETCH_USER_SUCCESS: {
@@ -65,7 +68,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                 break;
             default:
                 if (!userReducer.user) {
-                    this.props.router.push('/');
+                    this.props.router.push("/");
                 }
                 break;
         }
@@ -81,8 +84,13 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                     }
                 }
                 break;
+            default:
+                break;
+        }
+
+        switch (chatlogReducer.state) {
             case chatlogsActions.STALK_INIT_CHATSLOG: {
-                this.props.dispatch(StalkBridgeActions.getLastAccessRoom());
+                this.props.dispatch(chatlogsActions.getLastAccessRoom());
                 break;
             }
             default:

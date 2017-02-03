@@ -150,7 +150,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
     public getUnreadMessages(token: string, roomAccess: DataModels.RoomAccessData[], callback: (err, logsData: Array<IUnread>) => void) {
         let self = this;
         let unreadLogs = new Array<IUnread>();
-        async.mapSeries(roomAccess, function iterator(item, cb) {
+        async.map(roomAccess, function iterator(item, cb) {
             if (!!item.roomId && !!item.accessTime) {
                 ServiceProvider.getUnreadMessage(item.roomId, item.accessTime.toString(), token)
                     .then(response => response.json())
@@ -162,8 +162,6 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
                             unreadLogs.push(unread);
                         }
 
-                        cb(null, null);
-                    }).catch(err => {
                         cb(null, null);
                     });
             }
