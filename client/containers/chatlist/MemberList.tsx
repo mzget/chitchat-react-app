@@ -1,13 +1,13 @@
-﻿import * as React from 'react';
-import { Flex, Box } from 'reflexbox';
+﻿import * as React from "react";
+import { Flex, Box } from "reflexbox";
 
-import { List, ListItem } from 'material-ui/List';
-import Divider from 'material-ui/Divider';
-import Subheader from 'material-ui/Subheader';
-import { grey400, darkBlack, lightBlack } from 'material-ui/styles/colors';
+import { List, ListItem } from "material-ui/List";
+import Divider from "material-ui/Divider";
+import Subheader from "material-ui/Subheader";
+import { grey400, darkBlack, lightBlack } from "material-ui/styles/colors";
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import Avatar from 'material-ui/Avatar';
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import Avatar from "material-ui/Avatar";
 
 import BadgeSimple from "../../components/BadgeSimple";
 

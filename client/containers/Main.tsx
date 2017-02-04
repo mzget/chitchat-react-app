@@ -3,11 +3,11 @@ import { connect } from "react-redux";
 import { Flex, Box } from "reflexbox";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
-import Subheader from "material-ui/Subheader";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
 import SimpleToolbar from "../components/SimpleToolbar";
+import ProfileBox from "./profile/ProfileBox";
 import OrgGroupListBox from "./group/OrgGroupListBox";
 import ChatLogsBox from "./ChatLogsBox";
 import ContactBox from "./chatlist/ContactBox";
@@ -147,9 +147,9 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                 <div>
                     <div style={{ height: this.headerHeight }}>
                         <SimpleToolbar title={this.props.teamReducer.team.name} menus={this.menus} onSelectedMenuItem={this.onSelectMenuItem} />
-                        <Subheader>{this.state.header}</Subheader>
                     </div>
-                    <div style={{ height: this.bodyHeight }}>
+                    <div style={{ height: this.bodyHeight, overflowY: "auto" }}>
+                        <ProfileBox {...this.props} />
                         <OrgGroupListBox {...this.props} />
                         <ContactBox {...this.props} />
                         <ChatLogsBox {...this.props} />

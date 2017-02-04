@@ -1,13 +1,13 @@
-import redis = require('redis');
+import redis = require("redis");
 import config = require("../../config");
 const getConfig = config.getConfig();
 
 const redisClient = redis.createClient(getConfig.redis_port, getConfig.redis_host);
-redisClient.on('connect', function () {
-    console.log('redis connected');
+redisClient.on("connect", function () {
+    console.log("redis connected");
 });
 redisClient.on("error", function (err) {
-    console.log("redis Error " + err);
+    console.error("redis Error " + err);
 });
 
 export default redisClient;

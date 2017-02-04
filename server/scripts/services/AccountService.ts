@@ -1,8 +1,8 @@
-﻿import * as User from '../models/User';
-import * as Room from '../models/Room';
+﻿import * as User from "../models/User";
+import * as Room from "../models/Room";
 
-import redis = require('redis');
-import redisClient, { ROOM_MAP_KEY } from './CachingSevice';
+import redis = require("redis");
+import redisClient, { ROOM_MAP_KEY } from "./CachingSevice";
 
 interface IRoomsMap {
     [rid: string]: Room.Room;
