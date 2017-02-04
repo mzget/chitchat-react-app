@@ -8,6 +8,7 @@ import * as async from "async";
 
 import BackendFactory from "./BackendFactory";
 import DataManager from "./dataManager";
+import DataListener from "./dataListener";
 import ServerImplemented from "../libs/stalk/serverImplemented";
 import ChatRoomApiProvider from "../libs/stalk/chatRoomApiProvider";
 import ServerEventListener from "../libs/stalk/serverEventListener";
@@ -46,6 +47,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
     }
     private secure: ISecureService;
     private dataManager: DataManager;
+    private dataListener: DataListener;
 
     constructor() {
         this.secure = SecureServiceFactory.getService();
@@ -56,6 +58,9 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
 
         });
         this.dataManager = BackendFactory.getInstance().dataManager;
+        this.dataListener = BackendFactory.getInstance().dataListener;
+
+        this.dataListener.addOnChatListener(this.onChat.bind(this));
     }
 
     onChat(message: MessageImp) {
@@ -66,16 +71,18 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
             chatMessages.push(message);
 
             self.dataManager.messageDAL.saveData(self.roomId, chatMessages).then(chats => {
-                if (!!this.chatroomDelegate)
+                if (!!this.chatroomDelegate) {
                     this.chatroomDelegate(ServerEventListener.ON_CHAT, message);
+                }
             });
         };
 
-        this.dataManager.messageDAL.getData(this.roomId).then((chats: Array<any>) => {
-            return chats;
-        }).then((chats: IMessage[]) => {
-            let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
-            if (this.roomId === message.rid) {
+        if (this.roomId === message.rid) {
+            this.dataManager.messageDAL.getData(this.roomId).then((chats: Array<any>) => {
+                return chats;
+            }).then((chats: IMessage[]) => {
+                let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
+
                 if (message.type === ContentType[ContentType.Text]) {
                     CryptoHelper.decryptionText(message).then(decoded => {
                         saveMessages(chatMessages);
@@ -90,25 +97,17 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                 else {
                     saveMessages(chatMessages);
                 }
+            }).catch(err => {
+                console.error("Cannot get persistend message of room", err);
+            });
+        }
+        else {
+            console.info("this msg come from other room.");
+
+            if (!!this.outsideRoomDelegete) {
+                this.outsideRoomDelegete(ServerEventListener.ON_CHAT, message);
             }
-            else {
-                console.info("this msg come from other room.");
-
-                if (!!this.outsideRoomDelegete) {
-                    this.outsideRoomDelegete(ServerEventListener.ON_CHAT, message);
-                }
-            }
-        }).catch(err => {
-            console.error("Cannot get persistend message of room", err);
-        });
-    }
-
-    onLeaveRoom(data) {
-
-    }
-
-    onRoomJoin(data) {
-
+        }
     }
 
     onMessageRead(dataEvent) {
@@ -427,6 +426,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
     }
 
     public dispose() {
+        this.dataListener.removeOnChatListener(this.onChat.bind(this));
         ChatRoomComponent.instance = null;
     }
 }

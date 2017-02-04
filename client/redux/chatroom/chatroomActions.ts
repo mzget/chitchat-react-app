@@ -67,7 +67,6 @@ export function initChatRoom(currentRoom: Room) {
 
     let chatroomComp = ChatRoomComponent.getInstance();
     chatroomComp.setRoomId(currentRoom._id);
-    BackendFactory.getInstance().dataListener.addChatListenerImp(chatroomComp);
 
     NotificationManager.unsubscribeGlobalNotifyMessageEvent();
 
@@ -110,14 +109,8 @@ function onChatRoomDelegate(event, newMsg: IMessage) {
 }
 function onOutSideRoomDelegate(event, data) {
     if (event === ServerEventListener.ON_CHAT) {
-        console.log("Call notification here..."); //active, background, inactive
+        console.log("Call notification here...", data); //active, background, inactive
         NotificationManager.notify(data);
-    }
-}
-function replaceMyMessage(receiveMsg) {
-    return {
-        type: ChatRoomActionsType.REPLACE_MESSAGE,
-        payload: receiveMsg
     }
 }
 
@@ -320,7 +313,6 @@ export function leaveRoomAction() {
         BackendFactory.getInstance().getServer().then(server => {
             server.LeaveChatRoomRequest(token, room_id, (err, res) => {
                 console.log("LeaveChatRoomRequest", err, res);
-                BackendFactory.getInstance().dataListener.removeChatListenerImp(room);
                 ChatRoomComponent.getInstance().dispose();
                 NotificationManager.regisNotifyNewMessageEvent();
             });

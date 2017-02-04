@@ -191,11 +191,10 @@ export const updateLastAccessRoomEpic = action$ =>
     action$.ofType(UPDATE_LAST_ACCESS_ROOM).mergeMap(action => {
         let token = Store.getState().authReducer.token;
         return ServiceProvider.updateLastAccessRoomInfo(token, action.payload);
+    }).map(response => updateLastAccessRoomSuccess(response.xhr.response)).do(x => {
+        if (x.payload.success) {
+            BackendFactory.getInstance().dataListener.onUpdatedLastAccessTime(x.payload.result);
+        }
     })
         .takeUntil(action$.ofType(UPDATE_LAST_ACCESS_ROOM_CANCELLED))
-        .catch(error => Rx.Observable.of(updateLastAccessRoomFailure(error.xhr.response)))
-        .map(response => updateLastAccessRoomSuccess(response.xhr.response)).do(x => {
-            if (x.payload.success) {
-                BackendFactory.getInstance().dataListener.onUpdatedLastAccessTime(x.payload.result);
-            }
-        });
+        .catch(error => Rx.Observable.of(updateLastAccessRoomFailure(error.xhr.response)));

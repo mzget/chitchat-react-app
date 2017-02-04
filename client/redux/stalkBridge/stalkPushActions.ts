@@ -7,11 +7,6 @@
 import BackendFactory from "../../chats/BackendFactory";
 import Store from "../configureStore";
 
-import * as ProfileActions from "../profile/profileActions";
-import * as notificationsActions from "../../reducers/notifications/notificationsActions";
-
-import AppAccount, { Account } from "../../dataAccess/AppAccount";
-
 const LINK_REQUEST = "LINK_REQUEST";
 const LINK_ACCEPTED = "LINK_ACCEPTED";
 const NEW_NOTICE = 'NEW_NOTICE';

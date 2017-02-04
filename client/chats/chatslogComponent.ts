@@ -12,10 +12,8 @@ import DataManager from "./dataManager";
 import DataListener from "./dataListener";
 import BackendFactory from "./BackendFactory";
 import * as CryptoHelper from "./utils/CryptoHelper";
-import HttpCode from "../libs/stalk/utils/httpStatusCode";
 import ServerImplement, { IDictionary } from "../libs/stalk/serverImplemented";
 import * as DataModels from "./models/ChatDataModels";
-import { MemberRole } from "./models/ChatDataModels";
 import { MessageImp } from "./models/MessageImp";
 import * as ServiceProvider from "./services/ServiceProvider";
 
@@ -59,7 +57,11 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         this.dataManager = BackendFactory.getInstance().dataManager;
         this.dataListener = BackendFactory.getInstance().dataListener;
 
-        this.dataListener.addRoomAccessListenerImp(this);
+        this.dataListener.addOnRoomAccessListener(this.onAccessRoom.bind(this));
+        this.dataListener.addOnChatListener(this.onChat.bind(this));
+        this.dataListener.addOnAddRoomAccessListener(this.onAddRoomAccess.bind(this));
+        this.dataListener.addOnUpdateRoomAccessListener(this.onUpdatedLastAccessTime.bind(this));
+
         BackendFactory.getInstance().getServer().then(server => {
             this.serverImp = server;
         }).catch(err => {

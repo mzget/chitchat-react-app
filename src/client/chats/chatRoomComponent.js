@@ -44,6 +44,8 @@ class ChatRoomComponent {
         }).catch(err => {
         });
         this.dataManager = BackendFactory_1.default.getInstance().dataManager;
+        this.dataListener = BackendFactory_1.default.getInstance().dataListener;
+        this.dataListener.addOnChatListener(this.onChat.bind(this));
     }
     onChat(message) {
         console.log("ChatRoomComponent.onChat");
@@ -51,15 +53,16 @@ class ChatRoomComponent {
         const saveMessages = (chatMessages) => {
             chatMessages.push(message);
             self.dataManager.messageDAL.saveData(self.roomId, chatMessages).then(chats => {
-                if (!!this.chatroomDelegate)
+                if (!!this.chatroomDelegate) {
                     this.chatroomDelegate(serverEventListener_1.default.ON_CHAT, message);
+                }
             });
         };
-        this.dataManager.messageDAL.getData(this.roomId).then((chats) => {
-            return chats;
-        }).then((chats) => {
-            let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
-            if (this.roomId === message.rid) {
+        if (this.roomId === message.rid) {
+            this.dataManager.messageDAL.getData(this.roomId).then((chats) => {
+                return chats;
+            }).then((chats) => {
+                let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
                 if (message.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
                     CryptoHelper.decryptionText(message).then(decoded => {
                         saveMessages(chatMessages);
@@ -73,20 +76,16 @@ class ChatRoomComponent {
                 else {
                     saveMessages(chatMessages);
                 }
+            }).catch(err => {
+                console.error("Cannot get persistend message of room", err);
+            });
+        }
+        else {
+            console.info("this msg come from other room.");
+            if (!!this.outsideRoomDelegete) {
+                this.outsideRoomDelegete(serverEventListener_1.default.ON_CHAT, message);
             }
-            else {
-                console.info("this msg come from other room.");
-                if (!!this.outsideRoomDelegete) {
-                    this.outsideRoomDelegete(serverEventListener_1.default.ON_CHAT, message);
-                }
-            }
-        }).catch(err => {
-            console.error("Cannot get persistend message of room", err);
-        });
-    }
-    onLeaveRoom(data) {
-    }
-    onRoomJoin(data) {
+        }
     }
     onMessageRead(dataEvent) {
         console.log("onMessageRead", JSON.stringify(dataEvent));
@@ -375,6 +374,7 @@ class ChatRoomComponent {
         });
     }
     dispose() {
+        this.dataListener.removeOnChatListener(this.onChat.bind(this));
         ChatRoomComponent.instance = null;
     }
 }

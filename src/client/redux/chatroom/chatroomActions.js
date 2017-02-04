@@ -70,7 +70,6 @@ function initChatRoom(currentRoom) {
     }
     let chatroomComp = chatRoomComponent_1.default.getInstance();
     chatroomComp.setRoomId(currentRoom._id);
-    BackendFactory_1.default.getInstance().dataListener.addChatListenerImp(chatroomComp);
     NotificationManager.unsubscribeGlobalNotifyMessageEvent();
     chatroomComp.chatroomDelegate = onChatRoomDelegate;
     chatroomComp.outsideRoomDelegete = onOutSideRoomDelegate;
@@ -108,15 +107,9 @@ function onChatRoomDelegate(event, newMsg) {
 }
 function onOutSideRoomDelegate(event, data) {
     if (event === serverEventListener_1.default.ON_CHAT) {
-        console.log("Call notification here..."); //active, background, inactive
+        console.log("Call notification here...", data); //active, background, inactive
         NotificationManager.notify(data);
     }
-}
-function replaceMyMessage(receiveMsg) {
-    return {
-        type: ChatRoomActionsType.REPLACE_MESSAGE,
-        payload: receiveMsg
-    };
 }
 const onNewMessage = (message) => ({ type: ChatRoomActionsType.ON_NEW_MESSAGE, payload: message });
 function getPersistendMessage_request() { return { type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_REQUEST }; }
@@ -306,7 +299,6 @@ function leaveRoomAction() {
         BackendFactory_1.default.getInstance().getServer().then(server => {
             server.LeaveChatRoomRequest(token, room_id, (err, res) => {
                 console.log("LeaveChatRoomRequest", err, res);
-                BackendFactory_1.default.getInstance().dataListener.removeChatListenerImp(room);
                 chatRoomComponent_1.default.getInstance().dispose();
                 NotificationManager.regisNotifyNewMessageEvent();
             });

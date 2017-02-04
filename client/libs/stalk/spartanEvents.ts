@@ -1,8 +1,6 @@
 ﻿export module absSpartan {
     export interface IChatServerListener {
         onChat(data);
-        onLeaveRoom(data);
-        onRoomJoin(data);
         onMessageRead(dataEvent);
         onGetMessagesReaders(dataEvent);
     }

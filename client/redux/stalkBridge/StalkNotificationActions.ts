@@ -22,30 +22,28 @@ const stalkNotiNewMessage = (payload) => ({ type: STALK_NOTICE_NEW_MESSAGE, payl
 
 const init = (onSuccess: (err, deviceToken) => void) => {
     console.log("Initialize NotificationManager.");
-}
+};
 
 export const regisNotifyNewMessageEvent = () => {
     console.log("subscribe global notify message event");
 
-    BackendFactory.getInstance().dataListener.addNoticeNewMessageEvent(notify);
-}
+    BackendFactory.getInstance().dataListener.addOnChatListener(notify);
+};
 
 export const unsubscribeGlobalNotifyMessageEvent = () => {
-    BackendFactory.getInstance().dataListener.removeNoticeNewMessageEvent(notify);
-}
+    BackendFactory.getInstance().dataListener.removeOnChatListener(notify);
+};
 
-export const notify = (messageImp: IMessage) => {
-    console.log("notify", messageImp);
-
-    CryptoHelper.decryptionText(messageImp as MessageImp).then(decoded => {
-        let message = decoded.body;
-        if (messageImp.type == ContentType[ContentType.Location]) {
-            message = "Sent you location";
-        }
-        else if (messageImp.type == ContentType[ContentType.Image]) {
-            message = "Sent you image";
-        }
-
-        Store.dispatch(stalkNotiNewMessage(message));
-    });
-}
+export const notify = (messageImp: MessageImp) => {
+    let message = "";
+    if (messageImp.type === ContentType[ContentType.Text]) {
+        message = messageImp.body;
+    }
+    else if (messageImp.type === ContentType[ContentType.Location]) {
+        message = "Sent you location";
+    }
+    else if (messageImp.type === ContentType[ContentType.Image]) {
+        message = "Sent you image";
+    }
+    Store.dispatch(stalkNotiNewMessage(message));
+};

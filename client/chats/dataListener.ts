@@ -1,41 +1,53 @@
 ﻿import { absSpartan } from "../libs/stalk/spartanEvents";
-import { IMessage, RoomAccessData, Room, StalkAccount } from "./models/ChatDataModels";
-import { IRoomAccessListenerImp } from './abstracts/IRoomAccessListenerImp';
+import { IMessage, StalkAccount } from "./models/ChatDataModels";
 
 import DataManager from "./dataManager";
 
 export default class DataListener implements absSpartan.IServerListener, absSpartan.IChatServerListener {
     private dataManager: DataManager;
 
-    private notifyNewMessageEvents = new Array<(message: IMessage) => void>();
-    public addNoticeNewMessageEvent(listener: (message: IMessage) => void) {
-        if (this.notifyNewMessageEvents.length === 0) {
-            this.notifyNewMessageEvents.push(listener);
-        }
+    private onChatEventListeners = new Array<(message: IMessage) => void>();
+    public addOnChatListener(listener: (message: IMessage) => void) {
+        this.onChatEventListeners.push(listener);
     }
-    public removeNoticeNewMessageEvent(listener: (message: IMessage) => void) {
-        let id = this.notifyNewMessageEvents.indexOf(listener);
-        this.notifyNewMessageEvents.splice(id, 1);
+    public removeOnChatListener(listener: (message: IMessage) => void) {
+        let id = this.onChatEventListeners.indexOf(listener);
+        this.onChatEventListeners.splice(id, 1);
     }
 
-    private chatListenerImps = new Array<absSpartan.IChatServerListener>();
-    public addChatListenerImp(listener: absSpartan.IChatServerListener) {
-        this.chatListenerImps.push(listener);
+    private onLeaveRoomListeners = new Array();
+    public addOnLeaveRoomListener(listener: (message: IMessage) => void) {
+        this.onLeaveRoomListeners.push(listener);
     }
-    public removeChatListenerImp(listener: absSpartan.IChatServerListener) {
-        let id = this.chatListenerImps.indexOf(listener);
-        this.chatListenerImps.splice(id, 1);
+    public removeOnLeaveRoomListener(listener: (message: IMessage) => void) {
+        let id = this.onLeaveRoomListeners.indexOf(listener);
+        this.onLeaveRoomListeners.splice(id, 1);
+    }
+    private onRoomAccessEventListeners = new Array<(data) => void>();
+    public addOnRoomAccessListener = (listener: (data) => void) => {
+        this.onRoomAccessEventListeners.push(listener);
+    }
+    public removeOnRoomAccessListener = (listener: (data) => void) => {
+        let id = this.onRoomAccessEventListeners.indexOf(listener);
+        this.onRoomAccessEventListeners.splice(id, 1);
+    }
 
-        console.log("chatListenerImps", this.chatListenerImps.length);
-    }
 
-    private roomAccessListenerImps = new Array<IRoomAccessListenerImp>();
-    public addRoomAccessListenerImp(listener: IRoomAccessListenerImp) {
-        this.roomAccessListenerImps.push(listener);
+    private onUpdateRoomAccessEventListeners = new Array();
+    public addOnUpdateRoomAccessListener = (listener: (data) => void) => {
+        this.onUpdateRoomAccessEventListeners.push(listener);
     }
-    public removeRoomAccessListener(listener: IRoomAccessListenerImp) {
-        var id = this.roomAccessListenerImps.indexOf(listener);
-        this.roomAccessListenerImps.splice(id, 1);
+    public removeOnUpdateRoomAccessListener = (listener: (data) => void) => {
+        let id = this.onUpdateRoomAccessEventListeners.indexOf(listener);
+        this.onUpdateRoomAccessEventListeners.splice(id, 1);
+    }
+    private onAddRoomAccessEventListeners = new Array();
+    public addOnAddRoomAccessListener = (listener: (data) => void) => {
+        this.onAddRoomAccessEventListeners.push(listener);
+    }
+    public removeOnAddRoomAccessListener = (listener: (data) => void) => {
+        let id = this.onAddRoomAccessEventListeners.indexOf(listener);
+        this.onAddRoomAccessEventListeners.splice(id, 1);
     }
 
     constructor(dataManager: DataManager) {
@@ -50,11 +62,9 @@ export default class DataListener implements absSpartan.IServerListener, absSpar
 
             this.dataManager.setRoomAccessForUser(data);
 
-            if (!!this.roomAccessListenerImps) {
-                this.roomAccessListenerImps.map(value => {
-                    value.onAccessRoom(data);
-                });
-            }
+            this.onRoomAccessEventListeners.map(value => {
+                value(data);
+            });
         }
     }
 
@@ -65,11 +75,7 @@ export default class DataListener implements absSpartan.IServerListener, absSpar
             let data = dataEvent[0];
             this.dataManager.updateRoomAccessForUser(data);
 
-            if (!!this.roomAccessListenerImps) {
-                this.roomAccessListenerImps.map(value => {
-                    value.onUpdatedLastAccessTime(data);
-                });
-            }
+            this.onUpdateRoomAccessEventListeners.map(item => item(data));
         }
     }
 
@@ -79,11 +85,7 @@ export default class DataListener implements absSpartan.IServerListener, absSpar
             this.dataManager.setRoomAccessForUser(dataEvent);
         }
 
-        if (!!this.roomAccessListenerImps) {
-            this.roomAccessListenerImps.map(value => {
-                value.onAddRoomAccess(dataEvent);
-            });
-        }
+        this.onAddRoomAccessEventListeners.map(value => value(dataEvent));
     }
 
     onCreateGroupSuccess(dataEvent) {
@@ -156,30 +158,13 @@ export default class DataListener implements absSpartan.IServerListener, absSpar
     //<!-- chat room data listener.
     onChat(data) {
         let chatMessageImp: IMessage = JSON.parse(JSON.stringify(data));
-
-        if (!!this.notifyNewMessageEvents && this.notifyNewMessageEvents.length !== 0) {
-            this.notifyNewMessageEvents.map((v, id, arr) => {
-                v(chatMessageImp);
-            });
-        }
-        if (!!this.chatListenerImps && this.chatListenerImps.length !== 0) {
-            this.chatListenerImps.forEach((value, id, arr) => {
-                value.onChat(chatMessageImp);
-            });
-        }
-        if (!!this.roomAccessListenerImps && this.roomAccessListenerImps.length !== 0) {
-            this.roomAccessListenerImps.map(v => {
-                v.onChat(chatMessageImp);
-            });
-        }
+        this.onChatEventListeners.map((value, id, arr) => {
+            value(chatMessageImp);
+        });
     };
 
     onLeaveRoom(data) {
-        if (!!this.chatListenerImps && this.chatListenerImps.length !== 0) {
-            this.chatListenerImps.forEach(value => {
-                value.onLeaveRoom(data);
-            });
-        }
+        this.onLeaveRoomListeners.map(value => value(data));
     };
 
     onRoomJoin(data) {

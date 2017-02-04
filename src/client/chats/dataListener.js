@@ -1,45 +1,56 @@
 "use strict";
 class DataListener {
     constructor(dataManager) {
-        this.notifyNewMessageEvents = new Array();
-        this.chatListenerImps = new Array();
-        this.roomAccessListenerImps = new Array();
+        this.onChatEventListeners = new Array();
+        this.onLeaveRoomListeners = new Array();
+        this.onRoomAccessEventListeners = new Array();
+        this.addOnRoomAccessListener = (listener) => {
+            this.onRoomAccessEventListeners.push(listener);
+        };
+        this.removeOnRoomAccessListener = (listener) => {
+            let id = this.onRoomAccessEventListeners.indexOf(listener);
+            this.onRoomAccessEventListeners.splice(id, 1);
+        };
+        this.onUpdateRoomAccessEventListeners = new Array();
+        this.addOnUpdateRoomAccessListener = (listener) => {
+            this.onUpdateRoomAccessEventListeners.push(listener);
+        };
+        this.removeOnUpdateRoomAccessListener = (listener) => {
+            let id = this.onUpdateRoomAccessEventListeners.indexOf(listener);
+            this.onUpdateRoomAccessEventListeners.splice(id, 1);
+        };
+        this.onAddRoomAccessEventListeners = new Array();
+        this.addOnAddRoomAccessListener = (listener) => {
+            this.onAddRoomAccessEventListeners.push(listener);
+        };
+        this.removeOnAddRoomAccessListener = (listener) => {
+            let id = this.onAddRoomAccessEventListeners.indexOf(listener);
+            this.onAddRoomAccessEventListeners.splice(id, 1);
+        };
         this.dataManager = dataManager;
     }
-    addNoticeNewMessageEvent(listener) {
-        if (this.notifyNewMessageEvents.length === 0) {
-            this.notifyNewMessageEvents.push(listener);
-        }
+    addOnChatListener(listener) {
+        this.onChatEventListeners.push(listener);
     }
-    removeNoticeNewMessageEvent(listener) {
-        let id = this.notifyNewMessageEvents.indexOf(listener);
-        this.notifyNewMessageEvents.splice(id, 1);
+    removeOnChatListener(listener) {
+        let id = this.onChatEventListeners.indexOf(listener);
+        this.onChatEventListeners.splice(id, 1);
     }
-    addChatListenerImp(listener) {
-        this.chatListenerImps.push(listener);
+    addOnLeaveRoomListener(listener) {
+        this.onLeaveRoomListeners.push(listener);
     }
-    removeChatListenerImp(listener) {
-        let id = this.chatListenerImps.indexOf(listener);
-        this.chatListenerImps.splice(id, 1);
-        console.log("chatListenerImps", this.chatListenerImps.length);
-    }
-    addRoomAccessListenerImp(listener) {
-        this.roomAccessListenerImps.push(listener);
-    }
-    removeRoomAccessListener(listener) {
-        var id = this.roomAccessListenerImps.indexOf(listener);
-        this.roomAccessListenerImps.splice(id, 1);
+    removeOnLeaveRoomListener(listener) {
+        let id = this.onLeaveRoomListeners.indexOf(listener);
+        this.onLeaveRoomListeners.splice(id, 1);
     }
     onAccessRoom(dataEvent) {
         console.info('DataListener.onAccessRoom: ', dataEvent);
         if (Array.isArray(dataEvent) && dataEvent.length > 0) {
             let data = dataEvent[0];
             this.dataManager.setRoomAccessForUser(data);
-            if (!!this.roomAccessListenerImps) {
-                this.roomAccessListenerImps.map(value => {
-                    value.onAccessRoom(data);
-                });
-            }
+            this.onRoomAccessEventListeners.map(value => {
+                value(data);
+            });
         }
     }
     onUpdatedLastAccessTime(dataEvent) {
@@ -47,11 +58,7 @@ class DataListener {
         if (Array.isArray(dataEvent) && dataEvent.length > 0) {
             let data = dataEvent[0];
             this.dataManager.updateRoomAccessForUser(data);
-            if (!!this.roomAccessListenerImps) {
-                this.roomAccessListenerImps.map(value => {
-                    value.onUpdatedLastAccessTime(data);
-                });
-            }
+            this.onUpdateRoomAccessEventListeners.map(item => item(data));
         }
     }
     onAddRoomAccess(dataEvent) {
@@ -59,11 +66,7 @@ class DataListener {
         if (!!datas[0].roomAccess && datas[0].roomAccess.length !== 0) {
             this.dataManager.setRoomAccessForUser(dataEvent);
         }
-        if (!!this.roomAccessListenerImps) {
-            this.roomAccessListenerImps.map(value => {
-                value.onAddRoomAccess(dataEvent);
-            });
-        }
+        this.onAddRoomAccessEventListeners.map(value => value(dataEvent));
     }
     onCreateGroupSuccess(dataEvent) {
         let group = JSON.parse(JSON.stringify(dataEvent));
@@ -120,29 +123,13 @@ class DataListener {
     //<!-- chat room data listener.
     onChat(data) {
         let chatMessageImp = JSON.parse(JSON.stringify(data));
-        if (!!this.notifyNewMessageEvents && this.notifyNewMessageEvents.length !== 0) {
-            this.notifyNewMessageEvents.map((v, id, arr) => {
-                v(chatMessageImp);
-            });
-        }
-        if (!!this.chatListenerImps && this.chatListenerImps.length !== 0) {
-            this.chatListenerImps.forEach((value, id, arr) => {
-                value.onChat(chatMessageImp);
-            });
-        }
-        if (!!this.roomAccessListenerImps && this.roomAccessListenerImps.length !== 0) {
-            this.roomAccessListenerImps.map(v => {
-                v.onChat(chatMessageImp);
-            });
-        }
+        this.onChatEventListeners.map((value, id, arr) => {
+            value(chatMessageImp);
+        });
     }
     ;
     onLeaveRoom(data) {
-        if (!!this.chatListenerImps && this.chatListenerImps.length !== 0) {
-            this.chatListenerImps.forEach(value => {
-                value.onLeaveRoom(data);
-            });
-        }
+        this.onLeaveRoomListeners.map(value => value(data));
     }
     ;
     onRoomJoin(data) {

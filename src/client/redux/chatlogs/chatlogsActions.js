@@ -154,11 +154,10 @@ exports.updateLastAccessRoomCancelled = redux_actions_1.createAction(UPDATE_LAST
 exports.updateLastAccessRoomEpic = action$ => action$.ofType(UPDATE_LAST_ACCESS_ROOM).mergeMap(action => {
     let token = configureStore_1.default.getState().authReducer.token;
     return ServiceProvider.updateLastAccessRoomInfo(token, action.payload);
-})
-    .takeUntil(action$.ofType(UPDATE_LAST_ACCESS_ROOM_CANCELLED))
-    .catch(error => Rx.Observable.of(updateLastAccessRoomFailure(error.xhr.response)))
-    .map(response => updateLastAccessRoomSuccess(response.xhr.response)).do(x => {
+}).map(response => updateLastAccessRoomSuccess(response.xhr.response)).do(x => {
     if (x.payload.success) {
         BackendFactory_1.default.getInstance().dataListener.onUpdatedLastAccessTime(x.payload.result);
     }
-});
+})
+    .takeUntil(action$.ofType(UPDATE_LAST_ACCESS_ROOM_CANCELLED))
+    .catch(error => Rx.Observable.of(updateLastAccessRoomFailure(error.xhr.response)));

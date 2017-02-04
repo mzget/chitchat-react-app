@@ -44,7 +44,7 @@ const rest_api = (host) => ({
 
 const devConfig = {
     Stalk: {
-        chat: "git.animation-genius.com",
+        chat: "localhost",
         port: "3010",
         api: {
             user: "http://localhost:9000/api/stalk/user"

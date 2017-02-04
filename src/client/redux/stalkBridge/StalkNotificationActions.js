@@ -9,7 +9,6 @@
 "use strict";
 const BackendFactory_1 = require("../../chats/BackendFactory");
 const ChatDataModels_1 = require("../../chats/models/ChatDataModels");
-const CryptoHelper = require("../../chats/utils/CryptoHelper");
 const configureStore_1 = require("../configureStore");
 exports.STALK_NOTICE_NEW_MESSAGE = "STALK_NOTICE_NEW_MESSAGE";
 const stalkNotiNewMessage = (payload) => ({ type: exports.STALK_NOTICE_NEW_MESSAGE, payload });
@@ -18,21 +17,21 @@ const init = (onSuccess) => {
 };
 exports.regisNotifyNewMessageEvent = () => {
     console.log("subscribe global notify message event");
-    BackendFactory_1.default.getInstance().dataListener.addNoticeNewMessageEvent(exports.notify);
+    BackendFactory_1.default.getInstance().dataListener.addOnChatListener(exports.notify);
 };
 exports.unsubscribeGlobalNotifyMessageEvent = () => {
-    BackendFactory_1.default.getInstance().dataListener.removeNoticeNewMessageEvent(exports.notify);
+    BackendFactory_1.default.getInstance().dataListener.removeOnChatListener(exports.notify);
 };
 exports.notify = (messageImp) => {
-    console.log("notify", messageImp);
-    CryptoHelper.decryptionText(messageImp).then(decoded => {
-        let message = decoded.body;
-        if (messageImp.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location]) {
-            message = "Sent you location";
-        }
-        else if (messageImp.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image]) {
-            message = "Sent you image";
-        }
-        configureStore_1.default.dispatch(stalkNotiNewMessage(message));
-    });
+    let message = "";
+    if (messageImp.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
+        message = messageImp.body;
+    }
+    else if (messageImp.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location]) {
+        message = "Sent you location";
+    }
+    else if (messageImp.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image]) {
+        message = "Sent you image";
+    }
+    configureStore_1.default.dispatch(stalkNotiNewMessage(message));
 };
