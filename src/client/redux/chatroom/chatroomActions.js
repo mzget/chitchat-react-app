@@ -12,6 +12,14 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const chatRoomComponent_1 = require("../../chats/chatRoomComponent");
 const BackendFactory_1 = require("../../chats/BackendFactory");
 const secureServiceFactory_1 = require("../../libs/chitchat/services/secureServiceFactory");
@@ -157,26 +165,27 @@ exports.checkOlderMessages = checkOlderMessages;
 function getNewerMessage_failure() {
     return { type: ChatRoomActionsType.GET_NEWER_MESSAGE_FAILURE };
 }
-function getNewerMessage_success() {
-    return { type: ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS };
+function getNewerMessage_success(messages) {
+    return { type: ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS, payload: messages };
 }
 function getNewerMessageFromNet() {
     return dispatch => {
         let token = configureStore_1.default.getState().authReducer.token;
-        chatRoomComponent_1.default.getInstance().getNewerMessageRecord(token, function done(promise) {
-            promise.then(value => {
-                dispatch(getNewerMessage_success());
-            }).catch(err => {
-                dispatch(getNewerMessage_failure());
-            });
-            //@ Todo next joinroom function is ready to call.
+        chatRoomComponent_1.default.getInstance().getNewerMessageRecord(token, (results) => {
+            dispatch(getNewerMessage_success(results));
+            // @Todo next joinroom function is ready to call.
+        }).catch(err => {
+            dispatch(getNewerMessage_failure());
         });
     };
 }
 exports.getNewerMessageFromNet = getNewerMessageFromNet;
 function getMessages() {
-    let chatroomComp = chatRoomComponent_1.default.getInstance();
-    return chatroomComp.getMessages();
+    return __awaiter(this, void 0, void 0, function* () {
+        let chatroomComp = chatRoomComponent_1.default.getInstance();
+        let messages = yield chatroomComp.getMessages();
+        return messages;
+    });
 }
 exports.getMessages = getMessages;
 function send_message_request() {

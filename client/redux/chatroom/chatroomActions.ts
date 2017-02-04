@@ -175,27 +175,26 @@ export function checkOlderMessages() {
 function getNewerMessage_failure() {
     return { type: ChatRoomActionsType.GET_NEWER_MESSAGE_FAILURE };
 }
-function getNewerMessage_success() {
-    return { type: ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS };
+function getNewerMessage_success(messages: any) {
+    return { type: ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS, payload: messages };
 }
 export function getNewerMessageFromNet() {
     return dispatch => {
         let token = Store.getState().authReducer.token;
-        ChatRoomComponent.getInstance().getNewerMessageRecord(token, function done(promise) {
-            promise.then(value => {
-                dispatch(getNewerMessage_success());
-            }).catch(err => {
-                dispatch(getNewerMessage_failure());
-            })
-
-            //@ Todo next joinroom function is ready to call.
+        ChatRoomComponent.getInstance().getNewerMessageRecord(token, (results) => {
+            dispatch(getNewerMessage_success(results));
+            // @Todo next joinroom function is ready to call.
+        }).catch(err => {
+            dispatch(getNewerMessage_failure());
         });
-    }
+    };
 }
 
-export function getMessages() {
+export async function getMessages() {
     let chatroomComp = ChatRoomComponent.getInstance();
-    return chatroomComp.getMessages();
+    let messages = await chatroomComp.getMessages();
+
+    return messages;
 }
 
 function send_message_request() {

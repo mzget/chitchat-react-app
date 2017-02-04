@@ -192,7 +192,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         });
     }
 
-    public getNewerMessageRecord(sessionToken: string, callback: (p: Promise<any>) => void) {
+    public async getNewerMessageRecord(sessionToken: string, callback: (results: Array<IMessage>) => void) {
         let self = this;
         let lastMessageTime = new Date();
 
@@ -209,26 +209,40 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
             });
         };
 
-        self.dataManager.messageDAL.getData(this.roomId).then((messages: IMessage[]) => {
+        const saveMergedMessage = async (histories: Array<IMessage>) => {
+            let _results = new Array();
             if (messages && messages.length > 0) {
-                if (messages[messages.length - 1] != null) {
-                    lastMessageTime = messages[messages.length - 1].createTime;
-                    callback(self.getNewerMessageFromNet(lastMessageTime, sessionToken));
-                }
-                else {
-                    getLastMessageTime((boo) => {
-                        callback(self.getNewerMessageFromNet(lastMessageTime, sessionToken));
-                    });
-                }
+                _results = messages.concat(histories);
+            }
+            else {
+                _results = histories.slice();
+            }
+            // Save persistent chats log here.
+            let results = await self.dataManager.messageDAL.saveData(self.roomId, _results) as Array<IMessage>;
+            callback(results);
+        };
+
+        const getNewerMessage = async () => {
+            let histories = await self.getNewerMessageFromNet(lastMessageTime, sessionToken) as Array<IMessage>;
+            saveMergedMessage(histories);
+        };
+
+        let messages: IMessage[] = await self.dataManager.messageDAL.getData(this.roomId);
+        if (messages && messages.length > 0) {
+            if (messages[messages.length - 1] != null) {
+                lastMessageTime = messages[messages.length - 1].createTime;
+                getNewerMessage();
             }
             else {
                 getLastMessageTime((boo) => {
-                    callback(self.getNewerMessageFromNet(lastMessageTime, sessionToken));
+                    getNewerMessage();
                 });
             }
-        }).catch(err => {
-            console.error(err + ": Cannot get persistend message of room");
-        });
+        } else {
+            getLastMessageTime((boo) => {
+                getNewerMessage();
+            });
+        }
     }
 
     private async getNewerMessageFromNet(lastMessageTime: Date, sessionToken: string) {
@@ -240,13 +254,10 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         return new Promise((resolve, reject) => {
             console.log("getChatHistory: ", value);
             if (value.success) {
-                let histories = [];
+                let histories = new Array<IMessage>();
                 histories = value.result;
-                console.info("Newer message counts.", histories.length);
                 if (histories.length > 0) {
-                    let messages: Array<IMessage> = JSON.parse(JSON.stringify(histories));
-
-                    async.forEach(messages, function (chat, cb) {
+                    async.forEach(histories, function (chat, cb) {
                         if (chat.type === ContentType[ContentType.Text]) {
                             if (config.appConfig.encryption === true) {
                                 self.secure.decryption(chat.body).then(function (res) {
@@ -265,22 +276,22 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                         }
                     }, function done(err) {
                         if (!!err) {
-                            console.error('get newer message error', err);
+                            console.error("get newer message error", err);
+                            reject(err);
                         }
-
-                        // Save persistent chats log here.
-                        self.dataManager.messageDAL.saveData(self.roomId, messages);
-                        resolve();
+                        else {
+                            resolve(histories);
+                        }
                     });
                 }
                 else {
                     console.log("Have no newer message.");
-                    resolve();
+                    resolve(histories);
                 }
             }
             else {
                 console.warn("WTF god only know.", value.message);
-                reject();
+                reject(value.message);
             }
         });
     }
@@ -411,8 +422,8 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         ServerImplemented.getInstance().getMemberProfile(member._id, callback);
     }
 
-    public getMessages(): Promise<any> {
-        return this.dataManager.messageDAL.getData(this.roomId);
+    public async getMessages() {
+        return await this.dataManager.messageDAL.getData(this.roomId);
     }
 
     public dispose() {

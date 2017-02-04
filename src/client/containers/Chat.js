@@ -128,6 +128,7 @@ class Chat extends React.Component {
             }
             case chatRoomActions.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
                 chatRoomActions.getMessages().then(messages => {
+                    console.info(messages);
                     this.setState(previousState => (__assign({}, previousState, { messages: messages })));
                 });
                 break;

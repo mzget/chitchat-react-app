@@ -151,6 +151,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             }
             case chatRoomActions.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
                 chatRoomActions.getMessages().then(messages => {
+                    console.info(messages);
                     this.setState(previousState => ({
                         ...previousState,
                         messages: messages
@@ -375,7 +376,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                             }
                             <ChatBox  {...this.props} value={this.state.messages} onSelected={(message: IMessage) => {
 
-                            } } />
+                            }} />
                         </div>
                     </Flex>
                     {

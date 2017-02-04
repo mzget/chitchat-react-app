@@ -88,6 +88,9 @@ exports.chatroomReducer = (state = new exports.ChatRoomInitState(), action) => {
         case chatroomActions_1.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
             return state.set("state", chatroomActions_1.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS);
         }
+        case chatroomActions_1.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
+            return state.set("state", chatroomActions_1.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS);
+        }
         case ChatRoomRx.CREATE_PRIVATE_CHATROOM_SUCCESS: {
             return state.set("room", action.payload.result[0])
                 .set("state", ChatRoomRx.CREATE_PRIVATE_CHATROOM_SUCCESS);
@@ -137,9 +140,6 @@ function oldRoomReducer(state = initialState, action) {
         }
         case chatroomActions_1.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
             return state.set("state", chatroomActions_1.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS);
-        }
-        case chatroomActions_1.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
-            return state.set("state", chatroomActions_1.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS);
         }
         case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
             let roomInfo = (!!action.payload) ? action.payload : state.get("selectRoom");
