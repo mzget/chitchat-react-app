@@ -5,7 +5,6 @@
  */
 
 import ChatRoomComponent from "../../chats/chatRoomComponent";
-import DataListener from "../../chats/dataListener";
 import BackendFactory from "../../chats/BackendFactory";
 import SecureServiceFactory from "../../libs/chitchat/services/secureServiceFactory";
 import ServerEventListener from "../../libs/stalk/serverEventListener";
@@ -16,9 +15,9 @@ import { Member } from '../../chats/models/Member';
 import * as ServiceProvider from "../../chats/services/ServiceProvider";
 
 import { createAction } from "redux-actions";
-import * as fetch from 'isomorphic-fetch';
 
 import Store from "../configureStore";
+import { updateLastAccessRoom } from "../chatlogs/chatlogsActions";
 
 import { Room } from "../../../server/scripts/models/Room";
 import config from "../../configs/config";
@@ -293,7 +292,7 @@ export function joinRoom(roomId: string, token: string, username: string) {
 
         BackendFactory.getInstance().getServer().then(server => {
             server.JoinChatRoomRequest(token, username, roomId, (err, res) => {
-                if (err || res.code != HTTPStatus.success) {
+                if (err || res.code !== HTTPStatus.success) {
                     dispatch(joinRoom_failure());
                 }
                 else {
@@ -302,28 +301,35 @@ export function joinRoom(roomId: string, token: string, username: string) {
             });
         }).catch(err => {
             dispatch(joinRoom_failure());
-        })
-    }
+        });
+    };
 }
 
+export const LEAVE_ROOM = "LEAVE_ROOM";
 export const LEAVE_ROOM_SUCCESS = "LEAVE_ROOM_SUCCESS";
-export function leaveRoom() {
+const leaveRoom = () => ({ type: LEAVE_ROOM });
+const leaveRoomSuccess = () => ({ type: LEAVE_ROOM_SUCCESS });
+export function leaveRoomAction() {
     return (dispatch) => {
-        let token = Store.getState().authReducer.token;
+        let token = Store.getState().stalkReducer.stalkToken;
         let room = ChatRoomComponent.getInstance();
+        let room_id = room.getRoomId();
+
+        dispatch(leaveRoom());
 
         BackendFactory.getInstance().getServer().then(server => {
-            server.LeaveChatRoomRequest(token, room.getRoomId(), (err, res) => {
+            server.LeaveChatRoomRequest(token, room_id, (err, res) => {
+                console.log("LeaveChatRoomRequest", err, res);
                 BackendFactory.getInstance().dataListener.removeChatListenerImp(room);
                 ChatRoomComponent.getInstance().dispose();
                 NotificationManager.regisNotifyNewMessageEvent();
             });
+
+            dispatch(updateLastAccessRoom(room_id));
         }).catch(err => {
-
+            dispatch(updateLastAccessRoom(room_id));
         });
-
-        dispatch({ type: LEAVE_ROOM_SUCCESS });
-    }
+    };
 }
 
 const loadEarlyMessage_success = () => ({ type: ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS });
@@ -331,7 +337,7 @@ export function loadEarlyMessageChunk() {
     return dispatch => {
         ChatRoomComponent.getInstance().getOlderMessageChunk(function done(err, res) {
             dispatch(loadEarlyMessage_success());
-            //@ check older message again.
+            // @check older message again.
             dispatch(checkOlderMessages());
         });
     }

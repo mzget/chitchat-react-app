@@ -34,14 +34,14 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     footerHeight = null;
 
     componentWillMount() {
-        const { teamReducer } = this.props;
-
-        if (!teamReducer.team)
-            this.props.router.replace("/");
-
         this.state = {
             header: "Home"
         };
+        const { teamReducer } = this.props;
+
+        if (!teamReducer.team) {
+            this.props.router.replace("/");
+        }
 
         this.headerHeight = this.clientHeight * 0.1;
         this.bodyHeight = (this.clientHeight * 0.9) - 50;
@@ -142,13 +142,11 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     public render(): JSX.Element {
-        let {stalkReducer, teamReducer} = this.props;
-
         return (
             <MuiThemeProvider>
                 <div>
                     <div style={{ height: this.headerHeight }}>
-                        <SimpleToolbar title={teamReducer.team.name} menus={this.menus} onSelectedMenuItem={this.onSelectMenuItem} />
+                        <SimpleToolbar title={this.props.teamReducer.team.name} menus={this.menus} onSelectedMenuItem={this.onSelectMenuItem} />
                         <Subheader>{this.state.header}</Subheader>
                     </div>
                     <div style={{ height: this.bodyHeight }}>
@@ -158,7 +156,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                         <UtilsBox />
                     </div>
                     {
-                        (stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
+                        (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
                             (
                                 <Flex style={{ height: this.footerHeight, backgroundColor: Colors.red500 }} align='center' justify='center' flexColumn={true}>
                                     <Flex flexColumn={true}>

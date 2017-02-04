@@ -39,12 +39,13 @@ class Main extends React.Component {
         };
     }
     componentWillMount() {
-        const { teamReducer } = this.props;
-        if (!teamReducer.team)
-            this.props.router.replace("/");
         this.state = {
             header: "Home"
         };
+        const { teamReducer } = this.props;
+        if (!teamReducer.team) {
+            this.props.router.replace("/");
+        }
         this.headerHeight = this.clientHeight * 0.1;
         this.bodyHeight = (this.clientHeight * 0.9) - 50;
         this.footerHeight = 50;
@@ -126,18 +127,17 @@ class Main extends React.Component {
         }
     }
     render() {
-        let { stalkReducer, teamReducer } = this.props;
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement("div", null,
                 React.createElement("div", { style: { height: this.headerHeight } },
-                    React.createElement(SimpleToolbar_1.default, { title: teamReducer.team.name, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem }),
+                    React.createElement(SimpleToolbar_1.default, { title: this.props.teamReducer.team.name, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem }),
                     React.createElement(Subheader_1.default, null, this.state.header)),
                 React.createElement("div", { style: { height: this.bodyHeight } },
                     React.createElement(OrgGroupListBox_1.default, __assign({}, this.props)),
                     React.createElement(ContactBox_1.default, __assign({}, this.props)),
                     React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
                     React.createElement(UtilsBox_1.default, null)),
-                (stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
+                (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
                     (React.createElement(reflexbox_1.Flex, { style: { height: this.footerHeight, backgroundColor: Colors.red500 }, align: 'center', justify: 'center', flexColumn: true },
                         React.createElement(reflexbox_1.Flex, { flexColumn: true },
                             React.createElement("span", { style: { color: Colors.white } }, "Unable to connect whit chat service."),

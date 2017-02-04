@@ -43,11 +43,15 @@ class DataListener {
         }
     }
     onUpdatedLastAccessTime(dataEvent) {
-        this.dataManager.updateRoomAccessForUser(dataEvent);
-        if (!!this.roomAccessListenerImps) {
-            this.roomAccessListenerImps.map(value => {
-                value.onUpdatedLastAccessTime(dataEvent);
-            });
+        console.info('DataListener.onUpdatedLastAccessTime: ', dataEvent);
+        if (Array.isArray(dataEvent) && dataEvent.length > 0) {
+            let data = dataEvent[0];
+            this.dataManager.updateRoomAccessForUser(data);
+            if (!!this.roomAccessListenerImps) {
+                this.roomAccessListenerImps.map(value => {
+                    value.onUpdatedLastAccessTime(data);
+                });
+            }
         }
     }
     onAddRoomAccess(dataEvent) {

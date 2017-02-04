@@ -30,6 +30,7 @@ const NotificationManager = require("../stalkBridge/StalkNotificationActions");
 const ServiceProvider = require("../../chats/services/ServiceProvider");
 const redux_actions_1 = require("redux-actions");
 const configureStore_1 = require("../configureStore");
+const chatlogsActions_1 = require("../chatlogs/chatlogsActions");
 const config_1 = require("../../configs/config");
 const secure = secureServiceFactory_1.default.getService();
 /**
@@ -279,7 +280,7 @@ function joinRoom(roomId, token, username) {
         dispatch(joinRoom_request());
         BackendFactory_1.default.getInstance().getServer().then(server => {
             server.JoinChatRoomRequest(token, username, roomId, (err, res) => {
-                if (err || res.code != httpStatusCode_1.default.success) {
+                if (err || res.code !== httpStatusCode_1.default.success) {
                     dispatch(joinRoom_failure());
                 }
                 else {
@@ -292,29 +293,36 @@ function joinRoom(roomId, token, username) {
     };
 }
 exports.joinRoom = joinRoom;
+exports.LEAVE_ROOM = "LEAVE_ROOM";
 exports.LEAVE_ROOM_SUCCESS = "LEAVE_ROOM_SUCCESS";
-function leaveRoom() {
+const leaveRoom = () => ({ type: exports.LEAVE_ROOM });
+const leaveRoomSuccess = () => ({ type: exports.LEAVE_ROOM_SUCCESS });
+function leaveRoomAction() {
     return (dispatch) => {
-        let token = configureStore_1.default.getState().authReducer.token;
+        let token = configureStore_1.default.getState().stalkReducer.stalkToken;
         let room = chatRoomComponent_1.default.getInstance();
+        let room_id = room.getRoomId();
+        dispatch(leaveRoom());
         BackendFactory_1.default.getInstance().getServer().then(server => {
-            server.LeaveChatRoomRequest(token, room.getRoomId(), (err, res) => {
+            server.LeaveChatRoomRequest(token, room_id, (err, res) => {
+                console.log("LeaveChatRoomRequest", err, res);
                 BackendFactory_1.default.getInstance().dataListener.removeChatListenerImp(room);
                 chatRoomComponent_1.default.getInstance().dispose();
                 NotificationManager.regisNotifyNewMessageEvent();
             });
+            dispatch(chatlogsActions_1.updateLastAccessRoom(room_id));
         }).catch(err => {
+            dispatch(chatlogsActions_1.updateLastAccessRoom(room_id));
         });
-        dispatch({ type: exports.LEAVE_ROOM_SUCCESS });
     };
 }
-exports.leaveRoom = leaveRoom;
+exports.leaveRoomAction = leaveRoomAction;
 const loadEarlyMessage_success = () => ({ type: ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS });
 function loadEarlyMessageChunk() {
     return dispatch => {
         chatRoomComponent_1.default.getInstance().getOlderMessageChunk(function done(err, res) {
             dispatch(loadEarlyMessage_success());
-            //@ check older message again.
+            // @check older message again.
             dispatch(checkOlderMessages());
         });
     };

@@ -3,12 +3,15 @@
  *
  * This is pure function action for redux app.
  */
-import * as async from "async";
+import config from "../../configs/config";
+import { Record } from "immutable";
+import { createAction, Reducer } from "redux-actions";
+import * as Rx from "rxjs/Rx";
+const { ajax } = Rx.Observable;
 
 import BackendFactory from "../../chats/BackendFactory";
-import ChatsLogComponent, { ChatLogMap, IUnread, Unread } from "../../chats/chatslogComponent";
+import ChatsLogComponent, { IUnread, Unread } from "../../chats/chatslogComponent";
 import ChatLog from "../../chats/models/chatLog";
-import StalkImp, { IDictionary } from "../../libs/stalk/serverImplemented";
 import * as ServiceProvider from "../../chats/services/ServiceProvider";
 
 import Store from "../configureStore";
@@ -175,3 +178,24 @@ export function getLastAccessRoom() {
             });
     };
 }
+
+const UPDATE_LAST_ACCESS_ROOM = "UPDATE_LAST_ACCESS_ROOM";
+export const UPDATE_LAST_ACCESS_ROOM_SUCCESS = "UPDATE_LAST_ACCESS_ROOM_SUCCESS";
+export const UPDATE_LAST_ACCESS_ROOM_FAILURE = "UPDATE_LAST_ACCESS_ROOM_FAILURE";
+const UPDATE_LAST_ACCESS_ROOM_CANCELLED = "UPDATE_LAST_ACCESS_ROOM_CANCELLED";
+export const updateLastAccessRoom = createAction(UPDATE_LAST_ACCESS_ROOM, room_id => room_id);
+const updateLastAccessRoomSuccess = createAction(UPDATE_LAST_ACCESS_ROOM_SUCCESS, payload => payload);
+const updateLastAccessRoomFailure = createAction(UPDATE_LAST_ACCESS_ROOM_FAILURE, error => error);
+export const updateLastAccessRoomCancelled = createAction(UPDATE_LAST_ACCESS_ROOM_CANCELLED);
+export const updateLastAccessRoomEpic = action$ =>
+    action$.ofType(UPDATE_LAST_ACCESS_ROOM).mergeMap(action => {
+        let token = Store.getState().authReducer.token;
+        return ServiceProvider.updateLastAccessRoomInfo(token, action.payload);
+    })
+        .takeUntil(action$.ofType(UPDATE_LAST_ACCESS_ROOM_CANCELLED))
+        .catch(error => Rx.Observable.of(updateLastAccessRoomFailure(error.xhr.response)))
+        .map(response => updateLastAccessRoomSuccess(response.xhr.response)).do(x => {
+            if (x.payload.success) {
+                BackendFactory.getInstance().dataListener.onUpdatedLastAccessTime(x.payload.result);
+            }
+        });

@@ -2,6 +2,7 @@
 const redux_observable_1 = require("redux-observable");
 const userRx = require("./user/userRx");
 const chatroomRxEpic = require("./chatroom/chatroomRxEpic");
+const chatlogsActions = require("./chatlogs/chatlogsActions");
 const authRx = require("./authen/authRx");
 const teamRx = require("./team/teamRx");
 const groupRx = require("./group/groupRx");
@@ -16,4 +17,6 @@ teamRx.fetchUserTeamsEpic, teamRx.createNewTeamEpic, teamRx.getTeamsInfoEpic, te
 ///@Group
 groupRx.getOrgGroupEpic, groupRx.createGroupEpic, 
 ///@ChatRoom
-chatroomRxEpic.getPrivateChatRoomEpic, chatroomRxEpic.getPersistendMessageEpic, chatroomRxEpic.createPrivateChatRoomEpic, chatroomRxEpic.uploadFileEpic);
+chatroomRxEpic.getPrivateChatRoomEpic, chatroomRxEpic.getPersistendMessageEpic, chatroomRxEpic.createPrivateChatRoomEpic, chatroomRxEpic.uploadFileEpic, 
+///@chatlogs
+chatlogsActions.updateLastAccessRoomEpic);

@@ -5,7 +5,6 @@
  */
 
 import * as ChatlogsActions from "../chatlogs/chatlogsActions";
-import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
 
 import { Record } from "immutable";
 

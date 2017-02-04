@@ -89,21 +89,6 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         let self = this;
         let roomAccess: DataModels.RoomAccessData[] = dataEvent.roomAccess;
 
-        /*
-                let _rooms = new Map<string, DataModels.Room>();
-                this.dataManager.roomDAL.getKeys().then(keys => {
-                    async.map(keys, (room_id, cb) => {
-                        this.dataManager.roomDAL.get(room_id).then((room: DataModels.Room) => {
-                            _rooms.set(room_id, room);
-                            cb(null, null);
-                        });
-                    }, (err, results) => {
-                        addRoomData(_rooms);
-                    });
-                }).catch(err => {
-                    done();
-                });
-        */
         const addRoomData = () => {
             async.map(roomAccess, function iterator(item, resultCallback) {
                 self.getRoomInfo(item.roomId, (err, room) => {
@@ -123,8 +108,9 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         const done = () => {
             self._isReady = true;
 
-            if (!!self.onReady)
+            if (!!self.onReady) {
                 self.onReady();
+            }
         };
 
         addRoomData();
@@ -132,8 +118,6 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
 
     public updatedLastAccessTimeEvent: (data) => void;
     onUpdatedLastAccessTime(dataEvent) {
-        console.log("onUpdatedLastAccessTime", JSON.stringify(dataEvent));
-
         if (!!this.updatedLastAccessTimeEvent) {
             this.updatedLastAccessTimeEvent(dataEvent);
         }

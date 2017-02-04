@@ -89,9 +89,9 @@ export const chatroomReducer = (state = new ChatRoomInitState(), action) => {
         case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
             return state.set("state", chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE);
         }
-        case chatroomActions.LEAVE_ROOM_SUCCESS: {
+        case chatroomActions.LEAVE_ROOM: {
             return state
-                .set("state", chatroomActions.LEAVE_ROOM_SUCCESS)
+                .set("state", chatroomActions.LEAVE_ROOM)
                 .set("room", null);
         }
 
@@ -117,13 +117,7 @@ export const chatroomReducer = (state = new ChatRoomInitState(), action) => {
 };
 
 function oldRoomReducer(state = initialState, action) {
-    if (!(state instanceof ChatRoomInitState)) return initialState.mergeDeep(state);
-
     switch (action.type) {
-        case ChatRoomActionsType.STOP: {
-            return state.set("state", ChatRoomActionsType.STOP);
-        }
-
         case ChatRoomActionsType.SEND_MESSAGE_REQUEST: {
             let nextState = state.set("state", ChatRoomActionsType.SEND_MESSAGE_REQUEST)
                 .set("isFetching", true);

@@ -71,7 +71,7 @@ class Chat extends React.Component {
     }
     componentWillUnmount() {
         console.log("Chat: leaveRoom");
-        this.props.dispatch(chatRoomActions.leaveRoom());
+        this.props.dispatch(chatRoomActions.leaveRoomAction());
     }
     componentWillReceiveProps(nextProps) {
         let { chatroomReducer } = nextProps;
@@ -84,8 +84,8 @@ class Chat extends React.Component {
                 this.props.router.push(`/`);
                 break;
             }
-            case chatRoomActions.LEAVE_ROOM_SUCCESS: {
-                this.props.router.push('/');
+            case chatRoomActions.LEAVE_ROOM: {
+                this.props.router.push(`/`);
                 break;
             }
             case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
@@ -128,7 +128,6 @@ class Chat extends React.Component {
             }
             case chatRoomActions.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
                 chatRoomActions.getMessages().then(messages => {
-                    console.info(messages);
                     this.setState(previousState => (__assign({}, previousState, { messages: messages })));
                 });
                 break;
@@ -154,7 +153,7 @@ class Chat extends React.Component {
     roomInitialize(props) {
         let { chatroomReducer, userReducer, params } = props;
         if (!userReducer.user) {
-            return this.props.dispatch(chatRoomActions.leaveRoom());
+            return this.props.dispatch(chatRoomActions.leaveRoomAction());
         }
         // todo
         // - Init chatroom service.

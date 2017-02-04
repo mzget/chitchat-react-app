@@ -1,5 +1,5 @@
 import config from "../../configs/config";
-
+import * as Rx from "rxjs/Rx";
 import "isomorphic-fetch";
 
 export const getRoomInfo = (room_id: string, token: string): Promise<any> => {
@@ -57,5 +57,17 @@ export function getLastAccessRoomInfo(token: string) {
             'Content-Type': 'application/json',
             "x-access-token": token
         }
+    });
+}
+
+export function updateLastAccessRoomInfo(token: string, room_id: string) {
+    return Rx.Observable.ajax({
+        url: `${config.Stalk.api.user}/lastAccessRoom`,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            "x-access-token": token
+        },
+        body: JSON.stringify({ room_id: room_id })
     });
 }

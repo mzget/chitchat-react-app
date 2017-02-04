@@ -1,4 +1,7 @@
 "use strict";
+const redux_actions_1 = require("redux-actions");
+const Rx = require("rxjs/Rx");
+const { ajax } = Rx.Observable;
 const BackendFactory_1 = require("../../chats/BackendFactory");
 const chatslogComponent_1 = require("../../chats/chatslogComponent");
 const ServiceProvider = require("../../chats/services/ServiceProvider");
@@ -140,3 +143,22 @@ function getLastAccessRoom() {
     };
 }
 exports.getLastAccessRoom = getLastAccessRoom;
+const UPDATE_LAST_ACCESS_ROOM = "UPDATE_LAST_ACCESS_ROOM";
+exports.UPDATE_LAST_ACCESS_ROOM_SUCCESS = "UPDATE_LAST_ACCESS_ROOM_SUCCESS";
+exports.UPDATE_LAST_ACCESS_ROOM_FAILURE = "UPDATE_LAST_ACCESS_ROOM_FAILURE";
+const UPDATE_LAST_ACCESS_ROOM_CANCELLED = "UPDATE_LAST_ACCESS_ROOM_CANCELLED";
+exports.updateLastAccessRoom = redux_actions_1.createAction(UPDATE_LAST_ACCESS_ROOM, room_id => room_id);
+const updateLastAccessRoomSuccess = redux_actions_1.createAction(exports.UPDATE_LAST_ACCESS_ROOM_SUCCESS, payload => payload);
+const updateLastAccessRoomFailure = redux_actions_1.createAction(exports.UPDATE_LAST_ACCESS_ROOM_FAILURE, error => error);
+exports.updateLastAccessRoomCancelled = redux_actions_1.createAction(UPDATE_LAST_ACCESS_ROOM_CANCELLED);
+exports.updateLastAccessRoomEpic = action$ => action$.ofType(UPDATE_LAST_ACCESS_ROOM).mergeMap(action => {
+    let token = configureStore_1.default.getState().authReducer.token;
+    return ServiceProvider.updateLastAccessRoomInfo(token, action.payload);
+})
+    .takeUntil(action$.ofType(UPDATE_LAST_ACCESS_ROOM_CANCELLED))
+    .catch(error => Rx.Observable.of(updateLastAccessRoomFailure(error.xhr.response)))
+    .map(response => updateLastAccessRoomSuccess(response.xhr.response)).do(x => {
+    if (x.payload.success) {
+        BackendFactory_1.default.getInstance().dataListener.onUpdatedLastAccessTime(x.payload.result);
+    }
+});
