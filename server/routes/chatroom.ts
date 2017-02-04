@@ -234,10 +234,32 @@ router.post("/getChatHistory", (req, res, next) => {
     ChatRoomManager.getNewerMessageOfChatRoom(room_id, utc).then(docs => {
         res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
 
-        //<!-- When get chat history complete. System will update roomAccess data for user.
+        // <!-- When get chat history complete. System will update roomAccess data for user.
         UserManager.updateLastAccessTimeOfRoom(user_id, room_id, new Date()).then(accessInfo => {
             console.log("updateLastAccessTimeOfRoom rid is %s: ", room_id, accessInfo.nModified);
         });
+
+        /*
+                userManager.updateLastAccessTimeOfRoom(user.uid, rid, new Date(), function (err, accessInfo) {
+                    let printR = (accessInfo) ? accessInfo.result : null;
+                    console.log("chatRemote.kick : updateLastAccessRoom rid is %s: ", rid, printR);
+        
+                    userManager.getRoomAccessOfRoom(uid, rid, function (err, res) {
+                        console.log("chatRemote.kick : getLastAccessOfRoom of %s", rid, res);
+                        if (err || res.length <= 0) return;
+        
+                        let targetId = { uid: user.uid, sid: user.serverId };
+                        let group = new Array();
+                        group.push(targetId);
+        
+                        let param = {
+                            route: Code.sharedEvents.onUpdatedLastAccessTime,
+                            data: res[0]
+                        };
+        
+                        channelService.pushMessageByUids(param.route, param.data, group);
+                    });
+                });*/
     }).catch(err => {
         console.error("getChatHistory fail: ", err);
         res.status(500).json(new apiUtils.ApiResponse(false, err));

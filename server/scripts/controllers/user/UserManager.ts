@@ -46,26 +46,16 @@ export async function getRoomAccessForUser(uid: string): Promise<any[]> {
     return docs;
 }
 
-export const getRoomAccessOfRoom = (uid: string, rid: string) => {
-    return new Promise((resolve, reject) => {
-        MongoClient.connect(config.chatDB).then(db => {
-            // Get the documents collection
-            let collection = db.collection(DbClient.stalkUserColl);
-            collection.find({ _id: new ObjectID(uid) }).project({ roomAccess: { $elemMatch: { roomId: rid } } })
-                .limit(1).toArray().then(docs => {
-                    db.close();
-                    resolve(docs);
-                })
-                .catch(err => {
-                    db.close();
-                    reject(err);
-                });
-        }).catch(err => {
-            console.error("Cannot connect database", err);
-            reject(err);
-        });
-    });
-}
+export const getRoomAccessOfRoom = async (uid: string, rid: string) => {
+    let db = await MongoClient.connect(config.chatDB);
+    // Get the documents collection
+    let collection = db.collection(DbClient.stalkUserColl);
+    let docs = await collection.find({ _id: new ObjectID(uid) })
+        .project({ roomAccess: { $elemMatch: { roomId: rid } } })
+        .limit(1).toArray();
+    db.close();
+    return docs;
+};
 
 export const updateLastAccessTimeOfRoom = async (user_id: string, room_id: string, date: Date) => {
     let db = await MongoClient.connect(config.chatDB);
