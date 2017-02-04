@@ -13,7 +13,7 @@ import { getConfig, Paths } from './config';
 import * as Constant from './scripts/Constant';
 const config = getConfig();
 
-process.env.NODE_ENV = 'development';
+process.env.NODE_ENV = `production`;
 const app = express();
 if (app.get('env') === 'development') {
     process.env.PORT = 9000;

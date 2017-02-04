@@ -9,7 +9,7 @@ const dev = {
     },
     apikey: "chitchat1234"
 };
-const production = {
+const master = {
     chatDB: "mongodb://rfl_dev:rfl1234@git.animation-genius.com:27017/chitchat-dev",
     redis_port: 6379,
     redis_host: "smelink.animation-genius.com",
@@ -20,7 +20,7 @@ const production = {
     apikey: "chitchat1234"
 };
 function getConfig() {
-    let conf = (process.env.NODE_ENV === `production`) ? production : dev;
+    let conf = (process.env.NODE_ENV === `production`) ? master : dev;
     return conf;
 }
 exports.getConfig = getConfig;

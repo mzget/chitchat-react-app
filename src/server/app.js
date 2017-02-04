@@ -12,7 +12,7 @@ const jwt = require("jsonwebtoken");
 const config_1 = require("./config");
 const Constant = require("./scripts/Constant");
 const config = config_1.getConfig();
-process.env.NODE_ENV = 'development';
+process.env.NODE_ENV = `production`;
 const app = express();
 if (app.get('env') === 'development') {
     process.env.PORT = 9000;

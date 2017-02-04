@@ -1,9 +1,9 @@
-import express = require('express');
-import crypto = require('crypto');
-import mongodb = require('mongodb');
-import async = require('async');
+import express = require("express");
+import crypto = require("crypto");
+import mongodb = require("mongodb");
+import async = require("async");
 const router = express.Router();
-import redis = require('redis');
+import redis = require("redis");
 const ObjectID = mongodb.ObjectID;
 import redisClient, { ROOM_KEY } from "../scripts/services/CachingSevice";
 import * as apiUtils from "../scripts/utils/apiUtils";
@@ -15,7 +15,7 @@ import * as ChatRoomManager from "../scripts/controllers/ChatRoomManager";
 import * as UserManager from "../scripts/controllers/user/UserManager";
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get("/", function (req, res, next) {
     next();
 });
 
@@ -32,7 +32,7 @@ router.post("/", function (req, res, next) {
         return res.status(500).json({ success: false, message: errors });
     }
 
-    let id = '';
+    let id = "";
     let owner = req.body.ownerId;
     let roommate = req.body.roommateId;
     if (owner < roommate) {
@@ -42,9 +42,9 @@ router.post("/", function (req, res, next) {
         id = roommate.concat(owner);
     }
 
-    let md = crypto.createHash('md5');
+    let md = crypto.createHash("md5");
     md.update(id);
-    let hexCode = md.digest('hex');
+    let hexCode = md.digest("hex");
     let roomId = hexCode.slice(0, 24);
 
     redisClient.hmget(ROOM_KEY, roomId, (err, result) => {
@@ -55,7 +55,7 @@ router.post("/", function (req, res, next) {
             console.log("get room from cache", room);
         }
         if (err || room === null || room === "undefined") {
-            //@find from db..
+            // @find from db..
             console.log("find room from db...");
             ChatRoomManager.GetChatRoomInfo(roomId).then(function (results) {
                 if (results.length > 0) {
@@ -88,7 +88,7 @@ router.post("/createPrivateRoom", function (req, res, next) {
         return res.status(500).json({ success: false, message: errors });
     }
 
-    let id: string = '';
+    let id: string = "";
     let owner: Room.Member = req.body.owner;
     let roommate: Room.Member = req.body.roommate;
     if (owner._id < roommate._id) {
@@ -98,9 +98,9 @@ router.post("/createPrivateRoom", function (req, res, next) {
         id = roommate._id.concat(owner._id);
     }
 
-    let md = crypto.createHash('md5');
+    let md = crypto.createHash("md5");
     md.update(id);
-    let hexCode = md.digest('hex');
+    let hexCode = md.digest("hex");
     let roomId = hexCode.slice(0, 24);
     let _tempArr = [owner, roommate];
     let _room = new Room.Room();
@@ -114,9 +114,9 @@ router.post("/createPrivateRoom", function (req, res, next) {
         let _room: Room.Room = results[0];
         redisClient.hmset(ROOM_KEY, _room._id, JSON.stringify(_room), redis.print);
 
-        //<!-- Push updated lastAccessRoom fields to all members.
+        // <!-- Push updated lastAccessRoom fields to all members.
         async.map(results[0].members, function (member: Room.Member, cb) {
-            //<!-- Add rid to user members lastAccessField.
+            // <!-- Add rid to user members lastAccessField.
             UserManager.AddRoomIdToRoomAccessFieldForUser(results[0]._id, member._id, new Date()).then((res) => {
                 console.log("add roomId to roomaccess fields", res);
                 cb(null, null);
@@ -267,7 +267,7 @@ router.post("/getChatHistory", (req, res, next) => {
     });
 });
 
-router.post('/clear_cache', (req, res, next) => {
+router.post("/clear_cache", (req, res, next) => {
     redisClient.del(ROOM_KEY, function (err, reply) {
         console.log(err, reply);
         if (err) return res.status(500).json({ success: false, message: err });
