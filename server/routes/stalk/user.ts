@@ -39,7 +39,7 @@ router.post("/lastAccessRoom", function (req, res, next) {
     async function update() {
         let accessInfo = await UserManager.updateLastAccessTimeOfRoom(user_id, room_id, new Date());
         console.log("updateLastAccessTimeOfRoom rid is %s: ", room_id, accessInfo.nModified);
-        let docs = await UserManager.getRoomAccessOfRoom(user_id, room_id);
+        let docs = await UserManager.getRoomAccessForUser(user_id);
 
         return docs;
     }

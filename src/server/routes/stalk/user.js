@@ -38,7 +38,7 @@ router.post("/lastAccessRoom", function (req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             let accessInfo = yield UserManager.updateLastAccessTimeOfRoom(user_id, room_id, new Date());
             console.log("updateLastAccessTimeOfRoom rid is %s: ", room_id, accessInfo.nModified);
-            let docs = yield UserManager.getRoomAccessOfRoom(user_id, room_id);
+            let docs = yield UserManager.getRoomAccessForUser(user_id);
             return docs;
         });
     }
