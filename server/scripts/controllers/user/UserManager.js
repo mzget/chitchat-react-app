@@ -39,26 +39,15 @@ function getRoomAccessForUser(uid) {
     });
 }
 exports.getRoomAccessForUser = getRoomAccessForUser;
-exports.getRoomAccessOfRoom = (uid, rid) => {
-    return new Promise((resolve, reject) => {
-        MongoClient.connect(config.chatDB).then(db => {
-            // Get the documents collection
-            let collection = db.collection(config_1.DbClient.stalkUserColl);
-            collection.find({ _id: new ObjectID(uid) }).project({ roomAccess: { $elemMatch: { roomId: rid } } })
-                .limit(1).toArray().then(docs => {
-                db.close();
-                resolve(docs);
-            })
-                .catch(err => {
-                db.close();
-                reject(err);
-            });
-        }).catch(err => {
-            console.error("Cannot connect database", err);
-            reject(err);
-        });
-    });
-};
+exports.getRoomAccessOfRoom = (uid, rid) => __awaiter(this, void 0, void 0, function* () {
+    let db = yield MongoClient.connect(config.chatDB);
+    let collection = db.collection(config_1.DbClient.stalkUserColl);
+    let docs = yield collection.find({ _id: new ObjectID(uid) })
+        .project({ roomAccess: { $elemMatch: { roomId: rid } } })
+        .limit(1).toArray();
+    db.close();
+    return docs;
+});
 exports.updateLastAccessTimeOfRoom = (user_id, room_id, date) => __awaiter(this, void 0, void 0, function* () {
     let db = yield MongoClient.connect(config.chatDB);
     let chatUserColl = db.collection(config_1.DbClient.stalkUserColl);

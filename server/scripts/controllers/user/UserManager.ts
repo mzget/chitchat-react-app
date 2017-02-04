@@ -46,6 +46,19 @@ export async function getRoomAccessForUser(uid: string): Promise<any[]> {
     return docs;
 }
 
+export const getRoomAccessOfRoom = async (uid: string, rid: string) => {
+    let db = await MongoClient.connect(config.chatDB);
+    let collection = db.collection(DbClient.stalkUserColl);
+
+    let docs = await collection.find({ _id: new ObjectID(uid) })
+        .project({ roomAccess: { $elemMatch: { roomId: rid } } })
+        .limit(1).toArray();
+
+    db.close();
+    return docs;
+};
+
+
 export const updateLastAccessTimeOfRoom = async (user_id: string, room_id: string, date: Date) => {
     let db = await MongoClient.connect(config.chatDB);
     let chatUserColl = db.collection(DbClient.stalkUserColl);
@@ -63,7 +76,7 @@ export const updateLastAccessTimeOfRoom = async (user_id: string, room_id: strin
         db.close();
         return result;
     }
-}
+};
 
 export const AddRoomIdToRoomAccessField = (roomId: string, memberIds: string[], date: Date, callback: (err, res: boolean) => void) => {
     async.each(memberIds, function (element: string, cb) {
