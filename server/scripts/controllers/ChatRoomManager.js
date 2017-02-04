@@ -59,88 +59,57 @@ function getOlderMessageChunkOfRid(rid, topEdgeMessageTime) {
     });
 }
 exports.getOlderMessageChunkOfRid = getOlderMessageChunkOfRid;
-exports.getUnreadMsgCountAndLastMsgContentInRoom = (roomId, lastAccessTime, callback) => {
-    let isoDate = new Date(lastAccessTime).toISOString();
-    // Use connect method to connect to the Server
-    MongoClient.connect(config.chatDB).then(db => {
-        // Get the documents collection
+function getUnreadMsgCountAndLastMsgContentInRoom(roomId, lastAccessTime) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // let isoDate = new Date(lastAccessTime).toISOString();
+        let db = yield MongoClient.connect(config.chatDB);
         let messagesColl = db.collection(config_1.DbClient.messageColl);
-        messagesColl.createIndex({ rid: 1, createTime: 1 }, { background: true, w: 1 });
-        messagesColl.find({ rid: roomId.toString(), createTime: { $gt: new Date(isoDate) } })
-            .project({ _id: 1 }).sort({ createTime: 1 })
-            .toArray()
-            .then(docs => {
-            db.close();
-            if (docs.length > 0) {
-                getLastMsgContentInMessagesIdArray(docs, function (err, res) {
-                    if (!!res) {
-                        callback(null, { count: docs.length, message: res });
-                    }
-                    else {
-                        callback(null, { count: docs.length });
-                    }
-                });
-            }
-            else {
-                getLastMessageContentOfRoom(roomId, function (err, res) {
-                    if (!!res) {
-                        callback(null, { count: docs.length, message: res });
-                    }
-                    else {
-                        callback(null, { count: docs.length });
-                    }
-                });
-            }
-        }).catch(err => {
-            db.close();
-            callback(new Error("GetUnreadMsgOfRoom by query date is no response." + err), null);
-        });
-    }).catch(err => {
-        callback("Cannot connect database." + err, null);
+        yield messagesColl.createIndex({ rid: 1 }, { background: true, w: 1 });
+        let docs = yield messagesColl.find({ rid: roomId.toString(), createTime: { $gt: new Date(lastAccessTime) } }).sort({ createTime: 1 }).toArray();
+        db.close();
+        let results = new Array();
+        if (docs.length > 0) {
+            results = yield getLastMsgContentInMessagesIdArray(docs);
+        }
+        else {
+            results = yield getLastMessageContentOfRoom(roomId);
+        }
+        if (results.length > 0) {
+            return { count: docs.length, message: results[0] };
+        }
+        else {
+            return { count: docs.length };
+        }
     });
-};
+}
+exports.getUnreadMsgCountAndLastMsgContentInRoom = getUnreadMsgCountAndLastMsgContentInRoom;
 /**
 * return : =>
 * unread msgs count.
 * type of msg,
 * msg.body
 */
-const getLastMsgContentInMessagesIdArray = (docs, callback) => {
-    let lastDoc = docs[docs.length - 1];
-    // Use connect method to connect to the Server
-    MongoClient.connect(config.chatDB).then(function (db) {
-        // Get the documents collection
+function getLastMsgContentInMessagesIdArray(docs) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let lastDoc = docs[docs.length - 1];
+        let db = yield MongoClient.connect(config.chatDB);
         let collection = db.collection(config_1.DbClient.messageColl);
         // Find some documents
-        collection.find({ _id: new ObjectID(lastDoc._id) }).limit(1).toArray().then(docs => {
-            if (docs.length > 0) {
-                callback(null, docs[0]);
-            }
-            else {
-                callback("no have last message", null);
-            }
-            db.close();
-        }).catch(err => callback(new Error("getLastMsgContentInMessagesIdArray error." + err), null));
-    }).catch(err => callback(err, null));
-};
-const getLastMessageContentOfRoom = (rid, callback) => {
-    // Use connect method to connect to the Server
-    MongoClient.connect(config.chatDB).then((db) => {
-        // Get the documents collection
+        let results = yield collection.find({ _id: new ObjectID(lastDoc._id) }).limit(1).toArray();
+        db.close();
+        return results;
+    });
+}
+function getLastMessageContentOfRoom(rid) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let db = yield MongoClient.connect(config.chatDB);
         let collection = db.collection(config_1.DbClient.messageColl);
-        collection.createIndex({ rid: 1 }, { background: true, w: 1 });
         // Find newest message documents
-        collection.find({ rid: rid.toString() }).sort({ createTime: -1 }).limit(1).toArray().then(docs => {
-            if (docs.length > 0) {
-                callback(null, docs[0]);
-            }
-            else {
-                callback("No have last message", null);
-            }
-            db.close();
-        });
-    }).catch(err => callback(err, null));
-};
+        let docs = yield collection.find({ rid: rid.toString() }).sort({ createTime: -1 }).limit(1).toArray();
+        db.close();
+        return docs;
+    });
+}
 exports.GetChatRoomInfo = (room_id) => {
     return new Promise((resolve, reject) => {
         MongoClient.connect(config.chatDB).then(db => {

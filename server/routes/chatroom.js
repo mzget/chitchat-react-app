@@ -41,9 +41,13 @@ router.post("/", function (req, res, next) {
     let hexCode = md.digest('hex');
     let roomId = hexCode.slice(0, 24);
     CachingSevice_1.default.hmget(CachingSevice_1.ROOM_KEY, roomId, (err, result) => {
-        let room = JSON.parse(JSON.stringify(result[0]));
-        console.log("get room from cache", room);
-        if (err || room == null || room == "undefined") {
+        let rooms = JSON.parse(result);
+        let room = {};
+        if (rooms && rooms.length > 0) {
+            room = rooms[0];
+            console.log("get room from cache", room);
+        }
+        if (err || room === null || room === "undefined") {
             //@find from db..
             console.log("find room from db...");
             ChatRoomManager.GetChatRoomInfo(roomId).then(function (results) {
@@ -162,13 +166,10 @@ router.get("/unreadMessage", (req, res, next) => {
             res.status(500).json({ success: false, message: "cannot access your request room." + err });
         }
         else {
-            ChatRoomManager.getUnreadMsgCountAndLastMsgContentInRoom(room_id, lastAccessTime, function (err, result2) {
-                if (err) {
-                    res.status(500).json({ success: false, message: err });
-                }
-                else {
-                    res.status(200).json({ success: true, result: result2 });
-                }
+            ChatRoomManager.getUnreadMsgCountAndLastMsgContentInRoom(room_id, lastAccessTime).then(results => {
+                res.status(200).json({ success: true, result: results });
+            }).catch(err => {
+                res.status(500).json({ success: false, message: err });
             });
         }
     });
