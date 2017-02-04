@@ -138,7 +138,7 @@ class Main extends React.Component {
                     React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
                     React.createElement(UtilsBox_1.default, null)),
                 (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
-                    (React.createElement(reflexbox_1.Flex, { style: { height: this.footerHeight, backgroundColor: Colors.red500 }, align: 'center', justify: 'center', flexColumn: true },
+                    (React.createElement(reflexbox_1.Flex, { style: { height: this.footerHeight, backgroundColor: Colors.red500 }, align: "center", justify: "center", flexColumn: true },
                         React.createElement(reflexbox_1.Flex, { flexColumn: true },
                             React.createElement("span", { style: { color: Colors.white } }, "Unable to connect whit chat service."),
                             React.createElement("span", { style: { color: Colors.white } }, "Check your Internet connection.")))) : null)));

@@ -1,11 +1,11 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
-import { Flex, Box } from 'reflexbox';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import * as Colors from 'material-ui/styles/colors';
-import Subheader from 'material-ui/Subheader';
+import { Flex, Box } from "reflexbox";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import * as Colors from "material-ui/styles/colors";
+import Subheader from "material-ui/Subheader";
 
-import { IComponentProps } from '../utils/IComponentProps';
+import { IComponentProps } from "../utils/IComponentProps";
 
 import SimpleToolbar from "../components/SimpleToolbar";
 import OrgGroupListBox from "./group/OrgGroupListBox";
@@ -158,7 +158,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                     {
                         (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
                             (
-                                <Flex style={{ height: this.footerHeight, backgroundColor: Colors.red500 }} align='center' justify='center' flexColumn={true}>
+                                <Flex style={{ height: this.footerHeight, backgroundColor: Colors.red500 }} align="center" justify="center" flexColumn={true}>
                                     <Flex flexColumn={true}>
                                         <span style={{ color: Colors.white }}>Unable to connect whit chat service.</span>
                                         <span style={{ color: Colors.white }}>Check your Internet connection.</span>

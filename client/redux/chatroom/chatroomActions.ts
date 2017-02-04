@@ -10,8 +10,8 @@ import SecureServiceFactory from "../../libs/chitchat/services/secureServiceFact
 import ServerEventListener from "../../libs/stalk/serverEventListener";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
 import { ContentType, IMessage, RoomType } from "../../chats/models/ChatDataModels";
-import * as NotificationManager from '../stalkBridge/StalkNotificationActions';
-import { Member } from '../../chats/models/Member';
+import * as NotificationManager from "../stalkBridge/StalkNotificationActions";
+import { Member } from "../../chats/models/Member";
 import * as ServiceProvider from "../../chats/services/ServiceProvider";
 
 import { createAction } from "redux-actions";
@@ -87,14 +87,14 @@ function onChatRoomDelegate(event, newMsg: IMessage) {
         }
         else {
             console.log("is contact message");
-            //@ Check app not run in background.
+            // @ Check app not run in background.
             let device = Store.getState().deviceReducer;
-            console.warn("AppState: ", device.appState); //active, background, inactive
-            if (device.appState == "active") {
+            console.warn("AppState: ", device.appState); // active, background, inactive
+            if (device.appState === "active") {
                 BackendFactory.getInstance().getChatApi().updateMessageReader(newMsg._id, newMsg.rid);
             }
-            else if (device.appState != "active") {
-                //@ When user joined room but appState is inActive.
+            else if (device.appState !== "active") {
+                // @ When user joined room but appState is inActive.
                 // sharedObjectService.getNotifyManager().notify(newMsg, appBackground, localNotifyService);
                 console.warn("Call local notification here...");
             }
@@ -109,19 +109,19 @@ function onChatRoomDelegate(event, newMsg: IMessage) {
 }
 function onOutSideRoomDelegate(event, data) {
     if (event === ServerEventListener.ON_CHAT) {
-        console.log("Call notification here...", data); //active, background, inactive
+        console.log("Call notification here...", data); // active, background, inactive
         NotificationManager.notify(data);
     }
 }
 
 const onNewMessage = (message: IMessage) => ({ type: ChatRoomActionsType.ON_NEW_MESSAGE, payload: message });
 
-function getPersistendMessage_request() { return { type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_REQUEST } }
+function getPersistendMessage_request() { return { type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_REQUEST }; }
 function getPersistendMessage_success(data?: any) {
     return {
         type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS,
         payload: data
-    }
+    };
 }
 const getPersistendMessage_failure = () => ({ type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_FAILURE });
 export function getPersistendMessage(currentRid: string) {
@@ -134,10 +134,10 @@ export function getPersistendMessage(currentRid: string) {
             dispatch(getPersistendMessage_success());
         }).catch(err => dispatch(getPersistendMessage_failure()));
 
-        //@ Next call 2 method below. -->
-        //getNewerMessageFromNet();
-        //checkOlderMessages();
-    }
+        // @ Next call 2 method below. -->
+        // getNewerMessageFromNet();
+        // checkOlderMessages();
+    };
 }
 
 const onEarlyMessageReady = createAction(ChatRoomActionsType.ON_EARLY_MESSAGE_READY, (data: boolean) => data);
@@ -161,7 +161,7 @@ export function checkOlderMessages() {
                 dispatch(onEarlyMessageReady(false));
             });
         });
-    }
+    };
 }
 
 function getNewerMessage_failure() {
@@ -190,32 +190,32 @@ export async function getMessages() {
 }
 
 function send_message_request() {
-    return { type: ChatRoomActionsType.SEND_MESSAGE_REQUEST }
+    return { type: ChatRoomActionsType.SEND_MESSAGE_REQUEST };
 }
 function send_message_success(data: any) {
     return {
         type: ChatRoomActionsType.SEND_MESSAGE_SUCCESS,
         payload: data
-    }
+    };
 }
 function send_message_failure(data?: any) {
     return {
         type: ChatRoomActionsType.SEND_MESSAGE_FAILURE,
         payload: data
-    }
+    };
 }
 export function sendMessage(msg: IMessage) {
     return (dispatch) => {
         dispatch(send_message_request());
 
-        if (msg.type == ContentType[ContentType.Location]) {
+        if (msg.type === ContentType[ContentType.Location]) {
             BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
                 dispatch(sendMessageResponse(err, res));
             });
-            return
+            return;
         }
 
-        if (msg.type == ContentType[ContentType.Text] && config.appConfig.encryption == true) {
+        if (msg.type === ContentType[ContentType.Text] && config.appConfig.encryption === true) {
             secure.encryption(msg.body).then(result => {
                 // secure.decryption(result).then(res => {
                 //     console.log(res);
@@ -236,7 +236,7 @@ export function sendMessage(msg: IMessage) {
                 dispatch(sendMessageResponse(err, res));
             });
         }
-    }
+    };
 }
 
 function sendMessageResponse(err, res) {
@@ -245,11 +245,11 @@ function sendMessageResponse(err, res) {
             dispatch(send_message_failure(res.body));
         }
         else {
-            console.log('server response!', res);
+            console.log("server response!", res);
 
-            if (res.data.hasOwnProperty('resultMsg')) {
+            if (res.data.hasOwnProperty("resultMsg")) {
                 let _msg = { ...res.data.resultMsg } as IMessage;
-                if (_msg.type == ContentType[ContentType.Text] && config.appConfig.encryption) {
+                if (_msg.type === ContentType[ContentType.Text] && config.appConfig.encryption) {
                     secure.decryption(_msg.body).then(res => {
                         _msg.body = res;
                         dispatch(send_message_success(_msg));
@@ -267,17 +267,17 @@ function sendMessageResponse(err, res) {
                 dispatch(send_message_failure(res.body));
             }
         }
-    }
+    };
 }
 
 function joinRoom_request() {
-    return { type: ChatRoomActionsType.JOIN_ROOM_REQUEST }
+    return { type: ChatRoomActionsType.JOIN_ROOM_REQUEST };
 }
 function joinRoom_success(data?: any) {
-    return { type: ChatRoomActionsType.JOIN_ROOM_SUCCESS, payload: data }
+    return { type: ChatRoomActionsType.JOIN_ROOM_SUCCESS, payload: data };
 }
 function joinRoom_failure() {
-    return { type: ChatRoomActionsType.JOIN_ROOM_FAILURE }
+    return { type: ChatRoomActionsType.JOIN_ROOM_FAILURE };
 }
 export function joinRoom(roomId: string, token: string, username: string) {
     return (dispatch) => {
@@ -332,7 +332,7 @@ export function loadEarlyMessageChunk() {
             // @check older message again.
             dispatch(checkOlderMessages());
         });
-    }
+    };
 }
 
 const GET_PERSISTEND_CHATROOM = "GET_PERSISTEND_CHATROOM";
@@ -374,4 +374,4 @@ export const createChatRoom = (myUser, contactUser) => {
 
         return null;
     }
-}
+};

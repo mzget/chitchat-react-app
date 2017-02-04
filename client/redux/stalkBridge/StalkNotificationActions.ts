@@ -11,7 +11,7 @@
 import BackendFactory from "../../chats/BackendFactory";
 import { ContentType } from "../../chats/models/ChatDataModels";
 import { MessageImp } from "../../chats/models/MessageImp";
-import * as CryptoHelper from '../../chats/utils/CryptoHelper';
+import * as CryptoHelper from "../../chats/utils/CryptoHelper";
 
 
 import Store from "../configureStore";

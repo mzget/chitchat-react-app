@@ -17,18 +17,17 @@ const AuthRx = require("../../redux/authen/authRx");
 class SignupBox extends React.Component {
     componentWillMount() {
         this.state = {
-            email: '',
-            password: '',
-            confirmPassword: '',
-            firstname: '',
-            lastname: ''
+            email: "",
+            password: "",
+            confirmPassword: "",
+            firstname: "",
+            lastname: ""
         };
         this.onSubmitForm = this.onSubmitForm.bind(this);
     }
     onSubmitForm() {
-        console.log("submit form", this.state);
-        if (this.state.password != this.state.confirmPassword) {
-            console.error('confirm password is not match!');
+        if (this.state.password !== this.state.confirmPassword) {
+            this.props.onError("confirm password is not match!");
         }
         else if (this.state.email.length > 0 && this.state.password.length > 0) {
             ValidateUtils.validateEmailPass(this.state.email, this.state.password, (result) => {
@@ -41,13 +40,16 @@ class SignupBox extends React.Component {
                         });
                     }
                     else {
-                        console.error('The require fields is missing!');
+                        this.props.onError("The require fields is missing!");
                     }
                 }
                 else {
                     console.warn(JSON.stringify(result));
                 }
             });
+        }
+        else {
+            this.props.onError("The require fields is missing!");
         }
     }
     render() {
