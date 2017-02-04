@@ -13,3 +13,10 @@ build
 .DS_Store
 .env
 npm-debug.log
+.vs/
+obj/
+server/.vscode/
+.vscode/
+server/npm-debug.log.185713772
+server/public/uploads/
+yarn-error.log
