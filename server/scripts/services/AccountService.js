@@ -55,9 +55,8 @@ class AccountService {
     }
     getRoom(roomId, callback) {
         CachingSevice_1.default.hmget(CachingSevice_1.ROOM_MAP_KEY, roomId, function (err, roomMap) {
-            console.dir(roomMap);
             if (err || roomMap[0] == null) {
-                callback("Have no a roomId in roomMembers dict." + err, null);
+                callback(err, null);
             }
             else {
                 let room = JSON.parse(roomMap[0]);

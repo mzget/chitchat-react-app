@@ -9,7 +9,7 @@
 
 
 import BackendFactory from "../../chats/BackendFactory";
-import { IMessage, ContentType } from "../../chats/models/ChatDataModels";
+import { ContentType } from "../../chats/models/ChatDataModels";
 import { MessageImp } from "../../chats/models/MessageImp";
 import * as CryptoHelper from '../../chats/utils/CryptoHelper';
 
@@ -37,13 +37,17 @@ export const unsubscribeGlobalNotifyMessageEvent = () => {
 export const notify = (messageImp: MessageImp) => {
     let message = "";
     if (messageImp.type === ContentType[ContentType.Text]) {
-        message = messageImp.body;
+        CryptoHelper.decryptionText(messageImp).then((decoded) => {
+            message = decoded.body;
+            Store.dispatch(stalkNotiNewMessage(message));
+        });
     }
     else if (messageImp.type === ContentType[ContentType.Location]) {
         message = "Sent you location";
+        Store.dispatch(stalkNotiNewMessage(message));
     }
     else if (messageImp.type === ContentType[ContentType.Image]) {
         message = "Sent you image";
+        Store.dispatch(stalkNotiNewMessage(message));
     }
-    Store.dispatch(stalkNotiNewMessage(message));
 };
