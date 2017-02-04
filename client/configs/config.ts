@@ -14,7 +14,7 @@ type IApi = {
     orgChart: string;
     chatroom: string;
     fileUpload: string;
-}
+};
 type IConfigFile = {
     Stalk: {
         chat: string,
@@ -27,7 +27,7 @@ type IConfigFile = {
         encryption: boolean
     };
     api: IApi;
-}
+};
 
 const rest_api = (host) => ({
     apiKey: "chitchat1234",
