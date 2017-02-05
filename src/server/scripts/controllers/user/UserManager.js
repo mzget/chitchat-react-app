@@ -430,3 +430,16 @@ function getUserOrgChart(user_id, team_id) {
     });
 }
 exports.getUserOrgChart = getUserOrgChart;
+function getTeamProfile(user_id, team_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let db = yield MongoClient.connect(config_1.config.chatDB);
+        let teamProfileColl = db.collection(config_1.DbClient.teamProfileCollection);
+        let profile = {};
+        profile.team_id = team_id;
+        profile.user_id = user_id;
+        let docs = yield teamProfileColl.find({ user_id: profile.user_id, team_id: profile.team_id }).limit(1).toArray();
+        db.close();
+        return docs;
+    });
+}
+exports.getTeamProfile = getTeamProfile;

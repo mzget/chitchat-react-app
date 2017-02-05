@@ -46,6 +46,9 @@ router.post("/create", function (req, res, next) {
         return res.status(500).json(new apiUtils.ApiResponse(false, errors));
     }
     let room = req.body.room;
+    if (!room.org_chart_id) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, "missing org_chart_id"));
+    }
     let roomModel = new Room_1.Room();
     roomModel = __assign({}, room);
     roomModel.createTime = new Date();

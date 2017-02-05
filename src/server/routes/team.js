@@ -145,10 +145,19 @@ router.get("/teamMembers", function (req, res, next) {
     function findTeamMembers(team_id) {
         return __awaiter(this, void 0, void 0, function* () {
             let db = yield MongoClient.connect(config.chatDB);
-            let collection = db.collection(config_1.DbClient.chitchatUserColl);
-            let results = yield collection.find({ teams: { $in: [team_id.toString()] } })
-                .project({ username: 1, firstname: 1, lastname: 1, image: 1, org_chart_id: 1 })
-                .limit(100).toArray();
+            let chitchatUserColl = db.collection(config_1.DbClient.chitchatUserColl);
+            let results = yield chitchatUserColl.aggregate([
+                { $match: { teams: { $in: [team_id.toString()] } } },
+                {
+                    $lookup: {
+                        from: config_1.DbClient.teamProfileCollection,
+                        localField: "_id",
+                        foreignField: "user_id",
+                        as: "teamProfile"
+                    }
+                }
+            ])
+                .project({ username: 1, firstname: 1, lastname: 1, image: 1, teamProfile: "$teamProfile" }).limit(100).toArray();
             db.close();
             return results;
         });

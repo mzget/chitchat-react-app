@@ -478,9 +478,9 @@ export async function updateOrgChart(user_id: string, team_id: string, org_chart
     await teamProfileColl.createIndex({ team_id: 1, user_id: 1 }, { background: true });
 
     let profile = {} as ITeamProfile;
-    profile.team_id = team_id;
-    profile.user_id = user_id;
-    profile.org_chart_id = org_chart_id;
+    profile.team_id = new mongodb.ObjectID(team_id);
+    profile.user_id = new mongodb.ObjectID(user_id);
+    profile.org_chart_id = new mongodb.ObjectID(org_chart_id);
 
     let result = await teamProfileColl.updateOne(
         { user_id: profile.user_id, team_id: profile.team_id },
@@ -497,11 +497,24 @@ export async function getUserOrgChart(user_id: string, team_id: string) {
     await teamProfileColl.createIndex({ team_id: 1, user_id: 1 }, { background: true });
 
     let profile = {} as ITeamProfile;
-    profile.team_id = team_id;
-    profile.user_id = user_id;
+    profile.team_id = new mongodb.ObjectID(team_id);
+    profile.user_id = new mongodb.ObjectID(user_id);
 
     let docs = await teamProfileColl.find({ user_id: profile.user_id, team_id: profile.team_id })
         .project({ org_chart_id: 1 }).limit(1).toArray();
+    db.close();
+    return docs as Array<ITeamProfile>;
+}
+
+export async function getTeamProfile(user_id: string, team_id: string) {
+    let db = await MongoClient.connect(config.chatDB);
+    let teamProfileColl = db.collection(DbClient.teamProfileCollection);
+    
+    let profile = {} as ITeamProfile;
+    profile.team_id = new mongodb.ObjectID(team_id);
+    profile.user_id = new mongodb.ObjectID(user_id);
+
+    let docs = await teamProfileColl.find({ user_id: profile.user_id, team_id: profile.team_id }).limit(1).toArray();
     db.close();
     return docs as Array<ITeamProfile>;
 }

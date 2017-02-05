@@ -93,15 +93,15 @@ export async function removeUserOutOfOrgChartGroups(user_id: string, orgChart_id
     return results.result;
 }
 
-export async function addUserToOrgChartGroups(user: ChitChatAccount, orgChart_id: string) {
+export async function addUserToOrgChartGroups(user_id: string, username: string, orgChart_id: string) {
     let db = await MongoClient.connect(config.chatDB);
     let groupCollection = db.collection(DbClient.chatroomColl);
 
     let member = new Member();
-    member._id = user._id;
+    member._id = user_id;
     member.joinTime = new Date();
     member.room_role = MemberRole.member;
-    member.username = user.username;
+    member.username = username;
 
     let results = await groupCollection.updateMany({ org_chart_id: orgChart_id },
         { $addToSet: { members: member } },

@@ -172,7 +172,8 @@ router.get("/teams", (req, res, next) => {
 });
 */
 router.post("/setOrgChartId", (req, res, next) => {
-    req.checkBody("user", "request for user object as body params").notEmpty();
+    req.checkBody("user_id", "request for user_id as body params").isMongoId();
+    req.checkBody("username", "request for username as body params").notEmpty();
     req.checkBody("team_id", "request for team_id").isMongoId();
     req.checkBody("org_chart_id", "request for org_chart_id").isMongoId();
     let errors = req.validationErrors();
@@ -183,18 +184,19 @@ router.post("/setOrgChartId", (req, res, next) => {
     // find old org_chart.
     // remove user out of members list from all group of old org_chart.
     // add user to member of all group of new org_chart.
-    let user = req.body.user;
+    let user_id = req.body.user_id;
+    let username = req.body.username;
     let team_id = req.body.team_id;
     let org_chart_id = req.body.org_chart_id;
     function setOrgChartId() {
         return __awaiter(this, void 0, void 0, function* () {
-            let docs = yield UserManager.getUserOrgChart(user._id.toString(), team_id);
+            let docs = yield UserManager.getUserOrgChart(user_id, team_id);
             if (docs.length > 0 && !!docs[0].org_chart_id) {
                 let old_org_chart_id = docs[0].org_chart_id;
-                let removeResult = yield GroupController.removeUserOutOfOrgChartGroups(user._id.toString(), old_org_chart_id.toString());
+                let removeResult = yield GroupController.removeUserOutOfOrgChartGroups(user_id, old_org_chart_id.toString());
             }
-            let addResult = yield GroupController.addUserToOrgChartGroups(user, org_chart_id.toString());
-            let result = yield UserManager.updateOrgChart(user._id.toString(), team_id, org_chart_id);
+            let addResult = yield GroupController.addUserToOrgChartGroups(user_id, username, org_chart_id.toString());
+            let result = yield UserManager.updateOrgChart(user_id, team_id, org_chart_id);
             return result;
         });
     }
@@ -202,6 +204,20 @@ router.post("/setOrgChartId", (req, res, next) => {
         res.status(200).json(new apiUtils.ApiResponse(false, null, result));
     }).catch(err => {
         console.error("Fail to updateOrgChart", err);
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
+    });
+});
+router.get("/teamProfile", (req, res, next) => {
+    req.checkQuery("team_id", "request for team_id").isMongoId();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+    let user_id = req["decoded"]._id;
+    let team_id = req.query.team_id;
+    UserManager.getTeamProfile(user_id, team_id).then(docs => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
+    }).catch(err => {
         res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });

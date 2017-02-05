@@ -168,14 +168,36 @@ router.get("/teamMembers", function (req, res, next) {
 
     async function findTeamMembers(team_id: mongodb.ObjectID) {
         let db = await MongoClient.connect(config.chatDB);
-        let collection = db.collection(DbClient.chitchatUserColl);
+        let chitchatUserColl = db.collection(DbClient.chitchatUserColl);
 
-        let results = await collection.find({ teams: { $in: [team_id.toString()] } })
-            .project({ username: 1, firstname: 1, lastname: 1, image: 1, org_chart_id: 1 })
-            .limit(100).toArray();
+        let results = await chitchatUserColl.aggregate([
+            { $match: { teams: { $in: [team_id.toString()] } } },
+            {
+                $lookup:
+                {
+                    from: DbClient.teamProfileCollection,
+                    localField: "_id",
+                    foreignField: "user_id",
+                    as: "teamProfiles"
+                }
+            },
+            {
+                $project: { username: 1, firstname: 1, lastname: 1, image: 1, teamProfiles: "$teamProfiles" }
+            },
+            {
+                $redact: {
+                    $cond: {
+                        if: { $and: [{ $ne: ["$team_id", team_id] }, { $ifNull: ["$team_id", false] }] },
+                        then: "$$PRUNE",
+                        else: "$$DESCEND"
+                    }
+                }
+            }]).limit(100).toArray() as Array<ChitChatAccount>;
+
+        console.log(results);
 
         db.close();
-        return results as Array<ChitChatAccount>;
+        return results;
     }
 
     findTeamMembers(team_id).then(docs => {
