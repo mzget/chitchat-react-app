@@ -8,11 +8,11 @@ import { ContactProfileView } from "./ContactProfileView";
 
 import * as adminRx from "../../redux/admin/adminRx";
 
-import { ChitChatAccount } from "../../../server/scripts/models/User";
+import { ITeamMember } from "../../chats/models/ITeamMember";
 import { IOrgChart } from "../../../server/scripts/models/OrgChart";
 
 interface IComponentState {
-    member: ChitChatAccount;
+    member: ITeamMember;
     dropdownValue: number;
 };
 export class TeamMemberBox extends React.Component<IComponentProps, IComponentState> {
@@ -43,7 +43,7 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
     }
 
 
-    onSelectMember(item: ChitChatAccount) {
+    onSelectMember(item: ITeamMember) {
         let {adminReducer: {orgCharts}} = this.props;
         console.log("onSelectMember", item);
         if (item.teamProfiles.length === 0) {
@@ -79,7 +79,6 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
     render() {
         return (
             <Flex flexColumn={false}>
-                <Box p={2} flexAuto></Box>
                 <Flex flexColumn align="center">
                     {
                         (!!this.state.member) ?
@@ -94,7 +93,6 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
                             <MemberList onSelected={this.onSelectMember} value={this.props.teamReducer.members} />
                     }
                 </Flex>
-                <Box p={2} flexAuto></Box>
             </Flex>
         );
     }

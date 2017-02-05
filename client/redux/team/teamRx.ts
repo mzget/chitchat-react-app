@@ -6,6 +6,7 @@ const { ajax } = Rx.Observable;
 
 import Store from "../configureStore";
 import * as userRx from "../user/userRx";
+import { ITeamMember } from "../../chats/models/ITeamMember";
 
 const FETCH_USER_TEAMS = "FETCH_USER_TEAMS";
 const FETCH_USER_TEAMS_SUCCESS = "FETCH_USER_TEAMS_SUCCESS";
@@ -150,9 +151,9 @@ export function getTeamMembersEpic(action$) {
             }
         }).map((x) => {
             let res = x.response;
-            let results = res.result as Array<ChitChatAccount>;
+            let results = res.result as Array<ITeamMember>;
             let user_id = Store.getState().userReducer.user._id;
-            let members = new Array<ChitChatAccount>();
+            let members = new Array<ITeamMember>();
             Rx.Observable.from(results)
                 .filter((x, i) => x._id !== user_id)
                 .subscribe(x => members.push(x));
@@ -162,7 +163,7 @@ export function getTeamMembersEpic(action$) {
             .catch(error => Rx.Observable.of(getTeamMembersFailure(error.xhr.response)))
             .do(x => {
                 if (x.type === GET_TEAM_MEMBERS_SUCCESS) {
-                    let arr = x.payload as Array<ChitChatAccount>;
+                    let arr = x.payload as Array<ITeamMember>;
                 }
             })
         );

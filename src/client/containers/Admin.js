@@ -75,6 +75,10 @@ class Admin extends React.Component {
                 this.onAlert(adminReducer.error);
                 break;
             }
+            case adminRx.UPDATE_USER_ORG_CHART_SUCCESS: {
+                this.props.dispatch(adminRx.emptyState());
+                break;
+            }
             default:
                 break;
         }

@@ -1,6 +1,7 @@
 ﻿import { ChitChatAccount } from "../../../server/scripts/models/User";
+import { ITeamProfile } from "../../../server/scripts/models/TeamProfile";
 
-export abstract class ITeamMember implements ChitChatAccount {
+export class ITeamMember extends ChitChatAccount {
     _id: string;
     displayname: string;
     username: string;
@@ -9,4 +10,5 @@ export abstract class ITeamMember implements ChitChatAccount {
     tel: string;
     email: string;
     avatar: string;
+    teamProfiles: Array<ITeamProfile>;
 }
