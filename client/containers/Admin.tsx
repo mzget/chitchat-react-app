@@ -74,19 +74,6 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             default:
                 break;
         }
-
-        switch (adminReducer.state) {
-            case adminRx.UPDATE_USER_ORG_CHART_FAILURE: {
-                this.onAlert(adminReducer.error);
-                break;
-            }
-            case adminRx.UPDATE_USER_ORG_CHART_SUCCESS: {
-                this.props.dispatch(adminRx.emptyState());
-                break;
-            }
-            default:
-                break;
-        }
     }
 
     onAdminMenuSelected(key: string) {

@@ -33,10 +33,15 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
         let {adminReducer} = nextProps;
 
         switch (adminReducer.state) {
-            case adminRx.UPDATE_USER_ORG_CHART_SUCCESS:
-                this.setState(previous => ({ ...previous, member: null }));
+            case adminRx.UPDATE_USER_ORG_CHART_FAILURE: {
+                this.props.onError(adminReducer.error);
                 break;
-
+            }
+            case adminRx.UPDATE_USER_ORG_CHART_SUCCESS: {
+                this.setState(previous => ({ ...previous, member: null }));
+                this.props.dispatch(adminRx.emptyState());
+                break;
+            }
             default:
                 break;
         }
