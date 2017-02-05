@@ -129,7 +129,7 @@ function getTeamMembersEpic(action$) {
             "x-access-token": configureStore_1.default.getState().authReducer.token
         }
     }).map((x) => {
-        let res = x.xhr.response;
+        let res = x.response;
         let results = res.result;
         let user_id = configureStore_1.default.getState().userReducer.user._id;
         let members = new Array();

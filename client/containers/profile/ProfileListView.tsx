@@ -20,21 +20,25 @@ interface IComponentProps {
 
 export const ProfileListView = (props: IComponentProps) => (
     < MuiThemeProvider >
-        <List>
-            <ListItem
-                onClick={() => props.onSelected(props.item)}
-                leftAvatar={(!!props.item.avatar) ?
-                    <Avatar src={props.item.avatar} /> : <Avatar>{props.item.username.charAt(0)}</Avatar>
-                }
-                rightIcon={null}
-                primaryText={props.item.username}
-                secondaryText={
-                    <p>
-                        <span style={{ color: darkBlack }}>{props.item.email}</span>
-                    </p>
-                }
-            />
-            <Divider inset={true} />
-        </List>
+        {
+            (props.item) ?
+                <List>
+                    <ListItem
+                        onClick={() => props.onSelected(props.item)}
+                        leftAvatar={(!!props.item.avatar) ?
+                            <Avatar src={props.item.avatar} /> : <Avatar>{props.item.username.charAt(0)}</Avatar>
+                        }
+                        rightIcon={null}
+                        primaryText={props.item.username}
+                        secondaryText={
+                            <p>
+                                <span style={{ color: darkBlack }}>{props.item.email}</span>
+                            </p>
+                        }
+                    />
+                    <Divider inset={true} />
+                </List>
+                : null
+        }
     </ MuiThemeProvider >
 );

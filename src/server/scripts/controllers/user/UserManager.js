@@ -406,9 +406,9 @@ function updateOrgChart(user_id, team_id, org_chart_id) {
         let teamProfileColl = db.collection(config_1.DbClient.teamProfileCollection);
         yield teamProfileColl.createIndex({ team_id: 1, user_id: 1 }, { background: true });
         let profile = {};
-        profile.team_id = team_id;
-        profile.user_id = user_id;
-        profile.org_chart_id = org_chart_id;
+        profile.team_id = new mongodb.ObjectID(team_id);
+        profile.user_id = new mongodb.ObjectID(user_id);
+        profile.org_chart_id = new mongodb.ObjectID(org_chart_id);
         let result = yield teamProfileColl.updateOne({ user_id: profile.user_id, team_id: profile.team_id }, { $set: { org_chart_id: profile.org_chart_id } }, { upsert: true });
         db.close();
         return result.result;
@@ -421,8 +421,8 @@ function getUserOrgChart(user_id, team_id) {
         let teamProfileColl = db.collection(config_1.DbClient.teamProfileCollection);
         yield teamProfileColl.createIndex({ team_id: 1, user_id: 1 }, { background: true });
         let profile = {};
-        profile.team_id = team_id;
-        profile.user_id = user_id;
+        profile.team_id = new mongodb.ObjectID(team_id);
+        profile.user_id = new mongodb.ObjectID(user_id);
         let docs = yield teamProfileColl.find({ user_id: profile.user_id, team_id: profile.team_id })
             .project({ org_chart_id: 1 }).limit(1).toArray();
         db.close();
@@ -435,8 +435,8 @@ function getTeamProfile(user_id, team_id) {
         let db = yield MongoClient.connect(config_1.config.chatDB);
         let teamProfileColl = db.collection(config_1.DbClient.teamProfileCollection);
         let profile = {};
-        profile.team_id = team_id;
-        profile.user_id = user_id;
+        profile.team_id = new mongodb.ObjectID(team_id);
+        profile.user_id = new mongodb.ObjectID(user_id);
         let docs = yield teamProfileColl.find({ user_id: profile.user_id, team_id: profile.team_id }).limit(1).toArray();
         db.close();
         return docs;

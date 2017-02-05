@@ -153,11 +153,23 @@ router.get("/teamMembers", function (req, res, next) {
                         from: config_1.DbClient.teamProfileCollection,
                         localField: "_id",
                         foreignField: "user_id",
-                        as: "teamProfile"
+                        as: "teamProfiles"
+                    }
+                },
+                {
+                    $project: { username: 1, firstname: 1, lastname: 1, image: 1, teamProfiles: "$teamProfiles" }
+                },
+                {
+                    $redact: {
+                        $cond: {
+                            if: { $and: [{ $ne: ["$team_id", team_id] }, { $ifNull: ["$team_id", false] }] },
+                            then: "$$PRUNE",
+                            else: "$$DESCEND"
+                        }
                     }
                 }
-            ])
-                .project({ username: 1, firstname: 1, lastname: 1, image: 1, teamProfile: "$teamProfile" }).limit(100).toArray();
+            ]).limit(100).toArray();
+            console.log(results);
             db.close();
             return results;
         });

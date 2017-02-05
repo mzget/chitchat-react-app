@@ -3,6 +3,7 @@ const config_1 = require("../../configs/config");
 const immutable_1 = require("immutable");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
+const UserService = require("../../chats/services/UserService");
 const authRx = require("../authen/authRx");
 const configureStore_1 = require("../configureStore");
 const FETCH_USER = "FETCH_USER";
@@ -14,7 +15,7 @@ const fetchUserFulfilled = payload => ({ type: exports.FETCH_USER_SUCCESS, paylo
 const cancelFetchUser = () => ({ type: FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: exports.FETCH_USER_FAILURE, payload, error: true });
 exports.fetchUserEpic = action$ => action$.ofType(FETCH_USER)
-    .mergeMap(action => ajax.getJSON(`${config_1.default.api.user}/?username=${action.payload}`, { 'x-access-token': configureStore_1.default.getState().authReducer.token })
+    .mergeMap(action => ajax.getJSON(`${config_1.default.api.user}/?username=${action.payload}`, { "x-access-token": configureStore_1.default.getState().authReducer.token })
     .map(fetchUserFulfilled)
     .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
     .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response))));
@@ -45,7 +46,7 @@ exports.fetchAgentEpic = action$ => (action$.ofType(FETCH_AGENT)
     .takeUntil(action$.ofType(FETCH_AGENT_CANCELLED))
     .catch(error => Rx.Observable.of(fetchAgentFailure(error.xhr.response)))));
 const FETCH_CONTACT = "FETCH_CONTACT";
-const FETCH_CONTACT_SUCCESS = 'FETCH_CONTACT_SUCCESS';
+const FETCH_CONTACT_SUCCESS = "FETCH_CONTACT_SUCCESS";
 exports.fetchContact = (contactId) => ({ type: FETCH_CONTACT, payload: contactId });
 const fetchContactSuccess = payload => ({ type: FETCH_CONTACT_SUCCESS, payload });
 exports.fetchContactEpic = action$ => action$.ofType(FETCH_CONTACT)
@@ -53,10 +54,27 @@ exports.fetchContactEpic = action$ => action$.ofType(FETCH_CONTACT)
     .map(fetchContactSuccess)
     .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
     .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response))));
+const GET_TEAM_PROFILE = "GET_TEAM_PROFILE";
+exports.GET_TEAM_PROFILE_SUCCESS = "GET_TEAM_PROFILE_SUCCESS";
+const GET_TEAM_PROFILE_FAILURE = "GET_TEAM_PROFILE_FAILURE";
+const GET_TEAM_PROFILE_CANCELLED = "GET_TEAM_PROFILE_CANCELLED";
+exports.getTeamProfile = (team_id) => ({ type: GET_TEAM_PROFILE, payload: team_id });
+const getTeamProfileSuccess = (payload) => ({ type: exports.GET_TEAM_PROFILE_SUCCESS, payload });
+const getTeamProfileFailure = (payload) => ({ type: GET_TEAM_PROFILE_FAILURE, payload });
+const getTeamProfileCancelled = () => ({ type: GET_TEAM_PROFILE_CANCELLED });
+exports.getTeamProfileEpic = action$ => (action$.ofType(GET_TEAM_PROFILE)
+    .mergeMap(action => {
+    let token = configureStore_1.default.getState().authReducer.token;
+    return UserService.getTeamProfile(token, action.payload);
+})
+    .map(response => getTeamProfileSuccess(response.response))
+    .takeUntil(action$.ofType(GET_TEAM_PROFILE_CANCELLED))
+    .catch(error => Rx.Observable.of(getTeamProfileFailure(error.xhr.response))));
 exports.UserInitState = immutable_1.Record({
     isFetching: false,
     state: null,
-    user: null
+    user: null,
+    teamProfile: null
 });
 const userInitState = new exports.UserInitState();
 exports.userReducer = (state = userInitState, action) => {

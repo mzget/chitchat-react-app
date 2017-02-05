@@ -17,6 +17,8 @@ export const rootEpic = combineEpics(
     userRx.fetchUserEpic,
     userRx.fetchContactEpic,
     userRx.fetchAgentEpic,
+    userRx.getTeamProfileEpic,
+
     ///@ Signup user.
     authRx.signupUserEpic,
     authRx.authUserEpic,

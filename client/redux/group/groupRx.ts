@@ -39,7 +39,7 @@ export const getOrgGroupEpic = action$ => (
         ));
 
 const CREATE_GROUP = "CREATE_GROUP";
-const CREATE_GROUP_FAILURE = "CREATE_GROUP_FAILURE";
+export const CREATE_GROUP_FAILURE = "CREATE_GROUP_FAILURE";
 export const CREATE_GROUP_SUCCESS = "CREATE_GROUP_SUCCESS";
 const CREATE_GROUP_CANCELLED = "CREATE_GROUP_CANCELLED";
 export const createGroup = createAction(CREATE_GROUP, group => group);
@@ -61,9 +61,13 @@ export const createGroupEpic = action$ => (
             .catch(error => Rx.Observable.of(createGroupFailure(error.xhr.response))))
 );
 
+const GROUP_RX_EMPTY_STATE = "GROUP_RX_EMPTY_STATE";
+export const emptyState = () => ({ type: GROUP_RX_EMPTY_STATE });
+
 export const GroupInitState = Record({
     isFetching: false,
     state: null,
+    error: null,
     orgGroups: null
 });
 export const groupReducer = (state = new GroupInitState(), action) => {
@@ -85,6 +89,14 @@ export const groupReducer = (state = new GroupInitState(), action) => {
             }
 
             return state;
+        }
+        case CREATE_GROUP_FAILURE: {
+            return state.set("state", CREATE_GROUP_FAILURE)
+                .set("error", action.payload.message);
+        }
+
+        case GROUP_RX_EMPTY_STATE: {
+            return state.set("state", GROUP_RX_EMPTY_STATE).set("error", null);
         }
         default:
             return state;

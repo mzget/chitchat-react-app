@@ -4,6 +4,7 @@ import { Record } from "immutable";
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
+import * as UserService from "../../chats/services/UserService";
 import * as authRx from "../authen/authRx";
 import Store from "../configureStore";
 
@@ -69,10 +70,31 @@ export const fetchContactEpic = action$ => action$.ofType(FETCH_CONTACT)
             .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))
     );
 
+
+const GET_TEAM_PROFILE = "GET_TEAM_PROFILE";
+export const GET_TEAM_PROFILE_SUCCESS = "GET_TEAM_PROFILE_SUCCESS";
+const GET_TEAM_PROFILE_FAILURE = "GET_TEAM_PROFILE_FAILURE";
+const GET_TEAM_PROFILE_CANCELLED = "GET_TEAM_PROFILE_CANCELLED";
+export const getTeamProfile = (team_id: string) => ({ type: GET_TEAM_PROFILE, payload: team_id });
+const getTeamProfileSuccess = (payload) => ({ type: GET_TEAM_PROFILE_SUCCESS, payload });
+const getTeamProfileFailure = (payload) => ({ type: GET_TEAM_PROFILE_FAILURE, payload });
+const getTeamProfileCancelled = () => ({ type: GET_TEAM_PROFILE_CANCELLED });
+export const getTeamProfileEpic = action$ => (
+    action$.ofType(GET_TEAM_PROFILE)
+        .mergeMap(action => {
+            let token = Store.getState().authReducer.token;
+            return UserService.getTeamProfile(token, action.payload);
+        })
+        .map(response => getTeamProfileSuccess(response.response))
+        .takeUntil(action$.ofType(GET_TEAM_PROFILE_CANCELLED))
+        .catch(error => Rx.Observable.of(getTeamProfileFailure(error.xhr.response)))
+);
+
 export const UserInitState = Record({
     isFetching: false,
     state: null,
-    user: null
+    user: null,
+    teamProfile: null
 });
 const userInitState = new UserInitState();
 export const userReducer = (state = userInitState, action) => {

@@ -34,25 +34,26 @@ class TeamMemberBox extends React.Component {
     }
     onSelectMember(item) {
         let { adminReducer: { orgCharts } } = this.props;
-        if (!item.org_chart_id) {
+        console.log("onSelectMember", item);
+        if (item.teamProfiles.length === 0) {
             this.setState(previous => (__assign({}, previous, { member: item, dropdownValue: -1 })));
         }
         else {
             let charts = orgCharts;
             let chart_ids = charts.findIndex((v, i, arr) => {
-                return v._id.toString() === item.org_chart_id;
+                return v._id.toString() === item.teamProfiles[0].org_chart_id;
             });
             this.setState(previous => (__assign({}, previous, { member: item, dropdownValue: chart_ids })));
         }
     }
     onSubmit() {
-        let { adminReducer: { orgCharts } } = this.props;
+        let { adminReducer: { orgCharts }, teamReducer: { team } } = this.props;
         let _member = this.state.member;
-        if (orgCharts.length > 0) {
-            _member.org_chart_id = orgCharts[this.state.dropdownValue]._id;
+        if (orgCharts.length > 0 && this.state.dropdownValue >= 0) {
+            this.orgChart_id = orgCharts[this.state.dropdownValue]._id;
         }
         if (_member) {
-            this.props.dispatch(adminRx.updateUserOrgChart(_member));
+            this.props.dispatch(adminRx.updateUserOrgChart(_member, team._id, this.orgChart_id));
         }
         else {
             if (this.props.onError) {

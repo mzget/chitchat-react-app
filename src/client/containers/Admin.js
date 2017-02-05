@@ -57,10 +57,22 @@ class Admin extends React.Component {
         this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
     }
     componentWillReceiveProps(nextProps) {
-        const { groupReducer } = nextProps;
+        const { groupReducer, adminReducer } = nextProps;
         switch (groupReducer.state) {
             case groupRx.CREATE_GROUP_SUCCESS: {
                 this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.idle })));
+                break;
+            }
+            case groupRx.CREATE_GROUP_FAILURE: {
+                this.onAlert(groupReducer.error);
+                break;
+            }
+            default:
+                break;
+        }
+        switch (adminReducer.state) {
+            case adminRx.UPDATE_USER_ORG_CHART_FAILURE: {
+                this.onAlert(adminReducer.error);
                 break;
             }
             default:
@@ -91,7 +103,10 @@ class Admin extends React.Component {
     closeAlert() {
         this.alertTitle = "";
         this.alertMessage = "";
-        this.setState(prevState => (__assign({}, prevState, { alert: false })));
+        this.setState(prevState => (__assign({}, prevState, { alert: false })), () => {
+            this.props.dispatch(groupRx.emptyState());
+            this.props.dispatch(adminRx.emptyState());
+        });
     }
     onAlert(error) {
         this.alertTitle = "Alert!";

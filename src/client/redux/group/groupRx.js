@@ -29,12 +29,12 @@ exports.getOrgGroupEpic = action$ => (action$.ofType(GET_ORG_GROUP)
     }
 })));
 const CREATE_GROUP = "CREATE_GROUP";
-const CREATE_GROUP_FAILURE = "CREATE_GROUP_FAILURE";
+exports.CREATE_GROUP_FAILURE = "CREATE_GROUP_FAILURE";
 exports.CREATE_GROUP_SUCCESS = "CREATE_GROUP_SUCCESS";
 const CREATE_GROUP_CANCELLED = "CREATE_GROUP_CANCELLED";
 exports.createGroup = redux_actions_1.createAction(CREATE_GROUP, group => group);
 const createGroupSuccess = redux_actions_1.createAction(exports.CREATE_GROUP_SUCCESS, payload => payload);
-const createGroupFailure = redux_actions_1.createAction(CREATE_GROUP_FAILURE, err => err);
+const createGroupFailure = redux_actions_1.createAction(exports.CREATE_GROUP_FAILURE, err => err);
 const createGroupCancelled = redux_actions_1.createAction(CREATE_GROUP_CANCELLED);
 exports.createGroupEpic = action$ => (action$.ofType(CREATE_GROUP)
     .mergeMap(action => ajax({
@@ -48,9 +48,12 @@ exports.createGroupEpic = action$ => (action$.ofType(CREATE_GROUP)
 }).map(json => createGroupSuccess(json.response.result))
     .takeUntil(action$.ofType(CREATE_GROUP_CANCELLED))
     .catch(error => Rx.Observable.of(createGroupFailure(error.xhr.response)))));
+const GROUP_RX_EMPTY_STATE = "GROUP_RX_EMPTY_STATE";
+exports.emptyState = () => ({ type: GROUP_RX_EMPTY_STATE });
 exports.GroupInitState = immutable_1.Record({
     isFetching: false,
     state: null,
+    error: null,
     orgGroups: null
 });
 exports.groupReducer = (state = new exports.GroupInitState(), action) => {
@@ -71,6 +74,13 @@ exports.groupReducer = (state = new exports.GroupInitState(), action) => {
                     return state;
             }
             return state;
+        }
+        case exports.CREATE_GROUP_FAILURE: {
+            return state.set("state", exports.CREATE_GROUP_FAILURE)
+                .set("error", action.payload.message);
+        }
+        case GROUP_RX_EMPTY_STATE: {
+            return state.set("state", GROUP_RX_EMPTY_STATE).set("error", null);
         }
         default:
             return state;
