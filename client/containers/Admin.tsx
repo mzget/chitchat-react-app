@@ -1,13 +1,13 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import * as Colors from 'material-ui/styles/colors';
-import Subheader from 'material-ui/Subheader';
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import * as Colors from "material-ui/styles/colors";
+import Subheader from "material-ui/Subheader";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
-import SimpleToolbar from '../components/SimpleToolbar';
-import { AdminMenu } from './admins/AdminMenu';
+import SimpleToolbar from "../components/SimpleToolbar";
+import { AdminMenu } from "./admins/AdminMenu";
 import ManageOrgChartBox from "./admins/ManageOrgChartBox";
 import CreateGroupBox from "./admins/CreateGroupBox";
 import { TeamMemberBox } from "./admins/TeamMemberBox";
@@ -73,7 +73,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     onAdminMenuSelected(key: string) {
-        console.log('onAdminMenuSelected', key);
+        console.log("onAdminMenuSelected", key);
 
         if (key === this.createOrgGroup || key === this.createPjbGroup || key === this.createPvGroup) {
             this.setState(previous => ({ ...previous, boxState: BoxState.isCreateGroup }));
@@ -125,7 +125,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
         return (
             <MuiThemeProvider>
                 <div>
-                    <SimpleToolbar title={'Admin'} onBackPressed={this.onBackPressed} />
+                    <SimpleToolbar title={"Admin"} onBackPressed={this.onBackPressed} />
                     {
                         this.getAdminPanel()
                     }

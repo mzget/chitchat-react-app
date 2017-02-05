@@ -41,7 +41,7 @@ class SimpleToolbar extends React.Component {
                     (React.createElement(Toolbar_1.ToolbarGroup, null,
                         React.createElement(Toolbar_1.ToolbarSeparator, null),
                         React.createElement(IconMenu_1.default, { iconButtonElement: React.createElement(IconButton_1.default, null,
-                                React.createElement(expand_more_1.default, null)), anchorOrigin: { horizontal: 'right', vertical: 'top' }, targetOrigin: { horizontal: 'right', vertical: 'top' }, onRequestChange: (open, reason) => this.setState({ openState: open }), onItemTouchTap: (event, child) => console.log('item touch tap', event, child), onTouchTap: (event) => this.setState({ openState: !this.state.openState }), open: this.state.openState }, this.props.menus.map((value, i, arr) => {
+                                React.createElement(expand_more_1.default, null)), anchorOrigin: { horizontal: "right", vertical: "top" }, targetOrigin: { horizontal: "right", vertical: "top" }, onRequestChange: (open, reason) => this.setState({ openState: open }), onItemTouchTap: (event, child) => console.log("item touch tap", event.type), onTouchTap: (event) => this.setState({ openState: !this.state.openState }), open: this.state.openState }, this.props.menus.map((value, i, arr) => {
                             return React.createElement(MenuItem_1.default, { key: i, primaryText: value, onClick: () => this.props.onSelectedMenuItem(i, value) });
                         })))) : null)));
     }

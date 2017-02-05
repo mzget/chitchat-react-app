@@ -1,12 +1,12 @@
-import AccountService from "./AccountService";
-const accountService = new AccountService();
+import * as AccountService from "./AccountService";
+const accountService = new AccountService.AccountService();
 
 
 export const checkedCanAccessRoom = (roomId: string, userId: string, callback: (err: Error, res: boolean) => void) => {
-    accountService.getRoom(roomId, (err, room) => {
+    AccountService.getRoom(roomId, (err, room) => {
         let result: boolean = false;
         if (err || !room) {
-            console.warn("getRoom fail", err);
+            console.error("getRoom fail", err);
             callback(null, result);
         }
         else {

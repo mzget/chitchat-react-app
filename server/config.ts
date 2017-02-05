@@ -41,6 +41,7 @@ export const DbClient = {
     stalkUserColl: "chatUsers",
     messageColl: "messages",
     teamsColl: "teams",
+    teamProfileCollection: "teamProfiles",
     orgChartCollection: "orgCharts"
 };
 

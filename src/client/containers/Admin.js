@@ -68,7 +68,7 @@ class Admin extends React.Component {
         }
     }
     onAdminMenuSelected(key) {
-        console.log('onAdminMenuSelected', key);
+        console.log("onAdminMenuSelected", key);
         if (key === this.createOrgGroup || key === this.createPjbGroup || key === this.createPvGroup) {
             this.setState(previous => (__assign({}, previous, { boxState: BoxState.isCreateGroup })));
         }
@@ -113,7 +113,7 @@ class Admin extends React.Component {
     render() {
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement("div", null,
-                React.createElement(SimpleToolbar_1.default, { title: 'Admin', onBackPressed: this.onBackPressed }),
+                React.createElement(SimpleToolbar_1.default, { title: "Admin", onBackPressed: this.onBackPressed }),
                 this.getAdminPanel(),
                 React.createElement(DialogBox_1.DialogBox, { title: this.alertTitle, message: this.alertMessage, open: this.state.alert, handleClose: this.closeAlert }))));
     }

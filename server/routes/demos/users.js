@@ -25,13 +25,13 @@ router.post("/username", (req, res, next) => {
                     res.status(200).json({ success: true, result: r.ops });
                 }).catch(err => {
                     db.close();
-                    res.status(500).json({ success: false, message: err + ': Cannot insert db.' });
+                    res.status(500).json({ success: false, message: err + ": Cannot insert db." });
                 });
             }
         });
     }).catch(err => {
         console.error("Cannot connect db.", err);
-        res.status(500).json({ success: false, message: err + ': Cannot connect db.' });
+        res.status(500).json({ success: false, message: err + ": Cannot connect db." });
     });
 });
 module.exports = router;

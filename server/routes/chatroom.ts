@@ -7,7 +7,7 @@ import redis = require("redis");
 const ObjectID = mongodb.ObjectID;
 import redisClient, { ROOM_KEY } from "../scripts/services/CachingSevice";
 import * as apiUtils from "../scripts/utils/apiUtils";
-import Room = require("../scripts/models/Room");
+import { Room, Member, RoomType } from "../scripts/models/Room";
 import Message = require("../scripts/models/Message");
 import * as RoomService from "../scripts/services/RoomService";
 import * as AccountService from "../scripts/services/AccountService";
@@ -20,7 +20,7 @@ router.get("/", function (req, res, next) {
 });
 
 /**
-/* Require owner memberId and roommate id. 
+/* Require owner memberId and roommate id.
 * For get one-to-one chat room.
 */
 router.post("/", function (req, res, next) {
@@ -48,13 +48,18 @@ router.post("/", function (req, res, next) {
     let roomId = hexCode.slice(0, 24);
 
     redisClient.hmget(ROOM_KEY, roomId, (err, result) => {
-        let rooms = JSON.parse(result);
-        let room = {};
+        let rooms = JSON.parse(JSON.stringify(result)) as Array<Room>;
+        console.log("get room from cache", rooms);
+
+        let room = null;
         if (rooms && rooms.length > 0) {
-            room = rooms[0];
-            console.log("get room from cache", room);
+            room = JSON.parse(result[0]);
         }
-        if (err || room === null || room === "undefined") {
+
+        if (room !== null && room !== undefined) {
+            res.status(200).json({ success: true, result: [room] });
+        }
+        else {
             // @find from db..
             console.log("find room from db...");
             ChatRoomManager.GetChatRoomInfo(roomId).then(function (results) {
@@ -68,10 +73,6 @@ router.post("/", function (req, res, next) {
             }).catch(err => {
                 res.status(500).json({ success: false, message: err });
             });
-        }
-        else {
-            let room: Room.Room = JSON.parse(result[0]);
-            res.status(200).json({ success: true, result: [room] });
         }
     });
 });
@@ -89,8 +90,8 @@ router.post("/createPrivateRoom", function (req, res, next) {
     }
 
     let id: string = "";
-    let owner: Room.Member = req.body.owner;
-    let roommate: Room.Member = req.body.roommate;
+    let owner: Member = req.body.owner;
+    let roommate: Member = req.body.roommate;
     if (owner._id < roommate._id) {
         id = owner._id.concat(roommate._id);
     }
@@ -103,19 +104,19 @@ router.post("/createPrivateRoom", function (req, res, next) {
     let hexCode = md.digest("hex");
     let roomId = hexCode.slice(0, 24);
     let _tempArr = [owner, roommate];
-    let _room = new Room.Room();
+    let _room = new Room();
     _room._id = new ObjectID(roomId);
-    _room.type = Room.RoomType.privateChat;
+    _room.type = RoomType.privateChat;
     _room.members = _tempArr;
     _room.createTime = new Date();
     ChatRoomManager.createPrivateChatRoom(_room).then(function (results) {
         console.log("Create Private Chat Room: ", JSON.stringify(results));
 
-        let _room: Room.Room = results[0];
+        let _room: Room = results[0];
         redisClient.hmset(ROOM_KEY, _room._id, JSON.stringify(_room), redis.print);
 
         // <!-- Push updated lastAccessRoom fields to all members.
-        async.map(results[0].members, function (member: Room.Member, cb) {
+        async.map(results[0].members, function (member: Member, cb) {
             // <!-- Add rid to user members lastAccessField.
             UserManager.AddRoomIdToRoomAccessFieldForUser(results[0]._id, member._id, new Date()).then((res) => {
                 console.log("add roomId to roomaccess fields", res);
@@ -244,20 +245,20 @@ router.post("/getChatHistory", (req, res, next) => {
                 userManager.updateLastAccessTimeOfRoom(user.uid, rid, new Date(), function (err, accessInfo) {
                     let printR = (accessInfo) ? accessInfo.result : null;
                     console.log("chatRemote.kick : updateLastAccessRoom rid is %s: ", rid, printR);
-        
+
                     userManager.getRoomAccessOfRoom(uid, rid, function (err, res) {
                         console.log("chatRemote.kick : getLastAccessOfRoom of %s", rid, res);
                         if (err || res.length <= 0) return;
-        
+
                         let targetId = { uid: user.uid, sid: user.serverId };
                         let group = new Array();
                         group.push(targetId);
-        
+
                         let param = {
                             route: Code.sharedEvents.onUpdatedLastAccessTime,
                             data: res[0]
                         };
-        
+
                         channelService.pushMessageByUids(param.route, param.data, group);
                     });
                 });*/

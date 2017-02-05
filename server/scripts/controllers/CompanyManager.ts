@@ -1,9 +1,7 @@
-﻿import Mdb = require('../db/dbClient');
-import room = require('../model/Room');
-import mongodb = require('mongodb');
-import assert = require('assert');
-var MongoClient = mongodb.MongoClient;
-var DbClient = Mdb.DbController.DbClient.GetInstance();
+﻿import { DbClient } from "../../config";
+import { Room } from "../models/Room";
+import mongodb = require("mongodb");
+const MongoClient = mongodb.MongoClient;
 
 module Controller {
     export class CompanyManager {
@@ -48,7 +46,7 @@ module Controller {
                 assert.equal(null, err);
 
                 // Get the documents collection
-                var collection = db.collection(Mdb.DbController.userColl);
+                let collection = db.collection(Mdb.DbController.userColl);
                 // Find some documents
                 collection.find({}).project(projection).toArray(function (err, result) {
                     assert.equal(null, err);

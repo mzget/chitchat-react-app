@@ -8,7 +8,7 @@ const redis = require("redis");
 const ObjectID = mongodb.ObjectID;
 const CachingSevice_1 = require("../scripts/services/CachingSevice");
 const apiUtils = require("../scripts/utils/apiUtils");
-const Room = require("../scripts/models/Room");
+const Room_1 = require("../scripts/models/Room");
 const RoomService = require("../scripts/services/RoomService");
 const ChatRoomManager = require("../scripts/controllers/ChatRoomManager");
 const UserManager = require("../scripts/controllers/user/UserManager");
@@ -41,13 +41,16 @@ router.post("/", function (req, res, next) {
     let hexCode = md.digest("hex");
     let roomId = hexCode.slice(0, 24);
     CachingSevice_1.default.hmget(CachingSevice_1.ROOM_KEY, roomId, (err, result) => {
-        let rooms = JSON.parse(result);
-        let room = {};
+        let rooms = JSON.parse(JSON.stringify(result));
+        console.log("get room from cache", rooms);
+        let room = null;
         if (rooms && rooms.length > 0) {
-            room = rooms[0];
-            console.log("get room from cache", room);
+            room = JSON.parse(result[0]);
         }
-        if (err || room === null || room === "undefined") {
+        if (room !== null && room !== undefined) {
+            res.status(200).json({ success: true, result: [room] });
+        }
+        else {
             // @find from db..
             console.log("find room from db...");
             ChatRoomManager.GetChatRoomInfo(roomId).then(function (results) {
@@ -61,10 +64,6 @@ router.post("/", function (req, res, next) {
             }).catch(err => {
                 res.status(500).json({ success: false, message: err });
             });
-        }
-        else {
-            let room = JSON.parse(result[0]);
-            res.status(200).json({ success: true, result: [room] });
         }
     });
 });
@@ -92,9 +91,9 @@ router.post("/createPrivateRoom", function (req, res, next) {
     let hexCode = md.digest("hex");
     let roomId = hexCode.slice(0, 24);
     let _tempArr = [owner, roommate];
-    let _room = new Room.Room();
+    let _room = new Room_1.Room();
     _room._id = new ObjectID(roomId);
-    _room.type = Room.RoomType.privateChat;
+    _room.type = Room_1.RoomType.privateChat;
     _room.members = _tempArr;
     _room.createTime = new Date();
     ChatRoomManager.createPrivateChatRoom(_room).then(function (results) {
@@ -212,20 +211,20 @@ router.post("/getChatHistory", (req, res, next) => {
                 userManager.updateLastAccessTimeOfRoom(user.uid, rid, new Date(), function (err, accessInfo) {
                     let printR = (accessInfo) ? accessInfo.result : null;
                     console.log("chatRemote.kick : updateLastAccessRoom rid is %s: ", rid, printR);
-        
+
                     userManager.getRoomAccessOfRoom(uid, rid, function (err, res) {
                         console.log("chatRemote.kick : getLastAccessOfRoom of %s", rid, res);
                         if (err || res.length <= 0) return;
-        
+
                         let targetId = { uid: user.uid, sid: user.serverId };
                         let group = new Array();
                         group.push(targetId);
-        
+
                         let param = {
                             route: Code.sharedEvents.onUpdatedLastAccessTime,
                             data: res[0]
                         };
-        
+
                         channelService.pushMessageByUids(param.route, param.data, group);
                     });
                 });*/

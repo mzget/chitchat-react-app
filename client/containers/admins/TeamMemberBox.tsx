@@ -4,7 +4,7 @@ import { Flex, Box } from "reflexbox";
 import { IComponentProps } from "../../utils/IComponentProps";
 
 import { MemberList } from "../chatlist/MemberList";
-import { ContactProfile } from "./ContactProfile";
+import { ContactProfileView } from "./ContactProfileView";
 
 import * as adminRx from "../../redux/admin/adminRx";
 
@@ -44,7 +44,6 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
     onSelectMember(item: ChitChatAccount) {
         let {adminReducer: {orgCharts}} = this.props;
 
-        console.info(item);
         if (!item.org_chart_id) {
             this.setState(previous => ({ ...previous, member: item, dropdownValue: -1 }));
         }
@@ -61,8 +60,9 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
         let {adminReducer: {orgCharts}} = this.props;
 
         let _member = this.state.member;
-        _member.org_chart_id = orgCharts[this.state.dropdownValue]._id;
-
+        if (orgCharts.length > 0) {
+            _member.org_chart_id = orgCharts[this.state.dropdownValue]._id;
+        }
         if (_member) {
             this.props.dispatch(adminRx.updateUserOrgChart(_member));
         }
@@ -80,7 +80,7 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
                 <Flex flexColumn align="center">
                     {
                         (!!this.state.member) ?
-                            <ContactProfile
+                            <ContactProfileView
                                 member={this.state.member}
                                 onSubmit={this.onSubmit}
                                 dropdownItems={this.props.adminReducer.orgCharts}

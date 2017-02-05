@@ -9,23 +9,6 @@ import { IOrgChart } from "../../../server/scripts/models/OrgChart";
 
 import * as groupRx from "../../redux/group/groupRx";
 
-abstract class IComponentNameProps implements IComponentProps {
-    onError?: (error: string) => void;
-    location;
-    params;
-    router;
-    dispatch;
-    routing;
-    authReducer;
-    adminReducer;
-    userReducer;
-    chatroomReducer;
-    chatlogReducer;
-    stalkReducer;
-    teamReducer;
-    groupReducer;
-};
-
 interface IComponentNameState {
     groupImage: string;
     groupName: string;
@@ -34,7 +17,7 @@ interface IComponentNameState {
     dropdownValue: number;
 };
 
-class CreateGroupBox extends React.Component<IComponentNameProps, IComponentNameState> {
+class CreateGroupBox extends React.Component<IComponentProps, IComponentNameState> {
 
     group = {} as Room;
 
@@ -60,7 +43,7 @@ class CreateGroupBox extends React.Component<IComponentNameProps, IComponentName
             this.group.description = this.state.groupDescription;
             this.group.type = RoomType.organizationGroup;
             this.group.team_id = teamReducer.team._id;
-            this.group.org_chart_id = orgCharts[this.state.dropdownValue]._id;
+            this.group.org_chart_id = (orgCharts.length > 0) ? orgCharts[this.state.dropdownValue]._id : null;
 
             this.props.dispatch(groupRx.createGroup(this.group));
         }

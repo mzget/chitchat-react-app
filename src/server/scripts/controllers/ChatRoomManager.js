@@ -163,7 +163,7 @@ class ChatRoomManager {
         if (editType === "add") {
             this.roomDAL.addGroupMembers(roomId, members, callback);
         }
-        else if (editType == "remove") {
+        else if (editType === "remove") {
             this.roomDAL.removeGroupMembers(roomId, members, callback);
         }
     }
@@ -246,7 +246,7 @@ class ChatRoomManager {
             }
             assert.equal(null, err);
             // Get the documents collection
-            var collection = db.collection(MDb.DbController.messageColl);
+            let collection = db.collection(MDb.DbController.messageColl);
             // Find some documents
             collection.find({ _id: new ObjectID(messageId) }).toArray((err, results) => {
                 callback(err, results);
@@ -288,10 +288,10 @@ class RoomDataAccess {
         }, {});
     }
     createPrivateGroup(groupName, memberIds, callback) {
-        var self = this;
-        var members = new Array();
+        let self = this;
+        let members = new Array();
         memberIds.forEach((val, id, arr) => {
-            var member = new Room.Member();
+            let member = new Room.Member();
             member.id = val;
             members.push(member);
         });
@@ -311,7 +311,7 @@ class RoomDataAccess {
         }, newRoom);
     }
     createProjectBaseGroup(groupName, members, callback) {
-        var newRoom = new Room.Room();
+        let newRoom = new Room.Room();
         newRoom.name = groupName;
         newRoom.type = Room.RoomType.projectBaseGroup;
         newRoom.members = members;
@@ -324,7 +324,7 @@ class RoomDataAccess {
             }
             assert.equal(null, err);
             // Get the documents collection
-            var collection = db.collection(MDb.DbController.roomColl);
+            let collection = db.collection(MDb.DbController.roomColl);
             // Find some documents
             collection.insertOne(newRoom, (err, result) => {
                 assert.equal(null, err);
@@ -334,7 +334,7 @@ class RoomDataAccess {
         });
     }
     userUpdateGroupImage(roomId, newUrl, callback) {
-        var self = this;
+        let self = this;
         dbClient.UpdateDocument(MDb.DbController.roomColl, function (res) {
             callback(null, res);
         }, { _id: new ObjectID(roomId) }, { $set: { image: newUrl } }, { w: 1, upsert: true });
@@ -345,7 +345,7 @@ class RoomDataAccess {
                 return console.dir(err);
             }
             // Get the documents collection
-            var collection = db.collection(MDb.DbController.roomColl);
+            let collection = db.collection(MDb.DbController.roomColl);
             // Find some documents
             collection.updateOne({ _id: new ObjectID(roomId) }, { $push: { members: { $each: members } } }, function (err, result) {
                 assert.equal(null, err);
@@ -366,7 +366,7 @@ class RoomDataAccess {
                     return console.dir(err);
                 }
                 // Get the documents collection
-                var collection = db.collection(MDb.DbController.roomColl);
+                let collection = db.collection(MDb.DbController.roomColl);
                 // Find some documents
                 collection.updateOne({ _id: new ObjectID(roomId) }, { $pull: { members: { id: item.id } } }, function (err, result) {
                     assert.equal(null, err);
@@ -381,7 +381,7 @@ class RoomDataAccess {
             });
         }, function done(err) {
             if (err) {
-                console.error('removeGroupMembers has a problem!', err.message);
+                console.error("removeGroupMembers has a problem!", err.message);
                 callback(err, null);
             }
             else {
@@ -395,7 +395,7 @@ class RoomDataAccess {
                 return console.dir(err);
             }
             // Get the documents collection
-            var collection = db.collection(MDb.DbController.roomColl);
+            let collection = db.collection(MDb.DbController.roomColl);
             // Find some documents
             collection.updateOne({ _id: new ObjectID(roomId) }, { $set: { name: newGroupName } }, function (err, result) {
                 assert.equal(null, err);
@@ -412,7 +412,7 @@ class RoomDataAccess {
     editMemberInfoInProjectBase(roomId, member, callback) {
         MongoClient.connect(MDb.DbController.chatDB, (err, db) => {
             // Get the collection
-            var col = db.collection(MDb.DbController.roomColl);
+            let col = db.collection(MDb.DbController.roomColl);
             col.updateOne({ _id: new ObjectID(roomId), "members.id": member.id }, { $set: { "members.$": member } }, function (err, result) {
                 assert.equal(1, result.matchedCount);
                 callback(null, result);

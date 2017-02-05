@@ -11,7 +11,7 @@ interface IUsersMap {
     [uid: string]: User.UserTransaction;
 }
 
-export default class AccountService {
+export class AccountService {
 
     private app: any;
     private uidMap = {};
@@ -68,34 +68,37 @@ export default class AccountService {
     }
 
 
-    /**
-     * roomMembers the dict for keep roomId pair with array of uid who is a member of room.
-     */
-    setRoomsMap(data: Array<any>, callback: () => void) {
-        data.forEach(element => {
-            let room: Room.Room = JSON.parse(JSON.stringify(element));
-            redisClient.hmset(ROOM_MAP_KEY, element._id, JSON.stringify(room), redis.print);
-        });
+}
 
-        callback();
-    }
-    getRoom(roomId: string, callback: (err: any, res: Room.Room) => void) {
-        redisClient.hmget(ROOM_MAP_KEY, roomId, function (err, roomMap) {
-            if (err || roomMap[0] == null) {
-                callback(err, null);
-            }
-            else {
-                let room: Room.Room = JSON.parse(roomMap[0]);
-                callback(null, room);
-            }
-        });
-    }
-    /**
-    * Require Room object. Must be { Room._id, Room.members }
-    */
-    addRoom(room: Room.Room) {
-        console.log("addRoom", room);
+/**
+ * roomMembers the dict for keep roomId pair with array of uid who is a member of room.
+ */
+export function setRoomsMap(data: Array<any>, callback: () => void) {
+    data.forEach(element => {
+        let room: Room.Room = JSON.parse(JSON.stringify(element));
+        redisClient.hmset(ROOM_MAP_KEY, element._id, JSON.stringify(room), redis.print);
+    });
 
-        redisClient.hmset(ROOM_MAP_KEY, room._id, JSON.stringify(room), redis.print);
-    }
+    callback();
+}
+
+export function getRoom(roomId: string, callback: (err: any, res: Room.Room) => void) {
+    redisClient.hmget(ROOM_MAP_KEY, roomId, function (err, roomMap) {
+        if (err || roomMap[0] == null) {
+            callback(err, null);
+        }
+        else {
+            let room: Room.Room = JSON.parse(roomMap[0]);
+            callback(null, room);
+        }
+    });
+}
+
+/**
+* Require Room object. Must be { Room._id, Room.members }
+*/
+export function addRoom(room: Room.Room) {
+    console.log("addRoom", room);
+
+    redisClient.hmset(ROOM_MAP_KEY, room._id, JSON.stringify(room), redis.print);
 }

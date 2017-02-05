@@ -1,16 +1,15 @@
-﻿import mongodb = require('mongodb');
-import async = require('async');
+﻿import mongodb = require("mongodb");
+import async = require("async");
 import Room = require("../models/Room");
 import message = require("../models/Message");
-import * as UserManager from './user/UserManager';
+import * as UserManager from "./user/UserManager";
 const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
 import { getConfig, DbClient } from "../../config";
 const config = getConfig();
 
-
 /*
-* Require 
+* Require
 *@roomId for query chat record in room.
 *@lastAccessTime for query only message who newer than lastAccessTime.
 */
@@ -61,7 +60,7 @@ export async function getUnreadMsgCountAndLastMsgContentInRoom(roomId: string, l
     let messagesColl = db.collection(DbClient.messageColl);
     await messagesColl.createIndex({ rid: 1 }, { background: true, w: 1 });
 
-    let docs = await messagesColl.find({ rid: roomId.toString(), createTime: { $gt: new Date(lastAccessTime) } }).sort({ createTime: 1 }).toArray()
+    let docs = await messagesColl.find({ rid: roomId.toString(), createTime: { $gt: new Date(lastAccessTime) } }).sort({ createTime: 1 }).toArray();
     db.close();
 
     let results = new Array();
@@ -83,7 +82,7 @@ export async function getUnreadMsgCountAndLastMsgContentInRoom(roomId: string, l
 /**
 * return : =>
 * unread msgs count.
-* type of msg, 
+* type of msg,
 * msg.body
 */
 async function getLastMsgContentInMessagesIdArray(docs: any[]) {
@@ -123,7 +122,7 @@ export const GetChatRoomInfo = (room_id: string): Promise<any[]> => {
             reject(err);
         });
     });
-}
+};
 
 export const createPrivateChatRoom = (room: Room.Room): Promise<any> => {
     return new Promise((resolve, reject) => {
@@ -141,7 +140,7 @@ export const createPrivateChatRoom = (room: Room.Room): Promise<any> => {
             reject(err);
         });
     });
-}
+};
 
 export class ChatRoomManager {
     private static _Instance: ChatRoomManager = null;
@@ -169,7 +168,7 @@ export class ChatRoomManager {
         if (editType === "add") {
             this.roomDAL.addGroupMembers(roomId, members, callback);
         }
-        else if (editType == "remove") {
+        else if (editType === "remove") {
             this.roomDAL.removeGroupMembers(roomId, members, callback);
         }
     }
@@ -214,7 +213,7 @@ export class ChatRoomManager {
     }
 
     /*
-    * Get last limit query messages of specific user and room then return messages info. 
+    * Get last limit query messages of specific user and room then return messages info.
     */
     public getMessagesReaders(userId: string, roomId: string, topEdgeMessageTime: string, callback: (err, res) => void) {
         let utc = new Date(topEdgeMessageTime);
@@ -265,7 +264,7 @@ export class ChatRoomManager {
             assert.equal(null, err);
 
             // Get the documents collection
-            var collection = db.collection(MDb.DbController.messageColl);
+            let collection = db.collection(MDb.DbController.messageColl);
             // Find some documents
             collection.find({ _id: new ObjectID(messageId) }).toArray((err: Error, results: any[]) => {
                 callback(err, results);
@@ -276,11 +275,11 @@ export class ChatRoomManager {
     }
 
     /**
-     * Retrive all room in db and then get all members from each room. 
+     * Retrive all room in db and then get all members from each room.
      */
     public getAllRooms(cb: (result: Array<any>) => void) {
         this.roomDAL.getAllRooms(function (res) {
-            cb(res)
+            cb(res);
         });
     }
 
@@ -311,11 +310,11 @@ export class RoomDataAccess {
     }
 
     public createPrivateGroup(groupName: string, memberIds: string[], callback: (err, res) => void) {
-        var self = this;
-        var members: Array<Room.Member> = new Array<Room.Member>();
+        let self = this;
+        let members: Array<Room.Member> = new Array<Room.Member>();
 
         memberIds.forEach((val, id, arr) => {
-            var member: Room.Member = new Room.Member();
+            let member: Room.Member = new Room.Member();
             member.id = val;
             members.push(member);
         });
@@ -338,7 +337,7 @@ export class RoomDataAccess {
     }
 
     public createProjectBaseGroup(groupName: string, members: Room.Member[], callback: (err, res) => void) {
-        var newRoom = new Room.Room();
+        let newRoom = new Room.Room();
         newRoom.name = groupName;
         newRoom.type = Room.RoomType.projectBaseGroup;
         newRoom.members = members;
@@ -351,7 +350,7 @@ export class RoomDataAccess {
             assert.equal(null, err);
 
             // Get the documents collection
-            var collection = db.collection(MDb.DbController.roomColl);
+            let collection = db.collection(MDb.DbController.roomColl);
             // Find some documents
             collection.insertOne(newRoom, (err, result) => {
                 assert.equal(null, err);
@@ -364,7 +363,7 @@ export class RoomDataAccess {
     }
 
     public userUpdateGroupImage(roomId: string, newUrl: string, callback: (err, res) => void) {
-        var self = this;
+        let self = this;
 
         dbClient.UpdateDocument(MDb.DbController.roomColl, function (res) {
             callback(null, res);
@@ -376,7 +375,7 @@ export class RoomDataAccess {
             if (err) { return console.dir(err); }
 
             // Get the documents collection
-            var collection = db.collection(MDb.DbController.roomColl);
+            let collection = db.collection(MDb.DbController.roomColl);
             // Find some documents
             collection.updateOne({ _id: new ObjectID(roomId) }, { $push: { members: { $each: members } } }, function (err, result) {
                 assert.equal(null, err);
@@ -397,7 +396,7 @@ export class RoomDataAccess {
                 if (err) { return console.dir(err); }
 
                 // Get the documents collection
-                var collection = db.collection(MDb.DbController.roomColl);
+                let collection = db.collection(MDb.DbController.roomColl);
                 // Find some documents
                 collection.updateOne({ _id: new ObjectID(roomId) }, { $pull: { members: { id: item.id } } }, function (err, result) {
                     assert.equal(null, err);
@@ -412,7 +411,7 @@ export class RoomDataAccess {
             });
         }, function done(err) {
             if (err) {
-                console.error('removeGroupMembers has a problem!', err.message);
+                console.error("removeGroupMembers has a problem!", err.message);
                 callback(err, null);
             }
             else {
@@ -426,7 +425,7 @@ export class RoomDataAccess {
             if (err) { return console.dir(err); }
 
             // Get the documents collection
-            var collection = db.collection(MDb.DbController.roomColl);
+            let collection = db.collection(MDb.DbController.roomColl);
             // Find some documents
             collection.updateOne({ _id: new ObjectID(roomId) }, { $set: { name: newGroupName } }, function (err, result) {
                 assert.equal(null, err);
@@ -444,7 +443,7 @@ export class RoomDataAccess {
     public editMemberInfoInProjectBase(roomId: string, member: Room.Member, callback: (err, res) => void) {
         MongoClient.connect(MDb.DbController.chatDB, (err, db) => {
             // Get the collection
-            var col = db.collection(MDb.DbController.roomColl);
+            let col = db.collection(MDb.DbController.roomColl);
             col.updateOne({ _id: new ObjectID(roomId), "members.id": member.id }, { $set: { "members.$": member } }, function (err, result) {
                 assert.equal(1, result.matchedCount);
 

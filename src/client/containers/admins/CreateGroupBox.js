@@ -11,9 +11,6 @@ const React = require("react");
 const CreateGroupForm_1 = require("./CreateGroupForm");
 const Room_1 = require("../../../server/scripts/models/Room");
 const groupRx = require("../../redux/group/groupRx");
-class IComponentNameProps {
-}
-;
 ;
 class CreateGroupBox extends React.Component {
     constructor() {
@@ -38,7 +35,7 @@ class CreateGroupBox extends React.Component {
             this.group.description = this.state.groupDescription;
             this.group.type = Room_1.RoomType.organizationGroup;
             this.group.team_id = teamReducer.team._id;
-            this.group.org_chart_id = orgCharts[this.state.dropdownValue]._id;
+            this.group.org_chart_id = (orgCharts.length > 0) ? orgCharts[this.state.dropdownValue]._id : null;
             this.props.dispatch(groupRx.createGroup(this.group));
         }
         else {

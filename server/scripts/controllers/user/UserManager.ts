@@ -1,15 +1,15 @@
 ﻿
 import mongodb = require('mongodb');
 import async = require('async');
-import { getConfig, DbClient } from "../../../config";
+import { config, DbClient } from "../../../config";
 
 import { ChitChatAccount } from "../../models/User";
+import { ITeamProfile } from "../../models/TeamProfile";
 import * as Room from "../../models/Room";
 import { RoomAccessData, StalkAccount } from '../../models/Stalk';
 import { ITeam } from '../../models/ITeam';
 
 const {MongoClient, ObjectID} = mongodb;
-const config = getConfig();
 
 export interface IUserDict {
     [id: string]: ChitChatAccount;
@@ -323,7 +323,6 @@ export const removeFavoriteMembers = (member: string, uid: string, callback: (er
         if (err) {
             return console.dir(err);
         }
-        assert.equal(null, err);
 
         // Get the documents collection
         var collection = db.collection(Mdb.DbController.userColl);
@@ -346,7 +345,6 @@ export const addFavoriteGroup = (group: string, uid: string, callback: (err, res
         if (err) {
             return console.dir(err);
         }
-        assert.equal(null, err);
 
         // Get the documents collection
         var collection = db.collection(Mdb.DbController.userColl);
@@ -368,7 +366,6 @@ export const removeFavoriteGroup = (group: string, uid: string, callback: (err, 
         if (err) {
             return console.dir(err);
         }
-        assert.equal(null, err);
 
         // Get the documents collection
         var collection = db.collection(Mdb.DbController.userColl);
@@ -391,7 +388,6 @@ export const addClosedNoticeUsersList = (member: string, uid: string, callback: 
         if (err) {
             return console.dir(err);
         }
-        assert.equal(null, err);
 
         // Get the documents collection
         var collection = db.collection(Mdb.DbController.userColl);
@@ -414,7 +410,6 @@ export const removeClosedNoticeUsersList = (member: string, uid: string, callbac
         if (err) {
             return console.dir(err);
         }
-        assert.equal(null, err);
 
         // Get the documents collection
         var collection = db.collection(Mdb.DbController.userColl);
@@ -437,7 +432,6 @@ export const addClosedNoticeGroupList = (member: string, uid: string, callback: 
         if (err) {
             return console.dir(err);
         }
-        assert.equal(null, err);
 
         // Get the documents collection
         var collection = db.collection(Mdb.DbController.userColl);
@@ -460,7 +454,6 @@ export const removeClosedNoticeGroupList = (member: string, uid: string, callbac
         if (err) {
             return console.dir(err);
         }
-        assert.equal(null, err);
 
         // Get the documents collection
         var collection = db.collection(Mdb.DbController.userColl);
@@ -478,27 +471,37 @@ export const removeClosedNoticeGroupList = (member: string, uid: string, callbac
     });
 }
 
-export async function updateOrgChart(user: ChitChatAccount) {
+export async function updateOrgChart(user_id: string, team_id: string, org_chart_id: string) {
     let db = await MongoClient.connect(config.chatDB);
-    let chitchatUserColl = db.collection(DbClient.chitchatUserColl);
+    let teamProfileColl = db.collection(DbClient.teamProfileCollection);
 
-    let user_id = user._id;
-    let org_chart_id = user.org_chart_id;
+    await teamProfileColl.createIndex({ team_id: 1, user_id: 1 }, { background: true });
 
-    let result = await chitchatUserColl.updateOne(
-        { _id: new ObjectID(user_id) },
-        { $set: { org_chart_id: org_chart_id } },
-        { upsert: false });
+    let profile = {} as ITeamProfile;
+    profile.team_id = team_id;
+    profile.user_id = user_id;
+    profile.org_chart_id = org_chart_id;
+
+    let result = await teamProfileColl.updateOne(
+        { user_id: profile.user_id, team_id: profile.team_id },
+        { $set: { org_chart_id: profile.org_chart_id } },
+        { upsert: true });
     db.close();
     return result.result;
 }
 
-export async function getUserOrgChart(user_id: string) {
+export async function getUserOrgChart(user_id: string, team_id: string) {
     let db = await MongoClient.connect(config.chatDB);
-    let chitchatUserColl = db.collection(DbClient.chitchatUserColl);
+    let teamProfileColl = db.collection(DbClient.teamProfileCollection);
 
-    let docs = await chitchatUserColl.find(
-        { _id: new ObjectID(user_id) }).project({ org_chart_id: 1 }).limit(1).toArray();
+    await teamProfileColl.createIndex({ team_id: 1, user_id: 1 }, { background: true });
+
+    let profile = {} as ITeamProfile;
+    profile.team_id = team_id;
+    profile.user_id = user_id;
+
+    let docs = await teamProfileColl.find({ user_id: profile.user_id, team_id: profile.team_id })
+        .project({ org_chart_id: 1 }).limit(1).toArray();
     db.close();
-    return docs;
+    return docs as Array<ITeamProfile>;
 }
