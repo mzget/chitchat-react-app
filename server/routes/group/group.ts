@@ -8,7 +8,7 @@ const router = express.Router();
 const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
 
-import { Room, RoomType, RoomStatus, Member } from "../../scripts/models/Room";
+import { Room, RoomType, RoomStatus, IMember } from "../../scripts/models/Room";
 
 import * as GroupController from "../../scripts/controllers/group/GroupController";
 import * as ChatRoomManager from "../../scripts/controllers/ChatRoomManager";
@@ -35,7 +35,7 @@ router.get("/org", function (req, res, next) {
     });
 });
 
-router.post("/create", function (req, res, next) {
+router.post("/org/create", function (req, res, next) {
     req.checkBody("room", "request for room object").notEmpty();
 
     let errors = req.validationErrors();

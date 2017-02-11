@@ -16,7 +16,7 @@ function createDefaultGroup(owner) {
     return __awaiter(this, void 0, void 0, function* () {
         let db = yield MongoClient.connect(config_1.Config.chatDB);
         let collection = db.collection(config_1.DbClient.chatroomColl);
-        let member = new Room_1.Member();
+        let member = new Member();
         member._id = owner._id;
         member.joinTime = new Date();
         member.room_role = Room_1.MemberRole.owner;
@@ -67,7 +67,7 @@ function addMember(group_id, user) {
     return __awaiter(this, void 0, void 0, function* () {
         let db = yield MongoClient.connect(config_1.Config.chatDB);
         let collection = db.collection(config_1.DbClient.chatroomColl);
-        let member = new Room_1.Member();
+        let member = new Member();
         member._id = user._id;
         member.joinTime = new Date();
         member.room_role = Room_1.MemberRole.member;
@@ -92,7 +92,7 @@ function addUserToOrgChartGroups(user_id, username, orgChart_id) {
     return __awaiter(this, void 0, void 0, function* () {
         let db = yield MongoClient.connect(config_1.Config.chatDB);
         let groupCollection = db.collection(config_1.DbClient.chatroomColl);
-        let member = new Room_1.Member();
+        let member = new Member();
         member._id = user_id;
         member.joinTime = new Date();
         member.room_role = Room_1.MemberRole.member;

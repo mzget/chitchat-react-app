@@ -38,7 +38,7 @@ router.get("/org", function (req, res, next) {
         res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });
-router.post("/create", function (req, res, next) {
+router.post("/org/create", function (req, res, next) {
     req.checkBody("room", "request for room object").notEmpty();
     let errors = req.validationErrors();
     if (errors) {

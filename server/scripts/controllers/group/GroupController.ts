@@ -1,7 +1,7 @@
 import mongodb = require("mongodb");
 
 import { Config, DbClient } from "../../../config";
-import { Room, RoomStatus, RoomType, Member, MemberRole } from "../../models/Room";
+import { Room, RoomStatus, RoomType, IMember, MemberRole } from "../../models/Room";
 import { ITeam } from "../../models/ITeam";
 import { ChitChatAccount } from "../../models/User";
 

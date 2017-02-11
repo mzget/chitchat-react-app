@@ -49,9 +49,9 @@ export function getRoom(roomId: string, callback: (err: any, res: Room.Room) => 
     redisClient.hmget(ROOM_MAP_KEY, roomId, function (err, roomMap) {
         if (err || roomMap[0] == null || roomMap[0] == undefined) {
             console.log("Can't find room from cache");
+
             let db = getAppDb();
             let chatroom_coll = db.collection(DbClient.chatroomColl);
-
             chatroom_coll.find({ _id: new ObjectID(roomId) }).limit(1).toArray().then(docs => {
                 if (docs.length > 0) {
                     addRoom(docs[0]);

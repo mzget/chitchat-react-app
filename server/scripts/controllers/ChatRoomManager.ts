@@ -163,7 +163,7 @@ export class ChatRoomManager {
         this.roomDAL.userUpdateGroupImage(roomId, newUrl, callback);
     }
 
-    public editGroupMembers(editType: string, roomId: string, members: Room.Member[], callback: (err, res) => void) {
+    public editGroupMembers(editType: string, roomId: string, members: Room.IMember[], callback: (err, res) => void) {
         if (editType === "add") {
             this.roomDAL.addGroupMembers(roomId, members, callback);
         }
@@ -193,11 +193,11 @@ export class ChatRoomManager {
     }
 
 
-    public createProjectBaseGroup(groupName: string, members: Room.Member[], callback: (err, res) => void) {
+    public createProjectBaseGroup(groupName: string, members: Room.IMember[], callback: (err, res) => void) {
         this.roomDAL.createProjectBaseGroup(groupName, members, callback);
     }
 
-    public editMemberInfoInProjectBase(roomId: string, member: Room.Member, callback: (Error, res) => void) {
+    public editMemberInfoInProjectBase(roomId: string, member: Room.IMember, callback: (Error, res) => void) {
         this.roomDAL.editMemberInfoInProjectBase(roomId, member, callback);
     }
 
@@ -310,10 +310,10 @@ export class RoomDataAccess {
 
     public createPrivateGroup(groupName: string, memberIds: string[], callback: (err, res) => void) {
         let self = this;
-        let members: Array<Room.Member> = new Array<Room.Member>();
+        let members: Array<Room.IMember> = new Array<Room.IMember>();
 
         memberIds.forEach((val, id, arr) => {
-            let member: Room.Member = new Room.Member();
+            let member: Room.IMember = new Room.Member();
             member.id = val;
             members.push(member);
         });
@@ -335,7 +335,7 @@ export class RoomDataAccess {
         }, newRoom);
     }
 
-    public createProjectBaseGroup(groupName: string, members: Room.Member[], callback: (err, res) => void) {
+    public createProjectBaseGroup(groupName: string, members: Room.IMember[], callback: (err, res) => void) {
         let newRoom = new Room.Room();
         newRoom.name = groupName;
         newRoom.type = Room.RoomType.projectBaseGroup;
@@ -369,7 +369,7 @@ export class RoomDataAccess {
         }, { _id: new ObjectID(roomId) }, { $set: { image: newUrl } }, { w: 1, upsert: true });
     }
 
-    public addGroupMembers(roomId: string, members: Room.Member[], callback: (err, res) => void) {
+    public addGroupMembers(roomId: string, members: Room.IMember[], callback: (err, res) => void) {
         MongoClient.connect(MDb.DbController.chatDB, function (err, db) {
             if (err) { return console.dir(err); }
 
@@ -389,7 +389,7 @@ export class RoomDataAccess {
         });
     }
 
-    public removeGroupMembers(roomId: string, members: Room.Member[], callback: (err, res) => void) {
+    public removeGroupMembers(roomId: string, members: Room.IMember[], callback: (err, res) => void) {
         async.eachSeries(members, function iterator(item, errCb) {
             MongoClient.connect(MDb.DbController.chatDB, function (err, db) {
                 if (err) { return console.dir(err); }
@@ -439,7 +439,7 @@ export class RoomDataAccess {
         });
     }
 
-    public editMemberInfoInProjectBase(roomId: string, member: Room.Member, callback: (err, res) => void) {
+    public editMemberInfoInProjectBase(roomId: string, member: Room.IMember, callback: (err, res) => void) {
         MongoClient.connect(MDb.DbController.chatDB, (err, db) => {
             // Get the collection
             let col = db.collection(MDb.DbController.roomColl);
