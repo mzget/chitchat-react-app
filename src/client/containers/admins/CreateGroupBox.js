@@ -30,26 +30,37 @@ class CreateGroupBox extends React.Component {
         };
         this.getView = this.getView.bind(this);
         this.onSubmitGroup = this.onSubmitGroup.bind(this);
-        this.onDropDownChange = this.onDropDownChange.bind(this);
     }
     onSubmitGroup() {
         console.log("submit group", this.state);
-        const { teamReducer, adminReducer: { orgCharts } } = this.props;
+        const { teamReducer, adminReducer: { orgCharts }, userReducer: { user } } = this.props;
         if (this.state.groupName.length > 0) {
             this.group.name = this.state.groupName;
             this.group.image = this.state.groupImage;
             this.group.description = this.state.groupDescription;
-            this.group.type = Room_1.RoomType.organizationGroup;
             this.group.team_id = teamReducer.team._id;
-            this.group.org_chart_id = (orgCharts.length > 0) ? orgCharts[this.state.dropdownValue]._id : null;
-            this.props.dispatch(groupRx.createGroup(this.group));
+            switch (this.props.groupType) {
+                case exports.createOrgGroup:
+                    this.group.type = Room_1.RoomType.organizationGroup;
+                    this.group.org_chart_id = (orgCharts.length > 0) ? orgCharts[this.state.dropdownValue]._id : null;
+                    this.props.dispatch(groupRx.createOrgGroup(this.group));
+                    break;
+                case exports.createPvGroup:
+                    let member = {
+                        _id: user._id,
+                        room_role: Room_1.MemberRole.owner,
+                        username: user.username
+                    };
+                    this.group.type = Room_1.RoomType.privateGroup;
+                    this.group.members = new Array(member);
+                    break;
+                default:
+                    break;
+            }
         }
         else {
             this.props.onError("Missing some require field");
         }
-    }
-    onDropDownChange(event, id, value) {
-        this.setState(previous => (__assign({}, previous, { dropdownValue: value })));
     }
     getView() {
         let prop = {
@@ -63,7 +74,7 @@ class CreateGroupBox extends React.Component {
         let chart = {
             dropdownItems: this.props.adminReducer.orgCharts,
             dropdownValue: this.state.dropdownValue,
-            dropdownChange: this.onDropDownChange
+            dropdownChange: (event, id, value) => this.setState(previous => (__assign({}, previous, { dropdownValue: value })))
         };
         switch (this.props.groupType) {
             case exports.createOrgGroup:
@@ -71,7 +82,7 @@ class CreateGroupBox extends React.Component {
             case exports.createPjbGroup:
                 return CreateGroupView_1.CreateGroupView(prop)(SelectOrgChartView_1.SelectOrgChartView(chart));
             case exports.createPvGroup:
-                return CreateGroupView_1.CreateGroupView(prop);
+                return CreateGroupView_1.CreateGroupView(prop)(null);
             default:
                 break;
         }
