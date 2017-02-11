@@ -2,8 +2,8 @@
 ;
 const dev = {
     chatDB: "mongodb://rfl_dev:rfl1234@git.animation-genius.com:27017/chitchat-dev",
-    redis_port: 6379,
-    redis_host: "smelink.animation-genius.com",
+    redis_port: 32769,
+    redis_host: "localhost",
     token: {
         secret: "chitchat1234",
         expire: "1 days"
