@@ -1,26 +1,26 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import * as async from "async";
-import { Flex, Box } from 'reflexbox';
+import { Flex, Box } from "reflexbox";
 
-import Config from '../configs/config';
+import Config from "../configs/config";
 
-import { TypingBox } from './TypingBox';
+import { TypingBox } from "./TypingBox";
 import ChatBox from "./ChatBox";
 import SimpleToolbar from "../components/SimpleToolbar";
 import UtilsBox from "./UtilsBox";
-import UploadingDialog from './UploadingDialog';
+import UploadingDialog from "./UploadingDialog";
 import GridListSimple from "../components/GridListSimple";
 
 import { IComponentProps } from "../utils/IComponentProps";
-import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
+import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
 import * as chatRoomActions from "../redux/chatroom/chatroomActions";
 import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 
 import { ContentType, IMessage } from "../chats/models/ChatDataModels";
 import { MessageImp } from "../chats/models/MessageImp";
 
-import { imagesPath } from '../consts/StickerPath';
+import { imagesPath } from "../consts/StickerPath";
 import * as FileType from "../../server/scripts/FileType";
 
 interface IComponentNameState {
@@ -66,6 +66,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.onSubmitStickerChat = this.onSubmitStickerChat.bind(this);
         this.roomInitialize = this.roomInitialize.bind(this);
         this.onToggleSticker = this.onToggleSticker.bind(this);
+        this.onBackPressed = this.onBackPressed.bind(this);
 
         let { chatroomReducer, userReducer, params} = this.props;
 
@@ -113,7 +114,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             }
 
             case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
-                this.setMessageStatus(chatroomReducer.responseMessage.uuid, 'ErrorButton');
+                this.setMessageStatus(chatroomReducer.responseMessage.uuid, "ErrorButton");
                 this.props.dispatch(chatRoomActions.emptyState());
                 break;
             }
@@ -128,7 +129,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                         ...previousState,
                         messages: messages
                     }), () => {
-                        let chatBox = document.getElementById('h_chatArea');
+                        let chatBox = document.getElementById("h_chatArea");
                         chatBox.scrollTop = chatBox.scrollHeight;
                     });
                 });
@@ -212,7 +213,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         let _messages = this.state.messages.slice();
 
         for (let i = 0; i < _messages.length; i++) {
-            if (_messages[i].uuid === uniqueId) {
+            if (_messages[i].uuid == uniqueId) {
                 let clone = Object.assign({}, _messages[i]);
                 clone.status = status;
                 messages.push(clone);
@@ -285,7 +286,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
         _messages.push(message);
         this.setState(previousState => ({ ...previousState, typingText: "", messages: _messages }), () => {
-            let chatBox = document.getElementById('h_chatArea');
+            let chatBox = document.getElementById("h_chatArea");
             chatBox.scrollTop = chatBox.scrollHeight;
         });
     }
@@ -352,6 +353,10 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         }));
     }
 
+    onBackPressed() {
+        this.props.router.goBack();
+    }
+
     render(): JSX.Element {
         let {chatroomReducer } = this.props;
 
@@ -360,14 +365,16 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 <div style={{ height: this.state.h_header }} >
                     <SimpleToolbar
                         title={(chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty"}
-                        menus={this.toolbarMenus} onSelectedMenuItem={(id, value) => console.log(value)} />
+                        menus={this.toolbarMenus}
+                        onSelectedMenuItem={(id, value) => console.log(value)}
+                        onBackPressed={this.onBackPressed} />
                 </div>
                 <div style={{ height: this.state.h_body }}>
                     <Flex flexColumn={true}>
-                        <div style={{ height: this.state.h_chatArea, overflowY: 'scroll' }} id={'h_chatArea'}>
+                        <div style={{ height: this.state.h_chatArea, overflowY: "scroll" }} id={"h_chatArea"}>
                             {
                                 (this.state.earlyMessageReady) ?
-                                    <Flex align='center' justify='center'>
+                                    <Flex align="center" justify="center">
                                         <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
                                     </Flex>
                                     :
@@ -387,8 +394,8 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                             : null
                     }
                 </div>
-                <Flex align='center' justify='center' flexColumn={false}>
-                    <div style={{ bottom: '0%', position: 'absolute' }} >
+                <Flex align="center" justify="center" flexColumn={false}>
+                    <div style={{ bottom: "0%", position: "absolute" }} >
                         <TypingBox
                             onSubmit={this.onSubmitTextChat}
                             onValueChange={this.onTypingTextChange}

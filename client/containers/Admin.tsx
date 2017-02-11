@@ -79,13 +79,13 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     onAdminMenuSelected(key: string) {
         console.log("onAdminMenuSelected", key);
 
-        if (key === this.createOrgGroup || key === this.createPjbGroup || key === this.createPvGroup) {
+        if (key == this.createOrgGroup || key == this.createPjbGroup || key == this.createPvGroup) {
             this.setState(previous => ({ ...previous, boxState: BoxState.isCreateGroup }));
         }
-        else if (key === this.manageOrgChart) {
+        else if (key == this.manageOrgChart) {
             this.setState(previous => ({ ...previous, boxState: BoxState.isManageTeam }));
         }
-        else if (key === this.teamMember) {
+        else if (key == this.teamMember) {
             this.setState(previous => ({ ...previous, boxState: BoxState.isManageMember }));
         }
     }
