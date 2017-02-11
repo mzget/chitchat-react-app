@@ -9,8 +9,6 @@ const expressValidator = require("express-validator");
 const cors = require("cors");
 const useragent = require("express-useragent");
 const jwt = require("jsonwebtoken");
-const config_1 = require("./config");
-const Constant = require("./scripts/Constant");
 process.env.NODE_ENV = `development`;
 const app = express();
 if (app.get("env") === "development") {
@@ -20,6 +18,16 @@ else if (app.get("env") === "production") {
     process.env.PORT = 9000;
 }
 console.log("listen on ", process.env.PORT);
+const config_1 = require("./config");
+const Constant = require("./scripts/Constant");
+const DbClient_1 = require("./scripts/DbClient");
+DbClient_1.InitDatabaseConnection().then(() => {
+    DbClient_1.getAppDb().stats().then(value => {
+        console.log("DB stat: ", value);
+    });
+}).catch(err => {
+    console.error("InitDatabaseConnection Fail:" + err);
+});
 const index = require("./routes/index");
 const users = require("./routes/users");
 const authen = require("./routes/authen");

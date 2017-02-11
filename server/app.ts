@@ -9,9 +9,6 @@ const cors = require("cors");
 import useragent = require("express-useragent");
 import jwt = require("jsonwebtoken");
 
-import { Config, Paths } from "./config";
-import * as Constant from "./scripts/Constant";
-
 process.env.NODE_ENV = `development`;
 const app = express();
 if (app.get("env") === "development") {
@@ -21,6 +18,17 @@ else if (app.get("env") === "production") {
     process.env.PORT = 9000;
 }
 console.log("listen on ", process.env.PORT);
+
+import { Config, Paths } from "./config";
+import * as Constant from "./scripts/Constant";
+import { InitDatabaseConnection, getAppDb } from "./scripts/DbClient";
+InitDatabaseConnection().then(() => {
+    getAppDb().stats().then(value => {
+        console.log("DB stat: ", value);
+    });
+}).catch(err => {
+    console.error("InitDatabaseConnection Fail:" + err);
+});
 
 const index = require("./routes/index");
 const users = require("./routes/users");
