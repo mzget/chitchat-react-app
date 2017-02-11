@@ -22,7 +22,7 @@ class DataManager {
         let id = this.getContactInfoFailEvents.indexOf(func);
         this.getContactInfoFailEvents.splice(id, 1);
     }
-    //@ Profile...
+    // @ Profile...
     getMyProfile() {
         return this.myProfile;
     }
@@ -60,7 +60,7 @@ class DataManager {
     getRoomAccess() {
         return this.myProfile.roomAccess;
     }
-    //<!---------- Group ------------------------------------
+    // <!---------- Group ------------------------------------
     updateGroupImage(data) {
         if (!!this.orgGroups[data._id]) {
             this.orgGroups[data._id].image = data.image;
@@ -84,12 +84,12 @@ class DataManager {
         }
     }
     updateGroupMembers(data) {
-        //<!-- Beware please checking myself before update group members.
-        //<!-- May be your id is removed from group.
-        var hasMe = this.checkMySelfInNewMembersReceived(data);
+        // <!-- Beware please checking myself before update group members.
+        // <!-- May be your id is removed from group.
+        let hasMe = this.checkMySelfInNewMembersReceived(data);
         if (data.type === ChatDataModels_1.RoomType.organizationGroup) {
             if (!!this.orgGroups[data._id]) {
-                //<!-- This statement call when current you still a member.
+                // <!-- This statement call when current you still a member.
                 if (hasMe) {
                     this.orgGroups[data._id].members = data.members;
                 }
@@ -130,7 +130,7 @@ class DataManager {
                 this.privateGroups[data._id] = data;
             }
         }
-        console.log('dataManager.updateGroupMembers:');
+        console.log("dataManager.updateGroupMembers:");
     }
     updateGroupMemberDetail(jsonObj) {
         let editMember = jsonObj.editMember;
@@ -156,7 +156,7 @@ class DataManager {
         console.log("New data has me", hasMe);
         return hasMe;
     }
-    //<!------------------------------------------------------
+    // <!------------------------------------------------------
     /**
      * Contacts ....
      */
@@ -219,7 +219,7 @@ class DataManager {
     onGetCompanyInfo(dataEvent) {
     }
     onGetOrganizeGroupsComplete(dataEvent) {
-        var rooms = JSON.parse(JSON.stringify(dataEvent));
+        let rooms = JSON.parse(JSON.stringify(dataEvent));
         if (!this.orgGroups)
             this.orgGroups = {};
         rooms.forEach(value => {
@@ -233,7 +233,7 @@ class DataManager {
     }
     ;
     onGetProjectBaseGroupsComplete(dataEvent) {
-        var groups = JSON.parse(JSON.stringify(dataEvent));
+        let groups = JSON.parse(JSON.stringify(dataEvent));
         if (!this.projectBaseGroups)
             this.projectBaseGroups = {};
         groups.forEach(value => {
@@ -247,7 +247,7 @@ class DataManager {
     }
     ;
     onGetPrivateGroupsComplete(dataEvent) {
-        var groups = JSON.parse(JSON.stringify(dataEvent));
+        let groups = JSON.parse(JSON.stringify(dataEvent));
         if (!this.privateGroups)
             this.privateGroups = {};
         groups.forEach(value => {

@@ -26,7 +26,7 @@ interface IComponentNameState {
 
 class Main extends React.Component<IComponentProps, IComponentNameState> {
 
-    menus = ["admin", "log out"];
+    menus = ["menu", "log out"];
     clientWidth = document.documentElement.clientWidth;
     clientHeight = document.documentElement.clientHeight;
     headerHeight = null;
@@ -146,7 +146,10 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
             <MuiThemeProvider>
                 <div>
                     <div style={{ height: this.headerHeight }}>
-                        <SimpleToolbar title={this.props.teamReducer.team.name} menus={this.menus} onSelectedMenuItem={this.onSelectMenuItem} />
+                        <SimpleToolbar
+                            title={this.props.teamReducer.team.name}
+                            menus={this.menus}
+                            onSelectedMenuItem={this.onSelectMenuItem} />
                     </div>
                     <div style={{ height: this.bodyHeight, overflowY: "auto" }}>
                         <ProfileBox {...this.props} />

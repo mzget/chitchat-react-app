@@ -2,12 +2,14 @@ import * as async from "async";
 
 import { absSpartan } from "../libs/stalk/spartanEvents";
 import ServerImplemented from "../libs/stalk/serverImplemented";
-import { RoomAccessData, Room, RoomType, ContactInfo, Member, MemberRole, StalkAccount } from "./models/ChatDataModels";
+import { RoomAccessData, RoomType, ContactInfo, MemberRole, StalkAccount } from "./models/ChatDataModels";
 
 import { IRoomDAL } from "../libs/chitchat/dataAccessLayer/IRoomDAL";
 import { RoomDALFactory } from "../libs/chitchat/dataAccessLayer/RoomDALFactory";
 import { IMessageDAL } from "../libs/chitchat/dataAccessLayer/IMessageDAL";
 import MessageDALFactory from "../libs/chitchat/dataAccessLayer/messageDALFactory";
+
+import { Room } from "../../server/scripts/models/Room";
 
 interface IRoomMap {
     [key: string]: Room;
@@ -48,7 +50,7 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
         this.messageDAL = MessageDALFactory.getObject();
     }
 
-    //@ Profile...
+    // @ Profile...
     public getMyProfile(): StalkAccount {
         return this.myProfile;
     }
@@ -56,7 +58,7 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
         return new Promise((resolve, reject) => {
             this.myProfile = data;
             resolve(this.myProfile);
-        })
+        });
     }
     public setRoomAccessForUser(data) {
         if (!!data.roomAccess) {
@@ -90,7 +92,7 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
         return this.myProfile.roomAccess;
     }
 
-    //<!---------- Group ------------------------------------
+    // <!---------- Group ------------------------------------
     public updateGroupImage(data: Room) {
         if (!!this.orgGroups[data._id]) {
             this.orgGroups[data._id].image = data.image;
@@ -114,13 +116,13 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
         }
     }
     public updateGroupMembers(data: Room) {
-        //<!-- Beware please checking myself before update group members.
-        //<!-- May be your id is removed from group.
-        var hasMe = this.checkMySelfInNewMembersReceived(data);
+        // <!-- Beware please checking myself before update group members.
+        // <!-- May be your id is removed from group.
+        let hasMe = this.checkMySelfInNewMembersReceived(data);
 
         if (data.type === RoomType.organizationGroup) {
             if (!!this.orgGroups[data._id]) {
-                //<!-- This statement call when current you still a member.
+                // <!-- This statement call when current you still a member.
                 if (hasMe) {
                     this.orgGroups[data._id].members = data.members;
                 }
@@ -162,7 +164,7 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
             }
         }
 
-        console.log('dataManager.updateGroupMembers:');
+        console.log("dataManager.updateGroupMembers:");
     }
     public updateGroupMemberDetail(jsonObj: any) {
         let editMember = jsonObj.editMember;
@@ -177,7 +179,7 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
         this.getGroup(roomId).members.forEach((value, index, arr) => {
             if (value.id === groupMember.id) {
                 this.getGroup(roomId).members[index].role = groupMember.role;
-                this.getGroup(roomId).members[index].textRole = MemberRole[groupMember.role]
+                this.getGroup(roomId).members[index].textRole = MemberRole[groupMember.role];
                 this.getGroup(roomId).members[index].jobPosition = groupMember.jobPosition;
             }
         });
@@ -193,7 +195,7 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
         return hasMe;
     }
 
-    //<!------------------------------------------------------
+    // <!------------------------------------------------------
 
     /**
      * Contacts ....
@@ -206,25 +208,25 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
 
         if (!this.contactsMember) this.contactsMember = {};
         if (!this.contactsMember[_id]) {
-            //@ Need to get new contact info.
+            // @ Need to get new contact info.
             /*
             ServerImplemented.getInstance().getMemberProfile(_id, (err, res) => {
                 console.log("getMemberProfile : ", err, JSON.stringify(res));
-    
+
                 let data = JSON.parse(JSON.stringify(res.data));
                 let contact: ContactInfo = new ContactInfo();
                 contact._id = data._id;
                 contact.displayname = data.displayname;
                 contact.image = data.image;
                 contact.status = data.status;
-    
+
                 console.warn(contact);
                 self.contactsMember[contact._id] = contact;
-    
+
                 if (self.onContactsDataReady != null) {
                     self.onContactsDataReady();
                 }
-    
+
                 console.log("We need to save contacts list to persistence data layer.");
             });
             */
@@ -286,7 +288,7 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
 
     }
     public onGetOrganizeGroupsComplete(dataEvent) {
-        var rooms: Array<Room> = JSON.parse(JSON.stringify(dataEvent));
+        let rooms: Array<Room> = JSON.parse(JSON.stringify(dataEvent));
         if (!this.orgGroups)
             this.orgGroups = {};
 
@@ -301,7 +303,7 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
         }
     };
     public onGetProjectBaseGroupsComplete(dataEvent) {
-        var groups: Array<Room> = JSON.parse(JSON.stringify(dataEvent));
+        let groups: Array<Room> = JSON.parse(JSON.stringify(dataEvent));
 
         if (!this.projectBaseGroups) this.projectBaseGroups = {};
 
@@ -316,7 +318,7 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
         }
     };
     public onGetPrivateGroupsComplete(dataEvent) {
-        var groups: Array<Room> = JSON.parse(JSON.stringify(dataEvent));
+        let groups: Array<Room> = JSON.parse(JSON.stringify(dataEvent));
 
         if (!this.privateGroups) this.privateGroups = {};
 

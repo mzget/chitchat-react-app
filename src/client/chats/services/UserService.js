@@ -4,9 +4,9 @@ const Rx = require("rxjs/Rx");
 function getTeamProfile(token, team_id) {
     return Rx.Observable.ajax({
         url: `${config_1.default.api.user}/teamProfile?team_id=${team_id}`,
-        method: 'GET',
+        method: "GET",
         headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             "x-access-token": token
         }
     });

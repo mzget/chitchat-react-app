@@ -4,7 +4,7 @@
 type IMembersStatus = {
     uid: string;
     status: string;
-}
+};
 export enum RoomType { organizationGroup = 0, projectBaseGroup, privateGroup, privateChat };
 enum RoomStatus { active, disable, delete };
 
@@ -46,7 +46,7 @@ export type ContactInfo = {
     displayname: string;
     status: string;
     image: string;
-}
+};
 
 /**
  * @Message...
@@ -81,7 +81,7 @@ export class StalkAccount {
     lastname: string;
     tel: string;
     email: string;
-    image: string; //!-- mean image url.
+    image: string; // !-- mean image url.
     status: string;
     roomAccess: RoomAccessData[];
     memberOfRooms: string[];

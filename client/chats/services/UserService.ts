@@ -4,9 +4,9 @@ import * as Rx from "rxjs/Rx";
 export function getTeamProfile(token: string, team_id: string) {
     return Rx.Observable.ajax({
         url: `${config.api.user}/teamProfile?team_id=${team_id}`,
-        method: 'GET',
+        method: "GET",
         headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             "x-access-token": token
         }
     });
