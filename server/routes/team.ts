@@ -1,16 +1,15 @@
-﻿import express = require('express');
-import mongodb = require('mongodb');
+﻿import express = require("express");
+import mongodb = require("mongodb");
 
-import * as apiUtils from '../scripts/utils/apiUtils';
+import * as apiUtils from "../scripts/utils/apiUtils";
 
-import { ITeam } from '../scripts/models/ITeam';
+import { ITeam } from "../scripts/models/ITeam";
 import { ChitChatAccount } from "../scripts/models/User";
 
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 const router = express.Router();
-import { getConfig, DbClient } from '../config';
-const config = getConfig();
+import { Config, DbClient } from "../config";
 
 import * as TeamController from "../scripts/controllers/team/TeamController";
 import * as UserManager from "../scripts/controllers/user/UserManager";
@@ -37,7 +36,7 @@ router.get("/", (req, res, next) => {
 });
 
 router.post("/teamInfo", function (req, res, next) {
-    req.checkBody('team_id', 'request for team_id').isMongoId();
+    req.checkBody("team_id", "request for team_id").isMongoId();
 
     let errors = req.validationErrors();
     if (errors) {
@@ -46,7 +45,7 @@ router.post("/teamInfo", function (req, res, next) {
 
     let team_id = new mongodb.ObjectID(req.body.team_id);
 
-    MongoClient.connect(config.chatDB).then(function (db) {
+    MongoClient.connect(Config.chatDB).then(function (db) {
         let collection = db.collection(DbClient.teamsColl);
 
         collection.createIndex({ name: 1 }, { background: true });
@@ -57,12 +56,12 @@ router.post("/teamInfo", function (req, res, next) {
                 db.close();
             }
             else {
-                res.status(500).json({ success: false, message: 'No have teamInfo' });
+                res.status(500).json({ success: false, message: "No have teamInfo" });
                 db.close();
             }
         });
     }).catch(err => {
-        console.error('/teamInfo: ', err);
+        console.error("/teamInfo: ", err);
         res.status(500).json({ success: false, message: req.url + err });
     });
 });
@@ -167,7 +166,7 @@ router.get("/teamMembers", function (req, res, next) {
     let team_id = new ObjectID(req.query.id);
 
     async function findTeamMembers(team_id: mongodb.ObjectID) {
-        let db = await MongoClient.connect(config.chatDB);
+        let db = await MongoClient.connect(Config.chatDB);
         let chitchatUserColl = db.collection(DbClient.chitchatUserColl);
 
         let results = await chitchatUserColl.aggregate([

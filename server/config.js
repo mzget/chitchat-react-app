@@ -1,4 +1,5 @@
 "use strict";
+;
 const dev = {
     chatDB: "mongodb://rfl_dev:rfl1234@git.animation-genius.com:27017/chitchat-dev",
     redis_port: 6379,
@@ -23,8 +24,7 @@ function getConfig() {
     let conf = (process.env.NODE_ENV === `production`) ? master : dev;
     return conf;
 }
-exports.getConfig = getConfig;
-exports.config = getConfig();
+exports.Config = getConfig();
 exports.DbClient = {
     chitchatUserColl: "users",
     chatroomColl: "rooms",

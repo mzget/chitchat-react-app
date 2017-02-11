@@ -1,8 +1,7 @@
 "use strict";
 const redis = require("redis");
-const config = require("../../config");
-const getConfig = config.getConfig();
-const redisClient = redis.createClient(getConfig.redis_port, getConfig.redis_host);
+const config_1 = require("../../config");
+const redisClient = redis.createClient(config_1.Config.redis_port, config_1.Config.redis_host);
 redisClient.on("connect", function () {
     console.log("redis connected");
 });

@@ -14,7 +14,6 @@ const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 const router = express.Router();
 const config_1 = require("../config");
-const config = config_1.getConfig();
 const TeamController = require("../scripts/controllers/team/TeamController");
 const UserManager = require("../scripts/controllers/user/UserManager");
 const GroupController = require("../scripts/controllers/group/GroupController");
@@ -36,13 +35,13 @@ router.get("/", (req, res, next) => {
     });
 });
 router.post("/teamInfo", function (req, res, next) {
-    req.checkBody('team_id', 'request for team_id').isMongoId();
+    req.checkBody("team_id", "request for team_id").isMongoId();
     let errors = req.validationErrors();
     if (errors) {
         return res.status(500).json({ success: false, message: errors });
     }
     let team_id = new mongodb.ObjectID(req.body.team_id);
-    MongoClient.connect(config.chatDB).then(function (db) {
+    MongoClient.connect(config_1.Config.chatDB).then(function (db) {
         let collection = db.collection(config_1.DbClient.teamsColl);
         collection.createIndex({ name: 1 }, { background: true });
         collection.find({ _id: team_id }).limit(1).toArray().then(function (docs) {
@@ -51,12 +50,12 @@ router.post("/teamInfo", function (req, res, next) {
                 db.close();
             }
             else {
-                res.status(500).json({ success: false, message: 'No have teamInfo' });
+                res.status(500).json({ success: false, message: "No have teamInfo" });
                 db.close();
             }
         });
     }).catch(err => {
-        console.error('/teamInfo: ', err);
+        console.error("/teamInfo: ", err);
         res.status(500).json({ success: false, message: req.url + err });
     });
 });
@@ -144,7 +143,7 @@ router.get("/teamMembers", function (req, res, next) {
     let team_id = new ObjectID(req.query.id);
     function findTeamMembers(team_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let db = yield MongoClient.connect(config.chatDB);
+            let db = yield MongoClient.connect(config_1.Config.chatDB);
             let chitchatUserColl = db.collection(config_1.DbClient.chitchatUserColl);
             let results = yield chitchatUserColl.aggregate([
                 { $match: { teams: { $in: [team_id.toString()] } } },

@@ -24,7 +24,6 @@ const Room_1 = require("../../scripts/models/Room");
 const GroupController = require("../../scripts/controllers/group/GroupController");
 const apiUtils = require("../../scripts/utils/apiUtils");
 const config_1 = require("../../config");
-const webConfig = config_1.getConfig();
 router.get("/org", function (req, res, next) {
     req.checkQuery("team_id", "request for team_id").isMongoId();
     let errors = req.validationErrors();
@@ -55,7 +54,7 @@ router.post("/create", function (req, res, next) {
     roomModel.status = Room_1.RoomStatus.active;
     function createGroup() {
         return __awaiter(this, void 0, void 0, function* () {
-            let db = yield MongoClient.connect(webConfig.chatDB);
+            let db = yield MongoClient.connect(config_1.Config.chatDB);
             let collection = db.collection(config_1.DbClient.chatroomColl);
             let result = yield collection.insertOne(roomModel);
             db.close();
@@ -69,14 +68,14 @@ router.post("/create", function (req, res, next) {
         res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });
-router.post('/editOrg', function (req, res, next) {
+router.post("/editOrg", function (req, res, next) {
     if (!!req && !!req.body) {
         console.log(req.body);
-        MongoClient.connect(webConfig.chatDB, function (err, db) {
+        MongoClient.connect(config_1.Config.chatDB, function (err, db) {
             if (err) {
                 throw err;
             }
-            var collection = db.collection(Mdb.DbClient.roomColl);
+            let collection = db.collection(Mdb.DbClient.roomColl);
             collection.findOneAndUpdate({ "_id": ObjectId(req.body._id) }, {
                 $set: {
                     "name": req.body.name,
@@ -99,14 +98,14 @@ router.post('/editOrg', function (req, res, next) {
         res.json(500, { "success": false });
     }
 });
-router.post('/inviteOrg', function (req, res, next) {
+router.post("/inviteOrg", function (req, res, next) {
     if (!!req && !!req.body) {
         console.log(req.body);
-        MongoClient.connect(webConfig.chatDB, function (err, db) {
+        MongoClient.connect(config_1.Config.chatDB, function (err, db) {
             if (err) {
                 throw err;
             }
-            var collection = db.collection(Mdb.DbClient.roomColl);
+            let collection = db.collection(Mdb.DbClient.roomColl);
             collection.findOneAndUpdate({ "_id": ObjectId(req.body._id) }, { $push: { members: { $each: req.body.members } } }).then(function onFulfilled(value) {
                 res.status(200).json({ success: true, result: value });
                 db.close();
@@ -121,14 +120,14 @@ router.post('/inviteOrg', function (req, res, next) {
         res.json(500, { "success": false });
     }
 });
-router.post('/deleteGroupOrg', function (req, res, next) {
+router.post("/deleteGroupOrg", function (req, res, next) {
     if (!!req && !!req.body) {
         console.log(req.body);
-        MongoClient.connect(webConfig.chatDB, function (err, db) {
+        MongoClient.connect(config_1.Config.chatDB, function (err, db) {
             if (err) {
                 throw err;
             }
-            var collection = db.collection(Mdb.DbClient.roomColl);
+            let collection = db.collection(Mdb.DbClient.roomColl);
             collection.deleteOne({ "_id": ObjectId(req.body._id) }).then(function onFulfilled(value) {
                 res.status(200).json({ success: true, result: value });
                 db.close();
@@ -143,14 +142,14 @@ router.post('/deleteGroupOrg', function (req, res, next) {
         res.json(500, { "success": false });
     }
 });
-router.post('/deleteMemberOrg', function (req, res, next) {
+router.post("/deleteMemberOrg", function (req, res, next) {
     if (!!req && !!req.body) {
         console.log(req.body);
-        MongoClient.connect(webConfig.chatDB, function (err, db) {
+        MongoClient.connect(config_1.Config.chatDB, function (err, db) {
             if (err) {
                 throw err;
             }
-            var collection = db.collection(Mdb.DbClient.roomColl);
+            let collection = db.collection(Mdb.DbClient.roomColl);
             collection.findOneAndUpdate({ "_id": ObjectId(req.body._id) }, { $pull: { "members": req.body.members } }).then(function onFulfilled(value) {
                 res.status(200).json({ success: true, result: value });
                 db.close();

@@ -1,8 +1,7 @@
 import redis = require("redis");
-import config = require("../../config");
-const getConfig = config.getConfig();
+import { Config } from "../../config";
 
-const redisClient = redis.createClient(getConfig.redis_port, getConfig.redis_host);
+const redisClient = redis.createClient(Config.redis_port, Config.redis_host);
 redisClient.on("connect", function () {
     console.log("redis connected");
 });

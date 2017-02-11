@@ -9,7 +9,7 @@ const router = express.Router();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 
-import { config } from "../../config";
+import { Config } from "../../config";
 
 /* GET users listing. */
 router.get("/lastAccessRoom", function (req, res, next) {

@@ -9,9 +9,8 @@ const cors = require("cors");
 import useragent = require("express-useragent");
 import jwt = require("jsonwebtoken");
 
-import { getConfig, Paths } from "./config";
+import { Config, Paths } from "./config";
 import * as Constant from "./scripts/Constant";
-const config = getConfig();
 
 process.env.NODE_ENV = `development`;
 const app = express();
@@ -45,14 +44,14 @@ apiRouteMiddleWare.use(function (req, res, next) {
     if (req.url === "/authenticate" || req.url === "/authenticate/verify") {
         next();
     }
-    else if (apikey === config.apikey) {
+    else if (apikey === Config.apikey) {
         next();
     }
     else {
         // decode token
         if (token) {
             // verifies secret and checks exp
-            jwt.verify(token, config.token.secret, function (err, decoded) {
+            jwt.verify(token, Config.token.secret, function (err, decoded) {
                 if (err) {
                     return res.status(500).json({ success: false, message: "Failed to authenticate token." + err });
                 } else {
@@ -100,7 +99,7 @@ app.use("/api/stalk/user", stalk_user);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    let err = new Error("Not Found");
+    let err = new Error("Not Found") as Error | any;
     err.status = 404;
     next(err);
 });

@@ -10,12 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const mongodb = require("mongodb");
 const config_1 = require("../../../config");
 const Room_1 = require("../../models/Room");
-const config = config_1.getConfig();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 function createDefaultGroup(owner) {
     return __awaiter(this, void 0, void 0, function* () {
-        let db = yield MongoClient.connect(config.chatDB);
+        let db = yield MongoClient.connect(config_1.Config.chatDB);
         let collection = db.collection(config_1.DbClient.chatroomColl);
         let member = new Room_1.Member();
         member._id = owner._id;
@@ -37,7 +36,7 @@ function createDefaultGroup(owner) {
 exports.createDefaultGroup = createDefaultGroup;
 function addTeamToGroup(group, team) {
     return __awaiter(this, void 0, void 0, function* () {
-        let db = yield MongoClient.connect(config.chatDB);
+        let db = yield MongoClient.connect(config_1.Config.chatDB);
         let collection = db.collection(config_1.DbClient.chatroomColl);
         let result = yield collection.update({ _id: new mongodb.ObjectID(group._id) }, {
             $set: {
@@ -51,7 +50,7 @@ function addTeamToGroup(group, team) {
 exports.addTeamToGroup = addTeamToGroup;
 function getOrgGroups(team_id, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        let db = yield MongoClient.connect(config.chatDB);
+        let db = yield MongoClient.connect(config_1.Config.chatDB);
         let collection = db.collection(config_1.DbClient.chatroomColl);
         collection.createIndex({ team_id: 1 }, { background: true });
         let docs = yield collection.find({
@@ -66,7 +65,7 @@ function getOrgGroups(team_id, user_id) {
 exports.getOrgGroups = getOrgGroups;
 function addMember(group_id, user) {
     return __awaiter(this, void 0, void 0, function* () {
-        let db = yield MongoClient.connect(config.chatDB);
+        let db = yield MongoClient.connect(config_1.Config.chatDB);
         let collection = db.collection(config_1.DbClient.chatroomColl);
         let member = new Room_1.Member();
         member._id = user._id;
@@ -81,7 +80,7 @@ function addMember(group_id, user) {
 exports.addMember = addMember;
 function removeUserOutOfOrgChartGroups(user_id, orgChart_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        let db = yield MongoClient.connect(config.chatDB);
+        let db = yield MongoClient.connect(config_1.Config.chatDB);
         let groupCollection = db.collection(config_1.DbClient.chatroomColl);
         let results = yield groupCollection.updateMany({ org_chart_id: orgChart_id }, { $pull: { members: { $elemMatch: { _id: user_id } } } }, { upsert: false });
         db.close();
@@ -91,7 +90,7 @@ function removeUserOutOfOrgChartGroups(user_id, orgChart_id) {
 exports.removeUserOutOfOrgChartGroups = removeUserOutOfOrgChartGroups;
 function addUserToOrgChartGroups(user_id, username, orgChart_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        let db = yield MongoClient.connect(config.chatDB);
+        let db = yield MongoClient.connect(config_1.Config.chatDB);
         let groupCollection = db.collection(config_1.DbClient.chatroomColl);
         let member = new Room_1.Member();
         member._id = user_id;

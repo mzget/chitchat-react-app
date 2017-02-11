@@ -1,14 +1,13 @@
-import express = require('express');
-import mongodb = require('mongodb');
-import fs = require('fs');
-const uuid = require('uuid');
-import multer = require('multer');
+import express = require("express");
+import mongodb = require("mongodb");
+import fs = require("fs");
+const uuid = require("uuid");
+import multer = require("multer");
 
 const MongoClient = mongodb.MongoClient;
 const router = express.Router();
 import * as apiUtils from "../../scripts/utils/apiUtils";
-import { getConfig, Paths } from '../../config';
-const webConfig = getConfig();
+import { Config, Paths } from "../../config";
 const upload = multer({ dest: Paths.fileUpload }).single("file");
 
 import * as FileType from "../../scripts/FileType";

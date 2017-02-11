@@ -5,8 +5,7 @@ import message = require("../models/Message");
 import * as UserManager from "./user/UserManager";
 const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
-import { getConfig, DbClient } from "../../config";
-const config = getConfig();
+import { Config, DbClient } from "../../config";
 
 /*
 * Require
@@ -14,7 +13,7 @@ const config = getConfig();
 *@lastAccessTime for query only message who newer than lastAccessTime.
 */
 export async function getNewerMessageOfChatRoom(roomId: string, isoDate: Date) {
-    let db = await MongoClient.connect(config.chatDB);
+    let db = await MongoClient.connect(Config.chatDB);
     // Get the documents collection
     let collection = db.collection(DbClient.messageColl);
     // Create an index on the a field
@@ -28,7 +27,7 @@ export async function getNewerMessageOfChatRoom(roomId: string, isoDate: Date) {
 export async function getOlderMessageChunkCount(rid: string, topEdgeMessageTime: string) {
     let utc = new Date(topEdgeMessageTime);
 
-    let db = await MongoClient.connect(config.chatDB);
+    let db = await MongoClient.connect(Config.chatDB);
     // Get the documents collection
     let collection = db.collection(DbClient.messageColl);
 
@@ -42,7 +41,7 @@ export async function getOlderMessageChunkCount(rid: string, topEdgeMessageTime:
 export async function getOlderMessageChunkOfRid(rid: string, topEdgeMessageTime: string) {
     let utc = new Date(topEdgeMessageTime);
 
-    let db = await MongoClient.connect(config.chatDB);
+    let db = await MongoClient.connect(Config.chatDB);
     // Get the documents collection
     let collection = db.collection(DbClient.messageColl);
 
@@ -56,7 +55,7 @@ export async function getOlderMessageChunkOfRid(rid: string, topEdgeMessageTime:
 export async function getUnreadMsgCountAndLastMsgContentInRoom(roomId: string, lastAccessTime: string) {
     // let isoDate = new Date(lastAccessTime).toISOString();
 
-    let db = await MongoClient.connect(config.chatDB);
+    let db = await MongoClient.connect(Config.chatDB);
     let messagesColl = db.collection(DbClient.messageColl);
     await messagesColl.createIndex({ rid: 1 }, { background: true, w: 1 });
 
@@ -88,7 +87,7 @@ export async function getUnreadMsgCountAndLastMsgContentInRoom(roomId: string, l
 async function getLastMsgContentInMessagesIdArray(docs: any[]) {
     let lastDoc = docs[docs.length - 1];
 
-    let db = await MongoClient.connect(config.chatDB);
+    let db = await MongoClient.connect(Config.chatDB);
     let collection = db.collection(DbClient.messageColl);
     // Find some documents
     let results = await collection.find({ _id: new ObjectID(lastDoc._id) }).limit(1).toArray();
@@ -97,7 +96,7 @@ async function getLastMsgContentInMessagesIdArray(docs: any[]) {
 }
 
 async function getLastMessageContentOfRoom(rid: string) {
-    let db = await MongoClient.connect(config.chatDB);
+    let db = await MongoClient.connect(Config.chatDB);
     let collection = db.collection(DbClient.messageColl);
 
     // Find newest message documents
@@ -108,7 +107,7 @@ async function getLastMessageContentOfRoom(rid: string) {
 
 export const GetChatRoomInfo = (room_id: string): Promise<any[]> => {
     return new Promise((resolve, reject) => {
-        MongoClient.connect(config.chatDB).then(db => {
+        MongoClient.connect(Config.chatDB).then(db => {
             let roomColl = db.collection(DbClient.chatroomColl);
 
             roomColl.find({ _id: new ObjectID(room_id) }).limit(1).toArray().then(docs => {
@@ -126,7 +125,7 @@ export const GetChatRoomInfo = (room_id: string): Promise<any[]> => {
 
 export const createPrivateChatRoom = (room: Room.Room): Promise<any> => {
     return new Promise((resolve, reject) => {
-        MongoClient.connect(config.chatDB).then(db => {
+        MongoClient.connect(Config.chatDB).then(db => {
             let roomColl = db.collection(DbClient.chatroomColl);
 
             roomColl.insertOne(room).then(result => {

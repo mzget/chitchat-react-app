@@ -1,12 +1,12 @@
-type Config = {
+interface IConfig {
     chatDB: string;
     redis_port: number;
     redis_host: string;
-    token: { secret: string, expire: string }
+    token: { secret: string, expire: string };
     apikey: string;
 };
 
-const dev: Config = {
+const dev: IConfig = {
     chatDB: "mongodb://rfl_dev:rfl1234@git.animation-genius.com:27017/chitchat-dev",
     redis_port: 6379,
     redis_host: "smelink.animation-genius.com",
@@ -17,7 +17,7 @@ const dev: Config = {
     apikey: "chitchat1234"
 };
 
-const master: Config = {
+const master: IConfig = {
     chatDB: "mongodb://rfl_dev:rfl1234@git.animation-genius.com:27017/chitchat-dev",
     redis_port: 6379,
     redis_host: "smelink.animation-genius.com",
@@ -28,12 +28,12 @@ const master: Config = {
     apikey: "chitchat1234"
 };
 
-export function getConfig(): Config {
+function getConfig(): IConfig {
     let conf = (process.env.NODE_ENV === `production`) ? master : dev;
 
     return conf;
 }
-export const config = getConfig();
+export const Config = getConfig();
 
 export const DbClient = {
     chitchatUserColl: "users",

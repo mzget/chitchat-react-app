@@ -1,16 +1,15 @@
-import mongodb = require('mongodb');
+import mongodb = require("mongodb");
 
-import { getConfig, DbClient } from "../../../config";
+import { Config, DbClient } from "../../../config";
 import { Room, RoomStatus, RoomType, Member, MemberRole } from "../../models/Room";
 import { ITeam } from "../../models/ITeam";
 import { ChitChatAccount } from "../../models/User";
 
-const config = getConfig();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 
 export async function createDefaultGroup(owner: ChitChatAccount) {
-    let db = await MongoClient.connect(config.chatDB);
+    let db = await MongoClient.connect(Config.chatDB);
     let collection = db.collection(DbClient.chatroomColl);
 
     let member = new Member();
@@ -35,7 +34,7 @@ export async function createDefaultGroup(owner: ChitChatAccount) {
 }
 
 export async function addTeamToGroup(group: Room, team: ITeam) {
-    let db = await MongoClient.connect(config.chatDB);
+    let db = await MongoClient.connect(Config.chatDB);
     let collection = db.collection(DbClient.chatroomColl);
 
     let result = await collection.update({ _id: new mongodb.ObjectID(group._id) }, {
@@ -49,7 +48,7 @@ export async function addTeamToGroup(group: Room, team: ITeam) {
 }
 
 export async function getOrgGroups(team_id: string, user_id: string) {
-    let db = await MongoClient.connect(config.chatDB);
+    let db = await MongoClient.connect(Config.chatDB);
     let collection = db.collection(DbClient.chatroomColl);
 
     collection.createIndex({ team_id: 1 }, { background: true });
@@ -64,7 +63,7 @@ export async function getOrgGroups(team_id: string, user_id: string) {
 }
 
 export async function addMember(group_id: string, user: ChitChatAccount) {
-    let db = await MongoClient.connect(config.chatDB);
+    let db = await MongoClient.connect(Config.chatDB);
     let collection = db.collection(DbClient.chatroomColl);
 
     let member = new Member();
@@ -82,7 +81,7 @@ export async function addMember(group_id: string, user: ChitChatAccount) {
 }
 
 export async function removeUserOutOfOrgChartGroups(user_id: string, orgChart_id: string) {
-    let db = await MongoClient.connect(config.chatDB);
+    let db = await MongoClient.connect(Config.chatDB);
     let groupCollection = db.collection(DbClient.chatroomColl);
 
     let results = await groupCollection.updateMany({ org_chart_id: orgChart_id },
@@ -94,7 +93,7 @@ export async function removeUserOutOfOrgChartGroups(user_id: string, orgChart_id
 }
 
 export async function addUserToOrgChartGroups(user_id: string, username: string, orgChart_id: string) {
-    let db = await MongoClient.connect(config.chatDB);
+    let db = await MongoClient.connect(Config.chatDB);
     let groupCollection = db.collection(DbClient.chatroomColl);
 
     let member = new Member();

@@ -10,10 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const mongodb = require("mongodb");
 const { MongoClient, ObjectID } = mongodb;
 const config_1 = require("../../../config");
-const config = config_1.getConfig();
 function createOrgChart(chart) {
     return __awaiter(this, void 0, void 0, function* () {
-        let db = yield MongoClient.connect(config.chatDB);
+        let db = yield MongoClient.connect(config_1.Config.chatDB);
         let collection = db.collection(config_1.DbClient.orgChartCollection);
         yield collection.createIndex({ team_id: 1 }, { background: true });
         let results = yield collection.insertOne(chart);
@@ -24,7 +23,7 @@ function createOrgChart(chart) {
 exports.createOrgChart = createOrgChart;
 function getOrgChart(team_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        let db = yield MongoClient.connect(config.chatDB);
+        let db = yield MongoClient.connect(config_1.Config.chatDB);
         let collection = db.collection(config_1.DbClient.orgChartCollection);
         let docs = yield collection.find({ team_id: team_id }).toArray();
         db.close();

@@ -11,7 +11,6 @@ const useragent = require("express-useragent");
 const jwt = require("jsonwebtoken");
 const config_1 = require("./config");
 const Constant = require("./scripts/Constant");
-const config = config_1.getConfig();
 process.env.NODE_ENV = `development`;
 const app = express();
 if (app.get("env") === "development") {
@@ -40,14 +39,14 @@ apiRouteMiddleWare.use(function (req, res, next) {
     if (req.url === "/authenticate" || req.url === "/authenticate/verify") {
         next();
     }
-    else if (apikey === config.apikey) {
+    else if (apikey === config_1.Config.apikey) {
         next();
     }
     else {
         // decode token
         if (token) {
             // verifies secret and checks exp
-            jwt.verify(token, config.token.secret, function (err, decoded) {
+            jwt.verify(token, config_1.Config.token.secret, function (err, decoded) {
                 if (err) {
                     return res.status(500).json({ success: false, message: "Failed to authenticate token." + err });
                 }

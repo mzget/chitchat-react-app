@@ -11,8 +11,7 @@ const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 
 import { ChitChatAccount } from "../scripts/models/User";
-import { getConfig, DbClient } from "../config";
-const config = getConfig();
+import { Config, DbClient } from "../config";
 
 /* GET users listing. */
 router.get("/contact/", function (req, res, next) {
@@ -28,7 +27,7 @@ router.get("/contact/", function (req, res, next) {
     if (query.email) {
         let email = query.email.toLowerCase();
 
-        MongoClient.connect(config.appDB).then(db => {
+        MongoClient.connect(Config.appDB).then(db => {
             let collection = db.collection(DbClient.userContactColl);
 
             collection.find({ email: email }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
@@ -55,7 +54,7 @@ router.get("/contact/", function (req, res, next) {
             return;
         }
 
-        MongoClient.connect(config.appDB).then(function (db) {
+        MongoClient.connect(Config.appDB).then(function (db) {
             let collection = db.collection(DbClient.userContactColl);
 
             collection.find({ _id: user_id }).project({ password: 0 })
@@ -89,7 +88,7 @@ router.get("/", (req, res, next) => {
         return res.status(500).json({ success: false, message: errors });
     }
 
-    MongoClient.connect(config.chatDB).then(db => {
+    MongoClient.connect(Config.chatDB).then(db => {
         let collection = db.collection(DbClient.chitchatUserColl);
 
         collection.find({ username: req.query.username }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
@@ -127,7 +126,7 @@ router.post("/signup", function (req: express.Request, res: express.Response, ne
     userModel.tel = user.tel;
     userModel.teams = new Array();
 
-    MongoClient.connect(config.chatDB).then(function (db) {
+    MongoClient.connect(Config.chatDB).then(function (db) {
         let collection = db.collection(DbClient.chitchatUserColl);
 
         collection.createIndex({ email: 1 }, { background: true });

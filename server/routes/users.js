@@ -17,7 +17,6 @@ const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 const User_1 = require("../scripts/models/User");
 const config_1 = require("../config");
-const config = config_1.getConfig();
 /* GET users listing. */
 router.get("/contact/", function (req, res, next) {
     req.checkQuery("email", "Request for email as query param.").optional();
@@ -29,7 +28,7 @@ router.get("/contact/", function (req, res, next) {
     let query = req.query;
     if (query.email) {
         let email = query.email.toLowerCase();
-        MongoClient.connect(config.appDB).then(db => {
+        MongoClient.connect(config_1.Config.appDB).then(db => {
             let collection = db.collection(config_1.DbClient.userContactColl);
             collection.find({ email: email }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
                 if (docs.length >= 1) {
@@ -54,7 +53,7 @@ router.get("/contact/", function (req, res, next) {
             res.status(500).json({ success: false, message: "id is require for ObjectID." });
             return;
         }
-        MongoClient.connect(config.appDB).then(function (db) {
+        MongoClient.connect(config_1.Config.appDB).then(function (db) {
             let collection = db.collection(config_1.DbClient.userContactColl);
             collection.find({ _id: user_id }).project({ password: 0 })
                 .limit(1).toArray().then(function (docs) {
@@ -84,7 +83,7 @@ router.get("/", (req, res, next) => {
     if (errors) {
         return res.status(500).json({ success: false, message: errors });
     }
-    MongoClient.connect(config.chatDB).then(db => {
+    MongoClient.connect(config_1.Config.chatDB).then(db => {
         let collection = db.collection(config_1.DbClient.chitchatUserColl);
         collection.find({ username: req.query.username }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
             if (docs.length >= 1) {
@@ -116,7 +115,7 @@ router.post("/signup", function (req, res, next) {
     userModel.lastname = user.lastname;
     userModel.tel = user.tel;
     userModel.teams = new Array();
-    MongoClient.connect(config.chatDB).then(function (db) {
+    MongoClient.connect(config_1.Config.chatDB).then(function (db) {
         let collection = db.collection(config_1.DbClient.chitchatUserColl);
         collection.createIndex({ email: 1 }, { background: true });
         collection.find({ email: user.email }).limit(1).toArray().then(function (docs) {
