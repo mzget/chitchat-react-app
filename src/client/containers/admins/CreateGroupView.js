@@ -13,8 +13,6 @@ const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const Colors = require("material-ui/styles/colors");
 const material_ui_1 = require("material-ui");
 const Avatar_1 = require("material-ui/Avatar");
-const SelectField_1 = require("material-ui/SelectField");
-const MenuItem_1 = require("material-ui/MenuItem");
 const styles = {
     span: {
         padding: 8
@@ -28,9 +26,7 @@ const styles = {
     }
 };
 const SubmitButton = (props) => (React.createElement(material_ui_1.RaisedButton, { primary: true, label: "submit", onClick: props.onSubmit }));
-const SelectChart = (props) => (React.createElement(SelectField_1.default, { floatingLabelText: "Org Charts", value: props.dropdownValue, onChange: props.dropdownChange }, (props.dropdownItems.length > 0) ?
-    props.dropdownItems.map((value, id) => React.createElement(MenuItem_1.default, { key: id, value: id, primaryText: value.chart_name })) : null));
-exports.CreateGroupView = (props) => (React.createElement(MuiThemeProvider_1.default, null,
+exports.CreateGroupView = (props) => (comp) => (React.createElement(MuiThemeProvider_1.default, null,
     React.createElement(reflexbox_1.Flex, { style: { backgroundColor: Colors.indigo50 }, flexColumn: true, align: "center" },
         React.createElement(reflexbox_1.Box, { justify: "center", align: "center", p: 2 },
             React.createElement("h3", null, "Create Group"),
@@ -46,5 +42,5 @@ exports.CreateGroupView = (props) => (React.createElement(MuiThemeProvider_1.def
                     props.onSubmit();
             } }),
         React.createElement("span", { style: styles.span }),
-        React.createElement(SelectChart, __assign({}, props)),
+        comp,
         React.createElement(SubmitButton, __assign({}, props)))));

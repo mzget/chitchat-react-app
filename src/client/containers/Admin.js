@@ -33,15 +33,13 @@ class Admin extends React.Component {
         this.alertTitle = "";
         this.alertMessage = "";
         this.manageOrgChart = "Manage ORG Chart";
-        this.createOrgGroup = "create-org-group";
-        this.createPjbGroup = "create-projectbase-group";
-        this.createPvGroup = "create-group";
         this.teamMember = "team-member";
-        this.menus = [this.manageOrgChart, this.createOrgGroup, this.createPjbGroup, this.createPvGroup, this.teamMember];
+        this.menus = [this.manageOrgChart, CreateGroupBox_1.createOrgGroup, CreateGroupBox_1.createPjbGroup, CreateGroupBox_1.createPvGroup, this.teamMember];
     }
     componentWillMount() {
         this.state = {
             boxState: BoxState.idle,
+            menuSelected: "",
             alert: false,
         };
         this.onBackPressed = this.onBackPressed.bind(this);
@@ -73,8 +71,8 @@ class Admin extends React.Component {
     }
     onAdminMenuSelected(key) {
         console.log("onAdminMenuSelected", key);
-        if (key == this.createOrgGroup || key == this.createPjbGroup || key == this.createPvGroup) {
-            this.setState(previous => (__assign({}, previous, { boxState: BoxState.isCreateGroup })));
+        if (key == CreateGroupBox_1.createOrgGroup || key == CreateGroupBox_1.createPjbGroup || key == CreateGroupBox_1.createPvGroup) {
+            this.setState(previous => (__assign({}, previous, { boxState: BoxState.isCreateGroup, menuSelected: key })));
         }
         else if (key == this.manageOrgChart) {
             this.setState(previous => (__assign({}, previous, { boxState: BoxState.isManageTeam })));
@@ -110,7 +108,7 @@ class Admin extends React.Component {
             case BoxState.isManageTeam:
                 return React.createElement(ManageOrgChartBox_1.default, __assign({}, this.props, { onError: this.onAlert }));
             case BoxState.isCreateGroup:
-                return React.createElement(CreateGroupBox_1.default, __assign({}, this.props, { onError: this.onAlert }));
+                return React.createElement(CreateGroupBox_1.default, __assign({}, this.props, { groupType: this.state.menuSelected, onError: this.onAlert }));
             case BoxState.isManageMember:
                 return React.createElement(TeamMemberBox_1.TeamMemberBox, __assign({}, this.props, { onError: this.onAlert }));
             default:

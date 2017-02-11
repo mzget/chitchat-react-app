@@ -2,13 +2,21 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { IComponentProps } from "../../utils/IComponentProps";
-import { CreateGroupForm } from "./CreateGroupForm";
+import { CreateGroupView } from "./CreateGroupView";
+import { SelectOrgChartView } from "./SelectOrgChartView";
 
 import { Room, RoomType, RoomStatus } from "../../../server/scripts/models/Room";
 import { IOrgChart } from "../../../server/scripts/models/OrgChart";
 
 import * as groupRx from "../../redux/group/groupRx";
 
+export const createOrgGroup: string = "create-org-group";
+export const createPjbGroup: string = "create-projectbase-group";
+export const createPvGroup: string = "create-group";
+
+interface IProps extends IComponentProps {
+    groupType: string;
+}
 interface IComponentNameState {
     groupImage: string;
     groupName: string;
@@ -17,7 +25,7 @@ interface IComponentNameState {
     dropdownValue: number;
 };
 
-class CreateGroupBox extends React.Component<IComponentProps, IComponentNameState> {
+class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
 
     group = {} as Room;
 
@@ -30,7 +38,9 @@ class CreateGroupBox extends React.Component<IComponentProps, IComponentNameStat
             dropdownValue: 0
         };
 
+        this.getView = this.getView.bind(this);
         this.onSubmitGroup = this.onSubmitGroup.bind(this);
+        this.onDropDownChange = this.onDropDownChange.bind(this);
     }
 
     onSubmitGroup() {
@@ -52,22 +62,43 @@ class CreateGroupBox extends React.Component<IComponentProps, IComponentNameStat
         }
     }
 
+    onDropDownChange(event, id, value) {
+        this.setState(previous => ({ ...previous, dropdownValue: value }));
+    }
+
+    getView() {
+        let prop = {
+            image: this.state.groupImage,
+            group_name: this.state.groupName,
+            onGroupNameChange: (e, text) => this.setState(previous => ({ ...previous, groupName: text })),
+            group_description: this.state.groupDescription,
+            onGroupDescriptionChange: (e, text) => this.setState(previous => ({ ...previous, groupDescription: text })),
+            onSubmit: this.onSubmitGroup
+        };
+        let chart = {
+            dropdownItems: this.props.adminReducer.orgCharts,
+            dropdownValue: this.state.dropdownValue,
+            dropdownChange: this.onDropDownChange
+        };
+
+        switch (this.props.groupType) {
+            case createOrgGroup:
+                return CreateGroupView(prop)(SelectOrgChartView(chart));
+            case createPjbGroup:
+                return CreateGroupView(prop)(SelectOrgChartView(chart));
+            case createPvGroup:
+                return CreateGroupView(prop);
+            default:
+                break;
+        }
+    };
+
     public render(): JSX.Element {
         return (
             <div>
-                <CreateGroupForm
-                    image={this.state.groupImage}
-                    group_name={this.state.groupName} onGroupNameChange={(e, text) => {
-                        this.setState(previous => ({ ...previous, groupName: text }));
-                    }}
-                    group_description={this.state.groupDescription} onGroupDescriptionChange={(e, text) => {
-                        this.setState(previous => ({ ...previous, groupDescription: text }));
-                    }}
-                    dropdownItems={this.props.adminReducer.orgCharts}
-                    dropdownValue={this.state.dropdownValue}
-                    dropdownChange={(event, id, value) => { this.setState(previous => ({ ...previous, dropdownValue: value })) }}
-                    onSubmit={this.onSubmitGroup}
-                />
+                {
+                    this.getView()
+                }
             </div>
         );
     }

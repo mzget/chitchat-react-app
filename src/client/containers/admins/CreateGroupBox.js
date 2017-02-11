@@ -8,9 +8,13 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 const React = require("react");
-const CreateGroupForm_1 = require("./CreateGroupForm");
+const CreateGroupView_1 = require("./CreateGroupView");
+const SelectOrgChartView_1 = require("./SelectOrgChartView");
 const Room_1 = require("../../../server/scripts/models/Room");
 const groupRx = require("../../redux/group/groupRx");
+exports.createOrgGroup = "create-org-group";
+exports.createPjbGroup = "create-projectbase-group";
+exports.createPvGroup = "create-group";
 ;
 class CreateGroupBox extends React.Component {
     constructor() {
@@ -24,7 +28,9 @@ class CreateGroupBox extends React.Component {
             groupDescription: "",
             dropdownValue: 0
         };
+        this.getView = this.getView.bind(this);
         this.onSubmitGroup = this.onSubmitGroup.bind(this);
+        this.onDropDownChange = this.onDropDownChange.bind(this);
     }
     onSubmitGroup() {
         console.log("submit group", this.state);
@@ -42,13 +48,37 @@ class CreateGroupBox extends React.Component {
             this.props.onError("Missing some require field");
         }
     }
+    onDropDownChange(event, id, value) {
+        this.setState(previous => (__assign({}, previous, { dropdownValue: value })));
+    }
+    getView() {
+        let prop = {
+            image: this.state.groupImage,
+            group_name: this.state.groupName,
+            onGroupNameChange: (e, text) => this.setState(previous => (__assign({}, previous, { groupName: text }))),
+            group_description: this.state.groupDescription,
+            onGroupDescriptionChange: (e, text) => this.setState(previous => (__assign({}, previous, { groupDescription: text }))),
+            onSubmit: this.onSubmitGroup
+        };
+        let chart = {
+            dropdownItems: this.props.adminReducer.orgCharts,
+            dropdownValue: this.state.dropdownValue,
+            dropdownChange: this.onDropDownChange
+        };
+        switch (this.props.groupType) {
+            case exports.createOrgGroup:
+                return CreateGroupView_1.CreateGroupView(prop)(SelectOrgChartView_1.SelectOrgChartView(chart));
+            case exports.createPjbGroup:
+                return CreateGroupView_1.CreateGroupView(prop)(SelectOrgChartView_1.SelectOrgChartView(chart));
+            case exports.createPvGroup:
+                return CreateGroupView_1.CreateGroupView(prop);
+            default:
+                break;
+        }
+    }
+    ;
     render() {
-        return (React.createElement("div", null,
-            React.createElement(CreateGroupForm_1.CreateGroupForm, { image: this.state.groupImage, group_name: this.state.groupName, onGroupNameChange: (e, text) => {
-                    this.setState(previous => (__assign({}, previous, { groupName: text })));
-                }, group_description: this.state.groupDescription, onGroupDescriptionChange: (e, text) => {
-                    this.setState(previous => (__assign({}, previous, { groupDescription: text })));
-                }, dropdownItems: this.props.adminReducer.orgCharts, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => { this.setState(previous => (__assign({}, previous, { dropdownValue: value }))); }, onSubmit: this.onSubmitGroup })));
+        return (React.createElement("div", null, this.getView()));
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
