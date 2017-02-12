@@ -28,7 +28,7 @@ const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 class Main extends React.Component {
     constructor() {
         super(...arguments);
-        this.menus = ["admin", "log out"];
+        this.menus = ["menu", "log out"];
         this.clientWidth = document.documentElement.clientWidth;
         this.clientHeight = document.documentElement.clientHeight;
         this.headerHeight = null;

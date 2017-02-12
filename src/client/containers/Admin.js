@@ -33,15 +33,13 @@ class Admin extends React.Component {
         this.alertTitle = "";
         this.alertMessage = "";
         this.manageOrgChart = "Manage ORG Chart";
-        this.createOrgGroup = "create-org-group";
-        this.createPjbGroup = "create-projectbase-group";
-        this.createPvGroup = "create-group";
         this.teamMember = "team-member";
-        this.menus = [this.manageOrgChart, this.createOrgGroup, this.createPjbGroup, this.createPvGroup, this.teamMember];
+        this.menus = [this.manageOrgChart, CreateGroupBox_1.createOrgGroup, CreateGroupBox_1.createPjbGroup, CreateGroupBox_1.createPvGroup, this.teamMember];
     }
     componentWillMount() {
         this.state = {
             boxState: BoxState.idle,
+            menuSelected: "",
             alert: false,
         };
         this.onBackPressed = this.onBackPressed.bind(this);
@@ -57,10 +55,14 @@ class Admin extends React.Component {
         this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
     }
     componentWillReceiveProps(nextProps) {
-        const { groupReducer } = nextProps;
+        const { groupReducer, adminReducer } = nextProps;
         switch (groupReducer.state) {
-            case groupRx.CREATE_GROUP_SUCCESS: {
+            case groupRx.CREATE_ORG_GROUP_SUCCESS || groupRx.CREATE_PRIVATE_GROUP_SUCCESS: {
                 this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.idle })));
+                break;
+            }
+            case groupRx.CREATE_ORG_GROUP_FAILURE || groupRx.CREATE_PRIVATE_GROUP_FAILURE: {
+                this.onAlert(groupReducer.error);
                 break;
             }
             default:
@@ -68,14 +70,14 @@ class Admin extends React.Component {
         }
     }
     onAdminMenuSelected(key) {
-        console.log('onAdminMenuSelected', key);
-        if (key === this.createOrgGroup || key === this.createPjbGroup || key === this.createPvGroup) {
-            this.setState(previous => (__assign({}, previous, { boxState: BoxState.isCreateGroup })));
+        console.log("onAdminMenuSelected", key);
+        if (key == CreateGroupBox_1.createOrgGroup || key == CreateGroupBox_1.createPjbGroup || key == CreateGroupBox_1.createPvGroup) {
+            this.setState(previous => (__assign({}, previous, { boxState: BoxState.isCreateGroup, menuSelected: key })));
         }
-        else if (key === this.manageOrgChart) {
+        else if (key == this.manageOrgChart) {
             this.setState(previous => (__assign({}, previous, { boxState: BoxState.isManageTeam })));
         }
-        else if (key === this.teamMember) {
+        else if (key == this.teamMember) {
             this.setState(previous => (__assign({}, previous, { boxState: BoxState.isManageMember })));
         }
     }
@@ -91,7 +93,10 @@ class Admin extends React.Component {
     closeAlert() {
         this.alertTitle = "";
         this.alertMessage = "";
-        this.setState(prevState => (__assign({}, prevState, { alert: false })));
+        this.setState(prevState => (__assign({}, prevState, { alert: false })), () => {
+            this.props.dispatch(groupRx.emptyState());
+            this.props.dispatch(adminRx.emptyState());
+        });
     }
     onAlert(error) {
         this.alertTitle = "Alert!";
@@ -103,7 +108,7 @@ class Admin extends React.Component {
             case BoxState.isManageTeam:
                 return React.createElement(ManageOrgChartBox_1.default, __assign({}, this.props, { onError: this.onAlert }));
             case BoxState.isCreateGroup:
-                return React.createElement(CreateGroupBox_1.default, __assign({}, this.props, { onError: this.onAlert }));
+                return React.createElement(CreateGroupBox_1.default, __assign({}, this.props, { groupType: this.state.menuSelected, onError: this.onAlert }));
             case BoxState.isManageMember:
                 return React.createElement(TeamMemberBox_1.TeamMemberBox, __assign({}, this.props, { onError: this.onAlert }));
             default:
@@ -113,7 +118,7 @@ class Admin extends React.Component {
     render() {
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement("div", null,
-                React.createElement(SimpleToolbar_1.default, { title: 'Admin', onBackPressed: this.onBackPressed }),
+                React.createElement(SimpleToolbar_1.default, { title: "Admin", onBackPressed: this.onBackPressed }),
                 this.getAdminPanel(),
                 React.createElement(DialogBox_1.DialogBox, { title: this.alertTitle, message: this.alertMessage, open: this.state.alert, handleClose: this.closeAlert }))));
     }

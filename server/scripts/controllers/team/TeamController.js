@@ -10,11 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const mongodb = require("mongodb");
 const MongoClient = mongodb.MongoClient;
 const config_1 = require("../../../config");
-const config = config_1.getConfig();
 const GroupController = require("../group/GroupController");
 function findTeamsInfo(team_ids) {
     return __awaiter(this, void 0, void 0, function* () {
-        let db = yield MongoClient.connect(config.chatDB);
+        let db = yield MongoClient.connect(config_1.Config.chatDB);
         let collection = db.collection(config_1.DbClient.teamsColl);
         let teams = yield collection.find({ _id: { $in: team_ids } }).limit(10).toArray();
         db.close();
@@ -25,7 +24,7 @@ exports.findTeamsInfo = findTeamsInfo;
 function findTeamName(team_name) {
     return __awaiter(this, void 0, void 0, function* () {
         let _team = team_name.toLowerCase();
-        let db = yield MongoClient.connect(config.chatDB);
+        let db = yield MongoClient.connect(config_1.Config.chatDB);
         let collection = db.collection(config_1.DbClient.teamsColl);
         collection.createIndex({ name: 1 }, { background: true });
         let teams = yield collection.find({ name: _team }).limit(1).toArray();
@@ -37,7 +36,7 @@ exports.findTeamName = findTeamName;
 function searchTeam(team_name) {
     return __awaiter(this, void 0, void 0, function* () {
         let _team = team_name.toLowerCase();
-        let db = yield MongoClient.connect(config.chatDB);
+        let db = yield MongoClient.connect(config_1.Config.chatDB);
         let collection = db.collection(config_1.DbClient.teamsColl);
         collection.createIndex({ name: 1 }, { background: true });
         let _key = new RegExp("^" + _team);
@@ -49,7 +48,7 @@ function searchTeam(team_name) {
 exports.searchTeam = searchTeam;
 function createTeam(team_name, owner) {
     return __awaiter(this, void 0, void 0, function* () {
-        let db = yield MongoClient.connect(config.chatDB);
+        let db = yield MongoClient.connect(config_1.Config.chatDB);
         let collection = db.collection(config_1.DbClient.teamsColl);
         collection.createIndex({ name: 1 }, { background: true });
         let defaultGroup = yield GroupController.createDefaultGroup(owner);

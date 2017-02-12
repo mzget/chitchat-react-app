@@ -2,13 +2,12 @@
 const express = require("express");
 const mongodb = require("mongodb");
 const fs = require("fs");
-const uuid = require('uuid');
+const uuid = require("uuid");
 const multer = require("multer");
 const MongoClient = mongodb.MongoClient;
 const router = express.Router();
 const apiUtils = require("../../scripts/utils/apiUtils");
 const config_1 = require("../../config");
-const webConfig = config_1.getConfig();
 const upload = multer({ dest: config_1.Paths.fileUpload }).single("file");
 const FileType = require("../../scripts/FileType");
 router.post("/", function (req, res, next) {

@@ -1,7 +1,7 @@
-import express = require('express');
-import mongodb = require('mongodb');
+import express = require("express");
+import mongodb = require("mongodb");
 
-import * as apiUtils from '../scripts/utils/apiUtils';
+import * as apiUtils from "../scripts/utils/apiUtils";
 
 import * as TeamController from "../scripts/controllers/team/TeamController";
 import * as UserManager from "../scripts/controllers/user/UserManager";
@@ -11,11 +11,10 @@ const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 
 import { ChitChatAccount } from "../scripts/models/User";
-import { getConfig, DbClient } from "../config";
-const config = getConfig();
+import { Config, DbClient } from "../config";
 
 /* GET users listing. */
-router.get('/contact/', function (req, res, next) {
+router.get("/contact/", function (req, res, next) {
     req.checkQuery("email", "Request for email as query param.").optional();
     req.checkQuery("id", "Request for id as query param").optional();
 
@@ -28,7 +27,7 @@ router.get('/contact/', function (req, res, next) {
     if (query.email) {
         let email = query.email.toLowerCase();
 
-        MongoClient.connect(config.appDB).then(db => {
+        MongoClient.connect(Config.appDB).then(db => {
             let collection = db.collection(DbClient.userContactColl);
 
             collection.find({ email: email }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
@@ -42,7 +41,7 @@ router.get('/contact/', function (req, res, next) {
                 }
             });
         }).catch(err => {
-            res.status(500).json({ success: false, message: err })
+            res.status(500).json({ success: false, message: err });
         });
     }
     else if (query.id) {
@@ -55,7 +54,7 @@ router.get('/contact/', function (req, res, next) {
             return;
         }
 
-        MongoClient.connect(config.appDB).then(function (db) {
+        MongoClient.connect(Config.appDB).then(function (db) {
             let collection = db.collection(DbClient.userContactColl);
 
             collection.find({ _id: user_id }).project({ password: 0 })
@@ -81,7 +80,7 @@ router.get('/contact/', function (req, res, next) {
     }
 });
 
-router.get('/', (req, res, next) => {
+router.get("/", (req, res, next) => {
     req.checkQuery("username", "Request for id as param").notEmpty();
 
     let errors = req.validationErrors();
@@ -89,7 +88,7 @@ router.get('/', (req, res, next) => {
         return res.status(500).json({ success: false, message: errors });
     }
 
-    MongoClient.connect(config.chatDB).then(db => {
+    MongoClient.connect(Config.chatDB).then(db => {
         let collection = db.collection(DbClient.chitchatUserColl);
 
         collection.find({ username: req.query.username }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
@@ -103,7 +102,7 @@ router.get('/', (req, res, next) => {
             }
         });
     }).catch(err => {
-        res.status(500).json({ success: false, message: err + ': Cannot connect db.' });
+        res.status(500).json({ success: false, message: err + ": Cannot connect db." });
     });
 });
 
@@ -127,14 +126,14 @@ router.post("/signup", function (req: express.Request, res: express.Response, ne
     userModel.tel = user.tel;
     userModel.teams = new Array();
 
-    MongoClient.connect(config.chatDB).then(function (db) {
+    MongoClient.connect(Config.chatDB).then(function (db) {
         let collection = db.collection(DbClient.chitchatUserColl);
 
         collection.createIndex({ email: 1 }, { background: true });
 
         collection.find({ email: user.email }).limit(1).toArray().then(function (docs) {
             if (docs.length >= 1) {
-                res.status(500).json({ success: false, message: 'Account registed with your email is already used.' });
+                res.status(500).json({ success: false, message: "Account registed with your email is already used." });
                 db.close();
             }
             else {
@@ -186,65 +185,12 @@ router.get("/teams", (req, res, next) => {
 });
 */
 
-var addGroupMember = function (roomId: string, user: ChitChatAccount, done: () => void) {
-    var promise = new Promise(function (resolve, reject) {
-        MongoClient.connect(config.chatDB, function (err, db) {
-            if (err) {
-                throw err;
-            }
-
-            var collection = db.collection(Mdb.DbClient.userColl);
-            collection.find({ mail: user.mail }).limit(1).toArray().then(function (docs) {
-                if (docs.length >= 1) {
-                    db.close();
-
-                    resolve(docs[0]);
-                }
-                else {
-                    db.close();
-
-                    reject(new Error('user account is no longer.'));
-                }
-            });
-        });
-    }).then(function onfulfilled(value) {
-        MongoClient.connect(config.chatDB, function (err, db) {
-            if (err) { return console.dir(err); }
-
-            console.warn('account;', value);
-            var account: MuserModel.UserModel = JSON.parse(JSON.stringify(value));
-            var member: MroomModel.Member = new MroomModel.Member();
-            member.id = account._id;
-
-            // Get the documents collection
-            var collection = db.collection(Mdb.DbClient.roomColl);
-            // Find some documents
-            collection.updateOne({ _id: new mongodb.ObjectID(roomId) }, { $push: { members: member } }).then(function (result) {
-                console.info('addGroupMember;', result.result);
-                db.close();
-
-                if (!!done) {
-                    done();
-                }
-            }).catch(function (err) {
-                console.warn('addGroupMember;', err);
-                db.close();
-
-                if (!!done) {
-                    done();
-                }
-            });
-        });
-
-    }).catch(function onRejected(err) {
-        if (!!done) {
-            done();
-        }
-    });
-}
 
 router.post("/setOrgChartId", (req, res, next) => {
-    req.checkBody("user", "request for user object as body params").notEmpty();
+    req.checkBody("user_id", "request for user_id as body params").isMongoId();
+    req.checkBody("username", "request for username as body params").notEmpty();
+    req.checkBody("team_id", "request for team_id").isMongoId();
+    req.checkBody("org_chart_id", "request for org_chart_id").isMongoId();
 
     let errors = req.validationErrors();
     if (errors) {
@@ -253,22 +199,24 @@ router.post("/setOrgChartId", (req, res, next) => {
 
     // @todo..
     // find old org_chart.
-    // remove user out of members list from all group of old org_chart.  
-    // add user to member of all group of new org_chart. 
-    let user = req.body.user as ChitChatAccount;
-    let old_org_chart_id = "";
+    // remove user out of members list from all group of old org_chart.
+    // add user to member of all group of new org_chart.
+    let user_id = req.body.user_id as string;
+    let username = req.body.username as string;
+    let team_id = req.body.team_id as string;
+    let org_chart_id = req.body.org_chart_id as string;
 
     async function setOrgChartId() {
-        let docs: Array<ChitChatAccount> = await UserManager.getUserOrgChart(user._id.toString());
+        let docs = await UserManager.getUserOrgChart(user_id, team_id);
 
         if (docs.length > 0 && !!docs[0].org_chart_id) {
-            old_org_chart_id = docs[0].org_chart_id;
+            let old_org_chart_id = docs[0].org_chart_id;
 
-            let removeResult = await GroupController.removeUserOutOfOrgChartGroups(user._id.toString(), old_org_chart_id.toString());
+            let removeResult = await GroupController.removeUserOutOfOrgChartGroups(user_id, old_org_chart_id.toString());
         }
 
-        let addResult = await GroupController.addUserToOrgChartGroups(user, user.org_chart_id.toString());
-        let result = await UserManager.updateOrgChart(user);
+        let addResult = await GroupController.addUserToOrgChartGroups(user_id, username, org_chart_id.toString());
+        let result = await UserManager.updateOrgChart(user_id, team_id, org_chart_id);
 
         return result;
     }
@@ -277,6 +225,24 @@ router.post("/setOrgChartId", (req, res, next) => {
         res.status(200).json(new apiUtils.ApiResponse(false, null, result));
     }).catch(err => {
         console.error("Fail to updateOrgChart", err);
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
+    });
+});
+
+router.get("/teamProfile", (req, res, next) => {
+    req.checkQuery("team_id", "request for team_id").isMongoId();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let user_id = req["decoded"]._id as string;
+    let team_id = req.query.team_id as string;
+
+    UserManager.getTeamProfile(user_id, team_id).then(docs => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
+    }).catch(err => {
         res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });

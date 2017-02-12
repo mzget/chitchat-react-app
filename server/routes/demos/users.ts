@@ -1,12 +1,11 @@
-import express = require('express');
-import mongodb = require('mongodb');
+import express = require("express");
+import mongodb = require("mongodb");
 
 const router = express.Router();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 
-import { getConfig, DbClient } from '../../config';
-const webConfig = getConfig();
+import { Config, DbClient } from "../../config";
 
 router.post("/username", (req, res, next) => {
     req.checkBody("username", "Request for id as body").notEmpty();
@@ -16,7 +15,7 @@ router.post("/username", (req, res, next) => {
         return res.status(500).json({ success: false, message: errors });
     }
 
-    MongoClient.connect(webConfig.systemDB).then(db => {
+    MongoClient.connect(Config.systemDB).then(db => {
         let collection = db.collection(DbClient.chitchatUserColl);
 
         collection.find({ username: req.body.username }).project({ password: 0 }).limit(1).toArray().then(function (docs) {
@@ -30,13 +29,13 @@ router.post("/username", (req, res, next) => {
                     res.status(200).json({ success: true, result: r.ops });
                 }).catch(err => {
                     db.close();
-                    res.status(500).json({ success: false, message: err + ': Cannot insert db.' });
+                    res.status(500).json({ success: false, message: err + ": Cannot insert db." });
                 });
             }
         });
     }).catch(err => {
         console.error("Cannot connect db.", err);
-        res.status(500).json({ success: false, message: err + ': Cannot connect db.' });
+        res.status(500).json({ success: false, message: err + ": Cannot connect db." });
     });
 });
 

@@ -44,7 +44,7 @@ class DataListener {
         this.onLeaveRoomListeners.splice(id, 1);
     }
     onAccessRoom(dataEvent) {
-        console.info('DataListener.onAccessRoom: ', dataEvent);
+        console.info("DataListener.onAccessRoom: ", dataEvent);
         if (Array.isArray(dataEvent) && dataEvent.length > 0) {
             let data = dataEvent[0];
             this.dataManager.setRoomAccessForUser(data);
@@ -54,7 +54,7 @@ class DataListener {
         }
     }
     onUpdatedLastAccessTime(dataEvent) {
-        console.info('DataListener.onUpdatedLastAccessTime: ', dataEvent);
+        console.info("DataListener.onUpdatedLastAccessTime: ", dataEvent);
         if (Array.isArray(dataEvent) && dataEvent.length > 0) {
             let data = dataEvent[0];
             this.dataManager.updateRoomAccessForUser(data);
@@ -107,20 +107,20 @@ class DataListener {
         this.dataManager.onUserLogin(dataEvent);
     }
     onUserUpdateImageProfile(dataEvent) {
-        var jsonObj = JSON.parse(JSON.stringify(dataEvent));
-        var _id = jsonObj._id;
-        var path = jsonObj.path;
+        let jsonObj = JSON.parse(JSON.stringify(dataEvent));
+        let _id = jsonObj._id;
+        let path = jsonObj.path;
         this.dataManager.updateContactImage(_id, path);
     }
     onUserUpdateProfile(dataEvent) {
-        var jsonobj = JSON.parse(JSON.stringify(dataEvent));
-        var params = jsonobj.params;
-        var _id = jsonobj._id;
+        let jsonobj = JSON.parse(JSON.stringify(dataEvent));
+        let params = jsonobj.params;
+        let _id = jsonobj._id;
         this.dataManager.updateContactProfile(_id, params);
     }
     //#endregion
     /*******************************************************************************/
-    //<!-- chat room data listener.
+    // <!-- chat room data listener.
     onChat(data) {
         let chatMessageImp = JSON.parse(JSON.stringify(data));
         this.onChatEventListeners.map((value, id, arr) => {

@@ -7,7 +7,7 @@ export interface IMembersStatus {
     uid: string;
     status: string;
 }
-export class Member {
+export interface IMember {
     _id: string;
     room_role: MemberRole;
     user_role: string;
@@ -22,7 +22,7 @@ export class Room {
     _id: any;
     name: string;
     type: RoomType;
-    members: Member[];
+    members: IMember[];
     image: string;
     description: string;
     status: RoomStatus;

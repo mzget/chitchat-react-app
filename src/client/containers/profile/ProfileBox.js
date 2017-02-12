@@ -2,9 +2,11 @@
 const React = require("react");
 const Subheader_1 = require("material-ui/Subheader");
 const ProfileListView_1 = require("./ProfileListView");
+const UserRx = require("../../redux/user/userRx");
 class ProfileBox extends React.Component {
     componentWillMount() {
         this.onClickMyProfile = this.onClickMyProfile.bind(this);
+        this.props.dispatch(UserRx.getTeamProfile(this.props.teamReducer.team._id));
     }
     onClickMyProfile(item) {
     }

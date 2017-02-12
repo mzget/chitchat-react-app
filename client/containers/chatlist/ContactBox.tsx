@@ -1,5 +1,5 @@
 ﻿import * as React from "react";
-import Subheader from 'material-ui/Subheader';
+import Subheader from "material-ui/Subheader";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 

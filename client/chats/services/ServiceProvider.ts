@@ -71,3 +71,4 @@ export function updateLastAccessRoomInfo(token: string, room_id: string) {
         body: JSON.stringify({ room_id: room_id })
     });
 }
+

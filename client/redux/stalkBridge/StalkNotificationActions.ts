@@ -1,8 +1,8 @@
 ﻿/**
  *  NotificationManager
- * 
+ *
  * Copyright 2016 Ahoo Studio.co.th.
- * 
+ *
  * The NotificationManager for react.js.
  *
  */

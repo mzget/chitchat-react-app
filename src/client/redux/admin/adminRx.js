@@ -4,6 +4,7 @@ const Rx = require("rxjs");
 const { ajax } = Rx.Observable;
 const configureStore_1 = require("../configureStore");
 const config_1 = require("../../configs/config");
+const UserService = require("../../chats/services/UserService");
 const CREATE_NEW_ORG_CHART = "CREATE_NEW_ORG_CHART";
 exports.CREATE_NEW_ORG_CHART_SUCCESS = "CREATE_NEW_ORG_CHART_SUCCESS";
 const CREATE_NEW_ORG_CHART_FAILURE = "CREATE_NEW_ORG_CHART_FAILURE";
@@ -40,21 +41,22 @@ exports.getOrgChartEpic = action$ => action$.ofType(GET_ORG_CHART)
     .catch(error => Rx.Observable.of(getOrgChartFailure(error.xhr.response))));
 const UPDATE_USER_ORG_CHART = "UPDATE_USER_ORG_CHART";
 exports.UPDATE_USER_ORG_CHART_SUCCESS = "UPDATE_USER_ORG_CHART_SUCCESS";
-const UPDATE_USER_ORG_CHART_FAILURE = "UPDATE_USER_ORG_CHART_FAILURE";
+exports.UPDATE_USER_ORG_CHART_FAILURE = "UPDATE_USER_ORG_CHART_FAILURE";
 const UPDATE_USER_ORG_CHART_CANCELLED = "UPDATE_USER_ORG_CHART_CANCELLED";
-exports.updateUserOrgChart = redux_actions_1.createAction(UPDATE_USER_ORG_CHART, user => user);
+exports.updateUserOrgChart = (user, team_id, orgChart_id) => ({
+    type: UPDATE_USER_ORG_CHART,
+    payload: { user: user, team_id: team_id, orgChart_id: orgChart_id }
+});
 const updateUserOrgChartSuccess = redux_actions_1.createAction(exports.UPDATE_USER_ORG_CHART_SUCCESS, payload => payload);
-const updateUserOrgChartFailure = redux_actions_1.createAction(UPDATE_USER_ORG_CHART_FAILURE, error => error);
+const updateUserOrgChartFailure = redux_actions_1.createAction(exports.UPDATE_USER_ORG_CHART_FAILURE, error => error);
 exports.updateUserOrgChartCancelled = redux_actions_1.createAction(UPDATE_USER_ORG_CHART_CANCELLED);
 exports.updateUserOrgChartEpic = action$ => action$.ofType(UPDATE_USER_ORG_CHART)
-    .mergeMap(action => ajax({
-    method: "POST",
-    url: `${config_1.default.api.user}/setOrgChartId`,
-    body: JSON.stringify({ user: action.payload }),
-    headers: {
-        "Content-Type": "application/json",
-        "x-access-token": configureStore_1.default.getState().authReducer.token
-    }
-}).map(result => updateUserOrgChartSuccess(result.response.result))
+    .mergeMap(action => {
+    let token = configureStore_1.default.getState().authReducer.token;
+    return UserService.setOrgChartId(token, action.payload.user, action.payload.team_id, action.payload.orgChart_id);
+})
+    .map((result) => updateUserOrgChartSuccess(result.response.result))
     .takeUntil(action$.ofType(UPDATE_USER_ORG_CHART_CANCELLED))
-    .catch(error => Rx.Observable.of(updateUserOrgChartFailure(error.xhr.response))));
+    .catch((error) => Rx.Observable.of(updateUserOrgChartFailure(error.xhr.response)));
+exports.ADMIN_RX_EMPTY_STATE = "ADMIN_RX_EMPTY_STATE";
+exports.emptyState = () => ({ type: exports.ADMIN_RX_EMPTY_STATE });

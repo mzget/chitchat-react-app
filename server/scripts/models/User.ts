@@ -1,7 +1,4 @@
-﻿import UserRole from "./UserRole";
-import JobLevel from "./JobLevel";
-
-interface IUser {
+﻿interface IUser {
     uid: string;
 };
 export class OnlineUser implements IUser {
@@ -28,10 +25,6 @@ export class ChitChatAccount {
     tel: string;
     email: string;
     avatar: string;
-    role: UserRole;
-    org_chart_id: string;
-    jobLevel: JobLevel;
-    jobPosition: string;
     status: string;
     memberOfRooms: string[];
     lastEditProfile: Date;

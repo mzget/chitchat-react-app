@@ -1,8 +1,6 @@
 const api_master = "http://git.animation-genius.com:9000";
 const api_dev = "http://localhost:9000";
 
-
-
 type IApi = {
     apiKey: string;
     host: string;
@@ -44,7 +42,7 @@ const rest_api = (host) => ({
 
 const devConfig = {
     Stalk: {
-        chat: "localhost",
+        chat: "git.animation-genius.com",
         port: "3010",
         api: {
             user: "http://localhost:9000/api/stalk/user"

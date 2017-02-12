@@ -1,13 +1,13 @@
-import * as React from 'react';
-import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
-import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
-import MenuItem from 'material-ui/MenuItem';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar';
-import * as Colors from 'material-ui/styles/colors';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import * as React from "react";
+import IconMenu from "material-ui/IconMenu";
+import IconButton from "material-ui/IconButton";
+import NavigationExpandMoreIcon from "material-ui/svg-icons/navigation/expand-more";
+import MenuItem from "material-ui/MenuItem";
+import DropDownMenu from "material-ui/DropDownMenu";
+import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from "material-ui/Toolbar";
+import * as Colors from "material-ui/styles/colors";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import getMuiTheme from "material-ui/styles/getMuiTheme";
 
 const muiTheme = getMuiTheme({
     palette: {
@@ -39,7 +39,7 @@ class SimpleToolbar extends React.Component<IComponentProps, IComponentState> {
     componentWillMount() {
         this.state = {
             openState: false
-        }
+        };
     }
 
     render() {
@@ -68,18 +68,18 @@ class SimpleToolbar extends React.Component<IComponentProps, IComponentState> {
                                                 <NavigationExpandMoreIcon />
                                             </IconButton>
                                         }
-                                        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                                        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                        anchorOrigin={{ horizontal: "right", vertical: "top" }}
+                                        targetOrigin={{ horizontal: "right", vertical: "top" }}
                                         onRequestChange={(open, reason) => this.setState({ openState: open })}
-                                        onItemTouchTap={(event, child) => console.log('item touch tap', event, child)}
+                                        onItemTouchTap={(event, child) => console.log("item touch tap", event.type)}
                                         onTouchTap={(event) => this.setState({ openState: !this.state.openState })}
                                         open={this.state.openState}
-                                        >
+                                    >
                                         {
                                             this.props.menus.map((value, i, arr) => {
                                                 return <MenuItem key={i} primaryText={value}
                                                     onClick={() => this.props.onSelectedMenuItem(i, value)}
-                                                    />
+                                                />;
                                             })}
                                     </IconMenu>
                                 </ToolbarGroup>

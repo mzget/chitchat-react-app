@@ -34,7 +34,7 @@ class SignupBox extends React.Component {
                 if (!result) {
                     if (this.state.firstname.length > 0 && this.state.lastname.length > 0) {
                         CryptoHelper.hashComputation(this.state.password).then((hash) => {
-                            this.setState(previous => (__assign({}, previous, { password: hash, confirmPassword: null })), () => {
+                            this.setState(previous => (__assign({}, previous, { password: hash, confirmPassword: "" })), () => {
                                 this.props.dispatch(AuthRx.signup(this.state));
                             });
                         });

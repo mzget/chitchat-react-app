@@ -1,15 +1,15 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import * as Colors from 'material-ui/styles/colors';
-import Subheader from 'material-ui/Subheader';
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import * as Colors from "material-ui/styles/colors";
+import Subheader from "material-ui/Subheader";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
-import SimpleToolbar from '../components/SimpleToolbar';
-import { AdminMenu } from './admins/AdminMenu';
+import SimpleToolbar from "../components/SimpleToolbar";
+import { AdminMenu } from "./admins/AdminMenu";
 import ManageOrgChartBox from "./admins/ManageOrgChartBox";
-import CreateGroupBox from "./admins/CreateGroupBox";
+import CreateGroupBox, { createOrgGroup, createPjbGroup, createPvGroup } from "./admins/CreateGroupBox";
 import { TeamMemberBox } from "./admins/TeamMemberBox";
 import { DialogBox } from "../components/DialogBox";
 
@@ -22,6 +22,7 @@ enum BoxState {
     idle = 0, isCreateGroup = 1, isManageTeam, isManageMember
 };
 interface IComponentNameState {
+    menuSelected: string;
     boxState: BoxState;
     alert: boolean;
 };
@@ -31,15 +32,13 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     alertMessage = "";
 
     manageOrgChart: string = "Manage ORG Chart";
-    createOrgGroup: string = "create-org-group";
-    createPjbGroup: string = "create-projectbase-group";
-    createPvGroup: string = "create-group";
     teamMember: string = "team-member";
-    menus = [this.manageOrgChart, this.createOrgGroup, this.createPjbGroup, this.createPvGroup, this.teamMember];
+    menus = [this.manageOrgChart, createOrgGroup, createPjbGroup, createPvGroup, this.teamMember];
 
     componentWillMount() {
         this.state = {
             boxState: BoxState.idle,
+            menuSelected: "",
             alert: false,
         };
 
@@ -60,11 +59,15 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        const { groupReducer } = nextProps;
+        const { groupReducer, adminReducer } = nextProps;
 
         switch (groupReducer.state) {
-            case groupRx.CREATE_GROUP_SUCCESS: {
+            case groupRx.CREATE_ORG_GROUP_SUCCESS || groupRx.CREATE_PRIVATE_GROUP_SUCCESS: {
                 this.setState(prevState => ({ ...prevState, boxState: BoxState.idle }));
+                break;
+            }
+            case groupRx.CREATE_ORG_GROUP_FAILURE || groupRx.CREATE_PRIVATE_GROUP_FAILURE: {
+                this.onAlert(groupReducer.error);
                 break;
             }
             default:
@@ -73,15 +76,15 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     onAdminMenuSelected(key: string) {
-        console.log('onAdminMenuSelected', key);
+        console.log("onAdminMenuSelected", key);
 
-        if (key === this.createOrgGroup || key === this.createPjbGroup || key === this.createPvGroup) {
-            this.setState(previous => ({ ...previous, boxState: BoxState.isCreateGroup }));
+        if (key == createOrgGroup || key == createPjbGroup || key == createPvGroup) {
+            this.setState(previous => ({ ...previous, boxState: BoxState.isCreateGroup, menuSelected: key }));
         }
-        else if (key === this.manageOrgChart) {
+        else if (key == this.manageOrgChart) {
             this.setState(previous => ({ ...previous, boxState: BoxState.isManageTeam }));
         }
-        else if (key === this.teamMember) {
+        else if (key == this.teamMember) {
             this.setState(previous => ({ ...previous, boxState: BoxState.isManageMember }));
         }
     }
@@ -99,7 +102,10 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     closeAlert() {
         this.alertTitle = "";
         this.alertMessage = "";
-        this.setState(prevState => ({ ...prevState, alert: false }));
+        this.setState(prevState => ({ ...prevState, alert: false }), () => {
+            this.props.dispatch(groupRx.emptyState());
+            this.props.dispatch(adminRx.emptyState());
+        });
     }
 
     onAlert(error: string) {
@@ -113,7 +119,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             case BoxState.isManageTeam:
                 return <ManageOrgChartBox {...this.props} onError={this.onAlert} />;
             case BoxState.isCreateGroup:
-                return <CreateGroupBox {...this.props} onError={this.onAlert} />;
+                return <CreateGroupBox {...this.props} groupType={this.state.menuSelected} onError={this.onAlert} />;
             case BoxState.isManageMember:
                 return <TeamMemberBox {...this.props} onError={this.onAlert} />;
             default:
@@ -125,7 +131,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
         return (
             <MuiThemeProvider>
                 <div>
-                    <SimpleToolbar title={'Admin'} onBackPressed={this.onBackPressed} />
+                    <SimpleToolbar title={"Admin"} onBackPressed={this.onBackPressed} />
                     {
                         this.getAdminPanel()
                     }
