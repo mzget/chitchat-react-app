@@ -1,6 +1,6 @@
 ﻿import mongodb = require("mongodb");
 import async = require("async");
-import Room = require("../models/Room");
+import { Room, RoomType } from "../models/Room";
 import message = require("../models/Message");
 import * as UserManager from "./user/UserManager";
 const ObjectID = mongodb.ObjectID;
@@ -106,25 +106,7 @@ async function getLastMessageContentOfRoom(rid: string) {
     return docs;
 }
 
-export const GetChatRoomInfo = (room_id: string): Promise<any[]> => {
-    return new Promise((resolve, reject) => {
-        MongoClient.connect(Config.chatDB).then(db => {
-            let roomColl = db.collection(DbClient.chatroomColl);
-
-            roomColl.find({ _id: new ObjectID(room_id) }).limit(1).toArray().then(docs => {
-                db.close();
-                resolve(docs);
-            }).catch(err => {
-                db.close();
-                reject(err);
-            });
-        }).catch(err => {
-            reject(err);
-        });
-    });
-};
-
-export const createPrivateChatRoom = async (room: Room.Room) => {
+export const createPrivateChatRoom = async (room: Room) => {
     let db = getAppDb();
     let chatRoomColl = db.collection(DbClient.chatroomColl);
 
@@ -132,8 +114,8 @@ export const createPrivateChatRoom = async (room: Room.Room) => {
     return result.ops;
 };
 
-export async function createPrivateGroup(room: Room.Room) {
-    if (room.type != Room.RoomType.privateGroup) {
+export async function createPrivateGroup(room: Room) {
+    if (room.type != RoomType.privateGroup) {
         throw new Error("createPrivateGroup fail: invalid room type.");
     }
 

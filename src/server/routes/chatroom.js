@@ -2,14 +2,12 @@
 const express = require("express");
 const crypto = require("crypto");
 const mongodb = require("mongodb");
-const router = express.Router();
-const redis = require("redis");
-const ObjectID = mongodb.ObjectID;
-const RedisClient_1 = require("../scripts/services/RedisClient");
 const apiUtils = require("../scripts/utils/apiUtils");
 const RoomService = require("../scripts/services/RoomService");
 const ChatRoomManager = require("../scripts/controllers/ChatRoomManager");
 const UserManager = require("../scripts/controllers/user/UserManager");
+const router = express.Router();
+const ObjectID = mongodb.ObjectID;
 /* GET home page. */
 router.get("/", function (req, res, next) {
     next();
@@ -38,31 +36,8 @@ router.post("/", function (req, res, next) {
     md.update(id);
     let hexCode = md.digest("hex");
     let roomId = hexCode.slice(0, 24);
-    RedisClient_1.default.hmget(RedisClient_1.ROOM_KEY, roomId, (err, result) => {
-        let rooms = JSON.parse(JSON.stringify(result));
-        console.log("get room from cache", rooms);
-        let room = null;
-        if (rooms && rooms.length > 0) {
-            room = JSON.parse(result[0]);
-        }
-        if (room !== null && room !== undefined) {
-            res.status(200).json({ success: true, result: [room] });
-        }
-        else {
-            // @find from db..
-            console.log("find room from db...");
-            ChatRoomManager.GetChatRoomInfo(roomId).then(function (results) {
-                if (results.length > 0) {
-                    RedisClient_1.default.hmset(RedisClient_1.ROOM_KEY, roomId, JSON.stringify(results[0]), redis.print);
-                    res.status(200).json({ success: true, result: results });
-                }
-                else {
-                    res.status(500).json({ success: false, message: results });
-                }
-            }).catch(err => {
-                res.status(500).json({ success: false, message: err });
-            });
-        }
+    RoomService.getRoom(roomId, (err, room) => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, [room]));
     });
 });
 router.get("/roomInfo", (req, res, next) => {
@@ -78,15 +53,8 @@ router.get("/roomInfo", (req, res, next) => {
             res.status(500).json({ success: false, message: "cannot access your request room." });
         }
         else {
-            ChatRoomManager.GetChatRoomInfo(room_id).then(function (result) {
-                if (result.length > 0) {
-                    res.status(200).json({ success: true, result: result });
-                }
-                else {
-                    res.status(500).json({ success: false, message: "Your request roomInfo is no longer." });
-                }
-            }).catch(err => {
-                res.status(500).json({ success: false, message: "Your request roomInfo is no longer." });
+            RoomService.getRoom(room_id, (err, room) => {
+                res.status(200).json(new apiUtils.ApiResponse(true, null, [room]));
             });
         }
     });
@@ -181,7 +149,7 @@ router.post("/getChatHistory", (req, res, next) => {
     });
 });
 router.post("/clear_cache", (req, res, next) => {
-    RedisClient_1.default.del(RedisClient_1.ROOM_KEY, function (err, reply) {
+    RedisClient.del(ROOM_KEY, function (err, reply) {
         console.log(err, reply);
         if (err)
             return res.status(500).json({ success: false, message: err });

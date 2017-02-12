@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const mongodb = require("mongodb");
 const redis = require("redis");
 const RedisClient_1 = require("./RedisClient");
@@ -16,7 +24,7 @@ exports.checkedCanAccessRoom = (roomId, userId, callback) => {
             if (room.members && Array.isArray(room.members)) {
                 let members = room.members;
                 result = members.some(value => {
-                    if (value._id === userId) {
+                    if (value._id == userId) {
                         return true;
                     }
                 });
@@ -39,28 +47,43 @@ function setRoomsMap(data, callback) {
 }
 exports.setRoomsMap = setRoomsMap;
 function getRoom(roomId, callback) {
-    RedisClient_1.default.hmget(RedisClient_1.ROOM_MAP_KEY, roomId, function (err, roomMap) {
-        if (err || roomMap[0] == null || roomMap[0] == undefined) {
-            console.log("Can't find room from cache");
+    if (RedisClient_1.redisStatus == RedisClient_1.RedisStatus.ready) {
+        RedisClient_1.default.hmget(RedisClient_1.ROOM_MAP_KEY, roomId, function (err, roomMap) {
+            if (err || roomMap[0] == null || roomMap[0] == undefined) {
+                console.log("Can't find room from cache");
+                queryChatRoom().then(room => {
+                    callback(null, room);
+                }).catch(err => {
+                    callback(err, null);
+                });
+            }
+            else {
+                let room = JSON.parse(roomMap[0]);
+                callback(null, room);
+            }
+        });
+    }
+    else {
+        queryChatRoom().then(room => {
+            callback(null, room);
+        }).catch(err => {
+            callback(err, null);
+        });
+    }
+    function queryChatRoom() {
+        return __awaiter(this, void 0, void 0, function* () {
             let db = DbClient_1.getAppDb();
             let chatroom_coll = db.collection(config_1.DbClient.chatroomColl);
-            chatroom_coll.find({ _id: new ObjectID(roomId) }).limit(1).toArray().then(docs => {
-                if (docs.length > 0) {
-                    addRoom(docs[0]);
-                    callback(null, docs[0]);
-                }
-                else {
-                    callback(new Error("Can't find room"), null);
-                }
-            }).catch(err => {
-                callback(new Error("Can't find room: " + err), null);
-            });
-        }
-        else {
-            let room = JSON.parse(roomMap[0]);
-            callback(null, room);
-        }
-    });
+            let docs = yield chatroom_coll.find({ _id: new ObjectID(roomId) }).limit(1).toArray();
+            if (docs.length > 0) {
+                addRoom(docs[0]);
+                return docs[0];
+            }
+            else {
+                throw new Error("Can't find room");
+            }
+        });
+    }
 }
 exports.getRoom = getRoom;
 /**

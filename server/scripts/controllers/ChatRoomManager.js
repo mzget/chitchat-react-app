@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 const mongodb = require("mongodb");
 const async = require("async");
-const Room = require("../models/Room");
+const Room_1 = require("../models/Room");
 const UserManager = require("./user/UserManager");
 const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
@@ -110,22 +110,6 @@ function getLastMessageContentOfRoom(rid) {
         return docs;
     });
 }
-exports.GetChatRoomInfo = (room_id) => {
-    return new Promise((resolve, reject) => {
-        MongoClient.connect(config_1.Config.chatDB).then(db => {
-            let roomColl = db.collection(config_1.DbClient.chatroomColl);
-            roomColl.find({ _id: new ObjectID(room_id) }).limit(1).toArray().then(docs => {
-                db.close();
-                resolve(docs);
-            }).catch(err => {
-                db.close();
-                reject(err);
-            });
-        }).catch(err => {
-            reject(err);
-        });
-    });
-};
 exports.createPrivateChatRoom = (room) => __awaiter(this, void 0, void 0, function* () {
     let db = DbClient_1.getAppDb();
     let chatRoomColl = db.collection(config_1.DbClient.chatroomColl);
@@ -134,7 +118,7 @@ exports.createPrivateChatRoom = (room) => __awaiter(this, void 0, void 0, functi
 });
 function createPrivateGroup(room) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (room.type != Room.RoomType.privateGroup) {
+        if (room.type != Room_1.RoomType.privateGroup) {
             throw new Error("createPrivateGroup fail: invalid room type.");
         }
         let db = DbClient_1.getAppDb();
@@ -271,12 +255,12 @@ class RoomDataAccess {
     findProjectBaseGroups(userId, callback) {
         dbClient.FindDocuments(MDb.DbController.roomColl, function (res) {
             callback(null, res);
-        }, { type: Room.RoomType.projectBaseGroup, status: Room.RoomStatus.active, members: { $elemMatch: { id: userId } } });
+        }, { type: Room_1.Room.RoomType.projectBaseGroup, status: Room_1.Room.RoomStatus.active, members: { $elemMatch: { id: userId } } });
     }
     findPrivateGroupChat(uid, callback) {
         dbClient.FindDocuments(MDb.DbController.roomColl, function (res) {
             callback(null, res);
-        }, { type: Room.RoomType.privateGroup, members: { $elemMatch: { id: uid } } });
+        }, { type: Room_1.Room.RoomType.privateGroup, members: { $elemMatch: { id: uid } } });
     }
     /**
      * Get all rooms and then return all info of { _id, members } to array of roomModel;.
@@ -287,12 +271,12 @@ class RoomDataAccess {
         }, {});
     }
     createProjectBaseGroup(groupName, members, callback) {
-        let newRoom = new Room.Room();
+        let newRoom = new Room_1.Room.Room();
         newRoom.name = groupName;
-        newRoom.type = Room.RoomType.projectBaseGroup;
+        newRoom.type = Room_1.Room.RoomType.projectBaseGroup;
         newRoom.members = members;
         newRoom.createTime = new Date();
-        newRoom.status = Room.RoomStatus.active;
+        newRoom.status = Room_1.Room.RoomStatus.active;
         newRoom.org_chart_id = 0;
         MongoClient.connect(MDb.DbController.chatDB, function (err, db) {
             if (err) {

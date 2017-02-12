@@ -7,7 +7,6 @@ import redis = require("redis");
 const router = express.Router();
 const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
-import RedisClient, { ROOM_KEY } from "../../scripts/services/RedisClient";
 
 import { Room, RoomType, RoomStatus, IMember } from "../../scripts/models/Room";
 import * as RoomService from "../../scripts/services/RoomService";
@@ -16,6 +15,7 @@ import * as ChatRoomManager from "../../scripts/controllers/ChatRoomManager";
 import * as UserManager from "../../scripts/controllers/user/UserManager";
 import * as apiUtils from "../../scripts/utils/apiUtils";
 
+import { getAppDb } from "../../scripts/DbClient";
 import { Config, DbClient } from "../../config";
 
 router.get("/org", function (req, res, next) {
@@ -60,11 +60,11 @@ router.post("/org/create", function (req, res, next) {
             throw new Error("Invalid room type");
         }
 
-        let db = await MongoClient.connect(Config.chatDB);
+        let db = getAppDb();
         let collection = db.collection(DbClient.chatroomColl);
 
         let result = await collection.insertOne(roomModel);
-        db.close();
+        RoomService.addRoom(result.ops[0]);
         return result.ops;
     };
 
@@ -258,7 +258,7 @@ router.post("/private_chat/create", function (req, res, next) {
         console.log("Create Private Chat Room: ", JSON.stringify(results));
 
         let _room: Room = results[0];
-        RedisClient.hmset(ROOM_KEY, _room._id, JSON.stringify(_room), redis.print);
+        RoomService.addRoom(_room);
 
         // <!-- Push updated lastAccessRoom fields to all members.
         async.map(results[0].members, function (member: IMember, cb) {

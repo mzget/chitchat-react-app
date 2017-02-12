@@ -19,17 +19,16 @@ const express = require("express");
 const crypto = require("crypto");
 const mongodb = require("mongodb");
 const async = require("async");
-const redis = require("redis");
 const router = express.Router();
 const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
-const RedisClient_1 = require("../../scripts/services/RedisClient");
 const Room_1 = require("../../scripts/models/Room");
 const RoomService = require("../../scripts/services/RoomService");
 const GroupController = require("../../scripts/controllers/group/GroupController");
 const ChatRoomManager = require("../../scripts/controllers/ChatRoomManager");
 const UserManager = require("../../scripts/controllers/user/UserManager");
 const apiUtils = require("../../scripts/utils/apiUtils");
+const DbClient_1 = require("../../scripts/DbClient");
 const config_1 = require("../../config");
 router.get("/org", function (req, res, next) {
     req.checkQuery("team_id", "request for team_id").isMongoId();
@@ -67,10 +66,10 @@ router.post("/org/create", function (req, res, next) {
             if (roomModel.type != Room_1.RoomType.organizationGroup) {
                 throw new Error("Invalid room type");
             }
-            let db = yield MongoClient.connect(config_1.Config.chatDB);
+            let db = DbClient_1.getAppDb();
             let collection = db.collection(config_1.DbClient.chatroomColl);
             let result = yield collection.insertOne(roomModel);
-            db.close();
+            RoomService.addRoom(result.ops[0]);
             return result.ops;
         });
     }
@@ -238,7 +237,7 @@ router.post("/private_chat/create", function (req, res, next) {
     ChatRoomManager.createPrivateChatRoom(_room).then(function (results) {
         console.log("Create Private Chat Room: ", JSON.stringify(results));
         let _room = results[0];
-        RedisClient_1.default.hmset(RedisClient_1.ROOM_KEY, _room._id, JSON.stringify(_room), redis.print);
+        RoomService.addRoom(_room);
         // <!-- Push updated lastAccessRoom fields to all members.
         async.map(results[0].members, function (member, cb) {
             // <!-- Add rid to user members lastAccessField.
