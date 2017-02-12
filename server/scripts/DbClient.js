@@ -8,8 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const mongodb = require("mongodb");
-const MongoClient = mongodb.MongoClient;
 const config_1 = require("../config");
+const MongoClient = mongodb.MongoClient;
 let appDB = null;
 exports.getAppDb = () => appDB;
 exports.InitDatabaseConnection = () => __awaiter(this, void 0, void 0, function* () {

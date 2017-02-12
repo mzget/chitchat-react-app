@@ -1,6 +1,8 @@
 import mongodb = require("mongodb");
-const MongoClient = mongodb.MongoClient;
+
 import { Config } from "../config";
+
+const MongoClient = mongodb.MongoClient;
 
 let appDB = null as mongodb.Db;
 export const getAppDb = () => appDB;
