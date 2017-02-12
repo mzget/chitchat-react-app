@@ -17,6 +17,8 @@ export const rootEpic = combineEpics(
     userRx.fetchUserEpic,
     userRx.fetchContactEpic,
     userRx.fetchAgentEpic,
+    userRx.getTeamProfileEpic,
+
     ///@ Signup user.
     authRx.signupUserEpic,
     authRx.authUserEpic,
@@ -32,8 +34,9 @@ export const rootEpic = combineEpics(
     teamRx.joinTeamEpic,
 
     ///@Group
-    groupRx.getOrgGroupEpic,
-    groupRx.createGroupEpic,
+    groupRx.getOrgGroup_Epic,
+    groupRx.createOrgGroup_Epic,
+    groupRx.createPrivateGroup_Epic,
 
     ///@ChatRoom
     chatroomRxEpic.getPrivateChatRoomEpic,

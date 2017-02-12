@@ -38,10 +38,12 @@
     <Content Include="client\components\AppBar.tsx" />
     <Content Include="client\containers\Admin.tsx" />
     <Content Include="client\containers\admins\AdminMenu.tsx" />
+    <Content Include="client\containers\admins\ContactProfileView.tsx" />
     <Content Include="client\containers\admins\CreateGroupBox.tsx" />
     <Content Include="client\containers\admins\CreateGroupForm.tsx" />
     <Content Include="client\containers\admins\ManageOrgChartBox.tsx" />
     <Content Include="client\containers\admins\CreateOrgChartForm.tsx" />
+    <Content Include="client\containers\admins\TeamMemberBox.tsx" />
     <Content Include="client\containers\admins\TeamRoleListView.tsx" />
     <Content Include="client\containers\authen\AuthenBox.tsx" />
     <Content Include="client\containers\authen\SigninBox.tsx" />
@@ -54,6 +56,8 @@
     <Content Include="client\containers\group\OrgGroupListBox.tsx" />
     <Content Include="client\containers\Home.tsx" />
     <Content Include="client\containers\ListChatLogs.tsx" />
+    <Content Include="client\containers\profile\ProfileBox.tsx" />
+    <Content Include="client\containers\profile\ProfileListView.tsx" />
     <Content Include="client\containers\Team.tsx" />
     <Content Include="client\containers\teams\TeamCreateBox.tsx" />
     <Content Include="client\containers\teams\FindTeamView.tsx" />
@@ -70,6 +74,9 @@
     <Content Include="README.md" />
     <Content Include="public\index.html" />
     <Content Include="public\favicon.ico" />
+    <Content Include="tslint.json" />
+    <TypeScriptCompile Include="client\chats\models\ITeamMember.ts" />
+    <TypeScriptCompile Include="client\chats\services\UserService.ts" />
     <TypeScriptCompile Include="client\containers\admins\OrgChartListView.tsx" />
     <TypeScriptCompile Include="client\containers\Main.tsx" />
     <TypeScriptCompile Include="client\libs\chitchat\dataAccessLayer\AppSessionToken.ts" />
@@ -165,8 +172,6 @@
     <TypeScriptCompile Include="client\redux\stalkBridge\StalkNotificationActions.ts" />
     <TypeScriptCompile Include="client\redux\stalkBridge\stalkPushActions.ts" />
     <TypeScriptCompile Include="client\redux\stalkBridge\stalkReducer.ts" />
-    <Compile Include="src\server\app.js" />
-    <Compile Include="src\server\config.js" />
     <Compile Include="src\client\chats\BackendFactory.js" />
     <Compile Include="src\client\chats\chatRoomComponent.js" />
     <Compile Include="src\client\chats\chatslogComponent.js" />
@@ -303,26 +308,6 @@
     <Content Include="src\images\stickers\sticker7.png" />
     <Content Include="src\images\stickers\sticker8.png" />
     <Content Include="src\images\stickers\sticker9.png" />
-    <Compile Include="src\server\routes\chatroom.js" />
-    <Compile Include="src\server\routes\index.js" />
-    <Compile Include="src\server\routes\users.js" />
-    <Compile Include="src\server\routes\demos\users.js" />
-    <Compile Include="src\server\routes\upload\uploadFile.js" />
-    <Compile Include="src\server\scripts\controllers\ChatRoomManager.js" />
-    <Compile Include="src\server\scripts\controllers\CompanyManager.js" />
-    <Compile Include="src\server\scripts\controllers\UserManager.js" />
-    <Compile Include="src\server\scripts\models\Company.js" />
-    <Compile Include="src\server\scripts\models\IChatRoom.js" />
-    <Compile Include="src\server\scripts\models\IProfile.js" />
-    <Compile Include="src\server\scripts\models\JobLevel.js" />
-    <Compile Include="src\server\scripts\models\Message.js" />
-    <Compile Include="src\server\scripts\models\Room.js" />
-    <Compile Include="src\server\scripts\models\RoomAccessData.js" />
-    <Compile Include="src\server\scripts\models\User.js" />
-    <Compile Include="src\server\scripts\models\UserRole.js" />
-    <Compile Include="src\server\scripts\services\accountService.js" />
-    <Compile Include="src\server\scripts\services\CachingSevice.js" />
-    <Compile Include="src\server\scripts\services\RoomService.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="client" />
@@ -339,6 +324,7 @@
     <Folder Include="client\containers\admins\" />
     <Folder Include="client\containers\chatlist\" />
     <Folder Include="client\containers\group\" />
+    <Folder Include="client\containers\profile\" />
     <Folder Include="client\containers\teams\" />
     <Folder Include="client\libs" />
     <Folder Include="client\libs\chitchat" />
@@ -396,14 +382,6 @@
     <Folder Include="src\client\utils" />
     <Folder Include="src\images" />
     <Folder Include="src\images\stickers" />
-    <Folder Include="src\server" />
-    <Folder Include="src\server\routes" />
-    <Folder Include="src\server\routes\demos" />
-    <Folder Include="src\server\routes\upload" />
-    <Folder Include="src\server\scripts" />
-    <Folder Include="src\server\scripts\controllers" />
-    <Folder Include="src\server\scripts\models" />
-    <Folder Include="src\server\scripts\services" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->

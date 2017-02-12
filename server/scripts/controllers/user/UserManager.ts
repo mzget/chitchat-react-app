@@ -1,22 +1,23 @@
 ﻿
 import mongodb = require('mongodb');
 import async = require('async');
-import { getConfig, DbClient } from "../../../config";
 
 import { ChitChatAccount } from "../../models/User";
+import { ITeamProfile } from "../../models/TeamProfile";
 import * as Room from "../../models/Room";
 import { RoomAccessData, StalkAccount } from '../../models/Stalk';
 import { ITeam } from '../../models/ITeam';
 
-const {MongoClient, ObjectID} = mongodb;
-const config = getConfig();
+import { Config, DbClient } from "../../../config";
+import { getAppDb } from "../../DbClient";
+const { ObjectID } = mongodb;
 
 export interface IUserDict {
     [id: string]: ChitChatAccount;
 };
 
 export async function joinTeam(team: ITeam, user_id: string) {
-    let db = await MongoClient.connect(config.chatDB);
+    let db = getAppDb();
     let collection = db.collection(DbClient.chitchatUserColl);
 
     let result = await collection.updateOne(
@@ -24,7 +25,6 @@ export async function joinTeam(team: ITeam, user_id: string) {
         { $addToSet: { teams: team._id.toString() } },
         { upsert: false });
 
-    db.close();
     return result;
 }
 
@@ -37,76 +37,76 @@ export const updateImageProfile = (uid: string, newUrl: string, callback: (err, 
 }
 
 export async function getRoomAccessForUser(uid: string): Promise<any[]> {
-    let db = await MongoClient.connect(config.chatDB);
+    let db = getAppDb();
     let userColl = db.collection(DbClient.stalkUserColl);
 
     let docs = await userColl.find({ _id: new ObjectID(uid) }).project({ roomAccess: 1 }).limit(1).toArray();
 
-    db.close();
     return docs;
 }
 
 export const getRoomAccessOfRoom = async (uid: string, rid: string) => {
-    let db = await MongoClient.connect(config.chatDB);
+    let db = getAppDb();
     let collection = db.collection(DbClient.stalkUserColl);
 
     let docs = await collection.find({ _id: new ObjectID(uid) })
         .project({ roomAccess: { $elemMatch: { roomId: rid } } })
         .limit(1).toArray();
 
-    db.close();
     return docs;
 };
 
+export async function AddRoomIdToRoomAccessFieldOfUsers(roomId: string, memberIds: string[], date: Date) {
+    let isDone = false;
+    async.each(memberIds, function (element: string, cb) {
+        AddRoomIdToRoomAccessFieldOfUser(roomId, element, date).then(result => {
+            cb();
+        }).catch(err => {
+            cb();
+        });
+    }, function (errCb) {
+        isDone = true;
+    });
+
+    while (!isDone) {
+        await isDone;
+    }
+    return isDone;
+}
+
+export async function AddRoomIdToRoomAccessFieldOfUser(roomId: string, userId: string, date: Date) {
+    let db = getAppDb();
+    let chatUserCollection = db.collection(DbClient.stalkUserColl);
+
+    let docs = await chatUserCollection.find({ _id: new ObjectID(userId) }, { roomAccess: 1 }).limit(1).toArray();
+    if (docs.length > 0 && !!docs[0].roomAccess) {
+        // <!-- add rid to MembersFields.
+        let result = await findRoomAccessDataMatchWithRoomId(userId, roomId, date);
+        return result;
+    }
+    else {
+        let result = await InsertMembersFieldsToUserModel(userId, roomId, date);
+        return result;
+    }
+}
 
 export const updateLastAccessTimeOfRoom = async (user_id: string, room_id: string, date: Date) => {
-    let db = await MongoClient.connect(config.chatDB);
-    let chatUserColl = db.collection(DbClient.stalkUserColl);
+    let db = getAppDb();
+    let stalkUsersColl = db.collection(DbClient.stalkUserColl);
 
-    let docs: Array<StalkAccount> = await chatUserColl.find({ _id: new ObjectID(user_id) }).limit(1).project({ roomAccess: 1 }).toArray();
+    let docs: Array<StalkAccount> = await stalkUsersColl.find({ _id: new ObjectID(user_id) }).limit(1)
+        .project({ roomAccess: 1 }).toArray();
 
     if (docs.length > 0 && docs[0].roomAccess) {
         let result = await findRoomAccessDataMatchWithRoomId(user_id, room_id, date);
-        db.close();
         return result;
     }
     else {
         // <!-- insert roomAccess info field in user data collection.
         let result = await insertRoomAccessInfoField(user_id, room_id);
-        db.close();
         return result;
     }
 };
-
-export const AddRoomIdToRoomAccessField = (roomId: string, memberIds: string[], date: Date, callback: (err, res: boolean) => void) => {
-    async.each(memberIds, function (element: string, cb) {
-        AddRidToRoomAccessField(element, roomId, date, (error, response) => {
-            cb();
-        });
-    }, function (errCb) {
-        if (!errCb) {
-            callback(null, true);
-        }
-    });
-}
-
-export const AddRoomIdToRoomAccessFieldForUser = async (roomId: string, userId: string, date: Date): Promise<any> => {
-    let db = await MongoClient.connect(config.chatDB);
-    let chatUserCollection = db.collection(DbClient.stalkUserColl);
-
-    let docs = await chatUserCollection.find({ _id: new ObjectID(userId) }, { roomAccess: 1 }).limit(1).toArray();
-    if (docs.length > 0 && !!docs[0].roomAccess) {
-        // <!-- add rid to MembersFields.       
-        db.close();
-        let result = await findRoomAccessDataMatchWithRoomId(userId, roomId, date);
-        return result;
-    }
-    else {
-        db.close();
-        let result = await InsertMembersFieldsToUserModel(userId, roomId, date);
-        return result;
-    }
-}
 
 export const updateFavoriteMembers = (editType: string, member: string, uid: string, callback: (err, res) => void) => {
     if (editType === "add") {
@@ -162,7 +162,7 @@ export const getCreatorPermission = (creator: string, callback: (err, res) => vo
 
 export const checkUnsubscribeRoom = (userId: string, roomType: Room.RoomType, roomId: string, callback: Function) => {
     if (roomType === Room.RoomType.privateGroup) {
-        MongoClient.connect(config.chatDB).then(function (db) {
+        MongoClient.connect(Config.chatDB).then(function (db) {
             // Get the documents collection
             let user = db.collection(DbClient.stalkUserColl);
 
@@ -179,7 +179,7 @@ export const checkUnsubscribeRoom = (userId: string, roomType: Room.RoomType, ro
         });
     }
     else if (roomType === Room.RoomType.privateChat) {
-        MongoClient.connect(config.chatDB).then(db => {
+        MongoClient.connect(Config.chatDB).then(db => {
             // Get the documents collection
             let user = db.collection(DbClient.stalkUserColl);
 
@@ -203,11 +203,10 @@ const InsertMembersFieldsToUserModel = async (uid: string, roomId: string, date:
     newRoomAccessInfos[0].roomId = roomId;
     newRoomAccessInfos[0].accessTime = date;
 
-    let db = await MongoClient.connect(config.chatDB);
+    let db = getAppDb();
     let chatUserColl = db.collection(DbClient.stalkUserColl);
     let result = await chatUserColl.updateOne({ _id: new ObjectID(uid) }, { $set: { roomAccess: newRoomAccessInfos } }, { upsert: true });
 
-    db.close();
     return result.result;
 }
 
@@ -217,19 +216,18 @@ const insertRoomAccessInfoField = async (user_id: string, room_id: string) => {
     newRoomAccessInfos[0].roomId = room_id;
     newRoomAccessInfos[0].accessTime = new Date();
 
-    let db = await MongoClient.connect(config.chatDB);
+    let db = getAppDb();
     let chatUserCollection = db.collection(DbClient.stalkUserColl);
     let result = await chatUserCollection.updateOne(
         { _id: new ObjectID(user_id) },
         { $set: { roomAccess: newRoomAccessInfos } },
         { upsert: true, w: 1 });
 
-    db.close();
     return result.result;
 }
 
 const findRoomAccessDataMatchWithRoomId = async (uid: string, rid: string, date: Date) => {
-    let db = await MongoClient.connect(config.chatDB)
+    let db = getAppDb();
     let chatUserColl = db.collection(DbClient.stalkUserColl);
 
     // Peform a simple find and return all the documents
@@ -244,21 +242,21 @@ const findRoomAccessDataMatchWithRoomId = async (uid: string, rid: string, date:
         newRoomAccessInfo.accessTime = date;
 
         let result = await chatUserColl.updateOne({ _id: new ObjectID(uid) }, { $push: { roomAccess: newRoomAccessInfo } }, { w: 1 });
-        db.close();
+
         console.log("Push new roomAccess.: ", result.result);
         return result.result;
     }
     else {
         //<!-- Update if data exist.
         let result = await chatUserColl.updateOne({ _id: new ObjectID(uid), "roomAccess.roomId": rid }, { $set: { "roomAccess.$.accessTime": date } }, { w: 1 });
-        db.close();
+
         console.log("Updated roomAccess.accessTime: ", result.result);
         return result.result;
     }
 }
 
 export const getUserProfile = (query: any, projection: any, callback: (err, res: Array<any>) => void) => {
-    MongoClient.connect(config.chatDB).then(db => {
+    MongoClient.connect(Config.chatDB).then(db => {
         // Get the documents collection
         let collection = db.collection(DbClient.stalkUserColl);
         // Find some documents
@@ -279,7 +277,7 @@ export const getUserProfile = (query: any, projection: any, callback: (err, res:
 }
 
 export const getRole = (creator: string, callback: (err, res) => void) => {
-    MongoClient.connect(config.chatDB).then(db => {
+    MongoClient.connect(Config.chatDB).then(db => {
         // Get the documents collection
         let collection = db.collection(DbClient.stalkUserColl);
         // Find some documents
@@ -299,7 +297,7 @@ export const getRole = (creator: string, callback: (err, res) => void) => {
 }
 
 export const addFavoriteMembers = (member: string, uid: string, callback: (err, res) => void) => {
-    MongoClient.connect(config.chatDB).then(db => {
+    MongoClient.connect(Config.chatDB).then(db => {
         // Get the documents collection
         let collection = db.collection(DbClient.stalkUserColl);
 
@@ -323,7 +321,6 @@ export const removeFavoriteMembers = (member: string, uid: string, callback: (er
         if (err) {
             return console.dir(err);
         }
-        assert.equal(null, err);
 
         // Get the documents collection
         var collection = db.collection(Mdb.DbController.userColl);
@@ -346,7 +343,6 @@ export const addFavoriteGroup = (group: string, uid: string, callback: (err, res
         if (err) {
             return console.dir(err);
         }
-        assert.equal(null, err);
 
         // Get the documents collection
         var collection = db.collection(Mdb.DbController.userColl);
@@ -368,7 +364,6 @@ export const removeFavoriteGroup = (group: string, uid: string, callback: (err, 
         if (err) {
             return console.dir(err);
         }
-        assert.equal(null, err);
 
         // Get the documents collection
         var collection = db.collection(Mdb.DbController.userColl);
@@ -391,7 +386,6 @@ export const addClosedNoticeUsersList = (member: string, uid: string, callback: 
         if (err) {
             return console.dir(err);
         }
-        assert.equal(null, err);
 
         // Get the documents collection
         var collection = db.collection(Mdb.DbController.userColl);
@@ -414,7 +408,6 @@ export const removeClosedNoticeUsersList = (member: string, uid: string, callbac
         if (err) {
             return console.dir(err);
         }
-        assert.equal(null, err);
 
         // Get the documents collection
         var collection = db.collection(Mdb.DbController.userColl);
@@ -437,7 +430,6 @@ export const addClosedNoticeGroupList = (member: string, uid: string, callback: 
         if (err) {
             return console.dir(err);
         }
-        assert.equal(null, err);
 
         // Get the documents collection
         var collection = db.collection(Mdb.DbController.userColl);
@@ -460,7 +452,6 @@ export const removeClosedNoticeGroupList = (member: string, uid: string, callbac
         if (err) {
             return console.dir(err);
         }
-        assert.equal(null, err);
 
         // Get the documents collection
         var collection = db.collection(Mdb.DbController.userColl);
@@ -478,27 +469,50 @@ export const removeClosedNoticeGroupList = (member: string, uid: string, callbac
     });
 }
 
-export async function updateOrgChart(user: ChitChatAccount) {
-    let db = await MongoClient.connect(config.chatDB);
-    let chitchatUserColl = db.collection(DbClient.chitchatUserColl);
+export async function updateOrgChart(user_id: string, team_id: string, org_chart_id: string) {
+    let db = getAppDb();
+    let teamProfileColl = db.collection(DbClient.teamProfileCollection);
 
-    let user_id = user._id;
-    let org_chart_id = user.org_chart_id;
+    await teamProfileColl.createIndex({ team_id: 1, user_id: 1 }, { background: true });
 
-    let result = await chitchatUserColl.updateOne(
-        { _id: new ObjectID(user_id) },
-        { $set: { org_chart_id: org_chart_id } },
-        { upsert: false });
-    db.close();
+    let profile = {} as ITeamProfile;
+    profile.team_id = new mongodb.ObjectID(team_id);
+    profile.user_id = new mongodb.ObjectID(user_id);
+    profile.org_chart_id = new mongodb.ObjectID(org_chart_id);
+
+    let result = await teamProfileColl.updateOne(
+        { user_id: profile.user_id, team_id: profile.team_id },
+        { $set: { org_chart_id: profile.org_chart_id } },
+        { upsert: true });
+
     return result.result;
 }
 
-export async function getUserOrgChart(user_id: string) {
-    let db = await MongoClient.connect(config.chatDB);
-    let chitchatUserColl = db.collection(DbClient.chitchatUserColl);
+export async function getUserOrgChart(user_id: string, team_id: string) {
+    let db = getAppDb();
+    let teamProfileColl = db.collection(DbClient.teamProfileCollection);
 
-    let docs = await chitchatUserColl.find(
-        { _id: new ObjectID(user_id) }).project({ org_chart_id: 1 }).limit(1).toArray();
-    db.close();
-    return docs;
+    await teamProfileColl.createIndex({ team_id: 1, user_id: 1 }, { background: true });
+
+    let profile = {} as ITeamProfile;
+    profile.team_id = new mongodb.ObjectID(team_id);
+    profile.user_id = new mongodb.ObjectID(user_id);
+
+    let docs = await teamProfileColl.find({ user_id: profile.user_id, team_id: profile.team_id })
+        .project({ org_chart_id: 1 }).limit(1).toArray();
+
+    return docs as Array<ITeamProfile>;
+}
+
+export async function getTeamProfile(user_id: string, team_id: string) {
+    let db = getAppDb();
+    let teamProfileColl = db.collection(DbClient.teamProfileCollection);
+
+    let profile = {} as ITeamProfile;
+    profile.team_id = new mongodb.ObjectID(team_id);
+    profile.user_id = new mongodb.ObjectID(user_id);
+
+    let docs = await teamProfileColl.find({ user_id: profile.user_id, team_id: profile.team_id }).limit(1).toArray();
+
+    return docs as Array<ITeamProfile>;
 }

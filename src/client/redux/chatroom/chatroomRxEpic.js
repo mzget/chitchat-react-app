@@ -17,42 +17,32 @@ exports.fetchPrivateChatRoom = (ownerId, roommateId) => ({ type: exports.FETCH_P
 const fetchPrivateChatRoomSuccess = (payload) => ({ type: exports.FETCH_PRIVATE_CHATROOM_SUCCESS, payload });
 const cancelFetchPrivateChatRoom = () => ({ type: exports.FETCH_PRIVATE_CHATROOM_CANCELLED });
 const fetchPrivateChatRoomFailure = payload => ({ type: exports.FETCH_PRIVATE_CHATROOM_FAILURE, payload, error: true });
-exports.getPrivateChatRoomEpic = action$ => {
-    return action$.ofType(exports.FETCH_PRIVATE_CHATROOM)
-        .mergeMap(action => ajax({
-        url: `${config_1.default.api.chatroom}`,
-        method: "POST",
-        body: JSON.stringify(action.payload),
-        headers: {
-            "Content-Type": "application/json",
-            "x-access-token": configureStore_1.default.getState().authReducer.token
-        }
-    }))
-        .map(json => fetchPrivateChatRoomSuccess(json.response))
-        .takeUntil(action$.ofType(exports.FETCH_PRIVATE_CHATROOM_CANCELLED))
-        .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.xhr.response)));
-};
+exports.getPrivateChatRoomEpic = action$ => action$.ofType(exports.FETCH_PRIVATE_CHATROOM)
+    .mergeMap(action => ajax({
+    url: `${config_1.default.api.chatroom}`,
+    method: "POST",
+    body: JSON.stringify(action.payload),
+    headers: {
+        "Content-Type": "application/json",
+        "x-access-token": configureStore_1.default.getState().authReducer.token
+    }
+}))
+    .map(json => fetchPrivateChatRoomSuccess(json.response))
+    .takeUntil(action$.ofType(exports.FETCH_PRIVATE_CHATROOM_CANCELLED))
+    .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.xhr.response)));
 const CREATE_PRIVATE_CHATROOM = "CREATE_PRIVATE_CHATROOM";
 exports.CREATE_PRIVATE_CHATROOM_SUCCESS = "CREATE_PRIVATE_CHATROOM_SUCCESS";
 const CREATE_PRIVATE_CHATROOM_CANCELLED = "CREATE_PRIVATE_CHATROOM_CANCELLED";
 const CREATE_PRIVATE_CHATROOM_FAILURE = "CREATE_PRIVATE_CHATROOM_FAILURE";
-exports.createPrivateChatRoom = (owner, roommate) => ({
-    type: CREATE_PRIVATE_CHATROOM, payload: { owner, roommate }
-});
-const createPrivateChatRoomSuccess = (payload) => ({
-    type: exports.CREATE_PRIVATE_CHATROOM_SUCCESS, payload
-});
-const createPrivateRoomCancelled = () => ({
-    type: CREATE_PRIVATE_CHATROOM_CANCELLED
-});
-const createPrivateChatRoomFailure = (payload) => ({
-    type: CREATE_PRIVATE_CHATROOM_FAILURE, payload
-});
+exports.createPrivateChatRoom = (owner, roommate) => ({ type: CREATE_PRIVATE_CHATROOM, payload: { owner, roommate } });
+const createPrivateChatRoomSuccess = (payload) => ({ type: exports.CREATE_PRIVATE_CHATROOM_SUCCESS, payload });
+const createPrivateRoomCancelled = () => ({ type: CREATE_PRIVATE_CHATROOM_CANCELLED });
+const createPrivateChatRoomFailure = (payload) => ({ type: CREATE_PRIVATE_CHATROOM_FAILURE, payload });
 exports.createPrivateChatRoomEpic = action$ => {
     return action$.ofType(CREATE_PRIVATE_CHATROOM)
         .mergeMap(action => ajax({
-        method: 'POST',
-        url: `${config_1.default.api.chatroom}/createPrivateRoom`,
+        method: "POST",
+        url: `${config_1.default.api.group}/private_chat/create`,
         body: action.payload,
         headers: {
             "Content-Type": "application/json",
@@ -94,9 +84,9 @@ exports.uploadFileCanceled = () => ({ type: exports.CHATROOM_UPLOAD_FILE_CANCELL
 exports.uploadFileEpic = action$ => (action$.ofType(exports.CHATROOM_UPLOAD_FILE)
     .mergeMap(action => {
     let body = new FormData();
-    body.append('file', action.payload.file);
+    body.append("file", action.payload.file);
     return ajax({
-        method: 'POST',
+        method: "POST",
         url: `${config_1.default.api.fileUpload}`,
         body: body,
         headers: {}

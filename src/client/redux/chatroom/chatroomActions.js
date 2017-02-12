@@ -87,14 +87,14 @@ function onChatRoomDelegate(event, newMsg) {
         }
         else {
             console.log("is contact message");
-            //@ Check app not run in background.
+            // @ Check app not run in background.
             let device = configureStore_1.default.getState().deviceReducer;
-            console.warn("AppState: ", device.appState); //active, background, inactive
-            if (device.appState == "active") {
+            console.warn("AppState: ", device.appState); // active, background, inactive
+            if (device.appState === "active") {
                 BackendFactory_1.default.getInstance().getChatApi().updateMessageReader(newMsg._id, newMsg.rid);
             }
-            else if (device.appState != "active") {
-                //@ When user joined room but appState is inActive.
+            else if (device.appState !== "active") {
+                // @ When user joined room but appState is inActive.
                 // sharedObjectService.getNotifyManager().notify(newMsg, appBackground, localNotifyService);
                 console.warn("Call local notification here...");
             }
@@ -107,7 +107,7 @@ function onChatRoomDelegate(event, newMsg) {
 }
 function onOutSideRoomDelegate(event, data) {
     if (event === serverEventListener_1.default.ON_CHAT) {
-        console.log("Call notification here...", data); //active, background, inactive
+        console.log("Call notification here...", data); // active, background, inactive
         NotificationManager.notify(data);
     }
 }
@@ -127,9 +127,9 @@ function getPersistendMessage(currentRid) {
             console.log("getPersistendMessage of room %s: completed.", currentRid);
             dispatch(getPersistendMessage_success());
         }).catch(err => dispatch(getPersistendMessage_failure()));
-        //@ Next call 2 method below. -->
-        //getNewerMessageFromNet();
-        //checkOlderMessages();
+        // @ Next call 2 method below. -->
+        // getNewerMessageFromNet();
+        // checkOlderMessages();
     };
 }
 exports.getPersistendMessage = getPersistendMessage;
@@ -200,13 +200,13 @@ function send_message_failure(data) {
 function sendMessage(msg) {
     return (dispatch) => {
         dispatch(send_message_request());
-        if (msg.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location]) {
+        if (msg.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location]) {
             BackendFactory_1.default.getInstance().getChatApi().chat("*", msg, (err, res) => {
                 dispatch(sendMessageResponse(err, res));
             });
             return;
         }
-        if (msg.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text] && config_1.default.appConfig.encryption == true) {
+        if (msg.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text] && config_1.default.appConfig.encryption === true) {
             secure.encryption(msg.body).then(result => {
                 // secure.decryption(result).then(res => {
                 //     console.log(res);
@@ -236,10 +236,10 @@ function sendMessageResponse(err, res) {
             dispatch(send_message_failure(res.body));
         }
         else {
-            console.log('server response!', res);
-            if (res.data.hasOwnProperty('resultMsg')) {
+            console.log("server response!", res);
+            if (res.data.hasOwnProperty("resultMsg")) {
                 let _msg = __assign({}, res.data.resultMsg);
-                if (_msg.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text] && config_1.default.appConfig.encryption) {
+                if (_msg.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text] && config_1.default.appConfig.encryption) {
                     secure.decryption(_msg.body).then(res => {
                         _msg.body = res;
                         dispatch(send_message_success(_msg));

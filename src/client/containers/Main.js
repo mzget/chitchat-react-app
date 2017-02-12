@@ -12,8 +12,8 @@ const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const Colors = require("material-ui/styles/colors");
-const Subheader_1 = require("material-ui/Subheader");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
+const ProfileBox_1 = require("./profile/ProfileBox");
 const OrgGroupListBox_1 = require("./group/OrgGroupListBox");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 const ContactBox_1 = require("./chatlist/ContactBox");
@@ -28,7 +28,7 @@ const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 class Main extends React.Component {
     constructor() {
         super(...arguments);
-        this.menus = ["admin", "log out"];
+        this.menus = ["menu", "log out"];
         this.clientWidth = document.documentElement.clientWidth;
         this.clientHeight = document.documentElement.clientHeight;
         this.headerHeight = null;
@@ -130,15 +130,15 @@ class Main extends React.Component {
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement("div", null,
                 React.createElement("div", { style: { height: this.headerHeight } },
-                    React.createElement(SimpleToolbar_1.default, { title: this.props.teamReducer.team.name, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem }),
-                    React.createElement(Subheader_1.default, null, this.state.header)),
-                React.createElement("div", { style: { height: this.bodyHeight } },
+                    React.createElement(SimpleToolbar_1.default, { title: this.props.teamReducer.team.name, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
+                React.createElement("div", { style: { height: this.bodyHeight, overflowY: "auto" } },
+                    React.createElement(ProfileBox_1.default, __assign({}, this.props)),
                     React.createElement(OrgGroupListBox_1.default, __assign({}, this.props)),
                     React.createElement(ContactBox_1.default, __assign({}, this.props)),
                     React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
                     React.createElement(UtilsBox_1.default, null)),
                 (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
-                    (React.createElement(reflexbox_1.Flex, { style: { height: this.footerHeight, backgroundColor: Colors.red500 }, align: 'center', justify: 'center', flexColumn: true },
+                    (React.createElement(reflexbox_1.Flex, { style: { height: this.footerHeight, backgroundColor: Colors.red500 }, align: "center", justify: "center", flexColumn: true },
                         React.createElement(reflexbox_1.Flex, { flexColumn: true },
                             React.createElement("span", { style: { color: Colors.white } }, "Unable to connect whit chat service."),
                             React.createElement("span", { style: { color: Colors.white } }, "Check your Internet connection.")))) : null)));

@@ -1,10 +1,7 @@
 "use strict";
-const Mdb = require("../db/dbClient");
-const room = require("../model/Room");
+const config_1 = require("../../config");
 const mongodb = require("mongodb");
-const assert = require("assert");
-var MongoClient = mongodb.MongoClient;
-var DbClient = Mdb.DbController.DbClient.GetInstance();
+const MongoClient = mongodb.MongoClient;
 var Controller;
 (function (Controller) {
     class CompanyManager {
@@ -22,10 +19,10 @@ var Controller;
             return CompanyManager._instance;
         }
         GetCompany(callback) {
-            DbClient.FindDocument(Mdb.DbController.companyColl, callback, {}, { _id: 0 });
+            config_1.DbClient.FindDocument(Mdb.DbController.companyColl, callback, {}, { _id: 0 });
         }
         getMyOrganizeChatRooms(userId, callback) {
-            DbClient.FindDocuments(Mdb.DbController.roomColl, (result) => {
+            config_1.DbClient.FindDocuments(Mdb.DbController.roomColl, (result) => {
                 callback(null, result);
             }, { type: room.RoomType.organizationGroup, status: room.RoomStatus.active, members: { $elemMatch: { id: userId } } });
         }
@@ -44,7 +41,7 @@ var Controller;
                 }
                 assert.equal(null, err);
                 // Get the documents collection
-                var collection = db.collection(Mdb.DbController.userColl);
+                let collection = db.collection(Mdb.DbController.userColl);
                 // Find some documents
                 collection.find({}).project(projection).toArray(function (err, result) {
                     assert.equal(null, err);

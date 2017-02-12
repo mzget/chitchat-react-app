@@ -6,14 +6,13 @@
 "use strict";
 const express = require("express");
 const mongodb = require("mongodb");
-const uuid = require('uuid');
+const uuid = require("uuid");
 const jwt = require("jsonwebtoken");
 const config_1 = require("../config");
 const apiUtils_1 = require("../scripts/utils/apiUtils");
-const config = config_1.getConfig();
 const MongoClient = mongodb.MongoClient;
 const router = express.Router();
-router.post('/', function (req, res, next) {
+router.post("/", function (req, res, next) {
     req.checkBody("email", "Request for email as body parameter.").isEmail();
     req.checkBody("password", "Request for password as body parameter").notEmpty();
     let errors = req.validationErrors();
@@ -23,7 +22,7 @@ router.post('/', function (req, res, next) {
     }
     let email = req.body.email.toLowerCase();
     let pass = req.body.password;
-    MongoClient.connect(config.chatDB).then(db => {
+    MongoClient.connect(config_1.Config.chatDB).then(db => {
         let userColl = db.collection(config_1.DbClient.chitchatUserColl);
         userColl.find({ email: email }).project({ email: 1, password: 1 }).limit(1).toArray().then(docs => {
             if (docs.length > 0) {
@@ -31,8 +30,8 @@ router.post('/', function (req, res, next) {
                 if (user.password == pass) {
                     // if user is found and password is right
                     // create a token
-                    jwt.sign(user, config.token.secret, {
-                        expiresIn: config.token.expire // expires in 24 hours
+                    jwt.sign(user, config_1.Config.token.secret, {
+                        expiresIn: config_1.Config.token.expire // expires in 24 hours
                     }, (err, encoded) => {
                         db.close();
                         if (err) {
@@ -58,7 +57,7 @@ router.post('/', function (req, res, next) {
             }
             else {
                 db.close();
-                res.status(apiUtils_1.ApiStatus.Error).json({ success: false, message: 'Authentication failed. User not found.' });
+                res.status(apiUtils_1.ApiStatus.Error).json({ success: false, message: "Authentication failed. User not found." });
             }
         }).catch(err => {
             db.close();
@@ -69,7 +68,7 @@ router.post('/', function (req, res, next) {
         res.status(apiUtils_1.ApiStatus.Error).json(new apiUtils_1.ApiResponse(false, err));
     });
 });
-router.post('/verify', (req, res, next) => {
+router.post("/verify", (req, res, next) => {
     req.checkBody("token", "Request for token as body param").notEmpty();
     let errors = req.validationErrors();
     if (errors) {
@@ -78,23 +77,23 @@ router.post('/verify', (req, res, next) => {
     }
     let token = req.body.token;
     // verifies secret and checks exp
-    jwt.verify(token, config.token.secret, function (err, decoded) {
+    jwt.verify(token, config_1.Config.token.secret, function (err, decoded) {
         if (err) {
-            res.status(500).json({ success: false, message: 'Failed to authenticate token.' + err });
+            res.status(500).json({ success: false, message: "Failed to authenticate token." + err });
         }
         else {
             let user_id = decoded._id;
             // if everything is good, save to request for use in other routes
-            req['decoded'] = decoded;
+            req["decoded"] = decoded;
             res.status(200).json(new apiUtils_1.ApiResponse(true, null, decoded));
         }
     });
 });
-router.post('/logout', (req, res, next) => {
-    let token = req['decoded'];
+router.post("/logout", (req, res, next) => {
+    let token = req["decoded"];
     let user_id = token._id;
     if (!user_id) {
-        return res.status(500).json({ success: false, message: 'no have user_id...' });
+        return res.status(500).json({ success: false, message: "no have user_id..." });
     }
     res.status(200).json(new apiUtils_1.ApiResponse(true));
 });

@@ -4,7 +4,7 @@ const router = express.Router();
 const apiUtils = require("../../scripts/utils/apiUtils");
 const adminController = require("../../scripts/controllers/admin/adminController");
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get("/", function (req, res, next) {
     next();
 });
 router.post("/create", function (req, res, next) {

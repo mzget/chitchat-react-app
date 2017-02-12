@@ -27,7 +27,7 @@
             "always"
         ],
         "triple-equals": [
-            true,
+            false,
             "allow-null-check"
         ],
         "variable-name": [
@@ -72,7 +72,7 @@
             "always"
         ],
         "triple-equals": [
-            true,
+            false,
             "allow-null-check"
         ],
         "typedef-whitespace": [

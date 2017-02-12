@@ -40,12 +40,12 @@ class AuthenBox extends React.Component {
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement(reflexbox_1.Flex, { flexColumn: true },
                 (this.state.showSignin) ?
-                    React.createElement(SigninBox_1.default, { dispatch: this.props.dispatch, onError: this.props.onError }) : React.createElement(SignupBox_1.default, __assign({}, this.props)),
+                    React.createElement(SigninBox_1.default, { dispatch: this.props.dispatch, onError: this.props.onError }) : React.createElement(SignupBox_1.default, __assign({}, this.props, { onError: this.props.onError })),
                 (this.state.showSignin) ?
-                    (React.createElement(reflexbox_1.Flex, { justify: 'center', align: 'center', p: 2 },
+                    (React.createElement(reflexbox_1.Flex, { justify: "center", align: "center", p: 2 },
                         React.createElement("p", null, "New to chitchat?"),
                         React.createElement(material_ui_1.RaisedButton, { primary: true, label: "Sign up now", onClick: this.onSignupPressed, style: { margin: 8 } }, " "))) :
-                    (React.createElement(reflexbox_1.Flex, { justify: 'center', align: 'center', p: 2 },
+                    (React.createElement(reflexbox_1.Flex, { justify: "center", align: "center", p: 2 },
                         React.createElement("p", null, "Already have account?"),
                         React.createElement(material_ui_1.RaisedButton, { primary: true, label: "Sign in", onClick: this.onSigninPressed, style: { margin: 8 } }, " "))))));
     }

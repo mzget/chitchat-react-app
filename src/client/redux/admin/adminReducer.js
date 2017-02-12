@@ -4,6 +4,7 @@ const adminRx = require("./adminRx");
 exports.AdminInitState = immutable_1.Record({
     isFetching: false,
     state: null,
+    error: null,
     orgCharts: new Array()
 });
 const adminInitState = new exports.AdminInitState();
@@ -20,6 +21,14 @@ exports.adminReducer = (state = adminInitState, action) => {
         }
         case adminRx.UPDATE_USER_ORG_CHART_SUCCESS: {
             return state.set("state", adminRx.UPDATE_USER_ORG_CHART_SUCCESS);
+        }
+        case adminRx.UPDATE_USER_ORG_CHART_FAILURE: {
+            return state.set("state", adminRx.UPDATE_USER_ORG_CHART_FAILURE)
+                .set("error", JSON.stringify(action.payload.message));
+        }
+        case adminRx.ADMIN_RX_EMPTY_STATE: {
+            return state.set("state", adminRx.ADMIN_RX_EMPTY_STATE)
+                .set("error", null);
         }
         default:
             return state;

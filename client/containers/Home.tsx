@@ -2,24 +2,24 @@ import * as React from "react";
 /**
  * Redux + Immutable
  */
-import { Map } from 'immutable';
-import { bindActionCreators } from 'redux';
+import { Map } from "immutable";
+import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { Link } from 'react-router';
-import { Flex, Box } from 'reflexbox';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import * as Colors from 'material-ui/styles/colors';
-import Subheader from 'material-ui/Subheader';
+import { Link } from "react-router";
+import { Flex, Box } from "reflexbox";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import * as Colors from "material-ui/styles/colors";
+import Subheader from "material-ui/Subheader";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
 import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
-import * as AuthRx from '../redux/authen/authRx';
-import * as AppActions from '../redux/app/persistentDataActions';
+import * as AuthRx from "../redux/authen/authRx";
+import * as AppActions from "../redux/app/persistentDataActions";
 
 import SimpleToolbar from "../components/SimpleToolbar";
 import { DialogBox } from "../components/DialogBox";
-import AuthenBox from './authen/AuthenBox';
+import AuthenBox from "./authen/AuthenBox";
 
 interface IComponentNameState {
     alert: boolean;
@@ -95,12 +95,12 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
                         <SimpleToolbar title={"ChitChat team communication."} />
                         <Subheader>{null}</Subheader>
                     </div>
-                    <Flex align='center'>
+                    <Flex align="center">
                         <Box p={2} flexAuto></Box>
                         <AuthenBox {...this.props} onError={this.onAuthBoxError} />
                         <Box p={2} flexAuto></Box>
                     </Flex>
-                    <Flex px={2} align='center'>
+                    <Flex px={2} align="center">
                         <Box p={2} flexAuto></Box>
                         <p>Stalk realtime messaging service.</p>
                         <Box p={2} flexAuto></Box>

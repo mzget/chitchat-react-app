@@ -29,12 +29,12 @@ exports.createNewTeamFailure = (error) => ({ type: exports.CREATE_TEAM_FAILURE, 
 exports.createNewTeamCancelled = () => ({ type: CREATE_TEAM_CANCELLED });
 exports.createNewTeamEpic = action$ => action$.ofType(CREATE_TEAM)
     .mergeMap(action => ajax({
-    method: 'POST',
+    method: "POST",
     url: `${config_1.default.api.team}/create`,
     body: JSON.stringify({ team_name: action.payload }),
     headers: {
-        'Content-Type': 'application/json',
-        'x-access-token': configureStore_1.default.getState().authReducer.token
+        "Content-Type": "application/json",
+        "x-access-token": configureStore_1.default.getState().authReducer.token
     }
 })
     .map(response => exports.createNewTeamSuccess(response.xhr.response))
@@ -50,11 +50,11 @@ const findTeamFailure = redux_actions_1.createAction(FIND_TEAM_FAILURE, error =>
 const findTeamCancelled = redux_actions_1.createAction(FIND_TEAM_CANCELLED);
 exports.findTeamEpic = action$ => action$.ofType(FIND_TEAM)
     .mergeMap(action => ajax({
-    method: 'GET',
+    method: "GET",
     url: `${config_1.default.api.team}?name=${action.payload}`,
     headers: {
-        'Content-Type': 'application/json',
-        'x-access-token': configureStore_1.default.getState().authReducer.token
+        "Content-Type": "application/json",
+        "x-access-token": configureStore_1.default.getState().authReducer.token
     }
 }).map(response => findTeamSuccess(response.xhr.response))
     .takeUntil(action$.ofType(FIND_TEAM_CANCELLED))
@@ -93,11 +93,11 @@ exports.getTeamsInfoSuccess = (payload) => ({ type: GET_TEAMS_INFO_SUCCESS, payl
 exports.getTeamsInfoFailure = (error) => ({ type: GET_TEAMS_INFO_FAILURE, payload: error });
 exports.getTeamsInfoCancelled = () => ({ type: GET_TEAMS_INFO_CANCELLED });
 exports.getTeamsInfoEpic = action$ => action$.ofType(GET_TEAMS_INFO).mergeMap(action => ajax({
-    method: 'POST',
+    method: "POST",
     url: `${config_1.default.api.team}/teamsInfo`,
     body: JSON.stringify({ team_ids: action.payload }),
     headers: {
-        'Content-Type': 'application/json', 'x-access-token': configureStore_1.default.getState().authReducer.token
+        "Content-Type": "application/json", "x-access-token": configureStore_1.default.getState().authReducer.token
     }
 }).map(response => exports.getTeamsInfoSuccess(response.xhr.response))
     .takeUntil(action$.ofType(GET_TEAMS_INFO_CANCELLED))
@@ -129,7 +129,7 @@ function getTeamMembersEpic(action$) {
             "x-access-token": configureStore_1.default.getState().authReducer.token
         }
     }).map((x) => {
-        let res = x.xhr.response;
+        let res = x.response;
         let results = res.result;
         let user_id = configureStore_1.default.getState().userReducer.user._id;
         let members = new Array();
@@ -165,7 +165,7 @@ exports.teamReducer = (state = new exports.TeamInitState(), action) => {
         case CREATE_TEAM_SUCCESS: {
             let teams = state.get("teams");
             let newItems = teams.concat(action.payload.result);
-            return state.set('teams', newItems);
+            return state.set("teams", newItems);
         }
         case exports.CREATE_TEAM_FAILURE: {
             return state.set("state", exports.CREATE_TEAM_FAILURE)
@@ -178,10 +178,10 @@ exports.teamReducer = (state = new exports.TeamInitState(), action) => {
             return state.set("findingTeams", null);
         }
         case FETCH_USER_TEAMS_SUCCESS: {
-            return state.set('teams', action.payload.result);
+            return state.set("teams", action.payload.result);
         }
         case GET_TEAMS_INFO_SUCCESS: {
-            return state.set('teams', action.payload.result);
+            return state.set("teams", action.payload.result);
         }
         case TEAM_SELECTED: {
             return state.set("team", action.payload)

@@ -1,11 +1,11 @@
 import * as React from "react";
-import { Flex, Box } from 'reflexbox';
-import { RaisedButton, TextField } from 'material-ui';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { Flex, Box } from "reflexbox";
+import { RaisedButton, TextField } from "material-ui";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 import SigninBox from "./SigninBox";
 import SignupBox from "./SignupBox";
-import * as AuthRx from '../../redux/authen/authRx';
+import * as AuthRx from "../../redux/authen/authRx";
 
 interface IComponentNameProps {
     onError: (error: string) => void;
@@ -47,15 +47,15 @@ class AuthenBox extends React.Component<IComponentNameProps, IComponentNameState
                 <Flex flexColumn>
                     {
                         (this.state.showSignin) ?
-                            <SigninBox dispatch={this.props.dispatch} onError={this.props.onError} /> : <SignupBox {...this.props} />
+                            <SigninBox dispatch={this.props.dispatch} onError={this.props.onError} /> : <SignupBox {...this.props} onError={this.props.onError} />
                     }
                     {
                         (this.state.showSignin) ?
-                            (<Flex justify='center' align='center' p={2}>
+                            (<Flex justify="center" align="center" p={2}>
                                 <p>New to chitchat?</p>
                                 <RaisedButton primary={true} label="Sign up now" onClick={this.onSignupPressed} style={{ margin: 8 }}> </RaisedButton>
                             </Flex>) :
-                            (<Flex justify='center' align='center' p={2}>
+                            (<Flex justify="center" align="center" p={2}>
                                 <p>Already have account?</p>
                                 <RaisedButton primary={true} label="Sign in" onClick={this.onSigninPressed} style={{ margin: 8 }}> </RaisedButton>
                             </Flex>)

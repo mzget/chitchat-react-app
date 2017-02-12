@@ -1,13 +1,13 @@
-import express = require('express');
+import express = require("express");
 const router = express.Router();
-import path = require('path');
+import path = require("path");
 
 import * as apiUtils from "../../scripts/utils/apiUtils";
 
 import * as adminController from "../../scripts/controllers/admin/adminController";
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get("/", function (req, res, next) {
     next();
 });
 

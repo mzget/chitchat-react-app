@@ -10,7 +10,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 const React = require("react");
 const reflexbox_1 = require("reflexbox");
 const MemberList_1 = require("../chatlist/MemberList");
-const ContactProfile_1 = require("./ContactProfile");
+const ContactProfileView_1 = require("./ContactProfileView");
 const adminRx = require("../../redux/admin/adminRx");
 ;
 class TeamMemberBox extends React.Component {
@@ -25,33 +25,41 @@ class TeamMemberBox extends React.Component {
     componentWillReceiveProps(nextProps) {
         let { adminReducer } = nextProps;
         switch (adminReducer.state) {
-            case adminRx.UPDATE_USER_ORG_CHART_SUCCESS:
-                this.setState(previous => (__assign({}, previous, { member: null })));
+            case adminRx.UPDATE_USER_ORG_CHART_FAILURE: {
+                this.props.onError(adminReducer.error);
                 break;
+            }
+            case adminRx.UPDATE_USER_ORG_CHART_SUCCESS: {
+                this.setState(previous => (__assign({}, previous, { member: null })));
+                this.props.dispatch(adminRx.emptyState());
+                break;
+            }
             default:
                 break;
         }
     }
     onSelectMember(item) {
         let { adminReducer: { orgCharts } } = this.props;
-        console.info(item);
-        if (!item.org_chart_id) {
+        console.log("onSelectMember", item);
+        if (item.teamProfiles.length === 0) {
             this.setState(previous => (__assign({}, previous, { member: item, dropdownValue: -1 })));
         }
         else {
             let charts = orgCharts;
             let chart_ids = charts.findIndex((v, i, arr) => {
-                return v._id.toString() === item.org_chart_id;
+                return v._id.toString() === item.teamProfiles[0].org_chart_id;
             });
             this.setState(previous => (__assign({}, previous, { member: item, dropdownValue: chart_ids })));
         }
     }
     onSubmit() {
-        let { adminReducer: { orgCharts } } = this.props;
+        let { adminReducer: { orgCharts }, teamReducer: { team } } = this.props;
         let _member = this.state.member;
-        _member.org_chart_id = orgCharts[this.state.dropdownValue]._id;
+        if (orgCharts.length > 0 && this.state.dropdownValue >= 0) {
+            this.orgChart_id = orgCharts[this.state.dropdownValue]._id;
+        }
         if (_member) {
-            this.props.dispatch(adminRx.updateUserOrgChart(_member));
+            this.props.dispatch(adminRx.updateUserOrgChart(_member, team._id, this.orgChart_id));
         }
         else {
             if (this.props.onError) {
@@ -61,12 +69,10 @@ class TeamMemberBox extends React.Component {
     }
     render() {
         return (React.createElement(reflexbox_1.Flex, { flexColumn: false },
-            React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
             React.createElement(reflexbox_1.Flex, { flexColumn: true, align: "center" }, (!!this.state.member) ?
-                React.createElement(ContactProfile_1.ContactProfile, { member: this.state.member, onSubmit: this.onSubmit, dropdownItems: this.props.adminReducer.orgCharts, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => { this.setState(previous => (__assign({}, previous, { dropdownValue: value }))); } })
+                React.createElement(ContactProfileView_1.ContactProfileView, { member: this.state.member, onSubmit: this.onSubmit, dropdownItems: this.props.adminReducer.orgCharts, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => { this.setState(previous => (__assign({}, previous, { dropdownValue: value }))); } })
                 :
-                    React.createElement(MemberList_1.MemberList, { onSelected: this.onSelectMember, value: this.props.teamReducer.members })),
-            React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })));
+                    React.createElement(MemberList_1.MemberList, { onSelected: this.onSelectMember, value: this.props.teamReducer.members }))));
     }
 }
 exports.TeamMemberBox = TeamMemberBox;

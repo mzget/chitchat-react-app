@@ -1,17 +1,16 @@
-﻿import mongodb = require('mongodb');
+﻿import mongodb = require("mongodb");
 
 const MongoClient = mongodb.MongoClient;
 type ObjectID = mongodb.ObjectID;
-import { getConfig, DbClient } from '../../../config';
-const config = getConfig();
+import { Config, DbClient } from "../../../config";
 
-import { ITeam } from '../../models/ITeam';
+import { ITeam } from "../../models/ITeam";
 import { ChitChatAccount } from "../../models/User";
-import * as GroupController from '../group/GroupController';
+import * as GroupController from "../group/GroupController";
 
 
 export async function findTeamsInfo(team_ids: Array<ObjectID>) {
-    let db = await MongoClient.connect(config.chatDB);
+    let db = await MongoClient.connect(Config.chatDB);
     let collection = db.collection(DbClient.teamsColl);
 
     let teams = await collection.find({ _id: { $in: team_ids } }).limit(10).toArray();
@@ -23,7 +22,7 @@ export async function findTeamName(team_name: string) {
 
     let _team = team_name.toLowerCase();
 
-    let db = await MongoClient.connect(config.chatDB);
+    let db = await MongoClient.connect(Config.chatDB);
     let collection = db.collection(DbClient.teamsColl);
 
     collection.createIndex({ name: 1 }, { background: true });
@@ -38,7 +37,7 @@ export async function searchTeam(team_name: string) {
 
     let _team = team_name.toLowerCase();
 
-    let db = await MongoClient.connect(config.chatDB);
+    let db = await MongoClient.connect(Config.chatDB);
     let collection = db.collection(DbClient.teamsColl);
 
     collection.createIndex({ name: 1 }, { background: true });
@@ -51,7 +50,7 @@ export async function searchTeam(team_name: string) {
 }
 
 export async function createTeam(team_name: string, owner: ChitChatAccount) {
-    let db = await MongoClient.connect(config.chatDB);
+    let db = await MongoClient.connect(Config.chatDB);
     let collection = db.collection(DbClient.teamsColl);
 
     collection.createIndex({ name: 1 }, { background: true });

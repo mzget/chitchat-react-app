@@ -1,13 +1,13 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
-import { Flex, Box } from 'reflexbox';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import * as Colors from 'material-ui/styles/colors';
-import Subheader from 'material-ui/Subheader';
+import { Flex, Box } from "reflexbox";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import * as Colors from "material-ui/styles/colors";
 
-import { IComponentProps } from '../utils/IComponentProps';
+import { IComponentProps } from "../utils/IComponentProps";
 
 import SimpleToolbar from "../components/SimpleToolbar";
+import ProfileBox from "./profile/ProfileBox";
 import OrgGroupListBox from "./group/OrgGroupListBox";
 import ChatLogsBox from "./ChatLogsBox";
 import ContactBox from "./chatlist/ContactBox";
@@ -26,7 +26,7 @@ interface IComponentNameState {
 
 class Main extends React.Component<IComponentProps, IComponentNameState> {
 
-    menus = ["admin", "log out"];
+    menus = ["menu", "log out"];
     clientWidth = document.documentElement.clientWidth;
     clientHeight = document.documentElement.clientHeight;
     headerHeight = null;
@@ -146,10 +146,13 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
             <MuiThemeProvider>
                 <div>
                     <div style={{ height: this.headerHeight }}>
-                        <SimpleToolbar title={this.props.teamReducer.team.name} menus={this.menus} onSelectedMenuItem={this.onSelectMenuItem} />
-                        <Subheader>{this.state.header}</Subheader>
+                        <SimpleToolbar
+                            title={this.props.teamReducer.team.name}
+                            menus={this.menus}
+                            onSelectedMenuItem={this.onSelectMenuItem} />
                     </div>
-                    <div style={{ height: this.bodyHeight }}>
+                    <div style={{ height: this.bodyHeight, overflowY: "auto" }}>
+                        <ProfileBox {...this.props} />
                         <OrgGroupListBox {...this.props} />
                         <ContactBox {...this.props} />
                         <ChatLogsBox {...this.props} />
@@ -158,7 +161,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                     {
                         (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
                             (
-                                <Flex style={{ height: this.footerHeight, backgroundColor: Colors.red500 }} align='center' justify='center' flexColumn={true}>
+                                <Flex style={{ height: this.footerHeight, backgroundColor: Colors.red500 }} align="center" justify="center" flexColumn={true}>
                                     <Flex flexColumn={true}>
                                         <span style={{ color: Colors.white }}>Unable to connect whit chat service.</span>
                                         <span style={{ color: Colors.white }}>Check your Internet connection.</span>

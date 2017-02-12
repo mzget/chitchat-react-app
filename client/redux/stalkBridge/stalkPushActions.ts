@@ -9,7 +9,7 @@ import Store from "../configureStore";
 
 const LINK_REQUEST = "LINK_REQUEST";
 const LINK_ACCEPTED = "LINK_ACCEPTED";
-const NEW_NOTICE = 'NEW_NOTICE';
+const NEW_NOTICE = "NEW_NOTICE";
 
 export function stalkPushInit() {
     const pushDataListener = BackendFactory.getInstance().pushDataListener;
