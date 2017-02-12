@@ -1,6 +1,6 @@
 ﻿import mongodb = require("mongodb");
 import async = require("async");
-import { Room, RoomType } from "../models/Room";
+import { Room, RoomType, RoomStatus, IMember } from "../models/Room";
 import message = require("../models/Message");
 import * as UserManager from "./user/UserManager";
 const ObjectID = mongodb.ObjectID;
@@ -128,7 +128,6 @@ export async function createPrivateGroup(room: Room) {
 
 export class ChatRoomManager {
     private static _Instance: ChatRoomManager = null;
-    private userManager = UserManager.getInstance();
     private roomDAL = new RoomDataAccess();
 
 
@@ -144,7 +143,7 @@ export class ChatRoomManager {
         this.roomDAL.userUpdateGroupImage(roomId, newUrl, callback);
     }
 
-    public editGroupMembers(editType: string, roomId: string, members: Room.IMember[], callback: (err, res) => void) {
+    public editGroupMembers(editType: string, roomId: string, members: IMember[], callback: (err, res) => void) {
         if (editType === "add") {
             this.roomDAL.addGroupMembers(roomId, members, callback);
         }
@@ -174,11 +173,11 @@ export class ChatRoomManager {
     }
 
 
-    public createProjectBaseGroup(groupName: string, members: Room.IMember[], callback: (err, res) => void) {
+    public createProjectBaseGroup(groupName: string, members: IMember[], callback: (err, res) => void) {
         this.roomDAL.createProjectBaseGroup(groupName, members, callback);
     }
 
-    public editMemberInfoInProjectBase(roomId: string, member: Room.IMember, callback: (Error, res) => void) {
+    public editMemberInfoInProjectBase(roomId: string, member: IMember, callback: (Error, res) => void) {
         this.roomDAL.editMemberInfoInProjectBase(roomId, member, callback);
     }
 
@@ -241,7 +240,6 @@ export class ChatRoomManager {
     public GetChatContent(messageId: string, callback: (err, res: any[]) => void) {
         MongoClient.connect(MDb.DbController.chatDB, function (err, db) {
             if (err) { return console.dir(err); }
-            assert.equal(null, err);
 
             // Get the documents collection
             let collection = db.collection(MDb.DbController.messageColl);
@@ -266,18 +264,16 @@ export class ChatRoomManager {
 }
 
 export class RoomDataAccess {
-    private userManager = UserManager.getInstance();
-
     findProjectBaseGroups(userId: string, callback: (err, res) => void) {
         dbClient.FindDocuments(MDb.DbController.roomColl, function (res) {
             callback(null, res);
-        }, { type: Room.RoomType.projectBaseGroup, status: Room.RoomStatus.active, members: { $elemMatch: { id: userId } } });
+        }, { type: RoomType.projectBaseGroup, status: RoomStatus.active, members: { $elemMatch: { id: userId } } });
     }
 
     findPrivateGroupChat(uid: string, callback: (err, res) => void) {
         dbClient.FindDocuments(MDb.DbController.roomColl, function (res) {
             callback(null, res);
-        }, { type: Room.RoomType.privateGroup, members: { $elemMatch: { id: uid } } });
+        }, { type: RoomType.privateGroup, members: { $elemMatch: { id: uid } } });
     }
 
     /**
@@ -289,13 +285,13 @@ export class RoomDataAccess {
         }, {});
     }
 
-    public createProjectBaseGroup(groupName: string, members: Room.IMember[], callback: (err, res) => void) {
-        let newRoom = new Room.Room();
+    public createProjectBaseGroup(groupName: string, members: IMember[], callback: (err, res) => void) {
+        let newRoom = new Room();
         newRoom.name = groupName;
-        newRoom.type = Room.RoomType.projectBaseGroup;
+        newRoom.type = RoomType.projectBaseGroup;
         newRoom.members = members;
         newRoom.createTime = new Date();
-        newRoom.status = Room.RoomStatus.active;
+        newRoom.status = RoomStatus.active;
         newRoom.org_chart_id = 0;
 
         MongoClient.connect(MDb.DbController.chatDB, function (err, db) {
@@ -323,7 +319,7 @@ export class RoomDataAccess {
         }, { _id: new ObjectID(roomId) }, { $set: { image: newUrl } }, { w: 1, upsert: true });
     }
 
-    public addGroupMembers(roomId: string, members: Room.IMember[], callback: (err, res) => void) {
+    public addGroupMembers(roomId: string, members: IMember[], callback: (err, res) => void) {
         MongoClient.connect(MDb.DbController.chatDB, function (err, db) {
             if (err) { return console.dir(err); }
 
@@ -343,7 +339,7 @@ export class RoomDataAccess {
         });
     }
 
-    public removeGroupMembers(roomId: string, members: Room.IMember[], callback: (err, res) => void) {
+    public removeGroupMembers(roomId: string, members: IMember[], callback: (err, res) => void) {
         async.eachSeries(members, function iterator(item, errCb) {
             MongoClient.connect(MDb.DbController.chatDB, function (err, db) {
                 if (err) { return console.dir(err); }
@@ -393,7 +389,7 @@ export class RoomDataAccess {
         });
     }
 
-    public editMemberInfoInProjectBase(roomId: string, member: Room.IMember, callback: (err, res) => void) {
+    public editMemberInfoInProjectBase(roomId: string, member: IMember, callback: (err, res) => void) {
         MongoClient.connect(MDb.DbController.chatDB, (err, db) => {
             // Get the collection
             let col = db.collection(MDb.DbController.roomColl);

@@ -13,7 +13,7 @@ export async function createDefaultGroup(owner: ChitChatAccount) {
     let db = await MongoClient.connect(Config.chatDB);
     let collection = db.collection(DbClient.chatroomColl);
 
-    let member = new Member();
+    let member = {} as IMember;
     member._id = owner._id;
     member.joinTime = new Date();
     member.room_role = MemberRole.owner;
@@ -67,7 +67,7 @@ export async function addMember(group_id: string, user: ChitChatAccount) {
     let db = await MongoClient.connect(Config.chatDB);
     let collection = db.collection(DbClient.chatroomColl);
 
-    let member = new Member();
+    let member = {} as IMember;
     member._id = user._id;
     member.joinTime = new Date();
     member.room_role = MemberRole.member;
@@ -97,7 +97,7 @@ export async function addUserToOrgChartGroups(user_id: string, username: string,
     let db = await MongoClient.connect(Config.chatDB);
     let groupCollection = db.collection(DbClient.chatroomColl);
 
-    let member = new Member();
+    let member = {} as IMember;
     member._id = user_id;
     member.joinTime = new Date();
     member.room_role = MemberRole.member;

@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const mongodb = require("mongodb");
 const async = require("async");
 const Room_1 = require("../models/Room");
-const UserManager = require("./user/UserManager");
 const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
 const config_1 = require("../../config");
@@ -130,7 +129,6 @@ function createPrivateGroup(room) {
 exports.createPrivateGroup = createPrivateGroup;
 class ChatRoomManager {
     constructor() {
-        this.userManager = UserManager.getInstance();
         this.roomDAL = new RoomDataAccess();
     }
     getProjectBaseGroups(userId, callback) {
@@ -227,7 +225,6 @@ class ChatRoomManager {
             if (err) {
                 return console.dir(err);
             }
-            assert.equal(null, err);
             // Get the documents collection
             let collection = db.collection(MDb.DbController.messageColl);
             // Find some documents
@@ -249,18 +246,15 @@ class ChatRoomManager {
 ChatRoomManager._Instance = null;
 exports.ChatRoomManager = ChatRoomManager;
 class RoomDataAccess {
-    constructor() {
-        this.userManager = UserManager.getInstance();
-    }
     findProjectBaseGroups(userId, callback) {
         dbClient.FindDocuments(MDb.DbController.roomColl, function (res) {
             callback(null, res);
-        }, { type: Room_1.Room.RoomType.projectBaseGroup, status: Room_1.Room.RoomStatus.active, members: { $elemMatch: { id: userId } } });
+        }, { type: Room_1.RoomType.projectBaseGroup, status: Room_1.RoomStatus.active, members: { $elemMatch: { id: userId } } });
     }
     findPrivateGroupChat(uid, callback) {
         dbClient.FindDocuments(MDb.DbController.roomColl, function (res) {
             callback(null, res);
-        }, { type: Room_1.Room.RoomType.privateGroup, members: { $elemMatch: { id: uid } } });
+        }, { type: Room_1.RoomType.privateGroup, members: { $elemMatch: { id: uid } } });
     }
     /**
      * Get all rooms and then return all info of { _id, members } to array of roomModel;.
@@ -271,12 +265,12 @@ class RoomDataAccess {
         }, {});
     }
     createProjectBaseGroup(groupName, members, callback) {
-        let newRoom = new Room_1.Room.Room();
+        let newRoom = new Room_1.Room();
         newRoom.name = groupName;
-        newRoom.type = Room_1.Room.RoomType.projectBaseGroup;
+        newRoom.type = Room_1.RoomType.projectBaseGroup;
         newRoom.members = members;
         newRoom.createTime = new Date();
-        newRoom.status = Room_1.Room.RoomStatus.active;
+        newRoom.status = Room_1.RoomStatus.active;
         newRoom.org_chart_id = 0;
         MongoClient.connect(MDb.DbController.chatDB, function (err, db) {
             if (err) {

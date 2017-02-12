@@ -178,13 +178,5 @@ router.post("/getChatHistory", (req, res, next) => {
     });
 });
 
-router.post("/clear_cache", (req, res, next) => {
-    RedisClient.del(ROOM_KEY, function (err, reply) {
-        console.log(err, reply);
-        if (err) return res.status(500).json({ success: false, message: err });
-        res.status(200).json({ success: true, result: reply });
-    });
-});
-
 
 module.exports = router;

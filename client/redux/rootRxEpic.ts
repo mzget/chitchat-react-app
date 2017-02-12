@@ -34,8 +34,9 @@ export const rootEpic = combineEpics(
     teamRx.joinTeamEpic,
 
     ///@Group
-    groupRx.getOrgGroupEpic,
-    groupRx.createOrgGroupEpic,
+    groupRx.getOrgGroup_Epic,
+    groupRx.createOrgGroup_Epic,
+    groupRx.createPrivateGroup_Epic,
 
     ///@ChatRoom
     chatroomRxEpic.getPrivateChatRoomEpic,

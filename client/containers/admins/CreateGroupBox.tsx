@@ -68,6 +68,8 @@ class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
                     this.group.type = RoomType.privateGroup;
                     this.group.members = new Array(member);
 
+                    this.props.dispatch(groupRx.createPrivateGroup(this.group));
+
                     break;
                 default:
                     break;

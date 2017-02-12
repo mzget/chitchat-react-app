@@ -62,11 +62,11 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
         const { groupReducer, adminReducer } = nextProps;
 
         switch (groupReducer.state) {
-            case groupRx.CREATE_ORG_GROUP_SUCCESS: {
+            case groupRx.CREATE_ORG_GROUP_SUCCESS || groupRx.CREATE_PRIVATE_GROUP_SUCCESS: {
                 this.setState(prevState => ({ ...prevState, boxState: BoxState.idle }));
                 break;
             }
-            case groupRx.CREATE_ORG_GROUP_FAILURE: {
+            case groupRx.CREATE_ORG_GROUP_FAILURE || groupRx.CREATE_PRIVATE_GROUP_FAILURE: {
                 this.onAlert(groupReducer.error);
                 break;
             }

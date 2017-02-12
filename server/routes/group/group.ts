@@ -98,8 +98,8 @@ router.post("/private_group/create", function (req, res, next) {
             res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
 
             let room = docs[0] as Room;
-            // <!-- Update list of roomsMember mapping.
             RoomService.addRoom(room);
+            // <!-- Update list of roomsMember mapping.
             pushNewRoomAccessToNewMembers(room._id.toString(), room.members);
         }
         else {
