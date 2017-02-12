@@ -19,7 +19,7 @@ exports.getOrgGroupEpic = action$ => (action$.ofType(GET_ORG_GROUP).mergeMap(act
     .takeUntil(action$.ofType(GET_ORG_GROUP_CANCELLED))
     .catch(error => Rx.Observable.of(getOrgGroupFailure(error.xhr.response)))
     .do(response => {
-    if (response.type === GET_ORG_GROUP_SUCCESS) {
+    if (response.type == GET_ORG_GROUP_SUCCESS) {
         const dataManager = BackendFactory_1.default.getInstance().dataManager;
         let rooms = response.payload.result;
         Rx.Observable.from(rooms)._do(x => {
@@ -35,7 +35,7 @@ exports.createOrgGroup = (group) => ({ type: CREATE_ORG_GROUP, payload: group })
 const createOrgGroupSuccess = redux_actions_1.createAction(exports.CREATE_ORG_GROUP_SUCCESS, payload => payload);
 const createOrgGroupFailure = redux_actions_1.createAction(exports.CREATE_ORG_GROUP_FAILURE, err => err);
 const createOrgGroupCancelled = redux_actions_1.createAction(CREATE_ORG_GROUP_CANCELLED);
-exports.createGroupEpic = action$ => (action$.ofType(CREATE_ORG_GROUP).mergeMap(action => ajax({
+exports.createOrgGroupEpic = action$ => (action$.ofType(CREATE_ORG_GROUP).mergeMap(action => ajax({
     method: "POST",
     url: `${config_1.default.api.group}/org/create`,
     body: JSON.stringify({ room: action.payload }),

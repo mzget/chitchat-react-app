@@ -26,7 +26,7 @@ export const getOrgGroupEpic = action$ => (
             .takeUntil(action$.ofType(GET_ORG_GROUP_CANCELLED))
             .catch(error => Rx.Observable.of(getOrgGroupFailure(error.xhr.response)))
             .do(response => {
-                if (response.type === GET_ORG_GROUP_SUCCESS) {
+                if (response.type == GET_ORG_GROUP_SUCCESS) {
                     const dataManager = BackendFactory.getInstance().dataManager;
                     let rooms = response.payload.result as Array<Room>;
 
@@ -45,7 +45,7 @@ export const createOrgGroup = (group) => ({ type: CREATE_ORG_GROUP, payload: gro
 const createOrgGroupSuccess = createAction(CREATE_ORG_GROUP_SUCCESS, payload => payload);
 const createOrgGroupFailure = createAction(CREATE_ORG_GROUP_FAILURE, err => err);
 const createOrgGroupCancelled = createAction(CREATE_ORG_GROUP_CANCELLED);
-export const createGroupEpic = action$ => (
+export const createOrgGroupEpic = action$ => (
     action$.ofType(CREATE_ORG_GROUP).mergeMap(action => ajax({
         method: "POST",
         url: `${config.api.group}/org/create`,

@@ -19,43 +19,33 @@ export const fetchPrivateChatRoom = (ownerId, roommateId) => ({ type: FETCH_PRIV
 const fetchPrivateChatRoomSuccess = (payload) => ({ type: FETCH_PRIVATE_CHATROOM_SUCCESS, payload });
 const cancelFetchPrivateChatRoom = () => ({ type: FETCH_PRIVATE_CHATROOM_CANCELLED });
 const fetchPrivateChatRoomFailure = payload => ({ type: FETCH_PRIVATE_CHATROOM_FAILURE, payload, error: true });
-export const getPrivateChatRoomEpic = action$ => {
-    return action$.ofType(FETCH_PRIVATE_CHATROOM)
-        .mergeMap(action => ajax({
-            url: `${config.api.chatroom}`,
-            method: "POST",
-            body: JSON.stringify(action.payload),
-            headers: {
-                "Content-Type": "application/json",
-                "x-access-token": Store.getState().authReducer.token
-            }
-        }))
-        .map(json => fetchPrivateChatRoomSuccess(json.response))
-        .takeUntil(action$.ofType(FETCH_PRIVATE_CHATROOM_CANCELLED))
-        .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.xhr.response)))
-};
+export const getPrivateChatRoomEpic = action$ => action$.ofType(FETCH_PRIVATE_CHATROOM)
+    .mergeMap(action => ajax({
+        url: `${config.api.chatroom}`,
+        method: "POST",
+        body: JSON.stringify(action.payload),
+        headers: {
+            "Content-Type": "application/json",
+            "x-access-token": Store.getState().authReducer.token
+        }
+    }))
+    .map(json => fetchPrivateChatRoomSuccess(json.response))
+    .takeUntil(action$.ofType(FETCH_PRIVATE_CHATROOM_CANCELLED))
+    .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.xhr.response)));
 
 const CREATE_PRIVATE_CHATROOM = "CREATE_PRIVATE_CHATROOM";
 export const CREATE_PRIVATE_CHATROOM_SUCCESS = "CREATE_PRIVATE_CHATROOM_SUCCESS";
 const CREATE_PRIVATE_CHATROOM_CANCELLED = "CREATE_PRIVATE_CHATROOM_CANCELLED";
 const CREATE_PRIVATE_CHATROOM_FAILURE = "CREATE_PRIVATE_CHATROOM_FAILURE";
-export const createPrivateChatRoom = (owner, roommate) => ({
-    type: CREATE_PRIVATE_CHATROOM, payload: { owner, roommate }
-});
-const createPrivateChatRoomSuccess = (payload) => ({
-    type: CREATE_PRIVATE_CHATROOM_SUCCESS, payload
-});
-const createPrivateRoomCancelled = () => ({
-    type: CREATE_PRIVATE_CHATROOM_CANCELLED
-});
-const createPrivateChatRoomFailure = (payload) => ({
-    type: CREATE_PRIVATE_CHATROOM_FAILURE, payload
-});
+export const createPrivateChatRoom = (owner, roommate) => ({ type: CREATE_PRIVATE_CHATROOM, payload: { owner, roommate } });
+const createPrivateChatRoomSuccess = (payload) => ({ type: CREATE_PRIVATE_CHATROOM_SUCCESS, payload });
+const createPrivateRoomCancelled = () => ({ type: CREATE_PRIVATE_CHATROOM_CANCELLED });
+const createPrivateChatRoomFailure = (payload) => ({ type: CREATE_PRIVATE_CHATROOM_FAILURE, payload });
 export const createPrivateChatRoomEpic = action$ => {
     return action$.ofType(CREATE_PRIVATE_CHATROOM)
         .mergeMap(action => ajax({
-            method: 'POST',
-            url: `${config.api.chatroom}/createPrivateRoom`,
+            method: "POST",
+            url: `${config.api.group}/private_chat/create`,
             body: action.payload,
             headers: {
                 "Content-Type": "application/json",
@@ -64,7 +54,7 @@ export const createPrivateChatRoomEpic = action$ => {
         }))
         .map(json => createPrivateChatRoomSuccess(json.response))
         .takeUntil(action$.ofType(CREATE_PRIVATE_CHATROOM_CANCELLED))
-        .catch(error => Rx.Observable.of(createPrivateChatRoomFailure(error.xhr.response)))
+        .catch(error => Rx.Observable.of(createPrivateChatRoomFailure(error.xhr.response)));
 };
 
 const GET_PERSISTEND_MESSAGE = "GET_PERSISTEND_MESSAGE";
@@ -80,7 +70,7 @@ export const getPersistendMessageEpic = action$ => {
         .mergeMap(action => ChatRoomComponent.getInstance().getPersistentMessage(action.payload))
         .map(json => getPersistendMessage_success(json))
         .takeUntil(action$.ofType(GET_PERSISTEND_MESSAGE_CANCELLED))
-        .catch(error => Rx.Observable.of(getPersistendMessage_failure(error)))
+        .catch(error => Rx.Observable.of(getPersistendMessage_failure(error)));
 
     // Next call 2 method below. -->
     // getNewerMessageFromNet();
@@ -103,10 +93,10 @@ export const uploadFileEpic = action$ => (
     action$.ofType(CHATROOM_UPLOAD_FILE)
         .mergeMap(action => {
             let body = new FormData();
-            body.append('file', action.payload.file);
+            body.append("file", action.payload.file);
 
             return ajax({
-                method: 'POST',
+                method: "POST",
                 url: `${config.api.fileUpload}`,
                 body: body,
                 headers: {}
