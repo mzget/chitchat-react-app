@@ -1,7 +1,7 @@
 "use strict";
 const mongodb = require("mongodb");
 const redis = require("redis");
-const CachingSevice_1 = require("./CachingSevice");
+const RedisClient_1 = require("./RedisClient");
 const config_1 = require("../../config");
 const DbClient_1 = require("../DbClient");
 const { ObjectID } = mongodb;
@@ -33,13 +33,13 @@ exports.checkedCanAccessRoom = (roomId, userId, callback) => {
 function setRoomsMap(data, callback) {
     data.forEach(element => {
         let room = JSON.parse(JSON.stringify(element));
-        CachingSevice_1.default.hmset(CachingSevice_1.ROOM_MAP_KEY, element._id, JSON.stringify(room), redis.print);
+        RedisClient_1.default.hmset(RedisClient_1.ROOM_MAP_KEY, element._id, JSON.stringify(room), redis.print);
     });
     callback();
 }
 exports.setRoomsMap = setRoomsMap;
 function getRoom(roomId, callback) {
-    CachingSevice_1.default.hmget(CachingSevice_1.ROOM_MAP_KEY, roomId, function (err, roomMap) {
+    RedisClient_1.default.hmget(RedisClient_1.ROOM_MAP_KEY, roomId, function (err, roomMap) {
         if (err || roomMap[0] == null || roomMap[0] == undefined) {
             console.log("Can't find room from cache");
             let db = DbClient_1.getAppDb();
@@ -67,6 +67,6 @@ exports.getRoom = getRoom;
 * Require Room object. Must be { Room._id, Room.members }
 */
 function addRoom(room) {
-    CachingSevice_1.default.hmset(CachingSevice_1.ROOM_MAP_KEY, room._id, JSON.stringify(room), redis.print);
+    RedisClient_1.default.hmset(RedisClient_1.ROOM_MAP_KEY, room._id, JSON.stringify(room), redis.print);
 }
 exports.addRoom = addRoom;

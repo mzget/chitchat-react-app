@@ -1,6 +1,6 @@
 import mongodb = require("mongodb");
 import redis = require("redis");
-import redisClient, { ROOM_MAP_KEY } from "./CachingSevice";
+import RedisClient, { ROOM_MAP_KEY, redisStatus, RedisStatus } from "./RedisClient";
 
 import { Config, DbClient } from "../../config";
 import { getAppDb } from "../DbClient";
@@ -19,7 +19,7 @@ export const checkedCanAccessRoom = (roomId: string, userId: string, callback: (
             if (room.members && Array.isArray(room.members)) {
                 let members = room.members as Array<any>;
                 result = members.some(value => {
-                    if (value._id === userId) {
+                    if (value._id == userId) {
                         return true;
                     }
                 });
@@ -39,41 +39,54 @@ export const checkedCanAccessRoom = (roomId: string, userId: string, callback: (
 export function setRoomsMap(data: Array<any>, callback: () => void) {
     data.forEach(element => {
         let room: Room.Room = JSON.parse(JSON.stringify(element));
-        redisClient.hmset(ROOM_MAP_KEY, element._id, JSON.stringify(room), redis.print);
+        RedisClient.hmset(ROOM_MAP_KEY, element._id, JSON.stringify(room), redis.print);
     });
 
     callback();
 }
 
 export function getRoom(roomId: string, callback: (err: any, res: Room.Room) => void) {
-    redisClient.hmget(ROOM_MAP_KEY, roomId, function (err, roomMap) {
-        if (err || roomMap[0] == null || roomMap[0] == undefined) {
-            console.log("Can't find room from cache");
+    if (redisStatus == RedisStatus.ready) {
+        RedisClient.hmget(ROOM_MAP_KEY, roomId, function (err, roomMap) {
+            if (err || roomMap[0] == null || roomMap[0] == undefined) {
+                console.log("Can't find room from cache");
 
-            let db = getAppDb();
-            let chatroom_coll = db.collection(DbClient.chatroomColl);
-            chatroom_coll.find({ _id: new ObjectID(roomId) }).limit(1).toArray().then(docs => {
-                if (docs.length > 0) {
-                    addRoom(docs[0]);
-
-                    callback(null, docs[0]);
-                } else {
-                    callback(new Error("Can't find room"), null);
-                }
-            }).catch(err => {
-                callback(new Error("Can't find room: " + err), null);
-            });
-        }
-        else {
-            let room: Room.Room = JSON.parse(roomMap[0]);
+                queryChatRoom().then(room => {
+                    callback(null, room);
+                }).catch(err => {
+                    callback(err, null);
+                });
+            }
+            else {
+                let room: Room.Room = JSON.parse(roomMap[0]);
+                callback(null, room);
+            }
+        });
+    }
+    else {
+        queryChatRoom().then(room => {
             callback(null, room);
+        }).catch(err => {
+            callback(err, null);
+        });
+    }
+
+    async function queryChatRoom() {
+        let db = getAppDb();
+        let chatroom_coll = db.collection(DbClient.chatroomColl);
+        let docs = await chatroom_coll.find({ _id: new ObjectID(roomId) }).limit(1).toArray();
+        if (docs.length > 0) {
+            addRoom(docs[0]);
+            return docs[0];
+        } else {
+            throw new Error("Can't find room");
         }
-    });
+    }
 }
 
 /**
 * Require Room object. Must be { Room._id, Room.members }
 */
 export function addRoom(room: Room.Room) {
-    redisClient.hmset(ROOM_MAP_KEY, room._id, JSON.stringify(room), redis.print);
+    RedisClient.hmset(ROOM_MAP_KEY, room._id, JSON.stringify(room), redis.print);
 }

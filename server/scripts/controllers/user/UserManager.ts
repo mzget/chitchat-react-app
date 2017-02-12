@@ -56,45 +56,31 @@ export const getRoomAccessOfRoom = async (uid: string, rid: string) => {
     return docs;
 };
 
-
-export const updateLastAccessTimeOfRoom = async (user_id: string, room_id: string, date: Date) => {
-    let db = getAppDb();
-    let chatUserColl = db.collection(DbClient.stalkUserColl);
-
-    let docs: Array<StalkAccount> = await chatUserColl.find({ _id: new ObjectID(user_id) }).limit(1).project({ roomAccess: 1 }).toArray();
-
-    if (docs.length > 0 && docs[0].roomAccess) {
-        let result = await findRoomAccessDataMatchWithRoomId(user_id, room_id, date);
-
-        return result;
-    }
-    else {
-        // <!-- insert roomAccess info field in user data collection.
-        let result = await insertRoomAccessInfoField(user_id, room_id);
-
-        return result;
-    }
-};
-
-export const AddRoomIdToRoomAccessField = (roomId: string, memberIds: string[], date: Date, callback: (err, res: boolean) => void) => {
+export async function AddRoomIdToRoomAccessFieldOfUsers(roomId: string, memberIds: string[], date: Date) {
+    let isDone = false;
     async.each(memberIds, function (element: string, cb) {
-        AddRidToRoomAccessField(element, roomId, date, (error, response) => {
+        AddRoomIdToRoomAccessFieldOfUser(roomId, element, date).then(result => {
+            cb();
+        }).catch(err => {
             cb();
         });
     }, function (errCb) {
-        if (!errCb) {
-            callback(null, true);
-        }
+        isDone = true;
     });
+
+    while (!isDone) {
+        await isDone;
+    }
+    return isDone;
 }
 
-export const AddRoomIdToRoomAccessFieldForUser = async (roomId: string, userId: string, date: Date): Promise<any> => {
+export async function AddRoomIdToRoomAccessFieldOfUser(roomId: string, userId: string, date: Date) {
     let db = getAppDb();
     let chatUserCollection = db.collection(DbClient.stalkUserColl);
 
     let docs = await chatUserCollection.find({ _id: new ObjectID(userId) }, { roomAccess: 1 }).limit(1).toArray();
     if (docs.length > 0 && !!docs[0].roomAccess) {
-        // <!-- add rid to MembersFields.       
+        // <!-- add rid to MembersFields.
         let result = await findRoomAccessDataMatchWithRoomId(userId, roomId, date);
         return result;
     }
@@ -103,6 +89,24 @@ export const AddRoomIdToRoomAccessFieldForUser = async (roomId: string, userId: 
         return result;
     }
 }
+
+export const updateLastAccessTimeOfRoom = async (user_id: string, room_id: string, date: Date) => {
+    let db = getAppDb();
+    let stalkUsersColl = db.collection(DbClient.stalkUserColl);
+
+    let docs: Array<StalkAccount> = await stalkUsersColl.find({ _id: new ObjectID(user_id) }).limit(1)
+        .project({ roomAccess: 1 }).toArray();
+
+    if (docs.length > 0 && docs[0].roomAccess) {
+        let result = await findRoomAccessDataMatchWithRoomId(user_id, room_id, date);
+        return result;
+    }
+    else {
+        // <!-- insert roomAccess info field in user data collection.
+        let result = await insertRoomAccessInfoField(user_id, room_id);
+        return result;
+    }
+};
 
 export const updateFavoriteMembers = (editType: string, member: string, uid: string, callback: (err, res) => void) => {
     if (editType === "add") {

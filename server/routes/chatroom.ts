@@ -5,7 +5,7 @@ import async = require("async");
 const router = express.Router();
 import redis = require("redis");
 const ObjectID = mongodb.ObjectID;
-import redisClient, { ROOM_KEY } from "../scripts/services/CachingSevice";
+import RedisClient, { ROOM_KEY } from "../scripts/services/RedisClient";
 import * as apiUtils from "../scripts/utils/apiUtils";
 import { Room, IMember, RoomType } from "../scripts/models/Room";
 import Message = require("../scripts/models/Message");
@@ -47,7 +47,7 @@ router.post("/", function (req, res, next) {
     let hexCode = md.digest("hex");
     let roomId = hexCode.slice(0, 24);
 
-    redisClient.hmget(ROOM_KEY, roomId, (err, result) => {
+    RedisClient.hmget(ROOM_KEY, roomId, (err, result) => {
         let rooms = JSON.parse(JSON.stringify(result)) as Array<Room>;
         console.log("get room from cache", rooms);
 
@@ -64,7 +64,7 @@ router.post("/", function (req, res, next) {
             console.log("find room from db...");
             ChatRoomManager.GetChatRoomInfo(roomId).then(function (results) {
                 if (results.length > 0) {
-                    redisClient.hmset(ROOM_KEY, roomId, JSON.stringify(results[0]), redis.print);
+                    RedisClient.hmset(ROOM_KEY, roomId, JSON.stringify(results[0]), redis.print);
                     res.status(200).json({ success: true, result: results });
                 }
                 else {
@@ -74,64 +74,6 @@ router.post("/", function (req, res, next) {
                 res.status(500).json({ success: false, message: err });
             });
         }
-    });
-});
-
-/**
- * Create chatroom.
- */
-router.post("/createPrivateRoom", function (req, res, next) {
-    req.checkBody("owner", "request for owner user").notEmpty();
-    req.checkBody("roommate", "request for roommate user").notEmpty();
-
-    let errors = req.validationErrors();
-    if (errors) {
-        return res.status(500).json({ success: false, message: errors });
-    }
-
-    let id: string = "";
-    let owner: IMember = req.body.owner;
-    let roommate: IMember = req.body.roommate;
-    if (owner._id < roommate._id) {
-        id = owner._id.concat(roommate._id);
-    }
-    else {
-        id = roommate._id.concat(owner._id);
-    }
-
-    let md = crypto.createHash("md5");
-    md.update(id);
-    let hexCode = md.digest("hex");
-    let roomId = hexCode.slice(0, 24);
-    let _tempArr = [owner, roommate];
-    let _room = new Room();
-    _room._id = new ObjectID(roomId);
-    _room.type = RoomType.privateChat;
-    _room.members = _tempArr;
-    _room.createTime = new Date();
-    ChatRoomManager.createPrivateChatRoom(_room).then(function (results) {
-        console.log("Create Private Chat Room: ", JSON.stringify(results));
-
-        let _room: Room = results[0];
-        redisClient.hmset(ROOM_KEY, _room._id, JSON.stringify(_room), redis.print);
-
-        // <!-- Push updated lastAccessRoom fields to all members.
-        async.map(results[0].members, function (member: IMember, cb) {
-            // <!-- Add rid to user members lastAccessField.
-            UserManager.AddRoomIdToRoomAccessFieldForUser(results[0]._id, member._id, new Date()).then((res) => {
-                console.log("add roomId to roomaccess fields", res);
-                cb(null, null);
-            }).catch(err => {
-                cb(err, null);
-            });
-        }, function (errCb) {
-            console.log("add roomId to roomaccess fields done.", errCb);
-        });
-
-        res.status(200).json({ success: true, result: results });
-    }).catch(err => {
-        console.warn("createPrivateChatRoom fail", err);
-        res.status(500).json({ success: false, message: err });
     });
 });
 
@@ -269,7 +211,7 @@ router.post("/getChatHistory", (req, res, next) => {
 });
 
 router.post("/clear_cache", (req, res, next) => {
-    redisClient.del(ROOM_KEY, function (err, reply) {
+    RedisClient.del(ROOM_KEY, function (err, reply) {
         console.log(err, reply);
         if (err) return res.status(500).json({ success: false, message: err });
         res.status(200).json({ success: true, result: reply });

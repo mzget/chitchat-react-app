@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const mongodb = require("mongodb");
 const config_1 = require("../../../config");
 const Room_1 = require("../../models/Room");
+const DbClient_1 = require("../../DbClient");
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 function createDefaultGroup(owner) {
@@ -50,7 +51,7 @@ function addTeamToGroup(group, team) {
 exports.addTeamToGroup = addTeamToGroup;
 function getOrgGroups(team_id, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        let db = yield MongoClient.connect(config_1.Config.chatDB);
+        let db = DbClient_1.getAppDb();
         let collection = db.collection(config_1.DbClient.chatroomColl);
         collection.createIndex({ team_id: 1 }, { background: true });
         let docs = yield collection.find({
@@ -58,7 +59,6 @@ function getOrgGroups(team_id, user_id) {
             "members._id": { $in: [user_id] },
             type: Room_1.RoomType.organizationGroup
         }).toArray();
-        db.close();
         return docs;
     });
 }

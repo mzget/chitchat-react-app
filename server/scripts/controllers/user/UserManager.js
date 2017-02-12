@@ -45,10 +45,47 @@ exports.getRoomAccessOfRoom = (uid, rid) => __awaiter(this, void 0, void 0, func
         .limit(1).toArray();
     return docs;
 });
+function AddRoomIdToRoomAccessFieldOfUsers(roomId, memberIds, date) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let isDone = false;
+        async.each(memberIds, function (element, cb) {
+            AddRoomIdToRoomAccessFieldOfUser(roomId, element, date).then(result => {
+                cb();
+            }).catch(err => {
+                cb();
+            });
+        }, function (errCb) {
+            isDone = true;
+        });
+        while (!isDone) {
+            yield isDone;
+        }
+        return isDone;
+    });
+}
+exports.AddRoomIdToRoomAccessFieldOfUsers = AddRoomIdToRoomAccessFieldOfUsers;
+function AddRoomIdToRoomAccessFieldOfUser(roomId, userId, date) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let db = DbClient_1.getAppDb();
+        let chatUserCollection = db.collection(config_1.DbClient.stalkUserColl);
+        let docs = yield chatUserCollection.find({ _id: new ObjectID(userId) }, { roomAccess: 1 }).limit(1).toArray();
+        if (docs.length > 0 && !!docs[0].roomAccess) {
+            // <!-- add rid to MembersFields.
+            let result = yield findRoomAccessDataMatchWithRoomId(userId, roomId, date);
+            return result;
+        }
+        else {
+            let result = yield InsertMembersFieldsToUserModel(userId, roomId, date);
+            return result;
+        }
+    });
+}
+exports.AddRoomIdToRoomAccessFieldOfUser = AddRoomIdToRoomAccessFieldOfUser;
 exports.updateLastAccessTimeOfRoom = (user_id, room_id, date) => __awaiter(this, void 0, void 0, function* () {
     let db = DbClient_1.getAppDb();
-    let chatUserColl = db.collection(config_1.DbClient.stalkUserColl);
-    let docs = yield chatUserColl.find({ _id: new ObjectID(user_id) }).limit(1).project({ roomAccess: 1 }).toArray();
+    let stalkUsersColl = db.collection(config_1.DbClient.stalkUserColl);
+    let docs = yield stalkUsersColl.find({ _id: new ObjectID(user_id) }).limit(1)
+        .project({ roomAccess: 1 }).toArray();
     if (docs.length > 0 && docs[0].roomAccess) {
         let result = yield findRoomAccessDataMatchWithRoomId(user_id, room_id, date);
         return result;
@@ -56,31 +93,6 @@ exports.updateLastAccessTimeOfRoom = (user_id, room_id, date) => __awaiter(this,
     else {
         // <!-- insert roomAccess info field in user data collection.
         let result = yield insertRoomAccessInfoField(user_id, room_id);
-        return result;
-    }
-});
-exports.AddRoomIdToRoomAccessField = (roomId, memberIds, date, callback) => {
-    async.each(memberIds, function (element, cb) {
-        AddRidToRoomAccessField(element, roomId, date, (error, response) => {
-            cb();
-        });
-    }, function (errCb) {
-        if (!errCb) {
-            callback(null, true);
-        }
-    });
-};
-exports.AddRoomIdToRoomAccessFieldForUser = (roomId, userId, date) => __awaiter(this, void 0, void 0, function* () {
-    let db = DbClient_1.getAppDb();
-    let chatUserCollection = db.collection(config_1.DbClient.stalkUserColl);
-    let docs = yield chatUserCollection.find({ _id: new ObjectID(userId) }, { roomAccess: 1 }).limit(1).toArray();
-    if (docs.length > 0 && !!docs[0].roomAccess) {
-        // <!-- add rid to MembersFields.       
-        let result = yield findRoomAccessDataMatchWithRoomId(userId, roomId, date);
-        return result;
-    }
-    else {
-        let result = yield InsertMembersFieldsToUserModel(userId, roomId, date);
         return result;
     }
 });

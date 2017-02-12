@@ -4,6 +4,7 @@ import { Config, DbClient } from "../../../config";
 import { Room, RoomStatus, RoomType, IMember, MemberRole } from "../../models/Room";
 import { ITeam } from "../../models/ITeam";
 import { ChitChatAccount } from "../../models/User";
+import { getAppDb } from "../../DbClient";
 
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
@@ -48,7 +49,7 @@ export async function addTeamToGroup(group: Room, team: ITeam) {
 }
 
 export async function getOrgGroups(team_id: string, user_id: string) {
-    let db = await MongoClient.connect(Config.chatDB);
+    let db = getAppDb();
     let collection = db.collection(DbClient.chatroomColl);
 
     collection.createIndex({ team_id: 1 }, { background: true });
@@ -58,7 +59,7 @@ export async function getOrgGroups(team_id: string, user_id: string) {
         "members._id": { $in: [user_id] },
         type: RoomType.organizationGroup
     }).toArray();
-    db.close();
+
     return docs;
 }
 

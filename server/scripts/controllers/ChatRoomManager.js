@@ -14,6 +14,7 @@ const UserManager = require("./user/UserManager");
 const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
 const config_1 = require("../../config");
+const DbClient_1 = require("../DbClient");
 /*
 * Require
 *@roomId for query chat record in room.
@@ -125,22 +126,24 @@ exports.GetChatRoomInfo = (room_id) => {
         });
     });
 };
-exports.createPrivateChatRoom = (room) => {
-    return new Promise((resolve, reject) => {
-        MongoClient.connect(config_1.Config.chatDB).then(db => {
-            let roomColl = db.collection(config_1.DbClient.chatroomColl);
-            roomColl.insertOne(room).then(result => {
-                db.close();
-                resolve(result.ops);
-            }).catch(err => {
-                db.close();
-                reject(err);
-            });
-        }).catch(err => {
-            reject(err);
-        });
+exports.createPrivateChatRoom = (room) => __awaiter(this, void 0, void 0, function* () {
+    let db = DbClient_1.getAppDb();
+    let chatRoomColl = db.collection(config_1.DbClient.chatroomColl);
+    let result = yield chatRoomColl.insertOne(room);
+    return result.ops;
+});
+function createPrivateGroup(room) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (room.type != Room.RoomType.privateGroup) {
+            throw new Error("createPrivateGroup fail: invalid room type.");
+        }
+        let db = DbClient_1.getAppDb();
+        let chatroomColl = db.collection(config_1.DbClient.chatroomColl);
+        let result = yield chatroomColl.insertOne(room);
+        return result.ops;
     });
-};
+}
+exports.createPrivateGroup = createPrivateGroup;
 class ChatRoomManager {
     constructor() {
         this.userManager = UserManager.getInstance();
@@ -151,9 +154,6 @@ class ChatRoomManager {
     }
     getPrivateGroupChat(uid, callback) {
         this.roomDAL.findPrivateGroupChat(uid, callback);
-    }
-    createPrivateGroup(groupName, memberIds, callback) {
-        this.roomDAL.createPrivateGroup(groupName, memberIds, callback);
     }
     updateGroupImage(roomId, newUrl, callback) {
         this.roomDAL.userUpdateGroupImage(roomId, newUrl, callback);
@@ -285,29 +285,6 @@ class RoomDataAccess {
         dbClient.FindDocuments(MDb.DbController.roomColl, function (res) {
             callback(res);
         }, {});
-    }
-    createPrivateGroup(groupName, memberIds, callback) {
-        let self = this;
-        let members = new Array();
-        memberIds.forEach((val, id, arr) => {
-            let member = new Room.Member();
-            member.id = val;
-            members.push(member);
-        });
-        let newRoom = new Room.Room();
-        newRoom.name = groupName;
-        newRoom.type = Room.RoomType.privateGroup;
-        newRoom.members = members;
-        newRoom.createTime = new Date();
-        dbClient.InsertDocument(MDb.DbController.roomColl, function (err, docs) {
-            console.log("Create new group to db.", docs.length);
-            if (docs !== null) {
-                callback(null, docs);
-            }
-            else {
-                callback(new Error("cannot insert new group to db collection."), null);
-            }
-        }, newRoom);
     }
     createProjectBaseGroup(groupName, members, callback) {
         let newRoom = new Room.Room();
