@@ -127,15 +127,22 @@ function createPrivateGroup(room) {
     });
 }
 exports.createPrivateGroup = createPrivateGroup;
+function getPrivateGroupChat(uid) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let db = DbClient_1.getAppDb();
+        let chatroomColl = db.collection(config_1.DbClient.chatroomColl);
+        let member = { _id: uid };
+        let docs = yield chatroomColl.find({ type: Room_1.RoomType.privateGroup, members: { $elemMatch: { _id: uid } } }).toArray();
+        return docs;
+    });
+}
+exports.getPrivateGroupChat = getPrivateGroupChat;
 class ChatRoomManager {
     constructor() {
         this.roomDAL = new RoomDataAccess();
     }
     getProjectBaseGroups(userId, callback) {
         this.roomDAL.findProjectBaseGroups(userId, callback);
-    }
-    getPrivateGroupChat(uid, callback) {
-        this.roomDAL.findPrivateGroupChat(uid, callback);
     }
     updateGroupImage(roomId, newUrl, callback) {
         this.roomDAL.userUpdateGroupImage(roomId, newUrl, callback);
@@ -250,11 +257,6 @@ class RoomDataAccess {
         dbClient.FindDocuments(MDb.DbController.roomColl, function (res) {
             callback(null, res);
         }, { type: Room_1.RoomType.projectBaseGroup, status: Room_1.RoomStatus.active, members: { $elemMatch: { id: userId } } });
-    }
-    findPrivateGroupChat(uid, callback) {
-        dbClient.FindDocuments(MDb.DbController.roomColl, function (res) {
-            callback(null, res);
-        }, { type: Room_1.RoomType.privateGroup, members: { $elemMatch: { id: uid } } });
     }
     /**
      * Get all rooms and then return all info of { _id, members } to array of roomModel;.

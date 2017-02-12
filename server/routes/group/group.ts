@@ -75,6 +75,17 @@ router.post("/org/create", function (req, res, next) {
     });
 });
 
+
+router.get("/private_group", (req, res, next) => {
+    let user_id = req["decoded"]._id as string;
+
+    ChatRoomManager.getPrivateGroupChat(user_id).then(docs => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
+    }).catch(err => {
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
+    });
+});
+
 /**
  * Create private group chat.
  */

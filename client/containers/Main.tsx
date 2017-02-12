@@ -9,6 +9,7 @@ import { IComponentProps } from "../utils/IComponentProps";
 import SimpleToolbar from "../components/SimpleToolbar";
 import ProfileBox from "./profile/ProfileBox";
 import OrgGroupListBox from "./group/OrgGroupListBox";
+import PrivateGroupListBox from "./group/PrivateGroupListBox";
 import ChatLogsBox from "./ChatLogsBox";
 import ContactBox from "./chatlist/ContactBox";
 import UtilsBox from "./UtilsBox";
@@ -154,6 +155,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                     <div style={{ height: this.bodyHeight, overflowY: "auto" }}>
                         <ProfileBox {...this.props} />
                         <OrgGroupListBox {...this.props} />
+                        <PrivateGroupListBox {...this.props} />
                         <ContactBox {...this.props} />
                         <ChatLogsBox {...this.props} />
                         <UtilsBox />

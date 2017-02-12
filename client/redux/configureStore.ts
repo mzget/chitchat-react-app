@@ -4,26 +4,26 @@
  * This is pure function for redux app.
  *
  * # configureStore.js
- * 
+ *
  * A Redux boilerplate setup
- * 
+ *
  */
 
 /**
  * ## Imports
- * 
+ *
  * redux functions
  */
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
+import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 
-import thunk from 'redux-thunk';
-import { createEpicMiddleware } from 'redux-observable';
-import * as createLogger from 'redux-logger';
+import thunk from "redux-thunk";
+import { createEpicMiddleware } from "redux-observable";
+import * as createLogger from "redux-logger";
 import { routerMiddleware } from "react-router-redux";
 import { browserHistory } from "react-router";
 
 import * as rootReducer from "./rootReducer";
-import * as rootRxEpic from './rootRxEpic';
+import * as rootRxEpic from "./rootRxEpic";
 const epicMiddleware = createEpicMiddleware(rootRxEpic.rootEpic);
 const routingMiddleware = routerMiddleware(browserHistory);
 

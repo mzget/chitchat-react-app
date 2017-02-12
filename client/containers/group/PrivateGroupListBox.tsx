@@ -7,20 +7,20 @@ import * as userRx from "../../redux/user/userRx";
 import * as teamRx from "../../redux/team/teamRx";
 import * as chatroomActions from "../../redux/chatroom/chatroomActions";
 import * as chatroomRx from "../../redux/chatroom/chatroomRxEpic";
-import * as groupRx from "../../redux/group/groupRx";
+import * as privateGroupRxActions from "../../redux/group/privateGroupRxActions";
 
 import { GroupList } from "./GroupList";
 
 interface IComponentNameState { };
 
-class OrgGroupListBox extends React.Component<IComponentProps, IComponentNameState> {
+class PrivateGroupListBox extends React.Component<IComponentProps, IComponentNameState> {
 
     componentWillMount() {
-        console.log("GroupList", this.props);
+        console.log("PrivateGroupListBox", this.props);
 
         this.onselectGroup = this.onselectGroup.bind(this);
 
-        this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
+        this.props.dispatch(privateGroupRxActions.getPrivateGroup(this.props.teamReducer.team._id));
     }
 
     onselectGroup(data) {
@@ -30,10 +30,10 @@ class OrgGroupListBox extends React.Component<IComponentProps, IComponentNameSta
     public render(): JSX.Element {
         return (
             <div>
-                <Subheader>Org-Group</Subheader>
-                <GroupList values={this.props.groupReducer.orgGroups} onSelected={this.onselectGroup} />
+                <Subheader>Groups</Subheader>
+                <GroupList values={this.props.groupReducer.privateGroups} onSelected={this.onselectGroup} />
             </div>);
     }
 }
 
-export default OrgGroupListBox;
+export default PrivateGroupListBox;
