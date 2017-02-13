@@ -9,6 +9,7 @@ import { Room, RoomType, RoomStatus, IMember, MemberRole } from "../../../server
 import { IOrgChart } from "../../../server/scripts/models/OrgChart";
 
 import * as groupRx from "../../redux/group/groupRx";
+import *as privateGroupRx from "../../redux/group/privateGroupRxActions";
 
 export const createOrgGroup: string = "create-org-group";
 export const createPjbGroup: string = "create-projectbase-group";
@@ -68,7 +69,7 @@ class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
                     this.group.type = RoomType.privateGroup;
                     this.group.members = new Array(member);
 
-                    this.props.dispatch(groupRx.createPrivateGroup(this.group));
+                    this.props.dispatch(privateGroupRx.createPrivateGroup(this.group));
 
                     break;
                 default:
