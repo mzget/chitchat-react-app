@@ -18,6 +18,7 @@ const TeamMemberBox_1 = require("./admins/TeamMemberBox");
 const DialogBox_1 = require("../components/DialogBox");
 const adminRx = require("../redux/admin/adminRx");
 const groupRx = require("../redux/group/groupRx");
+const User_1 = require("../../server/scripts/models/User");
 var BoxState;
 (function (BoxState) {
     BoxState[BoxState["idle"] = 0] = "idle";
@@ -71,14 +72,25 @@ class Admin extends React.Component {
     }
     onAdminMenuSelected(key) {
         console.log("onAdminMenuSelected", key);
+        let { userReducer } = this.props;
         if (key == CreateGroupBox_1.createOrgGroup || key == CreateGroupBox_1.createPjbGroup || key == CreateGroupBox_1.createPvGroup) {
             this.setState(previous => (__assign({}, previous, { boxState: BoxState.isCreateGroup, menuSelected: key })));
         }
         else if (key == this.manageOrgChart) {
-            this.setState(previous => (__assign({}, previous, { boxState: BoxState.isManageTeam })));
+            if (userReducer.user.role == User_1.UserRole[User_1.UserRole.admin]) {
+                this.setState(previous => (__assign({}, previous, { boxState: BoxState.isManageTeam })));
+            }
+            else {
+                this.onAlert("Request for admin permision");
+            }
         }
         else if (key == this.teamMember) {
-            this.setState(previous => (__assign({}, previous, { boxState: BoxState.isManageMember })));
+            if (userReducer.user.role == User_1.UserRole[User_1.UserRole.admin]) {
+                this.setState(previous => (__assign({}, previous, { boxState: BoxState.isManageMember })));
+            }
+            else {
+                this.onAlert("Request for admin permision");
+            }
         }
     }
     onBackPressed() {

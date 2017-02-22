@@ -17,6 +17,7 @@ import * as adminRx from "../redux/admin/adminRx";
 import * as groupRx from "../redux/group/groupRx";
 
 import { Room, RoomType, RoomStatus } from "../../server/scripts/models/Room";
+import { UserRole } from "../../server/scripts/models/User";
 
 enum BoxState {
     idle = 0, isCreateGroup = 1, isManageTeam, isManageMember
@@ -78,14 +79,26 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     onAdminMenuSelected(key: string) {
         console.log("onAdminMenuSelected", key);
 
+        let { userReducer } = this.props;
+
         if (key == createOrgGroup || key == createPjbGroup || key == createPvGroup) {
             this.setState(previous => ({ ...previous, boxState: BoxState.isCreateGroup, menuSelected: key }));
         }
         else if (key == this.manageOrgChart) {
-            this.setState(previous => ({ ...previous, boxState: BoxState.isManageTeam }));
+            if (userReducer.user.role == UserRole[UserRole.admin]) {
+                this.setState(previous => ({ ...previous, boxState: BoxState.isManageTeam }));
+            }
+            else {
+                this.onAlert("Request for admin permision");
+            }
         }
         else if (key == this.teamMember) {
-            this.setState(previous => ({ ...previous, boxState: BoxState.isManageMember }));
+            if (userReducer.user.role == UserRole[UserRole.admin]) {
+                this.setState(previous => ({ ...previous, boxState: BoxState.isManageMember }));
+            }
+            else {
+                this.onAlert("Request for admin permision");
+            }
         }
     }
 
