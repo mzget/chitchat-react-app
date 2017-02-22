@@ -91,7 +91,9 @@ class CreateGroupBox extends React.Component {
     }
     ;
     render() {
-        return (React.createElement("div", null, this.getView()));
+        return (React.createElement("div", null,
+            " ",
+            this.getView()));
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });

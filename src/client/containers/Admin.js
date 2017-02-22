@@ -18,6 +18,7 @@ const TeamMemberBox_1 = require("./admins/TeamMemberBox");
 const DialogBox_1 = require("../components/DialogBox");
 const adminRx = require("../redux/admin/adminRx");
 const groupRx = require("../redux/group/groupRx");
+const privateGroupRxActions = require("../redux/group/privateGroupRxActions");
 const User_1 = require("../../server/scripts/models/User");
 var BoxState;
 (function (BoxState) {
@@ -57,23 +58,25 @@ class Admin extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         const { groupReducer, adminReducer } = nextProps;
-        switch (groupReducer.state) {
-            case groupRx.CREATE_ORG_GROUP_SUCCESS || groupRx.CREATE_PRIVATE_GROUP_SUCCESS: {
-                this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.idle })));
-                break;
-            }
-            case groupRx.CREATE_ORG_GROUP_FAILURE || groupRx.CREATE_PRIVATE_GROUP_FAILURE: {
-                this.onAlert(groupReducer.error);
-                break;
-            }
-            default:
-                break;
+        if (groupReducer.state == groupRx.CREATE_ORG_GROUP_SUCCESS ||
+            groupReducer.state == privateGroupRxActions.CREATE_PRIVATE_GROUP_SUCCESS) {
+            this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.idle })));
+        }
+        else if (groupReducer.state == groupRx.CREATE_ORG_GROUP_FAILURE ||
+            groupReducer.state == privateGroupRxActions.CREATE_PRIVATE_GROUP_FAILURE) {
+            this.onAlert(groupReducer.error);
         }
     }
     onAdminMenuSelected(key) {
         console.log("onAdminMenuSelected", key);
         let { userReducer } = this.props;
         if (key == CreateGroupBox_1.createOrgGroup || key == CreateGroupBox_1.createPjbGroup || key == CreateGroupBox_1.createPvGroup) {
+            if (key == CreateGroupBox_1.createOrgGroup && userReducer.user.role != User_1.UserRole[User_1.UserRole.admin]) {
+                return this.onAlert("Request for admin permision");
+            }
+            if (key == CreateGroupBox_1.createPjbGroup) {
+                return this.onAlert("Not yet ready...");
+            }
             this.setState(previous => (__assign({}, previous, { boxState: BoxState.isCreateGroup, menuSelected: key })));
         }
         else if (key == this.manageOrgChart) {

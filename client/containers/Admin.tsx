@@ -15,7 +15,7 @@ import { DialogBox } from "../components/DialogBox";
 
 import * as adminRx from "../redux/admin/adminRx";
 import * as groupRx from "../redux/group/groupRx";
-
+import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
 import { Room, RoomType, RoomStatus } from "../../server/scripts/models/Room";
 import { UserRole } from "../../server/scripts/models/User";
 
@@ -62,17 +62,13 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     componentWillReceiveProps(nextProps: IComponentProps) {
         const { groupReducer, adminReducer } = nextProps;
 
-        switch (groupReducer.state) {
-            case groupRx.CREATE_ORG_GROUP_SUCCESS || groupRx.CREATE_PRIVATE_GROUP_SUCCESS: {
-                this.setState(prevState => ({ ...prevState, boxState: BoxState.idle }));
-                break;
-            }
-            case groupRx.CREATE_ORG_GROUP_FAILURE || groupRx.CREATE_PRIVATE_GROUP_FAILURE: {
-                this.onAlert(groupReducer.error);
-                break;
-            }
-            default:
-                break;
+        if (groupReducer.state == groupRx.CREATE_ORG_GROUP_SUCCESS ||
+            groupReducer.state == privateGroupRxActions.CREATE_PRIVATE_GROUP_SUCCESS) {
+            this.setState(prevState => ({ ...prevState, boxState: BoxState.idle }));
+        }
+        else if (groupReducer.state == groupRx.CREATE_ORG_GROUP_FAILURE ||
+            groupReducer.state == privateGroupRxActions.CREATE_PRIVATE_GROUP_FAILURE) {
+            this.onAlert(groupReducer.error);
         }
     }
 
@@ -82,6 +78,14 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
         let { userReducer } = this.props;
 
         if (key == createOrgGroup || key == createPjbGroup || key == createPvGroup) {
+            if (key == createOrgGroup && userReducer.user.role != UserRole[UserRole.admin]) {
+                return this.onAlert("Request for admin permision");
+            }
+
+            if (key == createPjbGroup) {
+                return this.onAlert("Not yet ready...");
+            }
+
             this.setState(previous => ({ ...previous, boxState: BoxState.isCreateGroup, menuSelected: key }));
         }
         else if (key == this.manageOrgChart) {

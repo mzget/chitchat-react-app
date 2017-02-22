@@ -110,10 +110,9 @@ class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
 
     public render(): JSX.Element {
         return (
-            <div>
-                {
-                    this.getView()
-                }
+            <div> {
+                this.getView()
+            }
             </div>
         );
     }

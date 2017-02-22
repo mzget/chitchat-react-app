@@ -1,5 +1,5 @@
 ﻿
-import UserRole from "./UserRole";
+import { UserRole } from "./User";
 
 module IProfile {
     export interface IProfile {

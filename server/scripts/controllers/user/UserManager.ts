@@ -58,19 +58,20 @@ export const getRoomAccessOfRoom = async (uid: string, rid: string) => {
 
 export async function AddRoomIdToRoomAccessFieldOfUsers(roomId: string, memberIds: string[], date: Date) {
     let isDone = false;
-    async.each(memberIds, function (element: string, cb) {
-        AddRoomIdToRoomAccessFieldOfUser(roomId, element, date).then(result => {
-            cb();
-        }).catch(err => {
-            cb();
+
+    await new Promise((resolve, reject) => {
+        async.each(memberIds, function (element: string, cb) {
+            AddRoomIdToRoomAccessFieldOfUser(roomId, element, date).then(result => {
+                cb();
+            }).catch(err => {
+                cb();
+            });
+        }, function (errCb) {
+            isDone = true;
+            resolve(isDone);
         });
-    }, function (errCb) {
-        isDone = true;
     });
 
-    while (!isDone) {
-        await isDone;
-    }
     return isDone;
 }
 
