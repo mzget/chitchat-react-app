@@ -12,7 +12,7 @@ RedisClient.on("connect", function () {
     redisStatus = RedisStatus.connected;
 });
 RedisClient.on("ready", function () {
-    console.error("redis ready ");
+    console.log("redis ready ");
     redisStatus = RedisStatus.ready;
 });
 RedisClient.on("error", function (err) {
