@@ -1,23 +1,19 @@
 import * as React from "react";
-import { Flex, Box } from 'reflexbox';
-import { RaisedButton, TextField } from 'material-ui';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import * as FileReaderInput from 'react-file-reader-input';
-import FontIcon from 'material-ui/FontIcon';
-import IconButton from 'material-ui/IconButton';
+import { Flex, Box } from "reflexbox";
+import { RaisedButton, TextField } from "material-ui";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import * as FileReaderInput from "react-file-reader-input";
+import FontIcon from "material-ui/FontIcon";
+import IconButton from "material-ui/IconButton";
 
 const styles = {
     span: {
         paddingRight: 2
-    },
-    box: {
-        bottom: 0,
-        position: 'absolute'
     }
 };
 
 const FileReaderBox = (props: ITypingBox) => (
-    <FileReaderInput as='url' id="file-input" onChange={props.fileReaderChange}>
+    <FileReaderInput as="url" id="file-input" onChange={props.fileReaderChange}>
         <IconButton>
             <FontIcon className="material-icons">attachment</FontIcon>
         </IconButton>
@@ -42,21 +38,23 @@ interface ITypingBox {
     value: string;
     onValueChange: (text) => void;
     fileReaderChange: (e, results) => void;
+
+    styles?: any;
 }
 
 export const TypingBox = (props: ITypingBox) => {
     return (
         < MuiThemeProvider >
-            <Flex>
-                <StickerButton {...props} />
-                <FileReaderBox {...props} />
-                <span style={styles.span} />
-                <TextField hintText="Type your message" value={props.value} onChange={props.onValueChange} onKeyDown={(e) => {
-                    if (e.key === 'Enter') props.onSubmit();
-                } } />
-                <span style={styles.span} />
-                <SendButton {...props} />
-            </Flex>
+            <div style={props.styles}>
+                <Flex>
+                    <StickerButton {...props} />
+                    <FileReaderBox {...props} />
+                    <TextField hintText="Type your message" value={props.value} onChange={props.onValueChange} onKeyDown={(e) => {
+                        if (e.key === "Enter") props.onSubmit();
+                    }} />
+                    <SendButton {...props} />
+                </Flex>
+            </div>
         </MuiThemeProvider >
     );
-}
+};

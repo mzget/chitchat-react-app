@@ -54,7 +54,8 @@ class Chat extends React.Component {
             h_body: body,
             h_footer: bottom,
             h_chatArea: body,
-            h_stickerBox: stickersBox
+            h_stickerBox: stickersBox,
+            clientWidth: clientWidth
         };
         this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
         this.onTypingTextChange = this.onTypingTextChange.bind(this);
@@ -291,14 +292,13 @@ class Chat extends React.Component {
                                 React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))
                             :
                                 null,
-                        React.createElement(ChatBox_1.default, __assign({}, this.props, { value: this.state.messages, onSelected: (message) => {
-                            } })))),
+                        React.createElement(ChatBox_1.ChatBox, { styles: { width: this.state.clientWidth, overflowX: "hidden" }, value: this.state.messages, onSelected: (message) => {
+                            } }))),
                 (this.state.openButtomMenu) ?
                     React.createElement(GridListSimple_1.default, { boxHeight: this.state.h_stickerBox, srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
                     : null),
-            React.createElement(reflexbox_1.Flex, { align: "center", justify: "center", flexColumn: false },
-                React.createElement("div", { style: { bottom: "0%", position: "absolute" } },
-                    React.createElement(TypingBox_1.TypingBox, { onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }))),
+            React.createElement(reflexbox_1.Flex, null,
+                React.createElement(TypingBox_1.TypingBox, { styles: { width: this.state.clientWidth }, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker })),
             React.createElement(UploadingDialog_1.default, null),
             React.createElement(UtilsBox_1.default, null)));
     }

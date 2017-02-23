@@ -19,7 +19,7 @@ const muiTheme = getMuiTheme_1.default({
     },
     toolbar: {
         color: Colors.white,
-        backgroundColor: Colors.lightBlue500,
+        backgroundColor: Colors.indigo500,
     },
 });
 class SimpleToolbar extends React.Component {
@@ -36,13 +36,13 @@ class SimpleToolbar extends React.Component {
                         React.createElement(IconButton_1.default, { iconClassName: "material-icons", onClick: this.props.onBackPressed }, "chevron_left")
                         :
                             React.createElement("span", { style: { margin: 8 } }),
-                    React.createElement(Toolbar_1.ToolbarTitle, { text: this.props.title })),
+                    React.createElement(Toolbar_1.ToolbarTitle, { text: this.props.title, style: { color: Colors.white } })),
                 (this.props.menus && this.props.menus.length > 0) ?
                     (React.createElement(Toolbar_1.ToolbarGroup, null,
                         React.createElement(Toolbar_1.ToolbarSeparator, null),
                         React.createElement(IconMenu_1.default, { iconButtonElement: React.createElement(IconButton_1.default, null,
-                                React.createElement(expand_more_1.default, null)), anchorOrigin: { horizontal: "right", vertical: "top" }, targetOrigin: { horizontal: "right", vertical: "top" }, onRequestChange: (open, reason) => this.setState({ openState: open }), onItemTouchTap: (event, child) => console.log("item touch tap", event.type), onTouchTap: (event) => this.setState({ openState: !this.state.openState }), open: this.state.openState }, this.props.menus.map((value, i, arr) => {
-                            return React.createElement(MenuItem_1.default, { key: i, primaryText: value, onClick: () => this.props.onSelectedMenuItem(i, value) });
+                                React.createElement(expand_more_1.default, null)), anchorOrigin: { horizontal: "right", vertical: "top" }, targetOrigin: { horizontal: "right", vertical: "top" }, onRequestChange: (open, reason) => this.setState({ openState: open }), onItemTouchTap: (event, child) => console.log("onItemTouchTap"), onTouchTap: (event) => console.log("onTouchTap"), open: this.state.openState }, this.props.menus.map((value, i, arr) => {
+                            return React.createElement(MenuItem_1.default, { key: i, primaryText: value, onTouchTap: () => this.props.onSelectedMenuItem(i, value) });
                         })))) : null)));
     }
 }

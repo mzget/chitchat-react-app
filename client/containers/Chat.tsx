@@ -6,7 +6,7 @@ import { Flex, Box } from "reflexbox";
 import Config from "../configs/config";
 
 import { TypingBox } from "./TypingBox";
-import ChatBox from "./ChatBox";
+import { ChatBox } from "./ChatBox";
 import SimpleToolbar from "../components/SimpleToolbar";
 import UtilsBox from "./UtilsBox";
 import UploadingDialog from "./UploadingDialog";
@@ -34,6 +34,7 @@ interface IComponentNameState {
     h_footer: number;
     h_stickerBox: number;
     h_chatArea: number;
+    clientWidth: number;
 };
 
 class Chat extends React.Component<IComponentProps, IComponentNameState> {
@@ -58,7 +59,8 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             h_body: body,
             h_footer: bottom,
             h_chatArea: body,
-            h_stickerBox: stickersBox
+            h_stickerBox: stickersBox,
+            clientWidth: clientWidth
         };
 
         this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
@@ -68,7 +70,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.onToggleSticker = this.onToggleSticker.bind(this);
         this.onBackPressed = this.onBackPressed.bind(this);
 
-        let { chatroomReducer, userReducer, params} = this.props;
+        let { chatroomReducer, userReducer, params } = this.props;
 
         if (!chatroomReducer.room) {
             this.props.dispatch(chatRoomActions.getPersistendChatroom(params.filter));
@@ -84,7 +86,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let { chatroomReducer} = nextProps;
+        let { chatroomReducer } = nextProps;
 
         switch (chatroomReducer.state) {
             case chatRoomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
@@ -101,7 +103,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             }
 
             case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
-                let {responseFile, fileInfo} = chatroomReducer;
+                let { responseFile, fileInfo } = chatroomReducer;
 
                 if (fileInfo.type.match(FileType.imageType)) {
                     this.onSubmitImageChat(fileInfo, responseFile.path);
@@ -194,7 +196,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     roomInitialize(props: IComponentProps) {
-        let { chatroomReducer, userReducer, params} = props;
+        let { chatroomReducer, userReducer, params } = props;
         if (!userReducer.user) {
             return this.props.dispatch(chatRoomActions.leaveRoomAction());
         }
@@ -358,7 +360,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     render(): JSX.Element {
-        let {chatroomReducer } = this.props;
+        let { chatroomReducer } = this.props;
 
         return (
             <div>
@@ -380,7 +382,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                                     :
                                     null
                             }
-                            <ChatBox  {...this.props} value={this.state.messages} onSelected={(message: IMessage) => {
+                            <ChatBox styles={{ width: this.state.clientWidth, overflowX: "hidden" }} value={this.state.messages} onSelected={(message: IMessage) => {
 
                             }} />
                         </div>
@@ -394,15 +396,14 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                             : null
                     }
                 </div>
-                <Flex align="center" justify="center" flexColumn={false}>
-                    <div style={{ bottom: "0%", position: "absolute" }} >
-                        <TypingBox
-                            onSubmit={this.onSubmitTextChat}
-                            onValueChange={this.onTypingTextChange}
-                            value={this.state.typingText}
-                            fileReaderChange={this.fileReaderChange}
-                            onSticker={this.onToggleSticker} />
-                    </div>
+                <Flex>
+                    <TypingBox
+                        styles={{ width: this.state.clientWidth }}
+                        onSubmit={this.onSubmitTextChat}
+                        onValueChange={this.onTypingTextChange}
+                        value={this.state.typingText}
+                        fileReaderChange={this.fileReaderChange}
+                        onSticker={this.onToggleSticker} />
                 </Flex>
                 <UploadingDialog />
                 <UtilsBox />

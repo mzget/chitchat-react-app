@@ -17,13 +17,9 @@ const IconButton_1 = require("material-ui/IconButton");
 const styles = {
     span: {
         paddingRight: 2
-    },
-    box: {
-        bottom: 0,
-        position: 'absolute'
     }
 };
-const FileReaderBox = (props) => (React.createElement(FileReaderInput, { as: 'url', id: "file-input", onChange: props.fileReaderChange },
+const FileReaderBox = (props) => (React.createElement(FileReaderInput, { as: "url", id: "file-input", onChange: props.fileReaderChange },
     React.createElement(IconButton_1.default, null,
         React.createElement(FontIcon_1.default, { className: "material-icons" }, "attachment"))));
 const SendButton = (props) => (React.createElement(IconButton_1.default, { onClick: props.onSubmit },
@@ -32,14 +28,13 @@ const StickerButton = (props) => (React.createElement(IconButton_1.default, { on
     React.createElement(FontIcon_1.default, { className: "material-icons" }, "insert_emoticon")));
 exports.TypingBox = (props) => {
     return (React.createElement(MuiThemeProvider_1.default, null,
-        React.createElement(reflexbox_1.Flex, null,
-            React.createElement(StickerButton, __assign({}, props)),
-            React.createElement(FileReaderBox, __assign({}, props)),
-            React.createElement("span", { style: styles.span }),
-            React.createElement(material_ui_1.TextField, { hintText: "Type your message", value: props.value, onChange: props.onValueChange, onKeyDown: (e) => {
-                    if (e.key === 'Enter')
-                        props.onSubmit();
-                } }),
-            React.createElement("span", { style: styles.span }),
-            React.createElement(SendButton, __assign({}, props)))));
+        React.createElement("div", { style: props.styles },
+            React.createElement(reflexbox_1.Flex, null,
+                React.createElement(StickerButton, __assign({}, props)),
+                React.createElement(FileReaderBox, __assign({}, props)),
+                React.createElement(material_ui_1.TextField, { hintText: "Type your message", value: props.value, onChange: props.onValueChange, onKeyDown: (e) => {
+                        if (e.key === "Enter")
+                            props.onSubmit();
+                    } }),
+                React.createElement(SendButton, __assign({}, props))))));
 };
