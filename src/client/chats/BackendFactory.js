@@ -120,7 +120,7 @@ class BackendFactory {
         let self = this;
         return new Promise((resolve, rejected) => {
             self.stalk.gateEnter(uid).then(value => {
-                //<!-- Connecting to connector server.
+                // <!-- Connecting to connector server.
                 let params = { host: value.host, port: value.port, reconnect: false };
                 self.stalk.connect(params, (err) => {
                     self.stalk._isConnected = true;

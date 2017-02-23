@@ -34,14 +34,14 @@ export default class WebSocketClient {
   let JS_WS_CLIENT_TYPE = 'js-websocket';
   let JS_WS_CLIENT_VERSION = '0.0.1';
 
-  let Protocol = require('pomelo-protocol');
-  let protobuf = require('pomelo-protobuf');
+  const Protocol = require("pomelo-protocol");
+  const protobuf = require("pomelo-protobuf");
   let decodeIO_protobuf = window.decodeIO_protobuf;
   let decodeIO_encoder = null;
   let decodeIO_decoder = null;
   let Package = Protocol.Package;
   let Message = Protocol.Message;
-  const EventEmitter = require('events');
+  const EventEmitter = require("events");
   let rsa = window.rsa;
 
   /*
@@ -62,7 +62,7 @@ export default class WebSocketClient {
   }
 
   let root = window;
-  let pomelo = Object.create(EventEmitter.prototype); // object extend from object
+  let pomelo = Object.create(EventEmitter.prototype);
   root.pomelo = pomelo;
   let socket = null;
   let reqId = 0;
@@ -121,9 +121,9 @@ export default class WebSocketClient {
     encode = params.encode || defaultEncode;
     decode = params.decode || defaultDecode;
 
-    let url = "ws://" + host; //'ws://' 
+    let url = "ws://" + host;
     if (port) {
-      url += ':' + port;
+      url += ":" + port;
     }
 
     handshakeBuffer.user = params.user;
@@ -133,7 +133,7 @@ export default class WebSocketClient {
       let data = {
         rsa_n: rsa.n.toString(16),
         rsa_e: rsa.e
-      }
+      };
       handshakeBuffer.sys.rsa = data;
     }
     handshakeCallback = params.handshakeCallback;
@@ -236,7 +236,7 @@ export default class WebSocketClient {
 
     maxReconnectAttempts = params.maxReconnectAttempts || DEFAULT_MAX_RECONNECT_ATTEMPTS;
     reconnectUrl = url;
-    //Add protobuf version
+    // Add protobuf version
     if (window.localStorage && window.localStorage.getItem('protos') && protoVersion === 0) {
       let protos = JSON.parse(window.localStorage.getItem('protos'));
 
@@ -252,11 +252,11 @@ export default class WebSocketClient {
         decodeIO_decoder = decodeIO_protobuf.loadJson(serverProtos);
       }
     }
-    //Set protoversion
+    // Set protoversion
     handshakeBuffer.sys.protoVersion = protoVersion;
 
     socket = new WebSocket(url);
-    socket.binaryType = 'arraybuffer';
+    socket.binaryType = "arraybuffer";
     socket.onopen = onopen;
     socket.onmessage = onmessage;
     socket.onerror = onerror;
@@ -266,6 +266,7 @@ export default class WebSocketClient {
   let onopen = function (event) {
     console.log('onSocketOpen:', event.type);
 
+    pomelo.emit("onopen", event);
     if (!!reconnect) {
       pomelo.emit('reconnect');
     }
@@ -293,11 +294,7 @@ export default class WebSocketClient {
   };
 
   let onclose = function (event) {
-    console.warn('socket close: ', event.type);
-
-    pomelo.emit('close', event);
-    pomelo.emit('disconnect', event);
-
+    pomelo.emit("close", event);
     if (!!reconnect && reconnectAttempts < maxReconnectAttempts) {
       console.log("reconnection", reconnect, reconnectAttempts, reconnectionDelay, connectParams)
       reconnect = true;
@@ -308,6 +305,7 @@ export default class WebSocketClient {
     }
     else {
       console.log("reconnection !", reconnect);
+      pomelo.emit("disconnected", event);
     }
   };
 
