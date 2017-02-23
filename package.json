@@ -47,7 +47,7 @@
     "redux-observable": "^0.13.0",
     "redux-thunk": "^2.1.0",
     "reflexbox": "^2.2.3",
-    "rxjs": "latest",
+    "rxjs": "^5.1.0",
     "stalk-js": "*",
     "validate.js": "^0.11.1"
   },

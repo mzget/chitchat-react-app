@@ -9,6 +9,10 @@ export class ApiResponse {
     result: any;
 
     constructor(_success: boolean, _message?: any, _result?: any) {
+        if (_message) {
+            console.error("API fail: ", _message);
+        }
+
         this.success = _success;
         this.message = _message;
         this.result = _result;

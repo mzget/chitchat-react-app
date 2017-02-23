@@ -20,10 +20,11 @@ import { teamReducer, TeamInitState } from "./team/teamRx";
 import { UserInitState, userReducer } from "./user/userRx";
 import { AdminInitState, adminReducer } from "./admin/adminReducer";
 import { AuthenInitState, authReducer, LOG_OUT_SUCCESS } from "./authen/authRx";
-import { GroupInitState, groupReducer } from "./group/groupRx";
 import { stalkReducer, StalkInitState } from "./stalkBridge/stalkReducer";
 import { chatroomReducer, ChatRoomInitState } from "./chatroom/chatroomReducer";
 import { chatlogReducer, ChatLogInitState } from "./chatlogs/chatlogReducer";
+
+import { GroupInitState, groupReducer } from "./group/groupReducer";
 
 /**
  * ## CombineReducers

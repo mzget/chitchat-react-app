@@ -12,6 +12,7 @@ const CreateGroupView_1 = require("./CreateGroupView");
 const SelectOrgChartView_1 = require("./SelectOrgChartView");
 const Room_1 = require("../../../server/scripts/models/Room");
 const groupRx = require("../../redux/group/groupRx");
+const privateGroupRx = require("../../redux/group/privateGroupRxActions");
 exports.createOrgGroup = "create-org-group";
 exports.createPjbGroup = "create-projectbase-group";
 exports.createPvGroup = "create-group";
@@ -53,7 +54,7 @@ class CreateGroupBox extends React.Component {
                     };
                     this.group.type = Room_1.RoomType.privateGroup;
                     this.group.members = new Array(member);
-                    this.props.dispatch(groupRx.createPrivateGroup(this.group));
+                    this.props.dispatch(privateGroupRx.createPrivateGroup(this.group));
                     break;
                 default:
                     break;
@@ -90,7 +91,9 @@ class CreateGroupBox extends React.Component {
     }
     ;
     render() {
-        return (React.createElement("div", null, this.getView()));
+        return (React.createElement("div", null,
+            " ",
+            this.getView()));
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });

@@ -48,18 +48,18 @@ exports.getRoomAccessOfRoom = (uid, rid) => __awaiter(this, void 0, void 0, func
 function AddRoomIdToRoomAccessFieldOfUsers(roomId, memberIds, date) {
     return __awaiter(this, void 0, void 0, function* () {
         let isDone = false;
-        async.each(memberIds, function (element, cb) {
-            AddRoomIdToRoomAccessFieldOfUser(roomId, element, date).then(result => {
-                cb();
-            }).catch(err => {
-                cb();
+        yield new Promise((resolve, reject) => {
+            async.each(memberIds, function (element, cb) {
+                AddRoomIdToRoomAccessFieldOfUser(roomId, element, date).then(result => {
+                    cb();
+                }).catch(err => {
+                    cb();
+                });
+            }, function (errCb) {
+                isDone = true;
+                resolve(isDone);
             });
-        }, function (errCb) {
-            isDone = true;
         });
-        while (!isDone) {
-            yield isDone;
-        }
         return isDone;
     });
 }

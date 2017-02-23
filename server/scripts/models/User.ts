@@ -14,6 +14,13 @@ export class UserTransaction implements IUser {
 export interface IOnlineUser {
     [uid: string]: OnlineUser;
 };
+export enum UserRole {
+    personnel = 0,
+    section_chief,
+    department_chief,
+    division_chief,
+    admin
+};
 
 export class ChitChatAccount {
     _id: string;
@@ -34,4 +41,5 @@ export class ChitChatAccount {
     closedNoticeGroups: string[]; // room_id
     deviceTokens: string[];
     teams: string[];
+    role: UserRole;
 };

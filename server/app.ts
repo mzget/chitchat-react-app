@@ -6,7 +6,7 @@ let cookieParser = require("cookie-parser");
 let bodyParser = require("body-parser");
 const expressValidator = require("express-validator");
 const cors = require("cors");
-import useragent = require("express-useragent");
+const useragent = require("express-useragent");
 import jwt = require("jsonwebtoken");
 
 process.env.NODE_ENV = `production`;

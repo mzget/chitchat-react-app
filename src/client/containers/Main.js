@@ -15,6 +15,7 @@ const Colors = require("material-ui/styles/colors");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const ProfileBox_1 = require("./profile/ProfileBox");
 const OrgGroupListBox_1 = require("./group/OrgGroupListBox");
+const PrivateGroupListBox_1 = require("./group/PrivateGroupListBox");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 const ContactBox_1 = require("./chatlist/ContactBox");
 const UtilsBox_1 = require("./UtilsBox");
@@ -134,6 +135,7 @@ class Main extends React.Component {
                 React.createElement("div", { style: { height: this.bodyHeight, overflowY: "auto" } },
                     React.createElement(ProfileBox_1.default, __assign({}, this.props)),
                     React.createElement(OrgGroupListBox_1.default, __assign({}, this.props)),
+                    React.createElement(PrivateGroupListBox_1.default, __assign({}, this.props)),
                     React.createElement(ContactBox_1.default, __assign({}, this.props)),
                     React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
                     React.createElement(UtilsBox_1.default, null)),

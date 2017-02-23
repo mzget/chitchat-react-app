@@ -53,6 +53,7 @@
     <Content Include="client\containers\chatlist\ContactBox.tsx" />
     <Content Include="client\containers\ChatLogsBox.tsx" />
     <Content Include="client\containers\group\GroupList.tsx" />
+    <Content Include="client\containers\group\PrivateGroupListBox.tsx" />
     <Content Include="client\containers\group\OrgGroupListBox.tsx" />
     <Content Include="client\containers\Home.tsx" />
     <Content Include="client\containers\ListChatLogs.tsx" />
@@ -84,7 +85,9 @@
     <TypeScriptCompile Include="client\redux\admin\adminRx.ts" />
     <TypeScriptCompile Include="client\redux\app\persistentDataActions.ts" />
     <TypeScriptCompile Include="client\redux\authen\authRx.ts" />
+    <TypeScriptCompile Include="client\redux\group\groupReducer.ts" />
     <TypeScriptCompile Include="client\redux\group\groupRx.ts" />
+    <TypeScriptCompile Include="client\redux\group\privateGroupRxActions.ts" />
     <TypeScriptCompile Include="client\redux\team\teamRx.ts" />
     <TypeScriptCompile Include="client\redux\user\userRx.ts" />
     <TypeScriptCompile Include="client\utils\ValidationUtils.ts" />

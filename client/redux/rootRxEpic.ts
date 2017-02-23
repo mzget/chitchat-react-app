@@ -5,8 +5,9 @@ import * as chatroomRxEpic from "./chatroom/chatroomRxEpic";
 import * as chatlogsActions from "./chatlogs/chatlogsActions";
 import * as authRx from "./authen/authRx";
 import * as teamRx from "./team/teamRx";
-import * as groupRx from "./group/groupRx";
 import * as adminRx from "./admin/adminRx";
+import * as groupRx from "./group/groupRx";
+import * as privateGroupRxActions from "./group/privateGroupRxActions";
 
 export const rootEpic = combineEpics(
     // @Admin
@@ -36,7 +37,12 @@ export const rootEpic = combineEpics(
     ///@Group
     groupRx.getOrgGroup_Epic,
     groupRx.createOrgGroup_Epic,
-    groupRx.createPrivateGroup_Epic,
+
+    /**
+     * Private group...
+     */
+    privateGroupRxActions.getPrivateGroup_Epic,
+    privateGroupRxActions.createPrivateGroup_Epic,
 
     ///@ChatRoom
     chatroomRxEpic.getPrivateChatRoomEpic,
