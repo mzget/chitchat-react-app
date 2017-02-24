@@ -6,6 +6,7 @@ import * as Colors from "material-ui/styles/colors";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
+import { WarningBar } from "../components/WarningBar";
 import SimpleToolbar from "../components/SimpleToolbar";
 import ProfileBox from "./profile/ProfileBox";
 import OrgGroupListBox from "./group/OrgGroupListBox";
@@ -153,19 +154,10 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                             menus={this.menus}
                             onSelectedMenuItem={this.onSelectMenuItem} />
                     </div>
-                    <div id={"warning_bar"}>
-                        {
-                            (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
-                                (
-                                    <Flex style={{ backgroundColor: Colors.red500 }} align="center" justify="center" flexColumn={true}>
-                                        <Flex flexColumn={true}>
-                                            <span style={{ color: Colors.white, fontSize: 14 }}>Unable to connect whit chat service.</span>
-                                            <span style={{ color: Colors.white, fontSize: 14 }}>Check your Internet connection.</span>
-                                        </Flex>
-                                    </Flex>
-                                ) : null
-
-                        }
+                    <div id={"warning_bar"}> {
+                        (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
+                            <WarningBar /> : null
+                    }
                     </div>
                     <div style={{ height: this.bodyHeight, overflowY: "auto" }} id={"app_body"}>
                         <ProfileBox {...this.props} />

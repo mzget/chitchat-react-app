@@ -2,9 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_redux_1 = require("react-redux");
-const reflexbox_1 = require("reflexbox");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
-const Colors = require("material-ui/styles/colors");
+const WarningBar_1 = require("../components/WarningBar");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const ProfileBox_1 = require("./profile/ProfileBox");
 const OrgGroupListBox_1 = require("./group/OrgGroupListBox");
@@ -125,11 +124,10 @@ class Main extends React.Component {
             React.createElement("div", { style: { overflowY: "hidden" } },
                 React.createElement("div", { style: { height: this.headerHeight }, id: "toolbar" },
                     React.createElement(SimpleToolbar_1.default, { title: this.props.teamReducer.team.name, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
-                React.createElement("div", { id: "warning_bar" }, (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
-                    (React.createElement(reflexbox_1.Flex, { style: { backgroundColor: Colors.red500 }, align: "center", justify: "center", flexColumn: true },
-                        React.createElement(reflexbox_1.Flex, { flexColumn: true },
-                            React.createElement("span", { style: { color: Colors.white, fontSize: 14 } }, "Unable to connect whit chat service."),
-                            React.createElement("span", { style: { color: Colors.white, fontSize: 14 } }, "Check your Internet connection.")))) : null),
+                React.createElement("div", { id: "warning_bar" },
+                    " ",
+                    (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
+                        React.createElement(WarningBar_1.WarningBar, null) : null),
                 React.createElement("div", { style: { height: this.bodyHeight, overflowY: "auto" }, id: "app_body" },
                     React.createElement(ProfileBox_1.default, Object.assign({}, this.props)),
                     React.createElement(OrgGroupListBox_1.default, Object.assign({}, this.props)),
