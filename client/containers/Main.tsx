@@ -31,6 +31,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     clientWidth = document.documentElement.clientWidth;
     clientHeight = document.documentElement.clientHeight;
     headerHeight = null;
+    subHeaderHeight = null;
     bodyHeight = null;
     footerHeight = null;
 
@@ -45,7 +46,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
         }
 
         this.headerHeight = this.clientHeight * 0.1;
-        this.bodyHeight = (this.clientHeight * 0.9) - 50;
+        this.bodyHeight = (this.clientHeight * 0.9);
         this.footerHeight = 50;
 
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
@@ -53,7 +54,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
 
     componentWillReceiveProps(nextProps: IComponentProps) {
         let {
-            location: {query: {userId, username, roomId, contactId}},
+            location: { query: { userId, username, roomId, contactId } },
             userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer
         } = nextProps;
 
@@ -113,7 +114,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     joinChatServer(nextProps: IComponentProps) {
-        let {stalkReducer, userReducer } = nextProps;
+        let { stalkReducer, userReducer } = nextProps;
 
         if (userReducer.user) {
             if (stalkReducer.state !== StalkBridgeActions.STALK_INIT) {
@@ -129,7 +130,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     onSelectMenuItem(id, value) {
         console.log(this.menus[id]);
 
-        let {authReducer} = this.props;
+        let { authReducer } = this.props;
         switch (id) {
             case 0:
                 this.props.router.push(`/admin/${authReducer.user}`);

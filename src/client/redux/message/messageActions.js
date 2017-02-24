@@ -4,6 +4,7 @@
  * Redux actions creator.
  */
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const BackendFactory_1 = require("../../chats/BackendFactory");
 const httpStatusCode_1 = require("../../libs/stalk/utils/httpStatusCode");
 class MessageActionsType {

@@ -1,12 +1,5 @@
 "use strict";
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
@@ -33,6 +26,7 @@ class Main extends React.Component {
         this.clientWidth = document.documentElement.clientWidth;
         this.clientHeight = document.documentElement.clientHeight;
         this.headerHeight = null;
+        this.subHeaderHeight = null;
         this.bodyHeight = null;
         this.footerHeight = null;
         this.fetch_privateChatRoom = (roommateId, owerId) => {
@@ -48,7 +42,7 @@ class Main extends React.Component {
             this.props.router.replace("/");
         }
         this.headerHeight = this.clientHeight * 0.1;
-        this.bodyHeight = (this.clientHeight * 0.9) - 50;
+        this.bodyHeight = (this.clientHeight * 0.9);
         this.footerHeight = 50;
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
     }
@@ -133,11 +127,11 @@ class Main extends React.Component {
                 React.createElement("div", { style: { height: this.headerHeight } },
                     React.createElement(SimpleToolbar_1.default, { title: this.props.teamReducer.team.name, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
                 React.createElement("div", { style: { height: this.bodyHeight, overflowY: "auto" } },
-                    React.createElement(ProfileBox_1.default, __assign({}, this.props)),
-                    React.createElement(OrgGroupListBox_1.default, __assign({}, this.props)),
-                    React.createElement(PrivateGroupListBox_1.default, __assign({}, this.props)),
-                    React.createElement(ContactBox_1.default, __assign({}, this.props)),
-                    React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
+                    React.createElement(ProfileBox_1.default, Object.assign({}, this.props)),
+                    React.createElement(OrgGroupListBox_1.default, Object.assign({}, this.props)),
+                    React.createElement(PrivateGroupListBox_1.default, Object.assign({}, this.props)),
+                    React.createElement(ContactBox_1.default, Object.assign({}, this.props)),
+                    React.createElement(ChatLogsBox_1.default, Object.assign({}, this.props)),
                     React.createElement(UtilsBox_1.default, null)),
                 (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
                     (React.createElement(reflexbox_1.Flex, { style: { height: this.footerHeight, backgroundColor: Colors.red500 }, align: "center", justify: "center", flexColumn: true },
@@ -146,6 +140,5 @@ class Main extends React.Component {
                             React.createElement("span", { style: { color: Colors.white } }, "Check your Internet connection.")))) : null)));
     }
 }
-const mapStateToProps = (state) => (__assign({}, state));
-Object.defineProperty(exports, "__esModule", { value: true });
+const mapStateToProps = (state) => (Object.assign({}, state));
 exports.default = react_redux_1.connect(mapStateToProps)(Main);

@@ -1,12 +1,5 @@
 "use strict";
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
@@ -112,7 +105,7 @@ class Chat extends React.Component {
             }
             case chatRoomActions.ChatRoomActionsType.ON_NEW_MESSAGE: {
                 chatRoomActions.getMessages().then(messages => {
-                    this.setState(previousState => (__assign({}, previousState, { messages: messages })), () => {
+                    this.setState(previousState => (Object.assign({}, previousState, { messages: messages })), () => {
                         let chatBox = document.getElementById("h_chatArea");
                         chatBox.scrollTop = chatBox.scrollHeight;
                     });
@@ -122,7 +115,7 @@ class Chat extends React.Component {
             }
             case chatRoomActions.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
                 chatRoomActions.getMessages().then(messages => {
-                    this.setState(previousState => (__assign({}, previousState, { messages: messages })));
+                    this.setState(previousState => (Object.assign({}, previousState, { messages: messages })));
                 });
                 this.props.dispatch(chatRoomActions.checkOlderMessages());
                 this.props.dispatch(chatRoomActions.getNewerMessageFromNet());
@@ -130,17 +123,17 @@ class Chat extends React.Component {
             }
             case chatRoomActions.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
                 chatRoomActions.getMessages().then(messages => {
-                    this.setState(previousState => (__assign({}, previousState, { messages: messages })));
+                    this.setState(previousState => (Object.assign({}, previousState, { messages: messages })));
                 });
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
-                this.setState((previousState) => (__assign({}, previousState, { earlyMessageReady: chatroomReducer.earlyMessageReady })));
+                this.setState((previousState) => (Object.assign({}, previousState, { earlyMessageReady: chatroomReducer.earlyMessageReady })));
                 break;
             }
             case chatRoomActions.ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS: {
                 chatRoomActions.getMessages().then(messages => {
-                    this.setState(previousState => (__assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false, messages: messages })));
+                    this.setState(previousState => (Object.assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false, messages: messages })));
                 });
                 break;
             }
@@ -149,7 +142,7 @@ class Chat extends React.Component {
         }
     }
     onLoadEarlierMessages() {
-        this.setState(previousState => (__assign({}, previousState, { isLoadingEarlierMessages: true })));
+        this.setState(previousState => (Object.assign({}, previousState, { isLoadingEarlierMessages: true })));
         this.props.dispatch(chatRoomActions.loadEarlyMessageChunk());
     }
     roomInitialize(props) {
@@ -178,7 +171,7 @@ class Chat extends React.Component {
                 messages.push(_messages[i]);
             }
         }
-        this.setState(__assign({}, this.state, { messages: messages }));
+        this.setState(Object.assign({}, this.state, { messages: messages }));
     }
     setMessageTemp(server_msg) {
         let _messages = this.state.messages.slice();
@@ -190,10 +183,10 @@ class Chat extends React.Component {
                 message.status = "Sent";
             }
         });
-        this.setState(__assign({}, this.state, { messages: _messages }), () => console.log(this.state.messages));
+        this.setState(Object.assign({}, this.state, { messages: _messages }), () => console.log(this.state.messages));
     }
     onTypingTextChange(event) {
-        this.setState(__assign({}, this.state, { typingText: event.target.value }));
+        this.setState(Object.assign({}, this.state, { typingText: event.target.value }));
     }
     onSubmitTextChat() {
         if (this.state.typingText.length <= 0)
@@ -229,7 +222,7 @@ class Chat extends React.Component {
         this.send(message);
         let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
         _messages.push(message);
-        this.setState(previousState => (__assign({}, previousState, { typingText: "", messages: _messages })), () => {
+        this.setState(previousState => (Object.assign({}, previousState, { typingText: "", messages: _messages })), () => {
             let chatBox = document.getElementById("h_chatArea");
             chatBox.scrollTop = chatBox.scrollHeight;
         });
@@ -274,7 +267,7 @@ class Chat extends React.Component {
         this.props.dispatch(chatRoomActions.sendMessage(message));
     }
     onToggleSticker() {
-        this.setState(previousState => (__assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu, h_chatArea: (previousState.openButtomMenu) ? previousState.h_body : previousState.h_body - previousState.h_stickerBox })));
+        this.setState(previousState => (Object.assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu, h_chatArea: (previousState.openButtomMenu) ? previousState.h_body : previousState.h_body - previousState.h_stickerBox })));
     }
     onBackPressed() {
         this.props.router.goBack();
@@ -306,6 +299,5 @@ class Chat extends React.Component {
 /**
  * ## Redux boilerplate
  */
-const mapStateToProps = (state) => (__assign({}, state));
-Object.defineProperty(exports, "__esModule", { value: true });
+const mapStateToProps = (state) => (Object.assign({}, state));
 exports.default = react_redux_1.connect(mapStateToProps)(Chat);

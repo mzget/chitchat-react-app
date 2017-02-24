@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const Subheader_1 = require("material-ui/Subheader");
 const chatroomActions = require("../../redux/chatroom/chatroomActions");
@@ -20,5 +21,4 @@ class PrivateGroupListBox extends React.Component {
             React.createElement(GroupList_1.GroupList, { values: this.props.groupReducer.privateGroups, onSelected: this.onselectGroup })));
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = PrivateGroupListBox;

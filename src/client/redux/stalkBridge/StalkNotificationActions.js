@@ -7,6 +7,7 @@
  *
  */
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const BackendFactory_1 = require("../../chats/BackendFactory");
 const ChatDataModels_1 = require("../../chats/models/ChatDataModels");
 const CryptoHelper = require("../../chats/utils/CryptoHelper");

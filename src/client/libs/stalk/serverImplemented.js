@@ -5,6 +5,7 @@
  * Ahoo Studio.co.th
  */
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const httpStatusCode_1 = require("./utils/httpStatusCode");
 const Pomelo = require("../pomelo/reactWSClient");
 const config_1 = require("../../configs/config");
@@ -20,6 +21,7 @@ class ServerImplemented {
         this._isLogedin = false;
         this.connect = this.connectServer;
         console.log("serv imp. constructor");
+        this.connectServer = this.connectServer.bind(this);
     }
     static getInstance() {
         if (this.Instance === null || this.Instance === undefined) {
@@ -58,15 +60,14 @@ class ServerImplemented {
     }
     logout() {
         console.log('logout request');
-        let self = this;
         let registrationId = "";
         let msg = {};
-        msg["username"] = this.username;
+        msg["username"] = null;
         msg["registrationId"] = registrationId;
-        if (self.pomelo != null)
-            self.pomelo.notify("connector.entryHandler.logout", msg);
+        if (this.pomelo != null)
+            this.pomelo.notify("connector.entryHandler.logout", msg);
         this.disConnect();
-        self.pomelo = null;
+        this.pomelo = null;
     }
     init(callback) {
         let self = this;
@@ -89,7 +90,10 @@ class ServerImplemented {
         console.log("socket connecting to: ", params);
         this.pomelo.on("onopen", (reason) => console.warn("onopen : reason", reason));
         this.pomelo.on("close", (data) => console.warn("close", data));
-        this.pomelo.on("disconnected", (data) => console.warn("disconnect", data));
+        this.pomelo.on("disconnected", (data) => {
+            console.warn("disconnected", data);
+            this._isConnected = false;
+        });
         this.pomelo.on("io-error", (data) => console.warn("io-error", data));
         this.pomelo.init(params, function cb(err) {
             console.log("socket init result: ", err);
@@ -161,10 +165,6 @@ class ServerImplemented {
                 if (callback != null) {
                     callback(null, res);
                 }
-                self.pomelo.on("disconnect", function data(reason) {
-                    console.warn("disconnect : reason", reason);
-                    self._isConnected = false;
-                });
             }
             else {
                 if (callback !== null) {
@@ -195,22 +195,29 @@ class ServerImplemented {
                 let message = "pomelo client is null: connecting status is " + self._isConnected;
                 console.log("Automatic init pomelo socket...");
                 rejected(message);
+                // self.init((err, res) => {
+                //     if (err) {
+                //         console.warn("Cannot starting pomelo socket!");
+                //         rejected(err);
+                //     }
+                //     else {
+                //         console.log("Init socket success.");
+                //         resolve();
+                //     }
+                // });
             }
         });
     }
     connectorEnter(msg) {
         let self = this;
         return new Promise((resolve, rejected) => {
-            //<!-- Authentication.
+            // <!-- Authentication.
             self.pomelo.request("connector.entryHandler.login", msg, function (res) {
                 if (res.code === httpStatusCode_1.default.fail) {
                     rejected(res.message);
                 }
                 else if (res.code === httpStatusCode_1.default.success) {
                     resolve(res);
-                    self.pomelo.on('disconnect', function data(reason) {
-                        self._isConnected = false;
-                    });
                 }
                 else {
                     resolve(res);
@@ -596,6 +603,5 @@ class ServerImplemented {
         });
     }
 }
-ServerImplemented.connectionProblemString = 'Server connection is unstable.';
-Object.defineProperty(exports, "__esModule", { value: true });
+ServerImplemented.connectionProblemString = "Server connection is unstable.";
 exports.default = ServerImplemented;

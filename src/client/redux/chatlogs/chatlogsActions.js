@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
@@ -24,6 +25,7 @@ const listenerImp = (newMsg) => {
         unread.count = count;
         chatsLogComp().addUnreadMessage(unread);
         onUnreadMessageMapChanged(unread);
+        //             chatLogDAL.savePersistedUnreadMsgMap(unread);
     }
 };
 function updateLastAccessTimeEventHandler(newRoomAccess) {
@@ -33,6 +35,7 @@ function updateLastAccessTimeEventHandler(newRoomAccess) {
             chatsLogComp().addUnreadMessage(unread);
             calculateUnreadCount();
             onUnreadMessageMapChanged(unread);
+            //chatLogDAL.savePersistedUnreadMsgMap(unread);
         }
     });
 }

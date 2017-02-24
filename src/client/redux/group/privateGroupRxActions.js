@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const Rx = require("@reactivex/rxjs");
 const { Observable: { ajax }, AjaxResponse } = Rx;
 const config_1 = require("../../configs/config");

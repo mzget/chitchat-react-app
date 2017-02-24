@@ -12,7 +12,18 @@ const Pomelo = require("../pomelo/reactWSClient");
 import config from '../../configs/config';
 import EventEmitter = require("events");
 
-class IPomelo extends EventEmitter { };
+abstract class IPomelo extends EventEmitter {
+    init;
+    notify;
+    request;
+    disconnect;
+    setReconnect;
+};
+export interface IPomeloParam {
+    host: string;
+    port: number;
+    reconnect: boolean;
+}
 
 export interface IDictionary {
     [k: string]: string;
@@ -25,9 +36,6 @@ class AuthenData implements IAuthenData {
     userId: string;
     token: string;
 }
-export interface IPomeloParam {
-    host: string, port: number, reconnect: boolean
-}
 
 export default class ServerImplemented {
     private static Instance: ServerImplemented;
@@ -39,7 +47,7 @@ export default class ServerImplemented {
         return this.Instance;
     }
 
-    static connectionProblemString: string = 'Server connection is unstable.';
+    static connectionProblemString: string = "Server connection is unstable.";
 
     pomelo: IPomelo;
     host: string;
@@ -51,6 +59,8 @@ export default class ServerImplemented {
 
     constructor() {
         console.log("serv imp. constructor");
+
+        this.connectServer = this.connectServer.bind(this);
     }
 
     public getClient() {
@@ -91,16 +101,15 @@ export default class ServerImplemented {
     public logout() {
         console.log('logout request');
 
-        let self = this;
         let registrationId = "";
         let msg: IDictionary = {};
-        msg["username"] = this.username;
+        msg["username"] = null;
         msg["registrationId"] = registrationId;
-        if (self.pomelo != null)
-            self.pomelo.notify("connector.entryHandler.logout", msg);
+        if (this.pomelo != null)
+            this.pomelo.notify("connector.entryHandler.logout", msg);
 
         this.disConnect();
-        self.pomelo = null;
+        this.pomelo = null;
     }
 
     public init(callback: (err, res) => void) {
@@ -127,7 +136,10 @@ export default class ServerImplemented {
 
         this.pomelo.on("onopen", (reason) => console.warn("onopen : reason", reason));
         this.pomelo.on("close", (data) => console.warn("close", data));
-        this.pomelo.on("disconnected", (data) => console.warn("disconnect", data));
+        this.pomelo.on("disconnected", (data) => {
+            console.warn("disconnected", data);
+            this._isConnected = false;
+        });
         this.pomelo.on("io-error", (data) => console.warn("io-error", data));
 
         this.pomelo.init(params, function cb(err) {
@@ -213,11 +225,6 @@ export default class ServerImplemented {
                 if (callback != null) {
                     callback(null, res);
                 }
-
-                self.pomelo.on("disconnect", function data(reason) {
-                    console.warn("disconnect : reason", reason);
-                    self._isConnected = false;
-                });
             }
             else {
                 if (callback !== null) {
@@ -273,17 +280,13 @@ export default class ServerImplemented {
         let self = this;
 
         return new Promise((resolve, rejected) => {
-            //<!-- Authentication.
+            // <!-- Authentication.
             self.pomelo.request("connector.entryHandler.login", msg, function (res) {
                 if (res.code === HttpStatusCode.fail) {
                     rejected(res.message);
                 }
                 else if (res.code === HttpStatusCode.success) {
                     resolve(res);
-
-                    self.pomelo.on('disconnect', function data(reason) {
-                        self._isConnected = false;
-                    });
                 }
                 else {
                     resolve(res);

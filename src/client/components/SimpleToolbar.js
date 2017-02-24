@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const IconMenu_1 = require("material-ui/IconMenu");
 const IconButton_1 = require("material-ui/IconButton");
@@ -46,5 +47,4 @@ class SimpleToolbar extends React.Component {
                         })))) : null)));
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = SimpleToolbar;
