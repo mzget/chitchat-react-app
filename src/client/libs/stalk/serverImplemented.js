@@ -22,6 +22,7 @@ class ServerImplemented {
         this.connect = this.connectServer;
         console.log("serv imp. constructor");
         this.connectServer = this.connectServer.bind(this);
+        this.listenForPomeloEvents = this.listenForPomeloEvents.bind(this);
     }
     static getInstance() {
         if (this.Instance === null || this.Instance === undefined) {
@@ -59,7 +60,7 @@ class ServerImplemented {
         }
     }
     logout() {
-        console.log('logout request');
+        console.log("logout request");
         let registrationId = "";
         let msg = {};
         msg["username"] = null;
@@ -87,18 +88,22 @@ class ServerImplemented {
         }
     }
     connectServer(params, callback) {
-        console.log("socket connecting to: ", params);
-        this.pomelo.on("onopen", (reason) => console.warn("onopen : reason", reason));
-        this.pomelo.on("close", (data) => console.warn("close", data));
-        this.pomelo.on("disconnected", (data) => {
-            console.warn("disconnected", data);
-            this._isConnected = false;
-        });
-        this.pomelo.on("io-error", (data) => console.warn("io-error", data));
         this.pomelo.init(params, function cb(err) {
             console.log("socket init result: ", err);
             callback(err);
         });
+    }
+    listenForPomeloEvents() {
+        this.pomelo.removeAllListeners();
+        this.pomelo.on("onopen", (data) => console.warn("onopen : reason", data));
+        this.pomelo.on("close", (this.onSocketClose) ? this.onSocketClose : (data) => console.warn("close", data));
+        this.pomelo.on("disconnected", (data) => {
+            console.warn("disconnected", data);
+            this._isConnected = false;
+            if (this.onDisconnected)
+                this.onDisconnected(data);
+        });
+        this.pomelo.on("io-error", (data) => console.warn("io-error", data));
     }
     // region <!-- Authentication...
     /// <summary>
@@ -176,11 +181,11 @@ class ServerImplemented {
     gateEnter(uid) {
         let self = this;
         let msg = { uid: uid };
-        return new Promise((resolve, rejected) => {
+        let result = new Promise((resolve, rejected) => {
             if (!!self.pomelo && this._isConnected === false) {
                 // <!-- Quering connector server.
                 self.pomelo.request("gate.gateHandler.queryEntry", msg, function (result) {
-                    console.log("gateEnter", JSON.stringify(result));
+                    console.log("gateEnter", result);
                     if (result.code === httpStatusCode_1.default.success) {
                         self.disConnect();
                         let data = { host: self.host, port: result.port };
@@ -195,20 +200,11 @@ class ServerImplemented {
                 let message = "pomelo client is null: connecting status is " + self._isConnected;
                 console.log("Automatic init pomelo socket...");
                 rejected(message);
-                // self.init((err, res) => {
-                //     if (err) {
-                //         console.warn("Cannot starting pomelo socket!");
-                //         rejected(err);
-                //     }
-                //     else {
-                //         console.log("Init socket success.");
-                //         resolve();
-                //     }
-                // });
             }
         });
+        return result;
     }
-    connectorEnter(msg) {
+    signin(msg) {
         let self = this;
         return new Promise((resolve, rejected) => {
             // <!-- Authentication.

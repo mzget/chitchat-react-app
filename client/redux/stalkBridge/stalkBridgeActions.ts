@@ -117,7 +117,7 @@ export function stalkLogin(user: any) {
             Store.dispatch({ type: STALK_INIT_FAILURE });
         });
     }).catch(err => {
-        console.warn("StalkInit Fail.");
+        console.warn("StalkInit Fail.", err);
 
         Store.dispatch({ type: STALK_INIT_FAILURE });
     });

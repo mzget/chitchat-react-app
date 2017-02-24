@@ -125,8 +125,10 @@ class BackendFactory {
                 let params = { host: value.host, port: value.port, reconnect: false };
                 self.stalk.connect(params, (err) => {
                     self.stalk._isConnected = true;
-                    if (!!self.stalk.pomelo)
+                    if (!!self.stalk.pomelo) {
+                        self.stalk.listenForPomeloEvents();
                         self.stalk.pomelo.setReconnect(true);
+                    }
                     if (!!err) {
                         rejected(err);
                     }
@@ -134,7 +136,7 @@ class BackendFactory {
                         let msg = {};
                         msg["token"] = token;
                         msg["user"] = user;
-                        self.stalk.connectorEnter(msg).then(value => {
+                        self.stalk.signin(msg).then(value => {
                             resolve(value);
                         }).catch(err => {
                             rejected(err);

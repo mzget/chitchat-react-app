@@ -91,7 +91,8 @@ export default class WebSocketClient {
         "sys": {
             type: JS_WS_CLIENT_TYPE,
             version: JS_WS_CLIENT_VERSION,
-            rsa: {}
+            rsa: {},
+            protoVersion
         },
         "user": {}
     };
