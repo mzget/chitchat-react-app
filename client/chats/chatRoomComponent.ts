@@ -9,7 +9,7 @@ import * as async from "async";
 import BackendFactory from "./BackendFactory";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
-import ServerImplemented from "../libs/stalk/serverImplemented";
+import { ServerImplemented } from "../libs/stalk/serverImplemented";
 import ChatRoomApiProvider from "../libs/stalk/chatRoomApiProvider";
 import ServerEventListener from "../libs/stalk/serverEventListener";
 import { absSpartan } from "../libs/stalk/spartanEvents";
@@ -134,7 +134,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
     }
 
     onGetMessagesReaders(dataEvent) {
-        console.log('onGetMessagesReaders', dataEvent);
+        console.log("onGetMessagesReaders", dataEvent);
 
         let self = this;
         interface Ireaders {
@@ -374,7 +374,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                     topEdgeMessageTime = messages[0].createTime;
                 }
             }
-            console.log('topEdgeMessageTime is: ', topEdgeMessageTime);
+            console.log("topEdgeMessageTime is: ", topEdgeMessageTime);
         }
 
         waitRoomMessage().then(() => {

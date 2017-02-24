@@ -16,7 +16,7 @@ class ChatRoomApiProvider {
      */
     chatFile(room_id, target, sender_id, fileUrl, contentType, meta, callback) {
         console.log("Send file to ", target);
-        var message = {};
+        let message = {};
         message["rid"] = room_id;
         message["content"] = fileUrl;
         message["sender"] = sender_id;
@@ -24,7 +24,7 @@ class ChatRoomApiProvider {
         message["meta"] = meta;
         message["type"] = contentType;
         this.pomelo.request("chat.chatHandler.send", message, (result) => {
-            var data = JSON.parse(JSON.stringify(result));
+            let data = JSON.parse(JSON.stringify(result));
             console.log("chatFile callback: ", data);
             if (data.code == 200) {
                 if (callback != null) {
@@ -37,7 +37,7 @@ class ChatRoomApiProvider {
         });
     }
     getSyncDateTime(callback) {
-        var message = {};
+        let message = {};
         this.pomelo.request("chat.chatHandler.getSyncDateTime", message, (result) => {
             if (callback != null) {
                 callback(null, result);
@@ -48,7 +48,7 @@ class ChatRoomApiProvider {
      * get older message histories.
      */
     getOlderMessageChunk(roomId, topEdgeMessageTime, callback) {
-        var message = {};
+        let message = {};
         message["rid"] = roomId;
         message["topEdgeMessageTime"] = topEdgeMessageTime.toString();
         this.pomelo.request("chat.chatHandler.getOlderMessageChunk", message, (result) => {
@@ -58,14 +58,14 @@ class ChatRoomApiProvider {
         });
     }
     getMessagesReaders(topEdgeMessageTime) {
-        var message = {};
+        let message = {};
         message["topEdgeMessageTime"] = topEdgeMessageTime;
         this.pomelo.request("chat.chatHandler.getMessagesReaders", message, (result) => {
-            console.info('getMessagesReaders respones: ', result);
+            console.info("getMessagesReaders respones: ", result);
         });
     }
     getMessageContent(messageId, callback) {
-        var message = {};
+        let message = {};
         message["messageId"] = messageId;
         this.pomelo.request("chat.chatHandler.getMessageContent", message, (result) => {
             if (!!callback) {
@@ -74,13 +74,13 @@ class ChatRoomApiProvider {
         });
     }
     updateMessageReader(messageId, roomId) {
-        var message = {};
+        let message = {};
         message["messageId"] = messageId;
         message["roomId"] = roomId;
         this.pomelo.notify("chat.chatHandler.updateWhoReadMessage", message);
     }
     updateMessageReaders(messageIds, roomId) {
-        var message = {};
+        let message = {};
         message["messageIds"] = JSON.stringify(messageIds);
         message["roomId"] = roomId;
         this.pomelo.notify("chat.chatHandler.updateWhoReadMessages", message);

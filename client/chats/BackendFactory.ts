@@ -3,8 +3,8 @@
  *
  */
 
-import Stalk, { IPomeloParam } from '../libs/stalk/serverImplemented';
-import ChatRoomApiProvider from '../libs/stalk/chatRoomApiProvider';
+import { ServerImplemented, IPomeloParam } from "../libs/stalk/serverImplemented";
+import ChatRoomApiProvider from "../libs/stalk/chatRoomApiProvider";
 import ServerEventListener from "../libs/stalk/serverEventListener";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
@@ -20,7 +20,7 @@ export default class BackendFactory {
         return BackendFactory.instance;
     }
 
-    stalk: Stalk;
+    stalk: ServerImplemented;
     chatRoomApiProvider: ChatRoomApiProvider;
     serverEventsListener: ServerEventListener;
     pushDataListener: PushDataListener;
@@ -28,15 +28,15 @@ export default class BackendFactory {
     dataListener: DataListener;
 
     constructor(token = null) {
-        console.log('BackendFactory: ', token);
+        console.log("BackendFactory: ", token);
 
-        this.stalk = Stalk.getInstance();
+        this.stalk = ServerImplemented.getInstance();
         this.pushDataListener = new PushDataListener();
         this.dataManager = new DataManager();
         this.dataListener = new DataListener(this.dataManager);
     }
 
-    getServer(): Promise<Stalk> {
+    getServer(): Promise<ServerImplemented> {
         return new Promise((resolve, rejected) => {
             if (this.stalk._isConnected)
                 resolve(this.stalk);
@@ -61,7 +61,7 @@ export default class BackendFactory {
     }
 
     stalkInit(): Promise<any> {
-        console.log('stalkInit...');
+        console.log("stalkInit...");
 
         let self = this;
         let promise = new Promise((resolve, reject) => {
@@ -83,7 +83,7 @@ export default class BackendFactory {
     login(username: string, hexPassword: string, deviceToken: string): Promise<any> {
         let email = username;
         let promise = new Promise(function executor(resolve, reject) {
-            Stalk.getInstance().logIn(email, hexPassword, deviceToken, (err, res) => {
+            ServerImplemented.getInstance().logIn(email, hexPassword, deviceToken, (err, res) => {
                 if (!!err) {
                     reject(err);
                 }
@@ -99,7 +99,7 @@ export default class BackendFactory {
         let token = tokenBearer;
         let promise = new Promise((resolved, rejected) => {
             console.warn(token);
-            Stalk.getInstance().TokenAuthen(token, (err, res) => {
+            ServerImplemented.getInstance().TokenAuthen(token, (err, res) => {
                 if (!!err) {
                     rejected(err);
                 }
@@ -115,7 +115,7 @@ export default class BackendFactory {
     logout() {
         let self = this;
         let promise = new Promise(function exe(resolve, reject) {
-            if (Stalk.getInstance) {
+            if (ServerImplemented.getInstance) {
                 if (!!self.stalk.pomelo)
                     self.stalk.pomelo.setReconnect(false);
                 self.stalk.logout();

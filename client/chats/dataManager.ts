@@ -1,7 +1,7 @@
 import * as async from "async";
 
 import { absSpartan } from "../libs/stalk/spartanEvents";
-import ServerImplemented from "../libs/stalk/serverImplemented";
+import { ServerImplemented } from "../libs/stalk/serverImplemented";
 import { RoomAccessData, RoomType, ContactInfo, MemberRole, StalkAccount } from "./models/ChatDataModels";
 
 import { IRoomDAL } from "../libs/chitchat/dataAccessLayer/IRoomDAL";

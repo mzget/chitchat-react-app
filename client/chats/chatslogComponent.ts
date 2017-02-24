@@ -12,7 +12,7 @@ import DataManager from "./dataManager";
 import DataListener from "./dataListener";
 import BackendFactory from "./BackendFactory";
 import * as CryptoHelper from "./utils/CryptoHelper";
-import ServerImplement, { IDictionary } from "../libs/stalk/serverImplemented";
+import { ServerImplemented, IDictionary } from "../libs/stalk/serverImplemented";
 import * as DataModels from "./models/ChatDataModels";
 import { MessageImp } from "./models/MessageImp";
 import * as ServiceProvider from "./services/ServiceProvider";
@@ -26,7 +26,7 @@ export interface IUnread { message: DataModels.IMessage; rid: string; count: num
 export class Unread { message: DataModels.IMessage; rid: string; count: number; };
 
 export default class ChatsLogComponent implements IRoomAccessListenerImp {
-    serverImp: ServerImplement = null;
+    serverImp: ServerImplemented = null;
     dataManager: DataManager = null;
     dataListener: DataListener = null;
 

@@ -107,7 +107,7 @@ class ChatRoomComponent {
         });
     }
     onGetMessagesReaders(dataEvent) {
-        console.log('onGetMessagesReaders', dataEvent);
+        console.log("onGetMessagesReaders", dataEvent);
         let self = this;
         let myMessagesArr = JSON.parse(JSON.stringify(dataEvent.data));
         self.chatMessages.forEach((originalMsg, id, arr) => {
@@ -330,7 +330,7 @@ class ChatRoomComponent {
                         topEdgeMessageTime = messages[0].createTime;
                     }
                 }
-                console.log('topEdgeMessageTime is: ', topEdgeMessageTime);
+                console.log("topEdgeMessageTime is: ", topEdgeMessageTime);
             });
         }
         waitRoomMessage().then(() => {
@@ -367,7 +367,7 @@ class ChatRoomComponent {
         });
     }
     getMemberProfile(member, callback) {
-        serverImplemented_1.default.getInstance().getMemberProfile(member._id, callback);
+        serverImplemented_1.ServerImplemented.getInstance().getMemberProfile(member._id, callback);
     }
     getMessages() {
         return __awaiter(this, void 0, void 0, function* () {

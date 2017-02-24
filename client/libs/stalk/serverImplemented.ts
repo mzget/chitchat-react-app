@@ -37,7 +37,7 @@ class AuthenData implements IAuthenData {
     token: string;
 }
 
-export default class ServerImplemented {
+export class ServerImplemented {
     private static Instance: ServerImplemented;
     public static getInstance(): ServerImplemented {
         if (this.Instance === null || this.Instance === undefined) {

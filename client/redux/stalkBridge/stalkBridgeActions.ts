@@ -8,7 +8,7 @@ import BackendFactory from "../../chats/BackendFactory";
 import * as StalkNotificationAction from "./StalkNotificationActions";
 import * as DataModels from "../../chats/models/ChatDataModels";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
-import StalkImp, { IDictionary } from "../../libs/stalk/serverImplemented";
+import { ServerImplemented, IDictionary } from "../../libs/stalk/serverImplemented";
 
 import config from "../../configs/config";
 import Store from "../configureStore";
@@ -19,23 +19,14 @@ import * as StalkPushActions from "./stalkPushActions";
 export const getSessionToken = () => {
     const backendFactory = BackendFactory.getInstance();
     return Store.getState().stalkReducer.stalkToken;
-}
+};
 export const getRoomDAL = () => {
     const backendFactory = BackendFactory.getInstance();
     return backendFactory.dataManager.roomDAL;
-}
+};
 const onGetContactProfileFail = (contact_id: string) => {
 
 };
-
-export function getUserInfo(userId: string, callback: (user: DataModels.ContactInfo) => void) {
-    let self = this;
-
-    let dataManager = BackendFactory.getInstance().dataManager;
-    let user: DataModels.ContactInfo = dataManager.getContactProfile(userId);
-    callback(user);
-}
-
 
 export const STALK_INIT = "STALK_INIT";
 export const STALK_INIT_SUCCESS = "STALK_INIT_SUCCESS";

@@ -604,4 +604,4 @@ class ServerImplemented {
     }
 }
 ServerImplemented.connectionProblemString = "Server connection is unstable.";
-exports.default = ServerImplemented;
+exports.ServerImplemented = ServerImplemented;

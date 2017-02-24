@@ -21,13 +21,6 @@ exports.getRoomDAL = () => {
 };
 const onGetContactProfileFail = (contact_id) => {
 };
-function getUserInfo(userId, callback) {
-    let self = this;
-    let dataManager = BackendFactory_1.default.getInstance().dataManager;
-    let user = dataManager.getContactProfile(userId);
-    callback(user);
-}
-exports.getUserInfo = getUserInfo;
 exports.STALK_INIT = "STALK_INIT";
 exports.STALK_INIT_SUCCESS = "STALK_INIT_SUCCESS";
 exports.STALK_INIT_FAILURE = "STALK_INIT_FAILURE";
