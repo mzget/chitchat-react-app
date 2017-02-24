@@ -42,12 +42,13 @@ class UtilsBox extends React.Component<IComponentProps, IComponentNameState> {
 
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_INIT_FAILURE:
-                this.setState({
-                    ...this.state,
-                    openDialog: true,
-                    dialogTitle: AlertMsg.stalkInitFail.title,
-                    dialogMessage: AlertMsg.stalkInitFail.message
-                });
+                /*     this.setState({
+                         ...this.state,
+                         openDialog: true,
+                         dialogTitle: AlertMsg.stalkInitFail.title,
+                         dialogMessage: AlertMsg.stalkInitFail.message
+                     });
+                  */
                 break;
             default:
                 break;

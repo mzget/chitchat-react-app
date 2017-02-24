@@ -125,7 +125,7 @@ class Main extends React.Component {
             React.createElement("div", { style: { overflowY: "hidden" } },
                 React.createElement("div", { style: { height: this.headerHeight }, id: "toolbar" },
                     React.createElement(SimpleToolbar_1.default, { title: this.props.teamReducer.team.name, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
-                React.createElement("div", { id: "warning_bar" }, (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
+                React.createElement("div", { id: "warning_bar" }, (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                     (React.createElement(reflexbox_1.Flex, { style: { backgroundColor: Colors.red500 }, align: "center", justify: "center", flexColumn: true },
                         React.createElement(reflexbox_1.Flex, { flexColumn: true },
                             React.createElement("span", { style: { color: Colors.white, fontSize: 14 } }, "Unable to connect whit chat service."),

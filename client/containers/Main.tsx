@@ -155,7 +155,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                     </div>
                     <div id={"warning_bar"}>
                         {
-                            (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
+                            (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                                 (
                                     <Flex style={{ backgroundColor: Colors.red500 }} align="center" justify="center" flexColumn={true}>
                                         <Flex flexColumn={true}>

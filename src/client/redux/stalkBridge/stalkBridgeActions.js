@@ -114,14 +114,20 @@ function stalkLogin(user) {
     });
 }
 exports.stalkLogin = stalkLogin;
-const STALK_ON_SOCKET_CLOSE = "STALK_ON_SOCKET_CLOSE";
-const onStalkSocketClose = (data) => ({ type: STALK_ON_SOCKET_CLOSE, payload: data });
-const STALK_ON_SOCKET_DISCONNECTED = "STALK_ON_SOCKET_DISCONNECTED";
-const onStalkSocketDisconnected = (data) => ({ type: STALK_ON_SOCKET_DISCONNECTED, payload: data });
+exports.STALK_ON_SOCKET_OPEN = "STALK_ON_SOCKET_OPEN";
+exports.STALK_ON_SOCKET_CLOSE = "STALK_ON_SOCKET_CLOSE";
+exports.STALK_ON_SOCKET_DISCONNECTED = "STALK_ON_SOCKET_DISCONNECTED";
+exports.STALK_CONNECTION_PROBLEM = "STALK_CONNECTION_PROBLEM";
+const onStalkSocketOpen = (data) => ({ type: exports.STALK_ON_SOCKET_OPEN, payload: data });
+const onStalkSocketClose = (data) => ({ type: exports.STALK_ON_SOCKET_CLOSE, payload: data });
+const onStalkSocketDisconnected = (data) => ({ type: exports.STALK_ON_SOCKET_DISCONNECTED, payload: data });
 function stalkManageConnection() {
     return __awaiter(this, void 0, void 0, function* () {
         const backendFactory = BackendFactory_1.BackendFactory.getInstance();
         let server = yield backendFactory.getServer();
+        server.onSocketOpen = (data) => {
+            configureStore_1.default.dispatch(onStalkSocketOpen(data.type));
+        };
         server.onSocketClose = (data) => {
             configureStore_1.default.dispatch(onStalkSocketClose(data.type));
         };
