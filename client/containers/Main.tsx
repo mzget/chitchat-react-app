@@ -33,7 +33,6 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     headerHeight = null;
     subHeaderHeight = null;
     bodyHeight = null;
-    footerHeight = null;
 
     componentWillMount() {
         this.state = {
@@ -45,18 +44,19 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
             this.props.router.replace("/");
         }
 
-        this.headerHeight = this.clientHeight * 0.1;
-        this.bodyHeight = (this.clientHeight * 0.9);
-        this.footerHeight = 50;
-
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
     }
+
 
     componentWillReceiveProps(nextProps: IComponentProps) {
         let {
             location: { query: { userId, username, roomId, contactId } },
             userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer
         } = nextProps;
+
+        this.headerHeight = document.getElementById("toolbar").clientHeight;
+        this.subHeaderHeight = document.getElementById("warning_bar").clientHeight;
+        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight));
 
         switch (userReducer.state) {
             case userRx.FETCH_USER_SUCCESS: {
@@ -146,14 +146,28 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     public render(): JSX.Element {
         return (
             <MuiThemeProvider>
-                <div>
-                    <div style={{ height: this.headerHeight }}>
+                <div style={{ overflowY: "hidden" }}>
+                    <div style={{ height: this.headerHeight }} id={"toolbar"}>
                         <SimpleToolbar
                             title={this.props.teamReducer.team.name}
                             menus={this.menus}
                             onSelectedMenuItem={this.onSelectMenuItem} />
                     </div>
-                    <div style={{ height: this.bodyHeight, overflowY: "auto" }}>
+                    <div id={"warning_bar"}>
+                        {
+                            (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
+                                (
+                                    <Flex style={{ backgroundColor: Colors.red500 }} align="center" justify="center" flexColumn={true}>
+                                        <Flex flexColumn={true}>
+                                            <span style={{ color: Colors.white, fontSize: 14 }}>Unable to connect whit chat service.</span>
+                                            <span style={{ color: Colors.white, fontSize: 14 }}>Check your Internet connection.</span>
+                                        </Flex>
+                                    </Flex>
+                                ) : null
+
+                        }
+                    </div>
+                    <div style={{ height: this.bodyHeight, overflowY: "auto" }} id={"app_body"}>
                         <ProfileBox {...this.props} />
                         <OrgGroupListBox {...this.props} />
                         <PrivateGroupListBox {...this.props} />
@@ -161,17 +175,6 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                         <ChatLogsBox {...this.props} />
                         <UtilsBox />
                     </div>
-                    {
-                        (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
-                            (
-                                <Flex style={{ height: this.footerHeight, backgroundColor: Colors.red500 }} align="center" justify="center" flexColumn={true}>
-                                    <Flex flexColumn={true}>
-                                        <span style={{ color: Colors.white }}>Unable to connect whit chat service.</span>
-                                        <span style={{ color: Colors.white }}>Check your Internet connection.</span>
-                                    </Flex>
-                                </Flex>
-                            ) : null
-                    }
                 </div>
             </MuiThemeProvider>
         );

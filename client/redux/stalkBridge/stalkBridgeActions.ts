@@ -92,6 +92,7 @@ export function stalkLogin(user: any) {
                 console.log("Joined chat-server success", result);
                 backendFactory.getServerListener();
                 backendFactory.startChatServerListener();
+                stalkManageConnection();
 
                 StalkNotificationAction.regisNotifyNewMessageEvent();
 
@@ -121,4 +122,20 @@ export function stalkLogin(user: any) {
 
         Store.dispatch({ type: STALK_INIT_FAILURE });
     });
+}
+
+const STALK_ON_SOCKET_CLOSE = "STALK_ON_SOCKET_CLOSE";
+const onStalkSocketClose = (data) => ({ type: STALK_ON_SOCKET_CLOSE, payload: data });
+const STALK_ON_SOCKET_DISCONNECTED = "STALK_ON_SOCKET_DISCONNECTED";
+const onStalkSocketDisconnected = (data) => ({ type: STALK_ON_SOCKET_DISCONNECTED, payload: data });
+async function stalkManageConnection() {
+    const backendFactory = BackendFactory.getInstance();
+
+    let server = await backendFactory.getServer();
+    server.onSocketClose = (data) => {
+        Store.dispatch(onStalkSocketClose(data.type));
+    };
+    server.onDisconnected = (data) => {
+        Store.dispatch(onStalkSocketDisconnected(data.type));
+    };
 }

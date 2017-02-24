@@ -44,7 +44,5 @@ class UtilsBox extends React.Component {
 /**
  * ## Redux boilerplate
  */
-function mapStateToProps(state) {
-    return Object.assign({}, state);
-}
+function mapStateToProps(state) { return Object.assign({}, state); }
 exports.default = react_redux_1.connect(mapStateToProps)(UtilsBox);

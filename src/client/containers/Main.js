@@ -28,7 +28,6 @@ class Main extends React.Component {
         this.headerHeight = null;
         this.subHeaderHeight = null;
         this.bodyHeight = null;
-        this.footerHeight = null;
         this.fetch_privateChatRoom = (roommateId, owerId) => {
             this.props.dispatch(chatroomRx.fetchPrivateChatRoom(owerId, roommateId));
         };
@@ -41,13 +40,13 @@ class Main extends React.Component {
         if (!teamReducer.team) {
             this.props.router.replace("/");
         }
-        this.headerHeight = this.clientHeight * 0.1;
-        this.bodyHeight = (this.clientHeight * 0.9);
-        this.footerHeight = 50;
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
     }
     componentWillReceiveProps(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer } = nextProps;
+        this.headerHeight = document.getElementById("toolbar").clientHeight;
+        this.subHeaderHeight = document.getElementById("warning_bar").clientHeight;
+        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight));
         switch (userReducer.state) {
             case userRx.FETCH_USER_SUCCESS: {
                 if (userReducer.user) {
@@ -123,21 +122,21 @@ class Main extends React.Component {
     }
     render() {
         return (React.createElement(MuiThemeProvider_1.default, null,
-            React.createElement("div", null,
-                React.createElement("div", { style: { height: this.headerHeight } },
+            React.createElement("div", { style: { overflowY: "hidden" } },
+                React.createElement("div", { style: { height: this.headerHeight }, id: "toolbar" },
                     React.createElement(SimpleToolbar_1.default, { title: this.props.teamReducer.team.name, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
-                React.createElement("div", { style: { height: this.bodyHeight, overflowY: "auto" } },
+                React.createElement("div", { id: "warning_bar" }, (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
+                    (React.createElement(reflexbox_1.Flex, { style: { backgroundColor: Colors.red500 }, align: "center", justify: "center", flexColumn: true },
+                        React.createElement(reflexbox_1.Flex, { flexColumn: true },
+                            React.createElement("span", { style: { color: Colors.white, fontSize: 14 } }, "Unable to connect whit chat service."),
+                            React.createElement("span", { style: { color: Colors.white, fontSize: 14 } }, "Check your Internet connection.")))) : null),
+                React.createElement("div", { style: { height: this.bodyHeight, overflowY: "auto" }, id: "app_body" },
                     React.createElement(ProfileBox_1.default, Object.assign({}, this.props)),
                     React.createElement(OrgGroupListBox_1.default, Object.assign({}, this.props)),
                     React.createElement(PrivateGroupListBox_1.default, Object.assign({}, this.props)),
                     React.createElement(ContactBox_1.default, Object.assign({}, this.props)),
                     React.createElement(ChatLogsBox_1.default, Object.assign({}, this.props)),
-                    React.createElement(UtilsBox_1.default, null)),
-                (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
-                    (React.createElement(reflexbox_1.Flex, { style: { height: this.footerHeight, backgroundColor: Colors.red500 }, align: "center", justify: "center", flexColumn: true },
-                        React.createElement(reflexbox_1.Flex, { flexColumn: true },
-                            React.createElement("span", { style: { color: Colors.white } }, "Unable to connect whit chat service."),
-                            React.createElement("span", { style: { color: Colors.white } }, "Check your Internet connection.")))) : null)));
+                    React.createElement(UtilsBox_1.default, null)))));
     }
 }
 const mapStateToProps = (state) => (Object.assign({}, state));
