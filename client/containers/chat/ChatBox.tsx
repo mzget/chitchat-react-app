@@ -28,11 +28,11 @@ interface MyProps {
 };
 
 export const ChatBox = (props: MyProps) => (
-    <MuiThemeProvider >
+    <MuiThemeProvider>
         <List style={props.styles} id={"chatbox"}>
             {(!!props.value) ? renderList(props) : null}
         </List>
-    </MuiThemeProvider >
+    </MuiThemeProvider>
 );
 
 const renderList = (props: MyProps) => {

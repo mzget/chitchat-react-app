@@ -6,7 +6,7 @@ import { Flex, Box } from "reflexbox";
 import Config from "../configs/config";
 
 import { TypingBox } from "./TypingBox";
-import { ChatBox } from "./ChatBox";
+import { ChatBox } from "./chat/ChatBox";
 import SimpleToolbar from "../components/SimpleToolbar";
 import UtilsBox from "./UtilsBox";
 import UploadingDialog from "./UploadingDialog";
