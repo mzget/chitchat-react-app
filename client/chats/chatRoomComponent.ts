@@ -6,7 +6,7 @@
 
 import * as async from "async";
 
-import BackendFactory from "./BackendFactory";
+import { BackendFactory } from "./BackendFactory";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
 import { ServerImplemented } from "../libs/stalk/serverImplemented";

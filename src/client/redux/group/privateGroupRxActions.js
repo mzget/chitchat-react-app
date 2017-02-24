@@ -20,7 +20,7 @@ exports.getPrivateGroup_Epic = action$ => (action$.ofType(GET_PRIVATE_GROUP)
     .catch(error => Rx.Observable.of(getPrivateGroupFailure(error.xhr.response)))
     .do(response => {
     if (response.type == exports.GET_PRIVATE_GROUP_SUCCESS) {
-        const dataManager = BackendFactory_1.default.getInstance().dataManager;
+        const dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
         let rooms = response.payload.result;
         Rx.Observable.from(rooms)._do(x => {
             dataManager.roomDAL.save(x._id, x);

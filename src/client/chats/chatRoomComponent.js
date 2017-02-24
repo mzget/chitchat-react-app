@@ -39,13 +39,13 @@ class ChatRoomComponent {
     }
     constructor() {
         this.secure = secureServiceFactory_1.default.getService();
-        this.chatRoomApi = BackendFactory_1.default.getInstance().getChatApi();
-        BackendFactory_1.default.getInstance().getServer().then(server => {
+        this.chatRoomApi = BackendFactory_1.BackendFactory.getInstance().getChatApi();
+        BackendFactory_1.BackendFactory.getInstance().getServer().then(server => {
             serverImp = server;
         }).catch(err => {
         });
-        this.dataManager = BackendFactory_1.default.getInstance().dataManager;
-        this.dataListener = BackendFactory_1.default.getInstance().dataListener;
+        this.dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
+        this.dataListener = BackendFactory_1.BackendFactory.getInstance().dataListener;
         this.dataListener.addOnChatListener(this.onChat.bind(this));
     }
     onChat(message) {
@@ -111,7 +111,7 @@ class ChatRoomComponent {
         let self = this;
         let myMessagesArr = JSON.parse(JSON.stringify(dataEvent.data));
         self.chatMessages.forEach((originalMsg, id, arr) => {
-            if (BackendFactory_1.default.getInstance().dataManager.isMySelf(originalMsg.sender)) {
+            if (BackendFactory_1.BackendFactory.getInstance().dataManager.isMySelf(originalMsg.sender)) {
                 myMessagesArr.some((myMsg, index, array) => {
                     if (originalMsg._id === myMsg._id) {
                         originalMsg.readers = myMsg.readers;
@@ -352,7 +352,7 @@ class ChatRoomComponent {
     updateReadMessages() {
         let self = this;
         async.map(self.chatMessages, function itorator(message, resultCb) {
-            if (!BackendFactory_1.default.getInstance().dataManager.isMySelf(message.sender)) {
+            if (!BackendFactory_1.BackendFactory.getInstance().dataManager.isMySelf(message.sender)) {
                 self.chatRoomApi.updateMessageReader(message._id, message.rid);
             }
             resultCb(null, null);

@@ -76,7 +76,7 @@ function onChatRoomDelegate(event, newMsg) {
          * - if message_id is mine. Replace message_id to local messages list.
          * - if not my message. Update who read this message. And tell anyone.
          */
-        if (BackendFactory_1.default.getInstance().dataManager.isMySelf(newMsg.sender)) {
+        if (BackendFactory_1.BackendFactory.getInstance().dataManager.isMySelf(newMsg.sender)) {
             // dispatch(replaceMyMessage(newMsg));
         }
         else {
@@ -85,7 +85,7 @@ function onChatRoomDelegate(event, newMsg) {
             let device = configureStore_1.default.getState().deviceReducer;
             console.warn("AppState: ", device.appState); // active, background, inactive
             if (device.appState === "active") {
-                BackendFactory_1.default.getInstance().getChatApi().updateMessageReader(newMsg._id, newMsg.rid);
+                BackendFactory_1.BackendFactory.getInstance().getChatApi().updateMessageReader(newMsg._id, newMsg.rid);
             }
             else if (device.appState !== "active") {
                 // @ When user joined room but appState is inActive.
@@ -196,7 +196,7 @@ function sendMessage(msg) {
     return (dispatch) => {
         dispatch(send_message_request());
         if (msg.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location]) {
-            BackendFactory_1.default.getInstance().getChatApi().chat("*", msg, (err, res) => {
+            BackendFactory_1.BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
                 dispatch(sendMessageResponse(err, res));
             });
             return;
@@ -209,7 +209,7 @@ function sendMessage(msg) {
                 //     console.error(err);
                 // });
                 msg.body = result;
-                BackendFactory_1.default.getInstance().getChatApi().chat("*", msg, (err, res) => {
+                BackendFactory_1.BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
                     dispatch(sendMessageResponse(err, res));
                 });
             }).catch(err => {
@@ -218,7 +218,7 @@ function sendMessage(msg) {
             });
         }
         else {
-            BackendFactory_1.default.getInstance().getChatApi().chat("*", msg, (err, res) => {
+            BackendFactory_1.BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
                 dispatch(sendMessageResponse(err, res));
             });
         }
@@ -266,7 +266,7 @@ function joinRoom_failure() {
 function joinRoom(roomId, token, username) {
     return (dispatch) => {
         dispatch(joinRoom_request());
-        BackendFactory_1.default.getInstance().getServer().then(server => {
+        BackendFactory_1.BackendFactory.getInstance().getServer().then(server => {
             server.JoinChatRoomRequest(token, username, roomId, (err, res) => {
                 if (err || res.code !== httpStatusCode_1.default.success) {
                     dispatch(joinRoom_failure());
@@ -291,7 +291,7 @@ function leaveRoomAction() {
         let room = chatRoomComponent_1.default.getInstance();
         let room_id = room.getRoomId();
         dispatch(leaveRoom());
-        BackendFactory_1.default.getInstance().getServer().then(server => {
+        BackendFactory_1.BackendFactory.getInstance().getServer().then(server => {
             server.LeaveChatRoomRequest(token, room_id, (err, res) => {
                 console.log("LeaveChatRoomRequest", err, res);
                 chatRoomComponent_1.default.getInstance().dispose();
@@ -323,7 +323,7 @@ const getPersistChatroomFail = () => ({ type: exports.GET_PERSISTEND_CHATROOM_FA
 const getPersistChatroomSuccess = (roomInfo) => ({ type: exports.GET_PERSISTEND_CHATROOM_SUCCESS, payload: roomInfo });
 exports.getPersistendChatroom = (roomId) => (dispatch => {
     dispatch({ type: GET_PERSISTEND_CHATROOM, payload: roomId });
-    const dataManager = BackendFactory_1.default.getInstance().dataManager;
+    const dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
     dataManager.roomDAL.get(roomId).then(room => {
         if (room)
             dispatch(getPersistChatroomSuccess(room));

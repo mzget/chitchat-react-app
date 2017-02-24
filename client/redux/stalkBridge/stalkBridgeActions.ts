@@ -4,11 +4,10 @@
  * This is pure function action for redux app.
  */
 
-import BackendFactory from "../../chats/BackendFactory";
+import { BackendFactory } from "../../chats/BackendFactory";
 import * as StalkNotificationAction from "./StalkNotificationActions";
 import * as DataModels from "../../chats/models/ChatDataModels";
-import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
-import { ServerImplemented, IDictionary } from "../../libs/stalk/serverImplemented";
+import { IDictionary } from "../../libs/stalk/serverImplemented";
 
 import config from "../../configs/config";
 import Store from "../configureStore";

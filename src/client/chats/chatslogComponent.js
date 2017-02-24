@@ -38,13 +38,13 @@ class ChatsLogComponent {
         this.chatListeners = new Array();
         this._isReady = false;
         this.convertDateService = _convertDateService;
-        this.dataManager = BackendFactory_1.default.getInstance().dataManager;
-        this.dataListener = BackendFactory_1.default.getInstance().dataListener;
+        this.dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
+        this.dataListener = BackendFactory_1.BackendFactory.getInstance().dataListener;
         this.dataListener.addOnRoomAccessListener(this.onAccessRoom.bind(this));
         this.dataListener.addOnChatListener(this.onChat.bind(this));
         this.dataListener.addOnAddRoomAccessListener(this.onAddRoomAccess.bind(this));
         this.dataListener.addOnUpdateRoomAccessListener(this.onUpdatedLastAccessTime.bind(this));
-        BackendFactory_1.default.getInstance().getServer().then(server => {
+        BackendFactory_1.BackendFactory.getInstance().getServer().then(server => {
             this.serverImp = server;
         }).catch(err => {
             console.log(err);

@@ -10,7 +10,7 @@ import { Member } from "./models/Member";
 import ChatLog from "./models/chatLog";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
-import BackendFactory from "./BackendFactory";
+import { BackendFactory } from "./BackendFactory";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import { ServerImplemented, IDictionary } from "../libs/stalk/serverImplemented";
 import * as DataModels from "./models/ChatDataModels";

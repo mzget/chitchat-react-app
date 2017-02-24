@@ -19,7 +19,7 @@ exports.getOrgGroup_Epic = action$ => (action$.ofType(GET_ORG_GROUP).mergeMap(ac
     .catch(error => Rx.Observable.of(getOrgGroupFailure(error.xhr.response)))
     .do(response => {
     if (response.type == exports.GET_ORG_GROUP_SUCCESS) {
-        const dataManager = BackendFactory_1.default.getInstance().dataManager;
+        const dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
         let rooms = response.payload.result;
         Rx.Observable.from(rooms)._do(x => {
             dataManager.roomDAL.save(x._id, x);

@@ -1,9 +1,9 @@
 ﻿import * as Rx from "@reactivex/rxjs";
-const {Observable: {ajax}, AjaxResponse} = Rx;
+const { Observable: { ajax }, AjaxResponse } = Rx;
 
 import config from "../../configs/config";
 import Store from "../configureStore";
-import BackendFactory from "../../chats/BackendFactory";
+import { BackendFactory } from "../../chats/BackendFactory";
 import { Room, RoomType } from "../../../server/scripts/models/Room";
 
 const GET_PRIVATE_GROUP = "GET_PRIVATE_GROUP";

@@ -148,4 +148,4 @@ class BackendFactory {
         });
     }
 }
-exports.default = BackendFactory;
+exports.BackendFactory = BackendFactory;

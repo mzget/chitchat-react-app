@@ -12,11 +12,11 @@ const configureStore_1 = require("../configureStore");
 const ChatLogsActions = require("../chatlogs/chatlogsActions");
 const StalkPushActions = require("./stalkPushActions");
 exports.getSessionToken = () => {
-    const backendFactory = BackendFactory_1.default.getInstance();
+    const backendFactory = BackendFactory_1.BackendFactory.getInstance();
     return configureStore_1.default.getState().stalkReducer.stalkToken;
 };
 exports.getRoomDAL = () => {
-    const backendFactory = BackendFactory_1.default.getInstance();
+    const backendFactory = BackendFactory_1.BackendFactory.getInstance();
     return backendFactory.dataManager.roomDAL;
 };
 const onGetContactProfileFail = (contact_id) => {
@@ -26,7 +26,7 @@ exports.STALK_INIT_SUCCESS = "STALK_INIT_SUCCESS";
 exports.STALK_INIT_FAILURE = "STALK_INIT_FAILURE";
 function stalkLoginWithToken(uid, token) {
     console.log("stalkLoginWithToken", uid, token);
-    const backendFactory = BackendFactory_1.default.getInstance();
+    const backendFactory = BackendFactory_1.BackendFactory.getInstance();
     backendFactory.stalkInit().then(value => {
         backendFactory.checkIn(uid, token, null).then(value => {
             console.log("Joined chat-server success", value.code);
@@ -71,7 +71,7 @@ function stalkLogin(user) {
     if (configureStore_1.default.getState().stalkReducer.isInit)
         return;
     configureStore_1.default.dispatch({ type: exports.STALK_INIT });
-    const backendFactory = BackendFactory_1.default.getInstance();
+    const backendFactory = BackendFactory_1.BackendFactory.getInstance();
     backendFactory.stalkInit().then(value => {
         backendFactory.checkIn(user._id, null, user).then(value => {
             let result = JSON.parse(JSON.stringify(value.data));

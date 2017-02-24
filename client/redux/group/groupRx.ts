@@ -6,7 +6,7 @@ const { ajax } = Rx.Observable;
 
 import Store from "../configureStore";
 
-import BackendFactory from "../../chats/BackendFactory";
+import { BackendFactory } from "../../chats/BackendFactory";
 import { Room, RoomType } from "../../../server/scripts/models/Room";
 
 const GET_ORG_GROUP = "GET_ORG_GROUP";

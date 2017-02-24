@@ -10,7 +10,7 @@ import DataManager from "./dataManager";
 import DataListener from "./dataListener";
 import PushDataListener from "./pushDataListener";
 
-export default class BackendFactory {
+export class BackendFactory {
     private static instance: BackendFactory;
     public static getInstance(): BackendFactory {
         if (BackendFactory.instance == null || BackendFactory.instance == undefined) {

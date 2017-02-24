@@ -10,7 +10,7 @@ const LINK_REQUEST = "LINK_REQUEST";
 const LINK_ACCEPTED = "LINK_ACCEPTED";
 const NEW_NOTICE = "NEW_NOTICE";
 function stalkPushInit() {
-    const pushDataListener = BackendFactory_1.default.getInstance().pushDataListener;
+    const pushDataListener = BackendFactory_1.BackendFactory.getInstance().pushDataListener;
     pushDataListener.addPushEvents(onPush_handler);
 }
 exports.stalkPushInit = stalkPushInit;
