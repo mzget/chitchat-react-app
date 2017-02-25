@@ -2,6 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import * as async from "async";
 import { Flex, Box } from "reflexbox";
+import * as Colors from "material-ui/styles/colors";
 
 import Config from "../configs/config";
 
@@ -11,6 +12,7 @@ import SimpleToolbar from "../components/SimpleToolbar";
 import UtilsBox from "./UtilsBox";
 import UploadingDialog from "./UploadingDialog";
 import GridListSimple from "../components/GridListSimple";
+import { WarningBar } from "../components/WarningBar";
 
 import { IComponentProps } from "../utils/IComponentProps";
 import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
@@ -29,38 +31,28 @@ interface IComponentNameState {
     typingText: string;
     earlyMessageReady;
     openButtomMenu: boolean;
-    h_header: number;
-    h_body: number;
-    h_footer: number;
-    h_stickerBox: number;
-    h_chatArea: number;
-    clientWidth: number;
 };
 
 class Chat extends React.Component<IComponentProps, IComponentNameState> {
     toolbarMenus = ["Favorite"];
+    clientWidth = document.documentElement.clientWidth;
+    clientHeight = document.documentElement.clientHeight;
+    h_header = null;
+    h_subHeader = null;
+    h_body = null;
+    h_chatArea = null;
+    h_typingArea = null;
+    bottom = this.clientHeight * 0.1;
+    h_stickerBox = this.clientHeight * 0.3;
 
     componentWillMount() {
-        const clientWidth = document.documentElement.clientWidth;
-        const clientHeight = document.documentElement.clientHeight;
-        const head = clientHeight * 0.1;
-        const body = clientHeight * 0.8;
-        const bottom = clientHeight * 0.1;
-        const stickersBox = clientHeight * 0.3;
 
         this.state = {
             messages: new Array(),
             typingText: "",
             isLoadingEarlierMessages: false,
             earlyMessageReady: false,
-            openButtomMenu: false,
-
-            h_header: head,
-            h_body: body,
-            h_footer: bottom,
-            h_chatArea: body,
-            h_stickerBox: stickersBox,
-            clientWidth: clientWidth
+            openButtomMenu: false
         };
 
         this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
@@ -87,6 +79,12 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
     componentWillReceiveProps(nextProps: IComponentProps) {
         let { chatroomReducer } = nextProps;
+
+        this.h_header = document.getElementById("toolbar").clientHeight;
+        this.h_subHeader = document.getElementById("warning_bar").clientHeight;
+        this.h_typingArea = document.getElementById("typing_box").clientHeight;
+        // this.h_typingArea = document.getElementById("sticker_box").clientHeight;
+        this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
 
         switch (chatroomReducer.state) {
             case chatRoomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
@@ -348,10 +346,10 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     onToggleSticker() {
+        this.h_body = (this.state.openButtomMenu) ? this.h_body + this.h_stickerBox : this.h_body - this.h_stickerBox;
         this.setState(previousState => ({
             ...previousState,
-            openButtomMenu: !previousState.openButtomMenu,
-            h_chatArea: (previousState.openButtomMenu) ? previousState.h_body : previousState.h_body - previousState.h_stickerBox
+            openButtomMenu: !previousState.openButtomMenu
         }));
     }
 
@@ -363,17 +361,21 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         let { chatroomReducer } = this.props;
 
         return (
-            <div>
-                <div style={{ height: this.state.h_header }} >
+            <div style={{ overflowY: "hidden" }}>
+                <div style={{ height: this.h_header }} id={"toolbar"}>
                     <SimpleToolbar
                         title={(chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty"}
                         menus={this.toolbarMenus}
                         onSelectedMenuItem={(id, value) => console.log(value)}
                         onBackPressed={this.onBackPressed} />
                 </div>
-                <div style={{ height: this.state.h_body }}>
-                    <Flex flexColumn={true}>
-                        <div style={{ height: this.state.h_chatArea, overflowY: "scroll" }} id={"h_chatArea"}>
+                {
+                    (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
+                        <WarningBar /> : null
+                }
+                <div style={{ height: this.h_body, overflowY: "auto", backgroundColor: Colors.indigo50 }} id={"app_body"}>
+                    <div style={{ height: this.h_chatArea, overflowY: "auto", backgroundColor: Colors.indigo50 }} id={"h_chatArea"}>
+                        <Flex flexColumn={true}>
                             {
                                 (this.state.earlyMessageReady) ?
                                     <Flex align="center" justify="center">
@@ -382,29 +384,28 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                                     :
                                     null
                             }
-                            <ChatBox styles={{ width: this.state.clientWidth, overflowX: "hidden" }} value={this.state.messages} onSelected={(message: IMessage) => {
-
-                            }} />
-                        </div>
-                    </Flex>
-                    {
-                        (this.state.openButtomMenu) ?
-                            <GridListSimple
-                                boxHeight={this.state.h_stickerBox}
-                                srcs={imagesPath}
-                                onSelected={this.onSubmitStickerChat} />
-                            : null
-                    }
+                            <ChatBox
+                                styles={{ width: this.clientWidth, overflowX: "hidden" }}
+                                value={this.state.messages}
+                                onSelected={(message: IMessage) => { }} />
+                        </Flex>
+                    </div>
                 </div>
-                <Flex>
-                    <TypingBox
-                        styles={{ width: this.state.clientWidth }}
-                        onSubmit={this.onSubmitTextChat}
-                        onValueChange={this.onTypingTextChange}
-                        value={this.state.typingText}
-                        fileReaderChange={this.fileReaderChange}
-                        onSticker={this.onToggleSticker} />
-                </Flex>
+                {
+                    (this.state.openButtomMenu) ?
+                        <GridListSimple
+                            boxHeight={this.h_stickerBox}
+                            srcs={imagesPath}
+                            onSelected={this.onSubmitStickerChat} />
+                        : null
+                }
+                <TypingBox
+                    styles={{ width: this.clientWidth }}
+                    onSubmit={this.onSubmitTextChat}
+                    onValueChange={this.onTypingTextChange}
+                    value={this.state.typingText}
+                    fileReaderChange={this.fileReaderChange}
+                    onSticker={this.onToggleSticker} />
                 <UploadingDialog />
                 <UtilsBox />
             </div>

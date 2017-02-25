@@ -56,7 +56,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
         } = nextProps;
 
         this.headerHeight = document.getElementById("toolbar").clientHeight;
-        this.subHeaderHeight = document.getElementById("warning_bar").clientHeight;
+        this.subHeaderHeight = (document.getElementById("warning_bar")) ? document.getElementById("warning_bar").clientHeight : 0;
         this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight));
 
         switch (userReducer.state) {
@@ -154,11 +154,10 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                             menus={this.menus}
                             onSelectedMenuItem={this.onSelectMenuItem} />
                     </div>
-                    <div id={"warning_bar"}> {
+                    {
                         (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                             <WarningBar /> : null
                     }
-                    </div>
                     <div style={{ height: this.bodyHeight, overflowY: "auto" }} id={"app_body"}>
                         <ProfileBox {...this.props} />
                         <OrgGroupListBox {...this.props} />

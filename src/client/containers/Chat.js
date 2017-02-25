@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
+const Colors = require("material-ui/styles/colors");
 const config_1 = require("../configs/config");
 const TypingBox_1 = require("./TypingBox");
 const ChatBox_1 = require("./chat/ChatBox");
@@ -10,6 +11,7 @@ const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const UtilsBox_1 = require("./UtilsBox");
 const UploadingDialog_1 = require("./UploadingDialog");
 const GridListSimple_1 = require("../components/GridListSimple");
+const WarningBar_1 = require("../components/WarningBar");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 const chatRoomActions = require("../redux/chatroom/chatroomActions");
 const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
@@ -22,6 +24,15 @@ class Chat extends React.Component {
     constructor() {
         super(...arguments);
         this.toolbarMenus = ["Favorite"];
+        this.clientWidth = document.documentElement.clientWidth;
+        this.clientHeight = document.documentElement.clientHeight;
+        this.h_header = null;
+        this.h_subHeader = null;
+        this.h_body = null;
+        this.h_chatArea = null;
+        this.h_typingArea = null;
+        this.bottom = this.clientHeight * 0.1;
+        this.h_stickerBox = this.clientHeight * 0.3;
         this.fileReaderChange = (e, results) => {
             results.forEach(result => {
                 const [progressEvent, file] = result;
@@ -31,24 +42,12 @@ class Chat extends React.Component {
         };
     }
     componentWillMount() {
-        const clientWidth = document.documentElement.clientWidth;
-        const clientHeight = document.documentElement.clientHeight;
-        const head = clientHeight * 0.1;
-        const body = clientHeight * 0.8;
-        const bottom = clientHeight * 0.1;
-        const stickersBox = clientHeight * 0.3;
         this.state = {
             messages: new Array(),
             typingText: "",
             isLoadingEarlierMessages: false,
             earlyMessageReady: false,
-            openButtomMenu: false,
-            h_header: head,
-            h_body: body,
-            h_footer: bottom,
-            h_chatArea: body,
-            h_stickerBox: stickersBox,
-            clientWidth: clientWidth
+            openButtomMenu: false
         };
         this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
         this.onTypingTextChange = this.onTypingTextChange.bind(this);
@@ -70,6 +69,11 @@ class Chat extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         let { chatroomReducer } = nextProps;
+        this.h_header = document.getElementById("toolbar").clientHeight;
+        this.h_subHeader = document.getElementById("warning_bar").clientHeight;
+        this.h_typingArea = document.getElementById("typing_box").clientHeight;
+        // this.h_typingArea = document.getElementById("sticker_box").clientHeight;
+        this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
         switch (chatroomReducer.state) {
             case chatRoomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
                 this.roomInitialize(nextProps);
@@ -267,31 +271,32 @@ class Chat extends React.Component {
         this.props.dispatch(chatRoomActions.sendMessage(message));
     }
     onToggleSticker() {
-        this.setState(previousState => (Object.assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu, h_chatArea: (previousState.openButtomMenu) ? previousState.h_body : previousState.h_body - previousState.h_stickerBox })));
+        this.h_body = (this.state.openButtomMenu) ? this.h_body + this.h_stickerBox : this.h_body - this.h_stickerBox;
+        this.setState(previousState => (Object.assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu })));
     }
     onBackPressed() {
         this.props.router.goBack();
     }
     render() {
         let { chatroomReducer } = this.props;
-        return (React.createElement("div", null,
-            React.createElement("div", { style: { height: this.state.h_header } },
+        return (React.createElement("div", { style: { overflowY: "hidden" } },
+            React.createElement("div", { style: { height: this.h_header }, id: "toolbar" },
                 React.createElement(SimpleToolbar_1.default, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty", menus: this.toolbarMenus, onSelectedMenuItem: (id, value) => console.log(value), onBackPressed: this.onBackPressed })),
-            React.createElement("div", { style: { height: this.state.h_body } },
-                React.createElement(reflexbox_1.Flex, { flexColumn: true },
-                    React.createElement("div", { style: { height: this.state.h_chatArea, overflowY: "scroll" }, id: "h_chatArea" },
+            (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
+                React.createElement(WarningBar_1.WarningBar, null) : null,
+            React.createElement("div", { style: { height: this.h_body, overflowY: "auto", backgroundColor: Colors.indigo50 }, id: "app_body" },
+                React.createElement("div", { style: { height: this.h_chatArea, overflowY: "auto", backgroundColor: Colors.indigo50 }, id: "h_chatArea" },
+                    React.createElement(reflexbox_1.Flex, { flexColumn: true },
                         (this.state.earlyMessageReady) ?
                             React.createElement(reflexbox_1.Flex, { align: "center", justify: "center" },
                                 React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))
                             :
                                 null,
-                        React.createElement(ChatBox_1.ChatBox, { styles: { width: this.state.clientWidth, overflowX: "hidden" }, value: this.state.messages, onSelected: (message) => {
-                            } }))),
-                (this.state.openButtomMenu) ?
-                    React.createElement(GridListSimple_1.default, { boxHeight: this.state.h_stickerBox, srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
-                    : null),
-            React.createElement(reflexbox_1.Flex, null,
-                React.createElement(TypingBox_1.TypingBox, { styles: { width: this.state.clientWidth }, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker })),
+                        React.createElement(ChatBox_1.ChatBox, { styles: { width: this.clientWidth, overflowX: "hidden" }, value: this.state.messages, onSelected: (message) => { } })))),
+            (this.state.openButtomMenu) ?
+                React.createElement(GridListSimple_1.default, { boxHeight: this.h_stickerBox, srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
+                : null,
+            React.createElement(TypingBox_1.TypingBox, { styles: { width: this.clientWidth }, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }),
             React.createElement(UploadingDialog_1.default, null),
             React.createElement(UtilsBox_1.default, null)));
     }

@@ -21,7 +21,7 @@ const StickerButton = (props) => (React.createElement(IconButton_1.default, { on
     React.createElement(FontIcon_1.default, { className: "material-icons" }, "insert_emoticon")));
 exports.TypingBox = (props) => {
     return (React.createElement(MuiThemeProvider_1.default, null,
-        React.createElement("div", { style: props.styles },
+        React.createElement("div", { style: props.styles, id: "typing_box" },
             React.createElement(reflexbox_1.Flex, null,
                 React.createElement(StickerButton, Object.assign({}, props)),
                 React.createElement(FileReaderBox, Object.assign({}, props)),

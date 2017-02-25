@@ -45,7 +45,7 @@ interface ITypingBox {
 export const TypingBox = (props: ITypingBox) => {
     return (
         < MuiThemeProvider >
-            <div style={props.styles}>
+            <div style={props.styles} id={"typing_box"}>
                 <Flex>
                     <StickerButton {...props} />
                     <FileReaderBox {...props} />

@@ -44,7 +44,7 @@ class Main extends React.Component {
     componentWillReceiveProps(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer } = nextProps;
         this.headerHeight = document.getElementById("toolbar").clientHeight;
-        this.subHeaderHeight = document.getElementById("warning_bar").clientHeight;
+        this.subHeaderHeight = (document.getElementById("warning_bar")) ? document.getElementById("warning_bar").clientHeight : 0;
         this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight));
         switch (userReducer.state) {
             case userRx.FETCH_USER_SUCCESS: {
@@ -124,10 +124,8 @@ class Main extends React.Component {
             React.createElement("div", { style: { overflowY: "hidden" } },
                 React.createElement("div", { style: { height: this.headerHeight }, id: "toolbar" },
                     React.createElement(SimpleToolbar_1.default, { title: this.props.teamReducer.team.name, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
-                React.createElement("div", { id: "warning_bar" },
-                    " ",
-                    (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
-                        React.createElement(WarningBar_1.WarningBar, null) : null),
+                (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
+                    React.createElement(WarningBar_1.WarningBar, null) : null,
                 React.createElement("div", { style: { height: this.bodyHeight, overflowY: "auto" }, id: "app_body" },
                     React.createElement(ProfileBox_1.default, Object.assign({}, this.props)),
                     React.createElement(OrgGroupListBox_1.default, Object.assign({}, this.props)),
