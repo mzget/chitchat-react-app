@@ -40,7 +40,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     h_header = null;
     h_subHeader = null;
     h_body = null;
-    h_chatArea = null;
     h_typingArea = null;
     bottom = this.clientHeight * 0.1;
     h_stickerBox = this.clientHeight * 0.3;
@@ -129,7 +128,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                         ...previousState,
                         messages: messages
                     }), () => {
-                        let chatBox = document.getElementById("h_chatArea");
+                        let chatBox = document.getElementById("app_body");
                         chatBox.scrollTop = chatBox.scrollHeight;
                     });
                 });
@@ -286,7 +285,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
         _messages.push(message);
         this.setState(previousState => ({ ...previousState, typingText: "", messages: _messages }), () => {
-            let chatBox = document.getElementById("h_chatArea");
+            let chatBox = document.getElementById("app_body");
             chatBox.scrollTop = chatBox.scrollHeight;
         });
     }
@@ -350,7 +349,10 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.setState(previousState => ({
             ...previousState,
             openButtomMenu: !previousState.openButtomMenu
-        }));
+        }), () => {
+            let chatBox = document.getElementById("app_body");
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
     }
 
     onBackPressed() {
@@ -374,22 +376,20 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                         <WarningBar /> : null
                 }
                 <div style={{ height: this.h_body, overflowY: "auto", backgroundColor: Colors.indigo50 }} id={"app_body"}>
-                    <div style={{ height: this.h_chatArea, overflowY: "auto", backgroundColor: Colors.indigo50 }} id={"h_chatArea"}>
-                        <Flex flexColumn={true}>
-                            {
-                                (this.state.earlyMessageReady) ?
-                                    <Flex align="center" justify="center">
-                                        <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
-                                    </Flex>
-                                    :
-                                    null
-                            }
-                            <ChatBox
-                                styles={{ width: this.clientWidth, overflowX: "hidden" }}
-                                value={this.state.messages}
-                                onSelected={(message: IMessage) => { }} />
-                        </Flex>
-                    </div>
+                    <Flex flexColumn={true}>
+                        {
+                            (this.state.earlyMessageReady) ?
+                                <Flex align="center" justify="center">
+                                    <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
+                                </Flex>
+                                :
+                                null
+                        }
+                        <ChatBox
+                            styles={{ width: this.clientWidth, overflowX: "hidden" }}
+                            value={this.state.messages}
+                            onSelected={(message: IMessage) => { }} />
+                    </Flex>
                 </div>
                 {
                     (this.state.openButtomMenu) ?

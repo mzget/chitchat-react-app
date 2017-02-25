@@ -29,7 +29,6 @@ class Chat extends React.Component {
         this.h_header = null;
         this.h_subHeader = null;
         this.h_body = null;
-        this.h_chatArea = null;
         this.h_typingArea = null;
         this.bottom = this.clientHeight * 0.1;
         this.h_stickerBox = this.clientHeight * 0.3;
@@ -110,7 +109,7 @@ class Chat extends React.Component {
             case chatRoomActions.ChatRoomActionsType.ON_NEW_MESSAGE: {
                 chatRoomActions.getMessages().then(messages => {
                     this.setState(previousState => (Object.assign({}, previousState, { messages: messages })), () => {
-                        let chatBox = document.getElementById("h_chatArea");
+                        let chatBox = document.getElementById("app_body");
                         chatBox.scrollTop = chatBox.scrollHeight;
                     });
                 });
@@ -227,7 +226,7 @@ class Chat extends React.Component {
         let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
         _messages.push(message);
         this.setState(previousState => (Object.assign({}, previousState, { typingText: "", messages: _messages })), () => {
-            let chatBox = document.getElementById("h_chatArea");
+            let chatBox = document.getElementById("app_body");
             chatBox.scrollTop = chatBox.scrollHeight;
         });
     }
@@ -272,7 +271,10 @@ class Chat extends React.Component {
     }
     onToggleSticker() {
         this.h_body = (this.state.openButtomMenu) ? this.h_body + this.h_stickerBox : this.h_body - this.h_stickerBox;
-        this.setState(previousState => (Object.assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu })));
+        this.setState(previousState => (Object.assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu })), () => {
+            let chatBox = document.getElementById("app_body");
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
     }
     onBackPressed() {
         this.props.router.goBack();
@@ -285,14 +287,13 @@ class Chat extends React.Component {
             (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                 React.createElement(WarningBar_1.WarningBar, null) : null,
             React.createElement("div", { style: { height: this.h_body, overflowY: "auto", backgroundColor: Colors.indigo50 }, id: "app_body" },
-                React.createElement("div", { style: { height: this.h_chatArea, overflowY: "auto", backgroundColor: Colors.indigo50 }, id: "h_chatArea" },
-                    React.createElement(reflexbox_1.Flex, { flexColumn: true },
-                        (this.state.earlyMessageReady) ?
-                            React.createElement(reflexbox_1.Flex, { align: "center", justify: "center" },
-                                React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))
-                            :
-                                null,
-                        React.createElement(ChatBox_1.ChatBox, { styles: { width: this.clientWidth, overflowX: "hidden" }, value: this.state.messages, onSelected: (message) => { } })))),
+                React.createElement(reflexbox_1.Flex, { flexColumn: true },
+                    (this.state.earlyMessageReady) ?
+                        React.createElement(reflexbox_1.Flex, { align: "center", justify: "center" },
+                            React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))
+                        :
+                            null,
+                    React.createElement(ChatBox_1.ChatBox, { styles: { width: this.clientWidth, overflowX: "hidden" }, value: this.state.messages, onSelected: (message) => { } }))),
             (this.state.openButtomMenu) ?
                 React.createElement(GridListSimple_1.default, { boxHeight: this.h_stickerBox, srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
                 : null,
