@@ -16,7 +16,7 @@ import { WarningBar } from "../components/WarningBar";
 
 import { IComponentProps } from "../utils/IComponentProps";
 import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
-import * as chatRoomActions from "../redux/chatroom/chatroomActions";
+import * as chatroomActions from "../redux/chatroom/chatroomActions";
 import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
 
 import { ContentType, IMessage } from "../chats/models/ChatDataModels";
@@ -31,6 +31,7 @@ interface IComponentNameState {
     typingText: string;
     earlyMessageReady;
     openButtomMenu: boolean;
+    chatDisabled: boolean;
 };
 
 class Chat extends React.Component<IComponentProps, IComponentNameState> {
@@ -51,7 +52,8 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             typingText: "",
             isLoadingEarlierMessages: false,
             earlyMessageReady: false,
-            openButtomMenu: false
+            openButtomMenu: false,
+            chatDisabled: false
         };
 
         this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
@@ -64,7 +66,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         let { chatroomReducer, userReducer, params } = this.props;
 
         if (!chatroomReducer.room) {
-            this.props.dispatch(chatRoomActions.getPersistendChatroom(params.filter));
+            this.props.dispatch(chatroomActions.getPersistendChatroom(params.filter));
         }
         else {
             this.roomInitialize(this.props);
@@ -73,7 +75,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
     componentWillUnmount() {
         console.log("Chat: leaveRoom");
-        this.props.dispatch(chatRoomActions.leaveRoomAction());
+        this.props.dispatch(chatroomActions.leaveRoomAction());
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
@@ -86,15 +88,19 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
 
         switch (chatroomReducer.state) {
-            case chatRoomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
+            case chatroomActions.JOIN_ROOM_FAILURE: {
+                this.setState(previous => ({ ...previous, chatDisabled: true }));
+            }
+
+            case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
                 this.roomInitialize(nextProps);
                 break;
             }
-            case chatRoomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
+            case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
                 this.props.router.push(`/`);
                 break;
             }
-            case chatRoomActions.LEAVE_ROOM: {
+            case chatroomActions.LEAVE_ROOM: {
                 this.props.router.push(`/`);
                 break;
             }
@@ -112,18 +118,18 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 break;
             }
 
-            case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
-                this.setMessageStatus(chatroomReducer.responseMessage.uuid, "ErrorButton");
-                this.props.dispatch(chatRoomActions.emptyState());
+            case chatroomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
+                // this.setMessageStatus(chatroomReducer.responseMessage.uuid, "ErrorButton");
+                this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
-            case chatRoomActions.ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
+            case chatroomActions.ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
                 this.setMessageTemp(chatroomReducer.responseMessage);
-                this.props.dispatch(chatRoomActions.emptyState());
+                this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
-            case chatRoomActions.ChatRoomActionsType.ON_NEW_MESSAGE: {
-                chatRoomActions.getMessages().then(messages => {
+            case chatroomActions.ChatRoomActionsType.ON_NEW_MESSAGE: {
+                chatroomActions.getMessages().then(messages => {
                     this.setState(previousState => ({
                         ...previousState,
                         messages: messages
@@ -133,24 +139,24 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                     });
                 });
 
-                this.props.dispatch(chatRoomActions.emptyState());
+                this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
-            case chatRoomActions.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
-                chatRoomActions.getMessages().then(messages => {
+            case chatroomActions.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
+                chatroomActions.getMessages().then(messages => {
                     this.setState(previousState => ({
                         ...previousState,
                         messages: messages
                     }));
                 });
 
-                this.props.dispatch(chatRoomActions.checkOlderMessages());
-                this.props.dispatch(chatRoomActions.getNewerMessageFromNet());
+                this.props.dispatch(chatroomActions.checkOlderMessages());
+                this.props.dispatch(chatroomActions.getNewerMessageFromNet());
 
                 break;
             }
-            case chatRoomActions.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
-                chatRoomActions.getMessages().then(messages => {
+            case chatroomActions.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
+                chatroomActions.getMessages().then(messages => {
                     this.setState(previousState => ({
                         ...previousState,
                         messages: messages
@@ -158,7 +164,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 });
                 break;
             }
-            case chatRoomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
+            case chatroomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
                 this.setState((previousState) => ({
                     ...previousState,
                     earlyMessageReady: chatroomReducer.earlyMessageReady
@@ -166,8 +172,8 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
                 break;
             }
-            case chatRoomActions.ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS: {
-                chatRoomActions.getMessages().then(messages => {
+            case chatroomActions.ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS: {
+                chatroomActions.getMessages().then(messages => {
                     this.setState(previousState => ({
                         ...previousState,
                         isLoadingEarlierMessages: false,
@@ -189,22 +195,22 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             isLoadingEarlierMessages: true,
         }));
 
-        this.props.dispatch(chatRoomActions.loadEarlyMessageChunk());
+        this.props.dispatch(chatroomActions.loadEarlyMessageChunk());
     }
 
     roomInitialize(props: IComponentProps) {
         let { chatroomReducer, userReducer, params } = props;
         if (!userReducer.user) {
-            return this.props.dispatch(chatRoomActions.leaveRoomAction());
+            return this.props.dispatch(chatroomActions.leaveRoomAction());
         }
 
         // todo
         // - Init chatroom service.
         // - getPersistedMessage.
         // - Request join room.
-        chatRoomActions.initChatRoom(chatroomReducer.room);
+        chatroomActions.initChatRoom(chatroomReducer.room);
         this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
-        this.props.dispatch(chatRoomActions.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
+        this.props.dispatch(chatroomActions.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
     }
 
     setMessageStatus(uniqueId, status) {
@@ -331,7 +337,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     send(message: IMessage) {
-        this.props.dispatch(chatRoomActions.sendMessage(message));
+        this.props.dispatch(chatroomActions.sendMessage(message));
     }
 
     fileReaderChange = (e, results) => {
@@ -401,6 +407,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 }
                 <TypingBox
                     styles={{ width: this.clientWidth }}
+                    disabled={this.state.chatDisabled}
                     onSubmit={this.onSubmitTextChat}
                     onValueChange={this.onTypingTextChange}
                     value={this.state.typingText}

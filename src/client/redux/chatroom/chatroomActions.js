@@ -41,7 +41,6 @@ ChatRoomActionsType.SEND_MESSAGE_SUCCESS = "SEND_MESSAGE_SUCCESS";
 ChatRoomActionsType.SEND_MESSAGE_FAILURE = "SEND_MESSAGE_FAILURE";
 ChatRoomActionsType.JOIN_ROOM_REQUEST = "JOIN_ROOM_REQUEST";
 ChatRoomActionsType.JOIN_ROOM_SUCCESS = "JOIN_ROOM_SUCCESS";
-ChatRoomActionsType.JOIN_ROOM_FAILURE = "JOIN_ROOM_FAILURE";
 ChatRoomActionsType.REPLACE_MESSAGE = "REPLACE_MESSAGE";
 ChatRoomActionsType.ON_NEW_MESSAGE = "ON_NEW_MESSAGE";
 ChatRoomActionsType.ON_EARLY_MESSAGE_READY = "ON_EARLY_MESSAGE_READY";
@@ -177,21 +176,9 @@ function getMessages() {
     });
 }
 exports.getMessages = getMessages;
-function send_message_request() {
-    return { type: ChatRoomActionsType.SEND_MESSAGE_REQUEST };
-}
-function send_message_success(data) {
-    return {
-        type: ChatRoomActionsType.SEND_MESSAGE_SUCCESS,
-        payload: data
-    };
-}
-function send_message_failure(data) {
-    return {
-        type: ChatRoomActionsType.SEND_MESSAGE_FAILURE,
-        payload: data
-    };
-}
+const send_message_request = () => ({ type: ChatRoomActionsType.SEND_MESSAGE_REQUEST });
+const send_message_success = (data) => ({ type: ChatRoomActionsType.SEND_MESSAGE_SUCCESS, payload: data });
+const send_message_failure = (error) => ({ type: ChatRoomActionsType.SEND_MESSAGE_FAILURE, payload: error });
 function sendMessage(msg) {
     return (dispatch) => {
         dispatch(send_message_request());
@@ -203,11 +190,6 @@ function sendMessage(msg) {
         }
         if (msg.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text] && config_1.default.appConfig.encryption === true) {
             secure.encryption(msg.body).then(result => {
-                // secure.decryption(result).then(res => {
-                //     console.log(res);
-                // }).catch(err => {
-                //     console.error(err);
-                // });
                 msg.body = result;
                 BackendFactory_1.BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
                     dispatch(sendMessageResponse(err, res));
@@ -227,8 +209,8 @@ function sendMessage(msg) {
 exports.sendMessage = sendMessage;
 function sendMessageResponse(err, res) {
     return dispatch => {
-        if (!!err || res.code !== httpStatusCode_1.default.success) {
-            dispatch(send_message_failure(res.body));
+        if (!!err) {
+            dispatch(send_message_failure(err.message));
         }
         else {
             console.log("server response!", res);
@@ -254,15 +236,14 @@ function sendMessageResponse(err, res) {
         }
     };
 }
+exports.JOIN_ROOM_FAILURE = "JOIN_ROOM_FAILURE";
 function joinRoom_request() {
     return { type: ChatRoomActionsType.JOIN_ROOM_REQUEST };
 }
 function joinRoom_success(data) {
     return { type: ChatRoomActionsType.JOIN_ROOM_SUCCESS, payload: data };
 }
-function joinRoom_failure() {
-    return { type: ChatRoomActionsType.JOIN_ROOM_FAILURE };
-}
+function joinRoom_failure() { return { type: exports.JOIN_ROOM_FAILURE }; }
 function joinRoom(roomId, token, username) {
     return (dispatch) => {
         dispatch(joinRoom_request());

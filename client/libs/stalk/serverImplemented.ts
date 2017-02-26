@@ -12,7 +12,7 @@ const Pomelo = require("../pomelo/reactWSClient");
 import config from '../../configs/config';
 import EventEmitter = require("events");
 
-abstract class IPomelo extends EventEmitter {
+export abstract class IPomelo extends EventEmitter {
     init;
     notify;
     request;

@@ -12,6 +12,7 @@ const config_1 = require("../../configs/config");
 const EventEmitter = require("events");
 class IPomelo extends EventEmitter {
 }
+exports.IPomelo = IPomelo;
 ;
 class AuthenData {
 }
