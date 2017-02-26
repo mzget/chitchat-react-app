@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = require("../../configs/config");
 const Rx = require("rxjs/Rx");
 require("isomorphic-fetch");
@@ -48,9 +49,9 @@ exports.getChatHistory = (room_id, lastMessageTime, token) => {
 };
 function getLastAccessRoomInfo(token) {
     return fetch(`${config_1.default.Stalk.api.user}/lastAccessRoom`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             "x-access-token": token
         }
     });
@@ -59,9 +60,9 @@ exports.getLastAccessRoomInfo = getLastAccessRoomInfo;
 function updateLastAccessRoomInfo(token, room_id) {
     return Rx.Observable.ajax({
         url: `${config_1.default.Stalk.api.user}/lastAccessRoom`,
-        method: 'POST',
+        method: "POST",
         headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             "x-access-token": token
         },
         body: JSON.stringify({ room_id: room_id })

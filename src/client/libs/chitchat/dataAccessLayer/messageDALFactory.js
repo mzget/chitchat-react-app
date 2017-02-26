@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * MessageDALFactory.
  *
@@ -11,8 +12,9 @@ class MessageDALFactory {
             return new MessageDAL();
         }
         else {
+            // const NodeMessageDAL = require("./nodeMessageDAL");
+            // return new NodeMessageDAL();
         }
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = MessageDALFactory;

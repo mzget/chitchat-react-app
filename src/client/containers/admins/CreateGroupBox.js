@@ -1,12 +1,5 @@
 "use strict";
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const CreateGroupView_1 = require("./CreateGroupView");
 const SelectOrgChartView_1 = require("./SelectOrgChartView");
@@ -68,15 +61,15 @@ class CreateGroupBox extends React.Component {
         let prop = {
             image: this.state.groupImage,
             group_name: this.state.groupName,
-            onGroupNameChange: (e, text) => this.setState(previous => (__assign({}, previous, { groupName: text }))),
+            onGroupNameChange: (e, text) => this.setState(previous => (Object.assign({}, previous, { groupName: text }))),
             group_description: this.state.groupDescription,
-            onGroupDescriptionChange: (e, text) => this.setState(previous => (__assign({}, previous, { groupDescription: text }))),
+            onGroupDescriptionChange: (e, text) => this.setState(previous => (Object.assign({}, previous, { groupDescription: text }))),
             onSubmit: this.onSubmitGroup
         };
         let chart = {
             dropdownItems: this.props.adminReducer.orgCharts,
             dropdownValue: this.state.dropdownValue,
-            dropdownChange: (event, id, value) => this.setState(previous => (__assign({}, previous, { dropdownValue: value })))
+            dropdownChange: (event, id, value) => this.setState(previous => (Object.assign({}, previous, { dropdownValue: value })))
         };
         switch (this.props.groupType) {
             case exports.createOrgGroup:
@@ -96,5 +89,4 @@ class CreateGroupBox extends React.Component {
             this.getView()));
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = CreateGroupBox;

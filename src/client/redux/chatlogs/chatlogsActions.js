@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
@@ -13,7 +14,7 @@ exports.STALK_UNREAD_MAP_CHANGED = "STALK_UNREAD_MAP_CHANGED";
 exports.STALK_CHATLOG_MAP_CHANGED = "STALK_CHATLOG_MAP_CHANGED";
 exports.STALK_CHATLOG_CONTACT_COMPLETE = "STALK_CHATLOG_CONTACT_COMPLETE";
 const listenerImp = (newMsg) => {
-    let dataManager = BackendFactory_1.default.getInstance().dataManager;
+    let dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
     if (!dataManager.isMySelf(newMsg.sender)) {
         chatsLogComp().increaseChatsLogCount(1);
         let unread = new chatslogComponent_1.Unread();
@@ -24,6 +25,7 @@ const listenerImp = (newMsg) => {
         unread.count = count;
         chatsLogComp().addUnreadMessage(unread);
         onUnreadMessageMapChanged(unread);
+        //             chatLogDAL.savePersistedUnreadMsgMap(unread);
     }
 };
 function updateLastAccessTimeEventHandler(newRoomAccess) {
@@ -33,11 +35,12 @@ function updateLastAccessTimeEventHandler(newRoomAccess) {
             chatsLogComp().addUnreadMessage(unread);
             calculateUnreadCount();
             onUnreadMessageMapChanged(unread);
+            //chatLogDAL.savePersistedUnreadMsgMap(unread);
         }
     });
 }
 function initChatsLog() {
-    let dataManager = BackendFactory_1.default.getInstance().dataManager;
+    let dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
     let chatsLogComponent = new chatslogComponent_1.default();
     dataManager.contactsProfileChanged = (contact) => {
         chatsLogComponent.getRoomsInfo();
@@ -62,7 +65,7 @@ function initChatsLog() {
 }
 exports.initChatsLog = initChatsLog;
 function getUnreadMessages() {
-    let dataManager = BackendFactory_1.default.getInstance().dataManager;
+    let dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
     let token = configureStore_1.default.getState().authReducer.token;
     chatsLogComp().getUnreadMessages(token, dataManager.getRoomAccess(), function done(err, unreadLogs) {
         if (!!unreadLogs) {
@@ -115,7 +118,7 @@ function getUnreadMessageComplete() {
     chatsLogComp().getRoomsInfo();
 }
 const getChatLogContact = (chatlog) => {
-    let dataManager = BackendFactory_1.default.getInstance().dataManager;
+    let dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
     let contacts = chatlog.room.members.filter(value => {
         return !dataManager.isMySelf(value.id);
     });
@@ -132,7 +135,7 @@ function getLastAccessRoom() {
             .then(json => {
             if (json.success) {
                 dispatch(getLastAccessRoomSuccess(json.result));
-                BackendFactory_1.default.getInstance().dataListener.onAccessRoom(json.result);
+                BackendFactory_1.BackendFactory.getInstance().dataListener.onAccessRoom(json.result);
             }
             else {
                 dispatch(getLastAccessRoomFailure(json.message));
@@ -156,7 +159,7 @@ exports.updateLastAccessRoomEpic = action$ => action$.ofType(UPDATE_LAST_ACCESS_
     return ServiceProvider.updateLastAccessRoomInfo(token, action.payload);
 }).map(response => updateLastAccessRoomSuccess(response.xhr.response)).do(x => {
     if (x.payload.success) {
-        BackendFactory_1.default.getInstance().dataListener.onUpdatedLastAccessTime(x.payload.result);
+        BackendFactory_1.BackendFactory.getInstance().dataListener.onUpdatedLastAccessTime(x.payload.result);
     }
 })
     .takeUntil(action$.ofType(UPDATE_LAST_ACCESS_ROOM_CANCELLED))

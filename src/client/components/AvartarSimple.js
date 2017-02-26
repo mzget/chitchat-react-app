@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const Avatar_1 = require("material-ui/Avatar");
@@ -9,5 +10,4 @@ const Avatar_1 = require("material-ui/Avatar");
 const AvatarSimple = (props) => (React.createElement(MuiThemeProvider_1.default, null,
     React.createElement("div", null, (!!props.src) ?
         React.createElement(Avatar_1.default, { src: props.src }) : React.createElement(Avatar_1.default, null, props.letter.charAt(0)))));
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = AvatarSimple;

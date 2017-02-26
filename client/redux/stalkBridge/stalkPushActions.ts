@@ -4,7 +4,7 @@
  * This is pure function action for redux app.
  */
 
-import BackendFactory from "../../chats/BackendFactory";
+import { BackendFactory } from "../../chats/BackendFactory";
 import Store from "../configureStore";
 
 const LINK_REQUEST = "LINK_REQUEST";

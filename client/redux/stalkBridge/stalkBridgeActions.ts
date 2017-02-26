@@ -4,11 +4,10 @@
  * This is pure function action for redux app.
  */
 
-import BackendFactory from "../../chats/BackendFactory";
+import { BackendFactory } from "../../chats/BackendFactory";
 import * as StalkNotificationAction from "./StalkNotificationActions";
 import * as DataModels from "../../chats/models/ChatDataModels";
-import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
-import StalkImp, { IDictionary } from "../../libs/stalk/serverImplemented";
+import { IDictionary } from "../../libs/stalk/serverImplemented";
 
 import config from "../../configs/config";
 import Store from "../configureStore";
@@ -19,23 +18,14 @@ import * as StalkPushActions from "./stalkPushActions";
 export const getSessionToken = () => {
     const backendFactory = BackendFactory.getInstance();
     return Store.getState().stalkReducer.stalkToken;
-}
+};
 export const getRoomDAL = () => {
     const backendFactory = BackendFactory.getInstance();
     return backendFactory.dataManager.roomDAL;
-}
+};
 const onGetContactProfileFail = (contact_id: string) => {
 
 };
-
-export function getUserInfo(userId: string, callback: (user: DataModels.ContactInfo) => void) {
-    let self = this;
-
-    let dataManager = BackendFactory.getInstance().dataManager;
-    let user: DataModels.ContactInfo = dataManager.getContactProfile(userId);
-    callback(user);
-}
-
 
 export const STALK_INIT = "STALK_INIT";
 export const STALK_INIT_SUCCESS = "STALK_INIT_SUCCESS";
@@ -102,6 +92,7 @@ export function stalkLogin(user: any) {
                 console.log("Joined chat-server success", result);
                 backendFactory.getServerListener();
                 backendFactory.startChatServerListener();
+                stalkManageConnection();
 
                 StalkNotificationAction.regisNotifyNewMessageEvent();
 
@@ -127,8 +118,30 @@ export function stalkLogin(user: any) {
             Store.dispatch({ type: STALK_INIT_FAILURE });
         });
     }).catch(err => {
-        console.warn("StalkInit Fail.");
+        console.warn("StalkInit Fail.", err);
 
         Store.dispatch({ type: STALK_INIT_FAILURE });
     });
+}
+
+export const STALK_ON_SOCKET_RECONNECT = "STALK_ON_SOCKET_RECONNECT";
+export const STALK_ON_SOCKET_CLOSE = "STALK_ON_SOCKET_CLOSE";
+export const STALK_ON_SOCKET_DISCONNECTED = "STALK_ON_SOCKET_DISCONNECTED";
+export const STALK_CONNECTION_PROBLEM = "STALK_CONNECTION_PROBLEM";
+const onStalkSocketReconnect = (data) => ({ type: STALK_ON_SOCKET_RECONNECT, payload: data });
+const onStalkSocketClose = (data) => ({ type: STALK_ON_SOCKET_CLOSE, payload: data });
+const onStalkSocketDisconnected = (data) => ({ type: STALK_ON_SOCKET_DISCONNECTED, payload: data });
+async function stalkManageConnection() {
+    const backendFactory = BackendFactory.getInstance();
+
+    let server = await backendFactory.getServer();
+    server.onSocketReconnect = (data) => {
+        Store.dispatch(onStalkSocketReconnect(data.type));
+    };
+    server.onSocketClose = (data) => {
+        Store.dispatch(onStalkSocketClose(data.type));
+    };
+    server.onDisconnected = (data) => {
+        Store.dispatch(onStalkSocketDisconnected(data.type));
+    };
 }

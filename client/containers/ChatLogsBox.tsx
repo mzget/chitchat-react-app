@@ -1,12 +1,12 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import Subheader from 'material-ui/Subheader';
+import Subheader from "material-ui/Subheader";
 
 import ChatsLogComponent, { ChatLogMap, IUnread, Unread } from "../chats/chatslogComponent";
 import ChatLog from "../chats/models/chatLog";
 
 import Store from "../redux/configureStore";
-import * as userRx from '../redux/user/userRx';
+import * as userRx from "../redux/user/userRx";
 import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
 import * as chatroomActions from "../redux/chatroom/chatroomActions";
 import * as ChatLogsActions from "../redux/chatlogs/chatlogsActions";
@@ -16,18 +16,18 @@ import ListChatLogs from "./ListChatLogs";
 interface IComponentNameProps {
     location: {
         query
-    },
-    params,
-    chatroomReducer,
-    stalkReducer,
-    chatlogReducer
-    dispatch,
-    router
+    };
+    params;
+    chatroomReducer;
+    stalkReducer;
+    chatlogReducer;
+    dispatch;
+    router;
 };
 
 interface IComponentNameState {
-    chatsLog: Array<any>,
-    search
+    chatsLog: Array<any>;
+    search;
 };
 
 class ChatLogsBox extends React.Component<IComponentNameProps, IComponentNameState> {
@@ -35,7 +35,7 @@ class ChatLogsBox extends React.Component<IComponentNameProps, IComponentNameSta
         this.state = {
             search: "",
             chatsLog: null
-        }
+        };
 
         this.convertObjToArr = this.convertObjToArr.bind(this);
     }
@@ -66,12 +66,12 @@ class ChatLogsBox extends React.Component<IComponentNameProps, IComponentNameSta
 
         let chatsLog = obj;
 
-        let self = this
+        let self = this;
         let arr = Object.keys(chatsLog).filter(function (log) {
             if (!!chatsLog[log].roomName && chatsLog[log].roomName.toLowerCase().includes(self.state.search.toLowerCase()))
-                return true
+                return true;
             else
-                return false
+                return false;
         }).map(function (key) {
             return chatsLog[key];
         });
@@ -85,7 +85,7 @@ class ChatLogsBox extends React.Component<IComponentNameProps, IComponentNameSta
                 <Subheader>Recent chats</Subheader>
                 <ListChatLogs value={this.state.chatsLog} onSelected={(data) => {
                     this.props.router.push(`/chat/${data.id}`);
-                } } />
+                }} />
             </div>
         );
     }

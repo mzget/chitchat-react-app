@@ -9,7 +9,7 @@ import { createAction, Reducer } from "redux-actions";
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
-import BackendFactory from "../../chats/BackendFactory";
+import { BackendFactory } from "../../chats/BackendFactory";
 import ChatsLogComponent, { IUnread, Unread } from "../../chats/chatslogComponent";
 import ChatLog from "../../chats/models/chatLog";
 import * as ServiceProvider from "../../chats/services/ServiceProvider";

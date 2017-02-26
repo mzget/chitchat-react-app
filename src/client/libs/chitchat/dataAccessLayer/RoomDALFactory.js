@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
@@ -12,6 +13,8 @@ class RoomDALFactory {
             return new RoomDAL();
         }
         else {
+            // const NodeMessageDAL = require("./nodeMessageDAL");
+            // return new NodeMessageDAL();
         }
     }
 }

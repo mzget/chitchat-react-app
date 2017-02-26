@@ -7,6 +7,7 @@
  *
  */
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const BackendFactory_1 = require("../../chats/BackendFactory");
 const ChatDataModels_1 = require("../../chats/models/ChatDataModels");
 const CryptoHelper = require("../../chats/utils/CryptoHelper");
@@ -18,10 +19,10 @@ const init = (onSuccess) => {
 };
 exports.regisNotifyNewMessageEvent = () => {
     console.log("subscribe global notify message event");
-    BackendFactory_1.default.getInstance().dataListener.addOnChatListener(exports.notify);
+    BackendFactory_1.BackendFactory.getInstance().dataListener.addOnChatListener(exports.notify);
 };
 exports.unsubscribeGlobalNotifyMessageEvent = () => {
-    BackendFactory_1.default.getInstance().dataListener.removeOnChatListener(exports.notify);
+    BackendFactory_1.BackendFactory.getInstance().dataListener.removeOnChatListener(exports.notify);
 };
 exports.notify = (messageImp) => {
     let message = "";

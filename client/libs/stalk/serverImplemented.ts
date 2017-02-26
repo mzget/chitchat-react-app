@@ -8,9 +8,22 @@
 import HttpStatusCode from './utils/httpStatusCode';
 import TokenDecode from './utils/tokenDecode';
 
-const Pomelo = require('../pomelo/reactWSClient');
+const Pomelo = require("../pomelo/reactWSClient");
 import config from '../../configs/config';
+import EventEmitter = require("events");
 
+export abstract class IPomelo extends EventEmitter {
+    init;
+    notify;
+    request;
+    disconnect;
+    setReconnect;
+};
+export interface IPomeloParam {
+    host: string;
+    port: number;
+    reconnect: boolean;
+}
 
 export interface IDictionary {
     [k: string]: string;
@@ -23,11 +36,8 @@ class AuthenData implements IAuthenData {
     userId: string;
     token: string;
 }
-export interface IPomeloParam {
-    host: string, port: number, reconnect: boolean
-}
 
-export default class ServerImplemented {
+export class ServerImplemented {
     private static Instance: ServerImplemented;
     public static getInstance(): ServerImplemented {
         if (this.Instance === null || this.Instance === undefined) {
@@ -37,18 +47,25 @@ export default class ServerImplemented {
         return this.Instance;
     }
 
-    static connectionProblemString: string = 'Server connection is unstable.';
+    static connectionProblemString: string = "Server connection is unstable.";
 
-    pomelo: any;
+    pomelo: IPomelo;
     host: string;
     port: number | string;
     authenData: AuthenData;
     _isConnected = false;
     _isLogedin = false;
     connect = this.connectServer;
+    onSocketOpen: (data) => void;
+    onSocketClose: (data) => void;
+    onSocketReconnect: (data) => void;
+    onDisconnected: (data) => void;
 
     constructor() {
         console.log("serv imp. constructor");
+
+        this.connectServer = this.connectServer.bind(this);
+        this.listenForPomeloEvents = this.listenForPomeloEvents.bind(this);
     }
 
     public getClient() {
@@ -87,31 +104,28 @@ export default class ServerImplemented {
     }
 
     public logout() {
-        console.log('logout request');
+        console.log("logout request");
 
-        let self = this;
         let registrationId = "";
         let msg: IDictionary = {};
-        msg["username"] = this.username;
+        msg["username"] = null;
         msg["registrationId"] = registrationId;
-        if (self.pomelo != null)
-            self.pomelo.notify("connector.entryHandler.logout", msg);
+        if (this.pomelo != null)
+            this.pomelo.notify("connector.entryHandler.logout", msg);
 
         this.disConnect();
-        self.pomelo = null;
+        this.pomelo = null;
     }
 
     public init(callback: (err, res) => void) {
-        console.log('serverImp.init()');
-
         let self = this;
         this._isConnected = false;
-        self.pomelo = Pomelo;
+        this.pomelo = Pomelo;
 
         self.host = config.Stalk.chat;
         self.port = parseInt(config.Stalk.port);
         if (!!self.pomelo) {
-            //<!-- Connecting gate server.
+            // <!-- Connecting gate server.
             let params: IPomeloParam = { host: self.host, port: self.port, reconnect: false };
             self.connectServer(params, (err) => {
                 callback(err, self);
@@ -123,14 +137,26 @@ export default class ServerImplemented {
     }
 
     private connectServer(params: IPomeloParam, callback: (err) => void) {
-        let self = this;
-        console.log("socket connecting to: ", params);
-
-        self.pomelo.init(params, function cb(err) {
+        this.pomelo.init(params, function cb(err) {
             console.log("socket init result: ", err);
 
             callback(err);
         });
+    }
+
+    public listenForPomeloEvents() {
+        this.pomelo.removeAllListeners();
+        this.pomelo.on("onopen", (this.onSocketOpen) ? this.onSocketOpen : (data) => console.warn("onopen", data));
+        this.pomelo.on("close", (this.onSocketClose) ? this.onSocketClose : (data) => console.warn("close", data));
+        this.pomelo.on("reconnect", (this.onSocketReconnect) ? this.onSocketReconnect : (data) => console.warn("reconnect", data));
+        this.pomelo.on("disconnected", (data) => {
+            console.warn("disconnected", data);
+            this._isConnected = false;
+
+            if (this.onDisconnected)
+                this.onDisconnected(data);
+        });
+        this.pomelo.on("io-error", (data) => console.warn("io-error", data));
     }
 
     // region <!-- Authentication...
@@ -142,7 +168,7 @@ export default class ServerImplemented {
 
         if (!!self.pomelo && this._isConnected === false) {
             let msg = { uid: _username };
-            //<!-- Quering connector server.
+            // <!-- Quering connector server.
             self.pomelo.request("gate.gateHandler.queryEntry", msg, function (result) {
 
                 console.log("QueryConnectorServ", JSON.stringify(result));
@@ -151,7 +177,7 @@ export default class ServerImplemented {
                     self.disConnect();
 
                     let connectorPort = result.port;
-                    //<!-- Connecting to connector server.
+                    // <!-- Connecting to connector server.
                     let params: IPomeloParam = { host: self.host, port: connectorPort, reconnect: true };
                     self.connectServer(params, (err) => {
                         self._isConnected = true;
@@ -188,7 +214,7 @@ export default class ServerImplemented {
         }
     }
 
-    //<!-- Authentication. request for token sign.
+    // <!-- Authentication. request for token sign.
     private authenForFrontendServer(_username: string, _hash: string, deviceToken: string, callback: (err, res) => void) {
         let self = this;
 
@@ -196,7 +222,7 @@ export default class ServerImplemented {
         msg["email"] = _username;
         msg["password"] = _hash;
         msg["registrationId"] = deviceToken;
-        //<!-- Authentication.
+        // <!-- Authentication.
         self.pomelo.request("connector.entryHandler.login", msg, function (res) {
             console.log("login response: ", JSON.stringify(res));
 
@@ -209,10 +235,6 @@ export default class ServerImplemented {
                 if (callback != null) {
                     callback(null, res);
                 }
-
-                self.pomelo.on('disconnect', function data(reason) {
-                    self._isConnected = false;
-                });
             }
             else {
                 if (callback !== null) {
@@ -226,12 +248,12 @@ export default class ServerImplemented {
         let self = this;
 
         let msg = { uid: uid };
-        return new Promise((resolve, rejected) => {
+        let result = new Promise((resolve, rejected) => {
             if (!!self.pomelo && this._isConnected === false) {
-                //<!-- Quering connector server.
+                // <!-- Quering connector server.
                 self.pomelo.request("gate.gateHandler.queryEntry", msg, function (result) {
 
-                    console.log("gateEnter", JSON.stringify(result));
+                    console.log("gateEnter", result);
 
                     if (result.code === HttpStatusCode.success) {
                         self.disConnect();
@@ -249,36 +271,23 @@ export default class ServerImplemented {
                 console.log("Automatic init pomelo socket...");
 
                 rejected(message);
-                // self.init((err, res) => {
-                //     if (err) {
-                //         console.warn("Cannot starting pomelo socket!");
-
-                //         rejected(err);
-                //     }
-                //     else {
-                //         console.log("Init socket success.");
-                //         resolve();
-                //     }
-                // });
             }
         });
+
+        return result;
     }
 
-    public connectorEnter(msg: IDictionary): Promise<any> {
+    public signin(msg: IDictionary): Promise<any> {
         let self = this;
 
         return new Promise((resolve, rejected) => {
-            //<!-- Authentication.
+            // <!-- Authentication.
             self.pomelo.request("connector.entryHandler.login", msg, function (res) {
                 if (res.code === HttpStatusCode.fail) {
                     rejected(res.message);
                 }
                 else if (res.code === HttpStatusCode.success) {
                     resolve(res);
-
-                    self.pomelo.on('disconnect', function data(reason) {
-                        self._isConnected = false;
-                    });
                 }
                 else {
                     resolve(res);

@@ -20,7 +20,7 @@ const muiTheme = getMuiTheme({
     },
     toolbar: {
         color: Colors.white,
-        backgroundColor: Colors.lightBlue500,
+        backgroundColor: Colors.indigo500,
     },
 });
 
@@ -55,7 +55,7 @@ class SimpleToolbar extends React.Component<IComponentProps, IComponentState> {
                                 :
                                 <span style={{ margin: 8 }} />
                         }
-                        <ToolbarTitle text={this.props.title} />
+                        <ToolbarTitle text={this.props.title} style={{ color: Colors.white }} />
                     </ToolbarGroup>
                     {
                         (this.props.menus && this.props.menus.length > 0) ?
@@ -71,14 +71,14 @@ class SimpleToolbar extends React.Component<IComponentProps, IComponentState> {
                                         anchorOrigin={{ horizontal: "right", vertical: "top" }}
                                         targetOrigin={{ horizontal: "right", vertical: "top" }}
                                         onRequestChange={(open, reason) => this.setState({ openState: open })}
-                                        onItemTouchTap={(event, child) => console.log("item touch tap", event.type)}
-                                        onTouchTap={(event) => this.setState({ openState: !this.state.openState })}
+                                        onItemTouchTap={(event, child) => console.log("onItemTouchTap")}
+                                        onTouchTap={(event) => console.log("onTouchTap")}
                                         open={this.state.openState}
                                     >
                                         {
                                             this.props.menus.map((value, i, arr) => {
                                                 return <MenuItem key={i} primaryText={value}
-                                                    onClick={() => this.props.onSelectedMenuItem(i, value)}
+                                                    onTouchTap={() => this.props.onSelectedMenuItem(i, value)}
                                                 />;
                                             })}
                                     </IconMenu>

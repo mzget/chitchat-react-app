@@ -4,6 +4,7 @@
  * Redux actions creator.
  */
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const BackendFactory_1 = require("../../chats/BackendFactory");
 const httpStatusCode_1 = require("../../libs/stalk/utils/httpStatusCode");
 class MessageActionsType {
@@ -32,7 +33,7 @@ function getRoomId_failure() {
 function getDirectMessageRoomId(token, myId, contactId) {
     return dispatch => {
         dispatch(getRoomId_request());
-        BackendFactory_1.default.getInstance().getServer().getPrivateChatRoomId(token, myId, contactId, (err, res) => {
+        BackendFactory_1.BackendFactory.getInstance().getServer().getPrivateChatRoomId(token, myId, contactId, (err, res) => {
             if (err) {
                 dispatch(getRoomId_failure());
             }
@@ -62,7 +63,7 @@ function leaveRoom_failure() {
 function leaveRoom(token, currentRid, username) {
     return dispatch => {
         dispatch(leaveRoom_request());
-        BackendFactory_1.default.getInstance().getServer().LeaveChatRoomRequest(token, currentRid, username, (err, res) => {
+        BackendFactory_1.BackendFactory.getInstance().getServer().LeaveChatRoomRequest(token, currentRid, username, (err, res) => {
             if (err) {
                 dispatch(leaveRoom_failure());
             }

@@ -4,6 +4,7 @@
  *  RoomDAL.ts
  */
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const localForage = require("localforage");
 class RoomDAL {
     constructor() {

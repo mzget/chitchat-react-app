@@ -3,6 +3,7 @@
  *
  */
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const serverImplemented_1 = require("../libs/stalk/serverImplemented");
 const chatRoomApiProvider_1 = require("../libs/stalk/chatRoomApiProvider");
 const serverEventListener_1 = require("../libs/stalk/serverEventListener");
@@ -17,8 +18,8 @@ class BackendFactory {
         return BackendFactory.instance;
     }
     constructor(token = null) {
-        console.log('BackendFactory: ', token);
-        this.stalk = serverImplemented_1.default.getInstance();
+        console.log("BackendFactory: ", token);
+        this.stalk = serverImplemented_1.ServerImplemented.getInstance();
         this.pushDataListener = new pushDataListener_1.default();
         this.dataManager = new dataManager_1.default();
         this.dataListener = new dataListener_1.default(this.dataManager);
@@ -44,7 +45,7 @@ class BackendFactory {
         return this.serverEventsListener;
     }
     stalkInit() {
-        console.log('stalkInit...');
+        console.log("stalkInit...");
         let self = this;
         let promise = new Promise((resolve, reject) => {
             self.stalk.disConnect(function done() {
@@ -63,7 +64,7 @@ class BackendFactory {
     login(username, hexPassword, deviceToken) {
         let email = username;
         let promise = new Promise(function executor(resolve, reject) {
-            serverImplemented_1.default.getInstance().logIn(email, hexPassword, deviceToken, (err, res) => {
+            serverImplemented_1.ServerImplemented.getInstance().logIn(email, hexPassword, deviceToken, (err, res) => {
                 if (!!err) {
                     reject(err);
                 }
@@ -78,7 +79,7 @@ class BackendFactory {
         let token = tokenBearer;
         let promise = new Promise((resolved, rejected) => {
             console.warn(token);
-            serverImplemented_1.default.getInstance().TokenAuthen(token, (err, res) => {
+            serverImplemented_1.ServerImplemented.getInstance().TokenAuthen(token, (err, res) => {
                 if (!!err) {
                     rejected(err);
                 }
@@ -92,7 +93,7 @@ class BackendFactory {
     logout() {
         let self = this;
         let promise = new Promise(function exe(resolve, reject) {
-            if (serverImplemented_1.default.getInstance) {
+            if (serverImplemented_1.ServerImplemented.getInstance) {
                 if (!!self.stalk.pomelo)
                     self.stalk.pomelo.setReconnect(false);
                 self.stalk.logout();
@@ -120,12 +121,14 @@ class BackendFactory {
         let self = this;
         return new Promise((resolve, rejected) => {
             self.stalk.gateEnter(uid).then(value => {
-                //<!-- Connecting to connector server.
+                // <!-- Connecting to connector server.
                 let params = { host: value.host, port: value.port, reconnect: false };
                 self.stalk.connect(params, (err) => {
                     self.stalk._isConnected = true;
-                    if (!!self.stalk.pomelo)
+                    if (!!self.stalk.pomelo) {
+                        self.stalk.listenForPomeloEvents();
                         self.stalk.pomelo.setReconnect(true);
+                    }
                     if (!!err) {
                         rejected(err);
                     }
@@ -133,7 +136,7 @@ class BackendFactory {
                         let msg = {};
                         msg["token"] = token;
                         msg["user"] = user;
-                        self.stalk.connectorEnter(msg).then(value => {
+                        self.stalk.signin(msg).then(value => {
                             resolve(value);
                         }).catch(err => {
                             rejected(err);
@@ -147,5 +150,4 @@ class BackendFactory {
         });
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = BackendFactory;
+exports.BackendFactory = BackendFactory;

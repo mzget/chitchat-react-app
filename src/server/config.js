@@ -1,9 +1,10 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 ;
 const dev = {
     chatDB: "mongodb://rfl_dev:rfl1234@git.animation-genius.com:27017/chitchat-dev",
     redis_port: 6379,
-    redis_host: "localhost",
+    redis_host: "smelink.animation-genius.com",
     token: {
         secret: "chitchat1234",
         expire: "1 days"

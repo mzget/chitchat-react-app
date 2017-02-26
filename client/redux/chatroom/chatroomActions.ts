@@ -5,7 +5,7 @@
  */
 
 import ChatRoomComponent from "../../chats/chatRoomComponent";
-import BackendFactory from "../../chats/BackendFactory";
+import { BackendFactory } from "../../chats/BackendFactory";
 import SecureServiceFactory from "../../libs/chitchat/services/secureServiceFactory";
 import ServerEventListener from "../../libs/stalk/serverEventListener";
 import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
@@ -41,7 +41,6 @@ export class ChatRoomActionsType {
 
     static JOIN_ROOM_REQUEST = "JOIN_ROOM_REQUEST";
     static JOIN_ROOM_SUCCESS = "JOIN_ROOM_SUCCESS";
-    static JOIN_ROOM_FAILURE = "JOIN_ROOM_FAILURE";
 
     static REPLACE_MESSAGE = "REPLACE_MESSAGE";
     static ON_NEW_MESSAGE = "ON_NEW_MESSAGE";
@@ -189,21 +188,9 @@ export async function getMessages() {
     return messages;
 }
 
-function send_message_request() {
-    return { type: ChatRoomActionsType.SEND_MESSAGE_REQUEST };
-}
-function send_message_success(data: any) {
-    return {
-        type: ChatRoomActionsType.SEND_MESSAGE_SUCCESS,
-        payload: data
-    };
-}
-function send_message_failure(data?: any) {
-    return {
-        type: ChatRoomActionsType.SEND_MESSAGE_FAILURE,
-        payload: data
-    };
-}
+const send_message_request = () => ({ type: ChatRoomActionsType.SEND_MESSAGE_REQUEST });
+const send_message_success = (data: any) => ({ type: ChatRoomActionsType.SEND_MESSAGE_SUCCESS, payload: data });
+const send_message_failure = (error?: any) => ({ type: ChatRoomActionsType.SEND_MESSAGE_FAILURE, payload: error });
 export function sendMessage(msg: IMessage) {
     return (dispatch) => {
         dispatch(send_message_request());
@@ -217,11 +204,6 @@ export function sendMessage(msg: IMessage) {
 
         if (msg.type === ContentType[ContentType.Text] && config.appConfig.encryption === true) {
             secure.encryption(msg.body).then(result => {
-                // secure.decryption(result).then(res => {
-                //     console.log(res);
-                // }).catch(err => {
-                //     console.error(err);
-                // });
                 msg.body = result;
                 BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
                     dispatch(sendMessageResponse(err, res));
@@ -241,13 +223,13 @@ export function sendMessage(msg: IMessage) {
 
 function sendMessageResponse(err, res) {
     return dispatch => {
-        if (!!err || res.code !== HTTPStatus.success) {
-            dispatch(send_message_failure(res.body));
+        if (!!err) {
+            dispatch(send_message_failure(err.message));
         }
         else {
             console.log("server response!", res);
 
-            if (res.data.hasOwnProperty("resultMsg")) {
+            if (res.code == HTTPStatus.success && res.data.hasOwnProperty("resultMsg")) {
                 let _msg = { ...res.data.resultMsg } as IMessage;
                 if (_msg.type === ContentType[ContentType.Text] && config.appConfig.encryption) {
                     secure.decryption(_msg.body).then(res => {
@@ -264,21 +246,20 @@ function sendMessageResponse(err, res) {
                 }
             }
             else {
-                dispatch(send_message_failure(res.body));
+                dispatch(send_message_failure(res.message));
             }
         }
     };
 }
 
+export const JOIN_ROOM_FAILURE = "JOIN_ROOM_FAILURE";
 function joinRoom_request() {
     return { type: ChatRoomActionsType.JOIN_ROOM_REQUEST };
 }
 function joinRoom_success(data?: any) {
     return { type: ChatRoomActionsType.JOIN_ROOM_SUCCESS, payload: data };
 }
-function joinRoom_failure() {
-    return { type: ChatRoomActionsType.JOIN_ROOM_FAILURE };
-}
+function joinRoom_failure() { return { type: JOIN_ROOM_FAILURE }; }
 export function joinRoom(roomId: string, token: string, username: string) {
     return (dispatch) => {
         dispatch(joinRoom_request());

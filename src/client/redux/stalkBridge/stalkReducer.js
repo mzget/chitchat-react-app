@@ -4,6 +4,7 @@
  * This is pure function for redux app.
  */
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const StalkBridgeActions = require("../stalkBridge/stalkBridgeActions");
 const StalkNotificationActions = require("./StalkNotificationActions");
 const immutable_1 = require("immutable");
@@ -38,7 +39,16 @@ function stalkReducer(state = initialState, action) {
         }
         case StalkBridgeActions.STALK_INIT_FAILURE: {
             return state.set("isInit", true)
-                .set("state", StalkBridgeActions.STALK_INIT_FAILURE);
+                .set("state", StalkBridgeActions.STALK_CONNECTION_PROBLEM);
+        }
+        case StalkBridgeActions.STALK_ON_SOCKET_CLOSE: {
+            return state.set("state", StalkBridgeActions.STALK_CONNECTION_PROBLEM);
+        }
+        case StalkBridgeActions.STALK_ON_SOCKET_DISCONNECTED: {
+            return state.set("state", StalkBridgeActions.STALK_CONNECTION_PROBLEM);
+        }
+        case StalkBridgeActions.STALK_ON_SOCKET_RECONNECT: {
+            return state.set("state", StalkBridgeActions.STALK_ON_SOCKET_RECONNECT);
         }
         case StalkNotificationActions.STALK_NOTICE_NEW_MESSAGE: {
             return state.set("notiMessage", action.payload);

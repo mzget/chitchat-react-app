@@ -4,7 +4,7 @@
  * Redux actions creator.
  */
 
-import BackendFactory from "../../chats/BackendFactory";
+import { BackendFactory } from "../../chats/BackendFactory";
 import HttpStatus from "../../libs/stalk/utils/httpStatusCode";
 
 export class MessageActionsType {

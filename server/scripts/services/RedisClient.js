@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const redis = require("redis");
 const config_1 = require("../../config");
 var RedisStatus;
@@ -21,7 +22,6 @@ RedisClient.on("error", function (err) {
     console.error("redis Error " + err);
     exports.redisStatus = RedisStatus.error;
 });
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = RedisClient;
 exports.ROOM_KEY = "rooms";
 exports.ROOM_MAP_KEY = "room_map";

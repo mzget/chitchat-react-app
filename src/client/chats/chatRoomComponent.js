@@ -12,6 +12,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const async = require("async");
 const BackendFactory_1 = require("./BackendFactory");
 const serverImplemented_1 = require("../libs/stalk/serverImplemented");
@@ -38,13 +39,13 @@ class ChatRoomComponent {
     }
     constructor() {
         this.secure = secureServiceFactory_1.default.getService();
-        this.chatRoomApi = BackendFactory_1.default.getInstance().getChatApi();
-        BackendFactory_1.default.getInstance().getServer().then(server => {
+        this.chatRoomApi = BackendFactory_1.BackendFactory.getInstance().getChatApi();
+        BackendFactory_1.BackendFactory.getInstance().getServer().then(server => {
             serverImp = server;
         }).catch(err => {
         });
-        this.dataManager = BackendFactory_1.default.getInstance().dataManager;
-        this.dataListener = BackendFactory_1.default.getInstance().dataListener;
+        this.dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
+        this.dataListener = BackendFactory_1.BackendFactory.getInstance().dataListener;
         this.dataListener.addOnChatListener(this.onChat.bind(this));
     }
     onChat(message) {
@@ -106,11 +107,11 @@ class ChatRoomComponent {
         });
     }
     onGetMessagesReaders(dataEvent) {
-        console.log('onGetMessagesReaders', dataEvent);
+        console.log("onGetMessagesReaders", dataEvent);
         let self = this;
         let myMessagesArr = JSON.parse(JSON.stringify(dataEvent.data));
         self.chatMessages.forEach((originalMsg, id, arr) => {
-            if (BackendFactory_1.default.getInstance().dataManager.isMySelf(originalMsg.sender)) {
+            if (BackendFactory_1.BackendFactory.getInstance().dataManager.isMySelf(originalMsg.sender)) {
                 myMessagesArr.some((myMsg, index, array) => {
                     if (originalMsg._id === myMsg._id) {
                         originalMsg.readers = myMsg.readers;
@@ -329,7 +330,7 @@ class ChatRoomComponent {
                         topEdgeMessageTime = messages[0].createTime;
                     }
                 }
-                console.log('topEdgeMessageTime is: ', topEdgeMessageTime);
+                console.log("topEdgeMessageTime is: ", topEdgeMessageTime);
             });
         }
         waitRoomMessage().then(() => {
@@ -351,7 +352,7 @@ class ChatRoomComponent {
     updateReadMessages() {
         let self = this;
         async.map(self.chatMessages, function itorator(message, resultCb) {
-            if (!BackendFactory_1.default.getInstance().dataManager.isMySelf(message.sender)) {
+            if (!BackendFactory_1.BackendFactory.getInstance().dataManager.isMySelf(message.sender)) {
                 self.chatRoomApi.updateMessageReader(message._id, message.rid);
             }
             resultCb(null, null);
@@ -366,7 +367,7 @@ class ChatRoomComponent {
         });
     }
     getMemberProfile(member, callback) {
-        serverImplemented_1.default.getInstance().getMemberProfile(member._id, callback);
+        serverImplemented_1.ServerImplemented.getInstance().getMemberProfile(member._id, callback);
     }
     getMessages() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -378,5 +379,4 @@ class ChatRoomComponent {
         ChatRoomComponent.instance = null;
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ChatRoomComponent;

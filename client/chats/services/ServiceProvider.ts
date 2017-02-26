@@ -34,7 +34,7 @@ export const checkOlderMessagesCount = (room_id: string, topEdgeMessageTime: str
             "x-access-token": token
         }
     });
-}
+};
 
 export const getChatHistory = (room_id: string, lastMessageTime: Date, token: string) => {
     return fetch(`${config.api.chatroom}/getChatHistory`, {
@@ -48,13 +48,13 @@ export const getChatHistory = (room_id: string, lastMessageTime: Date, token: st
             "x-access-token": token
         }
     });
-}
+};
 
 export function getLastAccessRoomInfo(token: string) {
     return fetch(`${config.Stalk.api.user}/lastAccessRoom`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             "x-access-token": token
         }
     });
@@ -63,9 +63,9 @@ export function getLastAccessRoomInfo(token: string) {
 export function updateLastAccessRoomInfo(token: string, room_id: string) {
     return Rx.Observable.ajax({
         url: `${config.Stalk.api.user}/lastAccessRoom`,
-        method: 'POST',
+        method: "POST",
         headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             "x-access-token": token
         },
         body: JSON.stringify({ room_id: room_id })

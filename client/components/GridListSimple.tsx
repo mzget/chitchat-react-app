@@ -1,20 +1,20 @@
-import * as React from 'react';
-import { GridList, GridTile } from 'material-ui/GridList';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import IconButton from 'material-ui/IconButton';
-import Subheader from 'material-ui/Subheader';
-import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+import * as React from "react";
+import { GridList, GridTile } from "material-ui/GridList";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import IconButton from "material-ui/IconButton";
+import Subheader from "material-ui/Subheader";
+import StarBorder from "material-ui/svg-icons/toggle/star-border";
 
 const styles = (props) => ({
     root: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-around',
-        backgroundColor: 'white',
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "space-around",
+        backgroundColor: "white",
         height: props.boxHeight
     },
     gridList: {
-        overflowX: 'hidden'
+        overflowX: "hidden"
     },
 });
 
@@ -32,13 +32,13 @@ interface IGridListProps {
  */
 const GridListSimple = (props: IGridListProps) => (
     <MuiThemeProvider>
-        <div style={styles(props).root}>
-            <GridList cols={4} cellHeight='auto' style={styles(props).gridList} >
+        <div style={styles(props).root} id={"sticker_box"}>
+            <GridList cols={4} cellHeight="auto" style={styles(props).gridList} >
                 <Subheader>{props.subheader}</Subheader>
                 {
                     props.srcs.map((tile, i, arr) => (
                         <GridTile key={i}>
-                            <img src={tile.img} onClick={() => props.onSelected(i)} style={{ width: '50%', maxWidth: '128px' }} />
+                            <img src={tile.img} onClick={() => props.onSelected(i)} style={{ width: "50%", maxWidth: "128px" }} />
                         </GridTile>
                     ))
                 }
