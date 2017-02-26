@@ -6,6 +6,7 @@ import * as Colors from "material-ui/styles/colors";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
+import { WarningBar } from "../components/WarningBar";
 import SimpleToolbar from "../components/SimpleToolbar";
 import ProfileBox from "./profile/ProfileBox";
 import OrgGroupListBox from "./group/OrgGroupListBox";
@@ -33,7 +34,6 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     headerHeight = null;
     subHeaderHeight = null;
     bodyHeight = null;
-    footerHeight = null;
 
     componentWillMount() {
         this.state = {
@@ -45,18 +45,21 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
             this.props.router.replace("/");
         }
 
-        this.headerHeight = this.clientHeight * 0.1;
-        this.bodyHeight = (this.clientHeight * 0.9);
-        this.footerHeight = 50;
-
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
     }
+
 
     componentWillReceiveProps(nextProps: IComponentProps) {
         let {
             location: { query: { userId, username, roomId, contactId } },
             userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer
         } = nextProps;
+
+        let warning_bar = document.getElementById("warning_bar");
+
+        this.headerHeight = document.getElementById("toolbar").clientHeight;
+        this.subHeaderHeight = (warning_bar) ? warning_bar.clientHeight : 0;
+        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight));
 
         switch (userReducer.state) {
             case userRx.FETCH_USER_SUCCESS: {
@@ -146,14 +149,18 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     public render(): JSX.Element {
         return (
             <MuiThemeProvider>
-                <div>
-                    <div style={{ height: this.headerHeight }}>
+                <div style={{ overflowY: "hidden" }}>
+                    <div style={{ height: this.headerHeight }} id={"toolbar"}>
                         <SimpleToolbar
                             title={this.props.teamReducer.team.name}
                             menus={this.menus}
                             onSelectedMenuItem={this.onSelectMenuItem} />
                     </div>
-                    <div style={{ height: this.bodyHeight, overflowY: "auto" }}>
+                    {
+                        (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
+                            <WarningBar /> : null
+                    }
+                    <div style={{ height: this.bodyHeight, overflowY: "auto" }} id={"app_body"}>
                         <ProfileBox {...this.props} />
                         <OrgGroupListBox {...this.props} />
                         <PrivateGroupListBox {...this.props} />
@@ -161,17 +168,6 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                         <ChatLogsBox {...this.props} />
                         <UtilsBox />
                     </div>
-                    {
-                        (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
-                            (
-                                <Flex style={{ height: this.footerHeight, backgroundColor: Colors.red500 }} align="center" justify="center" flexColumn={true}>
-                                    <Flex flexColumn={true}>
-                                        <span style={{ color: Colors.white }}>Unable to connect whit chat service.</span>
-                                        <span style={{ color: Colors.white }}>Check your Internet connection.</span>
-                                    </Flex>
-                                </Flex>
-                            ) : null
-                    }
                 </div>
             </MuiThemeProvider>
         );

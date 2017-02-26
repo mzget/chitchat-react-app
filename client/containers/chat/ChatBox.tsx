@@ -13,13 +13,12 @@ import Avatar from "material-ui/Avatar";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
-import { ContentType } from "../chats/models/ChatDataModels";
-import { MessageImp } from "../chats/models/MessageImp";
-import CardTextWithAvatar from "../components/CardTextWithAvatar";
-import { CardImageWithAvatar, CardStickerWithAvatar } from "../components/CardImageWithAvatar";
-import CardVideoWithAvatar from "../components/CardVideoWithAvatar";
-
-import { IComponentProps } from "../utils/IComponentProps";
+import { ContentType } from "../../chats/models/ChatDataModels";
+import { MessageImp } from "../../chats/models/MessageImp";
+import CardTextWithAvatar from "../../components/CardTextWithAvatar";
+import { CardImageWithAvatar, CardStickerWithAvatar } from "../../components/CardImageWithAvatar";
+import CardVideoWithAvatar from "../../components/CardVideoWithAvatar";
+import { IComponentProps } from "../../utils/IComponentProps";
 
 interface MyProps {
     value: Array<MessageImp>;
@@ -29,11 +28,11 @@ interface MyProps {
 };
 
 export const ChatBox = (props: MyProps) => (
-    <MuiThemeProvider >
+    <MuiThemeProvider>
         <List style={props.styles} id={"chatbox"}>
             {(!!props.value) ? renderList(props) : null}
         </List>
-    </MuiThemeProvider >
+    </MuiThemeProvider>
 );
 
 const renderList = (props: MyProps) => {

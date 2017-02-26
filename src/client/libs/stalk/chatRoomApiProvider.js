@@ -6,9 +6,12 @@ class ChatRoomApiProvider {
     }
     chat(target, _message, callback) {
         this.pomelo.request("chat.chatHandler.send", _message, (result) => {
-            let data = JSON.parse(JSON.stringify(result));
-            if (callback !== null)
-                callback(null, data);
+            if (callback !== null) {
+                if (result instanceof Error)
+                    callback(result, null);
+                else
+                    callback(null, result);
+            }
         });
     }
     /**

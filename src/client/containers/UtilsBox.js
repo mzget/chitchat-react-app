@@ -5,7 +5,6 @@ const react_redux_1 = require("react-redux");
 const DialogBox_1 = require("../components/DialogBox");
 const SnackbarSimple_1 = require("../components/SnackbarSimple");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
-const AlertMsg = require("../consts/AlertMsg");
 ;
 class UtilsBox extends React.Component {
     componentWillMount() {
@@ -23,7 +22,13 @@ class UtilsBox extends React.Component {
         let { chatroomReducer, chatlogReducer, userReducer, stalkReducer } = nextProps;
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_INIT_FAILURE:
-                this.setState(Object.assign({}, this.state, { openDialog: true, dialogTitle: AlertMsg.stalkInitFail.title, dialogMessage: AlertMsg.stalkInitFail.message }));
+                /*     this.setState({
+                         ...this.state,
+                         openDialog: true,
+                         dialogTitle: AlertMsg.stalkInitFail.title,
+                         dialogMessage: AlertMsg.stalkInitFail.message
+                     });
+                  */
                 break;
             default:
                 break;
@@ -44,7 +49,5 @@ class UtilsBox extends React.Component {
 /**
  * ## Redux boilerplate
  */
-function mapStateToProps(state) {
-    return Object.assign({}, state);
-}
+function mapStateToProps(state) { return Object.assign({}, state); }
 exports.default = react_redux_1.connect(mapStateToProps)(UtilsBox);

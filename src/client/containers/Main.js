@@ -2,9 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_redux_1 = require("react-redux");
-const reflexbox_1 = require("reflexbox");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
-const Colors = require("material-ui/styles/colors");
+const WarningBar_1 = require("../components/WarningBar");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const ProfileBox_1 = require("./profile/ProfileBox");
 const OrgGroupListBox_1 = require("./group/OrgGroupListBox");
@@ -28,7 +27,6 @@ class Main extends React.Component {
         this.headerHeight = null;
         this.subHeaderHeight = null;
         this.bodyHeight = null;
-        this.footerHeight = null;
         this.fetch_privateChatRoom = (roommateId, owerId) => {
             this.props.dispatch(chatroomRx.fetchPrivateChatRoom(owerId, roommateId));
         };
@@ -41,13 +39,14 @@ class Main extends React.Component {
         if (!teamReducer.team) {
             this.props.router.replace("/");
         }
-        this.headerHeight = this.clientHeight * 0.1;
-        this.bodyHeight = (this.clientHeight * 0.9);
-        this.footerHeight = 50;
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
     }
     componentWillReceiveProps(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer } = nextProps;
+        let warning_bar = document.getElementById("warning_bar");
+        this.headerHeight = document.getElementById("toolbar").clientHeight;
+        this.subHeaderHeight = (warning_bar) ? warning_bar.clientHeight : 0;
+        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight));
         switch (userReducer.state) {
             case userRx.FETCH_USER_SUCCESS: {
                 if (userReducer.user) {
@@ -123,21 +122,18 @@ class Main extends React.Component {
     }
     render() {
         return (React.createElement(MuiThemeProvider_1.default, null,
-            React.createElement("div", null,
-                React.createElement("div", { style: { height: this.headerHeight } },
+            React.createElement("div", { style: { overflowY: "hidden" } },
+                React.createElement("div", { style: { height: this.headerHeight }, id: "toolbar" },
                     React.createElement(SimpleToolbar_1.default, { title: this.props.teamReducer.team.name, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
-                React.createElement("div", { style: { height: this.bodyHeight, overflowY: "auto" } },
+                (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
+                    React.createElement(WarningBar_1.WarningBar, null) : null,
+                React.createElement("div", { style: { height: this.bodyHeight, overflowY: "auto" }, id: "app_body" },
                     React.createElement(ProfileBox_1.default, Object.assign({}, this.props)),
                     React.createElement(OrgGroupListBox_1.default, Object.assign({}, this.props)),
                     React.createElement(PrivateGroupListBox_1.default, Object.assign({}, this.props)),
                     React.createElement(ContactBox_1.default, Object.assign({}, this.props)),
                     React.createElement(ChatLogsBox_1.default, Object.assign({}, this.props)),
-                    React.createElement(UtilsBox_1.default, null)),
-                (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE) ?
-                    (React.createElement(reflexbox_1.Flex, { style: { height: this.footerHeight, backgroundColor: Colors.red500 }, align: "center", justify: "center", flexColumn: true },
-                        React.createElement(reflexbox_1.Flex, { flexColumn: true },
-                            React.createElement("span", { style: { color: Colors.white } }, "Unable to connect whit chat service."),
-                            React.createElement("span", { style: { color: Colors.white } }, "Check your Internet connection.")))) : null)));
+                    React.createElement(UtilsBox_1.default, null)))));
     }
 }
 const mapStateToProps = (state) => (Object.assign({}, state));

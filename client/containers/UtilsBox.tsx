@@ -1,25 +1,25 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Flex, Box } from 'reflexbox';
+import { Flex, Box } from "reflexbox";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
 import { DialogBox } from "../components/DialogBox";
 import { SnackbarSimple } from "../components/SnackbarSimple";
 
-import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
-import * as StalkNotificationActions from '../redux/stalkBridge/StalkNotificationActions';
+import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
+import * as StalkNotificationActions from "../redux/stalkBridge/StalkNotificationActions";
 
 import * as AlertMsg from "../consts/AlertMsg";
 
 interface IComponentNameState {
-    openDialog: boolean,
-    dialogTitle: string,
-    dialogMessage: string,
+    openDialog: boolean;
+    dialogTitle: string;
+    dialogMessage: string;
 
-    openSnackbar: boolean,
-    snackbarMessage: string,
-    snackbarClose: (reason: string) => void
+    openSnackbar: boolean;
+    snackbarMessage: string;
+    snackbarClose: (reason: string) => void;
 };
 
 class UtilsBox extends React.Component<IComponentProps, IComponentNameState> {
@@ -38,16 +38,17 @@ class UtilsBox extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let {  chatroomReducer, chatlogReducer, userReducer, stalkReducer } = nextProps;
+        let { chatroomReducer, chatlogReducer, userReducer, stalkReducer } = nextProps;
 
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_INIT_FAILURE:
-                this.setState({
-                    ...this.state,
-                    openDialog: true,
-                    dialogTitle: AlertMsg.stalkInitFail.title,
-                    dialogMessage: AlertMsg.stalkInitFail.message
-                });
+                /*     this.setState({
+                         ...this.state,
+                         openDialog: true,
+                         dialogTitle: AlertMsg.stalkInitFail.title,
+                         dialogMessage: AlertMsg.stalkInitFail.message
+                     });
+                  */
                 break;
             default:
                 break;
@@ -73,11 +74,11 @@ class UtilsBox extends React.Component<IComponentProps, IComponentNameState> {
         return (
             <div>
                 <DialogBox
-                    handleClose={() => { this.setState({ ...this.state, openDialog: false }) } }
+                    handleClose={() => { this.setState({ ...this.state, openDialog: false }); }}
                     open={this.state.openDialog}
                     title={this.state.dialogTitle}
                     message={this.state.dialogMessage}
-                    />
+                />
 
                 <SnackbarSimple
                     open={this.state.openSnackbar}
@@ -92,9 +93,5 @@ class UtilsBox extends React.Component<IComponentProps, IComponentNameState> {
 /**
  * ## Redux boilerplate
  */
-function mapStateToProps(state) {
-    return {
-        ...state
-    };
-}
+function mapStateToProps(state) { return { ...state }; }
 export default connect(mapStateToProps)(UtilsBox);

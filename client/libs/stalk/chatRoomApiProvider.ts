@@ -1,17 +1,19 @@
-import { IDictionary } from "./serverImplemented";
+import { IDictionary, IPomelo } from "./serverImplemented";
 
 export default class ChatRoomApiProvider {
-    pomelo: any;
+    pomelo: IPomelo;
     constructor(socket) {
         this.pomelo = socket;
     }
 
     public chat(target: string, _message: any, callback: (err, res) => void) {
         this.pomelo.request("chat.chatHandler.send", _message, (result) => {
-            let data = JSON.parse(JSON.stringify(result));
-
-            if (callback !== null)
-                callback(null, data);
+            if (callback !== null) {
+                if (result instanceof Error)
+                    callback(result, null);
+                else
+                    callback(null, result);
+            }
         });
     }
 

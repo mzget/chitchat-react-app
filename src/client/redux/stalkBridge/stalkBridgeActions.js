@@ -4,6 +4,14 @@
  * This is pure function action for redux app.
  */
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const BackendFactory_1 = require("../../chats/BackendFactory");
 const StalkNotificationAction = require("./StalkNotificationActions");
@@ -79,6 +87,7 @@ function stalkLogin(user) {
                 console.log("Joined chat-server success", result);
                 backendFactory.getServerListener();
                 backendFactory.startChatServerListener();
+                stalkManageConnection();
                 StalkNotificationAction.regisNotifyNewMessageEvent();
                 let account = new DataModels.StalkAccount();
                 account._id = user._id;
@@ -105,3 +114,25 @@ function stalkLogin(user) {
     });
 }
 exports.stalkLogin = stalkLogin;
+exports.STALK_ON_SOCKET_OPEN = "STALK_ON_SOCKET_OPEN";
+exports.STALK_ON_SOCKET_CLOSE = "STALK_ON_SOCKET_CLOSE";
+exports.STALK_ON_SOCKET_DISCONNECTED = "STALK_ON_SOCKET_DISCONNECTED";
+exports.STALK_CONNECTION_PROBLEM = "STALK_CONNECTION_PROBLEM";
+const onStalkSocketOpen = (data) => ({ type: exports.STALK_ON_SOCKET_OPEN, payload: data });
+const onStalkSocketClose = (data) => ({ type: exports.STALK_ON_SOCKET_CLOSE, payload: data });
+const onStalkSocketDisconnected = (data) => ({ type: exports.STALK_ON_SOCKET_DISCONNECTED, payload: data });
+function stalkManageConnection() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const backendFactory = BackendFactory_1.BackendFactory.getInstance();
+        let server = yield backendFactory.getServer();
+        server.onSocketOpen = (data) => {
+            configureStore_1.default.dispatch(onStalkSocketOpen(data.type));
+        };
+        server.onSocketClose = (data) => {
+            configureStore_1.default.dispatch(onStalkSocketClose(data.type));
+        };
+        server.onDisconnected = (data) => {
+            configureStore_1.default.dispatch(onStalkSocketDisconnected(data.type));
+        };
+    });
+}

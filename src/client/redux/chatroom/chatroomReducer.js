@@ -21,11 +21,15 @@ exports.ChatRoomInitState = immutable_1.Record({
     newMessage: null,
     earlyMessageReady: false,
     uploadingFile: null,
-    fileInfo: null
+    fileInfo: null,
+    error: null
 });
 const initialState = new exports.ChatRoomInitState();
 exports.chatroomReducer = (state = new exports.ChatRoomInitState(), action) => {
     switch (action.type) {
+        case chatroomActions.JOIN_ROOM_FAILURE: {
+            return state.set("state", chatroomActions.JOIN_ROOM_FAILURE);
+        }
         case ChatRoomRx.FETCH_PRIVATE_CHATROOM_SUCCESS:
             return state.set("room", action.payload.result[0])
                 .set("state", ChatRoomRx.FETCH_PRIVATE_CHATROOM_SUCCESS);
@@ -37,7 +41,7 @@ exports.chatroomReducer = (state = new exports.ChatRoomInitState(), action) => {
         case ChatRoomRx.CHATROOM_UPLOAD_FILE: {
             return state.set("state", ChatRoomRx.CHATROOM_UPLOAD_FILE)
                 .set("uploadingFile", action.payload.data.target.result)
-                .set("fileInfo", action.payload.file); //action.payload.form['file']
+                .set("fileInfo", action.payload.file); // action.payload.form['file']
         }
         case ChatRoomRx.CHATROOM_UPLOAD_FILE_FAILURE: {
             return state;
@@ -57,7 +61,7 @@ exports.chatroomReducer = (state = new exports.ChatRoomInitState(), action) => {
             let payload = action.payload;
             let nextState = state.set("state", chatroomActions_1.ChatRoomActionsType.SEND_MESSAGE_FAILURE)
                 .set("isFetching", false)
-                .set("responseMessage", payload);
+                .set("error", payload);
             return nextState;
         }
         case chatroomActions_1.ChatRoomActionsType.ON_NEW_MESSAGE: {

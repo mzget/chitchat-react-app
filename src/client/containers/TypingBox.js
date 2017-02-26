@@ -12,20 +12,20 @@ const styles = {
         paddingRight: 2
     }
 };
-const FileReaderBox = (props) => (React.createElement(FileReaderInput, { as: "url", id: "file-input", onChange: props.fileReaderChange },
-    React.createElement(IconButton_1.default, null,
+const FileReaderBox = (props) => (React.createElement(FileReaderInput, { as: "url", id: "file-input", onChange: props.fileReaderChange, disabled: props.disabled },
+    React.createElement(IconButton_1.default, { disabled: props.disabled },
         React.createElement(FontIcon_1.default, { className: "material-icons" }, "attachment"))));
-const SendButton = (props) => (React.createElement(IconButton_1.default, { onClick: props.onSubmit },
+const SendButton = (props) => (React.createElement(IconButton_1.default, { onClick: props.onSubmit, disabled: props.disabled },
     React.createElement(FontIcon_1.default, { className: "material-icons" }, "send")));
-const StickerButton = (props) => (React.createElement(IconButton_1.default, { onClick: props.onSticker },
+const StickerButton = (props) => (React.createElement(IconButton_1.default, { onClick: props.onSticker, disabled: props.disabled },
     React.createElement(FontIcon_1.default, { className: "material-icons" }, "insert_emoticon")));
 exports.TypingBox = (props) => {
     return (React.createElement(MuiThemeProvider_1.default, null,
-        React.createElement("div", { style: props.styles },
+        React.createElement("div", { style: props.styles, id: "typing_box" },
             React.createElement(reflexbox_1.Flex, null,
                 React.createElement(StickerButton, Object.assign({}, props)),
                 React.createElement(FileReaderBox, Object.assign({}, props)),
-                React.createElement(material_ui_1.TextField, { hintText: "Type your message", value: props.value, onChange: props.onValueChange, onKeyDown: (e) => {
+                React.createElement(material_ui_1.TextField, { disabled: props.disabled, hintText: (props.disabled) ? "Chat room disabled!" : "Type your message", value: props.value, onChange: props.onValueChange, onKeyDown: (e) => {
                         if (e.key === "Enter")
                             props.onSubmit();
                     } }),

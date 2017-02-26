@@ -12,6 +12,7 @@ const config_1 = require("../../configs/config");
 const EventEmitter = require("events");
 class IPomelo extends EventEmitter {
 }
+exports.IPomelo = IPomelo;
 ;
 class AuthenData {
 }
@@ -95,7 +96,7 @@ class ServerImplemented {
     }
     listenForPomeloEvents() {
         this.pomelo.removeAllListeners();
-        this.pomelo.on("onopen", (data) => console.warn("onopen : reason", data));
+        this.pomelo.on("onopen", (this.onSocketOpen) ? this.onSocketOpen : (data) => console.warn("onopen", data));
         this.pomelo.on("close", (this.onSocketClose) ? this.onSocketClose : (data) => console.warn("close", data));
         this.pomelo.on("disconnected", (data) => {
             console.warn("disconnected", data);

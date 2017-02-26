@@ -62,7 +62,7 @@ export default class WebSocketClient {
     };
   }
 
-  let socket = null;
+  let socket = null as WebSocket;
   let reqId = 0;
   let callbacks = {};
   let handler = {};
@@ -143,7 +143,6 @@ export default class WebSocketClient {
   pomelo.disconnect = function (): Promise<any> {
     return new Promise((resolve, rejected) => {
       if (!!socket) {
-        if (socket.disconnect) socket.disconnect();
         if (socket.close) socket.close();
         socket = null;
 
@@ -164,6 +163,9 @@ export default class WebSocketClient {
   };
 
   pomelo.request = function (route, msg, cb) {
+    if (socket.readyState == socket.CLOSED)
+      return cb(new Error("Socket is closed"));
+
     if (arguments.length === 2 && typeof msg === "function") {
       cb = msg;
       msg = {};
