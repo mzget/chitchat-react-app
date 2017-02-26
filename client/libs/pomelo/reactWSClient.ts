@@ -269,7 +269,7 @@ export default class WebSocketClient {
 
     pomelo.emit("onopen", event);
     if (!!reconnect) {
-      pomelo.emit("reconnect");
+      pomelo.emit("reconnect", event);
     }
 
     reset();

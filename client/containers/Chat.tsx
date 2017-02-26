@@ -88,6 +88,18 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.h_subHeader = (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
 
+        switch (stalkReducer.state) {
+            case StalkBridgeActions.STALK_CONNECTION_PROBLEM:
+                this.setState(previous => ({ ...previous, chatDisabled: true }));
+                break;
+            case StalkBridgeActions.STALK_ON_SOCKET_RECONNECT:
+                this.props.router.replace("/");
+                break;
+            default:
+                this.setState(previous => ({ ...previous, chatDisabled: false }));
+                break;
+        }
+
         switch (chatroomReducer.state) {
             case chatroomActions.JOIN_ROOM_FAILURE: {
                 this.setState(previous => ({ ...previous, chatDisabled: true }));

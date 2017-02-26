@@ -124,19 +124,19 @@ export function stalkLogin(user: any) {
     });
 }
 
-export const STALK_ON_SOCKET_OPEN = "STALK_ON_SOCKET_OPEN";
+export const STALK_ON_SOCKET_RECONNECT = "STALK_ON_SOCKET_RECONNECT";
 export const STALK_ON_SOCKET_CLOSE = "STALK_ON_SOCKET_CLOSE";
 export const STALK_ON_SOCKET_DISCONNECTED = "STALK_ON_SOCKET_DISCONNECTED";
 export const STALK_CONNECTION_PROBLEM = "STALK_CONNECTION_PROBLEM";
-const onStalkSocketOpen = (data) => ({ type: STALK_ON_SOCKET_OPEN, payload: data });
+const onStalkSocketReconnect = (data) => ({ type: STALK_ON_SOCKET_RECONNECT, payload: data });
 const onStalkSocketClose = (data) => ({ type: STALK_ON_SOCKET_CLOSE, payload: data });
 const onStalkSocketDisconnected = (data) => ({ type: STALK_ON_SOCKET_DISCONNECTED, payload: data });
 async function stalkManageConnection() {
     const backendFactory = BackendFactory.getInstance();
 
     let server = await backendFactory.getServer();
-    server.onSocketOpen = (data) => {
-        Store.dispatch(onStalkSocketOpen(data.type));
+    server.onSocketReconnect = (data) => {
+        Store.dispatch(onStalkSocketReconnect(data.type));
     };
     server.onSocketClose = (data) => {
         Store.dispatch(onStalkSocketClose(data.type));

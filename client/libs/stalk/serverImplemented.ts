@@ -58,6 +58,7 @@ export class ServerImplemented {
     connect = this.connectServer;
     onSocketOpen: (data) => void;
     onSocketClose: (data) => void;
+    onSocketReconnect: (data) => void;
     onDisconnected: (data) => void;
 
     constructor() {
@@ -147,6 +148,7 @@ export class ServerImplemented {
         this.pomelo.removeAllListeners();
         this.pomelo.on("onopen", (this.onSocketOpen) ? this.onSocketOpen : (data) => console.warn("onopen", data));
         this.pomelo.on("close", (this.onSocketClose) ? this.onSocketClose : (data) => console.warn("close", data));
+        this.pomelo.on("reconnect", (this.onSocketReconnect) ? this.onSocketReconnect : (data) => console.warn("reconnect", data));
         this.pomelo.on("disconnected", (data) => {
             console.warn("disconnected", data);
             this._isConnected = false;

@@ -12,6 +12,8 @@
 import { combineReducers } from "redux";
 import { routerReducer } from "react-router-redux";
 
+import { STALK_ON_SOCKET_RECONNECT } from "./stalkBridge/stalkBridgeActions";
+
 /**
 * ## Reducers
 */
@@ -66,7 +68,7 @@ export function getInitialState() {
 }
 
 export const rootReducer = (state, action) => {
-    if (state.authReducer.state === LOG_OUT_SUCCESS) {
+    if (state.authReducer.state === LOG_OUT_SUCCESS || state.stalkReducer.state == STALK_ON_SOCKET_RECONNECT) {
         state = getInitialState();
     }
 

@@ -229,7 +229,7 @@ function sendMessageResponse(err, res) {
         else {
             console.log("server response!", res);
 
-            if (res.data.hasOwnProperty("resultMsg")) {
+            if (res.code == HTTPStatus.success && res.data.hasOwnProperty("resultMsg")) {
                 let _msg = { ...res.data.resultMsg } as IMessage;
                 if (_msg.type === ContentType[ContentType.Text] && config.appConfig.encryption) {
                     secure.decryption(_msg.body).then(res => {
@@ -246,7 +246,7 @@ function sendMessageResponse(err, res) {
                 }
             }
             else {
-                dispatch(send_message_failure(res.body));
+                dispatch(send_message_failure(res.message));
             }
         }
     };

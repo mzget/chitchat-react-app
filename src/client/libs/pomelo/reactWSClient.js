@@ -232,7 +232,7 @@ export default class WebSocketClient {
         console.log("onSocketOpen:", event.type);
         pomelo.emit("onopen", event);
         if (!!reconnect) {
-            pomelo.emit("reconnect");
+            pomelo.emit("reconnect", event);
         }
         reset();
         let obj = Package.encode(Package.TYPE_HANDSHAKE, Protocol.strencode(JSON.stringify(handshakeBuffer)));

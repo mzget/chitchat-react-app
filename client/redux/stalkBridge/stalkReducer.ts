@@ -49,8 +49,8 @@ export function stalkReducer(state = initialState, action) {
         case StalkBridgeActions.STALK_ON_SOCKET_DISCONNECTED: {
             return state.set("state", StalkBridgeActions.STALK_CONNECTION_PROBLEM);
         }
-        case StalkBridgeActions.STALK_ON_SOCKET_OPEN: {
-            return state.set("state", StalkBridgeActions.STALK_INIT_SUCCESS);
+        case StalkBridgeActions.STALK_ON_SOCKET_RECONNECT: {
+            return state.set("state", StalkBridgeActions.STALK_ON_SOCKET_RECONNECT);
         }
 
         case StalkNotificationActions.STALK_NOTICE_NEW_MESSAGE: {

@@ -214,7 +214,7 @@ function sendMessageResponse(err, res) {
         }
         else {
             console.log("server response!", res);
-            if (res.data.hasOwnProperty("resultMsg")) {
+            if (res.code == httpStatusCode_1.default.success && res.data.hasOwnProperty("resultMsg")) {
                 let _msg = Object.assign({}, res.data.resultMsg);
                 if (_msg.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text] && config_1.default.appConfig.encryption) {
                     secure.decryption(_msg.body).then(res => {
@@ -231,7 +231,7 @@ function sendMessageResponse(err, res) {
                 }
             }
             else {
-                dispatch(send_message_failure(res.body));
+                dispatch(send_message_failure(res.message));
             }
         }
     };

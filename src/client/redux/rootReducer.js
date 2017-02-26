@@ -12,6 +12,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const redux_1 = require("redux");
 const react_router_redux_1 = require("react-router-redux");
+const stalkBridgeActions_1 = require("./stalkBridge/stalkBridgeActions");
 /**
 * ## Reducers
 */
@@ -63,7 +64,7 @@ function getInitialState() {
 }
 exports.getInitialState = getInitialState;
 exports.rootReducer = (state, action) => {
-    if (state.authReducer.state === authRx_1.LOG_OUT_SUCCESS) {
+    if (state.authReducer.state === authRx_1.LOG_OUT_SUCCESS || state.stalkReducer.state == stalkBridgeActions_1.STALK_ON_SOCKET_RECONNECT) {
         state = getInitialState();
     }
     return appReducer(state, action);
