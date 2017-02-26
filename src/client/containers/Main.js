@@ -43,8 +43,9 @@ class Main extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer } = nextProps;
+        let warning_bar = document.getElementById("warning_bar");
         this.headerHeight = document.getElementById("toolbar").clientHeight;
-        this.subHeaderHeight = (document.getElementById("warning_bar")) ? document.getElementById("warning_bar").clientHeight : 0;
+        this.subHeaderHeight = (warning_bar) ? warning_bar.clientHeight : 0;
         this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight));
         switch (userReducer.state) {
             case userRx.FETCH_USER_SUCCESS: {

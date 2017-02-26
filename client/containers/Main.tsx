@@ -55,8 +55,10 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
             userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer
         } = nextProps;
 
+        let warning_bar = document.getElementById("warning_bar");
+
         this.headerHeight = document.getElementById("toolbar").clientHeight;
-        this.subHeaderHeight = (document.getElementById("warning_bar")) ? document.getElementById("warning_bar").clientHeight : 0;
+        this.subHeaderHeight = (warning_bar) ? warning_bar.clientHeight : 0;
         this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight));
 
         switch (userReducer.state) {

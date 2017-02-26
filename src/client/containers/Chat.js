@@ -27,7 +27,7 @@ class Chat extends React.Component {
         this.clientWidth = document.documentElement.clientWidth;
         this.clientHeight = document.documentElement.clientHeight;
         this.h_header = null;
-        this.h_subHeader = null;
+        this.h_subHeader = 34;
         this.h_body = null;
         this.h_typingArea = null;
         this.bottom = this.clientHeight * 0.1;
@@ -68,11 +68,12 @@ class Chat extends React.Component {
         this.props.dispatch(chatroomActions.leaveRoomAction());
     }
     componentWillReceiveProps(nextProps) {
-        let { chatroomReducer } = nextProps;
+        let { chatroomReducer, stalkReducer } = nextProps;
+        let warning_bar = document.getElementById("warning_bar");
+        let typing_box = document.getElementById("typing_box");
         this.h_header = document.getElementById("toolbar").clientHeight;
-        this.h_subHeader = document.getElementById("warning_bar").clientHeight;
-        this.h_typingArea = document.getElementById("typing_box").clientHeight;
-        // this.h_typingArea = document.getElementById("sticker_box").clientHeight;
+        this.h_typingArea = typing_box.clientHeight;
+        this.h_subHeader = (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
         switch (chatroomReducer.state) {
             case chatroomActions.JOIN_ROOM_FAILURE: {
@@ -284,11 +285,11 @@ class Chat extends React.Component {
         this.props.router.goBack();
     }
     render() {
-        let { chatroomReducer } = this.props;
+        let { chatroomReducer, stalkReducer } = this.props;
         return (React.createElement("div", { style: { overflowY: "hidden" } },
             React.createElement("div", { style: { height: this.h_header }, id: "toolbar" },
                 React.createElement(SimpleToolbar_1.default, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty", menus: this.toolbarMenus, onSelectedMenuItem: (id, value) => console.log(value), onBackPressed: this.onBackPressed })),
-            (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
+            (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                 React.createElement(WarningBar_1.WarningBar, null) : null,
             React.createElement("div", { style: { height: this.h_body, overflowY: "auto", backgroundColor: Colors.indigo50 }, id: "app_body" },
                 React.createElement(reflexbox_1.Flex, { flexColumn: true },

@@ -39,7 +39,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     clientWidth = document.documentElement.clientWidth;
     clientHeight = document.documentElement.clientHeight;
     h_header = null;
-    h_subHeader = null;
+    h_subHeader = 34;
     h_body = null;
     h_typingArea = null;
     bottom = this.clientHeight * 0.1;
@@ -79,12 +79,13 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let { chatroomReducer } = nextProps;
+        let { chatroomReducer, stalkReducer } = nextProps;
 
+        let warning_bar = document.getElementById("warning_bar");
+        let typing_box = document.getElementById("typing_box");
         this.h_header = document.getElementById("toolbar").clientHeight;
-        this.h_subHeader = document.getElementById("warning_bar").clientHeight;
-        this.h_typingArea = document.getElementById("typing_box").clientHeight;
-        // this.h_typingArea = document.getElementById("sticker_box").clientHeight;
+        this.h_typingArea = typing_box.clientHeight;
+        this.h_subHeader = (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
 
         switch (chatroomReducer.state) {
@@ -366,7 +367,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     render(): JSX.Element {
-        let { chatroomReducer } = this.props;
+        let { chatroomReducer, stalkReducer } = this.props;
 
         return (
             <div style={{ overflowY: "hidden" }}>
@@ -378,7 +379,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                         onBackPressed={this.onBackPressed} />
                 </div>
                 {
-                    (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
+                    (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                         <WarningBar /> : null
                 }
                 <div style={{ height: this.h_body, overflowY: "auto", backgroundColor: Colors.indigo50 }} id={"app_body"}>
