@@ -11,6 +11,7 @@ const { ObjectID } = mongodb;
 export const checkedCanAccessRoom = (roomId: string, userId: string, callback: (err: Error, res: boolean) => void) => {
     getRoom(roomId, (err, room) => {
         let result: boolean = false;
+        console.log(err, room, result);
         if (err || !room) {
             console.error("getRoom fail", err);
             callback(null, result);

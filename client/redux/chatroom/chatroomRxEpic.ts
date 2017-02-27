@@ -31,7 +31,7 @@ export const getPrivateChatRoomEpic = action$ => action$.ofType(FETCH_PRIVATE_CH
     }))
     .map(json => fetchPrivateChatRoomSuccess(json.response))
     .takeUntil(action$.ofType(FETCH_PRIVATE_CHATROOM_CANCELLED))
-    .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.xhr.response)));
+    .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.xhr.response.message)));
 
 const CREATE_PRIVATE_CHATROOM = "CREATE_PRIVATE_CHATROOM";
 export const CREATE_PRIVATE_CHATROOM_SUCCESS = "CREATE_PRIVATE_CHATROOM_SUCCESS";

@@ -48,7 +48,12 @@ router.post("/", function (req, res, next) {
     let roomId = hexCode.slice(0, 24);
 
     RoomService.getRoom(roomId, (err, room) => {
-        res.status(200).json(new apiUtils.ApiResponse(true, null, [room]));
+        if (err) {
+            res.status(500).json(new apiUtils.ApiResponse(false, err));
+        }
+        else {
+            res.status(200).json(new apiUtils.ApiResponse(true, null, [room]));
+        }
     });
 });
 
