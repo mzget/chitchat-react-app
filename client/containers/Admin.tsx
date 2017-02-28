@@ -7,7 +7,7 @@ import Subheader from "material-ui/Subheader";
 import { IComponentProps } from "../utils/IComponentProps";
 
 import SimpleToolbar from "../components/SimpleToolbar";
-import { AdminMenu } from "./admins/AdminMenu";
+import { MenuListview } from "../components/MenuListView";
 import ManageOrgChartBox from "./admins/ManageOrgChartBox";
 import CreateGroupBox, { createOrgGroup, createPjbGroup, createPvGroup } from "./admins/CreateGroupBox";
 import { TeamMemberBox } from "./admins/TeamMemberBox";
@@ -31,7 +31,6 @@ interface IComponentNameState {
 class Admin extends React.Component<IComponentProps, IComponentNameState> {
     alertTitle = "";
     alertMessage = "";
-
     manageOrgChart: string = "Manage ORG Chart";
     teamMember: string = "team-member";
     menus = [this.manageOrgChart, createOrgGroup, createPjbGroup, createPvGroup, this.teamMember];
@@ -140,7 +139,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             case BoxState.isManageMember:
                 return <TeamMemberBox {...this.props} onError={this.onAlert} />;
             default:
-                return <AdminMenu menus={this.menus} onSelectItem={this.onAdminMenuSelected} />;
+                return <MenuListview menus={this.menus} onSelectItem={this.onAdminMenuSelected} />;
         }
     }
 

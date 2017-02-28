@@ -23,7 +23,9 @@ const FileType = require("../../server/scripts/FileType");
 class Chat extends React.Component {
     constructor() {
         super(...arguments);
-        this.toolbarMenus = ["Favorite"];
+        this.settings = "Settings";
+        this.favorite = "Favorite";
+        this.toolbarMenus = [this.settings, this.favorite];
         this.clientWidth = document.documentElement.clientWidth;
         this.clientHeight = document.documentElement.clientHeight;
         this.h_header = null;
@@ -55,6 +57,7 @@ class Chat extends React.Component {
         this.roomInitialize = this.roomInitialize.bind(this);
         this.onToggleSticker = this.onToggleSticker.bind(this);
         this.onBackPressed = this.onBackPressed.bind(this);
+        this.onMenuSelect = this.onMenuSelect.bind(this);
         let { chatroomReducer, userReducer, params } = this.props;
         if (!chatroomReducer.room) {
             this.props.dispatch(chatroomActions.getPersistendChatroom(params.filter));
@@ -95,10 +98,6 @@ class Chat extends React.Component {
                 break;
             }
             case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
-                this.props.router.push(`/`);
-                break;
-            }
-            case chatroomActions.LEAVE_ROOM: {
                 this.props.router.push(`/`);
                 break;
             }
@@ -295,11 +294,18 @@ class Chat extends React.Component {
     onBackPressed() {
         this.props.router.goBack();
     }
+    onMenuSelect(id, value) {
+        let { chatroomReducer } = this.props;
+        console.log(id, value);
+        if (this.toolbarMenus[id] == this.settings) {
+            this.props.router.push(`/roomSettings/${chatroomReducer.room._id}`);
+        }
+    }
     render() {
         let { chatroomReducer, stalkReducer } = this.props;
         return (React.createElement("div", { style: { overflowY: "hidden" } },
             React.createElement("div", { style: { height: this.h_header }, id: "toolbar" },
-                React.createElement(SimpleToolbar_1.default, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty", menus: this.toolbarMenus, onSelectedMenuItem: (id, value) => console.log(value), onBackPressed: this.onBackPressed })),
+                React.createElement(SimpleToolbar_1.default, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty", menus: this.toolbarMenus, onSelectedMenuItem: this.onMenuSelect, onBackPressed: this.onBackPressed })),
             (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                 React.createElement(WarningBar_1.WarningBar, null) : null,
             React.createElement("div", { style: { height: this.h_body, overflowY: "auto", backgroundColor: Colors.indigo50 }, id: "app_body" },

@@ -4,7 +4,7 @@ const React = require("react");
 const react_redux_1 = require("react-redux");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
-const AdminMenu_1 = require("./admins/AdminMenu");
+const MenuListView_1 = require("../components/MenuListView");
 const ManageOrgChartBox_1 = require("./admins/ManageOrgChartBox");
 const CreateGroupBox_1 = require("./admins/CreateGroupBox");
 const TeamMemberBox_1 = require("./admins/TeamMemberBox");
@@ -120,7 +120,7 @@ class Admin extends React.Component {
             case BoxState.isManageMember:
                 return React.createElement(TeamMemberBox_1.TeamMemberBox, Object.assign({}, this.props, { onError: this.onAlert }));
             default:
-                return React.createElement(AdminMenu_1.AdminMenu, { menus: this.menus, onSelectItem: this.onAdminMenuSelected });
+                return React.createElement(MenuListView_1.MenuListview, { menus: this.menus, onSelectItem: this.onAdminMenuSelected });
         }
     }
     render() {

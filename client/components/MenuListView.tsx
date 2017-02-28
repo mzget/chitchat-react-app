@@ -12,6 +12,7 @@ import Subheader from "material-ui/Subheader";
 interface IComponentProps {
     menus: string[];
     onSelectItem: (key: string) => void;
+    title?: string;
 }
 
 const getItem = (props: IComponentProps) => {
@@ -24,10 +25,12 @@ const getItem = (props: IComponentProps) => {
     );
 };
 
-export const AdminMenu = (props: IComponentProps) => (
+export const MenuListview = (props: IComponentProps) => (
     <MuiThemeProvider >
         <div>
-            <Subheader>Menus</Subheader>
+            {
+                (props.title) ? <Subheader>{props.title}</Subheader> : null
+            }
             <List> {
                 (props.menus && props.menus.length > 0) ?
                     getItem(props) : null

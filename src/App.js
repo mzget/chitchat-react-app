@@ -14,6 +14,7 @@ history.listen(location => console.log(location.pathname));
 
 import Home from "./client/containers/Home";
 import Chat from "./client/containers/Chat";
+import ChatRoomSettings from "./client/containers/ChatRoomSettings";
 import Team from "./client/containers/Team";
 import Main from "./client/containers/Main";
 import Admin from "./client/containers/Admin";
@@ -25,6 +26,7 @@ class App extends Component {
                 <Router history={history}>
                     <Route path="/(:filter)" component={Home} />
                     <Route path="/chat/(:filter)" component={Chat} />
+                    <Route path="/roomSettings/(:filter)" component={ChatRoomSettings} />
                     <Route path="/team/(:filter)" component={Team} />
                     <Route path="/chatslist/(:filter)" component={Main} />
                     <Route path="/admin/(:filter)" component={Admin} />
