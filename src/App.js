@@ -26,7 +26,7 @@ class App extends Component {
                 <Router history={history}>
                     <Route path="/(:filter)" component={Home} />
                     <Route path="/chat/(:filter)" component={Chat} />
-                    <Route path="/roomSettings/(:filter)" component={ChatRoomSettings} />
+                    <Route path="/chat/:filter/:room_id" component={ChatRoomSettings} />
                     <Route path="/team/(:filter)" component={Team} />
                     <Route path="/chatslist/(:filter)" component={Main} />
                     <Route path="/admin/(:filter)" component={Admin} />

@@ -15,17 +15,18 @@ import { ChitChatAccount } from "../../../server/scripts/models/User";
 
 interface IComponentProps {
     value: Array<ChitChatAccount>;
-    onSelected: (item: ChitChatAccount) => void;
+    rightIcon?: any;
+    onSelected?: (item: ChitChatAccount) => void;
 }
 
 const renderList = (props: IComponentProps) => props.value.map((item, i) =>
     <div key={i}>
         <ListItem
-            onClick={() => props.onSelected(item)}
+            onClick={(!!props.onSelected) ? () => props.onSelected(item) : () => {}}
             leftAvatar={(!!item.avatar) ?
                 <Avatar src={item.avatar} /> : <Avatar>{item.username.charAt(0)}</Avatar>
             }
-            rightIcon={null}
+            rightIcon={(props.rightIcon) ? props.rightIcon : null}
             primaryText={item.username}
             secondaryText={
                 <p>

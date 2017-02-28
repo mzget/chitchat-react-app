@@ -298,7 +298,7 @@ class Chat extends React.Component {
         let { chatroomReducer } = this.props;
         console.log(id, value);
         if (this.toolbarMenus[id] == this.settings) {
-            this.props.router.push(`/roomSettings/${chatroomReducer.room._id}`);
+            this.props.router.push(`/chat/settings/${chatroomReducer.room._id}`);
         }
     }
     render() {
