@@ -2,12 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_redux_1 = require("react-redux");
-const FloatingActionButton_1 = require("material-ui/FloatingActionButton");
-const add_1 = require("material-ui/svg-icons/content/add");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const DialogBox_1 = require("../components/DialogBox");
 const MenuListView_1 = require("../components/MenuListView");
-const MemberList_1 = require("./chatlist/MemberList");
+const EditGroupMember_1 = require("./roomSettings/EditGroupMember");
 const EDIT_GROUP = "EDIT_GROUP";
 const GROUP_MEMBERS = "GROUP_MEMBERS";
 var BoxState;
@@ -74,8 +72,7 @@ class ChatRoomSettings extends React.Component {
     getViewPanel() {
         switch (this.state.boxState) {
             case BoxState.isEditMember:
-                return React.createElement(MemberList_1.MemberList, { onSelected: null, value: this.props.teamReducer.members, rightIcon: (React.createElement(FloatingActionButton_1.default, { mini: true, style: { marginRight: 20, marginBottom: 20 } },
-                        React.createElement(add_1.default, null))) });
+                return React.createElement(EditGroupMember_1.EditGroupMember, { members: this.props.teamReducer.members });
             default:
                 return null;
         }

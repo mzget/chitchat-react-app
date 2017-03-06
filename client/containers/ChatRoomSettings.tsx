@@ -1,14 +1,14 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import FloatingActionButton from "material-ui/FloatingActionButton";
-import ContentAdd from "material-ui/svg-icons/content/add";
+// import FloatingActionButton from "material-ui/FloatingActionButton";
+// import ContentAdd from "material-ui/svg-icons/content/add";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
 import SimpleToolbar from "../components/SimpleToolbar";
 import { DialogBox } from "../components/DialogBox";
 import { MenuListview } from "../components/MenuListView";
-import { MemberList } from "./chatlist/MemberList";
+import { EditGroupMember } from "./roomSettings/EditGroupMember";
 
 const EDIT_GROUP = "EDIT_GROUP";
 const GROUP_MEMBERS = "GROUP_MEMBERS";
@@ -99,15 +99,7 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
     getViewPanel() {
         switch (this.state.boxState) {
             case BoxState.isEditMember:
-                return <MemberList
-                    onSelected={null}
-                    value={this.props.teamReducer.members}
-                    rightIcon={
-                        (<FloatingActionButton mini={true} style={{ marginRight: 20, marginBottom: 20 }}>
-                            <ContentAdd />
-                        </FloatingActionButton>)
-                    }
-                />;
+                return <EditGroupMember members={this.props.teamReducer.members} />;
             default:
                 return null;
         }

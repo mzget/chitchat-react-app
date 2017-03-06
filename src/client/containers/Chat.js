@@ -67,7 +67,6 @@ class Chat extends React.Component {
         }
     }
     componentWillUnmount() {
-        console.log("Chat: leaveRoom");
         this.props.dispatch(chatroomActions.leaveRoomAction());
     }
     componentWillReceiveProps(nextProps) {
