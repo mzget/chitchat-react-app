@@ -92,6 +92,7 @@ class Chat extends React.Component {
         switch (chatroomReducer.state) {
             case chatroomActions.JOIN_ROOM_FAILURE: {
                 this.setState(previous => (Object.assign({}, previous, { chatDisabled: true })));
+                break;
             }
             case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
                 this.roomInitialize(nextProps);

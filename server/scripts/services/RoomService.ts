@@ -11,7 +11,6 @@ const { ObjectID } = mongodb;
 export const checkedCanAccessRoom = (roomId: string, userId: string, callback: (err: Error, res: boolean) => void) => {
     getRoom(roomId, (err, room) => {
         let result: boolean = false;
-        console.log(err, room, result);
         if (err || !room) {
             console.error("getRoom fail", err);
             callback(null, result);
@@ -60,6 +59,7 @@ export function getRoom(roomId: string, callback: (err: any, res: Room.Room) => 
             }
             else {
                 let room = JSON.parse(roomMap) as Room.Room;
+                console.log("room from cache: ", room);
                 callback(null, room);
             }
         });

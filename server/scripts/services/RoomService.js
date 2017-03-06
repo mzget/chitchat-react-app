@@ -17,7 +17,6 @@ const { ObjectID } = mongodb;
 exports.checkedCanAccessRoom = (roomId, userId, callback) => {
     getRoom(roomId, (err, room) => {
         let result = false;
-        console.log(err, room, result);
         if (err || !room) {
             console.error("getRoom fail", err);
             callback(null, result);
@@ -61,6 +60,7 @@ function getRoom(roomId, callback) {
             }
             else {
                 let room = JSON.parse(roomMap);
+                console.log("room from cache: ", room);
                 callback(null, room);
             }
         });

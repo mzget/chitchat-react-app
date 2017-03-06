@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
+import FloatingActionButton from "material-ui/FloatingActionButton";
+import ContentAdd from "material-ui/svg-icons/content/add";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
@@ -35,6 +35,8 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
         this.closeAlert = this.closeAlert.bind(this);
         this.onMenuSelected = this.onMenuSelected.bind(this);
         this.getViewPanel = this.getViewPanel.bind(this);
+
+        console.log("ChatRoomSettings", this.props);
     }
 
     componentDidMount() {

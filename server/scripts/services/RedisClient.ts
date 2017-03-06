@@ -1,4 +1,5 @@
 import redis = require("redis");
+import bluebird = require("bluebird");
 import { Config } from "../../config";
 
 export enum RedisStatus {
@@ -19,6 +20,9 @@ RedisClient.on("error", function (err) {
     console.error("redis Error " + err);
     redisStatus = RedisStatus.error;
 });
+
+bluebird.promisifyAll(RedisClient);
+// bluebird.promisifyAll(redis.Multi.prototype);
 
 export default RedisClient;
 

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const api_master = "http://git.animation-genius.com:9000";
-const api_dev = "http://192.168.2.253:9000";
+const api_dev = "http://localhost:9000";
 const rest_api = (host) => ({
     apiKey: "chitchat1234",
     host: `${host}`,
@@ -16,10 +16,10 @@ const rest_api = (host) => ({
 });
 const devConfig = {
     Stalk: {
-        chat: "192.168.2.253",
+        chat: "localhost",
         port: "3010",
         api: {
-            user: "http://192.168.2.253:9000/api/stalk/user"
+            user: "http://git.animation-genius.com:9000/api/stalk/user"
         }
     },
     appConfig: {

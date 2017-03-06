@@ -34,6 +34,7 @@ class ChatRoomSettings extends React.Component {
         this.closeAlert = this.closeAlert.bind(this);
         this.onMenuSelected = this.onMenuSelected.bind(this);
         this.getViewPanel = this.getViewPanel.bind(this);
+        console.log("ChatRoomSettings", this.props);
     }
     componentDidMount() {
     }

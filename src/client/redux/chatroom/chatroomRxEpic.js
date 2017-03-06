@@ -8,6 +8,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const chatRoomComponent_1 = require("../../chats/chatRoomComponent");
 const configureStore_1 = require("../configureStore");
 const config_1 = require("../../configs/config");
+const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 exports.FETCH_PRIVATE_CHATROOM = "FETCH_PRIVATE_CHATROOM";
@@ -58,10 +59,10 @@ const GET_PERSISTEND_MESSAGE = "GET_PERSISTEND_MESSAGE";
 const GET_PERSISTEND_MESSAGE_CANCELLED = "GET_PERSISTEND_MESSAGE_CANCELLED";
 const GET_PERSISTEND_MESSAGE_SUCCESS = "GET_PERSISTEND_MESSAGE_SUCCESS";
 const GET_PERSISTEND_MESSAGE_FAILURE = "GET_PERSISTEND_MESSAGE_FAILURE";
+exports.getPersistendMessage = redux_actions_1.createAction(GET_PERSISTEND_MESSAGE, currentRid => currentRid);
 const getPersistendMessage_cancel = () => ({ type: GET_PERSISTEND_MESSAGE_CANCELLED });
-const getPersistendMessage_success = (payload) => ({ type: GET_PERSISTEND_MESSAGE_SUCCESS, payload: payload });
+const getPersistendMessage_success = redux_actions_1.createAction(GET_PERSISTEND_MESSAGE_SUCCESS, payload => payload);
 const getPersistendMessage_failure = (error) => ({ type: GET_PERSISTEND_MESSAGE_FAILURE, payload: error });
-exports.getPersistendMessage = (currentRid) => ({ type: GET_PERSISTEND_MESSAGE, payload: currentRid });
 exports.getPersistendMessageEpic = action$ => {
     return action$.ofType(GET_PERSISTEND_MESSAGE)
         .mergeMap(action => chatRoomComponent_1.default.getInstance().getPersistentMessage(action.payload))
