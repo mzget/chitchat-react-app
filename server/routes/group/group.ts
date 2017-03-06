@@ -291,6 +291,32 @@ router.post("/private_chat/create", function (req, res, next) {
     });
 });
 
+/**
+ * edit group member...
+ */
+router.post("/editMember/:room_id", (req, res, next) => {
+    req.checkParams("room_id", "request for room_id as params").notEmpty();
+    req.checkBody("members", "request for members array as body object").isByteLength(0);
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let room_id = req.params.room_id as string;
+    let members = req.body.members as Array<IMember>;
+
+    if (Array.isArray(members)) {
+        GroupController.editMember(room_id, members).then((result) => {
+            res.status(200).json(new apiUtils.ApiResponse(true, null, result));
+        }).catch(err => {
+            res.status(500).json(new apiUtils.ApiResponse(false, "edit member fail!"));
+        });
+    }
+    else {
+        res.status(500).json(new apiUtils.ApiResponse(false, "request for members fields as array"));
+    }
+});
 
 function pushNewRoomAccessToNewMembers(rid: string, targetMembers: Array<IMember>) {
     let memberIds = new Array<string>();
