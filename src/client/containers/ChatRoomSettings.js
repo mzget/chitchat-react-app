@@ -6,6 +6,7 @@ const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const DialogBox_1 = require("../components/DialogBox");
 const MenuListView_1 = require("../components/MenuListView");
 const EditGroupMember_1 = require("./roomSettings/EditGroupMember");
+const chatroomActions = require("../redux/chatroom/chatroomActions");
 const EDIT_GROUP = "EDIT_GROUP";
 const GROUP_MEMBERS = "GROUP_MEMBERS";
 var BoxState;
@@ -32,9 +33,10 @@ class ChatRoomSettings extends React.Component {
         this.closeAlert = this.closeAlert.bind(this);
         this.onMenuSelected = this.onMenuSelected.bind(this);
         this.getViewPanel = this.getViewPanel.bind(this);
-        console.log("ChatRoomSettings", this.props);
     }
     componentDidMount() {
+        let { params } = this.props;
+        this.props.dispatch(chatroomActions.getPersistendChatroom(params.room_id));
     }
     componentWillReceiveProps(nextProps) {
     }
@@ -70,9 +72,10 @@ class ChatRoomSettings extends React.Component {
         }
     }
     getViewPanel() {
+        let { params } = this.props;
         switch (this.state.boxState) {
             case BoxState.isEditMember:
-                return React.createElement(EditGroupMember_1.EditGroupMember, { members: this.props.teamReducer.members });
+                return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: this.props.teamReducer.members, room_id: params.room_id });
             default:
                 return null;
         }

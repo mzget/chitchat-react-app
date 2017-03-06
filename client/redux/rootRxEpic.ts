@@ -8,6 +8,7 @@ import * as teamRx from "./team/teamRx";
 import * as adminRx from "./admin/adminRx";
 import * as groupRx from "./group/groupRx";
 import * as privateGroupRxActions from "./group/privateGroupRxActions";
+import * as editGroupRxActions from "./group/editGroupRxActions";
 
 export const rootEpic = combineEpics(
     // @Admin
@@ -37,6 +38,7 @@ export const rootEpic = combineEpics(
     ///@Group
     groupRx.getOrgGroup_Epic,
     groupRx.createOrgGroup_Epic,
+    editGroupRxActions.editGroupMember_Epic,
 
     /**
      * Private group...

@@ -8,7 +8,9 @@ import { IComponentProps } from "../utils/IComponentProps";
 import SimpleToolbar from "../components/SimpleToolbar";
 import { DialogBox } from "../components/DialogBox";
 import { MenuListview } from "../components/MenuListView";
-import { EditGroupMember } from "./roomSettings/EditGroupMember";
+import { ConnectEditGroupMember } from "./roomSettings/EditGroupMember";
+
+import * as chatroomActions from "../redux/chatroom/chatroomActions";
 
 const EDIT_GROUP = "EDIT_GROUP";
 const GROUP_MEMBERS = "GROUP_MEMBERS";
@@ -35,12 +37,11 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
         this.closeAlert = this.closeAlert.bind(this);
         this.onMenuSelected = this.onMenuSelected.bind(this);
         this.getViewPanel = this.getViewPanel.bind(this);
-
-        console.log("ChatRoomSettings", this.props);
     }
 
     componentDidMount() {
-
+        let { params } = this.props;
+        this.props.dispatch(chatroomActions.getPersistendChatroom(params.room_id));
     }
 
     componentWillReceiveProps(nextProps) {
@@ -97,9 +98,11 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
     }
 
     getViewPanel() {
+        let { params } = this.props;
+
         switch (this.state.boxState) {
             case BoxState.isEditMember:
-                return <EditGroupMember members={this.props.teamReducer.members} />;
+                return <ConnectEditGroupMember teamMembers={this.props.teamReducer.members} room_id={params.room_id} />;
             default:
                 return null;
         }

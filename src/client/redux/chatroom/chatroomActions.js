@@ -301,7 +301,7 @@ const GET_PERSISTEND_CHATROOM_CANCELLED = "GET_PERSISTEND_CHATROOM_CANCELLED";
 exports.GET_PERSISTEND_CHATROOM_SUCCESS = "GET_PERSISTEND_CHATROOM_SUCCESS";
 exports.GET_PERSISTEND_CHATROOM_FAILURE = "GET_PERSISTEND_CHATROOM_FAILURE";
 const getPersistChatroomFail = () => ({ type: exports.GET_PERSISTEND_CHATROOM_FAILURE });
-const getPersistChatroomSuccess = (roomInfo) => ({ type: exports.GET_PERSISTEND_CHATROOM_SUCCESS, payload: roomInfo });
+const getPersistChatroomSuccess = redux_actions_1.createAction(exports.GET_PERSISTEND_CHATROOM_SUCCESS, (roomInfo) => roomInfo);
 exports.getPersistendChatroom = (roomId) => (dispatch => {
     dispatch({ type: GET_PERSISTEND_CHATROOM, payload: roomId });
     const dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;

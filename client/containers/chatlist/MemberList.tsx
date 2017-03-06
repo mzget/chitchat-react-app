@@ -18,7 +18,7 @@ interface IComponentProps {
     value: Array<ChitChatAccount>;
     rightIcon?: any;
     rightToggle?: boolean;
-    onToggleItem?: (item: ChitChatAccount, checked: boolean);
+    onToggleItem?: (item: ChitChatAccount, checked: boolean) => void;
     onSelected?: (item: ChitChatAccount) => void;
 }
 

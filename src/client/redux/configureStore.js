@@ -19,13 +19,10 @@ const redux_1 = require("redux");
 const redux_thunk_1 = require("redux-thunk");
 const redux_observable_1 = require("redux-observable");
 const createLogger = require("redux-logger");
-const react_router_redux_1 = require("react-router-redux");
-const react_router_1 = require("react-router");
 const rootReducer = require("./rootReducer");
 const rootRxEpic = require("./rootRxEpic");
 const epicMiddleware = redux_observable_1.createEpicMiddleware(rootRxEpic.rootEpic);
-const routingMiddleware = react_router_redux_1.routerMiddleware(react_router_1.browserHistory);
-const middlewares = [redux_thunk_1.default, epicMiddleware, routingMiddleware];
+const middlewares = [redux_thunk_1.default, epicMiddleware];
 if (process.env.NODE_ENV === `development`) {
     const logger = createLogger();
     middlewares.push(logger);
