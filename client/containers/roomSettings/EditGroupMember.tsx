@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { Flex, Box } from "reflexbox";
-import { withProps, withState, withHandlers, compose, flattenProp } from "recompose";
+import { withProps, withState, withHandlers, compose, lifecycle } from "recompose";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
@@ -11,10 +11,23 @@ import { MemberList } from "../chatlist/MemberList";
 
 import * as editGroupRxActions from "../../redux/group/editGroupRxActions";
 
+interface IComponentProps {
+    members: Array<any>;
+    teamMembers: Array<any>;
+    room_id: string;
+    updateMembers;
+    onSubmit;
+    dispatch;
+}
 const enhance = compose(
     withState("members", "updateMembers", []),
+    lifecycle({
+        componentWillMount() {
+            this.props.updateMembers(member => this.props.initMembers);
+        }
+    }),
     withHandlers({
-        updateMembers: (props: IComponentProps) => (item, checked) => {
+        onToggleItem: (props: IComponentProps) => (item, checked) => {
             if (checked) {
                 props.members.push(item);
             }
@@ -28,27 +41,17 @@ const enhance = compose(
             let payload = { room_id: props.room_id, members: props.members };
             props.dispatch(editGroupRxActions.editGroupMember(payload));
         }
-    }),
-    flattenProp("teamMembers"),
-    flattenProp("room_id")
+    })
 );
-interface IComponentProps {
-    teamMembers: Array<any>;
-    room_id: string;
-    members: Array<any>;
-    updateMembers;
-    onSubmit;
-    dispatch;
-}
 
-const EditGroupMember = enhance(({ members, updateMembers, onSubmit, teamMembers, room_id }) =>
+const EditGroupMember = enhance(({ onToggleItem, onSubmit, teamMembers, room_id, initMembers }) =>
     <MuiThemeProvider>
         <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align="center">
             <MemberList
                 onSelected={null}
                 value={teamMembers}
                 rightToggle={true}
-                onToggleItem={updateMembers}
+                onToggleItem={onToggleItem}
             />
             <RaisedButton label="Submit" primary={true} onClick={onSubmit} />
         </Flex>

@@ -72,10 +72,10 @@ class ChatRoomSettings extends React.Component {
         }
     }
     getViewPanel() {
-        let { params } = this.props;
+        let { params, teamReducer, chatroomReducer } = this.props;
         switch (this.state.boxState) {
             case BoxState.isEditMember:
-                return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: this.props.teamReducer.members, room_id: params.room_id });
+                return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: teamReducer.members, room_id: params.room_id, initMembers: chatroomReducer.room.members });
             default:
                 return null;
         }

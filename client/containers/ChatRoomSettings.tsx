@@ -98,11 +98,14 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
     }
 
     getViewPanel() {
-        let { params } = this.props;
+        let { params, teamReducer, chatroomReducer } = this.props;
 
         switch (this.state.boxState) {
             case BoxState.isEditMember:
-                return <ConnectEditGroupMember teamMembers={this.props.teamReducer.members} room_id={params.room_id} />;
+                return <ConnectEditGroupMember
+                    teamMembers={teamReducer.members}
+                    room_id={params.room_id}
+                    initMembers={chatroomReducer.room.members} />;
             default:
                 return null;
         }

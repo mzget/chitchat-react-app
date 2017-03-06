@@ -15,13 +15,13 @@ const editGroupMemberFailure = redux_actions_1.createAction(EDIT_GROUP_MEMBER_FA
 const editGroupMemberCancelled = redux_actions_1.createAction(EDIT_GROUP_MEMBER_CANCELLED);
 exports.editGroupMember_Epic = action$ => (action$.ofType(EDIT_GROUP_MEMBER).mergeMap(action => ajax({
     method: "POST",
-    url: `${config_1.default.api.group}/org/create`,
-    body: JSON.stringify({ room: action.payload }),
+    url: `${config_1.default.api.group}/editMember/${action.payload.room_id}`,
+    body: JSON.stringify({ members: action.payload.members }),
     headers: {
         "Content-Type": "application/json",
         "x-access-token": configureStore_1.default.getState().authReducer.token
     }
-}).map(response => editGroupMemberSuccess(response))
+}).map(response => editGroupMemberSuccess(response.xhr.response))
     .takeUntil(action$.ofType(EDIT_GROUP_MEMBER_CANCELLED))
     .catch(error => Rx.Observable.of(editGroupMemberFailure(error.xhr.response)))
     .do(response => {

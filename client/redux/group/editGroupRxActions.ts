@@ -19,13 +19,13 @@ export const editGroupMember_Epic = action$ => (
     action$.ofType(EDIT_GROUP_MEMBER).mergeMap(action =>
         ajax({
             method: "POST",
-            url: `${config.api.group}/org/create`,
-            body: JSON.stringify({ room: action.payload }),
+            url: `${config.api.group}/editMember/${action.payload.room_id}`,
+            body: JSON.stringify({ members: action.payload.members }),
             headers: {
                 "Content-Type": "application/json",
                 "x-access-token": Store.getState().authReducer.token
             }
-        }).map(response => editGroupMemberSuccess(response))
+        }).map(response => editGroupMemberSuccess(response.xhr.response))
             .takeUntil(action$.ofType(EDIT_GROUP_MEMBER_CANCELLED))
             .catch(error => Rx.Observable.of(editGroupMemberFailure(error.xhr.response)))
             .do(response => {
