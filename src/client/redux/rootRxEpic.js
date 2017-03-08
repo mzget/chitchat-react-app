@@ -18,7 +18,7 @@ authRx.signupUserEpic, authRx.authUserEpic, authRx.tokenAuthUserEpic, authRx.log
 ///@Teams
 teamRx.fetchUserTeamsEpic, teamRx.createNewTeamEpic, teamRx.getTeamsInfoEpic, teamRx.getTeamMembersEpic, teamRx.findTeamEpic, teamRx.joinTeamEpic, 
 ///@Group
-groupRx.getOrgGroup_Epic, groupRx.createOrgGroup_Epic, editGroupRxActions.editGroupMember_Epic, 
+groupRx.getOrgGroup_Epic, groupRx.createOrgGroup_Epic, groupRx.uploadGroupImage_Epic, editGroupRxActions.editGroupMember_Epic, 
 /**
  * Private group...
  */

@@ -61,6 +61,14 @@ export const groupReducer = (state = new GroupInitState(), action) => {
                 .set("error", action.payload.message);
         }
 
+        case groupRx.UPLOAD_GROUP_IMAGE_SUCCESS: {
+            return state;
+        }
+        case groupRx.UPLOAD_GROUP_IMAGE_FAILURE: {
+            return state.set("state", groupRx.UPLOAD_GROUP_IMAGE_FAILURE)
+                .set("error", action.payload.message);
+        }
+
         case groupRx.GROUP_RX_EMPTY_STATE: {
             return state.set("state", groupRx.GROUP_RX_EMPTY_STATE).set("error", null);
         }

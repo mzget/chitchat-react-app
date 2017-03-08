@@ -55,6 +55,13 @@ exports.groupReducer = (state = new exports.GroupInitState(), action) => {
             return state.set("state", privateGroupRxActions.CREATE_PRIVATE_GROUP_FAILURE)
                 .set("error", action.payload.message);
         }
+        case groupRx.UPLOAD_GROUP_IMAGE_SUCCESS: {
+            return state;
+        }
+        case groupRx.UPLOAD_GROUP_IMAGE_FAILURE: {
+            return state.set("state", groupRx.UPLOAD_GROUP_IMAGE_FAILURE)
+                .set("error", action.payload.message);
+        }
         case groupRx.GROUP_RX_EMPTY_STATE: {
             return state.set("state", groupRx.GROUP_RX_EMPTY_STATE).set("error", null);
         }

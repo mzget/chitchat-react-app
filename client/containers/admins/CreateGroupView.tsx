@@ -5,6 +5,8 @@ import * as Colors from "material-ui/styles/colors";
 import { RaisedButton, TextField } from "material-ui";
 import Avatar from "material-ui/Avatar";
 
+import * as FileReaderInput from "react-file-reader-input";
+
 const styles = {
     span: {
         padding: 8
@@ -21,16 +23,17 @@ const styles = {
 interface IComponentProps {
     onSubmit: () => void;
     image?: string;
+    disabledImage?: boolean;
     group_name: string;
     onGroupNameChange: (e, text) => void;
     group_description?: string;
     onGroupDescriptionChange?: (e, text) => void;
+    onFileReaderChange?: (e, result) => void;
 }
 
 const SubmitButton = (props: IComponentProps) => (
     <RaisedButton primary={true} label="submit" onClick={props.onSubmit} ></RaisedButton>
 );
-
 
 export const CreateGroupView = (props: IComponentProps) => (comp: JSX.Element) => (
     <MuiThemeProvider>
@@ -39,11 +42,17 @@ export const CreateGroupView = (props: IComponentProps) => (comp: JSX.Element) =
                 <h3>Create Group</h3>
                 <p>Enter group informations</p>
             </Box>
-            <Avatar
-                src={props.image}
-                size={96}
-                style={styles.avatar}
-            />
+            <FileReaderInput
+                as="url"
+                id="file-input"
+                onChange={(props.onFileReaderChange) ? props.onFileReaderChange : () => { }}
+                disabled={props.disabledImage}>
+                <Avatar
+                    src={props.image}
+                    size={96}
+                    style={styles.avatar}
+                />
+            </FileReaderInput>
             <TextField
                 hintText="group name"
                 errorText="This field is required"

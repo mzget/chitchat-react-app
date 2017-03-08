@@ -62,3 +62,31 @@ export const createOrgGroup_Epic = action$ => (
 
 export const GROUP_RX_EMPTY_STATE = "GROUP_RX_EMPTY_STATE";
 export const emptyState = () => ({ type: GROUP_RX_EMPTY_STATE });
+
+export const UPLOAD_GROUP_IMAGE = "UPLOAD_GROUP_IMAGE";
+export const UPLOAD_GROUP_IMAGE_SUCCESS = "UPLOAD_GROUP_IMAGE_SUCCESS";
+export const UPLOAD_GROUP_IMAGE_FAILURE = "UPLOAD_GROUP_IMAGE_FAILURE";
+const UPLOAD_GROUP_IMAGE_CANCELLED = "UPLOAD_GROUP_IMAGE_CANCELLED";
+export const uploadGroupImage = createAction(UPLOAD_GROUP_IMAGE, file => file);
+export const uploadGroupImageFailure = createAction(UPLOAD_GROUP_IMAGE_FAILURE, error => error);
+export const uploadGroupImageSuccess = createAction(UPLOAD_GROUP_IMAGE_SUCCESS, result => result);
+export const uploadGroupImageCancelled = createAction(UPLOAD_GROUP_IMAGE_CANCELLED);
+export const uploadGroupImage_Epic = action$ => (
+    action$.ofType(UPLOAD_GROUP_IMAGE)
+        .mergeMap(action => {
+            let body = new FormData();
+            body.append("file", action.payload);
+
+            return ajax({
+                method: "POST",
+                url: `${config.api.group}/uploadImage`,
+                body: body,
+                headers: {
+                    "x-access-token": Store.getState().authReducer.token
+                }
+            });
+        })
+        .map(json => uploadGroupImageSuccess(json.response))
+        .takeUntil(action$.ofType(UPLOAD_GROUP_IMAGE_CANCELLED))
+        .catch(error => Rx.Observable.of(uploadGroupImageFailure(error.xhr.response)))
+);

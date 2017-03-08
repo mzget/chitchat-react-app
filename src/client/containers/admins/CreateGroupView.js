@@ -6,6 +6,7 @@ const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const Colors = require("material-ui/styles/colors");
 const material_ui_1 = require("material-ui");
 const Avatar_1 = require("material-ui/Avatar");
+const FileReaderInput = require("react-file-reader-input");
 const styles = {
     span: {
         padding: 8
@@ -24,7 +25,8 @@ exports.CreateGroupView = (props) => (comp) => (React.createElement(MuiThemeProv
         React.createElement(reflexbox_1.Box, { justify: "center", align: "center", p: 2 },
             React.createElement("h3", null, "Create Group"),
             React.createElement("p", null, "Enter group informations")),
-        React.createElement(Avatar_1.default, { src: props.image, size: 96, style: styles.avatar }),
+        React.createElement(FileReaderInput, { as: "url", id: "file-input", onChange: (props.onFileReaderChange) ? props.onFileReaderChange : () => { }, disabled: props.disabledImage },
+            React.createElement(Avatar_1.default, { src: props.image, size: 96, style: styles.avatar })),
         React.createElement(material_ui_1.TextField, { hintText: "group name", errorText: "This field is required", value: props.group_name, onChange: props.onGroupNameChange, onKeyDown: (e) => {
                 if (e.key === "Enter")
                     props.onSubmit();

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import * as Immutable from "immutable";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 import { CreateGroupView } from "./CreateGroupView";
@@ -22,13 +23,13 @@ interface IComponentNameState {
     groupImage: string;
     groupName: string;
     groupDescription: string;
-
     dropdownValue: number;
 };
 
 class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
 
     group = {} as Room;
+    groupImage = null as any;
 
     componentWillMount() {
         this.state = {
@@ -41,15 +42,28 @@ class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
 
         this.getView = this.getView.bind(this);
         this.onSubmitGroup = this.onSubmitGroup.bind(this);
+        this.fileReaderChange = this.fileReaderChange.bind(this);
     }
+
+    componentWillReceiveProps(nextProps) {
+        let { groupReducer } = nextProps as IComponentProps;
+
+        if (groupReducer.state == groupRx.UPLOAD_GROUP_IMAGE_FAILURE) {
+            let prev = Immutable.fromJS(this.props.groupReducer);
+            let next = Immutable.fromJS(groupReducer);
+            if (!next.equals(prev)) {
+                this.props.onError(groupReducer.error);
+            }
+        }
+    }
+
 
     onSubmitGroup() {
         console.log("submit group", this.state);
-        const {teamReducer, adminReducer: {orgCharts}, userReducer: {user} } = this.props;
+        const { teamReducer, adminReducer: { orgCharts }, userReducer: { user } } = this.props;
 
-        if (this.state.groupName.length > 0) {
+        if (this.state.groupName.length > 0 && !this.groupImage) {
             this.group.name = this.state.groupName;
-            this.group.image = this.state.groupImage;
             this.group.description = this.state.groupDescription;
             this.group.team_id = teamReducer.team._id;
 
@@ -76,9 +90,23 @@ class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
                     break;
             }
         }
+        else if (!!this.groupImage) {//this.state.groupName.length > 0 &&
+            // @Todo upload group image first...
+            // this.group.image = this.state.groupImage;
+            this.props.dispatch(groupRx.uploadGroupImage(this.groupImage));
+        }
         else {
             this.props.onError("Missing some require field");
         }
+    }
+    fileReaderChange = (e, results) => {
+        results.forEach(result => {
+            const [progressEvent, file] = result;
+
+            console.dir(file);
+            this.groupImage = file;
+            this.setState(prev => ({ ...prev, groupImage: progressEvent.target.result }));
+        });
     }
 
     getView() {
@@ -88,7 +116,8 @@ class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
             onGroupNameChange: (e, text) => this.setState(previous => ({ ...previous, groupName: text })),
             group_description: this.state.groupDescription,
             onGroupDescriptionChange: (e, text) => this.setState(previous => ({ ...previous, groupDescription: text })),
-            onSubmit: this.onSubmitGroup
+            onSubmit: this.onSubmitGroup,
+            disabledImage: true
         };
         let chart = {
             dropdownItems: this.props.adminReducer.orgCharts,
@@ -102,6 +131,8 @@ class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
             case createPjbGroup:
                 return CreateGroupView(prop)(SelectOrgChartView(chart));
             case createPvGroup:
+                prop.disabledImage = false;
+                prop.onFileReaderChange = this.fileReaderChange;
                 return CreateGroupView(prop)(null);
             default:
                 break;

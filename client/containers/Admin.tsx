@@ -34,7 +34,6 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     manageOrgChart: string = "Manage ORG Chart";
     teamMember: string = "team-member";
     menus = [this.manageOrgChart, createOrgGroup, createPjbGroup, createPvGroup, this.teamMember];
-
     componentWillMount() {
         this.state = {
             boxState: BoxState.idle,
