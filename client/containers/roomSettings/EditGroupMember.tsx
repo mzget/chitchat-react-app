@@ -16,11 +16,13 @@ import * as editGroupRxActions from "../../redux/group/editGroupRxActions";
 import { ChitChatAccount } from "../../../server/scripts/models/User";
 
 interface IComponentProps {
-    members: Array<any>;
-    teamMembers: Array<any>;
+    members: Array<ChitChatAccount>;
+    teamMembers: Array<ChitChatAccount>;
     room_id: string;
+    initMembers: Array<ChitChatAccount>;
     updateMembers;
     onSubmit;
+    onFinished: () => void;
     dispatch;
 }
 const enhance = compose(
@@ -41,15 +43,17 @@ const enhance = compose(
             }
         },
         onSubmit: (props: IComponentProps) => event => {
-            console.log(props);
             let payload = { room_id: props.room_id, members: props.members };
             props.dispatch(editGroupRxActions.editGroupMember(payload));
+
+            props.onFinished();
         }
     })
 );
 
-const EditGroupMember = enhance(({ members, updateMembers, onToggleItem, onSubmit, teamMembers, room_id, initMembers }
-    : { members: Array<ChitChatAccount>, teamMembers: Array<ChitChatAccount>, initMembers: Array<ChitChatAccount> }) =>
+const EditGroupMember = enhance(({
+     members, updateMembers, onToggleItem, onSubmit, teamMembers, room_id, initMembers, onFinished
+     }: IComponentProps) =>
     <MuiThemeProvider>
         <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align="center">
             <List> {
@@ -60,7 +64,6 @@ const EditGroupMember = enhance(({ members, updateMembers, onToggleItem, onSubmi
                                 return true;
                             }
                         });
-                        console.log(_isContain, members, item);
                         return (<div key={i}>
                             <ListItem
                                 leftAvatar={(!!item.avatar) ?

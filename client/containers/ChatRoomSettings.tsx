@@ -1,7 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-// import FloatingActionButton from "material-ui/FloatingActionButton";
-// import ContentAdd from "material-ui/svg-icons/content/add";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
@@ -105,7 +103,8 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
                 return <ConnectEditGroupMember
                     teamMembers={teamReducer.members}
                     room_id={params.room_id}
-                    initMembers={chatroomReducer.room.members} />;
+                    initMembers={chatroomReducer.room.members}
+                    onFinished={() => this.setState(prev => ({ ...prev, boxState: BoxState.idle }))} />;
             default:
                 return null;
         }

@@ -27,12 +27,12 @@ const enhance = recompose_1.compose(recompose_1.withState("members", "updateMemb
         }
     },
     onSubmit: (props) => event => {
-        console.log(props);
         let payload = { room_id: props.room_id, members: props.members };
         props.dispatch(editGroupRxActions.editGroupMember(payload));
+        props.onFinished();
     }
 }));
-const EditGroupMember = enhance(({ members, updateMembers, onToggleItem, onSubmit, teamMembers, room_id, initMembers }) => React.createElement(MuiThemeProvider_1.default, null,
+const EditGroupMember = enhance(({ members, updateMembers, onToggleItem, onSubmit, teamMembers, room_id, initMembers, onFinished }) => React.createElement(MuiThemeProvider_1.default, null,
     React.createElement(reflexbox_1.Flex, { style: { backgroundColor: Colors.indigo50 }, flexColumn: true, align: "center" },
         React.createElement(List_1.List, null,
             " ",
@@ -43,7 +43,6 @@ const EditGroupMember = enhance(({ members, updateMembers, onToggleItem, onSubmi
                             return true;
                         }
                     });
-                    console.log(_isContain, members, item);
                     return (React.createElement("div", { key: i },
                         React.createElement(List_1.ListItem, { leftAvatar: (!!item.avatar) ?
                                 React.createElement(Avatar_1.default, { src: item.avatar }) : React.createElement(Avatar_1.default, null, item.username.charAt(0)), rightToggle: React.createElement(Toggle_1.default, { onToggle: (event, isInputChecked) => {

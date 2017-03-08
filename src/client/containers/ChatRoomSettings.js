@@ -75,7 +75,7 @@ class ChatRoomSettings extends React.Component {
         let { params, teamReducer, chatroomReducer } = this.props;
         switch (this.state.boxState) {
             case BoxState.isEditMember:
-                return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: teamReducer.members, room_id: params.room_id, initMembers: chatroomReducer.room.members });
+                return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: teamReducer.members, room_id: params.room_id, initMembers: chatroomReducer.room.members, onFinished: () => this.setState(prev => (Object.assign({}, prev, { boxState: BoxState.idle }))) });
             default:
                 return null;
         }
