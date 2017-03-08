@@ -46,7 +46,7 @@ class ContactBox extends React.Component {
     render() {
         return (React.createElement("div", null,
             React.createElement(Subheader_1.default, null, "Chats"),
-            React.createElement(MemberList_1.MemberList, { value: this.props.teamReducer.members, onSelected: this.onselectMember })));
+            React.createElement(MemberList_1.MemberList, { items: this.props.teamReducer.members, onSelected: this.onselectMember })));
     }
 }
 exports.default = ContactBox;

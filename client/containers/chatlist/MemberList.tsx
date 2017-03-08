@@ -15,14 +15,14 @@ import BadgeSimple from "../../components/BadgeSimple";
 import { ChitChatAccount } from "../../../server/scripts/models/User";
 
 interface IComponentProps {
-    value: Array<ChitChatAccount>;
+    items: Array<ChitChatAccount>;
     rightIcon?: any;
     rightToggle?: boolean;
     onToggleItem?: (item: ChitChatAccount, checked: boolean) => void;
     onSelected?: (item: ChitChatAccount) => void;
 }
 
-const renderList = (props: IComponentProps) => props.value.map((item, i) =>
+const renderList = (props: IComponentProps) => props.items.map((item, i) =>
     <div key={i}>
         <ListItem
             onClick={(!!props.onSelected) ? () => props.onSelected(item) : () => { }}
@@ -35,6 +35,8 @@ const renderList = (props: IComponentProps) => props.value.map((item, i) =>
                     onToggle={(event: object, isInputChecked: boolean) => {
                         props.onToggleItem(item, isInputChecked);
                     }}
+                    disabled={true}
+                    defaultToggled={true}
                 /> : null}
             primaryText={item.username}
             secondaryText={
@@ -50,7 +52,7 @@ const renderList = (props: IComponentProps) => props.value.map((item, i) =>
 export const MemberList = (props: IComponentProps) => (
     < MuiThemeProvider >
         <List>
-            {(!!props.value) ? renderList(props) : null}
+            {(!!props.items) ? renderList(props) : null}
         </List>
     </ MuiThemeProvider >
 );
