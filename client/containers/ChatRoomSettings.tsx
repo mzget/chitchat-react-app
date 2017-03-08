@@ -7,8 +7,11 @@ import SimpleToolbar from "../components/SimpleToolbar";
 import { DialogBox } from "../components/DialogBox";
 import { MenuListview } from "../components/MenuListView";
 import { ConnectEditGroupMember } from "./roomSettings/EditGroupMember";
+import { ConnectGroupDetail } from "./roomSettings/GroupDetail";
 
 import * as chatroomActions from "../redux/chatroom/chatroomActions";
+
+import { Room } from "../../server/scripts/models/Room";
 
 const EDIT_GROUP = "EDIT_GROUP";
 const GROUP_MEMBERS = "GROUP_MEMBERS";
@@ -93,18 +96,24 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
         if (key == GROUP_MEMBERS) {
             this.setState(prevState => ({ ...prevState, boxState: BoxState.isEditMember }));
         }
+        else if (key == EDIT_GROUP) {
+            this.setState(prevState => ({ ...prevState, boxState: BoxState.isEditGroup }));
+        }
     }
 
     getViewPanel() {
         let { params, teamReducer, chatroomReducer } = this.props;
+        let { room }: { room: Room } = chatroomReducer;
 
         switch (this.state.boxState) {
             case BoxState.isEditMember:
                 return <ConnectEditGroupMember
                     teamMembers={teamReducer.members}
                     room_id={params.room_id}
-                    initMembers={chatroomReducer.room.members}
+                    initMembers={room.members}
                     onFinished={() => this.setState(prev => ({ ...prev, boxState: BoxState.idle }))} />;
+            case BoxState.isEditGroup:
+                return <ConnectGroupDetail image={room.image} group_name={room.name} group_description={room.description} />;
             default:
                 return null;
         }

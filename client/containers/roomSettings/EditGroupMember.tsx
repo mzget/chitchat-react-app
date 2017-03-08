@@ -50,7 +50,6 @@ const enhance = compose(
         }
     })
 );
-
 const EditGroupMember = enhance(({
      members, updateMembers, onToggleItem, onSubmit, teamMembers, room_id, initMembers, onFinished
      }: IComponentProps) =>

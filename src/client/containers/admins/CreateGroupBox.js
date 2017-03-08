@@ -91,7 +91,6 @@ class CreateGroupBox extends React.Component {
         }
         else if (this.state.groupName.length > 0 && !!this.groupImage) {
             // @Todo upload group image first...
-            // this.group.image = this.state.groupImage;
             this.props.dispatch(groupRx.uploadGroupImage(this.groupImage));
         }
         else {

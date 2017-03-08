@@ -6,6 +6,7 @@ const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const DialogBox_1 = require("../components/DialogBox");
 const MenuListView_1 = require("../components/MenuListView");
 const EditGroupMember_1 = require("./roomSettings/EditGroupMember");
+const GroupDetail_1 = require("./roomSettings/GroupDetail");
 const chatroomActions = require("../redux/chatroom/chatroomActions");
 const EDIT_GROUP = "EDIT_GROUP";
 const GROUP_MEMBERS = "GROUP_MEMBERS";
@@ -70,12 +71,18 @@ class ChatRoomSettings extends React.Component {
         if (key == GROUP_MEMBERS) {
             this.setState(prevState => (Object.assign({}, prevState, { boxState: BoxState.isEditMember })));
         }
+        else if (key == EDIT_GROUP) {
+            this.setState(prevState => (Object.assign({}, prevState, { boxState: BoxState.isEditGroup })));
+        }
     }
     getViewPanel() {
         let { params, teamReducer, chatroomReducer } = this.props;
+        let { room } = chatroomReducer;
         switch (this.state.boxState) {
             case BoxState.isEditMember:
-                return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: teamReducer.members, room_id: params.room_id, initMembers: chatroomReducer.room.members, onFinished: () => this.setState(prev => (Object.assign({}, prev, { boxState: BoxState.idle }))) });
+                return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: teamReducer.members, room_id: params.room_id, initMembers: room.members, onFinished: () => this.setState(prev => (Object.assign({}, prev, { boxState: BoxState.idle }))) });
+            case BoxState.isEditGroup:
+                return React.createElement(GroupDetail_1.ConnectGroupDetail, { image: room.image, group_name: room.name, group_description: room.description });
             default:
                 return null;
         }
