@@ -6,6 +6,7 @@ import { IComponentProps } from "../../utils/IComponentProps";
 import { CreateGroupView } from "./CreateGroupView";
 import { SelectOrgChartView } from "./SelectOrgChartView";
 
+import config from "../../configs/config";
 import { Room, RoomType, RoomStatus, IMember, MemberRole } from "../../../server/scripts/models/Room";
 import { IOrgChart } from "../../../server/scripts/models/OrgChart";
 
@@ -43,6 +44,7 @@ class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
         this.getView = this.getView.bind(this);
         this.onSubmitGroup = this.onSubmitGroup.bind(this);
         this.fileReaderChange = this.fileReaderChange.bind(this);
+        this.submit = this.submit.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -55,42 +57,54 @@ class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
                 this.props.onError(groupReducer.error);
             }
         }
-    }
-
-
-    onSubmitGroup() {
-        console.log("submit group", this.state);
-        const { teamReducer, adminReducer: { orgCharts }, userReducer: { user } } = this.props;
-
-        if (this.state.groupName.length > 0 && !this.groupImage) {
-            this.group.name = this.state.groupName;
-            this.group.description = this.state.groupDescription;
-            this.group.team_id = teamReducer.team._id;
-
-            switch (this.props.groupType) {
-                case createOrgGroup:
-                    this.group.type = RoomType.organizationGroup;
-                    this.group.org_chart_id = (orgCharts.length > 0) ? orgCharts[this.state.dropdownValue]._id : null;
-
-                    this.props.dispatch(groupRx.createOrgGroup(this.group));
-                    break;
-                case createPvGroup:
-                    let member = {
-                        _id: user._id,
-                        room_role: MemberRole.owner,
-                        username: user.username
-                    } as IMember;
-                    this.group.type = RoomType.privateGroup;
-                    this.group.members = new Array(member);
-
-                    this.props.dispatch(privateGroupRx.createPrivateGroup(this.group));
-
-                    break;
-                default:
-                    break;
+        else if (groupReducer.state == groupRx.UPLOAD_GROUP_IMAGE_SUCCESS) {
+            let prev = Immutable.fromJS(this.props.groupReducer);
+            let next = Immutable.fromJS(groupReducer);
+            if (!next.equals(prev)) {
+                this.groupImage = null;
+                this.group.image = `${config.api.host}${groupReducer.groupImageResult.path}`;
+                this.submit();
             }
         }
-        else if (!!this.groupImage) {//this.state.groupName.length > 0 &&
+    }
+    submit() {
+        const { teamReducer, adminReducer: { orgCharts }, userReducer: { user } } = this.props;
+
+        this.group.name = this.state.groupName;
+        this.group.description = this.state.groupDescription;
+        this.group.team_id = teamReducer.team._id;
+
+        switch (this.props.groupType) {
+            case createOrgGroup:
+                this.group.type = RoomType.organizationGroup;
+                this.group.org_chart_id = (orgCharts.length > 0) ? orgCharts[this.state.dropdownValue]._id : null;
+
+                this.props.dispatch(groupRx.createOrgGroup(this.group));
+                break;
+            case createPvGroup:
+                let member = {
+                    _id: user._id,
+                    room_role: MemberRole.owner,
+                    username: user.username
+                } as IMember;
+                this.group.type = RoomType.privateGroup;
+                this.group.members = new Array(member);
+
+                this.props.dispatch(privateGroupRx.createPrivateGroup(this.group));
+
+                break;
+            default:
+                console.warn("cannot submit create group...");
+                break;
+        }
+    }
+    onSubmitGroup() {
+        console.log("submit group", this.state);
+
+        if (this.state.groupName.length > 0 && !this.groupImage) {
+            this.submit();
+        }
+        else if (this.state.groupName.length > 0 && !!this.groupImage) {
             // @Todo upload group image first...
             // this.group.image = this.state.groupImage;
             this.props.dispatch(groupRx.uploadGroupImage(this.groupImage));
@@ -149,4 +163,5 @@ class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
     }
 }
 
-export default CreateGroupBox;
+const mapStateToProps = (state) => ({ ...state });
+export default connect(mapStateToProps)(CreateGroupBox);

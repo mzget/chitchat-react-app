@@ -12,6 +12,7 @@ export const GroupInitState = Record({
     error: null,
     orgGroups: null,
     privateGroups: null,
+    groupImageResult: null
 });
 export const groupReducer = (state = new GroupInitState(), action) => {
     switch (action.type) {
@@ -62,7 +63,8 @@ export const groupReducer = (state = new GroupInitState(), action) => {
         }
 
         case groupRx.UPLOAD_GROUP_IMAGE_SUCCESS: {
-            return state;
+            return state.set("state", groupRx.UPLOAD_GROUP_IMAGE_SUCCESS)
+                .set("groupImageResult", action.payload.result);
         }
         case groupRx.UPLOAD_GROUP_IMAGE_FAILURE: {
             return state.set("state", groupRx.UPLOAD_GROUP_IMAGE_FAILURE)

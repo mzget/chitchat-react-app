@@ -10,6 +10,7 @@ exports.GroupInitState = immutable_1.Record({
     error: null,
     orgGroups: null,
     privateGroups: null,
+    groupImageResult: null
 });
 exports.groupReducer = (state = new exports.GroupInitState(), action) => {
     switch (action.type) {
@@ -56,7 +57,8 @@ exports.groupReducer = (state = new exports.GroupInitState(), action) => {
                 .set("error", action.payload.message);
         }
         case groupRx.UPLOAD_GROUP_IMAGE_SUCCESS: {
-            return state;
+            return state.set("state", groupRx.UPLOAD_GROUP_IMAGE_SUCCESS)
+                .set("groupImageResult", action.payload.result);
         }
         case groupRx.UPLOAD_GROUP_IMAGE_FAILURE: {
             return state.set("state", groupRx.UPLOAD_GROUP_IMAGE_FAILURE)

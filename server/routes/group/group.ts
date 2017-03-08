@@ -3,6 +3,8 @@ import crypto = require("crypto");
 import mongodb = require("mongodb");
 import async = require("async");
 import redis = require("redis");
+import multer = require("multer");
+import fs = require("fs");
 
 const router = express.Router();
 const ObjectID = mongodb.ObjectID;
@@ -16,7 +18,9 @@ import * as UserManager from "../../scripts/controllers/user/UserManager";
 import * as apiUtils from "../../scripts/utils/apiUtils";
 
 import { getAppDb } from "../../scripts/DbClient";
-import { Config, DbClient } from "../../config";
+import { Config, DbClient, Paths } from "../../config";
+import * as FileType from "../../scripts/FileType";
+const upload = multer({ dest: Paths.groupImage }).single("file");
 
 router.get("/org", function (req, res, next) {
     req.checkQuery("team_id", "request for team_id").isMongoId();
@@ -316,6 +320,47 @@ router.post("/editMember/:room_id", (req, res, next) => {
     else {
         res.status(500).json(new apiUtils.ApiResponse(false, "request for members fields as array"));
     }
+});
+
+router.post("/uploadImage", (req, res, next) => {
+    upload(req, res, function (err) {
+        if (err) {
+            // An error occurred when uploading
+            console.error(err);
+            return res.status(500).json({ success: false, message: "fail to upload" + err });
+        }
+
+        console.log("file", req.file);
+        if (!!req.file) {
+            let file = req.file;
+            let fullname: string = "";
+            if (file.mimetype.match(FileType.imageType))
+                fullname = file.path + file.mimetype.replace("image/", ".");
+
+            fs.readFile(file.path, function (err, data) {
+                if (err) {
+                    res.status(500).json(new apiUtils.ApiResponse(false, err));
+                }
+                else {
+                    fs.writeFile(fullname, data, function (err) {
+                        if (err) {
+                            return res.status(500).json(new apiUtils.ApiResponse(false, err));
+                        }
+
+                        fs.unlink(file.path, (err) => {
+                            if (err) throw err;
+                            console.log("successfully deleted req.file");
+                        });
+
+                        file.path = fullname.replace("public", "");
+                        res.status(200).json(new apiUtils.ApiResponse(true, null, file));
+                    });
+                }
+            });
+        } else {
+            res.status(500).json({ success: false, message: "fail file is missing: " });
+        }
+    });
 });
 
 function pushNewRoomAccessToNewMembers(rid: string, targetMembers: Array<IMember>) {

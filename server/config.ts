@@ -46,5 +46,6 @@ export const DbClient = {
 };
 
 export const Paths = {
-    fileUpload: `./public/uploads/`
+    fileUpload: `./public/uploads/`,
+    groupImage: "./public/groupImage/"
 };
