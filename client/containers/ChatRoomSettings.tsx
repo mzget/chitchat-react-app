@@ -12,7 +12,7 @@ import { ConnectGroupDetail } from "./roomSettings/GroupDetail";
 import * as chatroomActions from "../redux/chatroom/chatroomActions";
 import * as groupRx from "../redux/group/groupRx";
 
-import { Room } from "../../server/scripts/models/Room";
+import { Room, RoomType } from "../../server/scripts/models/Room";
 
 const EDIT_GROUP = "EDIT_GROUP";
 const GROUP_MEMBERS = "GROUP_MEMBERS";
@@ -84,11 +84,18 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
     }
     onMenuSelected(key: string) {
         console.log("onMenuSelected", key);
+
+        let { chatroomReducer } = this.props;
+        let { room }: { room: Room } = chatroomReducer;
+        // @Todo ...
+        // Check room type and user permision for edit group details.
         if (key == GROUP_MEMBERS) {
-            this.setState(prevState => ({ ...prevState, boxState: BoxState.isEditMember }));
+            if (room.type == RoomType.privateGroup)
+                this.setState(prevState => ({ ...prevState, boxState: BoxState.isEditMember }));
         }
         else if (key == EDIT_GROUP) {
-            this.setState(prevState => ({ ...prevState, boxState: BoxState.isEditGroup }));
+            if (room.type == RoomType.privateGroup)
+                this.setState(prevState => ({ ...prevState, boxState: BoxState.isEditGroup }));
         }
     }
 

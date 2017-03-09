@@ -9,6 +9,7 @@ const EditGroupMember_1 = require("./roomSettings/EditGroupMember");
 const GroupDetail_1 = require("./roomSettings/GroupDetail");
 const chatroomActions = require("../redux/chatroom/chatroomActions");
 const groupRx = require("../redux/group/groupRx");
+const Room_1 = require("../../server/scripts/models/Room");
 const EDIT_GROUP = "EDIT_GROUP";
 const GROUP_MEMBERS = "GROUP_MEMBERS";
 var BoxState;
@@ -67,11 +68,17 @@ class ChatRoomSettings extends React.Component {
     }
     onMenuSelected(key) {
         console.log("onMenuSelected", key);
+        let { chatroomReducer } = this.props;
+        let { room } = chatroomReducer;
+        // @Todo ...
+        // Check room type and user permision for edit group details.
         if (key == GROUP_MEMBERS) {
-            this.setState(prevState => (Object.assign({}, prevState, { boxState: BoxState.isEditMember })));
+            if (room.type == Room_1.RoomType.privateGroup)
+                this.setState(prevState => (Object.assign({}, prevState, { boxState: BoxState.isEditMember })));
         }
         else if (key == EDIT_GROUP) {
-            this.setState(prevState => (Object.assign({}, prevState, { boxState: BoxState.isEditGroup })));
+            if (room.type == Room_1.RoomType.privateGroup)
+                this.setState(prevState => (Object.assign({}, prevState, { boxState: BoxState.isEditGroup })));
         }
     }
     getViewPanel() {

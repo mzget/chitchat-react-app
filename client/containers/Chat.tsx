@@ -35,9 +35,9 @@ interface IComponentNameState {
 };
 
 class Chat extends React.Component<IComponentProps, IComponentNameState> {
-    settings = "Settings";
+    options = "Options";
     favorite = "Favorite";
-    toolbarMenus = [this.settings, this.favorite];
+    toolbarMenus = [this.options, this.favorite];
     clientWidth = document.documentElement.clientWidth;
     clientHeight = document.documentElement.clientHeight;
     h_header = null;
@@ -380,7 +380,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     onMenuSelect(id, value) {
         let { chatroomReducer } = this.props;
         console.log(id, value);
-        if (this.toolbarMenus[id] == this.settings) {
+        if (this.toolbarMenus[id] == this.options) {
             this.props.router.push(`/chat/settings/${chatroomReducer.room._id}`);
         }
     }

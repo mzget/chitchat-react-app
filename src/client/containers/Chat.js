@@ -23,9 +23,9 @@ const FileType = require("../../server/scripts/FileType");
 class Chat extends React.Component {
     constructor() {
         super(...arguments);
-        this.settings = "Settings";
+        this.options = "Options";
         this.favorite = "Favorite";
-        this.toolbarMenus = [this.settings, this.favorite];
+        this.toolbarMenus = [this.options, this.favorite];
         this.clientWidth = document.documentElement.clientWidth;
         this.clientHeight = document.documentElement.clientHeight;
         this.h_header = null;
@@ -297,7 +297,7 @@ class Chat extends React.Component {
     onMenuSelect(id, value) {
         let { chatroomReducer } = this.props;
         console.log(id, value);
-        if (this.toolbarMenus[id] == this.settings) {
+        if (this.toolbarMenus[id] == this.options) {
             this.props.router.push(`/chat/settings/${chatroomReducer.room._id}`);
         }
     }
