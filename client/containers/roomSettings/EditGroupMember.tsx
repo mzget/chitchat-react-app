@@ -15,7 +15,7 @@ import * as editGroupRxActions from "../../redux/group/editGroupRxActions";
 
 import { ChitChatAccount } from "../../../server/scripts/models/User";
 
-interface IComponentProps {
+interface IEnhanceProps {
     members: Array<ChitChatAccount>;
     teamMembers: Array<ChitChatAccount>;
     room_id: string;
@@ -23,26 +23,29 @@ interface IComponentProps {
     updateMembers;
     onSubmit;
     onFinished: () => void;
+    onToggleItem: (item, checked) => void;
     dispatch;
 }
 const enhance = compose(
-    withState("members", "updateMembers", []),
-    lifecycle({
-        componentWillMount() {
-            this.props.updateMembers(member => this.props.initMembers);
-        }
-    }),
+    withState("members", "updateMembers", ({ initMembers }) => initMembers),
+    // lifecycle({
+    //     componentWillMount() {
+    //         this.props.updateMembers(member => this.props.initMembers);
+    //     }
+    // }),
     withHandlers({
-        onToggleItem: (props: IComponentProps) => (item, checked) => {
+        onToggleItem: (props: IEnhanceProps) => (item, checked) => {
             if (checked) {
                 props.members.push(item);
+                props.updateMembers((members: Array<ChitChatAccount>) => props.members);
             }
             else {
                 let index = props.members.indexOf(item);
-                props.members.splice(index, 1);
+                props.members.splice(index);
+                props.updateMembers((members: Array<ChitChatAccount>) => props.members);
             }
         },
-        onSubmit: (props: IComponentProps) => event => {
+        onSubmit: (props: IEnhanceProps) => event => {
             let payload = { room_id: props.room_id, members: props.members };
             props.dispatch(editGroupRxActions.editGroupMember(payload));
 
@@ -50,15 +53,16 @@ const enhance = compose(
         }
     })
 );
-const EditGroupMember = enhance(({
-     members, updateMembers, onToggleItem, onSubmit, teamMembers, room_id, initMembers, onFinished
-     }: IComponentProps) =>
+const EditGroupMember = (props: { teamMembers: Array<any>, members: Array<any>, onToggleItem, onSubmit }) => (
     <MuiThemeProvider>
         <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align="center">
+            {
+                console.log(props)
+            }
             <List> {
-                (teamMembers && teamMembers.length > 0) ?
-                    teamMembers.map((item, i, arr) => {
-                        let _isContain = members.some((member, id, arr) => {
+                (props.teamMembers && props.teamMembers.length > 0) ?
+                    props.teamMembers.map((item, i, arr) => {
+                        let _isContain = props.members.some((member, id, arr) => {
                             if (member._id == item._id) {
                                 return true;
                             }
@@ -71,7 +75,7 @@ const EditGroupMember = enhance(({
                                 rightToggle={
                                     < Toggle
                                         onToggle={(event: object, isInputChecked: boolean) => {
-                                            onToggleItem(item, isInputChecked);
+                                            props.onToggleItem(item, isInputChecked);
                                         }}
                                         defaultToggled={_isContain}
                                     />}
@@ -88,9 +92,18 @@ const EditGroupMember = enhance(({
             }
             </List>
             <Divider inset={true} />
-            <RaisedButton label="Submit" primary={true} onClick={onSubmit} />
+            <RaisedButton label="Submit" primary={true} onClick={props.onSubmit} />
         </Flex>
     </MuiThemeProvider>
 );
+const EnhanceEditGroupMember = enhance(({
+    teamMembers, initMembers, room_id, members, updateMembers, onToggleItem, onSubmit, onFinished
+     }: IEnhanceProps) =>
+    <EditGroupMember
+        teamMembers={teamMembers}
+        members={members}
+        onToggleItem={onToggleItem}
+        onSubmit={onSubmit} />
+);
 
-export const ConnectEditGroupMember = connect()(EditGroupMember);
+export const ConnectEditGroupMember = connect()(EnhanceEditGroupMember);

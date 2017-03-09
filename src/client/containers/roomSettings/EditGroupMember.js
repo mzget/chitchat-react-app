@@ -12,18 +12,22 @@ const Divider_1 = require("material-ui/Divider");
 const Avatar_1 = require("material-ui/Avatar");
 const Toggle_1 = require("material-ui/Toggle");
 const editGroupRxActions = require("../../redux/group/editGroupRxActions");
-const enhance = recompose_1.compose(recompose_1.withState("members", "updateMembers", []), recompose_1.lifecycle({
-    componentWillMount() {
-        this.props.updateMembers(member => this.props.initMembers);
-    }
-}), recompose_1.withHandlers({
+const enhance = recompose_1.compose(recompose_1.withState("members", "updateMembers", ({ initMembers }) => initMembers), 
+// lifecycle({
+//     componentWillMount() {
+//         this.props.updateMembers(member => this.props.initMembers);
+//     }
+// }),
+recompose_1.withHandlers({
     onToggleItem: (props) => (item, checked) => {
         if (checked) {
             props.members.push(item);
+            props.updateMembers((members) => props.members);
         }
         else {
             let index = props.members.indexOf(item);
-            props.members.splice(index, 1);
+            props.members.splice(index);
+            props.updateMembers((members) => props.members);
         }
     },
     onSubmit: (props) => event => {
@@ -32,13 +36,14 @@ const enhance = recompose_1.compose(recompose_1.withState("members", "updateMemb
         props.onFinished();
     }
 }));
-const EditGroupMember = enhance(({ members, updateMembers, onToggleItem, onSubmit, teamMembers, room_id, initMembers, onFinished }) => React.createElement(MuiThemeProvider_1.default, null,
+const EditGroupMember = (props) => (React.createElement(MuiThemeProvider_1.default, null,
     React.createElement(reflexbox_1.Flex, { style: { backgroundColor: Colors.indigo50 }, flexColumn: true, align: "center" },
+        console.log(props),
         React.createElement(List_1.List, null,
             " ",
-            (teamMembers && teamMembers.length > 0) ?
-                teamMembers.map((item, i, arr) => {
-                    let _isContain = members.some((member, id, arr) => {
+            (props.teamMembers && props.teamMembers.length > 0) ?
+                props.teamMembers.map((item, i, arr) => {
+                    let _isContain = props.members.some((member, id, arr) => {
                         if (member._id == item._id) {
                             return true;
                         }
@@ -46,11 +51,12 @@ const EditGroupMember = enhance(({ members, updateMembers, onToggleItem, onSubmi
                     return (React.createElement("div", { key: i },
                         React.createElement(List_1.ListItem, { leftAvatar: (!!item.avatar) ?
                                 React.createElement(Avatar_1.default, { src: item.avatar }) : React.createElement(Avatar_1.default, null, item.username.charAt(0)), rightToggle: React.createElement(Toggle_1.default, { onToggle: (event, isInputChecked) => {
-                                    onToggleItem(item, isInputChecked);
+                                    props.onToggleItem(item, isInputChecked);
                                 }, defaultToggled: _isContain }), primaryText: item.username, secondaryText: React.createElement("p", null,
                                 React.createElement("span", { style: { color: Colors.darkBlack } }, item.email)) }),
                         React.createElement(Divider_1.default, { inset: true })));
                 }) : null),
         React.createElement(Divider_1.default, { inset: true }),
-        React.createElement(RaisedButton_1.default, { label: "Submit", primary: true, onClick: onSubmit }))));
-exports.ConnectEditGroupMember = react_redux_1.connect()(EditGroupMember);
+        React.createElement(RaisedButton_1.default, { label: "Submit", primary: true, onClick: props.onSubmit }))));
+const EnhanceEditGroupMember = enhance(({ teamMembers, initMembers, room_id, members, updateMembers, onToggleItem, onSubmit, onFinished }) => React.createElement(EditGroupMember, { teamMembers: teamMembers, members: members, onToggleItem: onToggleItem, onSubmit: onSubmit }));
+exports.ConnectEditGroupMember = react_redux_1.connect()(EnhanceEditGroupMember);
