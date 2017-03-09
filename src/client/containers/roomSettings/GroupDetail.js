@@ -44,6 +44,16 @@ const enhance = recompose_1.compose(recompose_1.withState("group_name", "setGrou
                 });
             }
         }
+        else if (groupReducer.state == editGroupRxActions.EDIT_GROUP_DETAIL_FAILURE) {
+            if (!recompose_1.shallowEqual(this.props.groupReducer, groupReducer)) {
+                this.props.onError(groupReducer.error);
+            }
+        }
+        else if (groupReducer.state == editGroupRxActions.EDIT_GROUP_DETAIL_SUCCESS) {
+            if (!recompose_1.shallowEqual(this.props.groupReducer, groupReducer)) {
+                this.props.onFinished();
+            }
+        }
     }
 }), recompose_1.withHandlers({
     onGroupNameChange: (props) => (e, text) => {
@@ -65,7 +75,6 @@ const enhance = recompose_1.compose(recompose_1.withState("group_name", "setGrou
         }
         else {
             submit(props);
-            // props.onFinished();
         }
     }
 }));
@@ -87,6 +96,6 @@ const GroupDetail = (props) => (React.createElement(MuiThemeProvider_1.default, 
             } }),
         React.createElement("span", { style: styles.span }),
         React.createElement(material_ui_1.RaisedButton, { primary: true, label: "submit", onClick: props.onSubmit }))));
-const EnhanceGroupDetail = enhance(({ group, image, group_name, group_description, onGroupNameChange, onGroupDescriptionChange, onSubmit, onError, onFileReaderChange }) => React.createElement(GroupDetail, { image: image, group_name: group_name, group_description: group_description, onSubmit: onSubmit, onGroupNameChange: onGroupNameChange, onGroupDescriptionChange: onGroupDescriptionChange, onFileReaderChange: onFileReaderChange }));
+const EnhanceGroupDetail = enhance(({ group, image, group_name, group_description, onGroupNameChange, onGroupDescriptionChange, onFileReaderChange, onSubmit, onError, onFinished }) => React.createElement(GroupDetail, { image: image, group_name: group_name, group_description: group_description, onSubmit: onSubmit, onGroupNameChange: onGroupNameChange, onGroupDescriptionChange: onGroupDescriptionChange, onFileReaderChange: onFileReaderChange }));
 const mapStateToProps = (state) => ({ groupReducer: state.groupReducer });
 exports.ConnectGroupDetail = react_redux_1.connect(mapStateToProps)(EnhanceGroupDetail);

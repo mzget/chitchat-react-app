@@ -43,7 +43,7 @@ export const editGroupMember_Epic = action$ => (
 
 const EDIT_GROUP_DETAIL = "EDIT_GROUP_DETAIL";
 export const EDIT_GROUP_DETAIL_SUCCESS = "EDIT_GROUP_DETAIL_SUCCESS";
-const EDIT_GROUP_DETAIL_FAILURE = "EDIT_GROUP_DETAIL_FAILURE";
+export const EDIT_GROUP_DETAIL_FAILURE = "EDIT_GROUP_DETAIL_FAILURE";
 const EDIT_GROUP_DETAIL_CANCELLED = "EDIT_GROUP_DETAIL_CANCELLED";
 export const editGroupDetail = createAction(EDIT_GROUP_DETAIL, (room: Room) => room);
 const editGroupDetailSuccess = createAction(EDIT_GROUP_DETAIL_SUCCESS, payload => payload);

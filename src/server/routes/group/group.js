@@ -337,6 +337,9 @@ router.post("/update", (req, res, next) => {
     if (room.type == Room_1.RoomType.privateChat) {
         return res.status(500).json(new apiUtils.ApiResponse(false, "Invalid group type, Cannot edit group info!"));
     }
+    else if (room.name.length <= 0) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, "Invalid group name, Cannot empty field!"));
+    }
     let roomModel = new Room_1.Room();
     roomModel = Object.assign({}, room);
     ChatRoomManager.updateGroup(roomModel._id.toString(), roomModel).then(result => {

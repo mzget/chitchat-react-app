@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const immutable_1 = require("immutable");
 const groupRx = require("./groupRx");
 const privateGroupRxActions = require("./privateGroupRxActions");
+const editGroupRxActions = require("./editGroupRxActions");
 const Room_1 = require("../../../server/scripts/models/Room");
 exports.GroupInitState = immutable_1.Record({
     isFetching: false,
@@ -62,6 +63,13 @@ exports.groupReducer = (state = new exports.GroupInitState(), action) => {
         }
         case groupRx.UPLOAD_GROUP_IMAGE_FAILURE: {
             return state.set("state", groupRx.UPLOAD_GROUP_IMAGE_FAILURE)
+                .set("error", action.payload.message);
+        }
+        case editGroupRxActions.EDIT_GROUP_DETAIL_SUCCESS: {
+            return state.set("state", editGroupRxActions.EDIT_GROUP_DETAIL_SUCCESS);
+        }
+        case editGroupRxActions.EDIT_GROUP_DETAIL_FAILURE: {
+            return state.set("state", editGroupRxActions.EDIT_GROUP_DETAIL_FAILURE)
                 .set("error", action.payload.message);
         }
         case groupRx.GROUP_RX_EMPTY_STATE: {

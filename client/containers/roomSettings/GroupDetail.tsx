@@ -27,6 +27,7 @@ const styles = {
 interface IEnhanceProps {
     onSubmit: () => void;
     onError: () => void;
+    onFinished: () => void;
     group?: Room;
     image?: string;
     setImageUrl;
@@ -71,6 +72,16 @@ const enhance = compose(
                     });
                 }
             }
+            else if (groupReducer.state == editGroupRxActions.EDIT_GROUP_DETAIL_FAILURE) {
+                if (!shallowEqual(this.props.groupReducer, groupReducer)) {
+                    this.props.onError(groupReducer.error);
+                }
+            }
+            else if (groupReducer.state == editGroupRxActions.EDIT_GROUP_DETAIL_SUCCESS) {
+                if (!shallowEqual(this.props.groupReducer, groupReducer)) {
+                    this.props.onFinished();
+                }
+            }
         }
     }),
     withHandlers({
@@ -94,8 +105,6 @@ const enhance = compose(
             }
             else {
                 submit(props);
-
-                // props.onFinished();
             }
         }
     })
@@ -140,7 +149,9 @@ const GroupDetail = (props) => (
     </MuiThemeProvider >
 );
 const EnhanceGroupDetail = enhance(({
-  group, image, group_name, group_description, onGroupNameChange, onGroupDescriptionChange, onSubmit, onError, onFileReaderChange
+  group, image, group_name, group_description,
+    onGroupNameChange, onGroupDescriptionChange, onFileReaderChange,
+    onSubmit, onError, onFinished
  }: IEnhanceProps) =>
     <GroupDetail
         image={image}

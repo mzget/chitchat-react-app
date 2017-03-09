@@ -10,6 +10,7 @@ import { ConnectEditGroupMember } from "./roomSettings/EditGroupMember";
 import { ConnectGroupDetail } from "./roomSettings/GroupDetail";
 
 import * as chatroomActions from "../redux/chatroom/chatroomActions";
+import * as groupRx from "../redux/group/groupRx";
 
 import { Room } from "../../server/scripts/models/Room";
 
@@ -35,6 +36,7 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
         };
 
         this.onBackPressed = this.onBackPressed.bind(this);
+        this.onAlert = this.onAlert.bind(this);
         this.closeAlert = this.closeAlert.bind(this);
         this.onMenuSelected = this.onMenuSelected.bind(this);
         this.getViewPanel = this.getViewPanel.bind(this);
@@ -43,22 +45,6 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
     componentDidMount() {
         let { params } = this.props;
         this.props.dispatch(chatroomActions.getPersistendChatroom(params.room_id));
-    }
-
-    componentWillReceiveProps(nextProps) {
-
-    }
-
-    componentWillUpdate(nextProps, nextState) {
-
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-
-    }
-
-    componentWillUnmount() {
-
     }
 
     render() {
@@ -86,10 +72,15 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
     closeAlert() {
         this.alertTitle = "";
         this.alertMessage = "";
-        this.setState(prevState => ({ ...prevState }), () => {
-            // this.props.dispatch(groupRx.emptyState());
+        this.setState(prevState => ({ ...prevState, alert: false }), () => {
+            this.props.dispatch(groupRx.emptyState());
             // this.props.dispatch(adminRx.emptyState());
         });
+    }
+    onAlert(error: string) {
+        this.alertTitle = "Alert!";
+        this.alertMessage = error;
+        this.setState(previous => ({ ...previous, alert: true }));
     }
     onMenuSelected(key: string) {
         console.log("onMenuSelected", key);
@@ -118,7 +109,8 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
                     image={room.image}
                     group_name={room.name}
                     group_description={room.description}
-                    onError={(message) => console.warn(message)} />;
+                    onError={(message) => this.onAlert(message)}
+                    onFinished={() => this.setState(prev => ({ ...prev, boxState: BoxState.idle }))} />;
             default:
                 return null;
         }

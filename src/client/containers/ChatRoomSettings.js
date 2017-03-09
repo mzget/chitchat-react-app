@@ -8,6 +8,7 @@ const MenuListView_1 = require("../components/MenuListView");
 const EditGroupMember_1 = require("./roomSettings/EditGroupMember");
 const GroupDetail_1 = require("./roomSettings/GroupDetail");
 const chatroomActions = require("../redux/chatroom/chatroomActions");
+const groupRx = require("../redux/group/groupRx");
 const EDIT_GROUP = "EDIT_GROUP";
 const GROUP_MEMBERS = "GROUP_MEMBERS";
 var BoxState;
@@ -31,6 +32,7 @@ class ChatRoomSettings extends React.Component {
             alert: false
         };
         this.onBackPressed = this.onBackPressed.bind(this);
+        this.onAlert = this.onAlert.bind(this);
         this.closeAlert = this.closeAlert.bind(this);
         this.onMenuSelected = this.onMenuSelected.bind(this);
         this.getViewPanel = this.getViewPanel.bind(this);
@@ -38,14 +40,6 @@ class ChatRoomSettings extends React.Component {
     componentDidMount() {
         let { params } = this.props;
         this.props.dispatch(chatroomActions.getPersistendChatroom(params.room_id));
-    }
-    componentWillReceiveProps(nextProps) {
-    }
-    componentWillUpdate(nextProps, nextState) {
-    }
-    componentDidUpdate(prevProps, prevState) {
-    }
-    componentWillUnmount() {
     }
     render() {
         return (React.createElement("div", null,
@@ -61,10 +55,15 @@ class ChatRoomSettings extends React.Component {
     closeAlert() {
         this.alertTitle = "";
         this.alertMessage = "";
-        this.setState(prevState => (Object.assign({}, prevState)), () => {
-            // this.props.dispatch(groupRx.emptyState());
+        this.setState(prevState => (Object.assign({}, prevState, { alert: false })), () => {
+            this.props.dispatch(groupRx.emptyState());
             // this.props.dispatch(adminRx.emptyState());
         });
+    }
+    onAlert(error) {
+        this.alertTitle = "Alert!";
+        this.alertMessage = error;
+        this.setState(previous => (Object.assign({}, previous, { alert: true })));
     }
     onMenuSelected(key) {
         console.log("onMenuSelected", key);
@@ -82,7 +81,7 @@ class ChatRoomSettings extends React.Component {
             case BoxState.isEditMember:
                 return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: teamReducer.members, room_id: params.room_id, initMembers: room.members, onFinished: () => this.setState(prev => (Object.assign({}, prev, { boxState: BoxState.idle }))) });
             case BoxState.isEditGroup:
-                return React.createElement(GroupDetail_1.ConnectGroupDetail, { group: room, image: room.image, group_name: room.name, group_description: room.description, onError: (message) => console.warn(message) });
+                return React.createElement(GroupDetail_1.ConnectGroupDetail, { group: room, image: room.image, group_name: room.name, group_description: room.description, onError: (message) => this.onAlert(message), onFinished: () => this.setState(prev => (Object.assign({}, prev, { boxState: BoxState.idle }))) });
             default:
                 return null;
         }

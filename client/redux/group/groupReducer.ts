@@ -2,6 +2,7 @@
 
 import * as groupRx from "./groupRx";
 import * as privateGroupRxActions from "./privateGroupRxActions";
+import * as editGroupRxActions from "./editGroupRxActions";
 
 import { Room, RoomType } from "../../../server/scripts/models/Room";
 
@@ -68,6 +69,14 @@ export const groupReducer = (state = new GroupInitState(), action) => {
         }
         case groupRx.UPLOAD_GROUP_IMAGE_FAILURE: {
             return state.set("state", groupRx.UPLOAD_GROUP_IMAGE_FAILURE)
+                .set("error", action.payload.message);
+        }
+
+        case editGroupRxActions.EDIT_GROUP_DETAIL_SUCCESS: {
+            return state.set("state", editGroupRxActions.EDIT_GROUP_DETAIL_SUCCESS);
+        }
+        case editGroupRxActions.EDIT_GROUP_DETAIL_FAILURE: {
+            return state.set("state", editGroupRxActions.EDIT_GROUP_DETAIL_FAILURE)
                 .set("error", action.payload.message);
         }
 
