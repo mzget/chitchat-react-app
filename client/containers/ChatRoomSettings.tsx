@@ -8,6 +8,7 @@ import { DialogBox } from "../components/DialogBox";
 import { MenuListview } from "../components/MenuListView";
 import { ConnectEditGroupMember } from "./roomSettings/EditGroupMember";
 import { ConnectGroupDetail } from "./roomSettings/GroupDetail";
+import { GroupMemberEnhancer } from "./roomSettings/GroupMemberEnhancer";
 
 import * as chatroomActions from "../redux/chatroom/chatroomActions";
 import * as groupRx from "../redux/group/groupRx";
@@ -15,9 +16,10 @@ import * as groupRx from "../redux/group/groupRx";
 import { Room, RoomType } from "../../server/scripts/models/Room";
 
 const EDIT_GROUP = "EDIT_GROUP";
+const EDIT_GROUP_MEMBERS = "EDIT_GROUP_MEMBERS";
 const GROUP_MEMBERS = "GROUP_MEMBERS";
 enum BoxState {
-    idle = 0, isEditGroup = 1, isEditMember
+    idle = 0, isEditGroup = 1, isEditMember, viewMembers
 };
 interface IComponentState {
     boxState: BoxState;
@@ -27,7 +29,7 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
     title = "Room settings";
     alertTitle = "Alert!";
     alertMessage = "";
-    menus = [EDIT_GROUP, GROUP_MEMBERS];
+    menus = [EDIT_GROUP, EDIT_GROUP_MEMBERS, GROUP_MEMBERS];
 
     componentWillMount() {
         this.state = {
@@ -89,13 +91,16 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
         let { room }: { room: Room } = chatroomReducer;
         // @Todo ...
         // Check room type and user permision for edit group details.
-        if (key == GROUP_MEMBERS) {
+        if (key == EDIT_GROUP_MEMBERS) {
             if (room.type == RoomType.privateGroup)
                 this.setState(prevState => ({ ...prevState, boxState: BoxState.isEditMember }));
         }
         else if (key == EDIT_GROUP) {
             if (room.type == RoomType.privateGroup)
                 this.setState(prevState => ({ ...prevState, boxState: BoxState.isEditGroup }));
+        }
+        else if (key == GROUP_MEMBERS) {
+            this.setState(prevState => ({ ...prevState, boxState: BoxState.viewMembers }));
         }
     }
 
@@ -118,6 +123,8 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
                     group_description={room.description}
                     onError={(message) => this.onAlert(message)}
                     onFinished={() => this.setState(prev => ({ ...prev, boxState: BoxState.idle }))} />;
+            case BoxState.viewMembers:
+                return <GroupMemberEnhancer members={room.members} />;
             default:
                 return null;
         }

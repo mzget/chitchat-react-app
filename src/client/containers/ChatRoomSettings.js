@@ -7,16 +7,19 @@ const DialogBox_1 = require("../components/DialogBox");
 const MenuListView_1 = require("../components/MenuListView");
 const EditGroupMember_1 = require("./roomSettings/EditGroupMember");
 const GroupDetail_1 = require("./roomSettings/GroupDetail");
+const GroupMemberEnhancer_1 = require("./roomSettings/GroupMemberEnhancer");
 const chatroomActions = require("../redux/chatroom/chatroomActions");
 const groupRx = require("../redux/group/groupRx");
 const Room_1 = require("../../server/scripts/models/Room");
 const EDIT_GROUP = "EDIT_GROUP";
+const EDIT_GROUP_MEMBERS = "EDIT_GROUP_MEMBERS";
 const GROUP_MEMBERS = "GROUP_MEMBERS";
 var BoxState;
 (function (BoxState) {
     BoxState[BoxState["idle"] = 0] = "idle";
     BoxState[BoxState["isEditGroup"] = 1] = "isEditGroup";
     BoxState[BoxState["isEditMember"] = 2] = "isEditMember";
+    BoxState[BoxState["viewMembers"] = 3] = "viewMembers";
 })(BoxState || (BoxState = {}));
 ;
 class ChatRoomSettings extends React.Component {
@@ -25,7 +28,7 @@ class ChatRoomSettings extends React.Component {
         this.title = "Room settings";
         this.alertTitle = "Alert!";
         this.alertMessage = "";
-        this.menus = [EDIT_GROUP, GROUP_MEMBERS];
+        this.menus = [EDIT_GROUP, EDIT_GROUP_MEMBERS, GROUP_MEMBERS];
     }
     componentWillMount() {
         this.state = {
@@ -72,13 +75,16 @@ class ChatRoomSettings extends React.Component {
         let { room } = chatroomReducer;
         // @Todo ...
         // Check room type and user permision for edit group details.
-        if (key == GROUP_MEMBERS) {
+        if (key == EDIT_GROUP_MEMBERS) {
             if (room.type == Room_1.RoomType.privateGroup)
                 this.setState(prevState => (Object.assign({}, prevState, { boxState: BoxState.isEditMember })));
         }
         else if (key == EDIT_GROUP) {
             if (room.type == Room_1.RoomType.privateGroup)
                 this.setState(prevState => (Object.assign({}, prevState, { boxState: BoxState.isEditGroup })));
+        }
+        else if (key == GROUP_MEMBERS) {
+            this.setState(prevState => (Object.assign({}, prevState, { boxState: BoxState.viewMembers })));
         }
     }
     getViewPanel() {
@@ -89,6 +95,8 @@ class ChatRoomSettings extends React.Component {
                 return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: teamReducer.members, room_id: params.room_id, initMembers: room.members, onFinished: () => this.setState(prev => (Object.assign({}, prev, { boxState: BoxState.idle }))) });
             case BoxState.isEditGroup:
                 return React.createElement(GroupDetail_1.ConnectGroupDetail, { group: room, image: room.image, group_name: room.name, group_description: room.description, onError: (message) => this.onAlert(message), onFinished: () => this.setState(prev => (Object.assign({}, prev, { boxState: BoxState.idle }))) });
+            case BoxState.viewMembers:
+                return React.createElement(GroupMemberEnhancer_1.GroupMemberEnhancer, { members: room.members });
             default:
                 return null;
         }
