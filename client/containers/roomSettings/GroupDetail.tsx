@@ -1,6 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { withProps, withState, withHandlers, compose, lifecycle } from "recompose";
+import * as Immutable from "immutable";
+import { withProps, withState, withHandlers, compose, lifecycle, shallowEqual } from "recompose";
 import { Flex, Box } from "reflexbox";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
@@ -9,7 +10,10 @@ import Avatar from "material-ui/Avatar";
 
 import * as FileReaderInput from "react-file-reader-input";
 
+import config from "../../configs/config";
 import * as editGroupRxActions from "../../redux/group/editGroupRxActions";
+import * as groupRx from "../../redux/group/groupRx";
+import { Room } from "../../../server/scripts/models/Room";
 
 const styles = {
     span: {
@@ -20,43 +24,83 @@ const styles = {
     }
 };
 
-interface IComponentProps {
+interface IEnhanceProps {
     onSubmit: () => void;
+    onError: () => void;
+    group?: Room;
     image?: string;
-    disabledImage?: boolean;
+    setImageUrl;
+    imageFile;
+    setImageFile;
     group_name: string;
+    setGroupName;
     onGroupNameChange: (e, text) => void;
     group_description?: string;
+    setGroupDescription;
     onGroupDescriptionChange?: (e, text) => void;
     onFileReaderChange?: (e, result) => void;
+    dispatch?;
 }
+const submit = (props: IEnhanceProps) => {
+    console.log(props);
+    let group = { ...props.group } as Room;
+    group.name = props.group_name;
+    group.description = props.group_description;
+    group.image = props.image;
+    props.dispatch(editGroupRxActions.editGroupDetail(group));
+};
 const enhance = compose(
     withState("group_name", "setGroupName", ({ group_name }) => group_name),
     withState("group_description", "setGroupDescription", ({ group_description }) => group_description),
+    withState("image", "setImageUrl", ({ image }) => image),
+    withState("imageFile", "setImageFile", null),
     lifecycle({
-        componentWillMount() {
+        componentWillReceiveProps(nextProps) {
+            let { groupReducer } = nextProps;
+
+            if (groupReducer.state == groupRx.UPLOAD_GROUP_IMAGE_FAILURE) {
+                if (!shallowEqual(this.props.groupReducer, groupReducer)) {
+                    this.props.onError(groupReducer.error);
+                }
+            }
+            else if (groupReducer.state == groupRx.UPLOAD_GROUP_IMAGE_SUCCESS) {
+                if (!shallowEqual(this.props.groupReducer, groupReducer)) {
+                    this.props.setImageFile(prev => null);
+                    this.props.setImageUrl(prev => `${config.api.host}${groupReducer.groupImageResult.path}`, () => {
+                        submit(this.props);
+                    });
+                }
+            }
         }
     }),
     withHandlers({
-        onGroupNameChange: (props: IComponentProps) => (e, text) => {
+        onGroupNameChange: (props: IEnhanceProps) => (e, text) => {
             props.setGroupName(groupName => text);
-        }, onGroupDescriptionChange: (props: IComponentProps) => (e, text) => {
+        }, onGroupDescriptionChange: (props: IEnhanceProps) => (e, text) => {
             props.setGroupDescription(group_description => text);
         },
-        onFileReaderChange: (props: IComponentProps) => (e, result) => {
+        onFileReaderChange: (props: IEnhanceProps) => (e, results) => {
+            results.forEach(result => {
+                const [progressEvent, file] = result;
 
+                props.setImageUrl(prev => progressEvent.target.result);
+                props.setImageFile(prev => file);
+            });
         },
-        onSubmit: (props: IComponentProps) => event => {
-            console.log(props);
+        onSubmit: (props: IEnhanceProps) => event => {
+            if (!!props.imageFile) {
+                // @Todo upload group image first...
+                props.dispatch(groupRx.uploadGroupImage(props.imageFile));
+            }
+            else {
+                submit(props);
 
-            // let payload = { room_id: props.room_id, members: props.members };
-            // props.dispatch(editGroupRxActions.editGroupMember(payload));
-
-            // props.onFinished();
+                // props.onFinished();
+            }
         }
     })
 );
-const GroupDetail = (props: IComponentProps) => (
+const GroupDetail = (props) => (
     <MuiThemeProvider>
         <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align="center">
             <Box justify="center" align="center" p={2}>
@@ -96,12 +140,17 @@ const GroupDetail = (props: IComponentProps) => (
     </MuiThemeProvider >
 );
 const EnhanceGroupDetail = enhance(({
-    image, group_name, group_description, onGroupNameChange, onGroupDescriptionChange, onSubmit, onFileReaderChange
- }: IComponentProps) =>
-    <GroupDetail image={image} group_name={group_name} group_description={group_description}
+  group, image, group_name, group_description, onGroupNameChange, onGroupDescriptionChange, onSubmit, onError, onFileReaderChange
+ }: IEnhanceProps) =>
+    <GroupDetail
+        image={image}
+        group_name={group_name}
+        group_description={group_description}
         onSubmit={onSubmit}
         onGroupNameChange={onGroupNameChange}
         onGroupDescriptionChange={onGroupDescriptionChange}
         onFileReaderChange={onFileReaderChange}
     />);
-export const ConnectGroupDetail = connect()(EnhanceGroupDetail);
+
+const mapStateToProps = (state) => ({ groupReducer: state.groupReducer });
+export const ConnectGroupDetail = connect(mapStateToProps)(EnhanceGroupDetail);

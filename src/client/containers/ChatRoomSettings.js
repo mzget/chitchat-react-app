@@ -82,7 +82,7 @@ class ChatRoomSettings extends React.Component {
             case BoxState.isEditMember:
                 return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: teamReducer.members, room_id: params.room_id, initMembers: room.members, onFinished: () => this.setState(prev => (Object.assign({}, prev, { boxState: BoxState.idle }))) });
             case BoxState.isEditGroup:
-                return React.createElement(GroupDetail_1.ConnectGroupDetail, { image: room.image, group_name: room.name, group_description: room.description });
+                return React.createElement(GroupDetail_1.ConnectGroupDetail, { group: room, image: room.image, group_name: room.name, group_description: room.description, onError: (message) => console.warn(message) });
             default:
                 return null;
         }

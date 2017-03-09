@@ -58,7 +58,7 @@ class ManageOrgChartBox extends React.Component<IComponentNameProps, IComponentN
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        const {adminReducer} = nextProps;
+        const { adminReducer } = nextProps;
 
         switch (adminReducer.state) {
             case adminRx.CREATE_NEW_ORG_CHART_SUCCESS:
@@ -71,7 +71,7 @@ class ManageOrgChartBox extends React.Component<IComponentNameProps, IComponentN
     }
 
     onSubmit() {
-        const {teamReducer} = this.props;
+        const { teamReducer } = this.props;
 
         if (this.state.chart_name.length > 0) {
             this.orgChart.chart_level = this.state.dropdownValue;
@@ -98,14 +98,14 @@ class ManageOrgChartBox extends React.Component<IComponentNameProps, IComponentN
                         <CreateOrgChartForm
                             orgChartName={this.state.chart_name}
                             orgChart_description={this.state.chart_description}
-                            onOrgChartNameChange={(e, text) => { this.setState(previous => ({ ...previous, chart_name: text })) } }
-                            onOrgChartDescriptionChange={(e, text) => { this.setState(previous => ({ ...previous, chart_description: text })) } }
+                            onOrgChartNameChange={(e, text) => { this.setState(previous => ({ ...previous, chart_name: text })) }}
+                            onOrgChartDescriptionChange={(e, text) => { this.setState(previous => ({ ...previous, chart_description: text })) }}
 
                             dropdownItems={this.orgLevels}
                             dropdownValue={this.state.dropdownValue}
-                            dropdownChange={(event, id, value) => { this.setState(previous => ({ ...previous, dropdownValue: value })) } }
+                            dropdownChange={(event, id, value) => { this.setState(previous => ({ ...previous, dropdownValue: value })) }}
                             onSubmit={this.onSubmit}
-                            />
+                        />
                     ) : (
                             <div>
                                 <OrgChartListView items={this.props.adminReducer.orgCharts} />

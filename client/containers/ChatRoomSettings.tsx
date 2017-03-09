@@ -113,7 +113,12 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
                     initMembers={room.members}
                     onFinished={() => this.setState(prev => ({ ...prev, boxState: BoxState.idle }))} />;
             case BoxState.isEditGroup:
-                return <ConnectGroupDetail image={room.image} group_name={room.name} group_description={room.description} />;
+                return <ConnectGroupDetail
+                    group={room}
+                    image={room.image}
+                    group_name={room.name}
+                    group_description={room.description}
+                    onError={(message) => console.warn(message)} />;
             default:
                 return null;
         }

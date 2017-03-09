@@ -38,3 +38,28 @@ export const editGroupMember_Epic = action$ => (
                 // }
             })
     ));
+
+
+
+const EDIT_GROUP_DETAIL = "EDIT_GROUP_DETAIL";
+export const EDIT_GROUP_DETAIL_SUCCESS = "EDIT_GROUP_DETAIL_SUCCESS";
+const EDIT_GROUP_DETAIL_FAILURE = "EDIT_GROUP_DETAIL_FAILURE";
+const EDIT_GROUP_DETAIL_CANCELLED = "EDIT_GROUP_DETAIL_CANCELLED";
+export const editGroupDetail = createAction(EDIT_GROUP_DETAIL, (room: Room) => room);
+const editGroupDetailSuccess = createAction(EDIT_GROUP_DETAIL_SUCCESS, payload => payload);
+const editGroupDetailFailure = createAction(EDIT_GROUP_DETAIL_FAILURE, err => err);
+const editGroupDetailCancelled = createAction(EDIT_GROUP_DETAIL_CANCELLED);
+export const editGroupDetail_Epic = action$ => (
+    action$.ofType(EDIT_GROUP_DETAIL).mergeMap(action =>
+        ajax({
+            method: "POST",
+            url: `${config.api.group}/update`,
+            body: JSON.stringify({ room: action.payload }),
+            headers: {
+                "Content-Type": "application/json",
+                "x-access-token": Store.getState().authReducer.token
+            }
+        }).map(response => editGroupDetailSuccess(response.xhr.response))
+            .takeUntil(action$.ofType(EDIT_GROUP_DETAIL_CANCELLED))
+            .catch(error => Rx.Observable.of(editGroupDetailFailure(error.xhr.response)))
+    ));

@@ -363,6 +363,35 @@ router.post("/uploadImage", (req, res, next) => {
     });
 });
 
+/**
+ * update group info...
+ */
+router.post("/update", (req, res, next) => {
+    req.checkBody("room", "request for room object").notEmpty();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let room = req.body.room as Room;
+    if (room.type == RoomType.privateChat) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, "Invalid group type, Cannot edit group info!"));
+    }
+
+    let roomModel = new Room();
+    roomModel = { ...room } as Room;
+
+    ChatRoomManager.updateGroup(roomModel._id.toString(), roomModel).then(result => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, result));
+
+        // <!-- Push new room info to all members.
+        console.warn("Next we will Push new room info to all members.");
+    }).catch(err => {
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
+    });
+});
+
 function pushNewRoomAccessToNewMembers(rid: string, targetMembers: Array<IMember>) {
     let memberIds = new Array<string>();
     async.map(targetMembers, function iterator(item, cb) {

@@ -9,6 +9,9 @@ const Colors = require("material-ui/styles/colors");
 const material_ui_1 = require("material-ui");
 const Avatar_1 = require("material-ui/Avatar");
 const FileReaderInput = require("react-file-reader-input");
+const config_1 = require("../../configs/config");
+const editGroupRxActions = require("../../redux/group/editGroupRxActions");
+const groupRx = require("../../redux/group/groupRx");
 const styles = {
     span: {
         padding: 8
@@ -17,8 +20,30 @@ const styles = {
         margin: 5
     }
 };
-const enhance = recompose_1.compose(recompose_1.withState("group_name", "setGroupName", ({ group_name }) => group_name), recompose_1.withState("group_description", "setGroupDescription", ({ group_description }) => group_description), recompose_1.lifecycle({
-    componentWillMount() {
+const submit = (props) => {
+    console.log(props);
+    let group = Object.assign({}, props.group);
+    group.name = props.group_name;
+    group.description = props.group_description;
+    group.image = props.image;
+    props.dispatch(editGroupRxActions.editGroupDetail(group));
+};
+const enhance = recompose_1.compose(recompose_1.withState("group_name", "setGroupName", ({ group_name }) => group_name), recompose_1.withState("group_description", "setGroupDescription", ({ group_description }) => group_description), recompose_1.withState("image", "setImageUrl", ({ image }) => image), recompose_1.withState("imageFile", "setImageFile", null), recompose_1.lifecycle({
+    componentWillReceiveProps(nextProps) {
+        let { groupReducer } = nextProps;
+        if (groupReducer.state == groupRx.UPLOAD_GROUP_IMAGE_FAILURE) {
+            if (!recompose_1.shallowEqual(this.props.groupReducer, groupReducer)) {
+                this.props.onError(groupReducer.error);
+            }
+        }
+        else if (groupReducer.state == groupRx.UPLOAD_GROUP_IMAGE_SUCCESS) {
+            if (!recompose_1.shallowEqual(this.props.groupReducer, groupReducer)) {
+                this.props.setImageFile(prev => null);
+                this.props.setImageUrl(prev => `${config_1.default.api.host}${groupReducer.groupImageResult.path}`, () => {
+                    submit(this.props);
+                });
+            }
+        }
     }
 }), recompose_1.withHandlers({
     onGroupNameChange: (props) => (e, text) => {
@@ -26,13 +51,22 @@ const enhance = recompose_1.compose(recompose_1.withState("group_name", "setGrou
     }, onGroupDescriptionChange: (props) => (e, text) => {
         props.setGroupDescription(group_description => text);
     },
-    onFileReaderChange: (props) => (e, result) => {
+    onFileReaderChange: (props) => (e, results) => {
+        results.forEach(result => {
+            const [progressEvent, file] = result;
+            props.setImageUrl(prev => progressEvent.target.result);
+            props.setImageFile(prev => file);
+        });
     },
     onSubmit: (props) => event => {
-        console.log(props);
-        // let payload = { room_id: props.room_id, members: props.members };
-        // props.dispatch(editGroupRxActions.editGroupMember(payload));
-        // props.onFinished();
+        if (!!props.imageFile) {
+            // @Todo upload group image first...
+            props.dispatch(groupRx.uploadGroupImage(props.imageFile));
+        }
+        else {
+            submit(props);
+            // props.onFinished();
+        }
     }
 }));
 const GroupDetail = (props) => (React.createElement(MuiThemeProvider_1.default, null,
@@ -53,5 +87,6 @@ const GroupDetail = (props) => (React.createElement(MuiThemeProvider_1.default, 
             } }),
         React.createElement("span", { style: styles.span }),
         React.createElement(material_ui_1.RaisedButton, { primary: true, label: "submit", onClick: props.onSubmit }))));
-const EnhanceGroupDetail = enhance(({ image, group_name, group_description, onGroupNameChange, onGroupDescriptionChange, onSubmit, onFileReaderChange }) => React.createElement(GroupDetail, { image: image, group_name: group_name, group_description: group_description, onSubmit: onSubmit, onGroupNameChange: onGroupNameChange, onGroupDescriptionChange: onGroupDescriptionChange, onFileReaderChange: onFileReaderChange }));
-exports.ConnectGroupDetail = react_redux_1.connect()(EnhanceGroupDetail);
+const EnhanceGroupDetail = enhance(({ group, image, group_name, group_description, onGroupNameChange, onGroupDescriptionChange, onSubmit, onError, onFileReaderChange }) => React.createElement(GroupDetail, { image: image, group_name: group_name, group_description: group_description, onSubmit: onSubmit, onGroupNameChange: onGroupNameChange, onGroupDescriptionChange: onGroupDescriptionChange, onFileReaderChange: onFileReaderChange }));
+const mapStateToProps = (state) => ({ groupReducer: state.groupReducer });
+exports.ConnectGroupDetail = react_redux_1.connect(mapStateToProps)(EnhanceGroupDetail);

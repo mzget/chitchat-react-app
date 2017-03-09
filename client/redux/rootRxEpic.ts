@@ -39,6 +39,7 @@ export const rootEpic = combineEpics(
     groupRx.getOrgGroup_Epic,
     groupRx.createOrgGroup_Epic,
     groupRx.uploadGroupImage_Epic,
+    editGroupRxActions.editGroupDetail_Epic,
     editGroupRxActions.editGroupMember_Epic,
 
     /**

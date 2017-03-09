@@ -33,3 +33,22 @@ exports.editGroupMember_Epic = action$ => (action$.ofType(EDIT_GROUP_MEMBER).mer
     //     }).subscribe();
     // }
 })));
+const EDIT_GROUP_DETAIL = "EDIT_GROUP_DETAIL";
+exports.EDIT_GROUP_DETAIL_SUCCESS = "EDIT_GROUP_DETAIL_SUCCESS";
+const EDIT_GROUP_DETAIL_FAILURE = "EDIT_GROUP_DETAIL_FAILURE";
+const EDIT_GROUP_DETAIL_CANCELLED = "EDIT_GROUP_DETAIL_CANCELLED";
+exports.editGroupDetail = redux_actions_1.createAction(EDIT_GROUP_DETAIL, (room) => room);
+const editGroupDetailSuccess = redux_actions_1.createAction(exports.EDIT_GROUP_DETAIL_SUCCESS, payload => payload);
+const editGroupDetailFailure = redux_actions_1.createAction(EDIT_GROUP_DETAIL_FAILURE, err => err);
+const editGroupDetailCancelled = redux_actions_1.createAction(EDIT_GROUP_DETAIL_CANCELLED);
+exports.editGroupDetail_Epic = action$ => (action$.ofType(EDIT_GROUP_DETAIL).mergeMap(action => ajax({
+    method: "POST",
+    url: `${config_1.default.api.group}/update`,
+    body: JSON.stringify({ room: action.payload }),
+    headers: {
+        "Content-Type": "application/json",
+        "x-access-token": configureStore_1.default.getState().authReducer.token
+    }
+}).map(response => editGroupDetailSuccess(response.xhr.response))
+    .takeUntil(action$.ofType(EDIT_GROUP_DETAIL_CANCELLED))
+    .catch(error => Rx.Observable.of(editGroupDetailFailure(error.xhr.response)))));
