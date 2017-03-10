@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 //@ require for socket.io
 window.navigator.userAgent = 'react-native';
 //if (window.navigator && Object.keys(window.navigator).length == 0) {
@@ -210,5 +209,6 @@ class Pomelo extends EventEmitter {
         return msg;
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Pomelo;
 ;

@@ -1,5 +1,12 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 const React = require("react");
 const SignupForm_1 = require("../../components/SignupForm");
 const CryptoHelper = require("../../chats/utils/CryptoHelper");
@@ -27,7 +34,7 @@ class SignupBox extends React.Component {
                 if (!result) {
                     if (this.state.firstname.length > 0 && this.state.lastname.length > 0) {
                         CryptoHelper.hashComputation(this.state.password).then((hash) => {
-                            this.setState(previous => (Object.assign({}, previous, { password: hash, confirmPassword: "" })), () => {
+                            this.setState(previous => (__assign({}, previous, { password: hash, confirmPassword: "" })), () => {
                                 this.props.dispatch(AuthRx.signup(this.state));
                             });
                         });
@@ -48,16 +55,17 @@ class SignupBox extends React.Component {
     render() {
         return (React.createElement("span", null,
             React.createElement(SignupForm_1.SignupForm, { email: this.state.email, onEmailChange: (e, text) => {
-                    this.setState(previous => (Object.assign({}, previous, { email: text })));
+                    this.setState(previous => (__assign({}, previous, { email: text })));
                 }, password: this.state.password, onPasswordChange: (e, text) => {
-                    this.setState(previous => (Object.assign({}, previous, { password: text })));
+                    this.setState(previous => (__assign({}, previous, { password: text })));
                 }, confirmPassword: this.state.confirmPassword, onConfirmPasswordChange: (e, text) => {
-                    this.setState(previous => (Object.assign({}, previous, { confirmPassword: text })));
+                    this.setState(previous => (__assign({}, previous, { confirmPassword: text })));
                 }, firstname: this.state.firstname, onFirstnameChange: (e, text) => {
-                    this.setState(previous => (Object.assign({}, previous, { firstname: text })));
+                    this.setState(previous => (__assign({}, previous, { firstname: text })));
                 }, lastname: this.state.lastname, onLastnameChange: (e, text) => {
-                    this.setState(previous => (Object.assign({}, previous, { lastname: text })));
+                    this.setState(previous => (__assign({}, previous, { lastname: text })));
                 }, onSubmit: this.onSubmitForm })));
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = SignupBox;

@@ -40,7 +40,7 @@ export function setRoomsMap(data: Array<any>, callback: () => void) {
     data.forEach(element => {
         let room: Room.Room = JSON.parse(JSON.stringify(element));
         RedisClient.hset(ROOM_MAP_KEY, element._id.toString(), JSON.stringify(room), redis.print);
-        RedisClient.expire(ROOM_MAP_KEY, 30, redis.print);
+        //RedisClient.expire(ROOM_MAP_KEY, 30, redis.print);
     });
 
     callback();
@@ -91,5 +91,5 @@ export function getRoom(roomId: string, callback: (err: any, res: Room.Room) => 
 */
 export function addRoom(room: Room.Room) {
     RedisClient.hset(ROOM_MAP_KEY, room._id.toString(), JSON.stringify(room), redis.print);
-    RedisClient.expire(ROOM_MAP_KEY, 30, redis.print);
+    //RedisClient.expire(ROOM_MAP_KEY, 30, redis.print);
 }

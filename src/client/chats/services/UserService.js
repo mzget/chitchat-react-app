@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = require("../../configs/config");
 const Rx = require("rxjs/Rx");
 function getTeamProfile(token, team_id) {

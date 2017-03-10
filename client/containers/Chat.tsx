@@ -8,7 +8,7 @@ import Config from "../configs/config";
 
 import { TypingBox } from "./TypingBox";
 import { ChatBox } from "./chat/ChatBox";
-import SimpleToolbar from "../components/SimpleToolbar";
+import { SimpleToolbar } from "../components/SimpleToolbar";
 import UtilsBox from "./UtilsBox";
 import UploadingDialog from "./UploadingDialog";
 import GridListSimple from "../components/GridListSimple";

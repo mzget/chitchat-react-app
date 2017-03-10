@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
-import SimpleToolbar from "../components/SimpleToolbar";
+import { SimpleToolbar } from "../components/SimpleToolbar";
 import { DialogBox } from "../components/DialogBox";
 import { MenuListview } from "../components/MenuListView";
 import { ConnectEditGroupMember } from "./roomSettings/EditGroupMember";
@@ -50,10 +50,13 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
     }
 
     render() {
+        let { chatroomReducer } = this.props;
+        let { room }: { room: Room } = chatroomReducer;
+
         return (
             <div>
                 <SimpleToolbar title={this.title} onBackPressed={this.onBackPressed} />
-                <MenuListview title={this.title} menus={this.menus} onSelectItem={this.onMenuSelected} />
+                <MenuListview title={(room) ? room.name : "Settings"} menus={this.menus} onSelectItem={this.onMenuSelected} />
                 {
                     this.getViewPanel()
                 }
@@ -92,12 +95,20 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
         // @Todo ...
         // Check room type and user permision for edit group details.
         if (key == EDIT_GROUP_MEMBERS) {
-            if (room.type == RoomType.privateGroup)
+            if (room.type == RoomType.privateGroup) {
                 this.setState(prevState => ({ ...prevState, boxState: BoxState.isEditMember }));
+            }
+            else {
+                this.onAlert("Request for valid group permission!");
+            }
         }
         else if (key == EDIT_GROUP) {
-            if (room.type == RoomType.privateGroup)
+            if (room.type == RoomType.privateGroup) {
                 this.setState(prevState => ({ ...prevState, boxState: BoxState.isEditGroup }));
+            }
+            else {
+                this.onAlert("Request for valid group permission!");
+            }
         }
         else if (key == GROUP_MEMBERS) {
             this.setState(prevState => ({ ...prevState, boxState: BoxState.viewMembers }));

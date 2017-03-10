@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const Subheader_1 = require("material-ui/Subheader");
 const ProfileListView_1 = require("./ProfileListView");
@@ -17,4 +16,5 @@ class ProfileBox extends React.Component {
             React.createElement(ProfileListView_1.ProfileListView, { item: this.props.userReducer.user, onSelected: this.onClickMyProfile })));
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ProfileBox;

@@ -13,7 +13,7 @@ import * as authRx from "../redux/authen/authRx";
 import { DialogBox } from "../components/DialogBox";
 import TeamListBox from './teams/TeamListBox';
 import TeamCreateBox from './teams/TeamCreateBox';
-import SimpleToolbar from '../components/SimpleToolbar';
+import { SimpleToolbar } from '../components/SimpleToolbar';
 
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import { ITeam } from '../../server/scripts/models/ITeam';

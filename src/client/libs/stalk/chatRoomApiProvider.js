@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 class ChatRoomApiProvider {
     constructor(socket) {
         this.pomelo = socket;
@@ -89,4 +88,5 @@ class ChatRoomApiProvider {
         this.pomelo.notify("chat.chatHandler.updateWhoReadMessages", message);
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ChatRoomApiProvider;

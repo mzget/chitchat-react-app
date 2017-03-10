@@ -12,7 +12,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 const async = require("async");
 const BackendFactory_1 = require("./BackendFactory");
 const serverImplemented_1 = require("../libs/stalk/serverImplemented");
@@ -379,4 +378,5 @@ class ChatRoomComponent {
         ChatRoomComponent.instance = null;
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ChatRoomComponent;

@@ -6,7 +6,7 @@ import Subheader from "material-ui/Subheader";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
-import SimpleToolbar from "../components/SimpleToolbar";
+import { SimpleToolbar } from "../components/SimpleToolbar";
 import { MenuListview } from "../components/MenuListView";
 import ManageOrgChartBox from "./admins/ManageOrgChartBox";
 import CreateGroupBox, { createOrgGroup, createPjbGroup, createPvGroup } from "./admins/CreateGroupBox";
