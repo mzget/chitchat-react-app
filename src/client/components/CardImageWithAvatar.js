@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const Card_1 = require("material-ui/Card");
 exports.CardImageWithAvatar = (props) => (React.createElement(Card_1.Card, null,

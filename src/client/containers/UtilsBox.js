@@ -1,12 +1,5 @@
 "use strict";
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const DialogBox_1 = require("../components/DialogBox");
@@ -41,21 +34,20 @@ class UtilsBox extends React.Component {
                 break;
         }
         if (stalkReducer.notiMessage != this.props.stalkReducer.notiMessage) {
-            this.setState(previousState => (__assign({}, previousState, { openSnackbar: true, snackbarMessage: stalkReducer.notiMessage })));
+            this.setState(previousState => (Object.assign({}, previousState, { openSnackbar: true, snackbarMessage: stalkReducer.notiMessage })));
         }
     }
     closeSnackbar(reason) {
-        this.setState(previousState => (__assign({}, previousState, { openSnackbar: false })));
+        this.setState(previousState => (Object.assign({}, previousState, { openSnackbar: false })));
     }
     render() {
         return (React.createElement("div", null,
-            React.createElement(DialogBox_1.DialogBox, { handleClose: () => { this.setState(__assign({}, this.state, { openDialog: false })); }, open: this.state.openDialog, title: this.state.dialogTitle, message: this.state.dialogMessage }),
+            React.createElement(DialogBox_1.DialogBox, { handleClose: () => { this.setState(Object.assign({}, this.state, { openDialog: false })); }, open: this.state.openDialog, title: this.state.dialogTitle, message: this.state.dialogMessage }),
             React.createElement(SnackbarSimple_1.SnackbarSimple, { open: this.state.openSnackbar, message: this.state.snackbarMessage, handleRequestClose: this.closeSnackbar, hideDuration: 2000 })));
     }
 }
 /**
  * ## Redux boilerplate
  */
-function mapStateToProps(state) { return __assign({}, state); }
-Object.defineProperty(exports, "__esModule", { value: true });
+function mapStateToProps(state) { return Object.assign({}, state); }
 exports.default = react_redux_1.connect(mapStateToProps)(UtilsBox);

@@ -18,18 +18,27 @@ const styles = {
     }
 };
 
-const GroupDetail = (props) => (
+interface IProfileDetailProps {
+    image;
+    first_name;
+    last_name;
+    email;
+    onFirstNameChange: (event, newValue) => void;
+    onLastNameChange: (event, newValue) => void;
+    onFileReaderChange;
+    onSubmit;
+}
+
+export const ProfileDetail = (props: IProfileDetailProps) => (
     <MuiThemeProvider>
         <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align="center">
             <Box justify="center" align="center" p={2}>
-                <h3>Edit Group</h3>
-                <p>Enter group informations</p>
+                <h3>Edit your profile</h3>
             </Box>
             <FileReaderInput
                 as="url"
                 id="file-input"
-                onChange={(props.onFileReaderChange) ? props.onFileReaderChange : () => { }}
-                disabled={props.disabledImage}>
+                onChange={(props.onFileReaderChange) ? props.onFileReaderChange : () => { }} >
                 <Avatar
                     src={props.image}
                     size={96}
@@ -37,21 +46,20 @@ const GroupDetail = (props) => (
                 />
             </FileReaderInput>
             <TextField
-                hintText="group name"
-                errorText="This field is required"
-                value={props.group_name}
-                onChange={props.onGroupNameChange}
-                onKeyDown={(e) => {
-                    if (e.key === "Enter") props.onSubmit();
-                }} />
+                hintText="email"
+                value={props.email}
+                disabled={true} />
             <span style={styles.span} />
             <TextField
-                hintText="group description"
-                value={props.group_description}
-                onChange={props.onGroupDescriptionChange}
-                onKeyDown={(e) => {
-                    if (e.key === "Enter") props.onSubmit();
-                }} />
+                hintText="first_name"
+                errorText="This field is required"
+                value={props.first_name}
+                onChange={props.onFirstNameChange} />
+            <span style={styles.span} />
+            <TextField
+                hintText="last_name"
+                value={props.last_name}
+                onChange={props.onLastNameChange} />
             <span style={styles.span} />
             <RaisedButton primary={true} label="submit" onClick={props.onSubmit} ></RaisedButton>
         </Flex>

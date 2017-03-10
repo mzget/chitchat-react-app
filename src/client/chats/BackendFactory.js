@@ -3,6 +3,7 @@
  *
  */
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const serverImplemented_1 = require("../libs/stalk/serverImplemented");
 const chatRoomApiProvider_1 = require("../libs/stalk/chatRoomApiProvider");
 const serverEventListener_1 = require("../libs/stalk/serverEventListener");

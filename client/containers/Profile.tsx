@@ -8,6 +8,7 @@ import Subheader from "material-ui/Subheader";
 import { IComponentProps } from "../utils/IComponentProps";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { DialogBox } from "../components/DialogBox";
+import { ConnectProfileDetailEnhancer } from "./profile/ProfileDetailEnhancer";
 
 interface IComponentNameState {
     alert: boolean;
@@ -48,21 +49,12 @@ class Profile extends React.Component<IComponentProps, IComponentNameState> {
                         <Subheader>{null}</Subheader>
                     </div>
                     <div style={{ backgroundColor: Colors.indigo50 }}>
-
-                        <div id={"app_body"} style={{ height: this.bodyHeight, backgroundColor: Colors.indigo50 }}>
-                            <Flex flexColumn={true} >
-                                <Flex align="center">
-                                    <Box p={2} flexAuto></Box>
-                                    <Box p={2} flexAuto></Box>
-                                </Flex>
-                                <Box flexAuto justify="flex-end"></Box>
-                                <DialogBox
-                                    title={this.alertTitle}
-                                    message={this.alertMessage}
-                                    open={this.state.alert}
-                                    handleClose={this.closeAlert} />
-                            </Flex>
-                        </div>
+                        <ConnectProfileDetailEnhancer user={this.props.userReducer.user} />
+                        <DialogBox
+                            title={this.alertTitle}
+                            message={this.alertMessage}
+                            open={this.state.alert}
+                            handleClose={this.closeAlert} />
                     </div>
                 </div>
             </MuiThemeProvider >

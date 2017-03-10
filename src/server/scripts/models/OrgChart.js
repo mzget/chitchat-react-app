@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var OrgLevel;
 (function (OrgLevel) {
     OrgLevel[OrgLevel["department"] = 0] = "department";

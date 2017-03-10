@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const api_master = "http://git.animation-genius.com:9000";
 const api_dev = "http://localhost:9000";
 const rest_api = (host) => ({
@@ -54,5 +55,4 @@ const getConfig = () => {
     }
 };
 const config = getConfig();
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = config;
