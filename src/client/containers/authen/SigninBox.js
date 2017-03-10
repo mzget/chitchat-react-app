@@ -1,5 +1,12 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 const React = require("react");
 const SigninForm_1 = require("../../components/SigninForm");
 const CryptoHelper = require("../../chats/utils/CryptoHelper");
@@ -17,10 +24,10 @@ class SigninBox extends React.Component {
         this.onSubmitForm = this.onSubmitForm.bind(this);
     }
     onUsername(event, text) {
-        this.setState(previous => (Object.assign({}, previous, { username: text })));
+        this.setState(previous => (__assign({}, previous, { username: text })));
     }
     onPassword(event, text) {
-        this.setState(previous => (Object.assign({}, previous, { password: text })));
+        this.setState(previous => (__assign({}, previous, { password: text })));
     }
     onSubmitForm() {
         let username = this.state.username;
@@ -41,4 +48,5 @@ class SigninBox extends React.Component {
             React.createElement(SigninForm_1.SigninForm, { username: this.state.username, onUsername: this.onUsername, password: this.state.password, onPassword: this.onPassword, onSubmit: this.onSubmitForm })));
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = SigninBox;

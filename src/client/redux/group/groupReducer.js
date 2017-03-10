@@ -1,8 +1,8 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const immutable_1 = require("immutable");
 const groupRx = require("./groupRx");
 const privateGroupRxActions = require("./privateGroupRxActions");
+const editGroupRxActions = require("./editGroupRxActions");
 const Room_1 = require("../../../server/scripts/models/Room");
 exports.GroupInitState = immutable_1.Record({
     isFetching: false,
@@ -10,6 +10,7 @@ exports.GroupInitState = immutable_1.Record({
     error: null,
     orgGroups: null,
     privateGroups: null,
+    groupImageResult: null
 });
 exports.groupReducer = (state = new exports.GroupInitState(), action) => {
     switch (action.type) {
@@ -53,6 +54,21 @@ exports.groupReducer = (state = new exports.GroupInitState(), action) => {
         }
         case privateGroupRxActions.CREATE_PRIVATE_GROUP_FAILURE: {
             return state.set("state", privateGroupRxActions.CREATE_PRIVATE_GROUP_FAILURE)
+                .set("error", action.payload.message);
+        }
+        case groupRx.UPLOAD_GROUP_IMAGE_SUCCESS: {
+            return state.set("state", groupRx.UPLOAD_GROUP_IMAGE_SUCCESS)
+                .set("groupImageResult", action.payload.result);
+        }
+        case groupRx.UPLOAD_GROUP_IMAGE_FAILURE: {
+            return state.set("state", groupRx.UPLOAD_GROUP_IMAGE_FAILURE)
+                .set("error", action.payload.message);
+        }
+        case editGroupRxActions.EDIT_GROUP_DETAIL_SUCCESS: {
+            return state.set("state", editGroupRxActions.EDIT_GROUP_DETAIL_SUCCESS);
+        }
+        case editGroupRxActions.EDIT_GROUP_DETAIL_FAILURE: {
+            return state.set("state", editGroupRxActions.EDIT_GROUP_DETAIL_FAILURE)
                 .set("error", action.payload.message);
         }
         case groupRx.GROUP_RX_EMPTY_STATE: {

@@ -25,7 +25,7 @@ class ContactBox extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let {chatroomReducer, teamReducer, userReducer} = nextProps;
+        let { chatroomReducer, teamReducer, userReducer } = nextProps;
 
         switch (chatroomReducer.state) {
             case chatroomRx.FETCH_PRIVATE_CHATROOM_SUCCESS:
@@ -52,7 +52,7 @@ class ContactBox extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     onselectMember(data) {
-        let {userReducer} = this.props;
+        let { userReducer } = this.props;
         this._tempContact_id = data._id;
         this.props.dispatch(chatroomRx.fetchPrivateChatRoom(userReducer.user._id, this._tempContact_id));
     }
@@ -61,7 +61,7 @@ class ContactBox extends React.Component<IComponentProps, IComponentNameState> {
         return (
             <div>
                 <Subheader>Chats</Subheader>
-                <MemberList value={this.props.teamReducer.members} onSelected={this.onselectMember} />
+                <MemberList items={this.props.teamReducer.members} onSelected={this.onselectMember} />
             </div>);
     }
 }

@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = require("../../configs/config");
 const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
@@ -47,3 +46,27 @@ exports.createOrgGroup_Epic = action$ => (action$.ofType(CREATE_ORG_GROUP).merge
     .catch(error => Rx.Observable.of(createOrgGroupFailure(error.xhr.response)))));
 exports.GROUP_RX_EMPTY_STATE = "GROUP_RX_EMPTY_STATE";
 exports.emptyState = () => ({ type: exports.GROUP_RX_EMPTY_STATE });
+exports.UPLOAD_GROUP_IMAGE = "UPLOAD_GROUP_IMAGE";
+exports.UPLOAD_GROUP_IMAGE_SUCCESS = "UPLOAD_GROUP_IMAGE_SUCCESS";
+exports.UPLOAD_GROUP_IMAGE_FAILURE = "UPLOAD_GROUP_IMAGE_FAILURE";
+const UPLOAD_GROUP_IMAGE_CANCELLED = "UPLOAD_GROUP_IMAGE_CANCELLED";
+exports.uploadGroupImage = redux_actions_1.createAction(exports.UPLOAD_GROUP_IMAGE, file => file);
+exports.uploadGroupImageFailure = redux_actions_1.createAction(exports.UPLOAD_GROUP_IMAGE_FAILURE, error => error);
+exports.uploadGroupImageSuccess = redux_actions_1.createAction(exports.UPLOAD_GROUP_IMAGE_SUCCESS, result => result);
+exports.uploadGroupImageCancelled = redux_actions_1.createAction(UPLOAD_GROUP_IMAGE_CANCELLED);
+exports.uploadGroupImage_Epic = action$ => (action$.ofType(exports.UPLOAD_GROUP_IMAGE)
+    .mergeMap(action => {
+    let body = new FormData();
+    body.append("file", action.payload);
+    return ajax({
+        method: "POST",
+        url: `${config_1.default.api.group}/uploadImage`,
+        body: body,
+        headers: {
+            "x-access-token": configureStore_1.default.getState().authReducer.token
+        }
+    });
+})
+    .map(json => exports.uploadGroupImageSuccess(json.response))
+    .takeUntil(action$.ofType(UPLOAD_GROUP_IMAGE_CANCELLED))
+    .catch(error => Rx.Observable.of(exports.uploadGroupImageFailure(error.xhr.response))));

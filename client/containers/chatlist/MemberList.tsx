@@ -8,24 +8,36 @@ import { grey400, darkBlack, lightBlack } from "material-ui/styles/colors";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Avatar from "material-ui/Avatar";
+import Toggle from "material-ui/Toggle";
 
 import BadgeSimple from "../../components/BadgeSimple";
 
 import { ChitChatAccount } from "../../../server/scripts/models/User";
 
 interface IComponentProps {
-    value: Array<ChitChatAccount>;
-    onSelected: (item: ChitChatAccount) => void;
+    items: Array<ChitChatAccount>;
+    rightIcon?: any;
+    rightToggle?: boolean;
+    onToggleItem?: (item: ChitChatAccount, checked: boolean) => void;
+    onSelected?: (item: ChitChatAccount) => void;
 }
 
-const renderList = (props: IComponentProps) => props.value.map((item, i) =>
+const renderList = (props: IComponentProps) => props.items.map((item, i) =>
     <div key={i}>
         <ListItem
-            onClick={() => props.onSelected(item)}
+            onClick={(!!props.onSelected) ? () => props.onSelected(item) : () => { }}
             leftAvatar={(!!item.avatar) ?
                 <Avatar src={item.avatar} /> : <Avatar>{item.username.charAt(0)}</Avatar>
             }
-            rightIcon={null}
+            rightIcon={(props.rightIcon) ? props.rightIcon : null}
+            rightToggle={(props.rightToggle) ?
+                <Toggle
+                    onToggle={(event: object, isInputChecked: boolean) => {
+                        props.onToggleItem(item, isInputChecked);
+                    }}
+                    disabled={true}
+                    defaultToggled={true}
+                /> : null}
             primaryText={item.username}
             secondaryText={
                 <p>
@@ -40,7 +52,7 @@ const renderList = (props: IComponentProps) => props.value.map((item, i) =>
 export const MemberList = (props: IComponentProps) => (
     < MuiThemeProvider >
         <List>
-            {(!!props.value) ? renderList(props) : null}
+            {(!!props.items) ? renderList(props) : null}
         </List>
     </ MuiThemeProvider >
 );

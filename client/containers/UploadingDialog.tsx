@@ -35,7 +35,7 @@ class UploadingDialog extends React.Component<IComponentProps, IComponentNameSta
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let {chatroomReducer} = nextProps;
+        let { chatroomReducer } = nextProps;
         let self = this;
 
         switch (chatroomReducer.state) {
@@ -66,7 +66,7 @@ class UploadingDialog extends React.Component<IComponentProps, IComponentNameSta
     }
 
     cancelFileUpload = () => {
-        let {chatroomReducer} = this.props as IComponentProps;
+        let { chatroomReducer } = this.props as IComponentProps;
 
         if (chatroomReducer.state == ChatroomRx.CHATROOM_UPLOAD_FILE) {
             this.props.dispatch(ChatroomRx.uploadFileCanceled());
@@ -76,14 +76,14 @@ class UploadingDialog extends React.Component<IComponentProps, IComponentNameSta
     }
 
     public render(): JSX.Element {
-        let {chatroomReducer} = this.props as IComponentProps;
+        let { chatroomReducer } = this.props as IComponentProps;
 
         const actions = [
             <FlatButton
                 label={this.state.closeLabel}
                 primary={true}
                 onClick={this.cancelFileUpload}
-                />
+            />
         ];
 
         const getMediaCard = () => {
@@ -105,7 +105,7 @@ class UploadingDialog extends React.Component<IComponentProps, IComponentNameSta
                     actions={actions}
                     modal={true}
                     open={this.state.openState}
-                    >
+                >
                     {
                         (this.state.openState) ?
                             getMediaCard() : null

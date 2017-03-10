@@ -17,7 +17,7 @@ import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 import * as AuthRx from "../redux/authen/authRx";
 import * as AppActions from "../redux/app/persistentDataActions";
 
-import SimpleToolbar from "../components/SimpleToolbar";
+import { SimpleToolbar } from "../components/SimpleToolbar";
 import { DialogBox } from "../components/DialogBox";
 import AuthenBox from "./authen/AuthenBox";
 

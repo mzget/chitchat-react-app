@@ -30,7 +30,7 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let {adminReducer} = nextProps;
+        let { adminReducer } = nextProps;
 
         switch (adminReducer.state) {
             case adminRx.UPDATE_USER_ORG_CHART_FAILURE: {
@@ -49,7 +49,7 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
 
 
     onSelectMember(item: ITeamMember) {
-        let {adminReducer: {orgCharts}} = this.props;
+        let { adminReducer: { orgCharts } } = this.props;
         console.log("onSelectMember", item);
         if (item.teamProfiles.length === 0) {
             this.setState(previous => ({ ...previous, member: item, dropdownValue: -1 }));
@@ -64,7 +64,7 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
     }
 
     onSubmit() {
-        let {adminReducer: {orgCharts}, teamReducer: {team}} = this.props;
+        let { adminReducer: { orgCharts }, teamReducer: { team } } = this.props;
 
         let _member = this.state.member;
         if (orgCharts.length > 0 && this.state.dropdownValue >= 0) {
@@ -92,10 +92,10 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
                                 onSubmit={this.onSubmit}
                                 dropdownItems={this.props.adminReducer.orgCharts}
                                 dropdownValue={this.state.dropdownValue}
-                                dropdownChange={(event, id, value) => { this.setState(previous => ({ ...previous, dropdownValue: value })); }}
+                                dropdownChange={(event, id, value) => { console.log(value); this.setState(previous => ({ ...previous, dropdownValue: value })); }}
                             />
                             :
-                            <MemberList onSelected={this.onSelectMember} value={this.props.teamReducer.members} />
+                            <MemberList onSelected={this.onSelectMember} items={this.props.teamReducer.members} />
                     }
                 </Flex>
             </Flex>

@@ -8,7 +8,7 @@ import Config from "../configs/config";
 
 import { TypingBox } from "./TypingBox";
 import { ChatBox } from "./chat/ChatBox";
-import SimpleToolbar from "../components/SimpleToolbar";
+import { SimpleToolbar } from "../components/SimpleToolbar";
 import UtilsBox from "./UtilsBox";
 import UploadingDialog from "./UploadingDialog";
 import GridListSimple from "../components/GridListSimple";
@@ -35,7 +35,9 @@ interface IComponentNameState {
 };
 
 class Chat extends React.Component<IComponentProps, IComponentNameState> {
-    toolbarMenus = ["Favorite"];
+    options = "Options";
+    favorite = "Favorite";
+    toolbarMenus = [this.options, this.favorite];
     clientWidth = document.documentElement.clientWidth;
     clientHeight = document.documentElement.clientHeight;
     h_header = null;
@@ -62,6 +64,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.roomInitialize = this.roomInitialize.bind(this);
         this.onToggleSticker = this.onToggleSticker.bind(this);
         this.onBackPressed = this.onBackPressed.bind(this);
+        this.onMenuSelect = this.onMenuSelect.bind(this);
 
         let { chatroomReducer, userReducer, params } = this.props;
 
@@ -74,7 +77,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillUnmount() {
-        console.log("Chat: leaveRoom");
         this.props.dispatch(chatroomActions.leaveRoomAction());
     }
 
@@ -103,6 +105,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         switch (chatroomReducer.state) {
             case chatroomActions.JOIN_ROOM_FAILURE: {
                 this.setState(previous => ({ ...previous, chatDisabled: true }));
+                break;
             }
 
             case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
@@ -110,10 +113,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 break;
             }
             case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
-                this.props.router.push(`/`);
-                break;
-            }
-            case chatroomActions.LEAVE_ROOM: {
                 this.props.router.push(`/`);
                 break;
             }
@@ -378,6 +377,14 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.props.router.goBack();
     }
 
+    onMenuSelect(id, value) {
+        let { chatroomReducer } = this.props;
+        console.log(id, value);
+        if (this.toolbarMenus[id] == this.options) {
+            this.props.router.push(`/chat/settings/${chatroomReducer.room._id}`);
+        }
+    }
+
     render(): JSX.Element {
         let { chatroomReducer, stalkReducer } = this.props;
 
@@ -387,7 +394,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                     <SimpleToolbar
                         title={(chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty"}
                         menus={this.toolbarMenus}
-                        onSelectedMenuItem={(id, value) => console.log(value)}
+                        onSelectedMenuItem={this.onMenuSelect}
                         onBackPressed={this.onBackPressed} />
                 </div>
                 {

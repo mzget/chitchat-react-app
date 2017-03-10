@@ -10,7 +10,6 @@
  */
 
 import { combineReducers } from "redux";
-import { routerReducer } from "react-router-redux";
 
 import { STALK_ON_SOCKET_RECONNECT } from "./stalkBridge/stalkBridgeActions";
 
@@ -35,7 +34,6 @@ import { GroupInitState, groupReducer } from "./group/groupReducer";
  * EVERY TIME there is a basic action
  */
 const appReducer = combineReducers({
-    routing: routerReducer,
     deviceReducer,
     authReducer,
     teamReducer,

@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const validate = require("validate.js");
 function validateEmailPass(_email, _password, callback) {
     const constraints = {

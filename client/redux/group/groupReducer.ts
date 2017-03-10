@@ -2,6 +2,7 @@
 
 import * as groupRx from "./groupRx";
 import * as privateGroupRxActions from "./privateGroupRxActions";
+import * as editGroupRxActions from "./editGroupRxActions";
 
 import { Room, RoomType } from "../../../server/scripts/models/Room";
 
@@ -12,6 +13,7 @@ export const GroupInitState = Record({
     error: null,
     orgGroups: null,
     privateGroups: null,
+    groupImageResult: null
 });
 export const groupReducer = (state = new GroupInitState(), action) => {
     switch (action.type) {
@@ -58,6 +60,23 @@ export const groupReducer = (state = new GroupInitState(), action) => {
         }
         case privateGroupRxActions.CREATE_PRIVATE_GROUP_FAILURE: {
             return state.set("state", privateGroupRxActions.CREATE_PRIVATE_GROUP_FAILURE)
+                .set("error", action.payload.message);
+        }
+
+        case groupRx.UPLOAD_GROUP_IMAGE_SUCCESS: {
+            return state.set("state", groupRx.UPLOAD_GROUP_IMAGE_SUCCESS)
+                .set("groupImageResult", action.payload.result);
+        }
+        case groupRx.UPLOAD_GROUP_IMAGE_FAILURE: {
+            return state.set("state", groupRx.UPLOAD_GROUP_IMAGE_FAILURE)
+                .set("error", action.payload.message);
+        }
+
+        case editGroupRxActions.EDIT_GROUP_DETAIL_SUCCESS: {
+            return state.set("state", editGroupRxActions.EDIT_GROUP_DETAIL_SUCCESS);
+        }
+        case editGroupRxActions.EDIT_GROUP_DETAIL_FAILURE: {
+            return state.set("state", editGroupRxActions.EDIT_GROUP_DETAIL_FAILURE)
                 .set("error", action.payload.message);
         }
 

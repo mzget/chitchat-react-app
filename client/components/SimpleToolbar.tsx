@@ -31,64 +31,44 @@ interface IComponentProps {
     onBackPressed?: () => void;
 }
 
-interface IComponentState {
-    openState: boolean;
-}
-
-class SimpleToolbar extends React.Component<IComponentProps, IComponentState> {
-    componentWillMount() {
-        this.state = {
-            openState: false
-        };
-    }
-
-    render() {
-        return (
-            <MuiThemeProvider muiTheme={muiTheme}>
-                <Toolbar>
-                    <ToolbarGroup firstChild={true}>
-                        {
-                            (this.props.onBackPressed) ?
-                                <IconButton iconClassName="material-icons" onClick={this.props.onBackPressed}>
-                                    chevron_left
+export const SimpleToolbar = (props: IComponentProps) => (
+    <MuiThemeProvider muiTheme={muiTheme}>
+        <Toolbar>
+            <ToolbarGroup firstChild={true}>
+                {
+                    (props.onBackPressed) ?
+                        <IconButton iconClassName="material-icons" onClick={props.onBackPressed}>
+                            chevron_left
                                 </IconButton>
-                                :
-                                <span style={{ margin: 8 }} />
-                        }
-                        <ToolbarTitle text={this.props.title} style={{ color: Colors.white }} />
-                    </ToolbarGroup>
-                    {
-                        (this.props.menus && this.props.menus.length > 0) ?
-                            (
-                                <ToolbarGroup>
-                                    <ToolbarSeparator />
-                                    <IconMenu
-                                        iconButtonElement={
-                                            <IconButton>
-                                                <NavigationExpandMoreIcon />
-                                            </IconButton>
-                                        }
-                                        anchorOrigin={{ horizontal: "right", vertical: "top" }}
-                                        targetOrigin={{ horizontal: "right", vertical: "top" }}
-                                        onRequestChange={(open, reason) => this.setState({ openState: open })}
-                                        onItemTouchTap={(event, child) => console.log("onItemTouchTap")}
-                                        onTouchTap={(event) => console.log("onTouchTap")}
-                                        open={this.state.openState}
-                                    >
-                                        {
-                                            this.props.menus.map((value, i, arr) => {
-                                                return <MenuItem key={i} primaryText={value}
-                                                    onTouchTap={() => this.props.onSelectedMenuItem(i, value)}
-                                                />;
-                                            })}
-                                    </IconMenu>
-                                </ToolbarGroup>
-                            ) : null
-                    }
-                </Toolbar>
-            </MuiThemeProvider>
-        );
-    }
-}
-
-export default SimpleToolbar;
+                        :
+                        <span style={{ margin: 8 }} />
+                }
+                <ToolbarTitle text={props.title} style={{ color: Colors.white }} />
+            </ToolbarGroup>
+            {
+                (props.menus && props.menus.length > 0) ?
+                    (
+                        <ToolbarGroup>
+                            <ToolbarSeparator />
+                            <IconMenu
+                                iconButtonElement={
+                                    <IconButton>
+                                        <NavigationExpandMoreIcon />
+                                    </IconButton>
+                                }
+                                anchorOrigin={{ horizontal: "right", vertical: "top" }}
+                                targetOrigin={{ horizontal: "right", vertical: "top" }}
+                            >
+                                {
+                                    props.menus.map((value, i, arr) => {
+                                        return <MenuItem key={i} primaryText={value}
+                                            onClick={() => props.onSelectedMenuItem(i, value)}
+                                        />;
+                                    })}
+                            </IconMenu>
+                        </ToolbarGroup>
+                    ) : null
+            }
+        </Toolbar>
+    </MuiThemeProvider>
+);

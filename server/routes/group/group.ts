@@ -3,6 +3,8 @@ import crypto = require("crypto");
 import mongodb = require("mongodb");
 import async = require("async");
 import redis = require("redis");
+import multer = require("multer");
+import fs = require("fs");
 
 const router = express.Router();
 const ObjectID = mongodb.ObjectID;
@@ -16,7 +18,9 @@ import * as UserManager from "../../scripts/controllers/user/UserManager";
 import * as apiUtils from "../../scripts/utils/apiUtils";
 
 import { getAppDb } from "../../scripts/DbClient";
-import { Config, DbClient } from "../../config";
+import { Config, DbClient, Paths } from "../../config";
+import * as FileType from "../../scripts/FileType";
+const upload = multer({ dest: Paths.groupImage }).single("file");
 
 router.get("/org", function (req, res, next) {
     req.checkQuery("team_id", "request for team_id").isMongoId();
@@ -291,6 +295,105 @@ router.post("/private_chat/create", function (req, res, next) {
     });
 });
 
+/**
+ * edit group member...
+ */
+router.post("/editMember/:room_id", (req, res, next) => {
+    req.checkParams("room_id", "request for room_id as params").notEmpty();
+    req.checkBody("members", "request for members array as body object").isByteLength(0);
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let room_id = req.params.room_id as string;
+    let members = req.body.members as Array<IMember>;
+
+    if (Array.isArray(members)) {
+        GroupController.editMember(room_id, members).then((result) => {
+            res.status(200).json(new apiUtils.ApiResponse(true, null, result));
+        }).catch(err => {
+            res.status(500).json(new apiUtils.ApiResponse(false, "edit member fail!"));
+        });
+    }
+    else {
+        res.status(500).json(new apiUtils.ApiResponse(false, "request for members fields as array"));
+    }
+});
+
+router.post("/uploadImage", (req, res, next) => {
+    upload(req, res, function (err) {
+        if (err) {
+            // An error occurred when uploading
+            console.error(err);
+            return res.status(500).json({ success: false, message: "fail to upload" + err });
+        }
+
+        console.log("file", req.file);
+        if (!!req.file) {
+            let file = req.file;
+            let fullname: string = "";
+            if (file.mimetype.match(FileType.imageType))
+                fullname = file.path + file.mimetype.replace("image/", ".");
+
+            fs.readFile(file.path, function (err, data) {
+                if (err) {
+                    res.status(500).json(new apiUtils.ApiResponse(false, err));
+                }
+                else {
+                    fs.writeFile(fullname, data, function (err) {
+                        if (err) {
+                            return res.status(500).json(new apiUtils.ApiResponse(false, err));
+                        }
+
+                        fs.unlink(file.path, (err) => {
+                            if (err) throw err;
+                            console.log("successfully deleted req.file");
+                        });
+
+                        file.path = fullname.replace("public", "");
+                        res.status(200).json(new apiUtils.ApiResponse(true, null, file));
+                    });
+                }
+            });
+        } else {
+            res.status(500).json({ success: false, message: "fail file is missing: " });
+        }
+    });
+});
+
+/**
+ * update group info...
+ */
+router.post("/update", (req, res, next) => {
+    req.checkBody("room", "request for room object").notEmpty();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let room = req.body.room as Room;
+    if (room.type == RoomType.privateChat) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, "Invalid group type, Cannot edit group info!"));
+    }
+    else if (room.name.length <= 0) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, "Invalid group name, Cannot empty field!"));
+    }
+
+    let roomModel = new Room();
+    roomModel = { ...room } as Room;
+
+    ChatRoomManager.updateGroup(roomModel._id.toString(), roomModel).then(result => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, result));
+
+        // <!-- Push new room info to all members.
+        console.warn("Next we will Push new room info to all members.");
+    }).catch(err => {
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
+    });
+});
 
 function pushNewRoomAccessToNewMembers(rid: string, targetMembers: Array<IMember>) {
     let memberIds = new Array<string>();

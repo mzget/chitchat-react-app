@@ -19,15 +19,13 @@ import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 import { createEpicMiddleware } from "redux-observable";
 import * as createLogger from "redux-logger";
-import { routerMiddleware } from "react-router-redux";
 import { browserHistory } from "react-router";
 
 import * as rootReducer from "./rootReducer";
 import * as rootRxEpic from "./rootRxEpic";
 const epicMiddleware = createEpicMiddleware(rootRxEpic.rootEpic);
-const routingMiddleware = routerMiddleware(browserHistory);
 
-const middlewares = [thunk, epicMiddleware, routingMiddleware];
+const middlewares = [thunk, epicMiddleware];
 
 if (process.env.NODE_ENV === `development`) {
     const logger = createLogger();

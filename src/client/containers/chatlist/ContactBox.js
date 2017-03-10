@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const Subheader_1 = require("material-ui/Subheader");
 const teamRx = require("../../redux/team/teamRx");
@@ -46,7 +45,8 @@ class ContactBox extends React.Component {
     render() {
         return (React.createElement("div", null,
             React.createElement(Subheader_1.default, null, "Chats"),
-            React.createElement(MemberList_1.MemberList, { value: this.props.teamReducer.members, onSelected: this.onselectMember })));
+            React.createElement(MemberList_1.MemberList, { items: this.props.teamReducer.members, onSelected: this.onselectMember })));
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ContactBox;

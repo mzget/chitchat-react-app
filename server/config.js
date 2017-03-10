@@ -36,5 +36,6 @@ exports.DbClient = {
     orgChartCollection: "orgCharts"
 };
 exports.Paths = {
-    fileUpload: `./public/uploads/`
+    fileUpload: `./public/uploads/`,
+    groupImage: "./public/groupImage/"
 };

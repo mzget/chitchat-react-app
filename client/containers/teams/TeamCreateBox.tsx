@@ -71,14 +71,14 @@ class TeamCreateBox extends React.Component<IComponentProps, IComponentNameState
                             onNameChange={this.onNameChange}
                             onCreateTeam={this.onSubmitTeam}
                             onFindTeam={this.onToggleView}
-                            />
+                        />
                         :
                         <FindTeamView
                             onSubmit={this.onFindTeamPress}
                             onNameChange={this.onNameChange}
                             onCreateNewPress={this.onToggleView}
                             team_name={this.state.team_name}
-                            />
+                        />
                 }
                 <FindTeamListBox findingTeams={this.props.teamReducer.findingTeams} onSelectTeam={this.onSelectTeam} />
             </div>);

@@ -164,14 +164,6 @@ function oldRoomReducer(state = initialState, action) {
             return state.set("state", ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS);
         }
 
-        case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
-            let roomInfo = (!!action.payload) ? action.payload : state.get("selectRoom");
-
-            return state
-                .set("state", chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS)
-                .set("selectRoom", roomInfo);
-        }
-
         default:
             return state;
     }

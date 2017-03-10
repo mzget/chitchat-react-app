@@ -5,7 +5,6 @@
  * Ahoo Studio.co.th
  */
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const httpStatusCode_1 = require("./utils/httpStatusCode");
 const Pomelo = require("../pomelo/reactWSClient");
 const config_1 = require("../../configs/config");

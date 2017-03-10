@@ -16,7 +16,7 @@ const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 function createDefaultGroup(owner) {
     return __awaiter(this, void 0, void 0, function* () {
-        let db = yield MongoClient.connect(config_1.Config.chatDB);
+        let db = DbClient_1.getAppDb();
         let collection = db.collection(config_1.DbClient.chatroomColl);
         let member = {};
         member._id = owner._id;
@@ -31,21 +31,19 @@ function createDefaultGroup(owner) {
         group.status = Room_1.RoomStatus.active;
         group.type = Room_1.RoomType.organizationGroup;
         let result = yield collection.insert(group);
-        db.close();
         return result.ops;
     });
 }
 exports.createDefaultGroup = createDefaultGroup;
 function addTeamToGroup(group, team) {
     return __awaiter(this, void 0, void 0, function* () {
-        let db = yield MongoClient.connect(config_1.Config.chatDB);
+        let db = DbClient_1.getAppDb();
         let collection = db.collection(config_1.DbClient.chatroomColl);
         let result = yield collection.update({ _id: new mongodb.ObjectID(group._id) }, {
             $set: {
                 team_id: team._id
             }
         });
-        db.close();
         return result.ops;
     });
 }
@@ -66,7 +64,7 @@ function getOrgGroups(team_id, user_id) {
 exports.getOrgGroups = getOrgGroups;
 function addMember(group_id, user) {
     return __awaiter(this, void 0, void 0, function* () {
-        let db = yield MongoClient.connect(config_1.Config.chatDB);
+        let db = DbClient_1.getAppDb();
         let collection = db.collection(config_1.DbClient.chatroomColl);
         let member = {};
         member._id = user._id;
@@ -74,24 +72,22 @@ function addMember(group_id, user) {
         member.room_role = Room_1.MemberRole.member;
         member.username = user.username;
         let results = yield collection.update({ _id: new mongodb.ObjectID(group_id) }, { $addToSet: { members: member } }, { upsert: false });
-        db.close();
         return results.result;
     });
 }
 exports.addMember = addMember;
 function removeUserOutOfOrgChartGroups(user_id, orgChart_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        let db = yield MongoClient.connect(config_1.Config.chatDB);
+        let db = DbClient_1.getAppDb();
         let groupCollection = db.collection(config_1.DbClient.chatroomColl);
         let results = yield groupCollection.updateMany({ org_chart_id: orgChart_id }, { $pull: { members: { $elemMatch: { _id: user_id } } } }, { upsert: false });
-        db.close();
         return results.result;
     });
 }
 exports.removeUserOutOfOrgChartGroups = removeUserOutOfOrgChartGroups;
 function addUserToOrgChartGroups(user_id, username, orgChart_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        let db = yield MongoClient.connect(config_1.Config.chatDB);
+        let db = DbClient_1.getAppDb();
         let groupCollection = db.collection(config_1.DbClient.chatroomColl);
         let member = {};
         member._id = user_id;
@@ -99,8 +95,25 @@ function addUserToOrgChartGroups(user_id, username, orgChart_id) {
         member.room_role = Room_1.MemberRole.member;
         member.username = username;
         let results = yield groupCollection.updateMany({ org_chart_id: orgChart_id }, { $addToSet: { members: member } }, { upsert: false });
-        db.close();
         return results.result;
     });
 }
 exports.addUserToOrgChartGroups = addUserToOrgChartGroups;
+function editMember(group_id, members) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let db = DbClient_1.getAppDb();
+        let collection = db.collection(config_1.DbClient.chatroomColl);
+        let _members = members.map((value, id, arr) => {
+            let member = {};
+            member._id = value._id.toString();
+            member.joinTime = new Date();
+            member.room_role = Room_1.MemberRole.member;
+            member.username = value.username;
+            return member;
+        });
+        let group = { members: _members };
+        let results = yield collection.update({ _id: new mongodb.ObjectID(group_id) }, { $set: group }, { upsert: false });
+        return results.result;
+    });
+}
+exports.editMember = editMember;

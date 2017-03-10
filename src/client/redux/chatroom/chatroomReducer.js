@@ -4,7 +4,6 @@
  * This is pure function for redux app.
  */
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const chatroomActions_1 = require("./chatroomActions");
 const ChatRoomRx = require("./chatroomRxEpic");
 const chatroomActions = require("./chatroomActions");
@@ -140,12 +139,6 @@ function oldRoomReducer(state = initialState, action) {
         }
         case chatroomActions_1.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
             return state.set("state", chatroomActions_1.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS);
-        }
-        case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
-            let roomInfo = (!!action.payload) ? action.payload : state.get("selectRoom");
-            return state
-                .set("state", chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS)
-                .set("selectRoom", roomInfo);
         }
         default:
             return state;

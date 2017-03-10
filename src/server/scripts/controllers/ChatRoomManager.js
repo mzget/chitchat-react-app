@@ -7,14 +7,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 const mongodb = require("mongodb");
 const async = require("async");
 const Room_1 = require("../models/Room");
-const ObjectID = mongodb.ObjectID;
-const MongoClient = mongodb.MongoClient;
 const config_1 = require("../../config");
 const DbClient_1 = require("../DbClient");
+const ObjectID = mongodb.ObjectID;
+const MongoClient = mongodb.MongoClient;
 /*
 * Require
 *@roomId for query chat record in room.
@@ -138,15 +137,31 @@ function getPrivateGroupChat(uid) {
     });
 }
 exports.getPrivateGroupChat = getPrivateGroupChat;
+function updateGroup(roomId, newRoomInfo) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let db = DbClient_1.getAppDb();
+        let collection = db.collection(config_1.DbClient.chatroomColl);
+        let update = {
+            name: newRoomInfo.name,
+            description: newRoomInfo.description,
+            image: newRoomInfo.image
+        };
+        let result = yield collection.updateOne({ _id: new ObjectID(roomId) }, {
+            $currentDate: {
+                lastModified: true
+            },
+            $set: update
+        }, { upsert: false });
+        return result.result;
+    });
+}
+exports.updateGroup = updateGroup;
 class ChatRoomManager {
     constructor() {
         this.roomDAL = new RoomDataAccess();
     }
     getProjectBaseGroups(userId, callback) {
         this.roomDAL.findProjectBaseGroups(userId, callback);
-    }
-    updateGroupImage(roomId, newUrl, callback) {
-        this.roomDAL.userUpdateGroupImage(roomId, newUrl, callback);
     }
     editGroupMembers(editType, roomId, members, callback) {
         if (editType === "add") {
@@ -155,9 +170,6 @@ class ChatRoomManager {
         else if (editType === "remove") {
             this.roomDAL.removeGroupMembers(roomId, members, callback);
         }
-    }
-    editGroupName(roomId, newGroupName, callback) {
-        this.roomDAL.editGroupName(roomId, newGroupName, callback);
     }
     AddChatRecord(object, callback) {
         MongoClient.connect(MDb.DbController.chatDB).then(db => {
@@ -290,12 +302,6 @@ class RoomDataAccess {
             });
         });
     }
-    userUpdateGroupImage(roomId, newUrl, callback) {
-        let self = this;
-        dbClient.UpdateDocument(MDb.DbController.roomColl, function (res) {
-            callback(null, res);
-        }, { _id: new ObjectID(roomId) }, { $set: { image: newUrl } }, { w: 1, upsert: true });
-    }
     addGroupMembers(roomId, members, callback) {
         MongoClient.connect(MDb.DbController.chatDB, function (err, db) {
             if (err) {
@@ -344,26 +350,6 @@ class RoomDataAccess {
             else {
                 callback(null, "removeGroupMembers success.");
             }
-        });
-    }
-    editGroupName(roomId, newGroupName, callback) {
-        MongoClient.connect(MDb.DbController.chatDB, function (err, db) {
-            if (err) {
-                return console.dir(err);
-            }
-            // Get the documents collection
-            let collection = db.collection(MDb.DbController.roomColl);
-            // Find some documents
-            collection.updateOne({ _id: new ObjectID(roomId) }, { $set: { name: newGroupName } }, function (err, result) {
-                assert.equal(null, err);
-                if (err) {
-                    callback(new Error(err.message), null);
-                }
-                else {
-                    callback(null, result);
-                }
-                db.close();
-            });
         });
     }
     editMemberInfoInProjectBase(roomId, member, callback) {
