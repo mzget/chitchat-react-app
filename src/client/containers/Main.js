@@ -135,7 +135,7 @@ class Main extends React.Component {
                 (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                     React.createElement(WarningBar_1.WarningBar, null) : null,
                 React.createElement("div", { style: { height: this.bodyHeight, overflowY: "auto" }, id: "app_body" },
-                    React.createElement(ProfileBox_1.default, __assign({}, this.props)),
+                    React.createElement(ProfileBox_1.ConnectProfileEnhancer, { router: this.props.router }),
                     React.createElement(OrgGroupListBox_1.default, __assign({}, this.props)),
                     React.createElement(PrivateGroupListBox_1.default, __assign({}, this.props)),
                     React.createElement(ContactBox_1.default, __assign({}, this.props)),
