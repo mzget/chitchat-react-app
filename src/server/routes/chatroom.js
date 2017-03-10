@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const crypto = require("crypto");
 const mongodb = require("mongodb");
@@ -38,7 +37,12 @@ router.post("/", function (req, res, next) {
     let hexCode = md.digest("hex");
     let roomId = hexCode.slice(0, 24);
     RoomService.getRoom(roomId, (err, room) => {
-        res.status(200).json(new apiUtils.ApiResponse(true, null, [room]));
+        if (err) {
+            res.status(500).json(new apiUtils.ApiResponse(false, err));
+        }
+        else {
+            res.status(200).json(new apiUtils.ApiResponse(true, null, [room]));
+        }
     });
 });
 router.get("/roomInfo", (req, res, next) => {

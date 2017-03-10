@@ -1,4 +1,12 @@
 "use strict";
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -7,11 +15,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const crypto = require("crypto");
 const mongodb = require("mongodb");
 const async = require("async");
+const multer = require("multer");
+const fs = require("fs");
 const router = express.Router();
 const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
@@ -23,6 +32,8 @@ const UserManager = require("../../scripts/controllers/user/UserManager");
 const apiUtils = require("../../scripts/utils/apiUtils");
 const DbClient_1 = require("../../scripts/DbClient");
 const config_1 = require("../../config");
+const FileType = require("../../scripts/FileType");
+const upload = multer({ dest: config_1.Paths.groupImage }).single("file");
 router.get("/org", function (req, res, next) {
     req.checkQuery("team_id", "request for team_id").isMongoId();
     let errors = req.validationErrors();
@@ -51,7 +62,7 @@ router.post("/org/create", function (req, res, next) {
         return res.status(500).json(new apiUtils.ApiResponse(false, "missing org_chart_id"));
     }
     let roomModel = new Room_1.Room();
-    roomModel = Object.assign({}, room);
+    roomModel = __assign({}, room);
     roomModel.createTime = new Date();
     roomModel.status = Room_1.RoomStatus.active;
     function createGroup() {
@@ -92,7 +103,7 @@ router.post("/private_group/create", function (req, res, next) {
     }
     let room = req.body.room;
     let roomModel = new Room_1.Room();
-    roomModel = Object.assign({}, room);
+    roomModel = __assign({}, room);
     roomModel.createTime = new Date();
     roomModel.status = Room_1.RoomStatus.active;
     ChatRoomManager.createPrivateGroup(roomModel).then(docs => {
@@ -192,9 +203,7 @@ router.post("/deleteMemberOrg", function (req, res, next) {
                 throw err;
             }
             let collection = db.collection(Mdb.DbClient.roomColl);
-            collection.findOneAndUpdate({ "_id": ObjectId(req.body._id) }, { $pull: { "members": req.body.members } }
-            // { $pull: { members: { $in: req.body.members  } } }
-            ).then(function onFulfilled(value) {
+            collection.findOneAndUpdate({ "_id": ObjectId(req.body._id) }, { $pull: { "members": req.body.members } }).then(function onFulfilled(value) {
                 res.status(200).json({ success: true, result: value });
                 db.close();
             })
@@ -257,6 +266,93 @@ router.post("/private_chat/create", function (req, res, next) {
     }).catch(err => {
         console.warn("createPrivateChatRoom fail", err);
         res.status(500).json({ success: false, message: err });
+    });
+});
+/**
+ * edit group member...
+ */
+router.post("/editMember/:room_id", (req, res, next) => {
+    req.checkParams("room_id", "request for room_id as params").notEmpty();
+    req.checkBody("members", "request for members array as body object").isByteLength(0);
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+    let room_id = req.params.room_id;
+    let members = req.body.members;
+    if (Array.isArray(members)) {
+        GroupController.editMember(room_id, members).then((result) => {
+            res.status(200).json(new apiUtils.ApiResponse(true, null, result));
+        }).catch(err => {
+            res.status(500).json(new apiUtils.ApiResponse(false, "edit member fail!"));
+        });
+    }
+    else {
+        res.status(500).json(new apiUtils.ApiResponse(false, "request for members fields as array"));
+    }
+});
+router.post("/uploadImage", (req, res, next) => {
+    upload(req, res, function (err) {
+        if (err) {
+            // An error occurred when uploading
+            console.error(err);
+            return res.status(500).json({ success: false, message: "fail to upload" + err });
+        }
+        console.log("file", req.file);
+        if (!!req.file) {
+            let file = req.file;
+            let fullname = "";
+            if (file.mimetype.match(FileType.imageType))
+                fullname = file.path + file.mimetype.replace("image/", ".");
+            fs.readFile(file.path, function (err, data) {
+                if (err) {
+                    res.status(500).json(new apiUtils.ApiResponse(false, err));
+                }
+                else {
+                    fs.writeFile(fullname, data, function (err) {
+                        if (err) {
+                            return res.status(500).json(new apiUtils.ApiResponse(false, err));
+                        }
+                        fs.unlink(file.path, (err) => {
+                            if (err)
+                                throw err;
+                            console.log("successfully deleted req.file");
+                        });
+                        file.path = fullname.replace("public", "");
+                        res.status(200).json(new apiUtils.ApiResponse(true, null, file));
+                    });
+                }
+            });
+        }
+        else {
+            res.status(500).json({ success: false, message: "fail file is missing: " });
+        }
+    });
+});
+/**
+ * update group info...
+ */
+router.post("/update", (req, res, next) => {
+    req.checkBody("room", "request for room object").notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+    let room = req.body.room;
+    if (room.type == Room_1.RoomType.privateChat) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, "Invalid group type, Cannot edit group info!"));
+    }
+    else if (room.name.length <= 0) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, "Invalid group name, Cannot empty field!"));
+    }
+    let roomModel = new Room_1.Room();
+    roomModel = __assign({}, room);
+    ChatRoomManager.updateGroup(roomModel._id.toString(), roomModel).then(result => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, result));
+        // <!-- Push new room info to all members.
+        console.warn("Next we will Push new room info to all members.");
+    }).catch(err => {
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });
 function pushNewRoomAccessToNewMembers(rid, targetMembers) {

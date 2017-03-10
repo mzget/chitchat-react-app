@@ -1,10 +1,17 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
-const AdminMenu_1 = require("./admins/AdminMenu");
+const MenuListView_1 = require("../components/MenuListView");
 const ManageOrgChartBox_1 = require("./admins/ManageOrgChartBox");
 const CreateGroupBox_1 = require("./admins/CreateGroupBox");
 const TeamMemberBox_1 = require("./admins/TeamMemberBox");
@@ -53,7 +60,7 @@ class Admin extends React.Component {
         const { groupReducer, adminReducer } = nextProps;
         if (groupReducer.state == groupRx.CREATE_ORG_GROUP_SUCCESS ||
             groupReducer.state == privateGroupRxActions.CREATE_PRIVATE_GROUP_SUCCESS) {
-            this.setState(prevState => (Object.assign({}, prevState, { boxState: BoxState.idle })));
+            this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.idle })));
         }
         else if (groupReducer.state == groupRx.CREATE_ORG_GROUP_FAILURE ||
             groupReducer.state == privateGroupRxActions.CREATE_PRIVATE_GROUP_FAILURE) {
@@ -70,11 +77,11 @@ class Admin extends React.Component {
             if (key == CreateGroupBox_1.createPjbGroup) {
                 return this.onAlert("Not yet ready...");
             }
-            this.setState(previous => (Object.assign({}, previous, { boxState: BoxState.isCreateGroup, menuSelected: key })));
+            this.setState(previous => (__assign({}, previous, { boxState: BoxState.isCreateGroup, menuSelected: key })));
         }
         else if (key == this.manageOrgChart) {
             if (userReducer.user.role == User_1.UserRole[User_1.UserRole.admin]) {
-                this.setState(previous => (Object.assign({}, previous, { boxState: BoxState.isManageTeam })));
+                this.setState(previous => (__assign({}, previous, { boxState: BoxState.isManageTeam })));
             }
             else {
                 this.onAlert("Request for admin permision");
@@ -82,7 +89,7 @@ class Admin extends React.Component {
         }
         else if (key == this.teamMember) {
             if (userReducer.user.role == User_1.UserRole[User_1.UserRole.admin]) {
-                this.setState(previous => (Object.assign({}, previous, { boxState: BoxState.isManageMember })));
+                this.setState(previous => (__assign({}, previous, { boxState: BoxState.isManageMember })));
             }
             else {
                 this.onAlert("Request for admin permision");
@@ -91,7 +98,7 @@ class Admin extends React.Component {
     }
     onBackPressed() {
         if (this.state.boxState) {
-            this.setState(previous => (Object.assign({}, previous, { boxState: BoxState.idle })));
+            this.setState(previous => (__assign({}, previous, { boxState: BoxState.idle })));
         }
         else {
             // Jump to main menu.
@@ -101,7 +108,7 @@ class Admin extends React.Component {
     closeAlert() {
         this.alertTitle = "";
         this.alertMessage = "";
-        this.setState(prevState => (Object.assign({}, prevState, { alert: false })), () => {
+        this.setState(prevState => (__assign({}, prevState, { alert: false })), () => {
             this.props.dispatch(groupRx.emptyState());
             this.props.dispatch(adminRx.emptyState());
         });
@@ -109,27 +116,28 @@ class Admin extends React.Component {
     onAlert(error) {
         this.alertTitle = "Alert!";
         this.alertMessage = error;
-        this.setState(previous => (Object.assign({}, previous, { alert: true })));
+        this.setState(previous => (__assign({}, previous, { alert: true })));
     }
     getAdminPanel() {
         switch (this.state.boxState) {
             case BoxState.isManageTeam:
-                return React.createElement(ManageOrgChartBox_1.default, Object.assign({}, this.props, { onError: this.onAlert }));
+                return React.createElement(ManageOrgChartBox_1.default, __assign({}, this.props, { onError: this.onAlert }));
             case BoxState.isCreateGroup:
-                return React.createElement(CreateGroupBox_1.default, Object.assign({}, this.props, { groupType: this.state.menuSelected, onError: this.onAlert }));
+                return React.createElement(CreateGroupBox_1.default, __assign({}, this.props, { groupType: this.state.menuSelected, onError: this.onAlert }));
             case BoxState.isManageMember:
-                return React.createElement(TeamMemberBox_1.TeamMemberBox, Object.assign({}, this.props, { onError: this.onAlert }));
+                return React.createElement(TeamMemberBox_1.TeamMemberBox, __assign({}, this.props, { onError: this.onAlert }));
             default:
-                return React.createElement(AdminMenu_1.AdminMenu, { menus: this.menus, onSelectItem: this.onAdminMenuSelected });
+                return React.createElement(MenuListView_1.MenuListview, { menus: this.menus, onSelectItem: this.onAdminMenuSelected });
         }
     }
     render() {
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement("div", null,
-                React.createElement(SimpleToolbar_1.default, { title: "Admin", onBackPressed: this.onBackPressed }),
+                React.createElement(SimpleToolbar_1.SimpleToolbar, { title: "Admin", onBackPressed: this.onBackPressed }),
                 this.getAdminPanel(),
                 React.createElement(DialogBox_1.DialogBox, { title: this.alertTitle, message: this.alertMessage, open: this.state.alert, handleClose: this.closeAlert }))));
     }
 }
-const mapstateToProps = (state) => (Object.assign({}, state));
+const mapstateToProps = (state) => (__assign({}, state));
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = react_redux_1.connect(mapstateToProps)(Admin);

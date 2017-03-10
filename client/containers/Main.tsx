@@ -7,7 +7,7 @@ import * as Colors from "material-ui/styles/colors";
 import { IComponentProps } from "../utils/IComponentProps";
 
 import { WarningBar } from "../components/WarningBar";
-import SimpleToolbar from "../components/SimpleToolbar";
+import { SimpleToolbar } from "../components/SimpleToolbar";
 import ProfileBox from "./profile/ProfileBox";
 import OrgGroupListBox from "./group/OrgGroupListBox";
 import PrivateGroupListBox from "./group/PrivateGroupListBox";

@@ -4,7 +4,6 @@
  * HttpStatusCode.
  */
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 class HttpStatusCode {
 }
 HttpStatusCode.success = 200;
@@ -12,4 +11,5 @@ HttpStatusCode.noContent = 204;
 HttpStatusCode.fail = 500;
 HttpStatusCode.requestTimeout = 408;
 HttpStatusCode.duplicateLogin = 1004;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = HttpStatusCode;

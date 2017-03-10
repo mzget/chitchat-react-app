@@ -7,6 +7,7 @@ import ChatRoomComponent from "../../chats/chatRoomComponent";
 import Store from "../configureStore";
 import config from "../../configs/config";
 
+import { createAction } from "redux-actions";
 import Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 
@@ -31,7 +32,7 @@ export const getPrivateChatRoomEpic = action$ => action$.ofType(FETCH_PRIVATE_CH
     }))
     .map(json => fetchPrivateChatRoomSuccess(json.response))
     .takeUntil(action$.ofType(FETCH_PRIVATE_CHATROOM_CANCELLED))
-    .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.xhr.response)));
+    .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.xhr.response.message)));
 
 const CREATE_PRIVATE_CHATROOM = "CREATE_PRIVATE_CHATROOM";
 export const CREATE_PRIVATE_CHATROOM_SUCCESS = "CREATE_PRIVATE_CHATROOM_SUCCESS";
@@ -61,10 +62,10 @@ const GET_PERSISTEND_MESSAGE = "GET_PERSISTEND_MESSAGE";
 const GET_PERSISTEND_MESSAGE_CANCELLED = "GET_PERSISTEND_MESSAGE_CANCELLED";
 const GET_PERSISTEND_MESSAGE_SUCCESS = "GET_PERSISTEND_MESSAGE_SUCCESS";
 const GET_PERSISTEND_MESSAGE_FAILURE = "GET_PERSISTEND_MESSAGE_FAILURE";
+export const getPersistendMessage = createAction(GET_PERSISTEND_MESSAGE, currentRid => currentRid);
 const getPersistendMessage_cancel = () => ({ type: GET_PERSISTEND_MESSAGE_CANCELLED });
-const getPersistendMessage_success = (payload) => ({ type: GET_PERSISTEND_MESSAGE_SUCCESS, payload: payload });
+const getPersistendMessage_success = createAction(GET_PERSISTEND_MESSAGE_SUCCESS, payload => payload);
 const getPersistendMessage_failure = (error) => ({ type: GET_PERSISTEND_MESSAGE_FAILURE, payload: error });
-export const getPersistendMessage = (currentRid: string) => ({ type: GET_PERSISTEND_MESSAGE, payload: currentRid });
 export const getPersistendMessageEpic = action$ => {
     return action$.ofType(GET_PERSISTEND_MESSAGE)
         .mergeMap(action => ChatRoomComponent.getInstance().getPersistentMessage(action.payload))

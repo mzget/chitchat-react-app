@@ -19,6 +19,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
+    <Content Include="client\App.tsx" />
     <Content Include="client\components\AvartarSimple.tsx" />
     <Content Include="client\components\BadgeSimple.tsx" />
     <Content Include="client\components\CardImageWithAvatar.tsx" />
@@ -28,6 +29,7 @@
     <Content Include="client\components\DialogBox.tsx" />
     <Content Include="client\components\GridListSimple.tsx" />
     <Content Include="client\components\LinearProgressSimple.tsx" />
+    <Content Include="client\components\MenuListView.tsx" />
     <Content Include="client\components\MessageListItem.tsx" />
     <Content Include="client\components\SigninForm.tsx" />
     <Content Include="client\components\SignupForm.tsx" />
@@ -36,6 +38,7 @@
     <Content Include="client\components\SnackbarSimple.tsx" />
     <Content Include="client\components\SimpleToolbar.tsx" />
     <Content Include="client\components\AppBar.tsx" />
+    <Content Include="client\components\WarningBar.tsx" />
     <Content Include="client\containers\Admin.tsx" />
     <Content Include="client\containers\admins\AdminMenu.tsx" />
     <Content Include="client\containers\admins\ContactProfileView.tsx" />
@@ -49,9 +52,10 @@
     <Content Include="client\containers\authen\SigninBox.tsx" />
     <Content Include="client\containers\authen\SignupBox.tsx" />
     <Content Include="client\containers\Chat.tsx" />
-    <Content Include="client\containers\ChatBox.tsx" />
     <Content Include="client\containers\chatlist\ContactBox.tsx" />
     <Content Include="client\containers\ChatLogsBox.tsx" />
+    <Content Include="client\containers\ChatRoomSettings.tsx" />
+    <Content Include="client\containers\chat\ChatBox.tsx" />
     <Content Include="client\containers\group\GroupList.tsx" />
     <Content Include="client\containers\group\PrivateGroupListBox.tsx" />
     <Content Include="client\containers\group\OrgGroupListBox.tsx" />
@@ -59,6 +63,10 @@
     <Content Include="client\containers\ListChatLogs.tsx" />
     <Content Include="client\containers\profile\ProfileBox.tsx" />
     <Content Include="client\containers\profile\ProfileListView.tsx" />
+    <Content Include="client\containers\roomSettings\EditGroupMember.tsx" />
+    <Content Include="client\containers\roomSettings\GroupDetail.tsx" />
+    <Content Include="client\containers\roomSettings\GroupMember.tsx" />
+    <Content Include="client\containers\roomSettings\GroupMemberEnhancer.tsx" />
     <Content Include="client\containers\Team.tsx" />
     <Content Include="client\containers\teams\TeamCreateBox.tsx" />
     <Content Include="client\containers\teams\FindTeamView.tsx" />
@@ -85,6 +93,7 @@
     <TypeScriptCompile Include="client\redux\admin\adminRx.ts" />
     <TypeScriptCompile Include="client\redux\app\persistentDataActions.ts" />
     <TypeScriptCompile Include="client\redux\authen\authRx.ts" />
+    <TypeScriptCompile Include="client\redux\group\editGroupRxActions.ts" />
     <TypeScriptCompile Include="client\redux\group\groupReducer.ts" />
     <TypeScriptCompile Include="client\redux\group\groupRx.ts" />
     <TypeScriptCompile Include="client\redux\group\privateGroupRxActions.ts" />
@@ -94,7 +103,6 @@
     <Content Include="src\App.css" />
     <Content Include="src\index.css" />
     <Content Include="src\logo.svg" />
-    <Compile Include="src\App.js" />
     <Compile Include="src\App.test.js" />
     <Compile Include="src\client\containers\authen\AuthenBox.js" />
     <Compile Include="src\client\containers\authen\SampleLoginBox.js" />
@@ -326,8 +334,10 @@
     <Folder Include="client\containers\authen\" />
     <Folder Include="client\containers\admins\" />
     <Folder Include="client\containers\chatlist\" />
+    <Folder Include="client\containers\chat\" />
     <Folder Include="client\containers\group\" />
     <Folder Include="client\containers\profile\" />
+    <Folder Include="client\containers\roomSettings\" />
     <Folder Include="client\containers\teams\" />
     <Folder Include="client\libs" />
     <Folder Include="client\libs\chitchat" />

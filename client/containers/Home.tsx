@@ -17,7 +17,7 @@ import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 import * as AuthRx from "../redux/authen/authRx";
 import * as AppActions from "../redux/app/persistentDataActions";
 
-import SimpleToolbar from "../components/SimpleToolbar";
+import { SimpleToolbar } from "../components/SimpleToolbar";
 import { DialogBox } from "../components/DialogBox";
 import AuthenBox from "./authen/AuthenBox";
 
@@ -28,6 +28,12 @@ interface IComponentNameState {
 class Home extends React.Component<IComponentProps, IComponentNameState> {
     alertMessage: string = "";
     alertTitle: string = "";
+    clientWidth = document.documentElement.clientWidth;
+    clientHeight = document.documentElement.clientHeight;
+    headerHeight = null;
+    subHeaderHeight = null;
+    bodyHeight = null;
+    footerHeight = null;
 
     closeAlert() {
         this.alertTitle = "";
@@ -55,8 +61,23 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
         this.props.dispatch(AppActions.getSession());
     }
 
+    componentDidMount() {
+        let toolbar = document.getElementById("toolbar");
+        let warning_bar = document.getElementById("warning_bar");
+        let app_body = document.getElementById("app_body");
+        let app_footer = document.getElementById("app_footer");
+
+        this.headerHeight = toolbar.clientHeight;
+        this.subHeaderHeight = (warning_bar) ? warning_bar.clientHeight : 0;
+        this.footerHeight = app_footer.clientHeight;
+        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight + this.footerHeight));
+
+        this.setState(previous => ({ ...previous }));
+    }
+
+
     componentWillReceiveProps(nextProps) {
-        let { location: {query: {userId, username, roomId, contactId}},
+        let { location: { query: { userId, username, roomId, contactId } },
             chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer
         } = nextProps as IComponentProps;
 
@@ -87,27 +108,40 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     public render(): JSX.Element {
-        let { location: {query: {userId, username, roomId, contactId}}, chatroomReducer, userReducer } = this.props;
+        let { location: { query: { userId, username, roomId, contactId } } } = this.props;
+
         return (
             <MuiThemeProvider>
-                <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn={true}>
-                    <div>
+                <div>
+                    <div id={"toolbar"} style={{ height: this.headerHeight }} >
                         <SimpleToolbar title={"ChitChat team communication."} />
                         <Subheader>{null}</Subheader>
                     </div>
-                    <Flex align="center">
-                        <Box p={2} flexAuto></Box>
-                        <AuthenBox {...this.props} onError={this.onAuthBoxError} />
-                        <Box p={2} flexAuto></Box>
-                    </Flex>
-                    <Flex px={2} align="center">
-                        <Box p={2} flexAuto></Box>
-                        <p>Stalk realtime messaging service.</p>
-                        <Box p={2} flexAuto></Box>
-                    </Flex>
-                    <DialogBox title={this.alertTitle} message={this.alertMessage} open={this.state.alert} handleClose={this.closeAlert} />
-                </Flex>
-            </MuiThemeProvider>
+                    <div style={{ backgroundColor: Colors.indigo50 }}>
+                        <div id={"app_body"} style={{ height: this.bodyHeight, backgroundColor: Colors.indigo50 }}>
+                            <Flex flexColumn={true} >
+                                <Flex align="center">
+                                    <Box p={2} flexAuto></Box>
+                                    <AuthenBox {...this.props}
+                                        onError={this.onAuthBoxError} />
+                                    <Box p={2} flexAuto></Box>
+                                </Flex>
+                                <Box flexAuto justify="flex-end"></Box>
+                                <DialogBox
+                                    title={this.alertTitle}
+                                    message={this.alertMessage}
+                                    open={this.state.alert}
+                                    handleClose={this.closeAlert} />
+                            </Flex>
+                        </div>
+                        <div id={"app_footer"} style={{ width: this.clientWidth, fontSize: 16, padding: 2 }}>
+                            <Flex px={2} align="center" justify="center">
+                                <span>Powered by Stalk realtime messaging service.</span>
+                            </Flex>
+                        </div>
+                    </div>
+                </div>
+            </MuiThemeProvider >
         );
     }
 }

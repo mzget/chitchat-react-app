@@ -9,9 +9,7 @@
  *
  */
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const redux_1 = require("redux");
-const react_router_redux_1 = require("react-router-redux");
 const stalkBridgeActions_1 = require("./stalkBridge/stalkBridgeActions");
 /**
 * ## Reducers
@@ -32,7 +30,6 @@ const groupReducer_1 = require("./group/groupReducer");
  * EVERY TIME there is a basic action
  */
 const appReducer = redux_1.combineReducers({
-    routing: react_router_redux_1.routerReducer,
     deviceReducer: deviceReducer_1.deviceReducer,
     authReducer: authRx_1.authReducer,
     teamReducer: teamRx_1.teamReducer,

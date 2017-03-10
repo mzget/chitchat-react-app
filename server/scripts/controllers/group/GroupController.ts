@@ -10,7 +10,7 @@ const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 
 export async function createDefaultGroup(owner: ChitChatAccount) {
-    let db = await MongoClient.connect(Config.chatDB);
+    let db = getAppDb();
     let collection = db.collection(DbClient.chatroomColl);
 
     let member = {} as IMember;
@@ -29,13 +29,11 @@ export async function createDefaultGroup(owner: ChitChatAccount) {
 
     let result = await collection.insert(group);
 
-    db.close();
-
     return result.ops as Room[];
 }
 
 export async function addTeamToGroup(group: Room, team: ITeam) {
-    let db = await MongoClient.connect(Config.chatDB);
+    let db = getAppDb();
     let collection = db.collection(DbClient.chatroomColl);
 
     let result = await collection.update({ _id: new mongodb.ObjectID(group._id) }, {
@@ -44,7 +42,6 @@ export async function addTeamToGroup(group: Room, team: ITeam) {
         }
     });
 
-    db.close();
     return result.ops;
 }
 
@@ -64,7 +61,7 @@ export async function getOrgGroups(team_id: string, user_id: string) {
 }
 
 export async function addMember(group_id: string, user: ChitChatAccount) {
-    let db = await MongoClient.connect(Config.chatDB);
+    let db = getAppDb();
     let collection = db.collection(DbClient.chatroomColl);
 
     let member = {} as IMember;
@@ -77,24 +74,22 @@ export async function addMember(group_id: string, user: ChitChatAccount) {
         { $addToSet: { members: member } },
         { upsert: false });
 
-    db.close();
     return results.result;
 }
 
 export async function removeUserOutOfOrgChartGroups(user_id: string, orgChart_id: string) {
-    let db = await MongoClient.connect(Config.chatDB);
+    let db = getAppDb();
     let groupCollection = db.collection(DbClient.chatroomColl);
 
     let results = await groupCollection.updateMany({ org_chart_id: orgChart_id },
         { $pull: { members: { $elemMatch: { _id: user_id } } } },
         { upsert: false });
 
-    db.close();
     return results.result;
 }
 
 export async function addUserToOrgChartGroups(user_id: string, username: string, orgChart_id: string) {
-    let db = await MongoClient.connect(Config.chatDB);
+    let db = getAppDb();
     let groupCollection = db.collection(DbClient.chatroomColl);
 
     let member = {} as IMember;
@@ -107,6 +102,28 @@ export async function addUserToOrgChartGroups(user_id: string, username: string,
         { $addToSet: { members: member } },
         { upsert: false });
 
-    db.close();
+    return results.result;
+}
+
+export async function editMember(group_id: string, members: Array<IMember>) {
+    let db = getAppDb();
+    let collection = db.collection(DbClient.chatroomColl);
+
+    let _members = members.map((value, id, arr) => {
+        let member = {} as IMember;
+        member._id = value._id.toString();
+        member.joinTime = new Date();
+        member.room_role = MemberRole.member;
+        member.username = value.username;
+
+        return member;
+    });
+
+    let group = { members: _members } as Room;
+
+    let results = await collection.update({ _id: new mongodb.ObjectID(group_id) },
+        { $set: group },
+        { upsert: false });
+
     return results.result;
 }

@@ -1,5 +1,12 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 const React = require("react");
 const reflexbox_1 = require("reflexbox");
 const material_ui_1 = require("material-ui");
@@ -27,10 +34,10 @@ exports.TeamCreateView = (props) => {
                         props.onCreateTeam();
                 } }),
             React.createElement("span", { style: styles.span }),
-            React.createElement(SubmitButton, Object.assign({}, props)),
+            React.createElement(SubmitButton, __assign({}, props)),
             React.createElement("span", { style: styles.span }),
             React.createElement(reflexbox_1.Flex, { flexColumn: false, align: 'center', justify: 'center' },
                 React.createElement("p", null, "Looking for existing team?"),
                 React.createElement("span", { style: styles.span }),
-                React.createElement(FindButton, Object.assign({}, props))))));
+                React.createElement(FindButton, __assign({}, props))))));
 };

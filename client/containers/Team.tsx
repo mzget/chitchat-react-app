@@ -13,7 +13,7 @@ import * as authRx from "../redux/authen/authRx";
 import { DialogBox } from "../components/DialogBox";
 import TeamListBox from './teams/TeamListBox';
 import TeamCreateBox from './teams/TeamCreateBox';
-import SimpleToolbar from '../components/SimpleToolbar';
+import { SimpleToolbar } from '../components/SimpleToolbar';
 
 import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
 import { ITeam } from '../../server/scripts/models/ITeam';
@@ -38,7 +38,7 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
         this.onToolbarMenuItem = this.onToolbarMenuItem.bind(this);
         this.onCloseDialog = this.onCloseDialog.bind(this);
 
-        let { location: {query: {userId, username, roomId, contactId }}, params, userReducer } = this.props;
+        let { location: { query: { userId, username, roomId, contactId } }, params, userReducer } = this.props;
 
         this.toolbar = "Teams";
         this.state = {
@@ -51,7 +51,7 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let { location: {query: {userId, username, roomId, contactId}},
+        let { location: { query: { userId, username, roomId, contactId } },
             userReducer, authReducer, teamReducer
         } = nextProps;
 
@@ -119,7 +119,7 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     public render(): JSX.Element {
-        let { location: {query: {userId, username, roomId, contactId}}, userReducer, stalkReducer, teamReducer } = this.props;
+        let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, teamReducer } = this.props;
 
         return (
             <MuiThemeProvider>
@@ -132,7 +132,7 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
                         message={this.alertBoxMessage}
                         open={this.state.openDialog}
                         handleClose={this.onCloseDialog}
-                        />
+                    />
                 </div>
             </MuiThemeProvider>
         );
