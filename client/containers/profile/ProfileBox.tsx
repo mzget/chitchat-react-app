@@ -38,7 +38,10 @@ const ProfileView = (props: { user, onClickMyProfile: (item) => void }) => (
     </div>
 );
 const EnhancerProfile = enhanced(({ teamReducer, userReducer, onClickMyProfile }: IEnhancerProps) =>
-    <ProfileView user={userReducer.user} onClickMyProfile={onClickMyProfile} />
+    <ProfileView
+        user={userReducer.user}
+        onClickMyProfile={onClickMyProfile}
+    />
 );
 
 const mapStateToProps = (state) => ({

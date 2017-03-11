@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const recompose_1 = require("recompose");
 const react_redux_1 = require("react-redux");

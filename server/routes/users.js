@@ -7,7 +7,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const mongodb = require("mongodb");
 const apiUtils = require("../scripts/utils/apiUtils");
@@ -108,7 +107,6 @@ router.post("/signup", function (req, res, next) {
     }
     let user = req.body.user;
     let userModel = new User_1.ChitChatAccount();
-    userModel.displayname = user.username;
     userModel.username = user.email;
     userModel.email = user.email;
     userModel.password = user.password;

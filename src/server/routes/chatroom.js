@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const crypto = require("crypto");
 const mongodb = require("mongodb");

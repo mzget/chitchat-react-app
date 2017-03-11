@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const react_router_1 = require("react-router");
@@ -28,4 +27,5 @@ class App extends React.Component {
                 React.createElement(react_router_1.Route, { path: "/admin/(:filter)", component: Admin_1.default }))));
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = App;

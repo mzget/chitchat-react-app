@@ -1,25 +1,24 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = require("../../configs/config");
-const immutable_1 = require("immutable");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 const UserService = require("../../chats/services/UserService");
-const authRx = require("../authen/authRx");
 const configureStore_1 = require("../configureStore");
 const FETCH_USER = "FETCH_USER";
 exports.FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS";
 exports.FETCH_USER_FAILURE = "FETCH_USER_FAILURE";
-const FETCH_USER_CANCELLED = "FETCH_USER_CANCELLED";
+exports.FETCH_USER_CANCELLED = "FETCH_USER_CANCELLED";
 exports.fetchUser = (username) => ({ type: FETCH_USER, payload: username }); // username => ({ type: FETCH_USER, payload: username });
 const fetchUserFulfilled = payload => ({ type: exports.FETCH_USER_SUCCESS, payload });
-const cancelFetchUser = () => ({ type: FETCH_USER_CANCELLED });
+const cancelFetchUser = () => ({ type: exports.FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: exports.FETCH_USER_FAILURE, payload, error: true });
-exports.fetchUserEpic = action$ => action$.ofType(FETCH_USER)
-    .mergeMap(action => ajax.getJSON(`${config_1.default.api.user}/?username=${action.payload}`, { "x-access-token": configureStore_1.default.getState().authReducer.token })
-    .map(fetchUserFulfilled)
-    .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
-    .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response))));
+exports.fetchUserEpic = action$ => (action$.ofType(FETCH_USER).mergeMap(action => ajax.getJSON(`${config_1.default.api.user}/?username=${action.payload}`, { "x-access-token": configureStore_1.default.getState().authReducer.token }).map(fetchUserFulfilled)
+    .takeUntil(action$.ofType(exports.FETCH_USER_CANCELLED))
+    .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))));
+const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
+exports.UPDATE_USER_PROFILE_SUCCESS = "UPDATE_USER_PROFILE_SUCCESS";
+exports.UPDATE_USER_PROFILE_FAILURE = "UPDATE_USER_PROFILE_FAILURE";
+exports.UPDATE_USER_PROFILE_CANCELLED = "UPDATE_USER_PROFILE_CANCELLED";
 const FETCH_AGENT_BY_ID = "FETCH_AGENT_BY_ID";
 const FETCH_AGENT_BY_ID_SUCCESS = "FETCH_AGENT_BY_ID_SUCCESS";
 const FETCH_AGENT_BY_ID_FAILURE = "FETCH_AGENT_BY_ID_FAILURE";
@@ -53,44 +52,21 @@ const fetchContactSuccess = payload => ({ type: FETCH_CONTACT_SUCCESS, payload }
 exports.fetchContactEpic = action$ => action$.ofType(FETCH_CONTACT)
     .mergeMap(action => ajax.getJSON(`${config_1.default.api.user}/contact/?id=${action.payload}`)
     .map(fetchContactSuccess)
-    .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
+    .takeUntil(action$.ofType(exports.FETCH_USER_CANCELLED))
     .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response))));
 const GET_TEAM_PROFILE = "GET_TEAM_PROFILE";
 exports.GET_TEAM_PROFILE_SUCCESS = "GET_TEAM_PROFILE_SUCCESS";
-const GET_TEAM_PROFILE_FAILURE = "GET_TEAM_PROFILE_FAILURE";
+exports.GET_TEAM_PROFILE_FAILURE = "GET_TEAM_PROFILE_FAILURE";
 const GET_TEAM_PROFILE_CANCELLED = "GET_TEAM_PROFILE_CANCELLED";
 exports.getTeamProfile = (team_id) => ({ type: GET_TEAM_PROFILE, payload: team_id });
 const getTeamProfileSuccess = (payload) => ({ type: exports.GET_TEAM_PROFILE_SUCCESS, payload });
-const getTeamProfileFailure = (payload) => ({ type: GET_TEAM_PROFILE_FAILURE, payload });
+const getTeamProfileFailure = (payload) => ({ type: exports.GET_TEAM_PROFILE_FAILURE, payload });
 const getTeamProfileCancelled = () => ({ type: GET_TEAM_PROFILE_CANCELLED });
 exports.getTeamProfileEpic = action$ => (action$.ofType(GET_TEAM_PROFILE)
     .mergeMap(action => {
     let token = configureStore_1.default.getState().authReducer.token;
     return UserService.getTeamProfile(token, action.payload);
 })
-    .map(response => getTeamProfileSuccess(response.response))
+    .map(result => getTeamProfileSuccess(result.response.result))
     .takeUntil(action$.ofType(GET_TEAM_PROFILE_CANCELLED))
     .catch(error => Rx.Observable.of(getTeamProfileFailure(error.xhr.response))));
-exports.UserInitState = immutable_1.Record({
-    isFetching: false,
-    state: null,
-    user: null,
-    teamProfile: null
-});
-const userInitState = new exports.UserInitState();
-exports.userReducer = (state = userInitState, action) => {
-    switch (action.type) {
-        case exports.FETCH_USER_SUCCESS:
-            return state.set("user", action.payload.result[0])
-                .set("state", exports.FETCH_USER_SUCCESS);
-        case FETCH_USER_CANCELLED:
-            return state;
-        case exports.FETCH_USER_FAILURE:
-            return state.set("state", exports.FETCH_USER_FAILURE);
-        case authRx.LOG_OUT_SUCCESS: {
-            return userInitState;
-        }
-        default:
-            return state;
-    }
-};

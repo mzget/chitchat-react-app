@@ -9,7 +9,6 @@
  *
  */
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const redux_1 = require("redux");
 const stalkBridgeActions_1 = require("./stalkBridge/stalkBridgeActions");
 /**
@@ -17,7 +16,7 @@ const stalkBridgeActions_1 = require("./stalkBridge/stalkBridgeActions");
 */
 const deviceReducer_1 = require("./device/deviceReducer");
 const teamRx_1 = require("./team/teamRx");
-const userRx_1 = require("./user/userRx");
+const userReducer_1 = require("./user/userReducer");
 const adminReducer_1 = require("./admin/adminReducer");
 const authRx_1 = require("./authen/authRx");
 const stalkReducer_1 = require("./stalkBridge/stalkReducer");
@@ -38,7 +37,7 @@ const appReducer = redux_1.combineReducers({
     stalkReducer: stalkReducer_1.stalkReducer,
     chatroomReducer: chatroomReducer_1.chatroomReducer,
     chatlogReducer: chatlogReducer_1.chatlogReducer,
-    userReducer: userRx_1.userReducer,
+    userReducer: userReducer_1.userReducer,
     adminReducer: adminReducer_1.adminReducer,
 });
 /*
@@ -55,7 +54,7 @@ function getInitialState() {
         stalkReducer: new stalkReducer_1.StalkInitState(),
         chatroomReducer: new chatroomReducer_1.ChatRoomInitState(),
         chatlogReducer: new chatlogReducer_1.ChatLogInitState(),
-        userReducer: new userRx_1.UserInitState(),
+        userReducer: new userReducer_1.UserInitState(),
         adminReducer: new adminReducer_1.AdminInitState(),
     };
     return _initState;

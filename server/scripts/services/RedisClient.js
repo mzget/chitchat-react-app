@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const redis = require("redis");
 const bluebird = require("bluebird");
 const config_1 = require("../../config");
@@ -24,6 +23,7 @@ RedisClient.on("error", function (err) {
     exports.redisStatus = RedisStatus.error;
 });
 bluebird.promisifyAll(RedisClient);
+Object.defineProperty(exports, "__esModule", { value: true });
 // bluebird.promisifyAll(redis.Multi.prototype);
 exports.default = RedisClient;
 exports.ROOM_KEY = "rooms";

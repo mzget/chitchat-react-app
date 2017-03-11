@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { withProps, withState, withHandlers, compose, lifecycle } from "recompose";
 
 import { ProfileDetail } from "./ProfileDetail";
+import { } from "../../redux/user/userRx";
 
 import { ChitChatAccount } from "../../../server/scripts/models/User";
 
