@@ -31,8 +31,13 @@ const enhance = compose(
 
             props.updateUser(prev => user);
         },
+        onTelNumberChange: (props: IEnhanceProps) => (event, newValue) => {
+            let user = props.user;
+            user["tel"] = newValue;
+
+            props.updateUser(prev => user);
+        },
         onSubmit: (props: IEnhanceProps) => () => {
-            // let payload = { room_id: props.room_id, members: props.members };
             // props.dispatch(editGroupRxActions.editGroupMember(payload));
 
             console.log("bobo", props);
@@ -40,17 +45,14 @@ const enhance = compose(
     })
 );
 const ProfileDetailEnhancer = enhance(({
-  user, onFirstNameChange, onLastNameChange, onSubmit, onFileReaderChange
+  user, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange
      }: IEnhanceProps) =>
     <ProfileDetail
-        image={user.avatar}
-        first_name={user.firstname}
-        last_name={user.lastname}
-        email={user.email}
+        user={user}
         onFirstNameChange={onFirstNameChange}
         onLastNameChange={onLastNameChange}
+        onTelNumberChange={onTelNumberChange}
         onFileReaderChange={onFileReaderChange}
         onSubmit={onSubmit} />
 );
-
 export const ConnectProfileDetailEnhancer = connect()(ProfileDetailEnhancer);

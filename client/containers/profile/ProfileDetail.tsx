@@ -9,6 +9,8 @@ import Avatar from "material-ui/Avatar";
 
 import * as FileReaderInput from "react-file-reader-input";
 
+import { ChitChatAccount } from "../../../server/scripts/models/User";
+
 const styles = {
     span: {
         padding: 8
@@ -19,16 +21,13 @@ const styles = {
 };
 
 interface IProfileDetailProps {
-    image;
-    first_name;
-    last_name;
-    email;
+    user: ChitChatAccount;
     onFirstNameChange: (event, newValue) => void;
     onLastNameChange: (event, newValue) => void;
-    onFileReaderChange;
-    onSubmit;
+    onTelNumberChange: (event, newValue) => void;
+    onFileReaderChange: (event, file) => void;
+    onSubmit: () => void;
 }
-
 export const ProfileDetail = (props: IProfileDetailProps) => (
     <MuiThemeProvider>
         <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align="center">
@@ -40,26 +39,42 @@ export const ProfileDetail = (props: IProfileDetailProps) => (
                 id="file-input"
                 onChange={(props.onFileReaderChange) ? props.onFileReaderChange : () => { }} >
                 <Avatar
-                    src={props.image}
+                    src={props.user.avatar}
                     size={96}
                     style={styles.avatar}
                 />
             </FileReaderInput>
             <TextField
-                hintText="email"
-                value={props.email}
-                disabled={true} />
-            <span style={styles.span} />
-            <TextField
                 hintText="first_name"
                 errorText="This field is required"
-                value={props.first_name}
+                value={props.user.firstname}
                 onChange={props.onFirstNameChange} />
             <span style={styles.span} />
             <TextField
                 hintText="last_name"
-                value={props.last_name}
+                errorText="This field is required"
+                value={props.user.lastname}
                 onChange={props.onLastNameChange} />
+            <span style={styles.span} />
+            <TextField
+                hintText="email"
+                value={props.user.email}
+                disabled={true} />
+            <span style={styles.span} />
+            <TextField
+                hintText="user_role"
+                value={props.user.role}
+                disabled={true} />
+            <span style={styles.span} />
+            <TextField
+                hintText="user_status"
+                value={props.user.status}
+                disabled={true} />
+            <span style={styles.span} />
+            <TextField
+                hintText="tel"
+                value={props.user.tel}
+                onChange={props.onTelNumberChange} />
             <span style={styles.span} />
             <RaisedButton primary={true} label="submit" onClick={props.onSubmit} ></RaisedButton>
         </Flex>

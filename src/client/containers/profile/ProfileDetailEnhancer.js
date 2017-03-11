@@ -21,11 +21,15 @@ recompose_1.withHandlers({
         user["lastname"] = newValue;
         props.updateUser(prev => user);
     },
+    onTelNumberChange: (props) => (event, newValue) => {
+        let user = props.user;
+        user["tel"] = newValue;
+        props.updateUser(prev => user);
+    },
     onSubmit: (props) => () => {
-        // let payload = { room_id: props.room_id, members: props.members };
         // props.dispatch(editGroupRxActions.editGroupMember(payload));
         console.log("bobo", props);
     }
 }));
-const ProfileDetailEnhancer = enhance(({ user, onFirstNameChange, onLastNameChange, onSubmit, onFileReaderChange }) => React.createElement(ProfileDetail_1.ProfileDetail, { image: user.avatar, first_name: user.firstname, last_name: user.lastname, email: user.email, onFirstNameChange: onFirstNameChange, onLastNameChange: onLastNameChange, onFileReaderChange: onFileReaderChange, onSubmit: onSubmit }));
+const ProfileDetailEnhancer = enhance(({ user, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange }) => React.createElement(ProfileDetail_1.ProfileDetail, { user: user, onFirstNameChange: onFirstNameChange, onLastNameChange: onLastNameChange, onTelNumberChange: onTelNumberChange, onFileReaderChange: onFileReaderChange, onSubmit: onSubmit }));
 exports.ConnectProfileDetailEnhancer = react_redux_1.connect()(ProfileDetailEnhancer);
