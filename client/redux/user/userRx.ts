@@ -5,13 +5,12 @@ import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
 import * as UserService from "../../chats/services/UserService";
-import * as authRx from "../authen/authRx";
 import Store from "../configureStore";
 
 const FETCH_USER = "FETCH_USER";
 export const FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS";
 export const FETCH_USER_FAILURE = "FETCH_USER_FAILURE";
-const FETCH_USER_CANCELLED = "FETCH_USER_CANCELLED";
+export const FETCH_USER_CANCELLED = "FETCH_USER_CANCELLED";
 export const fetchUser = (username) => ({ type: FETCH_USER, payload: username }); // username => ({ type: FETCH_USER, payload: username });
 const fetchUserFulfilled = payload => ({ type: FETCH_USER_SUCCESS, payload });
 const cancelFetchUser = () => ({ type: FETCH_USER_CANCELLED });
@@ -19,7 +18,9 @@ const fetchUserRejected = payload => ({ type: FETCH_USER_FAILURE, payload, error
 export const fetchUserEpic = action$ =>
     action$.ofType(FETCH_USER)
         .mergeMap(action =>
-            ajax.getJSON(`${config.api.user}/?username=${action.payload}`, { "x-access-token": Store.getState().authReducer.token })
+            ajax.getJSON(`${config.api.user}/?username=${action.payload}`,
+                { "x-access-token": Store.getState().authReducer.token }
+            )
                 .map(fetchUserFulfilled)
                 .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
                 .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))
@@ -89,29 +90,3 @@ export const getTeamProfileEpic = action$ => (
         .takeUntil(action$.ofType(GET_TEAM_PROFILE_CANCELLED))
         .catch(error => Rx.Observable.of(getTeamProfileFailure(error.xhr.response)))
 );
-
-export const UserInitState = Record({
-    isFetching: false,
-    state: null,
-    user: null,
-    teamProfile: null
-});
-const userInitState = new UserInitState();
-export const userReducer = (state = userInitState, action) => {
-    switch (action.type) {
-        case FETCH_USER_SUCCESS:
-            return state.set("user", action.payload.result[0])
-                .set("state", FETCH_USER_SUCCESS);
-        case FETCH_USER_CANCELLED:
-            return state;
-        case FETCH_USER_FAILURE:
-            return state.set("state", FETCH_USER_FAILURE);
-
-        case authRx.LOG_OUT_SUCCESS: {
-            return userInitState;
-        }
-
-        default:
-            return state;
-    }
-};

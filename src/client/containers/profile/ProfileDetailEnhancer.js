@@ -4,13 +4,7 @@ const React = require("react");
 const react_redux_1 = require("react-redux");
 const recompose_1 = require("recompose");
 const ProfileDetail_1 = require("./ProfileDetail");
-const enhance = recompose_1.compose(recompose_1.withState("user", "updateUser", ({ user }) => user), 
-// lifecycle({
-//     componentWillMount() {
-//         this.props.updateMembers(member => this.props.initMembers);
-//     }
-// }),
-recompose_1.withHandlers({
+const enhance = recompose_1.compose(recompose_1.withState("user", "updateUser", ({ user }) => user), recompose_1.withHandlers({
     onFirstNameChange: (props) => (event, newValue) => {
         let user = props.user;
         user["firstname"] = newValue;

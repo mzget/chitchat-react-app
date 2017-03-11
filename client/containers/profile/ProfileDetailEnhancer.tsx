@@ -13,11 +13,6 @@ interface IEnhanceProps {
 }
 const enhance = compose(
     withState("user", "updateUser", ({ user }) => user),
-    // lifecycle({
-    //     componentWillMount() {
-    //         this.props.updateMembers(member => this.props.initMembers);
-    //     }
-    // }),
     withHandlers({
         onFirstNameChange: (props: IEnhanceProps) => (event, newValue) => {
             let user = props.user;
