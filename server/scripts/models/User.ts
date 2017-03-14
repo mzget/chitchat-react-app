@@ -26,7 +26,7 @@ export class ChitChatAccount {
     avatar: string;
     status: string;
     memberOfRooms: string[];
-    lastEditProfile: Date;
+    lastModified: Date;
     favoriteUsers: string[]; // user_id
     favoriteGroups: string[]; // room_id
     closedNoticeUsers: string[]; // user_id

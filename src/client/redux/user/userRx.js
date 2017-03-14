@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = require("../../configs/config");
+const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 const UserService = require("../../chats/services/UserService");
@@ -71,3 +72,27 @@ exports.getTeamProfileEpic = action$ => (action$.ofType(GET_TEAM_PROFILE)
     .map(result => getTeamProfileSuccess(result.response.result))
     .takeUntil(action$.ofType(GET_TEAM_PROFILE_CANCELLED))
     .catch(error => Rx.Observable.of(getTeamProfileFailure(error.xhr.response))));
+const UPLOAD_USER_AVATAR = "UPLOAD_USER_AVATAR";
+exports.UPLOAD_USER_AVATAR_SUCCESS = "UPLOAD_USER_AVATAR_SUCCESS";
+exports.UPLOAD_USER_AVATAR_FAILURE = "UPLOAD_USER_AVATAR_FAILURE";
+const UPLOAD_USER_AVATAR_CANCELLED = "UPLOAD_USER_AVATAR_CANCELLED";
+exports.uploadUserAvatar = redux_actions_1.createAction(UPLOAD_USER_AVATAR, file => file);
+exports.uploadUserAvatarSuccess = redux_actions_1.createAction(exports.UPLOAD_USER_AVATAR_SUCCESS, result => result);
+exports.uploadUserAvatarFailure = redux_actions_1.createAction(exports.UPLOAD_USER_AVATAR_FAILURE, error => error);
+exports.uploadUserAvatarCancelled = redux_actions_1.createAction(UPLOAD_USER_AVATAR_CANCELLED);
+exports.uploadUserAvatar_Epic = action$ => (action$.ofType(UPLOAD_USER_AVATAR)
+    .mergeMap(action => {
+    let body = new FormData();
+    body.append("file", action.payload);
+    return ajax({
+        method: "POST",
+        url: `${config_1.default.api.user}/uploadImage`,
+        body: body,
+        headers: {
+            "x-access-token": configureStore_1.default.getState().authReducer.token
+        }
+    });
+})
+    .map(json => exports.uploadUserAvatarSuccess(json.response))
+    .takeUntil(action$.ofType(UPLOAD_USER_AVATAR_CANCELLED))
+    .catch(error => Rx.Observable.of(exports.uploadUserAvatarFailure(error.xhr.response))));

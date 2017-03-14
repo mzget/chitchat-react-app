@@ -57,7 +57,9 @@ class Profile extends React.Component<IComponentProps, IComponentNameState> {
                         <Subheader>{null}</Subheader>
                     </div>
                     <div id={"app_body"} style={{ backgroundColor: Colors.indigo50, height: this.bodyHeight, overflowY: "auto" }}>
-                        <ConnectProfileDetailEnhancer user={this.props.userReducer.user} teamProfile={this.props.userReducer.teamProfile} />
+                        <ConnectProfileDetailEnhancer
+                            user={this.props.userReducer.user}
+                            teamProfile={this.props.userReducer.teamProfile} />
                         <DialogBox
                             title={this.alertTitle}
                             message={this.alertMessage}

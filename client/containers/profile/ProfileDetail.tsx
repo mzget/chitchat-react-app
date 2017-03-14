@@ -59,6 +59,11 @@ export const ProfileDetail = (props: IProfileDetailProps) => (
                 onChange={props.onLastNameChange} />
             <span style={styles.span} />
             <TextField
+                hintText="tel"
+                value={props.user.tel}
+                onChange={props.onTelNumberChange} />
+            <span style={styles.span} />
+            <TextField
                 hintText="email"
                 value={props.user.email}
                 disabled={true} />
@@ -72,11 +77,6 @@ export const ProfileDetail = (props: IProfileDetailProps) => (
                 hintText="user_status"
                 value={props.user.status}
                 disabled={true} />
-            <span style={styles.span} />
-            <TextField
-                hintText="tel"
-                value={props.user.tel}
-                onChange={props.onTelNumberChange} />
             <span style={styles.span} />
             <RaisedButton primary={true} label="submit" onClick={props.onSubmit} ></RaisedButton>
         </Flex>

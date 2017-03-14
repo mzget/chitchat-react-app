@@ -246,4 +246,23 @@ router.get("/teamProfile", (req, res, next) => {
     });
 });
 
+router.post("/userInfo", (req, res, next) => {
+    req.checkBody("user", "request for user as body params").notEmpty();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let token = req["decoded"];
+    let user_id = token._id as string;
+    let user = req.body.user as ChitChatAccount;
+
+    UserManager.updateUserInfo(user_id, user).then(value => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, value));
+    }).catch(err => {
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
+    });
+});
+
 module.exports = router;

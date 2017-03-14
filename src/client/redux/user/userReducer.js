@@ -9,7 +9,8 @@ exports.UserInitState = immutable_1.Record({
     isFetching: false,
     state: null,
     user: null,
-    teamProfile: null
+    teamProfile: null,
+    userAvatarResult: null
 });
 const userInitState = new exports.UserInitState();
 exports.userReducer = (state = userInitState, action) => {
@@ -32,6 +33,13 @@ exports.userReducer = (state = userInitState, action) => {
             else {
                 return state;
             }
+        }
+        case userRx_1.UPLOAD_USER_AVATAR_FAILURE: {
+            return state;
+        }
+        case userRx_1.UPLOAD_USER_AVATAR_SUCCESS: {
+            return state.set("state", userRx_1.UPLOAD_USER_AVATAR_SUCCESS)
+                .set("userAvatarResult", action.payload.result);
         }
         default:
             return state;

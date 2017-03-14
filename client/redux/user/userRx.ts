@@ -1,5 +1,6 @@
 import config from "../../configs/config";
 import { Record } from "immutable";
+import { createAction } from "redux-actions";
 
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
@@ -29,6 +30,7 @@ const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
 export const UPDATE_USER_PROFILE_SUCCESS = "UPDATE_USER_PROFILE_SUCCESS";
 export const UPDATE_USER_PROFILE_FAILURE = "UPDATE_USER_PROFILE_FAILURE";
 export const UPDATE_USER_PROFILE_CANCELLED = "UPDATE_USER_PROFILE_CANCELLED";
+
 
 const FETCH_AGENT_BY_ID = "FETCH_AGENT_BY_ID";
 const FETCH_AGENT_BY_ID_SUCCESS = "FETCH_AGENT_BY_ID_SUCCESS";
@@ -94,4 +96,32 @@ export const getTeamProfileEpic = action$ => (
         .map(result => getTeamProfileSuccess(result.response.result))
         .takeUntil(action$.ofType(GET_TEAM_PROFILE_CANCELLED))
         .catch(error => Rx.Observable.of(getTeamProfileFailure(error.xhr.response)))
+);
+
+const UPLOAD_USER_AVATAR = "UPLOAD_USER_AVATAR";
+export const UPLOAD_USER_AVATAR_SUCCESS = "UPLOAD_USER_AVATAR_SUCCESS";
+export const UPLOAD_USER_AVATAR_FAILURE = "UPLOAD_USER_AVATAR_FAILURE";
+const UPLOAD_USER_AVATAR_CANCELLED = "UPLOAD_USER_AVATAR_CANCELLED";
+export const uploadUserAvatar = createAction(UPLOAD_USER_AVATAR, file => file);
+export const uploadUserAvatarSuccess = createAction(UPLOAD_USER_AVATAR_SUCCESS, result => result);
+export const uploadUserAvatarFailure = createAction(UPLOAD_USER_AVATAR_FAILURE, error => error);
+export const uploadUserAvatarCancelled = createAction(UPLOAD_USER_AVATAR_CANCELLED);
+export const uploadUserAvatar_Epic = action$ => (
+    action$.ofType(UPLOAD_USER_AVATAR)
+        .mergeMap(action => {
+            let body = new FormData();
+            body.append("file", action.payload);
+
+            return ajax({
+                method: "POST",
+                url: `${config.api.user}/uploadImage`,
+                body: body,
+                headers: {
+                    "x-access-token": Store.getState().authReducer.token
+                }
+            });
+        })
+        .map(json => uploadUserAvatarSuccess(json.response))
+        .takeUntil(action$.ofType(UPLOAD_USER_AVATAR_CANCELLED))
+        .catch(error => Rx.Observable.of(uploadUserAvatarFailure(error.xhr.response)))
 );
