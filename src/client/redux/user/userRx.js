@@ -17,10 +17,25 @@ const fetchUserRejected = payload => ({ type: exports.FETCH_USER_FAILURE, payloa
 exports.fetchUserEpic = action$ => (action$.ofType(FETCH_USER).mergeMap(action => ajax.getJSON(`${config_1.default.api.user}/?username=${action.payload}`, { "x-access-token": configureStore_1.default.getState().authReducer.token }).map(fetchUserFulfilled)
     .takeUntil(action$.ofType(exports.FETCH_USER_CANCELLED))
     .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))));
-const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
-exports.UPDATE_USER_PROFILE_SUCCESS = "UPDATE_USER_PROFILE_SUCCESS";
-exports.UPDATE_USER_PROFILE_FAILURE = "UPDATE_USER_PROFILE_FAILURE";
-exports.UPDATE_USER_PROFILE_CANCELLED = "UPDATE_USER_PROFILE_CANCELLED";
+const UPDATE_USER_INFO = "UPDATE_USER_INFO";
+exports.UPDATE_USER_INFO_SUCCESS = "UPDATE_USER_INFO_SUCCESS";
+exports.UPDATE_USER_INFO_FAILURE = "UPDATE_USER_INFO_FAILURE";
+exports.UPDATE_USER_INFO_CANCELLED = "UPDATE_USER_INFO_CANCELLED";
+exports.updateUserInfo = redux_actions_1.createAction(UPDATE_USER_INFO, (user) => user);
+exports.updateUserInfoSuccess = redux_actions_1.createAction(exports.UPDATE_USER_INFO_SUCCESS, (result) => result);
+exports.updateUserInfoFailure = redux_actions_1.createAction(exports.UPDATE_USER_INFO_FAILURE, (error) => error);
+exports.updateUserInfoCancelled = redux_actions_1.createAction(exports.UPDATE_USER_INFO_CANCELLED);
+exports.updateUserInfo_Epic = action$ => (action$.ofType(UPDATE_USER_INFO).mergeMap(action => ajax({
+    method: "POST",
+    url: `${config_1.default.api.user}/userInfo`,
+    body: JSON.stringify({ user: action.payload }),
+    headers: {
+        "Content-Type": "application/json",
+        "x-access-token": configureStore_1.default.getState().authReducer.token
+    }
+}).map(json => exports.updateUserInfoSuccess(json.response.result))
+    .takeUntil(action$.ofType(exports.UPDATE_USER_INFO_CANCELLED))
+    .catch(error => Rx.Observable.of(exports.updateUserInfoFailure(error.xhr.response)))));
 const FETCH_AGENT_BY_ID = "FETCH_AGENT_BY_ID";
 const FETCH_AGENT_BY_ID_SUCCESS = "FETCH_AGENT_BY_ID_SUCCESS";
 const FETCH_AGENT_BY_ID_FAILURE = "FETCH_AGENT_BY_ID_FAILURE";
@@ -96,3 +111,5 @@ exports.uploadUserAvatar_Epic = action$ => (action$.ofType(UPLOAD_USER_AVATAR)
     .map(json => exports.uploadUserAvatarSuccess(json.response))
     .takeUntil(action$.ofType(UPLOAD_USER_AVATAR_CANCELLED))
     .catch(error => Rx.Observable.of(exports.uploadUserAvatarFailure(error.xhr.response))));
+exports.USERRX_EMPTY_STATE = "USERRX_EMPTY_STATE";
+exports.emptyState = redux_actions_1.createAction(exports.USERRX_EMPTY_STATE);

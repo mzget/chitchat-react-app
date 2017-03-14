@@ -7,9 +7,8 @@ const config_1 = require("../../configs/config");
 const ProfileDetail_1 = require("./ProfileDetail");
 const userRx = require("../../redux/user/userRx");
 const submit = (props) => {
-    console.log(props);
     let user = Object.assign({}, props.user);
-    // props.dispatch(userRx.(user));
+    props.dispatch(userRx.updateUserInfo(user));
 };
 const enhance = recompose_1.compose(recompose_1.withState("user", "updateUser", ({ user }) => user), recompose_1.withState("imageFile", "setImageFile", null), recompose_1.lifecycle({
     componentWillReceiveProps(nextProps) {
@@ -28,16 +27,11 @@ const enhance = recompose_1.compose(recompose_1.withState("user", "updateUser", 
                 this.props.updateUser(prev => user, () => { submit(this.props); });
             }
         }
-        // else if (groupReducer.state == editGroupRxActions.EDIT_GROUP_DETAIL_FAILURE) {
-        //     if (!shallowEqual(this.props.groupReducer, groupReducer)) {
-        //         this.props.onError(groupReducer.error);
-        //     }
-        // }
-        // else if (groupReducer.state == editGroupRxActions.EDIT_GROUP_DETAIL_SUCCESS) {
-        //     if (!shallowEqual(this.props.groupReducer, groupReducer)) {
-        //         this.props.onFinished();
-        //     }
-        // }
+        else if (userReducer.state == userRx.UPDATE_USER_INFO_FAILURE) {
+            if (!recompose_1.shallowEqual(this.props.userReducer, userReducer)) {
+                this.props.onError(userReducer.error);
+            }
+        }
     }
 }), recompose_1.withHandlers({
     onFirstNameChange: (props) => (event, newValue) => {
@@ -61,7 +55,6 @@ const enhance = recompose_1.compose(recompose_1.withState("user", "updateUser", 
             let user = props.user;
             user["avatar"] = progressEvent.target.result;
             props.updateUser(prev => user);
-            // props.setImageUrl(prev => progressEvent.target.result);
             props.setImageFile(prev => file);
         });
     },
@@ -75,7 +68,7 @@ const enhance = recompose_1.compose(recompose_1.withState("user", "updateUser", 
         }
     }
 }));
-const ProfileDetailEnhancer = enhance(({ user, teamProfile, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange }) => React.createElement(ProfileDetail_1.ProfileDetail, { user: user, teamProfile: teamProfile, onFirstNameChange: onFirstNameChange, onLastNameChange: onLastNameChange, onTelNumberChange: onTelNumberChange, onFileReaderChange: onFileReaderChange, onSubmit: onSubmit }));
+const ProfileDetailEnhancer = enhance(({ user, teamProfile, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange, onError }) => React.createElement(ProfileDetail_1.ProfileDetail, { user: user, teamProfile: teamProfile, onFirstNameChange: onFirstNameChange, onLastNameChange: onLastNameChange, onTelNumberChange: onTelNumberChange, onFileReaderChange: onFileReaderChange, onSubmit: onSubmit }));
 const mapStateToProps = (state) => ({
     userReducer: state.userReducer
 });

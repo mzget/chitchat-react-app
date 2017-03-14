@@ -6,6 +6,7 @@ import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
 import * as UserService from "../../chats/services/UserService";
+import { ChitChatAccount } from "../../../server/scripts/models/User";
 import Store from "../configureStore";
 
 const FETCH_USER = "FETCH_USER";
@@ -26,10 +27,27 @@ export const fetchUserEpic = action$ => (
             .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response))))
 );
 
-const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
-export const UPDATE_USER_PROFILE_SUCCESS = "UPDATE_USER_PROFILE_SUCCESS";
-export const UPDATE_USER_PROFILE_FAILURE = "UPDATE_USER_PROFILE_FAILURE";
-export const UPDATE_USER_PROFILE_CANCELLED = "UPDATE_USER_PROFILE_CANCELLED";
+const UPDATE_USER_INFO = "UPDATE_USER_INFO";
+export const UPDATE_USER_INFO_SUCCESS = "UPDATE_USER_INFO_SUCCESS";
+export const UPDATE_USER_INFO_FAILURE = "UPDATE_USER_INFO_FAILURE";
+export const UPDATE_USER_INFO_CANCELLED = "UPDATE_USER_INFO_CANCELLED";
+export const updateUserInfo = createAction(UPDATE_USER_INFO, (user: ChitChatAccount) => user);
+export const updateUserInfoSuccess = createAction(UPDATE_USER_INFO_SUCCESS, (result) => result);
+export const updateUserInfoFailure = createAction(UPDATE_USER_INFO_FAILURE, (error) => error);
+export const updateUserInfoCancelled = createAction(UPDATE_USER_INFO_CANCELLED);
+export const updateUserInfo_Epic = action$ => (
+    action$.ofType(UPDATE_USER_INFO).mergeMap(action => ajax({
+        method: "POST",
+        url: `${config.api.user}/userInfo`,
+        body: JSON.stringify({ user: action.payload }),
+        headers: {
+            "Content-Type": "application/json",
+            "x-access-token": Store.getState().authReducer.token
+        }
+    }).map(json => updateUserInfoSuccess(json.response.result))
+        .takeUntil(action$.ofType(UPDATE_USER_INFO_CANCELLED))
+        .catch(error => Rx.Observable.of(updateUserInfoFailure(error.xhr.response))))
+);
 
 
 const FETCH_AGENT_BY_ID = "FETCH_AGENT_BY_ID";
@@ -125,3 +143,6 @@ export const uploadUserAvatar_Epic = action$ => (
         .takeUntil(action$.ofType(UPLOAD_USER_AVATAR_CANCELLED))
         .catch(error => Rx.Observable.of(uploadUserAvatarFailure(error.xhr.response)))
 );
+
+export const USERRX_EMPTY_STATE = "USERRX_EMPTY_STATE";
+export const emptyState = createAction(USERRX_EMPTY_STATE);

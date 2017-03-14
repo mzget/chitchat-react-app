@@ -10,6 +10,8 @@ import { SimpleToolbar } from "../components/SimpleToolbar";
 import { DialogBox } from "../components/DialogBox";
 import { ConnectProfileDetailEnhancer } from "./profile/ProfileDetailEnhancer";
 
+import * as userRx from "../redux/user/userRx";
+
 interface IComponentNameState {
     alert: boolean;
 };
@@ -30,6 +32,7 @@ class Profile extends React.Component<IComponentProps, IComponentNameState> {
 
         this.onBackPressed = this.onBackPressed.bind(this);
         this.closeAlert = this.closeAlert.bind(this);
+        this.onAlert = this.onAlert.bind(this);
 
         this.headerHeight = document.getElementById("toolbar").clientHeight;
         this.bodyHeight = this.clientHeight - this.headerHeight;
@@ -40,34 +43,39 @@ class Profile extends React.Component<IComponentProps, IComponentNameState> {
         this.props.router.goBack();
     }
 
+    onAlert(error: string) {
+        this.alertTitle = "Alert!";
+        this.alertMessage = error;
+        this.setState(previous => ({ ...previous, alert: true }));
+    }
+
     closeAlert() {
         this.alertTitle = "";
         this.alertMessage = "";
         this.setState(prevState => ({ ...prevState, alert: false }), () => {
             // @Here clear error message in reducer.
+            this.props.dispatch(userRx.emptyState());
         });
     }
 
     render() {
         return (
-            <MuiThemeProvider>
-                <div>
-                    <div id={"toolbar"} style={{ height: this.headerHeight, overflowY: "hidden" }} >
-                        <SimpleToolbar title={"Profile"} onBackPressed={this.onBackPressed} />
-                        <Subheader>{null}</Subheader>
-                    </div>
-                    <div id={"app_body"} style={{ backgroundColor: Colors.indigo50, height: this.bodyHeight, overflowY: "auto" }}>
-                        <ConnectProfileDetailEnhancer
-                            user={this.props.userReducer.user}
-                            teamProfile={this.props.userReducer.teamProfile} />
-                        <DialogBox
-                            title={this.alertTitle}
-                            message={this.alertMessage}
-                            open={this.state.alert}
-                            handleClose={this.closeAlert} />
-                    </div>
+            <div>
+                <div id={"toolbar"} style={{ height: this.headerHeight, overflowY: "hidden" }} >
+                    <SimpleToolbar title={"Profile"} onBackPressed={this.onBackPressed} />
                 </div>
-            </MuiThemeProvider >
+                <div id={"app_body"} style={{ backgroundColor: Colors.indigo50, height: this.bodyHeight, overflowY: "auto" }}>
+                    <ConnectProfileDetailEnhancer
+                        user={this.props.userReducer.user}
+                        teamProfile={this.props.userReducer.teamProfile}
+                        onError={this.onAlert} />
+                </div>
+                <DialogBox
+                    title={this.alertTitle}
+                    message={this.alertMessage}
+                    open={this.state.alert}
+                    handleClose={this.closeAlert} />
+            </div>
         );
     }
 }

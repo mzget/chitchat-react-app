@@ -1,8 +1,8 @@
 import * as React from "react";
-import { RaisedButton, TextField } from 'material-ui';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
+import { RaisedButton, TextField } from "material-ui";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import Dialog from "material-ui/Dialog";
+import FlatButton from "material-ui/FlatButton";
 
 interface ICompProps {
     title: string;
@@ -15,7 +15,7 @@ const actions = (props: ICompProps) => [
         label="OK"
         primary={true}
         onMouseUp={props.handleClose}
-        />,
+    />,
 ];
 export const DialogBox = (props: ICompProps) => {
     return (
@@ -27,10 +27,10 @@ export const DialogBox = (props: ICompProps) => {
                     modal={true}
                     open={props.open}
                     onRequestClose={props.handleClose}
-                    >
+                >
                     {props.message}
                 </Dialog>
             </div>
         </MuiThemeProvider>
     );
-}
+};

@@ -10,7 +10,8 @@ exports.UserInitState = immutable_1.Record({
     state: null,
     user: null,
     teamProfile: null,
-    userAvatarResult: null
+    userAvatarResult: null,
+    error: null
 });
 const userInitState = new exports.UserInitState();
 exports.userReducer = (state = userInitState, action) => {
@@ -35,11 +36,17 @@ exports.userReducer = (state = userInitState, action) => {
             }
         }
         case userRx_1.UPLOAD_USER_AVATAR_FAILURE: {
-            return state;
+            return state.set("state", userRx_1.UPLOAD_USER_AVATAR_FAILURE)
+                .set("error", action.payload.message.toString());
         }
         case userRx_1.UPLOAD_USER_AVATAR_SUCCESS: {
             return state.set("state", userRx_1.UPLOAD_USER_AVATAR_SUCCESS)
                 .set("userAvatarResult", action.payload.result);
+        }
+        case userRx_1.USERRX_EMPTY_STATE: {
+            return state.set("error", null)
+                .set("userAvatarResult", null)
+                .set("state", null);
         }
         default:
             return state;

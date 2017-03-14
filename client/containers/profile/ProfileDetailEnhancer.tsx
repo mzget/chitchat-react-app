@@ -15,15 +15,14 @@ interface IEnhanceProps {
     updateUser;
     imageFile;
     setImageFile;
+    onError: (error) => void;
     dispatch;
     userReducer;
 }
 
 const submit = (props: IEnhanceProps) => {
-    console.log(props);
-
     let user = { ...props.user } as ChitChatAccount;
-    // props.dispatch(userRx.(user));
+    props.dispatch(userRx.updateUserInfo(user));
 };
 const enhance = compose(
     withState("user", "updateUser", ({ user }) => user),
@@ -47,16 +46,11 @@ const enhance = compose(
                     this.props.updateUser(prev => user, () => { submit(this.props); });
                 }
             }
-            // else if (groupReducer.state == editGroupRxActions.EDIT_GROUP_DETAIL_FAILURE) {
-            //     if (!shallowEqual(this.props.groupReducer, groupReducer)) {
-            //         this.props.onError(groupReducer.error);
-            //     }
-            // }
-            // else if (groupReducer.state == editGroupRxActions.EDIT_GROUP_DETAIL_SUCCESS) {
-            //     if (!shallowEqual(this.props.groupReducer, groupReducer)) {
-            //         this.props.onFinished();
-            //     }
-            // }
+            else if (userReducer.state == userRx.UPDATE_USER_INFO_FAILURE) {
+                if (!shallowEqual(this.props.userReducer, userReducer)) {
+                    this.props.onError(userReducer.error);
+                }
+            }
         }
     }),
     withHandlers({
@@ -85,7 +79,6 @@ const enhance = compose(
                 let user = props.user;
                 user["avatar"] = progressEvent.target.result;
                 props.updateUser(prev => user);
-                // props.setImageUrl(prev => progressEvent.target.result);
                 props.setImageFile(prev => file);
             });
         },
@@ -101,7 +94,10 @@ const enhance = compose(
     })
 );
 const ProfileDetailEnhancer = enhance(({
-  user, teamProfile, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange
+  user, teamProfile,
+    onFirstNameChange, onLastNameChange,
+    onTelNumberChange, onSubmit,
+    onFileReaderChange, onError
      }: IEnhanceProps) =>
     <ProfileDetail
         user={user}
