@@ -7,6 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
@@ -382,5 +383,4 @@ class ChatsLogComponent {
         });
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ChatsLogComponent;

@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const reflexbox_1 = require("reflexbox");
 const Colors = require("material-ui/styles/colors");

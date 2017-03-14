@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = require("../../configs/config");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;

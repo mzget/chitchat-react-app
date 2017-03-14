@@ -1,9 +1,10 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const recompose_1 = require("recompose");
 const ProfileDetail_1 = require("./ProfileDetail");
-const enhance = recompose_1.compose(recompose_1.withState("user", "updateUser", ({ user }) => user), recompose_1.withHandlers({
+const enhance = recompose_1.compose(recompose_1.withState("user", "updateUser", ({ user }) => user), recompose_1.withState("imageFile", "setImageFile", null), recompose_1.withHandlers({
     onFirstNameChange: (props) => (event, newValue) => {
         let user = props.user;
         user["firstname"] = newValue;
@@ -18,6 +19,16 @@ const enhance = recompose_1.compose(recompose_1.withState("user", "updateUser", 
         let user = props.user;
         user["tel"] = newValue;
         props.updateUser(prev => user);
+    },
+    onFileReaderChange: (props) => (event, results) => {
+        results.forEach(result => {
+            const [progressEvent, file] = result;
+            let user = props.user;
+            user["avatar"] = progressEvent.target.result;
+            props.updateUser(prev => user);
+            // props.setImageUrl(prev => progressEvent.target.result);
+            props.setImageFile(prev => file);
+        });
     },
     onSubmit: (props) => () => {
         // props.dispatch(editGroupRxActions.editGroupMember(payload));

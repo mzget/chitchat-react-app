@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const Subheader_1 = require("material-ui/Subheader");
 const RaisedButton_1 = require("material-ui/RaisedButton");
@@ -20,5 +21,4 @@ class TeamListBox extends React.Component {
             React.createElement(TeamListView_1.TeamListView, { items: this.props.teamReducer.teams, onSelectItem: this.props.onSelectTeam, actionChild: React.createElement(RaisedButton_1.default, { label: "Enter", primary: true, style: style }) })));
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TeamListBox;

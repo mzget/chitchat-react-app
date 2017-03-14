@@ -4,6 +4,7 @@
  * Author @ nattapon.r@live.com
  */
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const mongodb = require("mongodb");
 const uuid = require("uuid");

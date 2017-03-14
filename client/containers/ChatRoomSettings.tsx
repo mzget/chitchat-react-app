@@ -7,7 +7,7 @@ import { SimpleToolbar } from "../components/SimpleToolbar";
 import { DialogBox } from "../components/DialogBox";
 import { MenuListview } from "../components/MenuListView";
 import { ConnectEditGroupMember } from "./roomSettings/EditGroupMember";
-import { ConnectGroupDetail } from "./roomSettings/GroupDetail";
+import { ConnectGroupDetail } from "./roomSettings/GroupDetailEnhancer";
 import { GroupMemberEnhancer } from "./roomSettings/GroupMemberEnhancer";
 
 import * as chatroomActions from "../redux/chatroom/chatroomActions";

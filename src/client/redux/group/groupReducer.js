@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const immutable_1 = require("immutable");
 const groupRx = require("./groupRx");
 const privateGroupRxActions = require("./privateGroupRxActions");

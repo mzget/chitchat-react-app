@@ -12,10 +12,12 @@ interface IEnhanceProps {
     user: ChitChatAccount;
     teamProfile: ITeamProfile;
     updateUser;
+    setImageFile;
     dispatch;
 }
 const enhance = compose(
     withState("user", "updateUser", ({ user }) => user),
+    withState("imageFile", "setImageFile", null),
     withHandlers({
         onFirstNameChange: (props: IEnhanceProps) => (event, newValue) => {
             let user = props.user;
@@ -34,6 +36,18 @@ const enhance = compose(
             user["tel"] = newValue;
 
             props.updateUser(prev => user);
+        },
+        onFileReaderChange: (props: IEnhanceProps) => (event, results) => {
+            results.forEach(result => {
+                const [progressEvent, file] = result;
+
+                let user = props.user;
+                user["avatar"] = progressEvent.target.result;
+                props.updateUser(prev => user);
+
+                // props.setImageUrl(prev => progressEvent.target.result);
+                props.setImageFile(prev => file);
+            });
         },
         onSubmit: (props: IEnhanceProps) => () => {
             // props.dispatch(editGroupRxActions.editGroupMember(payload));

@@ -23,7 +23,6 @@ class Profile extends React.Component<IComponentProps, IComponentNameState> {
     subHeaderHeight = null;
     bodyHeight = null;
 
-
     componentWillMount() {
         this.state = {
             alert: false
@@ -31,9 +30,7 @@ class Profile extends React.Component<IComponentProps, IComponentNameState> {
 
         this.onBackPressed = this.onBackPressed.bind(this);
         this.closeAlert = this.closeAlert.bind(this);
-    }
 
-    componentDidMount() {
         this.headerHeight = document.getElementById("toolbar").clientHeight;
         this.bodyHeight = this.clientHeight - this.headerHeight;
     }
@@ -55,11 +52,11 @@ class Profile extends React.Component<IComponentProps, IComponentNameState> {
         return (
             <MuiThemeProvider>
                 <div>
-                    <div id={"toolbar"} style={{ height: this.headerHeight }} >
+                    <div id={"toolbar"} style={{ height: this.headerHeight, overflowY: "hidden" }} >
                         <SimpleToolbar title={"Profile"} onBackPressed={this.onBackPressed} />
                         <Subheader>{null}</Subheader>
                     </div>
-                    <div id={"app_body"} style={{ backgroundColor: Colors.indigo50, height: this.bodyHeight }}>
+                    <div id={"app_body"} style={{ backgroundColor: Colors.indigo50, height: this.bodyHeight, overflowY: "auto" }}>
                         <ConnectProfileDetailEnhancer user={this.props.userReducer.user} teamProfile={this.props.userReducer.teamProfile} />
                         <DialogBox
                             title={this.alertTitle}

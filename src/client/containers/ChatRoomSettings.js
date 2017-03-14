@@ -1,19 +1,12 @@
 "use strict";
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const DialogBox_1 = require("../components/DialogBox");
 const MenuListView_1 = require("../components/MenuListView");
 const EditGroupMember_1 = require("./roomSettings/EditGroupMember");
-const GroupDetail_1 = require("./roomSettings/GroupDetail");
+const GroupDetailEnhancer_1 = require("./roomSettings/GroupDetailEnhancer");
 const GroupMemberEnhancer_1 = require("./roomSettings/GroupMemberEnhancer");
 const chatroomActions = require("../redux/chatroom/chatroomActions");
 const groupRx = require("../redux/group/groupRx");
@@ -68,7 +61,7 @@ class ChatRoomSettings extends React.Component {
     closeAlert() {
         this.alertTitle = "";
         this.alertMessage = "";
-        this.setState(prevState => (__assign({}, prevState, { alert: false })), () => {
+        this.setState(prevState => (Object.assign({}, prevState, { alert: false })), () => {
             this.props.dispatch(groupRx.emptyState());
             // this.props.dispatch(adminRx.emptyState());
         });
@@ -76,7 +69,7 @@ class ChatRoomSettings extends React.Component {
     onAlert(error) {
         this.alertTitle = "Alert!";
         this.alertMessage = error;
-        this.setState(previous => (__assign({}, previous, { alert: true })));
+        this.setState(previous => (Object.assign({}, previous, { alert: true })));
     }
     onMenuSelected(key) {
         console.log("onMenuSelected", key);
@@ -86,7 +79,7 @@ class ChatRoomSettings extends React.Component {
         // Check room type and user permision for edit group details.
         if (key == EDIT_GROUP_MEMBERS) {
             if (room.type == Room_1.RoomType.privateGroup) {
-                this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.isEditMember })));
+                this.setState(prevState => (Object.assign({}, prevState, { boxState: BoxState.isEditMember })));
             }
             else {
                 this.onAlert("Request for valid group permission!");
@@ -94,14 +87,14 @@ class ChatRoomSettings extends React.Component {
         }
         else if (key == EDIT_GROUP) {
             if (room.type == Room_1.RoomType.privateGroup) {
-                this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.isEditGroup })));
+                this.setState(prevState => (Object.assign({}, prevState, { boxState: BoxState.isEditGroup })));
             }
             else {
                 this.onAlert("Request for valid group permission!");
             }
         }
         else if (key == GROUP_MEMBERS) {
-            this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.viewMembers })));
+            this.setState(prevState => (Object.assign({}, prevState, { boxState: BoxState.viewMembers })));
         }
     }
     getViewPanel() {
@@ -109,9 +102,9 @@ class ChatRoomSettings extends React.Component {
         let { room } = chatroomReducer;
         switch (this.state.boxState) {
             case BoxState.isEditMember:
-                return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: teamReducer.members, room_id: params.room_id, initMembers: room.members, onFinished: () => this.setState(prev => (__assign({}, prev, { boxState: BoxState.idle }))) });
+                return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: teamReducer.members, room_id: params.room_id, initMembers: room.members, onFinished: () => this.setState(prev => (Object.assign({}, prev, { boxState: BoxState.idle }))) });
             case BoxState.isEditGroup:
-                return React.createElement(GroupDetail_1.ConnectGroupDetail, { group: room, image: room.image, group_name: room.name, group_description: room.description, onError: (message) => this.onAlert(message), onFinished: () => this.setState(prev => (__assign({}, prev, { boxState: BoxState.idle }))) });
+                return React.createElement(GroupDetailEnhancer_1.ConnectGroupDetail, { group: room, image: room.image, group_name: room.name, group_description: room.description, onError: (message) => this.onAlert(message), onFinished: () => this.setState(prev => (Object.assign({}, prev, { boxState: BoxState.idle }))) });
             case BoxState.viewMembers:
                 return React.createElement(GroupMemberEnhancer_1.GroupMemberEnhancer, { members: room.members });
             default:
@@ -119,6 +112,5 @@ class ChatRoomSettings extends React.Component {
         }
     }
 }
-const mapStateToProps = (state) => (__assign({}, state));
-Object.defineProperty(exports, "__esModule", { value: true });
+const mapStateToProps = (state) => (Object.assign({}, state));
 exports.default = react_redux_1.connect(mapStateToProps)(ChatRoomSettings);

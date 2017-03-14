@@ -27,7 +27,7 @@ interface IProfileDetailProps {
     onFirstNameChange: (event, newValue) => void;
     onLastNameChange: (event, newValue) => void;
     onTelNumberChange: (event, newValue) => void;
-    onFileReaderChange: (event, file) => void;
+    onFileReaderChange: (event, results) => void;
     onSubmit: () => void;
 }
 export const ProfileDetail = (props: IProfileDetailProps) => (

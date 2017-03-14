@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * NodeMessageDAL.
  *
@@ -27,5 +28,4 @@ class NodeMessageDAL {
     clearData(next) {
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = NodeMessageDAL;
