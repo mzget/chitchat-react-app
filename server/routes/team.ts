@@ -10,6 +10,7 @@ const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 const router = express.Router();
 import { Config, DbClient } from "../config";
+import { getAppDb } from "../scripts/DbClient";
 
 import * as TeamController from "../scripts/controllers/team/TeamController";
 import * as UserManager from "../scripts/controllers/user/UserManager";
@@ -166,7 +167,7 @@ router.get("/teamMembers", function (req, res, next) {
     let team_id = new ObjectID(req.query.id);
 
     async function findTeamMembers(team_id: mongodb.ObjectID) {
-        let db = await MongoClient.connect(Config.chatDB);
+        let db = getAppDb();
         let chitchatUserColl = db.collection(DbClient.chitchatUserColl);
 
         let results = await chitchatUserColl.aggregate([
@@ -181,7 +182,7 @@ router.get("/teamMembers", function (req, res, next) {
                 }
             },
             {
-                $project: { username: 1, firstname: 1, lastname: 1, image: 1, teamProfiles: "$teamProfiles" }
+                $project: { username: 1, firstname: 1, lastname: 1, avatar: 1, teamProfiles: "$teamProfiles" }
             },
             {
                 $redact: {
@@ -194,15 +195,13 @@ router.get("/teamMembers", function (req, res, next) {
             }]).limit(100).toArray() as Array<ChitChatAccount>;
 
         console.log(results);
-
-        db.close();
         return results;
     }
 
     findTeamMembers(team_id).then(docs => {
         res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
     }).catch(err => {
-        console.error("findTeamMembers failt", err);
+        console.error("findTeamMembers fail", err);
         res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });

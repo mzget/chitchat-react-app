@@ -8,7 +8,7 @@ import { IComponentProps } from "../utils/IComponentProps";
 
 import { WarningBar } from "../components/WarningBar";
 import { SimpleToolbar } from "../components/SimpleToolbar";
-import ProfileBox from "./profile/ProfileBox";
+import { ConnectProfileEnhancer } from "./profile/ProfileBox";
 import OrgGroupListBox from "./group/OrgGroupListBox";
 import PrivateGroupListBox from "./group/PrivateGroupListBox";
 import ChatLogsBox from "./ChatLogsBox";
@@ -161,7 +161,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                             <WarningBar /> : null
                     }
                     <div style={{ height: this.bodyHeight, overflowY: "auto" }} id={"app_body"}>
-                        <ProfileBox {...this.props} />
+                        <ConnectProfileEnhancer router={this.props.router} />
                         <OrgGroupListBox {...this.props} />
                         <PrivateGroupListBox {...this.props} />
                         <ContactBox {...this.props} />

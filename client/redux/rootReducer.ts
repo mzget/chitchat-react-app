@@ -18,7 +18,7 @@ import { STALK_ON_SOCKET_RECONNECT } from "./stalkBridge/stalkBridgeActions";
 */
 import { deviceReducer, DeviceInitialState } from "./device/deviceReducer";
 import { teamReducer, TeamInitState } from "./team/teamRx";
-import { UserInitState, userReducer } from "./user/userRx";
+import { UserInitState, userReducer } from "./user/userReducer";
 import { AdminInitState, adminReducer } from "./admin/adminReducer";
 import { AuthenInitState, authReducer, LOG_OUT_SUCCESS } from "./authen/authRx";
 import { stalkReducer, StalkInitState } from "./stalkBridge/stalkReducer";

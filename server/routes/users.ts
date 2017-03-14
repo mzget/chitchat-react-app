@@ -1,17 +1,20 @@
 import express = require("express");
 import mongodb = require("mongodb");
+import multer = require("multer");
+import fs = require("fs");
 
 import * as apiUtils from "../scripts/utils/apiUtils";
 
 import * as TeamController from "../scripts/controllers/team/TeamController";
 import * as UserManager from "../scripts/controllers/user/UserManager";
 import * as GroupController from "../scripts/controllers/group/GroupController";
+import * as FileType from "../scripts/FileType";
 const router = express.Router();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
-
 import { ChitChatAccount } from "../scripts/models/User";
-import { Config, DbClient } from "../config";
+import { Config, DbClient, Paths } from "../config";
+const upload = multer({ dest: Paths.userAvatar }).single("file");
 
 /* GET users listing. */
 router.get("/contact/", function (req, res, next) {
@@ -117,7 +120,6 @@ router.post("/signup", function (req: express.Request, res: express.Response, ne
     let user = req.body.user;
 
     let userModel = new ChitChatAccount();
-    userModel.displayname = user.username;
     userModel.username = user.email;
     userModel.email = user.email;
     userModel.password = user.password;
@@ -244,6 +246,72 @@ router.get("/teamProfile", (req, res, next) => {
         res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
     }).catch(err => {
         res.status(500).json(new apiUtils.ApiResponse(false, err));
+    });
+});
+
+router.post("/userInfo", (req, res, next) => {
+    req.checkBody("user", "request for user as body params").notEmpty();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let token = req["decoded"];
+    let user_id = token._id as string;
+    let user = req.body.user as ChitChatAccount;
+    if (!user.firstname || user.firstname.length <= 0) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, "Missing user.firstname"));
+    }
+    if (!user.lastname || user.lastname.length <= 0) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, "Missing user.lastname"));
+    }
+
+    UserManager.updateUserInfo(user_id, user).then(value => {
+        res.status(200).json(new apiUtils.ApiResponse(true, null, value));
+    }).catch(err => {
+        res.status(500).json(new apiUtils.ApiResponse(false, err));
+    });
+});
+
+router.post("/uploadImage", (req, res, next) => {
+    upload(req, res, function (err) {
+        if (err) {
+            // An error occurred when uploading
+            console.error(err);
+            return res.status(500).json({ success: false, message: "fail to upload" + err });
+        }
+
+        console.log("file", req.file);
+        if (!!req.file) {
+            let file = req.file;
+            let fullname: string = "";
+            if (file.mimetype.match(FileType.imageType))
+                fullname = file.path + file.mimetype.replace("image/", ".");
+
+            fs.readFile(file.path, function (err, data) {
+                if (err) {
+                    res.status(500).json(new apiUtils.ApiResponse(false, err));
+                }
+                else {
+                    fs.writeFile(fullname, data, function (err) {
+                        if (err) {
+                            return res.status(500).json(new apiUtils.ApiResponse(false, err));
+                        }
+
+                        fs.unlink(file.path, (err) => {
+                            if (err) throw err;
+                            console.log("successfully deleted req.file");
+                        });
+
+                        file.path = fullname.replace("public", "");
+                        res.status(200).json(new apiUtils.ApiResponse(true, null, file));
+                    });
+                }
+            });
+        } else {
+            res.status(500).json({ success: false, message: "fail file is missing: " });
+        }
     });
 });
 

@@ -40,10 +40,8 @@
     <Content Include="client\components\AppBar.tsx" />
     <Content Include="client\components\WarningBar.tsx" />
     <Content Include="client\containers\Admin.tsx" />
-    <Content Include="client\containers\admins\AdminMenu.tsx" />
     <Content Include="client\containers\admins\ContactProfileView.tsx" />
     <Content Include="client\containers\admins\CreateGroupBox.tsx" />
-    <Content Include="client\containers\admins\CreateGroupForm.tsx" />
     <Content Include="client\containers\admins\ManageOrgChartBox.tsx" />
     <Content Include="client\containers\admins\CreateOrgChartForm.tsx" />
     <Content Include="client\containers\admins\TeamMemberBox.tsx" />
@@ -61,6 +59,7 @@
     <Content Include="client\containers\group\OrgGroupListBox.tsx" />
     <Content Include="client\containers\Home.tsx" />
     <Content Include="client\containers\ListChatLogs.tsx" />
+    <Content Include="client\containers\Profile.tsx" />
     <Content Include="client\containers\profile\ProfileBox.tsx" />
     <Content Include="client\containers\profile\ProfileListView.tsx" />
     <Content Include="client\containers\roomSettings\EditGroupMember.tsx" />
@@ -91,6 +90,7 @@
     <TypeScriptCompile Include="client\libs\chitchat\dataAccessLayer\AppSessionToken.ts" />
     <TypeScriptCompile Include="client\redux\admin\adminReducer.ts" />
     <TypeScriptCompile Include="client\redux\admin\adminRx.ts" />
+    <TypeScriptCompile Include="client\redux\app\contactActions.ts" />
     <TypeScriptCompile Include="client\redux\app\persistentDataActions.ts" />
     <TypeScriptCompile Include="client\redux\authen\authRx.ts" />
     <TypeScriptCompile Include="client\redux\group\editGroupRxActions.ts" />
@@ -98,6 +98,7 @@
     <TypeScriptCompile Include="client\redux\group\groupRx.ts" />
     <TypeScriptCompile Include="client\redux\group\privateGroupRxActions.ts" />
     <TypeScriptCompile Include="client\redux\team\teamRx.ts" />
+    <TypeScriptCompile Include="client\redux\user\userReducer.ts" />
     <TypeScriptCompile Include="client\redux\user\userRx.ts" />
     <TypeScriptCompile Include="client\utils\ValidationUtils.ts" />
     <Content Include="src\App.css" />

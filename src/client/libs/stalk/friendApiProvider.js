@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const serverImplemented_1 = require("./serverImplemented");
 /**
  * FriendApiProvider
@@ -25,5 +26,4 @@ class FriendApiProvider {
         });
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = FriendApiProvider;

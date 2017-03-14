@@ -17,7 +17,7 @@ import * as adminRx from "../redux/admin/adminRx";
 import * as groupRx from "../redux/group/groupRx";
 import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
 import { Room, RoomType, RoomStatus } from "../../server/scripts/models/Room";
-import { UserRole } from "../../server/scripts/models/User";
+import { UserRole } from "../../server/scripts/models/UserRole";
 
 enum BoxState {
     idle = 0, isCreateGroup = 1, isManageTeam, isManageMember
@@ -76,7 +76,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
         let { userReducer } = this.props;
 
         if (key == createOrgGroup || key == createPjbGroup || key == createPvGroup) {
-            if (key == createOrgGroup && userReducer.user.role != UserRole[UserRole.admin]) {
+            if (key == createOrgGroup && userReducer.teamProfile.team_role != UserRole[UserRole.admin]) {
                 return this.onAlert("Request for admin permision");
             }
 
@@ -87,7 +87,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             this.setState(previous => ({ ...previous, boxState: BoxState.isCreateGroup, menuSelected: key }));
         }
         else if (key == this.manageOrgChart) {
-            if (userReducer.user.role == UserRole[UserRole.admin]) {
+            if (userReducer.teamProfile.team_role == UserRole[UserRole.admin]) {
                 this.setState(previous => ({ ...previous, boxState: BoxState.isManageTeam }));
             }
             else {
@@ -95,7 +95,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             }
         }
         else if (key == this.teamMember) {
-            if (userReducer.user.role == UserRole[UserRole.admin]) {
+            if (userReducer.teamProfile.team_role == UserRole[UserRole.admin]) {
                 this.setState(previous => ({ ...previous, boxState: BoxState.isManageMember }));
             }
             else {

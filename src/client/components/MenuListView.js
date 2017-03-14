@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const List_1 = require("material-ui/List");
 const grade_1 = require("material-ui/svg-icons/action/grade");

@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const GridList_1 = require("material-ui/GridList");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
@@ -24,5 +25,4 @@ const GridListSimple = (props) => (React.createElement(MuiThemeProvider_1.defaul
             React.createElement(Subheader_1.default, null, props.subheader),
             props.srcs.map((tile, i, arr) => (React.createElement(GridList_1.GridTile, { key: i },
                 React.createElement("img", { src: tile.img, onClick: () => props.onSelected(i), style: { width: "50%", maxWidth: "128px" } }))))))));
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = GridListSimple;

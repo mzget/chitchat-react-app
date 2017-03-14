@@ -37,5 +37,6 @@ exports.DbClient = {
 };
 exports.Paths = {
     fileUpload: `./public/uploads/`,
-    groupImage: "./public/groupImage/"
+    groupImage: "./public/groupImage/",
+    userAvatar: "./public/userAvatar/"
 };

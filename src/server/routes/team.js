@@ -7,6 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const mongodb = require("mongodb");
 const apiUtils = require("../scripts/utils/apiUtils");
@@ -14,6 +15,7 @@ const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 const router = express.Router();
 const config_1 = require("../config");
+const DbClient_1 = require("../scripts/DbClient");
 const TeamController = require("../scripts/controllers/team/TeamController");
 const UserManager = require("../scripts/controllers/user/UserManager");
 const GroupController = require("../scripts/controllers/group/GroupController");
@@ -143,7 +145,7 @@ router.get("/teamMembers", function (req, res, next) {
     let team_id = new ObjectID(req.query.id);
     function findTeamMembers(team_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let db = yield MongoClient.connect(config_1.Config.chatDB);
+            let db = DbClient_1.getAppDb();
             let chitchatUserColl = db.collection(config_1.DbClient.chitchatUserColl);
             let results = yield chitchatUserColl.aggregate([
                 { $match: { teams: { $in: [team_id.toString()] } } },
@@ -156,7 +158,7 @@ router.get("/teamMembers", function (req, res, next) {
                     }
                 },
                 {
-                    $project: { username: 1, firstname: 1, lastname: 1, image: 1, teamProfiles: "$teamProfiles" }
+                    $project: { username: 1, firstname: 1, lastname: 1, avatar: 1, teamProfiles: "$teamProfiles" }
                 },
                 {
                     $redact: {
@@ -169,14 +171,13 @@ router.get("/teamMembers", function (req, res, next) {
                 }
             ]).limit(100).toArray();
             console.log(results);
-            db.close();
             return results;
         });
     }
     findTeamMembers(team_id).then(docs => {
         res.status(200).json(new apiUtils.ApiResponse(true, null, docs));
     }).catch(err => {
-        console.error("findTeamMembers failt", err);
+        console.error("findTeamMembers fail", err);
         res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });

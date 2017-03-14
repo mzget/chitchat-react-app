@@ -1,7 +1,7 @@
 ﻿
-import { UserRole } from "./User";
+import { UserRole } from "./UserRole";
 
-module IProfile {
+namespace IProfile {
     export interface IProfile {
         uid: string;
         username: string;
@@ -10,7 +10,7 @@ module IProfile {
         lastname: string;
         status: string;
         tel: string;
-        mail: string;
+        email: string;
         image: any;
         role: UserRole;
     }
@@ -23,7 +23,7 @@ module IProfile {
         lastname: string;
         status: string;
         tel: string;
-        mail: string;
+        email: string;
         image: any;
         role: UserRole;
     }

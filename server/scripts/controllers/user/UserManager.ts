@@ -28,13 +28,30 @@ export async function joinTeam(team: ITeam, user_id: string) {
     return result;
 }
 
-
 export const getLastProfileChanged = (uid: string, callback: (err, res) => void) => {
 
 }
 
-export const updateImageProfile = (uid: string, newUrl: string, callback: (err, res) => void) => {
-}
+export const updateUserInfo = async (uid: string, user: ChitChatAccount) => {
+    let db = getAppDb();
+    let chitchatUserColl = db.collection(DbClient.chitchatUserColl);
+
+    let update = {
+        firstname: user.firstname,
+        lastname: user.lastname,
+        tel: user.tel,
+        avatar: user.avatar
+    } as ChitChatAccount;
+
+    let result = await chitchatUserColl.updateOne({ _id: new mongodb.ObjectID(uid) }, {
+        $currentDate: {
+            lastModified: true
+        },
+        $set: update
+    }, { upsert: false });
+
+    return result.result;
+};
 
 export async function getRoomAccessForUser(uid: string): Promise<any[]> {
     let db = getAppDb();

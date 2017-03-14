@@ -2,7 +2,7 @@ import mongodb = require("mongodb");
 type ObjectID = mongodb.ObjectID;
 
 import JobLevel from "./JobLevel";
-import { UserRole } from "./User";
+import { UserRole } from "./UserRole";
 
 export interface ITeamProfile {
     _id: string;
@@ -11,5 +11,5 @@ export interface ITeamProfile {
     org_chart_id: ObjectID;
     jobLevel: JobLevel;
     jobPosition: string;
-    role: UserRole;
+    team_role: UserRole;
 }

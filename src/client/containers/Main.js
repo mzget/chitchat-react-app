@@ -1,12 +1,5 @@
 "use strict";
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
@@ -135,14 +128,13 @@ class Main extends React.Component {
                 (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                     React.createElement(WarningBar_1.WarningBar, null) : null,
                 React.createElement("div", { style: { height: this.bodyHeight, overflowY: "auto" }, id: "app_body" },
-                    React.createElement(ProfileBox_1.default, __assign({}, this.props)),
-                    React.createElement(OrgGroupListBox_1.default, __assign({}, this.props)),
-                    React.createElement(PrivateGroupListBox_1.default, __assign({}, this.props)),
-                    React.createElement(ContactBox_1.default, __assign({}, this.props)),
-                    React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
+                    React.createElement(ProfileBox_1.ConnectProfileEnhancer, { router: this.props.router }),
+                    React.createElement(OrgGroupListBox_1.default, Object.assign({}, this.props)),
+                    React.createElement(PrivateGroupListBox_1.default, Object.assign({}, this.props)),
+                    React.createElement(ContactBox_1.default, Object.assign({}, this.props)),
+                    React.createElement(ChatLogsBox_1.default, Object.assign({}, this.props)),
                     React.createElement(UtilsBox_1.default, null)))));
     }
 }
-const mapStateToProps = (state) => (__assign({}, state));
-Object.defineProperty(exports, "__esModule", { value: true });
+const mapStateToProps = (state) => (Object.assign({}, state));
 exports.default = react_redux_1.connect(mapStateToProps)(Main);

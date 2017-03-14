@@ -7,6 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const mongodb = require("mongodb");
 const async = require("async");
 const Room = require("../../models/Room");
@@ -26,8 +27,23 @@ function joinTeam(team, user_id) {
 exports.joinTeam = joinTeam;
 exports.getLastProfileChanged = (uid, callback) => {
 };
-exports.updateImageProfile = (uid, newUrl, callback) => {
-};
+exports.updateUserInfo = (uid, user) => __awaiter(this, void 0, void 0, function* () {
+    let db = DbClient_1.getAppDb();
+    let chitchatUserColl = db.collection(config_1.DbClient.chitchatUserColl);
+    let update = {
+        firstname: user.firstname,
+        lastname: user.lastname,
+        tel: user.tel,
+        avatar: user.avatar
+    };
+    let result = yield chitchatUserColl.updateOne({ _id: new mongodb.ObjectID(uid) }, {
+        $currentDate: {
+            lastModified: true
+        },
+        $set: update
+    }, { upsert: false });
+    return result.result;
+});
 function getRoomAccessForUser(uid) {
     return __awaiter(this, void 0, void 0, function* () {
         let db = DbClient_1.getAppDb();

@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const Card_1 = require("material-ui/Card");
 const CardVideoWithAvatar = (props) => (React.createElement(Card_1.Card, null,
@@ -8,5 +9,4 @@ const CardVideoWithAvatar = (props) => (React.createElement(Card_1.Card, null,
         React.createElement("video", { controls: true, preload: 'metadata' },
             React.createElement("source", { src: props.src }),
             "Sorry; your browser doesn't support HTML5 video."))));
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = CardVideoWithAvatar;
