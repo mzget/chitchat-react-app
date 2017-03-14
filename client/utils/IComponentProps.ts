@@ -16,10 +16,18 @@ export interface IComponentProps {
     routing;
     adminReducer;
     authReducer;
-    userReducer;
+    userReducer: IUserReducer;
     chatroomReducer;
     chatlogReducer;
     stalkReducer;
     teamReducer;
     groupReducer;
 };
+
+
+export class IUserReducer {
+    isFetching: boolean;
+    state: string;
+    user: any;
+    teamProfile: any;
+}

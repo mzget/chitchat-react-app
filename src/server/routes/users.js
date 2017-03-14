@@ -107,7 +107,6 @@ router.post("/signup", function (req, res, next) {
     }
     let user = req.body.user;
     let userModel = new User_1.ChitChatAccount();
-    userModel.displayname = user.username;
     userModel.username = user.email;
     userModel.email = user.email;
     userModel.password = user.password;

@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const reflexbox_1 = require("reflexbox");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
@@ -27,7 +26,7 @@ exports.ProfileDetail = (props) => (React.createElement(MuiThemeProvider_1.defau
         React.createElement("span", { style: styles.span }),
         React.createElement(material_ui_1.TextField, { hintText: "email", value: props.user.email, disabled: true }),
         React.createElement("span", { style: styles.span }),
-        React.createElement(material_ui_1.TextField, { hintText: "user_role", value: props.user.role, disabled: true }),
+        React.createElement(material_ui_1.TextField, { hintText: "user_role", value: props.teamProfile.team_role, disabled: true }),
         React.createElement("span", { style: styles.span }),
         React.createElement(material_ui_1.TextField, { hintText: "user_status", value: props.user.status, disabled: true }),
         React.createElement("span", { style: styles.span }),

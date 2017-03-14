@@ -90,6 +90,7 @@
     <TypeScriptCompile Include="client\libs\chitchat\dataAccessLayer\AppSessionToken.ts" />
     <TypeScriptCompile Include="client\redux\admin\adminReducer.ts" />
     <TypeScriptCompile Include="client\redux\admin\adminRx.ts" />
+    <TypeScriptCompile Include="client\redux\app\contactActions.ts" />
     <TypeScriptCompile Include="client\redux\app\persistentDataActions.ts" />
     <TypeScriptCompile Include="client\redux\authen\authRx.ts" />
     <TypeScriptCompile Include="client\redux\group\editGroupRxActions.ts" />
@@ -97,6 +98,7 @@
     <TypeScriptCompile Include="client\redux\group\groupRx.ts" />
     <TypeScriptCompile Include="client\redux\group\privateGroupRxActions.ts" />
     <TypeScriptCompile Include="client\redux\team\teamRx.ts" />
+    <TypeScriptCompile Include="client\redux\user\userReducer.ts" />
     <TypeScriptCompile Include="client\redux\user\userRx.ts" />
     <TypeScriptCompile Include="client\utils\ValidationUtils.ts" />
     <Content Include="src\App.css" />

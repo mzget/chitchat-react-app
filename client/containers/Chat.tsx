@@ -48,7 +48,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     h_stickerBox = this.clientHeight * 0.3;
 
     componentWillMount() {
-
         this.state = {
             messages: new Array(),
             typingText: "",

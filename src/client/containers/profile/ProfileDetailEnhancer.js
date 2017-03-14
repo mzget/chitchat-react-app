@@ -24,5 +24,5 @@ const enhance = recompose_1.compose(recompose_1.withState("user", "updateUser", 
         console.log("bobo", props);
     }
 }));
-const ProfileDetailEnhancer = enhance(({ user, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange }) => React.createElement(ProfileDetail_1.ProfileDetail, { user: user, onFirstNameChange: onFirstNameChange, onLastNameChange: onLastNameChange, onTelNumberChange: onTelNumberChange, onFileReaderChange: onFileReaderChange, onSubmit: onSubmit }));
+const ProfileDetailEnhancer = enhance(({ user, teamProfile, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange }) => React.createElement(ProfileDetail_1.ProfileDetail, { user: user, teamProfile: teamProfile, onFirstNameChange: onFirstNameChange, onLastNameChange: onLastNameChange, onTelNumberChange: onTelNumberChange, onFileReaderChange: onFileReaderChange, onSubmit: onSubmit }));
 exports.ConnectProfileDetailEnhancer = react_redux_1.connect()(ProfileDetailEnhancer);

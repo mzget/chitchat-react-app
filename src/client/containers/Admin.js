@@ -19,7 +19,7 @@ const DialogBox_1 = require("../components/DialogBox");
 const adminRx = require("../redux/admin/adminRx");
 const groupRx = require("../redux/group/groupRx");
 const privateGroupRxActions = require("../redux/group/privateGroupRxActions");
-const User_1 = require("../../server/scripts/models/User");
+const UserRole_1 = require("../../server/scripts/models/UserRole");
 var BoxState;
 (function (BoxState) {
     BoxState[BoxState["idle"] = 0] = "idle";
@@ -71,7 +71,7 @@ class Admin extends React.Component {
         console.log("onAdminMenuSelected", key);
         let { userReducer } = this.props;
         if (key == CreateGroupBox_1.createOrgGroup || key == CreateGroupBox_1.createPjbGroup || key == CreateGroupBox_1.createPvGroup) {
-            if (key == CreateGroupBox_1.createOrgGroup && userReducer.user.role != User_1.UserRole[User_1.UserRole.admin]) {
+            if (key == CreateGroupBox_1.createOrgGroup && userReducer.teamProfile.team_role != UserRole_1.UserRole[UserRole_1.UserRole.admin]) {
                 return this.onAlert("Request for admin permision");
             }
             if (key == CreateGroupBox_1.createPjbGroup) {
@@ -80,7 +80,7 @@ class Admin extends React.Component {
             this.setState(previous => (__assign({}, previous, { boxState: BoxState.isCreateGroup, menuSelected: key })));
         }
         else if (key == this.manageOrgChart) {
-            if (userReducer.user.role == User_1.UserRole[User_1.UserRole.admin]) {
+            if (userReducer.teamProfile.team_role == UserRole_1.UserRole[UserRole_1.UserRole.admin]) {
                 this.setState(previous => (__assign({}, previous, { boxState: BoxState.isManageTeam })));
             }
             else {
@@ -88,7 +88,7 @@ class Admin extends React.Component {
             }
         }
         else if (key == this.teamMember) {
-            if (userReducer.user.role == User_1.UserRole[User_1.UserRole.admin]) {
+            if (userReducer.teamProfile.team_role == UserRole_1.UserRole[UserRole_1.UserRole.admin]) {
                 this.setState(previous => (__assign({}, previous, { boxState: BoxState.isManageMember })));
             }
             else {

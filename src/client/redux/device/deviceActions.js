@@ -12,7 +12,6 @@
  *
  */
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 // import NotificationManager from '../../chats/notificationManager';
 class DeviceActionsType {
 }

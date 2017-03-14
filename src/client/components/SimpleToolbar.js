@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const IconMenu_1 = require("material-ui/IconMenu");
 const IconButton_1 = require("material-ui/IconButton");

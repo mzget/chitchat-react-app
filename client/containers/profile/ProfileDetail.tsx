@@ -10,6 +10,7 @@ import Avatar from "material-ui/Avatar";
 import * as FileReaderInput from "react-file-reader-input";
 
 import { ChitChatAccount } from "../../../server/scripts/models/User";
+import { ITeamProfile } from "../../../server/scripts/models/TeamProfile";
 
 const styles = {
     span: {
@@ -22,6 +23,7 @@ const styles = {
 
 interface IProfileDetailProps {
     user: ChitChatAccount;
+    teamProfile: ITeamProfile;
     onFirstNameChange: (event, newValue) => void;
     onLastNameChange: (event, newValue) => void;
     onTelNumberChange: (event, newValue) => void;
@@ -63,7 +65,7 @@ export const ProfileDetail = (props: IProfileDetailProps) => (
             <span style={styles.span} />
             <TextField
                 hintText="user_role"
-                value={props.user.role}
+                value={props.teamProfile.team_role}
                 disabled={true} />
             <span style={styles.span} />
             <TextField

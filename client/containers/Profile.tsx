@@ -17,6 +17,12 @@ class Profile extends React.Component<IComponentProps, IComponentNameState> {
     alertTitle = "";
     alertMessage = "";
 
+    clientWidth = document.documentElement.clientWidth;
+    clientHeight = document.documentElement.clientHeight;
+    headerHeight = null;
+    subHeaderHeight = null;
+    bodyHeight = null;
+
 
     componentWillMount() {
         this.state = {
@@ -25,6 +31,11 @@ class Profile extends React.Component<IComponentProps, IComponentNameState> {
 
         this.onBackPressed = this.onBackPressed.bind(this);
         this.closeAlert = this.closeAlert.bind(this);
+    }
+
+    componentDidMount() {
+        this.headerHeight = document.getElementById("toolbar").clientHeight;
+        this.bodyHeight = this.clientHeight - this.headerHeight;
     }
 
     onBackPressed() {
@@ -48,8 +59,8 @@ class Profile extends React.Component<IComponentProps, IComponentNameState> {
                         <SimpleToolbar title={"Profile"} onBackPressed={this.onBackPressed} />
                         <Subheader>{null}</Subheader>
                     </div>
-                    <div style={{ backgroundColor: Colors.indigo50 }}>
-                        <ConnectProfileDetailEnhancer user={this.props.userReducer.user} />
+                    <div id={"app_body"} style={{ backgroundColor: Colors.indigo50, height: this.bodyHeight }}>
+                        <ConnectProfileDetailEnhancer user={this.props.userReducer.user} teamProfile={this.props.userReducer.teamProfile} />
                         <DialogBox
                             title={this.alertTitle}
                             message={this.alertMessage}

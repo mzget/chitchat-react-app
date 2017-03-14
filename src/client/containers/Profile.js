@@ -21,6 +21,11 @@ class Profile extends React.Component {
         super(...arguments);
         this.alertTitle = "";
         this.alertMessage = "";
+        this.clientWidth = document.documentElement.clientWidth;
+        this.clientHeight = document.documentElement.clientHeight;
+        this.headerHeight = null;
+        this.subHeaderHeight = null;
+        this.bodyHeight = null;
     }
     componentWillMount() {
         this.state = {
@@ -28,6 +33,10 @@ class Profile extends React.Component {
         };
         this.onBackPressed = this.onBackPressed.bind(this);
         this.closeAlert = this.closeAlert.bind(this);
+    }
+    componentDidMount() {
+        this.headerHeight = document.getElementById("toolbar").clientHeight;
+        this.bodyHeight = this.clientHeight - this.headerHeight;
     }
     onBackPressed() {
         // Jump to main menu.
@@ -46,8 +55,8 @@ class Profile extends React.Component {
                 React.createElement("div", { id: "toolbar", style: { height: this.headerHeight } },
                     React.createElement(SimpleToolbar_1.SimpleToolbar, { title: "Profile", onBackPressed: this.onBackPressed }),
                     React.createElement(Subheader_1.default, null, null)),
-                React.createElement("div", { style: { backgroundColor: Colors.indigo50 } },
-                    React.createElement(ProfileDetailEnhancer_1.ConnectProfileDetailEnhancer, { user: this.props.userReducer.user }),
+                React.createElement("div", { id: "app_body", style: { backgroundColor: Colors.indigo50, height: this.bodyHeight } },
+                    React.createElement(ProfileDetailEnhancer_1.ConnectProfileDetailEnhancer, { user: this.props.userReducer.user, teamProfile: this.props.userReducer.teamProfile }),
                     React.createElement(DialogBox_1.DialogBox, { title: this.alertTitle, message: this.alertMessage, open: this.state.alert, handleClose: this.closeAlert })))));
     }
 }

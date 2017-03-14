@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const async_1 = require("async");
 const config_1 = require("../../configs/config");
 function manageUploadQueue(files, target_api, onFinished, speedCallBack = false, onSpeedCallBack) {

@@ -6,9 +6,11 @@ import { ProfileDetail } from "./ProfileDetail";
 import { } from "../../redux/user/userRx";
 
 import { ChitChatAccount } from "../../../server/scripts/models/User";
+import { ITeamProfile } from "../../../server/scripts/models/TeamProfile";
 
 interface IEnhanceProps {
     user: ChitChatAccount;
+    teamProfile: ITeamProfile;
     updateUser;
     dispatch;
 }
@@ -41,10 +43,11 @@ const enhance = compose(
     })
 );
 const ProfileDetailEnhancer = enhance(({
-  user, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange
+  user, teamProfile, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange
      }: IEnhanceProps) =>
     <ProfileDetail
         user={user}
+        teamProfile={teamProfile}
         onFirstNameChange={onFirstNameChange}
         onLastNameChange={onLastNameChange}
         onTelNumberChange={onTelNumberChange}
