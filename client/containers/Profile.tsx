@@ -68,7 +68,7 @@ class Profile extends React.Component<IComponentProps, IComponentNameState> {
                     <ConnectProfileDetailEnhancer
                         user={this.props.userReducer.user}
                         teamProfile={this.props.userReducer.teamProfile}
-                        onError={this.onAlert} />
+                        alert={this.onAlert} />
                 </div>
                 <DialogBox
                     title={this.alertTitle}

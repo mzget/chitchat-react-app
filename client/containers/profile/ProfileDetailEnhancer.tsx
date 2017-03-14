@@ -15,7 +15,7 @@ interface IEnhanceProps {
     updateUser;
     imageFile;
     setImageFile;
-    onError: (error) => void;
+    alert: (message) => void;
     dispatch;
     userReducer;
 }
@@ -33,7 +33,7 @@ const enhance = compose(
 
             if (userReducer.state == userRx.UPLOAD_USER_AVATAR_FAILURE) {
                 if (!shallowEqual(this.props.userReducer, userReducer)) {
-                    this.props.onError(userReducer.error);
+                    this.props.alert(userReducer.error);
                 }
             }
             else if (userReducer.state == userRx.UPLOAD_USER_AVATAR_SUCCESS) {
@@ -48,7 +48,12 @@ const enhance = compose(
             }
             else if (userReducer.state == userRx.UPDATE_USER_INFO_FAILURE) {
                 if (!shallowEqual(this.props.userReducer, userReducer)) {
-                    this.props.onError(userReducer.error);
+                    this.props.alert(userReducer.error);
+                }
+            }
+            else if (userReducer.state == userRx.UPDATE_USER_INFO_SUCCESS) {
+                if (!shallowEqual(this.props.userReducer, userReducer)) {
+                    this.props.alert(userRx.UPDATE_USER_INFO_SUCCESS);
                 }
             }
         }
@@ -97,7 +102,7 @@ const ProfileDetailEnhancer = enhance(({
   user, teamProfile,
     onFirstNameChange, onLastNameChange,
     onTelNumberChange, onSubmit,
-    onFileReaderChange, onError
+    onFileReaderChange, alert
      }: IEnhanceProps) =>
     <ProfileDetail
         user={user}

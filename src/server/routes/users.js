@@ -233,6 +233,12 @@ router.post("/userInfo", (req, res, next) => {
     let token = req["decoded"];
     let user_id = token._id;
     let user = req.body.user;
+    if (!user.firstname || user.firstname.length <= 0) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, "Missing user.firstname"));
+    }
+    if (!user.lastname || user.lastname.length <= 0) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, "Missing user.lastname"));
+    }
     UserManager.updateUserInfo(user_id, user).then(value => {
         res.status(200).json(new apiUtils.ApiResponse(true, null, value));
     }).catch(err => {

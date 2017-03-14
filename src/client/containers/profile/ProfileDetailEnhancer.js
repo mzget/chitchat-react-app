@@ -15,7 +15,7 @@ const enhance = recompose_1.compose(recompose_1.withState("user", "updateUser", 
         let { userReducer } = nextProps;
         if (userReducer.state == userRx.UPLOAD_USER_AVATAR_FAILURE) {
             if (!recompose_1.shallowEqual(this.props.userReducer, userReducer)) {
-                this.props.onError(userReducer.error);
+                this.props.alert(userReducer.error);
             }
         }
         else if (userReducer.state == userRx.UPLOAD_USER_AVATAR_SUCCESS) {
@@ -29,7 +29,12 @@ const enhance = recompose_1.compose(recompose_1.withState("user", "updateUser", 
         }
         else if (userReducer.state == userRx.UPDATE_USER_INFO_FAILURE) {
             if (!recompose_1.shallowEqual(this.props.userReducer, userReducer)) {
-                this.props.onError(userReducer.error);
+                this.props.alert(userReducer.error);
+            }
+        }
+        else if (userReducer.state == userRx.UPDATE_USER_INFO_SUCCESS) {
+            if (!recompose_1.shallowEqual(this.props.userReducer, userReducer)) {
+                this.props.alert(userRx.UPDATE_USER_INFO_SUCCESS);
             }
         }
     }
@@ -68,7 +73,7 @@ const enhance = recompose_1.compose(recompose_1.withState("user", "updateUser", 
         }
     }
 }));
-const ProfileDetailEnhancer = enhance(({ user, teamProfile, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange, onError }) => React.createElement(ProfileDetail_1.ProfileDetail, { user: user, teamProfile: teamProfile, onFirstNameChange: onFirstNameChange, onLastNameChange: onLastNameChange, onTelNumberChange: onTelNumberChange, onFileReaderChange: onFileReaderChange, onSubmit: onSubmit }));
+const ProfileDetailEnhancer = enhance(({ user, teamProfile, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange, alert }) => React.createElement(ProfileDetail_1.ProfileDetail, { user: user, teamProfile: teamProfile, onFirstNameChange: onFirstNameChange, onLastNameChange: onLastNameChange, onTelNumberChange: onTelNumberChange, onFileReaderChange: onFileReaderChange, onSubmit: onSubmit }));
 const mapStateToProps = (state) => ({
     userReducer: state.userReducer
 });
