@@ -23,14 +23,20 @@ export const ChatRoomInitState = Record({
     earlyMessageReady: false,
     uploadingFile: null,
     fileInfo: null,
-    error: null
+    error: null,
+    chatDisabled: false
 });
 const initialState = new ChatRoomInitState();
 
 export const chatroomReducer = (state = new ChatRoomInitState(), action) => {
     switch (action.type) {
         case chatroomActions.JOIN_ROOM_FAILURE: {
-            return state.set("state", chatroomActions.JOIN_ROOM_FAILURE);
+            return state.set("state", chatroomActions.JOIN_ROOM_FAILURE)
+                .set("chatDisabled", true);
+        }
+        case chatroomActions.JOIN_ROOM_SUCCESS: {
+            return state.set("state", chatroomActions.JOIN_ROOM_SUCCESS)
+                .set("chatDisabled", false);
         }
 
         case ChatRoomRx.FETCH_PRIVATE_CHATROOM_SUCCESS:

@@ -39,9 +39,6 @@ export class ChatRoomActionsType {
     static SEND_MESSAGE_SUCCESS = "SEND_MESSAGE_SUCCESS";
     static SEND_MESSAGE_FAILURE = "SEND_MESSAGE_FAILURE";
 
-    static JOIN_ROOM_REQUEST = "JOIN_ROOM_REQUEST";
-    static JOIN_ROOM_SUCCESS = "JOIN_ROOM_SUCCESS";
-
     static REPLACE_MESSAGE = "REPLACE_MESSAGE";
     static ON_NEW_MESSAGE = "ON_NEW_MESSAGE";
     static ON_EARLY_MESSAGE_READY = "ON_EARLY_MESSAGE_READY";
@@ -252,12 +249,15 @@ function sendMessageResponse(err, res) {
     };
 }
 
+
+const JOIN_ROOM_REQUEST = "JOIN_ROOM_REQUEST";
+export const JOIN_ROOM_SUCCESS = "JOIN_ROOM_SUCCESS";
 export const JOIN_ROOM_FAILURE = "JOIN_ROOM_FAILURE";
 function joinRoom_request() {
-    return { type: ChatRoomActionsType.JOIN_ROOM_REQUEST };
+    return { type: JOIN_ROOM_REQUEST };
 }
 function joinRoom_success(data?: any) {
-    return { type: ChatRoomActionsType.JOIN_ROOM_SUCCESS, payload: data };
+    return { type: JOIN_ROOM_SUCCESS, payload: data };
 }
 function joinRoom_failure() { return { type: JOIN_ROOM_FAILURE }; }
 export function joinRoom(roomId: string, token: string, username: string) {

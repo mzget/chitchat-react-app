@@ -31,7 +31,6 @@ interface IComponentNameState {
     typingText: string;
     earlyMessageReady;
     openButtomMenu: boolean;
-    chatDisabled: boolean;
 };
 
 class Chat extends React.Component<IComponentProps, IComponentNameState> {
@@ -53,8 +52,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             typingText: "",
             isLoadingEarlierMessages: false,
             earlyMessageReady: false,
-            openButtomMenu: false,
-            chatDisabled: false
+            openButtomMenu: false
         };
 
         this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
@@ -103,7 +101,15 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
         switch (chatroomReducer.state) {
             case chatroomActions.JOIN_ROOM_FAILURE: {
-                this.setState(previous => ({ ...previous, chatDisabled: true }));
+                this.setState(previous => ({ ...previous, chatDisabled: true }), () => {
+                    this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
+                });
+                break;
+            }
+            case chatroomActions.JOIN_ROOM_SUCCESS: {
+                this.setState(previous => ({ ...previous, chatDisabled: false }), () => {
+                    this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
+                });
                 break;
             }
 
@@ -220,7 +226,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         // - getPersistedMessage.
         // - Request join room.
         chatroomActions.initChatRoom(chatroomReducer.room);
-        this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
         this.props.dispatch(chatroomActions.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
     }
 
@@ -426,7 +431,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 }
                 <TypingBox
                     styles={{ width: this.clientWidth }}
-                    disabled={this.state.chatDisabled}
+                    disabled={this.props.chatroomReducer.chatDisabled}
                     onSubmit={this.onSubmitTextChat}
                     onValueChange={this.onTypingTextChange}
                     value={this.state.typingText}
