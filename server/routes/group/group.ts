@@ -79,7 +79,6 @@ router.post("/org/create", function (req, res, next) {
     });
 });
 
-
 router.get("/private_group", (req, res, next) => {
     let user_id = req["decoded"]._id as string;
 
