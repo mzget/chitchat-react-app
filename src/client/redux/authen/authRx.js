@@ -6,10 +6,11 @@ const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 const AppActions = require("../app/persistentDataActions");
-const SIGN_UP = 'SIGN_UP';
-exports.SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS';
-const SIGN_UP_FAILURE = 'SIGN_UP_FAILURE';
-const SIGN_UP_CANCELLED = 'SIGN_UP_CANCELLED';
+const stalkBridgeActions = require("../stalkBridge/stalkBridgeActions");
+const SIGN_UP = "SIGN_UP";
+exports.SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
+const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
+const SIGN_UP_CANCELLED = "SIGN_UP_CANCELLED";
 exports.signup = (user) => ({ type: SIGN_UP, payload: user }); // username => ({ type: FETCH_USER, payload: username });
 const signupSuccess = payload => ({ type: exports.SIGN_UP_SUCCESS, payload });
 const signupFailure = payload => ({ type: SIGN_UP_FAILURE, payload, error: true });
@@ -33,10 +34,10 @@ const authUserSuccess = payload => ({ type: exports.AUTH_USER_SUCCESS, payload }
 const authUserFailure = payload => ({ type: exports.AUTH_USER_FAILURE, payload });
 const authUserCancelled = () => ({ type: AUTH_USER_CANCELLED });
 exports.authUserEpic = action$ => action$.ofType(AUTH_USER).mergeMap(action => ajax({
-    method: 'POST',
+    method: "POST",
     url: `${config_1.default.api.auth}`,
     body: JSON.stringify(action.payload),
-    headers: { 'Content-Type': 'application/json', 'x-api-key': config_1.default.api.apiKey }
+    headers: { "Content-Type": "application/json", "x-api-key": config_1.default.api.apiKey }
 })
     .map(response => authUserSuccess(response.xhr.response))
     .takeUntil(action$.ofType(AUTH_USER_CANCELLED))
@@ -50,10 +51,10 @@ const tokenAuthUserSuccess = payload => ({ type: exports.TOKEN_AUTH_USER_SUCCESS
 const tokenAuthUserFailure = payload => ({ type: TOKEN_AUTH_USER_FAILURE, payload });
 const tokenAuthUserCancelled = () => ({ type: TOKEN_AUTH_USER_CANCELLED });
 exports.tokenAuthUserEpic = action$ => action$.ofType(TOKEN_AUTH_USER).mergeMap(action => ajax({
-    method: 'POST',
+    method: "POST",
     url: `${config_1.default.api.auth}/verify`,
     body: JSON.stringify({ token: action.payload }),
-    headers: { 'Content-Type': 'application/json', 'x-api-key': config_1.default.api.apiKey }
+    headers: { "Content-Type": "application/json", "x-api-key": config_1.default.api.apiKey }
 })
     .map(response => tokenAuthUserSuccess(response.xhr.response))
     .takeUntil(action$.ofType(TOKEN_AUTH_USER_CANCELLED))
@@ -67,12 +68,13 @@ const logoutSuccess = redux_actions_1.createAction(exports.LOG_OUT_SUCCESS, payl
 const logoutFailure = redux_actions_1.createAction(LOG_OUT_FAILURE, payload => payload);
 const logoutCancelled = redux_actions_1.createAction(LOG_OUT_CANCELLED);
 exports.logoutUserEpic = action$ => action$.ofType(LOG_OUT).mergeMap(action => ajax({
-    method: 'POST',
+    method: "POST",
     url: `${config_1.default.api.auth}/logout`,
-    headers: { 'Content-Type': 'application/json', 'x-access-token': action.payload }
+    headers: { "Content-Type": "application/json", "x-access-token": action.payload }
 })
     .map(response => {
     AppActions.removeSession();
+    stalkBridgeActions.stalkLogout();
     return logoutSuccess(response.xhr.response);
 })
     .takeUntil(action$.ofType(LOG_OUT_CANCELLED))
@@ -89,27 +91,27 @@ exports.AuthenInitState = immutable_1.Record({
 exports.authReducer = (state = new exports.AuthenInitState(), action) => {
     switch (action.type) {
         case exports.SIGN_UP_SUCCESS:
-            return state.set('state', exports.SIGN_UP_SUCCESS);
+            return state.set("state", exports.SIGN_UP_SUCCESS);
         case AUTH_USER: {
-            return state.set('user', action.payload.email);
+            return state.set("user", action.payload.email);
         }
         case exports.AUTH_USER_SUCCESS: {
-            return state.set('state', exports.AUTH_USER_SUCCESS)
-                .set('token', action.payload.result);
+            return state.set("state", exports.AUTH_USER_SUCCESS)
+                .set("token", action.payload.result);
         }
         case exports.AUTH_USER_FAILURE: {
-            return state.set('state', exports.AUTH_USER_FAILURE)
-                .set('token', null)
-                .set('user', null)
+            return state.set("state", exports.AUTH_USER_FAILURE)
+                .set("token", null)
+                .set("user", null)
                 .set("error", JSON.stringify(action.payload));
         }
         case AppActions.GET_SESSION_TOKEN_SUCCESS: {
-            return state.set('token', action.payload)
-                .set('state', AppActions.GET_SESSION_TOKEN_SUCCESS);
+            return state.set("token", action.payload)
+                .set("state", AppActions.GET_SESSION_TOKEN_SUCCESS);
         }
         case exports.TOKEN_AUTH_USER_SUCCESS: {
-            return state.set('state', exports.TOKEN_AUTH_USER_SUCCESS)
-                .set('user', action.payload.result.email);
+            return state.set("state", exports.TOKEN_AUTH_USER_SUCCESS)
+                .set("user", action.payload.result.email);
         }
         case TOKEN_AUTH_USER_FAILURE: {
             return state.set("token", null)

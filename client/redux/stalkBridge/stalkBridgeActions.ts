@@ -145,3 +145,10 @@ async function stalkManageConnection() {
         Store.dispatch(onStalkSocketDisconnected(data.type));
     };
 }
+
+export async function stalkLogout() {
+    const backendFactory = BackendFactory.getInstance();
+
+    let server = await backendFactory.getServer();
+    server.logout();
+}

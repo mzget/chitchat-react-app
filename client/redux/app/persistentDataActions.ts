@@ -1,8 +1,8 @@
-﻿import { createAction} from "redux-actions";
+﻿import { createAction } from "redux-actions";
 
-import Store from '../configureStore';
+import Store from "../configureStore";
 
-import { AppSessionToken } from '../../libs/chitchat/dataAccessLayer/AppSessionToken';
+import { AppSessionToken } from "../../libs/chitchat/dataAccessLayer/AppSessionToken";
 const appSession = new AppSessionToken();
 
 
@@ -26,5 +26,5 @@ export function getSession() {
             else
                 dispatch(getSessionTokenFailure(null));
         }).catch(err => dispatch(getSessionTokenFailure(err)));
-    }
+    };
 }
