@@ -49,7 +49,7 @@ function setRoomsMap(data, callback) {
 }
 exports.setRoomsMap = setRoomsMap;
 function getRoom(roomId, callback) {
-    if (RedisClient_1.redisStatus == RedisClient_1.RedisStatus.ready) {
+    if (RedisClient_1.default.connected) {
         RedisClient_1.default.hget(RedisClient_1.ROOM_MAP_KEY, roomId, function (err, roomMap) {
             if (err || !roomMap) {
                 console.log("Can't find room from cache");

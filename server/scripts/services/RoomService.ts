@@ -1,6 +1,6 @@
 import mongodb = require("mongodb");
 import redis = require("redis");
-import RedisClient, { ROOM_MAP_KEY, redisStatus, RedisStatus } from "./RedisClient";
+import RedisClient, { ROOM_MAP_KEY } from "./RedisClient";
 
 import { Config, DbClient } from "../../config";
 import { getAppDb } from "../DbClient";
@@ -47,7 +47,7 @@ export function setRoomsMap(data: Array<any>, callback: () => void) {
 }
 
 export function getRoom(roomId: string, callback: (err: any, res: Room.Room) => void) {
-    if (redisStatus == RedisStatus.ready) {
+    if (RedisClient.connected) {
         RedisClient.hget(ROOM_MAP_KEY, roomId, function (err, roomMap) {
             if (err || !roomMap) {
                 console.log("Can't find room from cache");
