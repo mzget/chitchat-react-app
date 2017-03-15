@@ -16,7 +16,23 @@ const ObjectID = mongodb.ObjectID;
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-    next();
+    req.checkQuery("room_id", "request for room_id").isMongoId();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let room_id = req.query.room_id as string;
+
+    RoomService.getRoom(room_id, function (err, result) {
+        if (err || !result) {
+            res.status(500).json(new apiUtils.ApiResponse(false, "can't find roomId!"));
+        }
+        else {
+            res.status(200).json(new apiUtils.ApiResponse(true, null, [result]));
+        }
+    });
 });
 
 /**
@@ -70,7 +86,7 @@ router.get("/roomInfo", (req, res, next) => {
 
     RoomService.checkedCanAccessRoom(room_id, user_id, function (err, result) {
         if (err || result === false) {
-            res.status(500).json({ success: false, message: "cannot access your request room." });
+            res.status(500).json(new apiUtils.ApiResponse(false, "cannot access your request room."));
         }
         else {
             RoomService.getRoom(room_id, (err, room) => {

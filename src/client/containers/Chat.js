@@ -48,8 +48,7 @@ class Chat extends React.Component {
             typingText: "",
             isLoadingEarlierMessages: false,
             earlyMessageReady: false,
-            openButtomMenu: false,
-            chatDisabled: false
+            openButtomMenu: false
         };
         this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
         this.onTypingTextChange = this.onTypingTextChange.bind(this);
@@ -90,7 +89,15 @@ class Chat extends React.Component {
         }
         switch (chatroomReducer.state) {
             case chatroomActions.JOIN_ROOM_FAILURE: {
-                this.setState(previous => (Object.assign({}, previous, { chatDisabled: true })));
+                this.setState(previous => (Object.assign({}, previous, { chatDisabled: true })), () => {
+                    this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
+                });
+                break;
+            }
+            case chatroomActions.JOIN_ROOM_SUCCESS: {
+                this.setState(previous => (Object.assign({}, previous, { chatDisabled: false })), () => {
+                    this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
+                });
                 break;
             }
             case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
@@ -173,7 +180,6 @@ class Chat extends React.Component {
         // - getPersistedMessage.
         // - Request join room.
         chatroomActions.initChatRoom(chatroomReducer.room);
-        this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
         this.props.dispatch(chatroomActions.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
     }
     setMessageStatus(uniqueId, status) {
@@ -319,7 +325,7 @@ class Chat extends React.Component {
             (this.state.openButtomMenu) ?
                 React.createElement(GridListSimple_1.default, { boxHeight: this.h_stickerBox, srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
                 : null,
-            React.createElement(TypingBox_1.TypingBox, { styles: { width: this.clientWidth }, disabled: this.state.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }),
+            React.createElement(TypingBox_1.TypingBox, { styles: { width: this.clientWidth }, disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }),
             React.createElement(UploadingDialog_1.default, null),
             React.createElement(UtilsBox_1.default, null)));
     }

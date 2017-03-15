@@ -39,8 +39,6 @@ ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS = "GET_NEWER_MESSAGE_SUCCESS";
 ChatRoomActionsType.SEND_MESSAGE_REQUEST = "SEND_MESSAGE_REQUEST";
 ChatRoomActionsType.SEND_MESSAGE_SUCCESS = "SEND_MESSAGE_SUCCESS";
 ChatRoomActionsType.SEND_MESSAGE_FAILURE = "SEND_MESSAGE_FAILURE";
-ChatRoomActionsType.JOIN_ROOM_REQUEST = "JOIN_ROOM_REQUEST";
-ChatRoomActionsType.JOIN_ROOM_SUCCESS = "JOIN_ROOM_SUCCESS";
 ChatRoomActionsType.REPLACE_MESSAGE = "REPLACE_MESSAGE";
 ChatRoomActionsType.ON_NEW_MESSAGE = "ON_NEW_MESSAGE";
 ChatRoomActionsType.ON_EARLY_MESSAGE_READY = "ON_EARLY_MESSAGE_READY";
@@ -236,12 +234,14 @@ function sendMessageResponse(err, res) {
         }
     };
 }
+const JOIN_ROOM_REQUEST = "JOIN_ROOM_REQUEST";
+exports.JOIN_ROOM_SUCCESS = "JOIN_ROOM_SUCCESS";
 exports.JOIN_ROOM_FAILURE = "JOIN_ROOM_FAILURE";
 function joinRoom_request() {
-    return { type: ChatRoomActionsType.JOIN_ROOM_REQUEST };
+    return { type: JOIN_ROOM_REQUEST };
 }
 function joinRoom_success(data) {
-    return { type: ChatRoomActionsType.JOIN_ROOM_SUCCESS, payload: data };
+    return { type: exports.JOIN_ROOM_SUCCESS, payload: data };
 }
 function joinRoom_failure() { return { type: exports.JOIN_ROOM_FAILURE }; }
 function joinRoom(roomId, token, username) {
