@@ -131,6 +131,9 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 else if (fileInfo.type.match(FileType.videoType)) {
                     this.onSubmitVideoChat(fileInfo, responseFile.path);
                 }
+                else if (fileInfo.type.match(FileType.file)) {
+                    this.onSubmitPDFFile(fileInfo, responseFile);
+                }
 
                 break;
             }
@@ -257,7 +260,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             }
         });
 
-        this.setState({ ...this.state, messages: _messages }, () => console.log(this.state.messages));
+        this.setState({ ...this.state, messages: _messages }, () => console.dir(this.state.messages));
     }
 
     onTypingTextChange(event) {
@@ -287,6 +290,18 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         let msg = {
             video: file.name,
             src: `${Config.api.host}/${responseUrl}`
+        };
+
+        this.prepareSend(msg);
+    }
+
+    onSubmitPDFFile(file: File, responseFile: any) {
+        let { path, mimetype, size } = responseFile;
+        let msg = {
+            file: file.name,
+            mimetype: mimetype,
+            size: size,
+            src: `${Config.api.host}/${path}`
         };
 
         this.prepareSend(msg);
@@ -331,6 +346,12 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             message.body = msg.video;
             message.src = msg.src;
             message.type = ContentType[ContentType.Video];
+        }
+        else if (msg.file != null) {
+            message.body = msg.file;
+            message.meta = { mimetype: msg.mimetype, size: msg.size };
+            message.src = msg.src;
+            message.type = ContentType[ContentType.File];
         }
         else if (msg.sticker != null) {
             message.body = msg.sticker;

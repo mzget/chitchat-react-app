@@ -21,4 +21,7 @@ class PrivateGroupListBox extends React.Component {
             React.createElement(GroupList_1.GroupList, { values: this.props.groupReducer.privateGroups, onSelected: this.onselectGroup })));
     }
 }
+const PrivateGroupListView = () => (React.createElement("div", null,
+    React.createElement(Subheader_1.default, null, "Groups"),
+    React.createElement(GroupList_1.GroupList, { values: this.props.groupReducer.privateGroups, onSelected: this.onselectGroup })));
 exports.default = PrivateGroupListBox;

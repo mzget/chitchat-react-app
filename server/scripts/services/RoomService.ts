@@ -60,7 +60,7 @@ export function getRoom(roomId: string, callback: (err: any, res: Room.Room) => 
             }
             else {
                 let room = JSON.parse(roomMap) as Room.Room;
-                console.log("room from cache: ", room);
+                console.log("room from cache: ", room._id, room.name);
                 callback(null, room);
             }
         });

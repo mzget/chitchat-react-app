@@ -9,8 +9,7 @@ interface MyProps {
     cardText?: string;
     imageSrc: string;
 }
-
-export const CardImageWithAvatar = (props: MyProps) => (
+export const CardFileWithAvatar = (props: MyProps) => (
     <Card>
         <CardHeader
             title={<span style={{ color: "blue" }}>{props.title}</span>}
@@ -22,19 +21,6 @@ export const CardImageWithAvatar = (props: MyProps) => (
         </CardText>
         <CardMedia>
             <img src={props.imageSrc} width="100%" alt={`Image preview: ${props.cardText}`} />
-        </CardMedia>
-    </Card>
-);
-
-export const CardStickerWithAvatar = (props: MyProps) => (
-    <Card>
-        <CardHeader
-            title={<span style={{ color: "blue" }}>{props.title}</span>}
-            subtitle={<span>{props.subtitle}</span>}
-            avatar={props.avatar}
-        />
-        <CardMedia>
-            <img src={props.imageSrc} alt={`Image preview:`} style={{ padding: 4, width: "50%", minWidth: "128px", maxWidth: "160px" }} />
         </CardMedia>
     </Card>
 );

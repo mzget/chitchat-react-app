@@ -10,6 +10,7 @@ import { WarningBar } from "../components/WarningBar";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { ConnectProfileEnhancer } from "./profile/ProfileBox";
 import OrgGroupListBox from "./group/OrgGroupListBox";
+import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
 import PrivateGroupListBox from "./group/PrivateGroupListBox";
 import ChatLogsBox from "./ChatLogsBox";
 import ContactBox from "./chatlist/ContactBox";
@@ -20,6 +21,7 @@ import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
 import * as chatroomRx from "../redux/chatroom/chatroomRxEpic";
 import * as userRx from "../redux/user/userRx";
 import * as authRx from "../redux/authen/authRx";
+import * as groupRx from "../redux/group/groupRx";
 import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
 
 interface IComponentNameState {
@@ -47,7 +49,6 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
 
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
     }
-
 
     componentWillReceiveProps(nextProps: IComponentProps) {
         let {
@@ -162,7 +163,10 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                     }
                     <div style={{ height: this.bodyHeight, overflowY: "auto" }} id={"app_body"}>
                         <ConnectProfileEnhancer router={this.props.router} />
-                        <OrgGroupListBox {...this.props} />
+                        {/*<OrgGroupListBox {...this.props} />*/}
+                        <ConnectGroupListEnhancer fetchGroup={() => {
+                            this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
+                        }} />
                         <PrivateGroupListBox {...this.props} />
                         <ContactBox {...this.props} />
                         <ChatLogsBox {...this.props} />

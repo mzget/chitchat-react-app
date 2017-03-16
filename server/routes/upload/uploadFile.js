@@ -28,6 +28,8 @@ router.post("/", function (req, res, next) {
                 fullname = file.path + file.mimetype.replace("video/", ".");
             else if (file.mimetype.match(FileType.textType))
                 fullname = file.path + file.mimetype.replace("text/", ".");
+            else if (file.mimetype.match(FileType.file))
+                fullname = file.path + file.mimetype.replace("application/", ".");
             fs.readFile(file.path, function (err, data) {
                 if (err) {
                     res.status(500).json(new apiUtils.ApiResponse(false, err));

@@ -36,4 +36,10 @@ class PrivateGroupListBox extends React.Component<IComponentProps, IComponentNam
     }
 }
 
+const PrivateGroupListView = () => (
+    <div>
+        <Subheader>Groups</Subheader>
+        <GroupList values={this.props.groupReducer.privateGroups} onSelected={this.onselectGroup} />
+    </div>);
+
 export default PrivateGroupListBox;

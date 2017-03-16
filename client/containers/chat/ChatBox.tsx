@@ -17,6 +17,7 @@ import { ContentType } from "../../chats/models/ChatDataModels";
 import { MessageImp } from "../../chats/models/MessageImp";
 import CardTextWithAvatar from "../../components/CardTextWithAvatar";
 import { CardImageWithAvatar, CardStickerWithAvatar } from "../../components/CardImageWithAvatar";
+import { CardFileWithAvatar } from "../../components/CardFileWithAvatar";
 import CardVideoWithAvatar from "../../components/CardVideoWithAvatar";
 import { IComponentProps } from "../../utils/IComponentProps";
 
@@ -94,6 +95,20 @@ const renderList = (props: MyProps) => {
                                     <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                                 }
                                 src={message.src} />
+                        </ListItem>);
+                }
+            case ContentType[ContentType.File]:
+                {
+                    return (
+                        <ListItem key={i}>
+                            <CardFileWithAvatar
+                                title={message.user.username}
+                                subtitle={(message.createTime) ? message.createTime.toString() : ""}
+                                avatar={(message.user.avatar) ?
+                                    <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
+                                }
+                                cardText={message.body}
+                                imageSrc={message.src} />
                         </ListItem>);
                 }
             default:

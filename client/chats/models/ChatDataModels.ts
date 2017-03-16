@@ -63,11 +63,11 @@ export interface IMessage {
     target: string;
 }
 export interface IMessageMeta {
-    duration: string;
-    thumbnail: string;
-    name: string;
-    mimeType: string;
-    size: string;
+    duration?: string;
+    thumbnail?: string;
+    name?: string;
+    mimetype: string;
+    size: number;
 }
 
 /**

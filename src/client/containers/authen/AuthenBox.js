@@ -33,7 +33,8 @@ class AuthenBox extends React.Component {
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement(reflexbox_1.Flex, { flexColumn: true },
                 (this.state.showSignin) ?
-                    React.createElement(SigninBox_1.default, { dispatch: this.props.dispatch, onError: this.props.onError }) : React.createElement(SignupBox_1.default, Object.assign({}, this.props, { onError: this.props.onError })),
+                    React.createElement(SigninBox_1.default, { dispatch: this.props.dispatch, onError: this.props.onError }) :
+                    React.createElement(SignupBox_1.default, Object.assign({}, this.props, { onError: this.props.onError })),
                 (this.state.showSignin) ?
                     (React.createElement(reflexbox_1.Flex, { justify: "center", align: "center", p: 2 },
                         React.createElement("p", null, "New to chitchat?"),

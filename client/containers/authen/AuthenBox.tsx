@@ -47,7 +47,8 @@ class AuthenBox extends React.Component<IComponentNameProps, IComponentNameState
                 <Flex flexColumn>
                     {
                         (this.state.showSignin) ?
-                            <SigninBox dispatch={this.props.dispatch} onError={this.props.onError} /> : <SignupBox {...this.props} onError={this.props.onError} />
+                            <SigninBox dispatch={this.props.dispatch} onError={this.props.onError} /> :
+                            <SignupBox {...this.props} onError={this.props.onError} />
                     }
                     {
                         (this.state.showSignin) ?

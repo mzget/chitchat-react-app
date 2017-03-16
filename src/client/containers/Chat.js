@@ -116,6 +116,9 @@ class Chat extends React.Component {
                 else if (fileInfo.type.match(FileType.videoType)) {
                     this.onSubmitVideoChat(fileInfo, responseFile.path);
                 }
+                else if (fileInfo.type.match(FileType.file)) {
+                    this.onSubmitPDFFile(fileInfo, responseFile);
+                }
                 break;
             }
             case chatroomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
@@ -207,7 +210,7 @@ class Chat extends React.Component {
                 message.status = "Sent";
             }
         });
-        this.setState(Object.assign({}, this.state, { messages: _messages }), () => console.log(this.state.messages));
+        this.setState(Object.assign({}, this.state, { messages: _messages }), () => console.dir(this.state.messages));
     }
     onTypingTextChange(event) {
         this.setState(Object.assign({}, this.state, { typingText: event.target.value }));
@@ -231,6 +234,16 @@ class Chat extends React.Component {
         let msg = {
             video: file.name,
             src: `${config_1.default.api.host}/${responseUrl}`
+        };
+        this.prepareSend(msg);
+    }
+    onSubmitPDFFile(file, responseFile) {
+        let { path, mimetype, size } = responseFile;
+        let msg = {
+            file: file.name,
+            mimetype: mimetype,
+            size: size,
+            src: `${config_1.default.api.host}/${path}`
         };
         this.prepareSend(msg);
     }
@@ -269,6 +282,12 @@ class Chat extends React.Component {
             message.body = msg.video;
             message.src = msg.src;
             message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Video];
+        }
+        else if (msg.file != null) {
+            message.body = msg.file;
+            message.meta = { mimetype: msg.mimetype, size: msg.size };
+            message.src = msg.src;
+            message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.File];
         }
         else if (msg.sticker != null) {
             message.body = msg.sticker;

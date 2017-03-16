@@ -61,7 +61,7 @@ function getRoom(roomId, callback) {
             }
             else {
                 let room = JSON.parse(roomMap);
-                console.log("room from cache: ", room);
+                console.log("room from cache: ", room._id, room.name);
                 callback(null, room);
             }
         });

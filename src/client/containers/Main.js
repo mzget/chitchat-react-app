@@ -6,7 +6,7 @@ const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const WarningBar_1 = require("../components/WarningBar");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const ProfileBox_1 = require("./profile/ProfileBox");
-const OrgGroupListBox_1 = require("./group/OrgGroupListBox");
+const ConnectGroupListEnhancer_1 = require("./group/ConnectGroupListEnhancer");
 const PrivateGroupListBox_1 = require("./group/PrivateGroupListBox");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 const ContactBox_1 = require("./chatlist/ContactBox");
@@ -16,6 +16,7 @@ const chatlogsActions = require("../redux/chatlogs/chatlogsActions");
 const chatroomRx = require("../redux/chatroom/chatroomRxEpic");
 const userRx = require("../redux/user/userRx");
 const authRx = require("../redux/authen/authRx");
+const groupRx = require("../redux/group/groupRx");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 ;
 class Main extends React.Component {
@@ -129,7 +130,9 @@ class Main extends React.Component {
                     React.createElement(WarningBar_1.WarningBar, null) : null,
                 React.createElement("div", { style: { height: this.bodyHeight, overflowY: "auto" }, id: "app_body" },
                     React.createElement(ProfileBox_1.ConnectProfileEnhancer, { router: this.props.router }),
-                    React.createElement(OrgGroupListBox_1.default, Object.assign({}, this.props)),
+                    React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => {
+                            this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
+                        } }),
                     React.createElement(PrivateGroupListBox_1.default, Object.assign({}, this.props)),
                     React.createElement(ContactBox_1.default, Object.assign({}, this.props)),
                     React.createElement(ChatLogsBox_1.default, Object.assign({}, this.props)),
