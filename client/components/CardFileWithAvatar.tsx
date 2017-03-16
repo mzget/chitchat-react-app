@@ -22,7 +22,7 @@ export const CardFileWithAvatar = (props: MyProps) => (
             />
             <Flex flexColumn={false}>
                 <img src={props.imageSrc} style={{ padding: 5 }} alt={`Image preview: ${props.cardText}`} />
-                <p style={{ color: lightBlack, marginLeft: 15 }}>{props.cardText}</p>
+                <p style={{ color: darkBlack, marginLeft: 15, fontSize: 16 }}>{props.cardText}</p>
             </Flex>
             <CardActions>
                 <FlatButton label="Open" primary={true} onClick={props.openAction} />
