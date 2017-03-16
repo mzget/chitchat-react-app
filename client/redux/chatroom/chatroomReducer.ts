@@ -56,7 +56,8 @@ export const chatroomReducer = (state = new ChatRoomInitState(), action) => {
                 .set("fileInfo", action.payload.file); // action.payload.form['file']
         }
         case ChatRoomRx.CHATROOM_UPLOAD_FILE_FAILURE: {
-            return state;
+            return state.set("state", ChatRoomRx.CHATROOM_UPLOAD_FILE_FAILURE)
+                .set("error", JSON.stringify(action.payload.message));
         }
         case ChatRoomRx.CHATROOM_UPLOAD_FILE_SUCCESS: {
             return state.set("state", ChatRoomRx.CHATROOM_UPLOAD_FILE_SUCCESS)

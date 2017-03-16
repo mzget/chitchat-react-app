@@ -105,5 +105,5 @@ export const uploadFileEpic = action$ => (
         })
         .map(json => uploadFileSuccess(json.response))
         .takeUntil(action$.ofType(CHATROOM_UPLOAD_FILE_CANCELLED))
-        .catch(error => Rx.Observable.of(uploadFileFailure(error)))
+        .catch(error => Rx.Observable.of(uploadFileFailure(error.xhr.response)))
 );

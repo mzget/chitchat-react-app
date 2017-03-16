@@ -117,13 +117,13 @@ router.get("/unreadMessage", (req, res, next) => {
 
     RoomService.checkedCanAccessRoom(room_id, user_id, function (err, result) {
         if (err || result === false) {
-            res.status(500).json({ success: false, message: "cannot access your request room." + err });
+            res.status(500).json(new apiUtils.ApiResponse(false, "cannot access your request room. " + err));
         }
         else {
             ChatRoomManager.getUnreadMsgCountAndLastMsgContentInRoom(room_id, lastAccessTime).then(results => {
                 res.status(200).json({ success: true, result: results });
             }).catch(err => {
-                res.status(500).json({ success: false, message: err });
+                res.status(500).json(new apiUtils.ApiResponse(false, err));
             });
         }
     });

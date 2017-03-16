@@ -20,7 +20,9 @@ router.post("/", function (req, res, next) {
             return res.status(500).json({ success: false, message: "fail to upload" + err });
         }
 
-        console.log("file", req.file);
+        let exts = req.file.originalname.split(".");
+        let ext = exts[exts.length - 1].toLowerCase();
+        console.log(exts, ext);
         if (!!req.file) {
             let file = req.file;
             let fullname: string = "";
@@ -30,16 +32,19 @@ router.post("/", function (req, res, next) {
                 fullname = file.path + file.mimetype.replace("video/", ".");
             else if (file.mimetype.match(FileType.textType))
                 fullname = file.path + file.mimetype.replace("text/", ".");
-            else if (file.mimetype.match(FileType.file))
-                fullname = file.path + file.mimetype.replace("application/", ".");
+            else if (file.mimetype.match(FileType.file)) {
+                fullname = `${file.path}.${ext}`;
+            }
 
             fs.readFile(file.path, function (err, data) {
                 if (err) {
+                    console.log("eee", err);
                     res.status(500).json(new apiUtils.ApiResponse(false, err));
                 }
                 else {
                     fs.writeFile(fullname, data, function (err) {
                         if (err) {
+                            console.log("writeFile eee", fullname, err);
                             return res.status(500).json(new apiUtils.ApiResponse(false, err));
                         }
 
