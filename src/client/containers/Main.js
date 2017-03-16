@@ -7,7 +7,6 @@ const WarningBar_1 = require("../components/WarningBar");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const ProfileBox_1 = require("./profile/ProfileBox");
 const ConnectGroupListEnhancer_1 = require("./group/ConnectGroupListEnhancer");
-const PrivateGroupListBox_1 = require("./group/PrivateGroupListBox");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 const ContactBox_1 = require("./chatlist/ContactBox");
 const UtilsBox_1 = require("./UtilsBox");
@@ -18,6 +17,7 @@ const userRx = require("../redux/user/userRx");
 const authRx = require("../redux/authen/authRx");
 const groupRx = require("../redux/group/groupRx");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
+const privateGroupRxActions = require("../redux/group/privateGroupRxActions");
 ;
 class Main extends React.Component {
     constructor() {
@@ -132,8 +132,10 @@ class Main extends React.Component {
                     React.createElement(ProfileBox_1.ConnectProfileEnhancer, { router: this.props.router }),
                     React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => {
                             this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
-                        } }),
-                    React.createElement(PrivateGroupListBox_1.default, Object.assign({}, this.props)),
+                        }, groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
+                    React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => {
+                            this.props.dispatch(privateGroupRxActions.getPrivateGroup(this.props.teamReducer.team._id));
+                        }, groups: this.props.groupReducer.privateGroups, subHeader: "Private Groups" }),
                     React.createElement(ContactBox_1.default, Object.assign({}, this.props)),
                     React.createElement(ChatLogsBox_1.default, Object.assign({}, this.props)),
                     React.createElement(UtilsBox_1.default, null)))));

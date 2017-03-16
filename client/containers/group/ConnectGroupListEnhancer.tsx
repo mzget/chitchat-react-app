@@ -1,15 +1,15 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
-import { OrgGroupListView } from "./OrgGroupListView";
+import { GroupListView } from "./GroupListView";
 import { GroupListEnhancer } from "./GroupListEnhancer";
 
-const bobo = GroupListEnhancer(({ groupReducer, fetchGroup, onselectGroup }) =>
-    <OrgGroupListView orgGroups={groupReducer.orgGroups} onselectGroup={onselectGroup} />
+const bobo = GroupListEnhancer(({ groups, fetchGroup, onselectGroup, subHeader }) =>
+    <GroupListView groups={groups} onselectGroup={onselectGroup}
+        subHeader={subHeader} />
 );
 
-const mapStateToProps = (state) => ({ groupReducer: state.groupReducer });
-export const ConnectGroupListEnhancer = connect(mapStateToProps)(bobo);
+export const ConnectGroupListEnhancer = connect()(bobo);
 
 
 

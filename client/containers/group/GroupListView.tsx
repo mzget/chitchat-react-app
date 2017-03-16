@@ -3,10 +3,10 @@ import Subheader from "material-ui/Subheader";
 
 import { GroupList } from "./GroupList";
 
-export const OrgGroupListView = (props: { orgGroups, onselectGroup }) => (
+export const GroupListView = (props: { subHeader, groups, onselectGroup }) => (
     <div>
-        <Subheader>Org-Group</Subheader>
-        <GroupList values={props.orgGroups}
+        <Subheader>{props.subHeader}</Subheader>
+        <GroupList values={props.groups}
             onSelected={props.onselectGroup} />
     </div>
 );

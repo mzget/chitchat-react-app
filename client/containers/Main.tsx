@@ -9,9 +9,7 @@ import { IComponentProps } from "../utils/IComponentProps";
 import { WarningBar } from "../components/WarningBar";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { ConnectProfileEnhancer } from "./profile/ProfileBox";
-import OrgGroupListBox from "./group/OrgGroupListBox";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
-import PrivateGroupListBox from "./group/PrivateGroupListBox";
 import ChatLogsBox from "./ChatLogsBox";
 import ContactBox from "./chatlist/ContactBox";
 import UtilsBox from "./UtilsBox";
@@ -23,6 +21,7 @@ import * as userRx from "../redux/user/userRx";
 import * as authRx from "../redux/authen/authRx";
 import * as groupRx from "../redux/group/groupRx";
 import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
+import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
 
 interface IComponentNameState {
     header: string;
@@ -163,11 +162,18 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                     }
                     <div style={{ height: this.bodyHeight, overflowY: "auto" }} id={"app_body"}>
                         <ConnectProfileEnhancer router={this.props.router} />
-                        {/*<OrgGroupListBox {...this.props} />*/}
-                        <ConnectGroupListEnhancer fetchGroup={() => {
-                            this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
-                        }} />
-                        <PrivateGroupListBox {...this.props} />
+                        <ConnectGroupListEnhancer
+                            fetchGroup={() => {
+                                this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
+                            }}
+                            groups={this.props.groupReducer.orgGroups}
+                            subHeader={"OrgGroups"} />
+                        <ConnectGroupListEnhancer
+                            fetchGroup={() => {
+                                this.props.dispatch(privateGroupRxActions.getPrivateGroup(this.props.teamReducer.team._id));
+                            }}
+                            groups={this.props.groupReducer.privateGroups}
+                            subHeader={"Private Groups"} />
                         <ContactBox {...this.props} />
                         <ChatLogsBox {...this.props} />
                         <UtilsBox />
