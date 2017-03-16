@@ -173,7 +173,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                                 this.props.dispatch(privateGroupRxActions.getPrivateGroup(this.props.teamReducer.team._id));
                             }}
                             groups={this.props.groupReducer.privateGroups}
-                            subHeader={"Private Groups"} />
+                            subHeader={"Groups"} />
                         <ContactBox {...this.props} />
                         <ChatLogsBox {...this.props} />
                         <UtilsBox />

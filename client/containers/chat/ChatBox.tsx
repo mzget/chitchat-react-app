@@ -15,11 +15,13 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 import { ContentType } from "../../chats/models/ChatDataModels";
 import { MessageImp } from "../../chats/models/MessageImp";
-import CardTextWithAvatar from "../../components/CardTextWithAvatar";
+import { CardTextWithAvatar } from "../../components/CardTextWithAvatar";
 import { CardImageWithAvatar, CardStickerWithAvatar } from "../../components/CardImageWithAvatar";
 import { CardFileWithAvatar } from "../../components/CardFileWithAvatar";
-import CardVideoWithAvatar from "../../components/CardVideoWithAvatar";
+import { CardVideoWithAvatar } from "../../components/CardVideoWithAvatar";
 import { IComponentProps } from "../../utils/IComponentProps";
+
+const pdf = require("../../../images/assets/pdf_128.png");
 
 interface MyProps {
     value: Array<MessageImp>;
@@ -45,49 +47,50 @@ const renderList = (props: MyProps) => {
         }
 
         switch (message.type) {
-            case ContentType[ContentType.Text]:
-                {
-                    return (
-                        <ListItem key={i} >
-                            <CardTextWithAvatar
-                                title={message.user.username}
-                                subtitle={(message.createTime) ? message.createTime.toString() : ""}
-                                avatar={(message.user.avatar) ?
-                                    <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
-                                }
-                                cardText={message.body} />
-                        </ListItem>);
-                }
-            case ContentType[ContentType.Sticker]:
-                {
-                    return (
-                        <ListItem key={i}>
-                            <CardStickerWithAvatar
-                                title={message.user.username}
-                                subtitle={(message.createTime) ? message.createTime.toString() : ""}
-                                avatar={(message.user.avatar) ?
-                                    <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
-                                }
-                                imageSrc={message.src} />
-                        </ListItem>);
-                }
-            case ContentType[ContentType.Image]:
-                {
-                    return (
-                        <ListItem key={i}>
-                            <CardImageWithAvatar
-                                title={message.user.username}
-                                subtitle={(message.createTime) ? message.createTime.toString() : ""}
-                                avatar={(message.user.avatar) ?
-                                    <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
-                                }
-                                imageSrc={message.src} />
-                        </ListItem>);
-                }
+            case ContentType[ContentType.Text]: {
+                return (
+                    <ListItem key={i} containerElement={
+                        <CardTextWithAvatar
+                            title={message.user.username}
+                            subtitle={(message.createTime) ? message.createTime.toString() : ""}
+                            avatar={(message.user.avatar) ?
+                                <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
+                            }
+                            cardText={message.body} />
+                    } >
+                    </ListItem >
+                );
+            }
+            case ContentType[ContentType.Sticker]: {
+                return (
+                    <ListItem key={i} style={{ margin: "5px" }} containerElement={
+                        <CardStickerWithAvatar
+                            title={message.user.username}
+                            subtitle={(message.createTime) ? message.createTime.toString() : ""}
+                            avatar={(message.user.avatar) ?
+                                <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
+                            }
+                            imageSrc={message.src} />
+                    }>
+                    </ListItem>);
+            }
+            case ContentType[ContentType.Image]: {
+                return (
+                    <ListItem key={i} style={{ margin: "5px" }} containerElement={
+                        <CardImageWithAvatar
+                            title={message.user.username}
+                            subtitle={(message.createTime) ? message.createTime.toString() : ""}
+                            avatar={(message.user.avatar) ?
+                                <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
+                            }
+                            imageSrc={message.src} />
+                    }>
+                    </ListItem>);
+            }
             case ContentType[ContentType.Video]:
                 {
                     return (
-                        <ListItem key={i}>
+                        <ListItem key={i} style={{ margin: "5px" }} containerElement={
                             <CardVideoWithAvatar
                                 title={message.user.username}
                                 subtitle={(message.createTime) ? message.createTime.toString() : ""}
@@ -95,12 +98,13 @@ const renderList = (props: MyProps) => {
                                     <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                                 }
                                 src={message.src} />
+                        }>
                         </ListItem>);
                 }
             case ContentType[ContentType.File]:
                 {
                     return (
-                        <ListItem key={i}>
+                        <ListItem key={i} style={{ margin: "5px" }} containerElement={
                             <CardFileWithAvatar
                                 title={message.user.username}
                                 subtitle={(message.createTime) ? message.createTime.toString() : ""}
@@ -108,8 +112,10 @@ const renderList = (props: MyProps) => {
                                     <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                                 }
                                 cardText={message.body}
-                                imageSrc={message.src} />
-                        </ListItem>);
+                                imageSrc={pdf} />
+                        }>
+                        </ListItem>
+                    );
                 }
             default:
                 break;

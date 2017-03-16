@@ -135,7 +135,7 @@ class Main extends React.Component {
                         }, groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
                     React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => {
                             this.props.dispatch(privateGroupRxActions.getPrivateGroup(this.props.teamReducer.team._id));
-                        }, groups: this.props.groupReducer.privateGroups, subHeader: "Private Groups" }),
+                        }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
                     React.createElement(ContactBox_1.default, Object.assign({}, this.props)),
                     React.createElement(ChatLogsBox_1.default, Object.assign({}, this.props)),
                     React.createElement(UtilsBox_1.default, null)))));
