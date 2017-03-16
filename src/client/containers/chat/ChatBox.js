@@ -40,7 +40,9 @@ const renderList = (props) => {
             case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.File]:
                 {
                     return (React.createElement(List_1.ListItem, { key: i, style: { margin: "5px" }, containerElement: React.createElement(CardFileWithAvatar_1.CardFileWithAvatar, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : "", avatar: (message.user.avatar) ?
-                                React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), cardText: message.body, imageSrc: pdf }) }));
+                                React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), cardText: message.body, imageSrc: pdf, openAction: () => {
+                                window.open(message.src, "_blank");
+                            } }) }));
                 }
             default:
                 break;

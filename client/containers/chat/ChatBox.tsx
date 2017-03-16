@@ -112,7 +112,10 @@ const renderList = (props: MyProps) => {
                                     <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                                 }
                                 cardText={message.body}
-                                imageSrc={pdf} />
+                                imageSrc={pdf}
+                                openAction={() => {
+                                    window.open(message.src, "_blank");
+                                }} />
                         }>
                         </ListItem>
                     );

@@ -10,6 +10,7 @@ interface MyProps {
     avatar: any;
     cardText?: string;
     imageSrc: string;
+    openAction: () => void;
 }
 export const CardFileWithAvatar = (props: MyProps) => (
     <div style={{ padding: 2, color: grey400 }}>
@@ -23,6 +24,9 @@ export const CardFileWithAvatar = (props: MyProps) => (
                 <img src={props.imageSrc} style={{ padding: 5 }} alt={`Image preview: ${props.cardText}`} />
                 <p style={{ color: lightBlack, marginLeft: 15 }}>{props.cardText}</p>
             </Flex>
+            <CardActions>
+                <FlatButton label="Open" primary={true} onClick={props.openAction} />
+            </CardActions>
         </Card>
     </div>
 );
