@@ -9,7 +9,7 @@ exports.CardFileWithAvatar = (props) => (React.createElement("div", { style: { p
     React.createElement(Card_1.Card, null,
         React.createElement(Card_1.CardHeader, { title: React.createElement("span", { style: { color: "blue" } }, props.title), subtitle: React.createElement("span", null, props.subtitle), avatar: props.avatar }),
         React.createElement(reflexbox_1.Flex, { flexColumn: false },
-            React.createElement("img", { src: props.imageSrc, style: { padding: 5 }, alt: `Image preview: ${props.cardText}` }),
+            props.fileIcon,
             React.createElement("p", { style: { color: colors_1.darkBlack, marginLeft: 15, fontSize: 16 } }, props.cardText)),
         React.createElement(Card_1.CardActions, null,
             React.createElement(FlatButton_1.default, { label: "Open", primary: true, onClick: props.openAction })))));

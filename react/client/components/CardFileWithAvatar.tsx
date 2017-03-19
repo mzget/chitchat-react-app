@@ -9,7 +9,7 @@ interface MyProps {
     subtitle: string;
     avatar: any;
     cardText?: string;
-    imageSrc: string;
+    fileIcon: any;
     openAction: () => void;
 }
 export const CardFileWithAvatar = (props: MyProps) => (
@@ -21,7 +21,7 @@ export const CardFileWithAvatar = (props: MyProps) => (
                 avatar={props.avatar}
             />
             <Flex flexColumn={false}>
-                <img src={props.imageSrc} style={{ padding: 5 }} alt={`Image preview: ${props.cardText}`} />
+                {props.fileIcon}
                 <p style={{ color: darkBlack, marginLeft: 15, fontSize: 16 }}>{props.cardText}</p>
             </Flex>
             <CardActions>

@@ -1,14 +1,6 @@
 import * as React from "react";
-import { Flex, Box } from "reflexbox";
 
 import { List, ListItem } from "material-ui/List";
-import Divider from "material-ui/Divider";
-import Subheader from "material-ui/Subheader";
-import { grey400, darkBlack, lightBlack } from "material-ui/styles/colors";
-import IconButton from "material-ui/IconButton";
-import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
-import IconMenu from "material-ui/IconMenu";
-import MenuItem from "material-ui/MenuItem";
 import Avatar from "material-ui/Avatar";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -19,9 +11,8 @@ import { CardTextWithAvatar } from "../../components/CardTextWithAvatar";
 import { CardImageWithAvatar, CardStickerWithAvatar } from "../../components/CardImageWithAvatar";
 import { CardFileWithAvatar } from "../../components/CardFileWithAvatar";
 import { CardVideoWithAvatar } from "../../components/CardVideoWithAvatar";
-import { IComponentProps } from "../../utils/IComponentProps";
 
-const pdf = require("../../../images/assets/pdf_128.png");
+const FontAwesome = require('react-fontawesome');
 
 interface MyProps {
     value: Array<MessageImp>;
@@ -112,7 +103,9 @@ const renderList = (props: MyProps) => {
                                     <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                                 }
                                 cardText={message.body}
-                                imageSrc={pdf}
+                                fileIcon={
+                                    <FontAwesome style={{ padding: 5, marginLeft: 5 }} name='file-pdf-o' size='2x' />
+                                }
                                 openAction={() => {
                                     window.open(message.src, "_blank");
                                 }} />
