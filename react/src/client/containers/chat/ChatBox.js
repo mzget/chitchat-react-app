@@ -9,14 +9,31 @@ const CardTextWithAvatar_1 = require("../../components/CardTextWithAvatar");
 const CardImageWithAvatar_1 = require("../../components/CardImageWithAvatar");
 const CardFileWithAvatar_1 = require("../../components/CardFileWithAvatar");
 const CardVideoWithAvatar_1 = require("../../components/CardVideoWithAvatar");
-const FontAwesome = require('react-fontawesome');
+const FontAwesome = require("react-fontawesome");
 ;
+exports.getFontIcon = (message) => {
+    let exts = message.body.split(".");
+    let ext = exts[exts.length - 1].toLowerCase();
+    console.log(message.type, ext);
+    if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.File]) {
+        if (ext == "pdf")
+            return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "file-pdf-o", size: "3x" });
+        else if (ext == "txt")
+            return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "file-text-o", size: "3x" });
+        else if (ext == "pptx") {
+            return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "file-powerpoint-o", size: "3x" });
+        }
+        else if (ext == "docx") {
+            return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "file-word-o", size: "3x" });
+        }
+    }
+};
 exports.ChatBox = (props) => (React.createElement(MuiThemeProvider_1.default, null,
     React.createElement(List_1.List, { style: props.styles, id: "chatbox" }, (!!props.value) ? renderList(props) : null)));
 const renderList = (props) => {
     return props.value.map((message, i, arr) => {
         if (!message.user || !message.user.username) {
-            console.dir(message);
+            console.warn(message);
             return null;
         }
         switch (message.type) {
@@ -40,7 +57,7 @@ const renderList = (props) => {
             case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.File]:
                 {
                     return (React.createElement(List_1.ListItem, { key: i, style: { margin: "5px" }, containerElement: React.createElement(CardFileWithAvatar_1.CardFileWithAvatar, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : "", avatar: (message.user.avatar) ?
-                                React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), cardText: message.body, fileIcon: React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: 'file-pdf-o', size: '2x' }), openAction: () => {
+                                React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), cardText: message.body, fileIcon: exports.getFontIcon(message), openAction: () => {
                                 window.open(message.src, "_blank");
                             } }) }));
                 }

@@ -12,13 +12,35 @@ import { CardImageWithAvatar, CardStickerWithAvatar } from "../../components/Car
 import { CardFileWithAvatar } from "../../components/CardFileWithAvatar";
 import { CardVideoWithAvatar } from "../../components/CardVideoWithAvatar";
 
-const FontAwesome = require('react-fontawesome');
+import * as FileType from "../../../shared/FileType";
+
+const FontAwesome = require("react-fontawesome");
 
 interface MyProps {
     value: Array<MessageImp>;
     onSelected: (item) => void;
 
     styles?: any;
+};
+
+export const getFontIcon = (message: MessageImp) => {
+    let exts = message.body.split(".");
+    let ext = exts[exts.length - 1].toLowerCase();
+
+    console.log(message.type, ext);
+
+    if (message.type == ContentType[ContentType.File]) {
+        if (ext == "pdf")
+            return <FontAwesome style={{ padding: 5, marginLeft: 5 }} name="file-pdf-o" size="3x" />;
+        else if (ext == "txt")
+            return <FontAwesome style={{ padding: 5, marginLeft: 5 }} name="file-text-o" size="3x" />;
+        else if (ext == "pptx") {
+            return <FontAwesome style={{ padding: 5, marginLeft: 5 }} name="file-powerpoint-o" size="3x" />;
+        }
+        else if (ext == "docx") {
+            return <FontAwesome style={{ padding: 5, marginLeft: 5 }} name="file-word-o" size="3x" />;
+        }
+    }
 };
 
 export const ChatBox = (props: MyProps) => (
@@ -33,7 +55,7 @@ const renderList = (props: MyProps) => {
     return props.value.map((message, i, arr) => {
 
         if (!message.user || !message.user.username) {
-            console.dir(message);
+            console.warn(message);
             return null;
         }
 
@@ -104,7 +126,7 @@ const renderList = (props: MyProps) => {
                                 }
                                 cardText={message.body}
                                 fileIcon={
-                                    <FontAwesome style={{ padding: 5, marginLeft: 5 }} name='file-pdf-o' size='2x' />
+                                    getFontIcon(message)
                                 }
                                 openAction={() => {
                                     window.open(message.src, "_blank");

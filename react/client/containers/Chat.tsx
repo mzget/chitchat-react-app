@@ -131,11 +131,8 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 else if (fileInfo.type.match(FileType.videoType)) {
                     this.onSubmitVideoChat(fileInfo, responseFile.path);
                 }
-                else if (fileInfo.type.match(FileType.textType)) {
-                    this.onSubmitPDFFile(fileInfo, responseFile);
-                }
-                else if (fileInfo.type.match(FileType.file)) {
-                    this.onSubmitPDFFile(fileInfo, responseFile);
+                else if (fileInfo.type.match(FileType.textType) || fileInfo.type.match(FileType.file)) {
+                    this.onSubmitFile(fileInfo, responseFile);
                 }
 
                 break;
@@ -298,7 +295,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.prepareSend(msg);
     }
 
-    onSubmitPDFFile(file: File, responseFile: any) {
+    onSubmitFile(file: File, responseFile: any) {
         let { path, mimetype, size } = responseFile;
         let msg = {
             file: file.name,
