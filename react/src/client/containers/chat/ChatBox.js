@@ -18,12 +18,14 @@ exports.getFontIcon = (message) => {
     if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.File]) {
         if (ext == "pdf")
             return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "file-pdf-o", size: "3x" });
-        else if (ext == "txt")
+        else if (ext == "txt" || ext == "json")
             return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "file-text-o", size: "3x" });
+        else if (ext == "html")
+            return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "code", size: "3x" });
         else if (ext == "pptx") {
             return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "file-powerpoint-o", size: "3x" });
         }
-        else if (ext == "docx") {
+        else if (ext == "docx" || ext == "doc") {
             return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "file-word-o", size: "3x" });
         }
     }
@@ -57,7 +59,8 @@ const renderList = (props) => {
             case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.File]:
                 {
                     return (React.createElement(List_1.ListItem, { key: i, style: { margin: "5px" }, containerElement: React.createElement(CardFileWithAvatar_1.CardFileWithAvatar, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : "", avatar: (message.user.avatar) ?
-                                React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), cardText: message.body, fileIcon: exports.getFontIcon(message), openAction: () => {
+                                React.createElement(Avatar_1.default, { src: message.user.avatar }) :
+                                React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), cardText: message.body, fileIcon: exports.getFontIcon(message), openAction: () => {
                                 window.open(message.src, "_blank");
                             } }) }));
                 }
