@@ -38,7 +38,8 @@ class Chat extends React.Component {
             results.forEach(result => {
                 const [progressEvent, file] = result;
                 console.dir(file);
-                this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
+                if (file.type && file.type.length > 0)
+                    this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
             });
         };
     }
@@ -110,13 +111,13 @@ class Chat extends React.Component {
             }
             case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
                 let { responseFile, fileInfo } = chatroomReducer;
-                if (fileInfo.type.match(FileType.imageType)) {
+                if (responseFile.mimetype.match(FileType.imageType)) {
                     this.onSubmitImageChat(fileInfo, responseFile.path);
                 }
-                else if (fileInfo.type.match(FileType.videoType)) {
+                else if (responseFile.mimetype.match(FileType.videoType)) {
                     this.onSubmitVideoChat(fileInfo, responseFile.path);
                 }
-                else if (fileInfo.type.match(FileType.textType) || fileInfo.type.match(FileType.file)) {
+                else if (responseFile.mimetype.match(FileType.textType) || fileInfo.type.match(FileType.file)) {
                     this.onSubmitFile(fileInfo, responseFile);
                 }
                 break;

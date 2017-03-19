@@ -27,8 +27,6 @@ export const getFontIcon = (message: MessageImp) => {
     let exts = message.body.split(".");
     let ext = exts[exts.length - 1].toLowerCase();
 
-    console.log(message.type, ext);
-
     if (message.type == ContentType[ContentType.File]) {
         if (ext == "pdf")
             return <FontAwesome style={{ padding: 5, marginLeft: 5 }} name="file-pdf-o" size="3x" />;
@@ -36,12 +34,14 @@ export const getFontIcon = (message: MessageImp) => {
             return <FontAwesome style={{ padding: 5, marginLeft: 5 }} name="file-text-o" size="3x" />;
         else if (ext == "html")
             return <FontAwesome style={{ padding: 5, marginLeft: 5 }} name="code" size="3x" />;
-        else if (ext == "pptx") {
+        else if (ext == "pptx")
             return <FontAwesome style={{ padding: 5, marginLeft: 5 }} name="file-powerpoint-o" size="3x" />;
-        }
-        else if (ext == "docx" || ext == "doc") {
+        else if (ext == "xlsx" || ext == "xls")
+            return <FontAwesome style={{ padding: 5, marginLeft: 5 }} name="file-excel-o" size="3x" />;
+        else if (ext == "docx" || ext == "doc")
             return <FontAwesome style={{ padding: 5, marginLeft: 5 }} name="file-word-o" size="3x" />;
-        }
+        else
+            return <FontAwesome style={{ padding: 5, marginLeft: 5 }} name="file-o" size="3x" />;
     }
 };
 

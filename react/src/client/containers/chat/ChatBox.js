@@ -14,7 +14,6 @@ const FontAwesome = require("react-fontawesome");
 exports.getFontIcon = (message) => {
     let exts = message.body.split(".");
     let ext = exts[exts.length - 1].toLowerCase();
-    console.log(message.type, ext);
     if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.File]) {
         if (ext == "pdf")
             return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "file-pdf-o", size: "3x" });
@@ -22,12 +21,14 @@ exports.getFontIcon = (message) => {
             return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "file-text-o", size: "3x" });
         else if (ext == "html")
             return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "code", size: "3x" });
-        else if (ext == "pptx") {
+        else if (ext == "pptx")
             return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "file-powerpoint-o", size: "3x" });
-        }
-        else if (ext == "docx" || ext == "doc") {
+        else if (ext == "xlsx" || ext == "xls")
+            return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "file-excel-o", size: "3x" });
+        else if (ext == "docx" || ext == "doc")
             return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "file-word-o", size: "3x" });
-        }
+        else
+            return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "file-o", size: "3x" });
     }
 };
 exports.ChatBox = (props) => (React.createElement(MuiThemeProvider_1.default, null,
