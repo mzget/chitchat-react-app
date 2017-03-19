@@ -2,12 +2,12 @@
 import { connect } from "react-redux";
 import { Flex, Box } from "reflexbox";
 import FlatButton from "material-ui/FlatButton";
-import * as Colors from 'material-ui/styles/colors';
+import * as Colors from "material-ui/styles/colors";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 import { CreateOrgChartForm } from "./CreateOrgChartForm";
 import { OrgChartListView } from "./OrgChartListView";
-import { IOrgChart, OrgLevel } from "../../../server/scripts/models/OrgChart";
+import { IOrgChart, OrgLevel } from "../../../../shared/models/OrgChart";
 
 import * as adminRx from "../../redux/admin/adminRx";
 
@@ -92,18 +92,18 @@ class ManageOrgChartBox extends React.Component<IComponentNameProps, IComponentN
 
     public render(): JSX.Element {
         return (
-            <Flex flexColumn justify='center' style={{ backgroundColor: Colors.indigo50 }}>
+            <Flex flexColumn justify="center" style={{ backgroundColor: Colors.indigo50 }}>
                 {
                     (this.state.isOpenCreateNewForm) ? (
                         <CreateOrgChartForm
                             orgChartName={this.state.chart_name}
                             orgChart_description={this.state.chart_description}
-                            onOrgChartNameChange={(e, text) => { this.setState(previous => ({ ...previous, chart_name: text })) }}
-                            onOrgChartDescriptionChange={(e, text) => { this.setState(previous => ({ ...previous, chart_description: text })) }}
+                            onOrgChartNameChange={(e, text) => { this.setState(previous => ({ ...previous, chart_name: text })); }}
+                            onOrgChartDescriptionChange={(e, text) => { this.setState(previous => ({ ...previous, chart_description: text })); }}
 
                             dropdownItems={this.orgLevels}
                             dropdownValue={this.state.dropdownValue}
-                            dropdownChange={(event, id, value) => { this.setState(previous => ({ ...previous, dropdownValue: value })) }}
+                            dropdownChange={(event, id, value) => { this.setState(previous => ({ ...previous, dropdownValue: value })); }}
                             onSubmit={this.onSubmit}
                         />
                     ) : (

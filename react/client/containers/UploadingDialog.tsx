@@ -1,21 +1,21 @@
-import * as React from 'react';
+import * as React from "react";
 import { connect } from "react-redux";
-import { Flex, Box } from 'reflexbox';
+import { Flex, Box } from "reflexbox";
 
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import Dialog from "material-ui/Dialog";
+import FlatButton from "material-ui/FlatButton";
+import RaisedButton from "material-ui/RaisedButton";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
-import * as ChatroomRx from '../redux/chatroom/chatroomRxEpic';
+import * as ChatroomRx from "../redux/chatroom/chatroomRxEpic";
 
-import SimpleCardImage from '../components/SimpleCardImage';
-import SimpleCardVideo from '../components/SimpleCardVideo';
+import SimpleCardImage from "../components/SimpleCardImage";
+import SimpleCardVideo from "../components/SimpleCardVideo";
 import LinearProgressSimple from "../components/LinearProgressSimple";
 
-import * as FileType from "../../server/scripts/FileType";
+import * as FileType from "../../shared/FileType";
 
 interface IComponentNameState {
     dialogTitle: string;
@@ -29,7 +29,7 @@ class UploadingDialog extends React.Component<IComponentProps, IComponentNameSta
             dialogTitle: "Uploading...",
             openState: false,
             closeLabel: "Cancel"
-        }
+        };
 
         this.closeDialog = this.closeDialog.bind(this);
     }
@@ -88,15 +88,15 @@ class UploadingDialog extends React.Component<IComponentProps, IComponentNameSta
 
         const getMediaCard = () => {
             if (chatroomReducer.fileInfo.type.match(FileType.imageType)) {
-                return (< SimpleCardImage src={chatroomReducer.uploadingFile} />)
+                return (< SimpleCardImage src={chatroomReducer.uploadingFile} />);
             }
             else if (chatroomReducer.fileInfo.type.match(FileType.textType)) {
                 return null;
             }
             else if (chatroomReducer.fileInfo.type.match(FileType.videoType)) {
-                return (< SimpleCardVideo src={chatroomReducer.uploadingFile} />)
+                return (< SimpleCardVideo src={chatroomReducer.uploadingFile} />);
             }
-        }
+        };
 
         return (
             <MuiThemeProvider>
@@ -110,7 +110,7 @@ class UploadingDialog extends React.Component<IComponentProps, IComponentNameSta
                         (this.state.openState) ?
                             getMediaCard() : null
                     }
-                    <Flex p={2} align='center'>
+                    <Flex p={2} align="center">
                         <LinearProgressSimple />
                     </Flex>
                 </Dialog>

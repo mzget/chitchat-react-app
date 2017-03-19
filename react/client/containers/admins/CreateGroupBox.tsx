@@ -7,8 +7,8 @@ import { CreateGroupView } from "./CreateGroupView";
 import { SelectOrgChartView } from "./SelectOrgChartView";
 
 import config from "../../configs/config";
-import { Room, RoomType, RoomStatus, IMember, MemberRole } from "../../../server/scripts/models/Room";
-import { IOrgChart } from "../../../server/scripts/models/OrgChart";
+import { Room, RoomType, RoomStatus, IMember, MemberRole } from "../../../../shared/models/Room";
+import { IOrgChart } from "../../../../shared/models/OrgChart";
 
 import * as groupRx from "../../redux/group/groupRx";
 import *as privateGroupRx from "../../redux/group/privateGroupRxActions";

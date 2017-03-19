@@ -10,7 +10,7 @@ const ChatroomRx = require("../redux/chatroom/chatroomRxEpic");
 const SimpleCardImage_1 = require("../components/SimpleCardImage");
 const SimpleCardVideo_1 = require("../components/SimpleCardVideo");
 const LinearProgressSimple_1 = require("../components/LinearProgressSimple");
-const FileType = require("../../server/scripts/FileType");
+const FileType = require("../../shared/FileType");
 ;
 class UploadingDialog extends React.Component {
     constructor() {
@@ -79,7 +79,7 @@ class UploadingDialog extends React.Component {
             React.createElement(Dialog_1.default, { title: this.state.dialogTitle, actions: actions, modal: true, open: this.state.openState },
                 (this.state.openState) ?
                     getMediaCard() : null,
-                React.createElement(reflexbox_1.Flex, { p: 2, align: 'center' },
+                React.createElement(reflexbox_1.Flex, { p: 2, align: "center" },
                     React.createElement(LinearProgressSimple_1.default, null)))));
     }
 }

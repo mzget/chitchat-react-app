@@ -5,7 +5,8 @@
     "target": "es2015",
     "jsx": "react",
     "rootDirs": [
-      "client/"
+      "client/",
+      "shared"
     ],
     "outDir": "src",
     "typeRoots": [

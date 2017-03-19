@@ -23,7 +23,7 @@ import { ContentType, IMessage } from "../chats/models/ChatDataModels";
 import { MessageImp } from "../chats/models/MessageImp";
 
 import { imagesPath } from "../consts/StickerPath";
-import * as FileType from "../../server/scripts/FileType";
+import * as FileType from "../../shared/FileType";
 
 interface IComponentNameState {
     messages: any[];
@@ -130,6 +130,9 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 }
                 else if (fileInfo.type.match(FileType.videoType)) {
                     this.onSubmitVideoChat(fileInfo, responseFile.path);
+                }
+                else if (fileInfo.type.match(FileType.textType)) {
+                    this.onSubmitPDFFile(fileInfo, responseFile);
                 }
                 else if (fileInfo.type.match(FileType.file)) {
                     this.onSubmitPDFFile(fileInfo, responseFile);
@@ -321,7 +324,11 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
         let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
         _messages.push(message);
-        this.setState(previousState => ({ ...previousState, typingText: "", messages: _messages }), () => {
+        this.setState(previousState => ({
+            ...previousState,
+            typingText: "",
+            messages: _messages
+        }), () => {
             let chatBox = document.getElementById("app_body");
             chatBox.scrollTop = chatBox.scrollHeight;
         });

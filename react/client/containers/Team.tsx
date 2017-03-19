@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import * as Colors from 'material-ui/styles/colors';
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import * as Colors from "material-ui/styles/colors";
 import * as immutable from "immutable";
 
 import { IComponentProps } from "../utils/IComponentProps";
@@ -11,12 +11,12 @@ import * as teamRx from "../redux/team/teamRx";
 import * as authRx from "../redux/authen/authRx";
 
 import { DialogBox } from "../components/DialogBox";
-import TeamListBox from './teams/TeamListBox';
-import TeamCreateBox from './teams/TeamCreateBox';
-import { SimpleToolbar } from '../components/SimpleToolbar';
+import TeamListBox from "./teams/TeamListBox";
+import TeamCreateBox from "./teams/TeamCreateBox";
+import { SimpleToolbar } from "../components/SimpleToolbar";
 
-import * as StalkBridgeActions from '../redux/stalkBridge/stalkBridgeActions';
-import { ITeam } from '../../server/scripts/models/ITeam';
+import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
+import { ITeam } from "../../shared/models/ITeam";
 
 interface IComponentNameState {
     openDialog: boolean;
@@ -104,7 +104,7 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     onToolbarMenuItem(id, value) {
-        if (value == 'logout') {
+        if (value == "logout") {
             this.props.dispatch(authRx.logout(this.props.authReducer.token));
         }
     }

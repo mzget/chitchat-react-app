@@ -82,7 +82,7 @@ class Team extends React.Component {
         this.props.router.push(`/chatslist/${team.name}`);
     }
     onToolbarMenuItem(id, value) {
-        if (value == 'logout') {
+        if (value == "logout") {
             this.props.dispatch(authRx.logout(this.props.authReducer.token));
         }
     }

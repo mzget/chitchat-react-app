@@ -20,7 +20,7 @@ const rightIconMenu = (React.createElement(IconMenu_1.default, { iconButtonEleme
 const renderList = (props) => (props.value.map((log, i) => {
     return (React.createElement("div", { key: i },
         React.createElement(List_1.ListItem, { onClick: () => props.onSelected(log), leftAvatar: (!!log.room.image) ?
-                React.createElement(Avatar_1.default, { src: log.room.image }) : React.createElement(Avatar_1.default, null, log.roomName.charAt(0)), rightIcon: React.createElement("div", { style: { marginRight: '40px', marginTop: 0 } }, (log.count && log.count != 0) ? React.createElement(BadgeSimple_1.default, { content: log.count }) : null), primaryText: log.roomName, secondaryText: React.createElement("p", null,
+                React.createElement(Avatar_1.default, { src: log.room.image }) : React.createElement(Avatar_1.default, null, log.roomName.charAt(0)), rightIcon: React.createElement("div", { style: { marginRight: "40px", marginTop: 0 } }, (log.count && log.count != 0) ? React.createElement(BadgeSimple_1.default, { content: log.count }) : null), primaryText: log.roomName, secondaryText: React.createElement("p", null,
                 React.createElement("span", { style: { color: colors_1.darkBlack } }, log.lastMessage)) }),
         React.createElement(Divider_1.default, { inset: true })));
 }));

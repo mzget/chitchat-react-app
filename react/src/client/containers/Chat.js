@@ -18,7 +18,7 @@ const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
 const ChatDataModels_1 = require("../chats/models/ChatDataModels");
 const MessageImp_1 = require("../chats/models/MessageImp");
 const StickerPath_1 = require("../consts/StickerPath");
-const FileType = require("../../server/scripts/FileType");
+const FileType = require("../../shared/FileType");
 ;
 class Chat extends React.Component {
     constructor() {
@@ -115,6 +115,9 @@ class Chat extends React.Component {
                 }
                 else if (fileInfo.type.match(FileType.videoType)) {
                     this.onSubmitVideoChat(fileInfo, responseFile.path);
+                }
+                else if (fileInfo.type.match(FileType.textType)) {
+                    this.onSubmitPDFFile(fileInfo, responseFile);
                 }
                 else if (fileInfo.type.match(FileType.file)) {
                     this.onSubmitPDFFile(fileInfo, responseFile);

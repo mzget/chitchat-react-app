@@ -7,7 +7,7 @@ const { ajax } = Rx.Observable;
 import Store from "../configureStore";
 
 import { BackendFactory } from "../../chats/BackendFactory";
-import { Room, RoomType } from "../../../server/scripts/models/Room";
+import { Room, RoomType } from "../../../../shared/models/Room";
 
 const GET_ORG_GROUP = "GET_ORG_GROUP";
 export const GET_ORG_GROUP_SUCCESS = "GET_ORG_GROUP_SUCCESS";
