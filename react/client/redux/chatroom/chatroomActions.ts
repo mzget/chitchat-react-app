@@ -249,17 +249,12 @@ function sendMessageResponse(err, res) {
     };
 }
 
-
 const JOIN_ROOM_REQUEST = "JOIN_ROOM_REQUEST";
 export const JOIN_ROOM_SUCCESS = "JOIN_ROOM_SUCCESS";
 export const JOIN_ROOM_FAILURE = "JOIN_ROOM_FAILURE";
-function joinRoom_request() {
-    return { type: JOIN_ROOM_REQUEST };
-}
-function joinRoom_success(data?: any) {
-    return { type: JOIN_ROOM_SUCCESS, payload: data };
-}
-function joinRoom_failure() { return { type: JOIN_ROOM_FAILURE }; }
+const joinRoom_request = () => ({ type: JOIN_ROOM_REQUEST });
+const joinRoom_success = (data?: any) => ({ type: JOIN_ROOM_SUCCESS, payload: data });
+const joinRoom_failure = () => ({ type: JOIN_ROOM_FAILURE });
 export function joinRoom(roomId: string, token: string, username: string) {
     return (dispatch) => {
         dispatch(joinRoom_request());
@@ -304,6 +299,11 @@ export function leaveRoomAction() {
         });
     };
 }
+
+export const DISABLE_CHATROOM = "DISABLE_CHATROOM";
+export const ENABLE_CHATROOM = "ENABLE_CHATROOM";
+export const disableChatRoom = () => ({ type: DISABLE_CHATROOM });
+export const enableChatRoom = () => ({ type: ENABLE_CHATROOM });
 
 const loadEarlyMessage_success = () => ({ type: ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS });
 export function loadEarlyMessageChunk() {

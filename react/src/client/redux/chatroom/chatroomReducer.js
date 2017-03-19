@@ -36,6 +36,14 @@ exports.chatroomReducer = (state = new exports.ChatRoomInitState(), action) => {
             return state.set("state", chatroomActions.JOIN_ROOM_SUCCESS)
                 .set("chatDisabled", false);
         }
+        case chatroomActions.DISABLE_CHATROOM: {
+            return state.set("state", chatroomActions.DISABLE_CHATROOM)
+                .set("chatDisabled", true);
+        }
+        case chatroomActions.ENABLE_CHATROOM: {
+            return state.set("state", chatroomActions.ENABLE_CHATROOM)
+                .set("chatDisabled", false);
+        }
         case ChatRoomRx.FETCH_PRIVATE_CHATROOM_SUCCESS:
             return state.set("room", action.payload.result[0])
                 .set("state", ChatRoomRx.FETCH_PRIVATE_CHATROOM_SUCCESS);

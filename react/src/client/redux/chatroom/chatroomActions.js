@@ -237,13 +237,9 @@ function sendMessageResponse(err, res) {
 const JOIN_ROOM_REQUEST = "JOIN_ROOM_REQUEST";
 exports.JOIN_ROOM_SUCCESS = "JOIN_ROOM_SUCCESS";
 exports.JOIN_ROOM_FAILURE = "JOIN_ROOM_FAILURE";
-function joinRoom_request() {
-    return { type: JOIN_ROOM_REQUEST };
-}
-function joinRoom_success(data) {
-    return { type: exports.JOIN_ROOM_SUCCESS, payload: data };
-}
-function joinRoom_failure() { return { type: exports.JOIN_ROOM_FAILURE }; }
+const joinRoom_request = () => ({ type: JOIN_ROOM_REQUEST });
+const joinRoom_success = (data) => ({ type: exports.JOIN_ROOM_SUCCESS, payload: data });
+const joinRoom_failure = () => ({ type: exports.JOIN_ROOM_FAILURE });
 function joinRoom(roomId, token, username) {
     return (dispatch) => {
         dispatch(joinRoom_request());
@@ -285,6 +281,10 @@ function leaveRoomAction() {
     };
 }
 exports.leaveRoomAction = leaveRoomAction;
+exports.DISABLE_CHATROOM = "DISABLE_CHATROOM";
+exports.ENABLE_CHATROOM = "ENABLE_CHATROOM";
+exports.disableChatRoom = () => ({ type: exports.DISABLE_CHATROOM });
+exports.enableChatRoom = () => ({ type: exports.ENABLE_CHATROOM });
 const loadEarlyMessage_success = () => ({ type: ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS });
 function loadEarlyMessageChunk() {
     return dispatch => {

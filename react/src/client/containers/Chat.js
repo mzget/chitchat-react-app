@@ -38,8 +38,12 @@ class Chat extends React.Component {
             results.forEach(result => {
                 const [progressEvent, file] = result;
                 console.dir(file);
-                if (file.type && file.type.length > 0)
+                if (file.type && file.type.length > 0) {
                     this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
+                }
+                else {
+                    alert("Fail to upload.");
+                }
             });
         };
     }
@@ -79,26 +83,22 @@ class Chat extends React.Component {
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_CONNECTION_PROBLEM:
-                this.setState(previous => (Object.assign({}, previous, { chatDisabled: true })));
+                this.props.dispatch(chatroomActions.disableChatRoom());
                 break;
             case StalkBridgeActions.STALK_ON_SOCKET_RECONNECT:
                 this.props.router.replace("/");
                 break;
             default:
-                this.setState(previous => (Object.assign({}, previous, { chatDisabled: false })));
+                this.props.dispatch(chatroomActions.enableChatRoom());
                 break;
         }
         switch (chatroomReducer.state) {
             case chatroomActions.JOIN_ROOM_FAILURE: {
-                this.setState(previous => (Object.assign({}, previous, { chatDisabled: true })), () => {
-                    this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
-                });
+                this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
                 break;
             }
             case chatroomActions.JOIN_ROOM_SUCCESS: {
-                this.setState(previous => (Object.assign({}, previous, { chatDisabled: false })), () => {
-                    this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
-                });
+                this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
                 break;
             }
             case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {

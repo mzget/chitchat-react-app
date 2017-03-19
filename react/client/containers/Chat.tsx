@@ -89,27 +89,23 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_CONNECTION_PROBLEM:
-                this.setState(previous => ({ ...previous, chatDisabled: true }));
+                this.props.dispatch(chatroomActions.disableChatRoom());
                 break;
             case StalkBridgeActions.STALK_ON_SOCKET_RECONNECT:
                 this.props.router.replace("/");
                 break;
             default:
-                this.setState(previous => ({ ...previous, chatDisabled: false }));
+                this.props.dispatch(chatroomActions.enableChatRoom());
                 break;
         }
 
         switch (chatroomReducer.state) {
             case chatroomActions.JOIN_ROOM_FAILURE: {
-                this.setState(previous => ({ ...previous, chatDisabled: true }), () => {
-                    this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
-                });
+                this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
                 break;
             }
             case chatroomActions.JOIN_ROOM_SUCCESS: {
-                this.setState(previous => ({ ...previous, chatDisabled: false }), () => {
-                    this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
-                });
+                this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
                 break;
             }
 
@@ -387,8 +383,12 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
             console.dir(file);
 
-            if (file.type && file.type.length > 0)
+            if (file.type && file.type.length > 0) {
                 this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
+            }
+            else {
+                alert("Fail to upload.");
+            }
         });
     }
 
