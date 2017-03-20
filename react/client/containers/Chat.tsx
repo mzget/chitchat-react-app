@@ -13,6 +13,7 @@ import UtilsBox from "./UtilsBox";
 import UploadingDialog from "./UploadingDialog";
 import GridListSimple from "../components/GridListSimple";
 import { WarningBar } from "../components/WarningBar";
+import { ChatRoomDialogBoxEnhancer } from "./toolsbox/ChatRoomDialogBoxEnhancer";
 
 import { IComponentProps } from "../utils/IComponentProps";
 import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
@@ -431,6 +432,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                     (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                         <WarningBar /> : null
                 }
+                <ChatRoomDialogBoxEnhancer />
                 <div style={{ height: this.h_body, overflowY: "auto", backgroundColor: Colors.indigo50 }} id={"app_body"}>
                     <Flex flexColumn={true}>
                         {
@@ -465,6 +467,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                     onSticker={this.onToggleSticker} />
                 <UploadingDialog />
                 <UtilsBox />
+                />
             </div>
         );
     }

@@ -12,6 +12,7 @@ const UtilsBox_1 = require("./UtilsBox");
 const UploadingDialog_1 = require("./UploadingDialog");
 const GridListSimple_1 = require("../components/GridListSimple");
 const WarningBar_1 = require("../components/WarningBar");
+const ChatRoomDialogBoxEnhancer_1 = require("./toolsbox/ChatRoomDialogBoxEnhancer");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 const chatroomActions = require("../redux/chatroom/chatroomActions");
 const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
@@ -334,6 +335,7 @@ class Chat extends React.Component {
                 React.createElement(SimpleToolbar_1.SimpleToolbar, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty", menus: this.toolbarMenus, onSelectedMenuItem: this.onMenuSelect, onBackPressed: this.onBackPressed })),
             (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                 React.createElement(WarningBar_1.WarningBar, null) : null,
+            React.createElement(ChatRoomDialogBoxEnhancer_1.ChatRoomDialogBoxEnhancer, null),
             React.createElement("div", { style: { height: this.h_body, overflowY: "auto", backgroundColor: Colors.indigo50 }, id: "app_body" },
                 React.createElement(reflexbox_1.Flex, { flexColumn: true },
                     (this.state.earlyMessageReady) ?
@@ -347,7 +349,8 @@ class Chat extends React.Component {
                 : null,
             React.createElement(TypingBox_1.TypingBox, { styles: { width: this.clientWidth }, disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }),
             React.createElement(UploadingDialog_1.default, null),
-            React.createElement(UtilsBox_1.default, null)));
+            React.createElement(UtilsBox_1.default, null),
+            "/>"));
     }
 }
 /**
