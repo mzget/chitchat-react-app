@@ -467,7 +467,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                     onSticker={this.onToggleSticker} />
                 <UploadingDialog />
                 <UtilsBox />
-                />
             </div>
         );
     }

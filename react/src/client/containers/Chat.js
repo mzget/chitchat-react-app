@@ -349,8 +349,7 @@ class Chat extends React.Component {
                 : null,
             React.createElement(TypingBox_1.TypingBox, { styles: { width: this.clientWidth }, disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }),
             React.createElement(UploadingDialog_1.default, null),
-            React.createElement(UtilsBox_1.default, null),
-            "/>"));
+            React.createElement(UtilsBox_1.default, null)));
     }
 }
 /**
