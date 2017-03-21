@@ -10,7 +10,7 @@ const expressValidator = require("express-validator");
 const cors = require("cors");
 const useragent = require("express-useragent");
 const jwt = require("jsonwebtoken");
-process.env.NODE_ENV = `production`;
+process.env.NODE_ENV = `development`;
 const app = express();
 if (app.get("env") == "development") {
     process.env.PORT = 9000;
@@ -20,13 +20,11 @@ else if (app.get("env") == "production") {
 }
 console.log("listen on ", process.env.PORT);
 const config_1 = require("./config");
-const Constant = require("./scripts/Constant");
+const Constant = require("./../react/shared/Constant");
 const DbClient_1 = require("./scripts/DbClient");
-DbClient_1.InitDatabaseConnection().then(() => {
-    DbClient_1.getAppDb().stats().then(value => {
-        console.log("DB stat: ", value);
-    });
-}).catch(err => {
+DbClient_1.InitDatabaseConnection().then(() => DbClient_1.getAppDb().stats().then(value => {
+    console.log("DB stat: ", value.db);
+})).catch(err => {
     console.error("InitDatabaseConnection Fail:" + err);
 });
 const index = require("./routes/index");
@@ -87,7 +85,7 @@ app.use(bodyParser.urlencoded({
 app.use(expressValidator()); // this line must be immediately after express.bodyParser()!
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(express.static("../build"));
+app.use(express.static("./build"));
 app.use(useragent.express());
 app.use("/", index);
 app.use("/api", apiRouteMiddleWare);

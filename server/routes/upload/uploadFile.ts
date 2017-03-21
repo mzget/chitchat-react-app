@@ -10,7 +10,7 @@ import * as apiUtils from "../../scripts/utils/apiUtils";
 import { Config, Paths } from "../../config";
 const upload = multer({ dest: Paths.fileUpload }).single("file");
 
-import * as FileType from "../../scripts/FileType";
+import * as FileType from "../../../react/shared/FileType";
 
 router.post("/", function (req, res, next) {
     upload(req, res, function (err) {
@@ -20,7 +20,9 @@ router.post("/", function (req, res, next) {
             return res.status(500).json({ success: false, message: "fail to upload" + err });
         }
 
-        console.log("file", req.file);
+        let exts = req.file.originalname.split(".");
+        let ext = exts[exts.length - 1].toLowerCase();
+        console.log(exts, ext, req.file.mimetype);
         if (!!req.file) {
             let file = req.file;
             let fullname: string = "";
@@ -29,7 +31,10 @@ router.post("/", function (req, res, next) {
             else if (file.mimetype.match(FileType.videoType))
                 fullname = file.path + file.mimetype.replace("video/", ".");
             else if (file.mimetype.match(FileType.textType))
-                fullname = file.path + file.mimetype.replace("text/", ".");
+                fullname = `${file.path}.${ext}`;
+            else if (file.mimetype.match(FileType.file)) {
+                fullname = `${file.path}.${ext}`;
+            }
 
             fs.readFile(file.path, function (err, data) {
                 if (err) {
@@ -38,6 +43,7 @@ router.post("/", function (req, res, next) {
                 else {
                     fs.writeFile(fullname, data, function (err) {
                         if (err) {
+                            console.log("writeFile error", fullname, err);
                             return res.status(500).json(new apiUtils.ApiResponse(false, err));
                         }
 

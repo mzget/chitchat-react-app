@@ -12,7 +12,7 @@ import jwt = require("jsonwebtoken");
 import { Config, DbClient } from "../config";
 import { ApiStatus, ApiResponse } from "../scripts/utils/apiUtils";
 
-import { ChitChatAccount } from "../scripts/models/User";
+import { ChitChatAccount } from "../../react/shared/models/User";
 const MongoClient = mongodb.MongoClient;
 const router = express.Router();
 

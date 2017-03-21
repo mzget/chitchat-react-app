@@ -1,5 +1,5 @@
-﻿import * as User from "../models/User";
-import * as Room from "../models/Room";
+﻿import * as User from "../../../react/shared/models/User";
+import * as Room from "../../../react/shared/models/Room";
 
 
 interface IRoomsMap {

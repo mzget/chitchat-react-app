@@ -4,8 +4,8 @@ import mongodb = require("mongodb");
 import async = require("async");
 
 import * as apiUtils from "../scripts/utils/apiUtils";
-import { Room, IMember, RoomType } from "../scripts/models/Room";
-import Message = require("../scripts/models/Message");
+import { Room, IMember, RoomType } from "../../react/shared/models/Room";
+import { Message } from "../../react/shared/models/Message";
 import * as RoomService from "../scripts/services/RoomService";
 import * as AccountService from "../scripts/services/AccountService";
 import * as ChatRoomManager from "../scripts/controllers/ChatRoomManager";
@@ -16,7 +16,23 @@ const ObjectID = mongodb.ObjectID;
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-    next();
+    req.checkQuery("room_id", "request for room_id").isMongoId();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.status(500).json(new apiUtils.ApiResponse(false, errors));
+    }
+
+    let room_id = req.query.room_id as string;
+
+    RoomService.getRoom(room_id, function (err, result) {
+        if (err || !result) {
+            res.status(500).json(new apiUtils.ApiResponse(false, "can't find roomId!"));
+        }
+        else {
+            res.status(200).json(new apiUtils.ApiResponse(true, null, [result]));
+        }
+    });
 });
 
 /**
@@ -70,7 +86,7 @@ router.get("/roomInfo", (req, res, next) => {
 
     RoomService.checkedCanAccessRoom(room_id, user_id, function (err, result) {
         if (err || result === false) {
-            res.status(500).json({ success: false, message: "cannot access your request room." });
+            res.status(500).json(new apiUtils.ApiResponse(false, "cannot access your request room."));
         }
         else {
             RoomService.getRoom(room_id, (err, room) => {
@@ -101,13 +117,13 @@ router.get("/unreadMessage", (req, res, next) => {
 
     RoomService.checkedCanAccessRoom(room_id, user_id, function (err, result) {
         if (err || result === false) {
-            res.status(500).json({ success: false, message: "cannot access your request room." + err });
+            res.status(500).json(new apiUtils.ApiResponse(false, "cannot access your request room. " + err));
         }
         else {
             ChatRoomManager.getUnreadMsgCountAndLastMsgContentInRoom(room_id, lastAccessTime).then(results => {
                 res.status(200).json({ success: true, result: results });
             }).catch(err => {
-                res.status(500).json({ success: false, message: err });
+                res.status(500).json(new apiUtils.ApiResponse(false, err));
             });
         }
     });

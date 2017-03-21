@@ -3,7 +3,7 @@
 const { MongoClient, ObjectID } = mongodb;
 
 import { Config, DbClient } from "../../../config";
-import { IOrgChart, OrgLevel } from "../../models/OrgChart";
+import { IOrgChart, OrgLevel } from "../../../../react/shared/models/OrgChart";
 
 export async function createOrgChart(chart: IOrgChart) {
     let db = await MongoClient.connect(Config.chatDB);

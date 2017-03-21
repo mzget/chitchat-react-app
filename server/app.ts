@@ -9,7 +9,7 @@ const cors = require("cors");
 const useragent = require("express-useragent");
 import jwt = require("jsonwebtoken");
 
-process.env.NODE_ENV = `production`;
+process.env.NODE_ENV = `development`;
 const app = express();
 if (app.get("env") == "development") {
     process.env.PORT = 9000;
@@ -20,13 +20,11 @@ else if (app.get("env") == "production") {
 console.log("listen on ", process.env.PORT);
 
 import { Config, Paths } from "./config";
-import * as Constant from "./scripts/Constant";
+import * as Constant from "./../react/shared/Constant";
 import { InitDatabaseConnection, getAppDb } from "./scripts/DbClient";
-InitDatabaseConnection().then(() => {
-    getAppDb().stats().then(value => {
-        console.log("DB stat: ", value);
-    });
-}).catch(err => {
+InitDatabaseConnection().then(() => getAppDb().stats().then(value => {
+    console.log("DB stat: ", value.db);
+})).catch(err => {
     console.error("InitDatabaseConnection Fail:" + err);
 });
 
@@ -90,7 +88,7 @@ app.use(bodyParser.urlencoded({
 app.use(expressValidator()); // this line must be immediately after express.bodyParser()!
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(express.static("../build"));
+app.use(express.static("./build"));
 app.use(useragent.express());
 
 app.use("/", index);

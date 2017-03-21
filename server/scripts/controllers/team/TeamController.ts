@@ -4,8 +4,8 @@ const MongoClient = mongodb.MongoClient;
 type ObjectID = mongodb.ObjectID;
 import { Config, DbClient } from "../../../config";
 
-import { ITeam } from "../../models/ITeam";
-import { ChitChatAccount } from "../../models/User";
+import { ITeam } from "../../../../react/shared/models/ITeam";
+import { ChitChatAccount } from "../../../../react/shared/models/User";
 import * as GroupController from "../group/GroupController";
 
 

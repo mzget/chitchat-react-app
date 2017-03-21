@@ -17,7 +17,7 @@ const fs = require("fs");
 const router = express.Router();
 const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
-const Room_1 = require("../../scripts/models/Room");
+const Room_1 = require("../../../react/shared/models/Room");
 const RoomService = require("../../scripts/services/RoomService");
 const GroupController = require("../../scripts/controllers/group/GroupController");
 const ChatRoomManager = require("../../scripts/controllers/ChatRoomManager");
@@ -25,7 +25,7 @@ const UserManager = require("../../scripts/controllers/user/UserManager");
 const apiUtils = require("../../scripts/utils/apiUtils");
 const DbClient_1 = require("../../scripts/DbClient");
 const config_1 = require("../../config");
-const FileType = require("../../scripts/FileType");
+const FileType = require("../../../react/shared/FileType");
 const upload = multer({ dest: config_1.Paths.groupImage }).single("file");
 router.get("/org", function (req, res, next) {
     req.checkQuery("team_id", "request for team_id").isMongoId();

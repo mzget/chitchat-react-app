@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongodb = require("mongodb");
 const config_1 = require("../../../config");
-const Room_1 = require("../../models/Room");
+const Room_1 = require("../../../../react/shared/models/Room");
 const DbClient_1 = require("../../DbClient");
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;

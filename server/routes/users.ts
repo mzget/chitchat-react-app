@@ -8,11 +8,11 @@ import * as apiUtils from "../scripts/utils/apiUtils";
 import * as TeamController from "../scripts/controllers/team/TeamController";
 import * as UserManager from "../scripts/controllers/user/UserManager";
 import * as GroupController from "../scripts/controllers/group/GroupController";
-import * as FileType from "../scripts/FileType";
+import * as FileType from "../../react/shared/FileType";
 const router = express.Router();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
-import { ChitChatAccount } from "../scripts/models/User";
+import { ChitChatAccount } from "../../react/shared/models/User";
 import { Config, DbClient, Paths } from "../config";
 const upload = multer({ dest: Paths.userAvatar }).single("file");
 

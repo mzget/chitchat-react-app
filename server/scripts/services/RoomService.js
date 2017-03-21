@@ -43,13 +43,12 @@ function setRoomsMap(data, callback) {
     data.forEach(element => {
         let room = JSON.parse(JSON.stringify(element));
         RedisClient_1.default.hset(RedisClient_1.ROOM_MAP_KEY, element._id.toString(), JSON.stringify(room), redis.print);
-        //RedisClient.expire(ROOM_MAP_KEY, 30, redis.print);
     });
     callback();
 }
 exports.setRoomsMap = setRoomsMap;
 function getRoom(roomId, callback) {
-    if (RedisClient_1.redisStatus == RedisClient_1.RedisStatus.ready) {
+    if (RedisClient_1.default.connected) {
         RedisClient_1.default.hget(RedisClient_1.ROOM_MAP_KEY, roomId, function (err, roomMap) {
             if (err || !roomMap) {
                 console.log("Can't find room from cache");
@@ -61,7 +60,7 @@ function getRoom(roomId, callback) {
             }
             else {
                 let room = JSON.parse(roomMap);
-                console.log("room from cache: ", room);
+                console.log("room from cache: ", room._id, room.name);
                 callback(null, room);
             }
         });
@@ -94,6 +93,5 @@ exports.getRoom = getRoom;
 */
 function addRoom(room) {
     RedisClient_1.default.hset(RedisClient_1.ROOM_MAP_KEY, room._id.toString(), JSON.stringify(room), redis.print);
-    //RedisClient.expire(ROOM_MAP_KEY, 30, redis.print);
 }
 exports.addRoom = addRoom;

@@ -1,10 +1,10 @@
 import mongodb = require("mongodb");
 import redis = require("redis");
-import RedisClient, { ROOM_MAP_KEY, redisStatus, RedisStatus } from "./RedisClient";
+import RedisClient, { ROOM_MAP_KEY } from "./RedisClient";
 
 import { Config, DbClient } from "../../config";
 import { getAppDb } from "../DbClient";
-import * as Room from "../models/Room";
+import * as Room from "../../../react/shared/models/Room";
 
 const { ObjectID } = mongodb;
 
@@ -40,14 +40,13 @@ export function setRoomsMap(data: Array<any>, callback: () => void) {
     data.forEach(element => {
         let room: Room.Room = JSON.parse(JSON.stringify(element));
         RedisClient.hset(ROOM_MAP_KEY, element._id.toString(), JSON.stringify(room), redis.print);
-        //RedisClient.expire(ROOM_MAP_KEY, 30, redis.print);
     });
 
     callback();
 }
 
 export function getRoom(roomId: string, callback: (err: any, res: Room.Room) => void) {
-    if (redisStatus == RedisStatus.ready) {
+    if (RedisClient.connected) {
         RedisClient.hget(ROOM_MAP_KEY, roomId, function (err, roomMap) {
             if (err || !roomMap) {
                 console.log("Can't find room from cache");
@@ -60,7 +59,7 @@ export function getRoom(roomId: string, callback: (err: any, res: Room.Room) => 
             }
             else {
                 let room = JSON.parse(roomMap) as Room.Room;
-                console.log("room from cache: ", room);
+                console.log("room from cache: ", room._id, room.name);
                 callback(null, room);
             }
         });
@@ -91,5 +90,4 @@ export function getRoom(roomId: string, callback: (err: any, res: Room.Room) => 
 */
 export function addRoom(room: Room.Room) {
     RedisClient.hset(ROOM_MAP_KEY, room._id.toString(), JSON.stringify(room), redis.print);
-    //RedisClient.expire(ROOM_MAP_KEY, 30, redis.print);
 }

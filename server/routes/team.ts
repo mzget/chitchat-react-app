@@ -3,8 +3,8 @@ import mongodb = require("mongodb");
 
 import * as apiUtils from "../scripts/utils/apiUtils";
 
-import { ITeam } from "../scripts/models/ITeam";
-import { ChitChatAccount } from "../scripts/models/User";
+import { ITeam } from "../../react/shared/models/ITeam";
+import { ChitChatAccount } from "../../react/shared/models/User";
 
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;

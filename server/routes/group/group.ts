@@ -10,7 +10,7 @@ const router = express.Router();
 const ObjectID = mongodb.ObjectID;
 const MongoClient = mongodb.MongoClient;
 
-import { Room, RoomType, RoomStatus, IMember } from "../../scripts/models/Room";
+import { Room, RoomType, RoomStatus, IMember } from "../../../react/shared/models/Room";
 import * as RoomService from "../../scripts/services/RoomService";
 import * as GroupController from "../../scripts/controllers/group/GroupController";
 import * as ChatRoomManager from "../../scripts/controllers/ChatRoomManager";
@@ -19,7 +19,7 @@ import * as apiUtils from "../../scripts/utils/apiUtils";
 
 import { getAppDb } from "../../scripts/DbClient";
 import { Config, DbClient, Paths } from "../../config";
-import * as FileType from "../../scripts/FileType";
+import * as FileType from "../../../react/shared/FileType";
 const upload = multer({ dest: Paths.groupImage }).single("file");
 
 router.get("/org", function (req, res, next) {
@@ -78,7 +78,6 @@ router.post("/org/create", function (req, res, next) {
         res.status(500).json(new apiUtils.ApiResponse(false, err));
     });
 });
-
 
 router.get("/private_group", (req, res, next) => {
     let user_id = req["decoded"]._id as string;

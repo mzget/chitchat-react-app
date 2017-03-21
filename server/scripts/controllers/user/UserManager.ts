@@ -2,11 +2,11 @@
 import mongodb = require('mongodb');
 import async = require('async');
 
-import { ChitChatAccount } from "../../models/User";
-import { ITeamProfile } from "../../models/TeamProfile";
-import * as Room from "../../models/Room";
-import { RoomAccessData, StalkAccount } from '../../models/Stalk';
-import { ITeam } from '../../models/ITeam';
+import { ChitChatAccount } from "../../../../react/shared/models/User";
+import { ITeamProfile } from "../../../../react/shared/models/TeamProfile";
+import * as Room from "../../../../react/shared/models/Room";
+import { RoomAccessData, StalkAccount } from '../../../../react/shared/models/Stalk';
+import { ITeam } from '../../../../react/shared/models/ITeam';
 
 import { Config, DbClient } from "../../../config";
 import { getAppDb } from "../../DbClient";

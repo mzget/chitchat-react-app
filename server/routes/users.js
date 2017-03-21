@@ -15,11 +15,11 @@ const fs = require("fs");
 const apiUtils = require("../scripts/utils/apiUtils");
 const UserManager = require("../scripts/controllers/user/UserManager");
 const GroupController = require("../scripts/controllers/group/GroupController");
-const FileType = require("../scripts/FileType");
+const FileType = require("../../react/shared/FileType");
 const router = express.Router();
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
-const User_1 = require("../scripts/models/User");
+const User_1 = require("../../react/shared/models/User");
 const config_1 = require("../config");
 const upload = multer({ dest: config_1.Paths.userAvatar }).single("file");
 /* GET users listing. */

@@ -10,7 +10,7 @@ const router = express.Router();
 const apiUtils = require("../../scripts/utils/apiUtils");
 const config_1 = require("../../config");
 const upload = multer({ dest: config_1.Paths.fileUpload }).single("file");
-const FileType = require("../../scripts/FileType");
+const FileType = require("../../../react/shared/FileType");
 router.post("/", function (req, res, next) {
     upload(req, res, function (err) {
         if (err) {
@@ -18,7 +18,9 @@ router.post("/", function (req, res, next) {
             console.error(err);
             return res.status(500).json({ success: false, message: "fail to upload" + err });
         }
-        console.log("file", req.file);
+        let exts = req.file.originalname.split(".");
+        let ext = exts[exts.length - 1].toLowerCase();
+        console.log(exts, ext, req.file.mimetype);
         if (!!req.file) {
             let file = req.file;
             let fullname = "";
@@ -27,7 +29,10 @@ router.post("/", function (req, res, next) {
             else if (file.mimetype.match(FileType.videoType))
                 fullname = file.path + file.mimetype.replace("video/", ".");
             else if (file.mimetype.match(FileType.textType))
-                fullname = file.path + file.mimetype.replace("text/", ".");
+                fullname = `${file.path}.${ext}`;
+            else if (file.mimetype.match(FileType.file)) {
+                fullname = `${file.path}.${ext}`;
+            }
             fs.readFile(file.path, function (err, data) {
                 if (err) {
                     res.status(500).json(new apiUtils.ApiResponse(false, err));
@@ -35,6 +40,7 @@ router.post("/", function (req, res, next) {
                 else {
                     fs.writeFile(fullname, data, function (err) {
                         if (err) {
+                            console.log("writeFile error", fullname, err);
                             return res.status(500).json(new apiUtils.ApiResponse(false, err));
                         }
                         fs.unlink(file.path, (err) => {

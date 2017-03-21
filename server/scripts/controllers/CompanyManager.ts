@@ -1,5 +1,5 @@
 ﻿import { DbClient } from "../../config";
-import { Room } from "../models/Room";
+import { Room } from "../../../react/shared/models/Room";
 import mongodb = require("mongodb");
 const MongoClient = mongodb.MongoClient;
 

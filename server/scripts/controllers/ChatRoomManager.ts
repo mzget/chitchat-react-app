@@ -1,7 +1,7 @@
 ﻿import mongodb = require("mongodb");
 import async = require("async");
-import { Room, RoomType, RoomStatus, IMember } from "../models/Room";
-import message = require("../models/Message");
+import { Room, RoomType, RoomStatus, IMember } from "../../../react/shared/models/Room";
+import { Message } from "../../../react/shared/models/Message";
 import * as UserManager from "./user/UserManager";
 import { Config, DbClient } from "../../config";
 import { getAppDb } from "../DbClient";
@@ -174,7 +174,7 @@ export class ChatRoomManager {
         }
     }
 
-    public AddChatRecord(object: message.Message, callback: (err, docs: Array<message.Message>) => void) {
+    public AddChatRecord(object: Message, callback: (err, docs: Array<Message>) => void) {
         MongoClient.connect(MDb.DbController.chatDB).then(db => {
             let col = db.collection(MDb.DbController.messageColl);
 
