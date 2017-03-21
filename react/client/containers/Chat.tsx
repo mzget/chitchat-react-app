@@ -96,7 +96,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 this.props.router.replace("/");
                 break;
             default:
-                this.props.dispatch(chatroomActions.enableChatRoom());
                 break;
         }
 
@@ -382,7 +381,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         results.forEach(result => {
             const [progressEvent, file] = result;
 
-            console.dir(file);
+            console.log(file.name, file.type);
 
             if (file.type && file.type.length > 0) {
                 this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));

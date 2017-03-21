@@ -38,7 +38,7 @@ class Chat extends React.Component {
         this.fileReaderChange = (e, results) => {
             results.forEach(result => {
                 const [progressEvent, file] = result;
-                console.dir(file);
+                console.log(file.name, file.type);
                 if (file.type && file.type.length > 0) {
                     this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
                 }
@@ -90,7 +90,6 @@ class Chat extends React.Component {
                 this.props.router.replace("/");
                 break;
             default:
-                this.props.dispatch(chatroomActions.enableChatRoom());
                 break;
         }
         switch (chatroomReducer.state) {
