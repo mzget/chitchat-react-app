@@ -4,7 +4,7 @@ const { Observable: { ajax }, AjaxResponse } = Rx;
 import config from "../../configs/config";
 import Store from "../configureStore";
 import { BackendFactory } from "../../chats/BackendFactory";
-import { Room, RoomType } from "../../../server/scripts/models/Room";
+import { Room, RoomType } from "../../../shared/models/Room";
 
 const GET_PRIVATE_GROUP = "GET_PRIVATE_GROUP";
 export const GET_PRIVATE_GROUP_SUCCESS = "GET_PRIVATE_GROUP_SUCCESS";

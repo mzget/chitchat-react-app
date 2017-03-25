@@ -20,8 +20,8 @@ import * as chatroomRx from "../redux/chatroom/chatroomRxEpic";
 import * as userRx from "../redux/user/userRx";
 import * as authRx from "../redux/authen/authRx";
 import * as groupRx from "../redux/group/groupRx";
-import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
 import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
+import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
 
 interface IComponentNameState {
     header: string;
@@ -47,6 +47,8 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
         }
 
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
+        this.fetch_orgGroups = this.fetch_orgGroups.bind(this);
+        this.fetch_privateGroups = this.fetch_privateGroups.bind(this);
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
@@ -129,6 +131,12 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     fetch_privateChatRoom = (roommateId, owerId) => {
         this.props.dispatch(chatroomRx.fetchPrivateChatRoom(owerId, roommateId));
     }
+    fetch_orgGroups = () => {
+        this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
+    }
+    fetch_privateGroups = () => {
+        this.props.dispatch(privateGroupRxActions.getPrivateGroup(this.props.teamReducer.team._id));
+    }
 
     onSelectMenuItem(id, value) {
         console.log(this.menus[id]);
@@ -162,16 +170,11 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                     }
                     <div style={{ height: this.bodyHeight, overflowY: "auto" }} id={"app_body"}>
                         <ConnectProfileEnhancer router={this.props.router} />
-                        <ConnectGroupListEnhancer
-                            fetchGroup={() => {
-                                this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
-                            }}
+                        <ConnectGroupListEnhancer fetchGroup={() => this.fetch_orgGroups()}
                             groups={this.props.groupReducer.orgGroups}
                             subHeader={"OrgGroups"} />
                         <ConnectGroupListEnhancer
-                            fetchGroup={() => {
-                                this.props.dispatch(privateGroupRxActions.getPrivateGroup(this.props.teamReducer.team._id));
-                            }}
+                            fetchGroup={() => { this.fetch_privateGroups(); }}
                             groups={this.props.groupReducer.privateGroups}
                             subHeader={"Groups"} />
                         <ContactBox {...this.props} />

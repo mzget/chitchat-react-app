@@ -7,7 +7,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
@@ -113,15 +112,15 @@ class ChatsLogComponent {
             this.addNewRoomAccessEvent(dataEvent);
         }
     }
-    getUnreadMessages(token, roomAccess, callback) {
+    getUnreadMessages(user_id, roomAccess, callback) {
         let self = this;
         let unreadLogs = new Array();
         async.map(roomAccess, function iterator(item, cb) {
             if (!!item.roomId && !!item.accessTime) {
-                ServiceProvider.getUnreadMessage(item.roomId, item.accessTime.toString(), token)
+                ServiceProvider.getUnreadMessage(item.roomId, user_id, item.accessTime.toString())
                     .then(response => response.json())
                     .then(value => {
-                    console.log("getUnreadMessage: ", value);
+                    console.log("getUnreadMessage result: ", value);
                     if (value.success) {
                         let unread = JSON.parse(JSON.stringify(value.result));
                         unread.rid = item.roomId;
@@ -138,8 +137,8 @@ class ChatsLogComponent {
             callback(null, unreadLogs);
         });
     }
-    getUnreadMessage(token, roomAccess, callback) {
-        ServiceProvider.getUnreadMessage(roomAccess.roomId, roomAccess.accessTime.toString(), token)
+    getUnreadMessage(user_id, roomAccess, callback) {
+        ServiceProvider.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString())
             .then(response => response.json())
             .then(value => {
             console.log("getUnreadMessage", value);
@@ -383,4 +382,5 @@ class ChatsLogComponent {
         });
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ChatsLogComponent;

@@ -19,7 +19,7 @@ import { createAction } from "redux-actions";
 import Store from "../configureStore";
 import { updateLastAccessRoom } from "../chatlogs/chatlogsActions";
 
-import { Room } from "../../../server/scripts/models/Room";
+import { Room } from "../../../shared/models/Room";
 import config from "../../configs/config";
 const secure = SecureServiceFactory.getService();
 
@@ -261,6 +261,8 @@ export function joinRoom(roomId: string, token: string, username: string) {
 
         BackendFactory.getInstance().getServer().then(server => {
             server.JoinChatRoomRequest(token, username, roomId, (err, res) => {
+                console.log("JoinChatRoomRequest value", res);
+
                 if (err || res.code !== HTTPStatus.success) {
                     dispatch(joinRoom_failure());
                 }

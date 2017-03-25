@@ -256,7 +256,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             }
         });
 
-        this.setState({ ...this.state, messages: _messages }, () => console.dir(this.state.messages));
+        this.setState({ ...this.state, messages: _messages });
     }
 
     onTypingTextChange(event) {
@@ -431,7 +431,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                     (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                         <WarningBar /> : null
                 }
-                <ChatRoomDialogBoxEnhancer />
                 <div style={{ height: this.h_body, overflowY: "auto", backgroundColor: Colors.indigo50 }} id={"app_body"}>
                     <Flex flexColumn={true}>
                         {
@@ -464,6 +463,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                     value={this.state.typingText}
                     fileReaderChange={this.fileReaderChange}
                     onSticker={this.onToggleSticker} />
+                {/*<ChatRoomDialogBoxEnhancer openDialog={this}/>*/}
                 <UploadingDialog />
                 <UtilsBox />
             </div>

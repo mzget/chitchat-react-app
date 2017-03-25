@@ -2,6 +2,12 @@ import config from "../../configs/config";
 import * as Rx from "rxjs/Rx";
 import "isomorphic-fetch";
 
+
+const chitchat_headers = {
+    "Content-Type": "application/json",
+    "x-api-key": config.api.apiKey
+};
+
 export const getRoomInfo = (room_id: string, token: string): Promise<any> => {
     return fetch(`${config.api.chatroom}/roomInfo?room_id=${room_id}`, {
         method: "GET",
@@ -12,13 +18,10 @@ export const getRoomInfo = (room_id: string, token: string): Promise<any> => {
     });
 };
 
-export const getUnreadMessage = (room_id: string, lastAccessTime: string, token: string): Promise<any> => {
-    return fetch(`${config.api.chatroom}/unreadMessage?room_id=${room_id}&lastAccessTime=${lastAccessTime}`, {
+export const getUnreadMessage = (room_id: string, user_id: string, lastAccessTime: string): Promise<any> => {
+    return fetch(`${config.api.chatroom}/unreadMessage?room_id=${room_id}&user_id=${user_id}&lastAccessTime=${lastAccessTime}`, {
         method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "x-access-token": token
-        }
+        headers: chitchat_headers
     });
 };
 

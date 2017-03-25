@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const immutable_1 = require("immutable");
 const adminRx = require("./adminRx");
 exports.AdminInitState = immutable_1.Record({

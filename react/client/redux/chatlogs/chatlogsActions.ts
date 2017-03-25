@@ -42,8 +42,8 @@ const listenerImp = (newMsg) => {
 };
 
 function updateLastAccessTimeEventHandler(newRoomAccess) {
-    let token = Store.getState().authReducer.token;
-    chatsLogComp().getUnreadMessage(token, newRoomAccess.roomAccess[0], function (err, unread) {
+    let user_id = Store.getState().userReducer.user._id;
+    chatsLogComp().getUnreadMessage(user_id, newRoomAccess.roomAccess[0], function (err, unread) {
         if (!!unread) {
             chatsLogComp().addUnreadMessage(unread);
 
@@ -83,8 +83,8 @@ export function initChatsLog() {
 
 function getUnreadMessages() {
     let dataManager = BackendFactory.getInstance().dataManager;
-    let token = Store.getState().authReducer.token;
-    chatsLogComp().getUnreadMessages(token, dataManager.getRoomAccess(), function done(err, unreadLogs) {
+    let user_id = Store.getState().userReducer.user._id;
+    chatsLogComp().getUnreadMessages(user_id, dataManager.getRoomAccess(), function done(err, unreadLogs) {
         if (!!unreadLogs) {
             unreadLogs.map(function element(unread) {
                 chatsLogComp().addUnreadMessage(unread);

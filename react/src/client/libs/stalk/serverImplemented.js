@@ -5,7 +5,6 @@
  * Ahoo Studio.co.th
  */
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const httpStatusCode_1 = require("./utils/httpStatusCode");
 const Pomelo = require("../pomelo/reactWSClient");
 const config_1 = require("../../configs/config");
@@ -401,7 +400,7 @@ class ServerImplemented {
     }
     requestCreateProjectBaseGroup(groupName, members, callback) {
         let self = this;
-        var msg = {};
+        let msg = {};
         msg["token"] = this.authenData.token;
         msg["groupName"] = groupName;
         msg["members"] = JSON.stringify(members);
@@ -527,7 +526,7 @@ class ServerImplemented {
             }
         });
     }
-    //<!-- Join and leave chat room.
+    // <!-- Join and leave chat room.
     JoinChatRoomRequest(token, username, room_id, callback) {
         let self = this;
         let msg = {};
@@ -535,7 +534,6 @@ class ServerImplemented {
         msg["rid"] = room_id;
         msg["username"] = username;
         self.pomelo.request("connector.entryHandler.enterRoom", msg, (result) => {
-            console.log("JoinChatRoom: " + JSON.stringify(result));
             if (callback !== null) {
                 callback(null, result);
             }

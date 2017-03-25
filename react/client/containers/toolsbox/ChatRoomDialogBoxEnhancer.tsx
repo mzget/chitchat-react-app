@@ -15,7 +15,9 @@ export const ChatRoomDialogBoxEnhancer = compose(
             console.log("handleClose", props);
         }
     }),
-    withPropsOnChange(["openDialog", "dialogTitle", "dialogMessage", "handleClose"], ({ openDialog, dialogTitle, dialogMessage, handleClose }) => {
+    withPropsOnChange(["openDialog", "dialogTitle", "dialogMessage", "handleClose"], ({
+         openDialog, dialogTitle, dialogMessage, handleClose
+         }) => {
         return {
             open: openDialog,
             title: dialogTitle,

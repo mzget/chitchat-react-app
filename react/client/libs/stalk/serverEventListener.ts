@@ -1,6 +1,6 @@
 ﻿/**
  * Copyright 2016 Ahoo Studio.co.th.
- * 
+ *
  * Support by@ nattapon.r@live.com
  */
 
@@ -17,22 +17,22 @@ export default class ServerEventListener {
     public static ON_VOICE_CALL: string = "onVoiceCall";
     public static ON_HANGUP_CALL: string = "onHangupCall";
     public static ON_THE_LINE_IS_BUSY: string = "onTheLineIsBusy";
-    //<!-- AccessRoom Info -->
+    // <!-- AccessRoom Info -->
     public static ON_ACCESS_ROOMS: string = "onAccessRooms";
     public static ON_ADD_ROOM_ACCESS: string = "onAddRoomAccess";
     public static ON_UPDATED_LASTACCESSTIME: string = "onUpdatedLastAccessTime";
-    //<!-- Group -->
+    // <!-- Group -->
     public static ON_CREATE_GROUP_SUCCESS: string = "onCreateGroupSuccess";
     public static ON_EDITED_GROUP_MEMBER: string = "onEditGroupMembers";
     public static ON_EDITED_GROUP_NAME: string = "onEditGroupName";
     public static ON_EDITED_GROUP_IMAGE: string = "onEditGroupImage";
     public static ON_NEW_GROUP_CREATED: string = "onNewGroupCreated";
     public static ON_UPDATE_MEMBER_INFO_IN_PROJECTBASE: string = "onUpdateMemberInfoInProjectBase";
-    //<!-- User -->
+    // <!-- User -->
     public static ON_USER_LOGIN: string = "onUserLogin";
     public static ON_USER_UPDATE_IMAGE_PROFILE: string = "onUserUpdateImgProfile";
     public static ON_USER_UPDATE_PROFILE: string = "onUserUpdateProfile";
-    //<!-- Frontend server --->
+    // <!-- Frontend server --->
     public static ON_GET_ME: string = "onGetMe";
     public static ON_GET_COMPANY_INFO: string = "onGetCompanyInfo";
     public static ON_GET_COMPANY_MEMBERS: string = "onGetCompanyMembers";
@@ -92,7 +92,7 @@ export default class ServerEventListener {
             self.frontendListener.onGetCompanyInfo(data);
         });
 
-        //wait message from the server.
+        // wait message from the server.
         self.pomelo.on(ServerEventListener.ON_GET_ORGANIZE_GROUPS, function (data) {
             console.log(ServerEventListener.ON_GET_ORGANIZE_GROUPS, JSON.stringify(data));
 
@@ -119,15 +119,16 @@ export default class ServerEventListener {
         let self = this;
 
         self.pomelo.on(ServerEventListener.ON_CHAT, function (data) {
-            console.log(ServerEventListener.ON_CHAT, JSON.stringify(data));
+            // console.log(ServerEventListener.ON_CHAT, JSON.stringify(data));
 
             self.chatServerListener.onChat(data);
         });
 
-        //pomelo.on(ServerEventListener.ON_ADD, (data) => {
-        //    console.log(ServerEventListener.ON_ADD, data);
-        //    self.onChatListener.on(data);
-        //});
+        self.pomelo.on(ServerEventListener.ON_ADD, (data) => {
+            // console.log(ServerEventListener.ON_ADD, data);
+
+            self.onChatListener.on(data);
+        });
 
         self.pomelo.on(ServerEventListener.ON_LEAVE, (data) => {
             console.log(ServerEventListener.ON_LEAVE, JSON.stringify(data));
@@ -176,7 +177,7 @@ export default class ServerEventListener {
     private callServerEvents() {
         let self = this;
 
-        //<!-- AccessRoom Info -->
+        // <!-- AccessRoom Info -->
         self.pomelo.on(ServerEventListener.ON_ACCESS_ROOMS, (data) => {
             console.log(ServerEventListener.ON_ACCESS_ROOMS, data);
 
@@ -193,7 +194,7 @@ export default class ServerEventListener {
             self.serverListener.onUpdatedLastAccessTime(data);
         });
 
-        //<!-- User -->
+        // <!-- User -->
         self.pomelo.on(ServerEventListener.ON_USER_LOGIN, data => {
             console.log(ServerEventListener.ON_USER_LOGIN);
 
@@ -210,7 +211,7 @@ export default class ServerEventListener {
             self.serverListener.onUserUpdateImageProfile(data);
         });
 
-        //<!-- Group -->
+        // <!-- Group -->
         self.pomelo.on(ServerEventListener.ON_CREATE_GROUP_SUCCESS, (data) => {
             console.log(ServerEventListener.ON_CREATE_GROUP_SUCCESS);
 

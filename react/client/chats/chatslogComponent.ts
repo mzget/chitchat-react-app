@@ -19,7 +19,7 @@ import * as ServiceProvider from "./services/ServiceProvider";
 
 import * as contactActions from "../redux/app/contactActions";
 import Store from "../redux/configureStore";
-import { Room } from "../../server/scripts/models/Room";
+import { Room } from "../../shared/models/Room";
 
 export interface ChatLogMap { [key: string]: ChatLog; };
 export interface IUnread { message: DataModels.IMessage; rid: string; count: number; };
@@ -133,15 +133,16 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         }
     }
 
-    public getUnreadMessages(token: string, roomAccess: DataModels.RoomAccessData[], callback: (err, logsData: Array<IUnread>) => void) {
+    public getUnreadMessages(user_id: string, roomAccess: DataModels.RoomAccessData[], callback: (err, logsData: Array<IUnread>) => void) {
         let self = this;
         let unreadLogs = new Array<IUnread>();
         async.map(roomAccess, function iterator(item, cb) {
             if (!!item.roomId && !!item.accessTime) {
-                ServiceProvider.getUnreadMessage(item.roomId, item.accessTime.toString(), token)
+                ServiceProvider.getUnreadMessage(item.roomId, user_id, item.accessTime.toString())
                     .then(response => response.json())
                     .then(value => {
-                        console.log("getUnreadMessage: ", value);
+                        console.log("getUnreadMessage result: ", value);
+
                         if (value.success) {
                             let unread: IUnread = JSON.parse(JSON.stringify(value.result));
                             unread.rid = item.roomId;
@@ -160,8 +161,8 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         });
     }
 
-    public getUnreadMessage(token: string, roomAccess: DataModels.RoomAccessData, callback: (err, res: IUnread) => void) {
-        ServiceProvider.getUnreadMessage(roomAccess.roomId, roomAccess.accessTime.toString(), token)
+    public getUnreadMessage(user_id: string, roomAccess: DataModels.RoomAccessData, callback: (err, res: IUnread) => void) {
+        ServiceProvider.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString())
             .then(response => response.json())
             .then(value => {
                 console.log("getUnreadMessage", value);

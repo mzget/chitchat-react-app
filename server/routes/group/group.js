@@ -1,4 +1,12 @@
 "use strict";
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -7,7 +15,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const crypto = require("crypto");
 const mongodb = require("mongodb");
@@ -55,7 +62,7 @@ router.post("/org/create", function (req, res, next) {
         return res.status(500).json(new apiUtils.ApiResponse(false, "missing org_chart_id"));
     }
     let roomModel = new Room_1.Room();
-    roomModel = Object.assign({}, room);
+    roomModel = __assign({}, room);
     roomModel.createTime = new Date();
     roomModel.status = Room_1.RoomStatus.active;
     function createGroup() {
@@ -96,7 +103,7 @@ router.post("/private_group/create", function (req, res, next) {
     }
     let room = req.body.room;
     let roomModel = new Room_1.Room();
-    roomModel = Object.assign({}, room);
+    roomModel = __assign({}, room);
     roomModel.createTime = new Date();
     roomModel.status = Room_1.RoomStatus.active;
     ChatRoomManager.createPrivateGroup(roomModel).then(docs => {
@@ -196,9 +203,7 @@ router.post("/deleteMemberOrg", function (req, res, next) {
                 throw err;
             }
             let collection = db.collection(Mdb.DbClient.roomColl);
-            collection.findOneAndUpdate({ "_id": ObjectId(req.body._id) }, { $pull: { "members": req.body.members } }
-            // { $pull: { members: { $in: req.body.members  } } }
-            ).then(function onFulfilled(value) {
+            collection.findOneAndUpdate({ "_id": ObjectId(req.body._id) }, { $pull: { "members": req.body.members } }).then(function onFulfilled(value) {
                 res.status(200).json({ success: true, result: value });
                 db.close();
             })
@@ -341,7 +346,7 @@ router.post("/update", (req, res, next) => {
         return res.status(500).json(new apiUtils.ApiResponse(false, "Invalid group name, Cannot empty field!"));
     }
     let roomModel = new Room_1.Room();
-    roomModel = Object.assign({}, room);
+    roomModel = __assign({}, room);
     ChatRoomManager.updateGroup(roomModel._id.toString(), roomModel).then(result => {
         res.status(200).json(new apiUtils.ApiResponse(true, null, result));
         // <!-- Push new room info to all members.

@@ -104,6 +104,7 @@ router.get("/roomInfo", (req, res, next) => {
  */
 router.get("/unreadMessage", (req, res, next) => {
     req.checkQuery("room_id", "request for room_id").isMongoId();
+    req.checkQuery("user_id", "request for user_id").isMongoId();
     req.checkQuery("lastAccessTime", "request for lastAccessTime").notEmpty();
 
     let errors = req.validationErrors();
@@ -111,8 +112,8 @@ router.get("/unreadMessage", (req, res, next) => {
         return res.status(500).json(new apiUtils.ApiResponse(false, errors));
     }
 
-    let room_id: string = req.query.room_id;
-    let user_id = req["decoded"]._id;
+    let room_id = req.query.room_id as string;
+    let user_id = req.query.user_id as string;
     let lastAccessTime: string = req.query.lastAccessTime;
 
     RoomService.checkedCanAccessRoom(room_id, user_id, function (err, result) {
@@ -121,7 +122,7 @@ router.get("/unreadMessage", (req, res, next) => {
         }
         else {
             ChatRoomManager.getUnreadMsgCountAndLastMsgContentInRoom(room_id, lastAccessTime).then(results => {
-                res.status(200).json({ success: true, result: results });
+                res.status(200).json(new apiUtils.ApiResponse(true, null, results));
             }).catch(err => {
                 res.status(500).json(new apiUtils.ApiResponse(false, err));
             });

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { GroupListView } from "./GroupListView";
 import { GroupListEnhancer } from "./GroupListEnhancer";
 
-const bobo = GroupListEnhancer(({ groups, fetchGroup, onselectGroup, subHeader }) =>
+const bobo = GroupListEnhancer(({ groups, fetchGroup, onselectGroup, subHeader }: any) =>
     <GroupListView
         groups={groups}
         onselectGroup={onselectGroup}

@@ -1,5 +1,12 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
@@ -16,8 +23,8 @@ const chatroomRx = require("../redux/chatroom/chatroomRxEpic");
 const userRx = require("../redux/user/userRx");
 const authRx = require("../redux/authen/authRx");
 const groupRx = require("../redux/group/groupRx");
-const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 const privateGroupRxActions = require("../redux/group/privateGroupRxActions");
+const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 ;
 class Main extends React.Component {
     constructor() {
@@ -31,6 +38,12 @@ class Main extends React.Component {
         this.fetch_privateChatRoom = (roommateId, owerId) => {
             this.props.dispatch(chatroomRx.fetchPrivateChatRoom(owerId, roommateId));
         };
+        this.fetch_orgGroups = () => {
+            this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
+        };
+        this.fetch_privateGroups = () => {
+            this.props.dispatch(privateGroupRxActions.getPrivateGroup(this.props.teamReducer.team._id));
+        };
     }
     componentWillMount() {
         this.state = {
@@ -41,6 +54,8 @@ class Main extends React.Component {
             this.props.router.replace("/");
         }
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
+        this.fetch_orgGroups = this.fetch_orgGroups.bind(this);
+        this.fetch_privateGroups = this.fetch_privateGroups.bind(this);
     }
     componentWillReceiveProps(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer } = nextProps;
@@ -130,16 +145,13 @@ class Main extends React.Component {
                     React.createElement(WarningBar_1.WarningBar, null) : null,
                 React.createElement("div", { style: { height: this.bodyHeight, overflowY: "auto" }, id: "app_body" },
                     React.createElement(ProfileBox_1.ConnectProfileEnhancer, { router: this.props.router }),
-                    React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => {
-                            this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
-                        }, groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
-                    React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => {
-                            this.props.dispatch(privateGroupRxActions.getPrivateGroup(this.props.teamReducer.team._id));
-                        }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
-                    React.createElement(ContactBox_1.default, Object.assign({}, this.props)),
-                    React.createElement(ChatLogsBox_1.default, Object.assign({}, this.props)),
+                    React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => this.fetch_orgGroups(), groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
+                    React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => { this.fetch_privateGroups(); }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
+                    React.createElement(ContactBox_1.default, __assign({}, this.props)),
+                    React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
                     React.createElement(UtilsBox_1.default, null)))));
     }
 }
-const mapStateToProps = (state) => (Object.assign({}, state));
+const mapStateToProps = (state) => (__assign({}, state));
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = react_redux_1.connect(mapStateToProps)(Main);

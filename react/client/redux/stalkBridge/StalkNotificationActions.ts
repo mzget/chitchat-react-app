@@ -13,9 +13,7 @@ import { ContentType } from "../../chats/models/ChatDataModels";
 import { MessageImp } from "../../chats/models/MessageImp";
 import * as CryptoHelper from "../../chats/utils/CryptoHelper";
 
-
 import Store from "../configureStore";
-
 
 export const STALK_NOTICE_NEW_MESSAGE = "STALK_NOTICE_NEW_MESSAGE";
 const stalkNotiNewMessage = (payload) => ({ type: STALK_NOTICE_NEW_MESSAGE, payload });

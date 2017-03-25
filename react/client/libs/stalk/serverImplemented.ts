@@ -496,9 +496,9 @@ export class ServerImplemented {
         });
     }
 
-    public requestCreateProjectBaseGroup(groupName: string, members: Member[], callback: (err, res) => void) {
+    public requestCreateProjectBaseGroup(groupName: string, members: any[], callback: (err, res) => void) {
         let self = this;
-        var msg: IDictionary = {};
+        let msg: IDictionary = {};
         msg["token"] = this.authenData.token;
         msg["groupName"] = groupName;
         msg["members"] = JSON.stringify(members);
@@ -509,7 +509,7 @@ export class ServerImplemented {
         });
     }
 
-    public editMemberInfoInProjectBase(roomId: string, roomType: RoomType, member: Member, callback: (err, res) => void) {
+    public editMemberInfoInProjectBase(roomId: string, roomType: any, member: any, callback: (err, res) => void) {
         let self = this;
         var msg: IDictionary = {};
         msg["token"] = this.authenData.token;
@@ -575,7 +575,7 @@ export class ServerImplemented {
         });
     }
 
-    public editGroupMembers(editType: string, roomId: string, roomType: RoomType, members: string[], callback: (err, res) => void) {
+    public editGroupMembers(editType: string, roomId: string, roomType: any, members: string[], callback: (err, res) => void) {
         let self = this;
         if (editType == null || editType.length === 0) return;
         if (roomId == null || roomId.length === 0) return;
@@ -597,7 +597,7 @@ export class ServerImplemented {
         });
     }
 
-    public editGroupName(roomId: string, roomType: RoomType, newGroupName: string, callback: (err, res) => void) {
+    public editGroupName(roomId: string, roomType: any, newGroupName: string, callback: (err, res) => void) {
         let self = this;
         if (roomId == null || roomId.length === 0) return;
         if (roomType === null) return;
@@ -635,15 +635,14 @@ export class ServerImplemented {
         });
     }
 
-    //<!-- Join and leave chat room.
+    // <!-- Join and leave chat room.
     public JoinChatRoomRequest(token: string, username, room_id: string, callback: (err, res) => void) {
         let self = this;
-        let msg: IDictionary = {};
+        let msg = {} as IDictionary;
         msg["token"] = token;
         msg["rid"] = room_id;
         msg["username"] = username;
         self.pomelo.request("connector.entryHandler.enterRoom", msg, (result) => {
-            console.log("JoinChatRoom: " + JSON.stringify(result));
             if (callback !== null) {
                 callback(null, result);
             }

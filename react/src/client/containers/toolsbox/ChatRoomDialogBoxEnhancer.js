@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const react_redux_1 = require("react-redux");
 const recompose_1 = require("recompose");
 const DialogBox_1 = require("../../components/DialogBox");

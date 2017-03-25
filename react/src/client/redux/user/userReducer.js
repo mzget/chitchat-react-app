@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const immutable_1 = require("immutable");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;

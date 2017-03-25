@@ -1,5 +1,12 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const Colors = require("material-ui/styles/colors");
@@ -36,12 +43,12 @@ class Profile extends React.Component {
     onAlert(error) {
         this.alertTitle = "Alert!";
         this.alertMessage = error;
-        this.setState(previous => (Object.assign({}, previous, { alert: true })));
+        this.setState(previous => (__assign({}, previous, { alert: true })));
     }
     closeAlert() {
         this.alertTitle = "";
         this.alertMessage = "";
-        this.setState(prevState => (Object.assign({}, prevState, { alert: false })), () => {
+        this.setState(prevState => (__assign({}, prevState, { alert: false })), () => {
             // @Here clear error message in reducer.
             this.props.dispatch(userRx.emptyState());
         });
@@ -55,5 +62,6 @@ class Profile extends React.Component {
             React.createElement(DialogBox_1.DialogBox, { title: this.alertTitle, message: this.alertMessage, open: this.state.alert, handleClose: this.closeAlert })));
     }
 }
-const mapStateToProps = (state) => (Object.assign({}, state));
+const mapStateToProps = (state) => (__assign({}, state));
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = react_redux_1.connect(mapStateToProps)(Profile);

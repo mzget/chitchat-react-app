@@ -4,7 +4,6 @@
  * Support by@ nattapon.r@live.com
  */
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const spartanEvents_1 = require("./spartanEvents");
 class ServerEventListener {
     constructor(socket) {
@@ -44,7 +43,7 @@ class ServerEventListener {
             console.log(ServerEventListener.ON_GET_COMPANY_INFO, JSON.stringify(data));
             self.frontendListener.onGetCompanyInfo(data);
         });
-        //wait message from the server.
+        // wait message from the server.
         self.pomelo.on(ServerEventListener.ON_GET_ORGANIZE_GROUPS, function (data) {
             console.log(ServerEventListener.ON_GET_ORGANIZE_GROUPS, JSON.stringify(data));
             self.frontendListener.onGetOrganizeGroupsComplete(data);
@@ -65,13 +64,13 @@ class ServerEventListener {
     callChatServer() {
         let self = this;
         self.pomelo.on(ServerEventListener.ON_CHAT, function (data) {
-            console.log(ServerEventListener.ON_CHAT, JSON.stringify(data));
+            // console.log(ServerEventListener.ON_CHAT, JSON.stringify(data));
             self.chatServerListener.onChat(data);
         });
-        //pomelo.on(ServerEventListener.ON_ADD, (data) => {
-        //    console.log(ServerEventListener.ON_ADD, data);
-        //    self.onChatListener.on(data);
-        //});
+        self.pomelo.on(ServerEventListener.ON_ADD, (data) => {
+            // console.log(ServerEventListener.ON_ADD, data);
+            self.onChatListener.on(data);
+        });
         self.pomelo.on(ServerEventListener.ON_LEAVE, (data) => {
             console.log(ServerEventListener.ON_LEAVE, JSON.stringify(data));
             self.chatServerListener.onLeaveRoom(data);
@@ -106,7 +105,7 @@ class ServerEventListener {
     }
     callServerEvents() {
         let self = this;
-        //<!-- AccessRoom Info -->
+        // <!-- AccessRoom Info -->
         self.pomelo.on(ServerEventListener.ON_ACCESS_ROOMS, (data) => {
             console.log(ServerEventListener.ON_ACCESS_ROOMS, data);
             self.serverListener.onAccessRoom(data);
@@ -119,7 +118,7 @@ class ServerEventListener {
             console.log(ServerEventListener.ON_UPDATED_LASTACCESSTIME, data);
             self.serverListener.onUpdatedLastAccessTime(data);
         });
-        //<!-- User -->
+        // <!-- User -->
         self.pomelo.on(ServerEventListener.ON_USER_LOGIN, data => {
             console.log(ServerEventListener.ON_USER_LOGIN);
             self.serverListener.onUserLogin(data);
@@ -132,7 +131,7 @@ class ServerEventListener {
             console.log(ServerEventListener.ON_USER_UPDATE_IMAGE_PROFILE);
             self.serverListener.onUserUpdateImageProfile(data);
         });
-        //<!-- Group -->
+        // <!-- Group -->
         self.pomelo.on(ServerEventListener.ON_CREATE_GROUP_SUCCESS, (data) => {
             console.log(ServerEventListener.ON_CREATE_GROUP_SUCCESS);
             self.serverListener.onCreateGroupSuccess(data);
@@ -175,26 +174,27 @@ ServerEventListener.ON_VIDEO_CALL = "onVideoCall";
 ServerEventListener.ON_VOICE_CALL = "onVoiceCall";
 ServerEventListener.ON_HANGUP_CALL = "onHangupCall";
 ServerEventListener.ON_THE_LINE_IS_BUSY = "onTheLineIsBusy";
-//<!-- AccessRoom Info -->
+// <!-- AccessRoom Info -->
 ServerEventListener.ON_ACCESS_ROOMS = "onAccessRooms";
 ServerEventListener.ON_ADD_ROOM_ACCESS = "onAddRoomAccess";
 ServerEventListener.ON_UPDATED_LASTACCESSTIME = "onUpdatedLastAccessTime";
-//<!-- Group -->
+// <!-- Group -->
 ServerEventListener.ON_CREATE_GROUP_SUCCESS = "onCreateGroupSuccess";
 ServerEventListener.ON_EDITED_GROUP_MEMBER = "onEditGroupMembers";
 ServerEventListener.ON_EDITED_GROUP_NAME = "onEditGroupName";
 ServerEventListener.ON_EDITED_GROUP_IMAGE = "onEditGroupImage";
 ServerEventListener.ON_NEW_GROUP_CREATED = "onNewGroupCreated";
 ServerEventListener.ON_UPDATE_MEMBER_INFO_IN_PROJECTBASE = "onUpdateMemberInfoInProjectBase";
-//<!-- User -->
+// <!-- User -->
 ServerEventListener.ON_USER_LOGIN = "onUserLogin";
 ServerEventListener.ON_USER_UPDATE_IMAGE_PROFILE = "onUserUpdateImgProfile";
 ServerEventListener.ON_USER_UPDATE_PROFILE = "onUserUpdateProfile";
-//<!-- Frontend server --->
+// <!-- Frontend server --->
 ServerEventListener.ON_GET_ME = "onGetMe";
 ServerEventListener.ON_GET_COMPANY_INFO = "onGetCompanyInfo";
 ServerEventListener.ON_GET_COMPANY_MEMBERS = "onGetCompanyMembers";
 ServerEventListener.ON_GET_PRIVATE_GROUPS = "onGetPrivateGroups";
 ServerEventListener.ON_GET_ORGANIZE_GROUPS = "onGetOrganizeGroups";
 ServerEventListener.ON_GET_PROJECT_BASE_GROUPS = "onGetProjectBaseGroups";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ServerEventListener;

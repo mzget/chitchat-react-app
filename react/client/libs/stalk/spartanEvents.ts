@@ -1,4 +1,4 @@
-﻿export module absSpartan {
+﻿export namespace absSpartan {
     export interface IChatServerListener {
         onChat(data);
         onMessageRead(dataEvent);
@@ -40,6 +40,6 @@
     }
 }
 
-export module StalkEvents {
+export namespace StalkEvents {
     export const ON_PUSH = "ON_PUSH";
 }

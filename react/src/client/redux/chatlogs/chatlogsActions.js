@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
@@ -25,17 +24,15 @@ const listenerImp = (newMsg) => {
         unread.count = count;
         chatsLogComp().addUnreadMessage(unread);
         onUnreadMessageMapChanged(unread);
-        //             chatLogDAL.savePersistedUnreadMsgMap(unread);
     }
 };
 function updateLastAccessTimeEventHandler(newRoomAccess) {
-    let token = configureStore_1.default.getState().authReducer.token;
-    chatsLogComp().getUnreadMessage(token, newRoomAccess.roomAccess[0], function (err, unread) {
+    let user_id = configureStore_1.default.getState().userReducer.user._id;
+    chatsLogComp().getUnreadMessage(user_id, newRoomAccess.roomAccess[0], function (err, unread) {
         if (!!unread) {
             chatsLogComp().addUnreadMessage(unread);
             calculateUnreadCount();
             onUnreadMessageMapChanged(unread);
-            //chatLogDAL.savePersistedUnreadMsgMap(unread);
         }
     });
 }
@@ -66,8 +63,8 @@ function initChatsLog() {
 exports.initChatsLog = initChatsLog;
 function getUnreadMessages() {
     let dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
-    let token = configureStore_1.default.getState().authReducer.token;
-    chatsLogComp().getUnreadMessages(token, dataManager.getRoomAccess(), function done(err, unreadLogs) {
+    let user_id = configureStore_1.default.getState().userReducer.user._id;
+    chatsLogComp().getUnreadMessages(user_id, dataManager.getRoomAccess(), function done(err, unreadLogs) {
         if (!!unreadLogs) {
             unreadLogs.map(function element(unread) {
                 chatsLogComp().addUnreadMessage(unread);

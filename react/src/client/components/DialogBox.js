@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const Dialog_1 = require("material-ui/Dialog");

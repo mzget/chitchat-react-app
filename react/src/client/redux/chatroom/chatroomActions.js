@@ -4,6 +4,14 @@
  * This is pure function action for redux app.
  */
 "use strict";
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -12,7 +20,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 const chatRoomComponent_1 = require("../../chats/chatRoomComponent");
 const BackendFactory_1 = require("../../chats/BackendFactory");
 const secureServiceFactory_1 = require("../../libs/chitchat/services/secureServiceFactory");
@@ -74,7 +81,6 @@ function onChatRoomDelegate(event, newMsg) {
          * - if not my message. Update who read this message. And tell anyone.
          */
         if (BackendFactory_1.BackendFactory.getInstance().dataManager.isMySelf(newMsg.sender)) {
-            // dispatch(replaceMyMessage(newMsg));
         }
         else {
             console.log("is contact message");
@@ -94,7 +100,6 @@ function onChatRoomDelegate(event, newMsg) {
     }
     else if (event === serverEventListener_1.default.ON_MESSAGE_READ) {
         console.log("serviceListener: ", serverEventListener_1.default.ON_MESSAGE_READ, newMsg);
-        //                service.set(chatRoomComponent.chatMessages);
     }
 }
 function onOutSideRoomDelegate(event, data) {
@@ -213,7 +218,7 @@ function sendMessageResponse(err, res) {
         else {
             console.log("server response!", res);
             if (res.code == httpStatusCode_1.default.success && res.data.hasOwnProperty("resultMsg")) {
-                let _msg = Object.assign({}, res.data.resultMsg);
+                let _msg = __assign({}, res.data.resultMsg);
                 if (_msg.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text] && config_1.default.appConfig.encryption) {
                     secure.decryption(_msg.body).then(res => {
                         _msg.body = res;
@@ -245,6 +250,7 @@ function joinRoom(roomId, token, username) {
         dispatch(joinRoom_request());
         BackendFactory_1.BackendFactory.getInstance().getServer().then(server => {
             server.JoinChatRoomRequest(token, username, roomId, (err, res) => {
+                console.log("JoinChatRoomRequest value", res);
                 if (err || res.code !== httpStatusCode_1.default.success) {
                     dispatch(joinRoom_failure());
                 }

@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var RoomType;
 (function (RoomType) {
     RoomType[RoomType["organizationGroup"] = 0] = "organizationGroup";

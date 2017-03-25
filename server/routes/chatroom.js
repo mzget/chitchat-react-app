@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const crypto = require("crypto");
 const mongodb = require("mongodb");
@@ -86,13 +85,14 @@ router.get("/roomInfo", (req, res, next) => {
  */
 router.get("/unreadMessage", (req, res, next) => {
     req.checkQuery("room_id", "request for room_id").isMongoId();
+    req.checkQuery("user_id", "request for user_id").isMongoId();
     req.checkQuery("lastAccessTime", "request for lastAccessTime").notEmpty();
     let errors = req.validationErrors();
     if (errors) {
         return res.status(500).json(new apiUtils.ApiResponse(false, errors));
     }
     let room_id = req.query.room_id;
-    let user_id = req["decoded"]._id;
+    let user_id = req.query.user_id;
     let lastAccessTime = req.query.lastAccessTime;
     RoomService.checkedCanAccessRoom(room_id, user_id, function (err, result) {
         if (err || result === false) {
@@ -100,7 +100,7 @@ router.get("/unreadMessage", (req, res, next) => {
         }
         else {
             ChatRoomManager.getUnreadMsgCountAndLastMsgContentInRoom(room_id, lastAccessTime).then(results => {
-                res.status(200).json({ success: true, result: results });
+                res.status(200).json(new apiUtils.ApiResponse(true, null, results));
             }).catch(err => {
                 res.status(500).json(new apiUtils.ApiResponse(false, err));
             });

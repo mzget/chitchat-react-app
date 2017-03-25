@@ -1,8 +1,11 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = require("../../configs/config");
 const Rx = require("rxjs/Rx");
 require("isomorphic-fetch");
+const chitchat_headers = {
+    "Content-Type": "application/json",
+    "x-api-key": config_1.default.api.apiKey
+};
 exports.getRoomInfo = (room_id, token) => {
     return fetch(`${config_1.default.api.chatroom}/roomInfo?room_id=${room_id}`, {
         method: "GET",
@@ -12,13 +15,10 @@ exports.getRoomInfo = (room_id, token) => {
         }
     });
 };
-exports.getUnreadMessage = (room_id, lastAccessTime, token) => {
-    return fetch(`${config_1.default.api.chatroom}/unreadMessage?room_id=${room_id}&lastAccessTime=${lastAccessTime}`, {
+exports.getUnreadMessage = (room_id, user_id, lastAccessTime) => {
+    return fetch(`${config_1.default.api.chatroom}/unreadMessage?room_id=${room_id}&user_id=${user_id}&lastAccessTime=${lastAccessTime}`, {
         method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "x-access-token": token
-        }
+        headers: chitchat_headers
     });
 };
 exports.checkOlderMessagesCount = (room_id, topEdgeMessageTime, token) => {

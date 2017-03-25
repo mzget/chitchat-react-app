@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const recompose_1 = require("recompose");
 const chatroomActions = require("../../redux/chatroom/chatroomActions");
 exports.GroupListEnhancer = recompose_1.compose(recompose_1.lifecycle({

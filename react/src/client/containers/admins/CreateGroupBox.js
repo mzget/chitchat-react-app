@@ -1,5 +1,12 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const Immutable = require("immutable");
@@ -23,7 +30,7 @@ class CreateGroupBox extends React.Component {
                 const [progressEvent, file] = result;
                 console.dir(file);
                 this.groupImage = file;
-                this.setState(prev => (Object.assign({}, prev, { groupImage: progressEvent.target.result })));
+                this.setState(prev => (__assign({}, prev, { groupImage: progressEvent.target.result })));
             });
         };
     }
@@ -101,16 +108,16 @@ class CreateGroupBox extends React.Component {
         let prop = {
             image: this.state.groupImage,
             group_name: this.state.groupName,
-            onGroupNameChange: (e, text) => this.setState(previous => (Object.assign({}, previous, { groupName: text }))),
+            onGroupNameChange: (e, text) => this.setState(previous => (__assign({}, previous, { groupName: text }))),
             group_description: this.state.groupDescription,
-            onGroupDescriptionChange: (e, text) => this.setState(previous => (Object.assign({}, previous, { groupDescription: text }))),
+            onGroupDescriptionChange: (e, text) => this.setState(previous => (__assign({}, previous, { groupDescription: text }))),
             onSubmit: this.onSubmitGroup,
             disabledImage: true
         };
         let chart = {
             dropdownItems: this.props.adminReducer.orgCharts,
             dropdownValue: this.state.dropdownValue,
-            dropdownChange: (event, id, value) => this.setState(previous => (Object.assign({}, previous, { dropdownValue: value })))
+            dropdownChange: (event, id, value) => this.setState(previous => (__assign({}, previous, { dropdownValue: value })))
         };
         switch (this.props.groupType) {
             case exports.createOrgGroup:
@@ -132,5 +139,6 @@ class CreateGroupBox extends React.Component {
             this.getView()));
     }
 }
-const mapStateToProps = (state) => (Object.assign({}, state));
+const mapStateToProps = (state) => (__assign({}, state));
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = react_redux_1.connect(mapStateToProps)(CreateGroupBox);
