@@ -16,7 +16,7 @@ const ProfileBox_1 = require("./profile/ProfileBox");
 const ConnectGroupListEnhancer_1 = require("./group/ConnectGroupListEnhancer");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 const ContactBox_1 = require("./chatlist/ContactBox");
-const UtilsBox_1 = require("./UtilsBox");
+const SnackbarToolBox_1 = require("./SnackbarToolBox");
 const chatroomActions = require("../redux/chatroom/chatroomActions");
 const chatlogsActions = require("../redux/chatlogs/chatlogsActions");
 const chatroomRx = require("../redux/chatroom/chatroomRxEpic");
@@ -149,7 +149,7 @@ class Main extends React.Component {
                     React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => { this.fetch_privateGroups(); }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
                     React.createElement(ContactBox_1.default, __assign({}, this.props)),
                     React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
-                    React.createElement(UtilsBox_1.default, null)))));
+                    React.createElement(SnackbarToolBox_1.SnackbarToolBox, null)))));
     }
 }
 const mapStateToProps = (state) => (__assign({}, state));

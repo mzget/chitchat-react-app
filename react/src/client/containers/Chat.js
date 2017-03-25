@@ -15,7 +15,7 @@ const config_1 = require("../configs/config");
 const TypingBox_1 = require("./TypingBox");
 const ChatBox_1 = require("./chat/ChatBox");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
-const UtilsBox_1 = require("./UtilsBox");
+const SnackbarToolBox_1 = require("./SnackbarToolBox");
 const UploadingDialog_1 = require("./UploadingDialog");
 const GridListSimple_1 = require("../components/GridListSimple");
 const WarningBar_1 = require("../components/WarningBar");
@@ -353,7 +353,7 @@ class Chat extends React.Component {
                 : null,
             React.createElement(TypingBox_1.TypingBox, { styles: { width: this.clientWidth }, disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }),
             React.createElement(UploadingDialog_1.default, null),
-            React.createElement(UtilsBox_1.default, null)));
+            React.createElement(SnackbarToolBox_1.SnackbarToolBox, null)));
     }
 }
 /**

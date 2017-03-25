@@ -12,7 +12,7 @@ import { ConnectProfileEnhancer } from "./profile/ProfileBox";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
 import ChatLogsBox from "./ChatLogsBox";
 import ContactBox from "./chatlist/ContactBox";
-import UtilsBox from "./UtilsBox";
+import { SnackbarToolBox } from "./SnackbarToolBox";
 
 import * as chatroomActions from "../redux/chatroom/chatroomActions";
 import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
@@ -179,7 +179,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                             subHeader={"Groups"} />
                         <ContactBox {...this.props} />
                         <ChatLogsBox {...this.props} />
-                        <UtilsBox />
+                        <SnackbarToolBox />
                     </div>
                 </div>
             </MuiThemeProvider>

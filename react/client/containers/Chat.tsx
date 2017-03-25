@@ -9,7 +9,7 @@ import Config from "../configs/config";
 import { TypingBox } from "./TypingBox";
 import { ChatBox } from "./chat/ChatBox";
 import { SimpleToolbar } from "../components/SimpleToolbar";
-import UtilsBox from "./UtilsBox";
+import { SnackbarToolBox } from "./SnackbarToolBox";
 import UploadingDialog from "./UploadingDialog";
 import GridListSimple from "../components/GridListSimple";
 import { WarningBar } from "../components/WarningBar";
@@ -465,7 +465,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                     onSticker={this.onToggleSticker} />
                 {/*<ChatRoomDialogBoxEnhancer openDialog={this}/>*/}
                 <UploadingDialog />
-                <UtilsBox />
+                <SnackbarToolBox />
             </div>
         );
     }
