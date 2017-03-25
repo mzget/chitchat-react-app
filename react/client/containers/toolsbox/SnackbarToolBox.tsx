@@ -2,15 +2,15 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Flex, Box } from "reflexbox";
 
-import { IComponentProps } from "../utils/IComponentProps";
+import { IComponentProps } from "../../utils/IComponentProps";
 
-import { DialogBox } from "../components/DialogBox";
-import { SnackbarSimple } from "../components/SnackbarSimple";
+import { DialogBox } from "../../components/DialogBox";
+import { SnackbarSimple } from "../../components/SnackbarSimple";
 
-import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
-import * as StalkNotificationActions from "../redux/stalkBridge/StalkNotificationActions";
+import * as StalkBridgeActions from "../../redux/stalkBridge/stalkBridgeActions";
+import * as StalkNotificationActions from "../../redux/stalkBridge/StalkNotificationActions";
 
-import * as AlertMsg from "../consts/AlertMsg";
+import * as AlertMsg from "../../consts/AlertMsg";
 
 interface IComponentNameState {
     openSnackbar: boolean;

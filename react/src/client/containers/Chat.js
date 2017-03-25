@@ -15,10 +15,11 @@ const config_1 = require("../configs/config");
 const TypingBox_1 = require("./TypingBox");
 const ChatBox_1 = require("./chat/ChatBox");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
-const SnackbarToolBox_1 = require("./SnackbarToolBox");
+const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
 const UploadingDialog_1 = require("./UploadingDialog");
 const GridListSimple_1 = require("../components/GridListSimple");
 const WarningBar_1 = require("../components/WarningBar");
+const ChatRoomDialogBoxEnhancer_1 = require("./toolsbox/ChatRoomDialogBoxEnhancer");
 const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 const chatroomActions = require("../redux/chatroom/chatroomActions");
 const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
@@ -41,6 +42,8 @@ class Chat extends React.Component {
         this.h_typingArea = null;
         this.bottom = this.clientHeight * 0.1;
         this.h_stickerBox = this.clientHeight * 0.3;
+        this.alertTitle = "";
+        this.alertMessage = "";
         this.fileReaderChange = (e, results) => {
             results.forEach(result => {
                 const [progressEvent, file] = result;
@@ -49,7 +52,9 @@ class Chat extends React.Component {
                     this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
                 }
                 else {
-                    alert("Fail to upload.");
+                    this.alertTitle = "Alert!";
+                    this.alertMessage = "Fail to upload file";
+                    this.setState({ onAlert: true });
                 }
             });
         };
@@ -60,7 +65,8 @@ class Chat extends React.Component {
             typingText: "",
             isLoadingEarlierMessages: false,
             earlyMessageReady: false,
-            openButtomMenu: false
+            openButtomMenu: false,
+            onAlert: false
         };
         this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
         this.onTypingTextChange = this.onTypingTextChange.bind(this);
@@ -352,6 +358,7 @@ class Chat extends React.Component {
                 React.createElement(GridListSimple_1.default, { boxHeight: this.h_stickerBox, srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
                 : null,
             React.createElement(TypingBox_1.TypingBox, { styles: { width: this.clientWidth }, disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }),
+            React.createElement(ChatRoomDialogBoxEnhancer_1.ChatRoomDialogBoxEnhancer, { title: this.alertTitle, message: this.alertMessage, open: this.state.onAlert, handleClose: () => this.setState({ onAlert: !this.state.onAlert }) }),
             React.createElement(UploadingDialog_1.default, null),
             React.createElement(SnackbarToolBox_1.SnackbarToolBox, null)));
     }

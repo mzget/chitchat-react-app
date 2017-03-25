@@ -12,7 +12,7 @@ import { ConnectProfileEnhancer } from "./profile/ProfileBox";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
 import ChatLogsBox from "./ChatLogsBox";
 import ContactBox from "./chatlist/ContactBox";
-import { SnackbarToolBox } from "./SnackbarToolBox";
+import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 
 import * as chatroomActions from "../redux/chatroom/chatroomActions";
 import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";

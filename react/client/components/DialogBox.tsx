@@ -4,7 +4,7 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
 
-interface ICompProps {
+export interface ICompProps {
     title: string;
     message: string;
     open: boolean;

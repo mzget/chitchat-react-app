@@ -9,7 +9,7 @@ import Config from "../configs/config";
 import { TypingBox } from "./TypingBox";
 import { ChatBox } from "./chat/ChatBox";
 import { SimpleToolbar } from "../components/SimpleToolbar";
-import { SnackbarToolBox } from "./SnackbarToolBox";
+import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import UploadingDialog from "./UploadingDialog";
 import GridListSimple from "../components/GridListSimple";
 import { WarningBar } from "../components/WarningBar";
@@ -32,6 +32,7 @@ interface IComponentNameState {
     typingText: string;
     earlyMessageReady;
     openButtomMenu: boolean;
+    onAlert: boolean;
 };
 
 class Chat extends React.Component<IComponentProps, IComponentNameState> {
@@ -47,13 +48,17 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     bottom = this.clientHeight * 0.1;
     h_stickerBox = this.clientHeight * 0.3;
 
+    alertTitle = "";
+    alertMessage = "";
+
     componentWillMount() {
         this.state = {
             messages: new Array(),
             typingText: "",
             isLoadingEarlierMessages: false,
             earlyMessageReady: false,
-            openButtomMenu: false
+            openButtomMenu: false,
+            onAlert: false
         };
 
         this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
@@ -387,7 +392,10 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
             }
             else {
-                alert("Fail to upload.");
+                this.alertTitle = "Alert!";
+                this.alertMessage = "Fail to upload file";
+
+                this.setState({ onAlert: true });
             }
         });
     }
@@ -463,7 +471,11 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                     value={this.state.typingText}
                     fileReaderChange={this.fileReaderChange}
                     onSticker={this.onToggleSticker} />
-                {/*<ChatRoomDialogBoxEnhancer openDialog={this}/>*/}
+                <ChatRoomDialogBoxEnhancer
+                    title={this.alertTitle}
+                    message={this.alertMessage}
+                    open={this.state.onAlert}
+                    handleClose={() => this.setState({ onAlert: !this.state.onAlert })} />
                 <UploadingDialog />
                 <SnackbarToolBox />
             </div>
