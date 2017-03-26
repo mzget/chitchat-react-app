@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 const redux_actions_1 = require("redux-actions");
 const configureStore_1 = require("../configureStore");
-const AppSessionToken_1 = require("../../libs/chitchat/dataAccessLayer/AppSessionToken");
+const AppSessionToken_1 = require("../../chats/dataAccessLayer/AppSessionToken");
 const appSession = new AppSessionToken_1.AppSessionToken();
 function saveSession() {
     return __awaiter(this, void 0, void 0, function* () {

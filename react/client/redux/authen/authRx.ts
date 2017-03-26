@@ -1,5 +1,4 @@
 ﻿import config from "../../configs/config";
-import { Record } from "immutable";
 import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
@@ -16,21 +15,21 @@ export const signup = (user) => ({ type: SIGN_UP, payload: user }); // username 
 const signupSuccess = payload => ({ type: SIGN_UP_SUCCESS, payload });
 const signupFailure = payload => ({ type: SIGN_UP_FAILURE, payload, error: true });
 const signupCancelled = () => ({ type: SIGN_UP_CANCELLED });
-export const signupUserEpic = action$ =>
+export const signupUserEpic = action$ => (
     action$.ofType(SIGN_UP)
         .mergeMap(action => ajax({
             method: "POST",
             url: `${config.api.user}/signup`,
             body: JSON.stringify({ user: action.payload }),
             headers: { "Content-Type": "application/json", "x-api-key": config.api.apiKey }
-        })
-            .map(response => signupSuccess(response.xhr.response))
+        }).map(response => signupSuccess(response.xhr.response))
             .takeUntil(action$.ofType(SIGN_UP_CANCELLED))
             .catch(error => Rx.Observable.of(signupFailure(error.xhr.response)))
-        );
+        )
+);
 
 
-const AUTH_USER = "AUTH_USER";
+export const AUTH_USER = "AUTH_USER";
 export const AUTH_USER_SUCCESS = "AUTH_USER_SUCCESS";
 export const AUTH_USER_FAILURE = "AUTH_USER_FAILURE";
 const AUTH_USER_CANCELLED = "AUTH_USER_CANCELLED";
@@ -53,21 +52,24 @@ export const authUserEpic = action$ =>
 
 const TOKEN_AUTH_USER = "TOKEN_AUTH_USER";
 export const TOKEN_AUTH_USER_SUCCESS = "TOKEN_AUTH_USER_SUCCESS";
-const TOKEN_AUTH_USER_FAILURE = "TOKEN_AUTH_USER_FAILURE";
+export const TOKEN_AUTH_USER_FAILURE = "TOKEN_AUTH_USER_FAILURE";
 const TOKEN_AUTH_USER_CANCELLED = "TOKEN_AUTH_USER_CANCELLED";
 export const tokenAuthUser = (token) => ({ type: TOKEN_AUTH_USER, payload: token }); // username => ({ type: FETCH_USER, payload: username });
 const tokenAuthUserSuccess = payload => ({ type: TOKEN_AUTH_USER_SUCCESS, payload });
 const tokenAuthUserFailure = payload => ({ type: TOKEN_AUTH_USER_FAILURE, payload });
 const tokenAuthUserCancelled = () => ({ type: TOKEN_AUTH_USER_CANCELLED });
-export const tokenAuthUserEpic = action$ => action$.ofType(TOKEN_AUTH_USER).mergeMap(action => ajax({
-    method: "POST",
-    url: `${config.api.auth}/verify`,
-    body: JSON.stringify({ token: action.payload }),
-    headers: { "Content-Type": "application/json", "x-api-key": config.api.apiKey }
-})
-    .map(response => tokenAuthUserSuccess(response.xhr.response))
-    .takeUntil(action$.ofType(TOKEN_AUTH_USER_CANCELLED))
-    .catch(error => Rx.Observable.of(tokenAuthUserFailure((error.xhr.response) ? error.xhr.response.message : error.message)))
+export const tokenAuthUserEpic = action$ => (
+    action$.ofType(TOKEN_AUTH_USER)
+        .mergeMap(action => ajax({
+            method: "POST",
+            url: `${config.api.auth}/verify`,
+            body: JSON.stringify({ token: action.payload }),
+            headers: { "Content-Type": "application/json" }
+        })
+            .map(response => tokenAuthUserSuccess(response.xhr.response))
+            .takeUntil(action$.ofType(TOKEN_AUTH_USER_CANCELLED))
+            .catch(error => Rx.Observable.of(tokenAuthUserFailure((error.xhr.response) ? error.xhr.response.message : error.message)))
+        )
 );
 
 const LOG_OUT = "LOG_OUT";
@@ -93,60 +95,5 @@ export const logoutUserEpic = action$ => action$.ofType(LOG_OUT)
     );
 
 
-const AUTH_REDUCER_CLEAR_ERROR = "AUTH_REDUCER_CLEAR_ERROR";
+export const AUTH_REDUCER_CLEAR_ERROR = "AUTH_REDUCER_CLEAR_ERROR";
 export const clearError = createAction(AUTH_REDUCER_CLEAR_ERROR);
-
-export const AuthenInitState = Record({
-    token: null,
-    isFetching: false,
-    error: null,
-    state: null,
-    user: null
-});
-export const authReducer = (state = new AuthenInitState(), action) => {
-    switch (action.type) {
-        case SIGN_UP_SUCCESS:
-            return state.set("state", SIGN_UP_SUCCESS);
-
-        case AUTH_USER: {
-            return state.set("user", action.payload.email);
-        }
-        case AUTH_USER_SUCCESS: {
-            return state.set("state", AUTH_USER_SUCCESS)
-                .set("token", action.payload.result);
-        }
-        case AUTH_USER_FAILURE: {
-            return state.set("state", AUTH_USER_FAILURE)
-                .set("token", null)
-                .set("user", null)
-                .set("error", JSON.stringify(action.payload));
-        }
-
-        case AppActions.GET_SESSION_TOKEN_SUCCESS: {
-            return state.set("token", action.payload)
-                .set("state", AppActions.GET_SESSION_TOKEN_SUCCESS);
-        }
-
-        case TOKEN_AUTH_USER_SUCCESS: {
-            return state.set("state", TOKEN_AUTH_USER_SUCCESS)
-                .set("user", action.payload.result.email);
-        }
-        case TOKEN_AUTH_USER_FAILURE: {
-            return state.set("token", null)
-                .set("error", JSON.stringify(action.payload))
-                .set("state", TOKEN_AUTH_USER_FAILURE);
-        }
-
-        case LOG_OUT_SUCCESS: {
-            return state.set("state", LOG_OUT_SUCCESS)
-                .set("token", null)
-                .set("user", null);
-        }
-
-        case AUTH_REDUCER_CLEAR_ERROR: {
-            return state.set("error", null).set("state", AUTH_REDUCER_CLEAR_ERROR);
-        }
-        default:
-            return state;
-    }
-};

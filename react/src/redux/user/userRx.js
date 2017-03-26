@@ -10,12 +10,20 @@ exports.FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS";
 exports.FETCH_USER_FAILURE = "FETCH_USER_FAILURE";
 exports.FETCH_USER_CANCELLED = "FETCH_USER_CANCELLED";
 exports.fetchUser = (username) => ({ type: FETCH_USER, payload: username }); // username => ({ type: FETCH_USER, payload: username });
-const fetchUserFulfilled = payload => ({ type: exports.FETCH_USER_SUCCESS, payload });
+const fetchUserFulfilled = payload => ({ type: exports.FETCH_USER_SUCCESS, payload: payload.xhr.response });
 const cancelFetchUser = () => ({ type: exports.FETCH_USER_CANCELLED });
-const fetchUserRejected = payload => ({ type: exports.FETCH_USER_FAILURE, payload, error: true });
-exports.fetchUserEpic = action$ => (action$.ofType(FETCH_USER).mergeMap(action => ajax.getJSON(`${config_1.default.api.user}/?username=${action.payload}`, { "x-access-token": configureStore_1.default.getState().authReducer.token }).map(fetchUserFulfilled)
+const fetchUserRejected = payload => ({ type: exports.FETCH_USER_FAILURE, payload });
+exports.fetchUserEpic = action$ => (action$.ofType(FETCH_USER).mergeMap(action => ajax({
+    method: "GET",
+    url: `${config_1.default.api.user}/?username=${action.payload}`,
+    headers: {
+        "Content-Type": "application/json",
+        "x-api-key": config_1.default.api.apiKey
+    }
+})
+    .map(fetchUserFulfilled)
     .takeUntil(action$.ofType(exports.FETCH_USER_CANCELLED))
-    .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))));
+    .catch(error => Rx.Observable.of(fetchUserRejected(error)))));
 const UPDATE_USER_INFO = "UPDATE_USER_INFO";
 exports.UPDATE_USER_INFO_SUCCESS = "UPDATE_USER_INFO_SUCCESS";
 exports.UPDATE_USER_INFO_FAILURE = "UPDATE_USER_INFO_FAILURE";
