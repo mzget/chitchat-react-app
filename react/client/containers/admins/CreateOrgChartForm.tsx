@@ -1,10 +1,10 @@
 ﻿import * as React from "react";
-import { Flex, Box } from 'reflexbox';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import * as Colors from 'material-ui/styles/colors';
-import { RaisedButton, TextField } from 'material-ui';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import { Flex, Box } from "reflexbox";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import * as Colors from "material-ui/styles/colors";
+import { RaisedButton, TextField } from "material-ui";
+import SelectField from "material-ui/SelectField";
+import MenuItem from "material-ui/MenuItem";
 
 const styles = {
     span: {
@@ -12,7 +12,7 @@ const styles = {
     },
     box: {
         bottom: 0,
-        position: 'absolute'
+        position: "absolute"
     },
     customWidth: {
         width: 200,
@@ -42,7 +42,7 @@ const ChartLevel = (props: IComponentProps) => (
         floatingLabelText="Org Level"
         value={props.dropdownValue}
         onChange={props.dropdownChange}
-        >
+    >
         {
             (props.dropdownItems.length > 0) ?
                 props.dropdownItems.map((value, id) =>
@@ -53,8 +53,8 @@ const ChartLevel = (props: IComponentProps) => (
 
 export const CreateOrgChartForm = (props: IComponentProps) => (
     <MuiThemeProvider>
-        <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align='center'>
-            <Box justify='center' align='center' p={2}>
+        <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align="center">
+            <Box justify="center" align="center" p={2}>
                 <h3>Create new ORG chart</h3>
             </Box>
             <TextField
@@ -63,16 +63,16 @@ export const CreateOrgChartForm = (props: IComponentProps) => (
                 value={props.orgChartName}
                 onChange={props.onOrgChartNameChange}
                 onKeyDown={(e) => {
-                    if (e.key === 'Enter') props.onSubmit();
-                } } />
+                    if (e.key === "Enter") props.onSubmit();
+                }} />
             <span style={styles.span} />
             <TextField
                 hintText="Description"
                 value={props.orgChart_description}
                 onChange={props.onOrgChartDescriptionChange}
                 onKeyDown={(e) => {
-                    if (e.key === 'Enter') props.onSubmit();
-                } } />
+                    if (e.key === "Enter") props.onSubmit();
+                }} />
             <span style={styles.span} />
             <ChartLevel {...props} />
             <span style={styles.span} />

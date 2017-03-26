@@ -1,10 +1,10 @@
 import * as React from "react";
 
-import { SigninForm } from '../../components/SigninForm';
+import { SigninForm } from "../../components/SigninForm";
 
-import * as CryptoHelper from '../../chats/utils/CryptoHelper';
-import * as ValidateUtils from '../../utils/ValidationUtils';
-import * as AuthRx from '../../redux/authen/authRx';
+import * as CryptoHelper from "../../chats/utils/CryptoHelper";
+import * as ValidateUtils from "../../utils/ValidationUtils";
+import * as AuthRx from "../../redux/authen/authRx";
 
 interface IComponentNameProps {
     onError: (error: string) => void;

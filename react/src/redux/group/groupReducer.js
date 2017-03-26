@@ -3,7 +3,7 @@ const immutable_1 = require("immutable");
 const groupRx = require("./groupRx");
 const privateGroupRxActions = require("./privateGroupRxActions");
 const editGroupRxActions = require("./editGroupRxActions");
-const Room_1 = require("../../../shared/models/Room");
+const Room_1 = require("../../libs/shared/Room");
 exports.GroupInitState = immutable_1.Record({
     isFetching: false,
     state: null,

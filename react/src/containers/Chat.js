@@ -26,7 +26,7 @@ const chatroomRxEpic = require("../chats/redux/chatroom/chatroomRxEpic");
 const Message_1 = require("../libs/shared/Message");
 const MessageImp_1 = require("../chats/models/MessageImp");
 const StickerPath_1 = require("../consts/StickerPath");
-const FileType = require("../../shared/FileType");
+const FileType = require("../libs/shared/FileType");
 ;
 class Chat extends React.Component {
     constructor() {

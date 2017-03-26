@@ -4,7 +4,7 @@ import * as groupRx from "./groupRx";
 import * as privateGroupRxActions from "./privateGroupRxActions";
 import * as editGroupRxActions from "./editGroupRxActions";
 
-import { Room, RoomType } from "../../../shared/models/Room";
+import { Room, RoomType } from "../../libs/shared/Room";
 
 
 export const GroupInitState = Record({

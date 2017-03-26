@@ -11,7 +11,7 @@ injectTapEventPlugin();
 //    }
 //});
 
-import App from './client/App';
+import App from './App';
 import './index.css';
 import 'rxjs';
 

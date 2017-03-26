@@ -15,8 +15,8 @@ import TeamListBox from "./teams/TeamListBox";
 import TeamCreateBox from "./teams/TeamCreateBox";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 
-import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
-import { ITeam } from "../../shared/models/ITeam";
+import * as StalkBridgeActions from "../chats/redux/stalkBridge/stalkBridgeActions";
+import { ITeam } from "../chats/models/ITeam";
 
 interface IComponentNameState {
     openDialog: boolean;

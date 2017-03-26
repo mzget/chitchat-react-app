@@ -15,7 +15,7 @@ import SimpleCardImage from "../components/SimpleCardImage";
 import SimpleCardVideo from "../components/SimpleCardVideo";
 import LinearProgressSimple from "../components/LinearProgressSimple";
 
-import * as FileType from "../../shared/FileType";
+import * as FileType from "../libs/shared/FileType";
 
 interface IComponentNameState {
     dialogTitle: string;

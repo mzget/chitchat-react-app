@@ -2,7 +2,7 @@ import * as React from "react";
 import SelectField from "material-ui/SelectField";
 import MenuItem from "material-ui/MenuItem";
 
-import { IOrgChart } from "../../../server/scripts/models/OrgChart";
+import { IOrgChart } from "../../chats/models/OrgChart";
 
 interface IComponentProps {
     dropdownItems: Array<IOrgChart>;

@@ -5,8 +5,7 @@
     "target": "es2015",
     "jsx": "react",
     "rootDirs": [
-      "client",
-      "shared"
+      "client/**/*"
     ],
     "outDir": "src",
     "typeRoots": [
@@ -14,8 +13,10 @@
       "node_modules/@reactivex/rxjs"
     ]
   },
+  // "include": [
+  //   "client/**/*"
+  // ],
   "exclude": [
-    "node_modules",
-    "node_modules/@types"
+    "node_modules"
   ]
 }

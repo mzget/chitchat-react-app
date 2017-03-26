@@ -9,7 +9,7 @@ import { ContactProfileView } from "./ContactProfileView";
 import * as adminRx from "../../redux/admin/adminRx";
 
 import { ITeamMember } from "../../chats/models/ITeamMember";
-import { IOrgChart } from "../../../server/scripts/models/OrgChart";
+import { IOrgChart } from "../../chats/models/OrgChart";
 
 interface IComponentState {
     member: ITeamMember;

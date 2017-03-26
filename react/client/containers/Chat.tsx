@@ -24,7 +24,7 @@ import { MessageType, IMessage } from "../libs/shared/Message";
 import { MessageImp } from "../chats/models/MessageImp";
 
 import { imagesPath } from "../consts/StickerPath";
-import * as FileType from "../../shared/FileType";
+import * as FileType from "../libs/shared/FileType";
 
 interface IComponentNameState {
     messages: any[];

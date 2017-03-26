@@ -13,7 +13,7 @@ import { GroupMemberEnhancer } from "./roomSettings/GroupMemberEnhancer";
 import * as chatroomActions from "../chats/redux/chatroom/chatroomActions";
 import * as groupRx from "../redux/group/groupRx";
 
-import { Room, RoomType } from "../../shared/models/Room";
+import { Room, RoomType } from "../libs/shared/Room";
 
 const EDIT_GROUP = "EDIT_GROUP";
 const EDIT_GROUP_MEMBERS = "EDIT_GROUP_MEMBERS";

@@ -16,8 +16,8 @@ import { DialogBox } from "../components/DialogBox";
 import * as adminRx from "../redux/admin/adminRx";
 import * as groupRx from "../redux/group/groupRx";
 import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
-import { Room, RoomType, RoomStatus } from "../../shared/models/Room";
-import { UserRole } from "../../shared/models/UserRole";
+import { Room, RoomType, RoomStatus } from "../libs/shared/Room";
+import { UserRole } from "../chats/models/UserRole";
 
 enum BoxState {
     idle = 0, isCreateGroup = 1, isManageTeam, isManageMember
