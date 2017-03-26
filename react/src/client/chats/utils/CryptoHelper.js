@@ -11,6 +11,8 @@ const ChatDataModels_1 = require("../models/ChatDataModels");
 const config_1 = require("../../configs/config");
 const secureServiceFactory_1 = require("../../libs/chitchat/services/secureServiceFactory");
 exports.decryptionText = (message) => __awaiter(this, void 0, void 0, function* () {
+    if (!message)
+        return message;
     let secure = secureServiceFactory_1.default.getService();
     if (message.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
         if (config_1.default.appConfig.encryption === true) {

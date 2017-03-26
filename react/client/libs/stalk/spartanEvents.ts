@@ -3,6 +3,8 @@
         onChat(data);
         onMessageRead(dataEvent);
         onGetMessagesReaders(dataEvent);
+        onRoomJoin(data);
+        onLeaveRoom(data);
     }
     export interface IFrontendServerListener {
         onGetMe(dataEvent);

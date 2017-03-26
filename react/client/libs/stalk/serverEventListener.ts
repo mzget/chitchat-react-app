@@ -119,31 +119,31 @@ export default class ServerEventListener {
         let self = this;
 
         self.pomelo.on(ServerEventListener.ON_CHAT, function (data) {
-            // console.log(ServerEventListener.ON_CHAT, JSON.stringify(data));
+            console.log(ServerEventListener.ON_CHAT, JSON.stringify(data));
 
             self.chatServerListener.onChat(data);
         });
 
         self.pomelo.on(ServerEventListener.ON_ADD, (data) => {
-            // console.log(ServerEventListener.ON_ADD, data);
+            console.log(ServerEventListener.ON_ADD, data);
 
-            self.onChatListener.on(data);
+            self.chatServerListener.onRoomJoin(data);
         });
 
         self.pomelo.on(ServerEventListener.ON_LEAVE, (data) => {
-            console.log(ServerEventListener.ON_LEAVE, JSON.stringify(data));
+            console.log(ServerEventListener.ON_LEAVE, data);
 
             self.chatServerListener.onLeaveRoom(data);
         });
 
         self.pomelo.on(ServerEventListener.ON_MESSAGE_READ, (data) => {
-            // console.log(ServerEventListener.ON_MESSAGE_READ);
+            console.log(ServerEventListener.ON_MESSAGE_READ);
 
             self.chatServerListener.onMessageRead(data);
         });
 
         self.pomelo.on(ServerEventListener.ON_GET_MESSAGES_READERS, (data) => {
-            // console.log(ServerEventListener.ON_GET_MESSAGES_READERS);
+            console.log(ServerEventListener.ON_GET_MESSAGES_READERS);
 
             self.chatServerListener.onGetMessagesReaders(data);
         });
