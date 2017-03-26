@@ -136,28 +136,39 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
     public getUnreadMessages(user_id: string, roomAccess: DataModels.RoomAccessData[], callback: (err, logsData: Array<IUnread>) => void) {
         let self = this;
         let unreadLogs = new Array<IUnread>();
-        async.map(roomAccess, function iterator(item, cb) {
-            if (!!item.roomId && !!item.accessTime) {
-                ServiceProvider.getUnreadMessage(item.roomId, user_id, item.accessTime.toString())
+
+        // create a queue object with concurrency 2
+        let q = async.queue(function (task: DataModels.RoomAccessData, callback: () => void) {
+            if (!!task.roomId && !!task.accessTime) {
+                ServiceProvider.getUnreadMessage(task.roomId, user_id, task.accessTime.toString())
                     .then(response => response.json())
                     .then(value => {
                         console.log("getUnreadMessage result: ", value);
 
                         if (value.success) {
                             let unread: IUnread = JSON.parse(JSON.stringify(value.result));
-                            unread.rid = item.roomId;
+                            unread.rid = task.roomId;
                             unreadLogs.push(unread);
                         }
 
-                        cb(null, null);
+                        callback();
                     });
             }
             else {
-                cb(null, null);
+                callback();
             }
-        }, function done(err) {
+        }, 10);
+
+        // assign a callback
+        q.drain = function () {
             console.log("getUnreadMessages from your roomAccess is done.");
             callback(null, unreadLogs);
+        };
+
+        // add some items to the queue (batch-wise)
+        q.push(roomAccess, function (err) {
+            if (!!err)
+                console.error("getUnreadMessage err", err);
         });
     }
 
@@ -201,22 +212,20 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
     private getRoomInfo(room_id: string, callback: (err, room: Room) => void) {
         let self = this;
         let token = Store.getState().authReducer.token;
-        ServiceProvider.getRoomInfo(room_id, token)
-            .then(response => response.json())
-            .then(function (json) {
-                console.log("getRoomInfo result", json);
-                if (json.success) {
-                    let roomInfos: Array<Room> = JSON.parse(JSON.stringify(json.result));
-                    let room = self.decorateRoomInfoData(roomInfos[0]);
-                    callback(null, room);
-                }
-                else {
-                    callback(json.message, null);
-                }
-            }).catch(err => {
-                console.warn("getRoomInfo fail: ", err);
-                callback(err, null);
-            });
+        ServiceProvider.getRoomInfo(room_id, token).then(response => response.json()).then(function (json) {
+            console.log("getRoomInfo result", json);
+            if (json.success) {
+                let roomInfos: Array<Room> = JSON.parse(JSON.stringify(json.result));
+                let room = self.decorateRoomInfoData(roomInfos[0]);
+                callback(null, room);
+            }
+            else {
+                callback(json.message, null);
+            }
+        }).catch(err => {
+            console.warn("getRoomInfo fail: ", err);
+            callback(err, null);
+        });
     }
 
     public getRoomsInfo() {
@@ -248,7 +257,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
                     });
                 }
             });
-        }, 2);
+        }, 10);
 
         // assign a callback
         q.drain = function () {

@@ -115,26 +115,34 @@ class ChatsLogComponent {
     getUnreadMessages(user_id, roomAccess, callback) {
         let self = this;
         let unreadLogs = new Array();
-        async.map(roomAccess, function iterator(item, cb) {
-            if (!!item.roomId && !!item.accessTime) {
-                ServiceProvider.getUnreadMessage(item.roomId, user_id, item.accessTime.toString())
+        // create a queue object with concurrency 2
+        let q = async.queue(function (task, callback) {
+            if (!!task.roomId && !!task.accessTime) {
+                ServiceProvider.getUnreadMessage(task.roomId, user_id, task.accessTime.toString())
                     .then(response => response.json())
                     .then(value => {
                     console.log("getUnreadMessage result: ", value);
                     if (value.success) {
                         let unread = JSON.parse(JSON.stringify(value.result));
-                        unread.rid = item.roomId;
+                        unread.rid = task.roomId;
                         unreadLogs.push(unread);
                     }
-                    cb(null, null);
+                    callback();
                 });
             }
             else {
-                cb(null, null);
+                callback();
             }
-        }, function done(err) {
+        }, 10);
+        // assign a callback
+        q.drain = function () {
             console.log("getUnreadMessages from your roomAccess is done.");
             callback(null, unreadLogs);
+        };
+        // add some items to the queue (batch-wise)
+        q.push(roomAccess, function (err) {
+            if (!!err)
+                console.error("getUnreadMessage err", err);
         });
     }
     getUnreadMessage(user_id, roomAccess, callback) {
@@ -174,9 +182,7 @@ class ChatsLogComponent {
     getRoomInfo(room_id, callback) {
         let self = this;
         let token = configureStore_1.default.getState().authReducer.token;
-        ServiceProvider.getRoomInfo(room_id, token)
-            .then(response => response.json())
-            .then(function (json) {
+        ServiceProvider.getRoomInfo(room_id, token).then(response => response.json()).then(function (json) {
             console.log("getRoomInfo result", json);
             if (json.success) {
                 let roomInfos = JSON.parse(JSON.stringify(json.result));
@@ -218,7 +224,7 @@ class ChatsLogComponent {
                     });
                 }
             });
-        }, 2);
+        }, 10);
         // assign a callback
         q.drain = function () {
             results.map(room => {
