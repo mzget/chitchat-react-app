@@ -140,21 +140,14 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         // create a queue object with concurrency 2
         let q = async.queue(function (task: DataModels.RoomAccessData, callback: () => void) {
             if (!!task.roomId && !!task.accessTime) {
-                ServiceProvider.getUnreadMessage(task.roomId, user_id, task.accessTime.toString())
-                    .then(response => response.json())
-                    .then(value => {
-                        console.log("getUnreadMessage result: ", value);
+                self.getUnreadMessage(user_id, task).then(value => {
+                    unreadLogs.push(value);
 
-                        if (value.success) {
-                            let unread: IUnread = JSON.parse(JSON.stringify(value.result));
-                            unread.rid = task.roomId;
-                            unreadLogs.push(unread);
-                        }
-
-                        callback();
-                    });
-            }
-            else {
+                    callback();
+                }).catch(err => {
+                    callback();
+                });
+            } else {
                 callback();
             }
         }, 10);
@@ -172,26 +165,21 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         });
     }
 
-    public getUnreadMessage(user_id: string, roomAccess: DataModels.RoomAccessData, callback: (err, res: IUnread) => void) {
-        ServiceProvider.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString())
-            .then(response => response.json())
-            .then(value => {
-                console.log("getUnreadMessage", value);
-                if (value.success) {
-                    let unread: IUnread = JSON.parse(JSON.stringify(value.result));
-                    unread.rid = roomAccess.roomId;
-                    CryptoHelper.decryptionText(unread.message as MessageImp).then(decoded => {
-                        callback(null, unread);
-                    }).catch(err => {
-                        callback(null, unread);
-                    });
-                }
-                else {
-                    callback(value.message, null);
-                }
-            }).catch(err => {
-                callback(err, null);
-            });
+    public async getUnreadMessage(user_id: string, roomAccess: DataModels.RoomAccessData) {
+        let response = await ServiceProvider.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString());
+        let value = await response.json();
+
+        console.log("getUnreadMessage result: ", value);
+        if (value.success) {
+            let unread = value.result as IUnread;
+            unread.rid = roomAccess.roomId;
+            let decoded = await CryptoHelper.decryptionText(unread.message as MessageImp);
+
+            return unread;
+        }
+        else {
+            throw new Error(value.message);
+        }
     }
 
     private decorateRoomInfoData(roomInfo: Room) {

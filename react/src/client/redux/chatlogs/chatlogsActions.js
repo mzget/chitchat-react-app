@@ -28,12 +28,13 @@ const listenerImp = (newMsg) => {
 };
 function updateLastAccessTimeEventHandler(newRoomAccess) {
     let user_id = configureStore_1.default.getState().userReducer.user._id;
-    chatsLogComp().getUnreadMessage(user_id, newRoomAccess.roomAccess[0], function (err, unread) {
-        if (!!unread) {
-            chatsLogComp().addUnreadMessage(unread);
-            calculateUnreadCount();
-            onUnreadMessageMapChanged(unread);
-        }
+    chatsLogComp().getUnreadMessage(user_id, newRoomAccess.roomAccess[0]).then(function (unread) {
+        chatsLogComp().addUnreadMessage(unread);
+        calculateUnreadCount();
+        onUnreadMessageMapChanged(unread);
+        // chatLogDAL.savePersistedUnreadMsgMap(unread);
+    }).catch(err => {
+        console.warn("updateLastAccessTimeEventHandler fail", err);
     });
 }
 function initChatsLog() {

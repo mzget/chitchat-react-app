@@ -118,15 +118,10 @@ class ChatsLogComponent {
         // create a queue object with concurrency 2
         let q = async.queue(function (task, callback) {
             if (!!task.roomId && !!task.accessTime) {
-                ServiceProvider.getUnreadMessage(task.roomId, user_id, task.accessTime.toString())
-                    .then(response => response.json())
-                    .then(value => {
-                    console.log("getUnreadMessage result: ", value);
-                    if (value.success) {
-                        let unread = JSON.parse(JSON.stringify(value.result));
-                        unread.rid = task.roomId;
-                        unreadLogs.push(unread);
-                    }
+                self.getUnreadMessage(user_id, task).then(value => {
+                    unreadLogs.push(value);
+                    callback();
+                }).catch(err => {
                     callback();
                 });
             }
@@ -145,25 +140,20 @@ class ChatsLogComponent {
                 console.error("getUnreadMessage err", err);
         });
     }
-    getUnreadMessage(user_id, roomAccess, callback) {
-        ServiceProvider.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString())
-            .then(response => response.json())
-            .then(value => {
-            console.log("getUnreadMessage", value);
+    getUnreadMessage(user_id, roomAccess) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let response = yield ServiceProvider.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString());
+            let value = yield response.json();
+            console.log("getUnreadMessage result: ", value);
             if (value.success) {
-                let unread = JSON.parse(JSON.stringify(value.result));
+                let unread = value.result;
                 unread.rid = roomAccess.roomId;
-                CryptoHelper.decryptionText(unread.message).then(decoded => {
-                    callback(null, unread);
-                }).catch(err => {
-                    callback(null, unread);
-                });
+                let decoded = yield CryptoHelper.decryptionText(unread.message);
+                return unread;
             }
             else {
-                callback(value.message, null);
+                throw new Error(value.message);
             }
-        }).catch(err => {
-            callback(err, null);
         });
     }
     decorateRoomInfoData(roomInfo) {
