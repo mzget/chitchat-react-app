@@ -18,8 +18,10 @@ exports.userReducer = (state = userInitState, action) => {
         case userRx_1.FETCH_USER_SUCCESS:
             return state.set("user", action.payload.result[0])
                 .set("state", userRx_1.FETCH_USER_SUCCESS);
-        case userRx_1.FETCH_USER_FAILURE:
-            return state.set("state", userRx_1.FETCH_USER_FAILURE);
+        case userRx_1.FETCH_USER_FAILURE: {
+            return state.set("state", userRx_1.FETCH_USER_FAILURE)
+                .set("error", action.payload.message);
+        }
         case authRx_1.LOG_OUT_SUCCESS: {
             return userInitState;
         }

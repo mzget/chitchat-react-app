@@ -27,8 +27,10 @@ export const userReducer = (state = userInitState, action) => {
         case FETCH_USER_SUCCESS:
             return state.set("user", action.payload.result[0])
                 .set("state", FETCH_USER_SUCCESS);
-        case FETCH_USER_FAILURE:
-            return state.set("state", FETCH_USER_FAILURE);
+        case FETCH_USER_FAILURE: {
+            return state.set("state", FETCH_USER_FAILURE)
+                .set("error", action.payload.message);
+        }
         case LOG_OUT_SUCCESS: {
             return userInitState;
         }

@@ -2,7 +2,7 @@
 
 import Store from "../configureStore";
 
-import { AppSessionToken } from "../../libs/chitchat/dataAccessLayer/AppSessionToken";
+import { AppSessionToken } from "../../chats/dataAccessLayer/AppSessionToken";
 const appSession = new AppSessionToken();
 
 

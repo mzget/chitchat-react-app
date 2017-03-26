@@ -29,7 +29,6 @@ class Team extends React.Component {
         this.alertBoxTitle = "";
     }
     componentWillMount() {
-        console.log("Main", this.props);
         this.onSelectTeam = this.onSelectTeam.bind(this);
         this.onToolbarMenuItem = this.onToolbarMenuItem.bind(this);
         this.onCloseDialog = this.onCloseDialog.bind(this);
@@ -63,7 +62,9 @@ class Team extends React.Component {
                 break;
             }
             case userRx.FETCH_USER_FAILURE: {
-                this.props.router.push(`/`);
+                this.alertBoxTitle = userRx.FETCH_USER_FAILURE;
+                this.alertBoxMessage = userReducer.error;
+                this.setState({ openDialog: true });
                 break;
             }
             default: {
@@ -105,7 +106,7 @@ class Team extends React.Component {
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement("div", null,
                 React.createElement(SimpleToolbar_1.SimpleToolbar, { title: this.toolbar, menus: ["logout"], onSelectedMenuItem: this.onToolbarMenuItem }),
-                React.createElement(TeamListBox_1.default, __assign({}, this.props, { onSelectTeam: this.onSelectTeam })),
+                React.createElement(TeamListBox_1.TeamListBox, { teams: this.props.teamReducer.teams, onSelectTeam: this.onSelectTeam }),
                 React.createElement(TeamCreateBox_1.default, __assign({}, this.props)),
                 React.createElement(DialogBox_1.DialogBox, { title: this.alertBoxTitle, message: this.alertBoxMessage, open: this.state.openDialog, handleClose: this.onCloseDialog }))));
     }
@@ -113,8 +114,6 @@ class Team extends React.Component {
 /**
  * ## Redux boilerplate
  */
-function mapStateToProps(state) {
-    return __assign({}, state);
-}
+function mapStateToProps(state) { return __assign({}, state); }
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = react_redux_1.connect(mapStateToProps)(Team);

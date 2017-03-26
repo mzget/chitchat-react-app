@@ -10,10 +10,8 @@
  */
 "use strict";
 const redux_1 = require("redux");
+const authRx_1 = require("./authen/authRx");
 const stalkBridgeActions_1 = require("../chats/redux/stalkBridge/stalkBridgeActions");
-const stalkReducer_1 = require("../chats/redux/stalkBridge/stalkReducer");
-const chatroomReducer_1 = require("../chats/redux/chatroom/chatroomReducer");
-const chatlogReducer_1 = require("../chats/redux/chatlogs/chatlogReducer");
 /**
 * ## Reducers
 */
@@ -21,8 +19,11 @@ const deviceReducer_1 = require("./device/deviceReducer");
 const teamRx_1 = require("./team/teamRx");
 const userReducer_1 = require("./user/userReducer");
 const adminReducer_1 = require("./admin/adminReducer");
-const authRx_1 = require("./authen/authRx");
+const authReducer_1 = require("./authen/authReducer");
 const groupReducer_1 = require("./group/groupReducer");
+const stalkReducer_1 = require("../chats/redux/stalkBridge/stalkReducer");
+const chatroomReducer_1 = require("../chats/redux/chatroom/chatroomReducer");
+const chatlogReducer_1 = require("../chats/redux/chatlogs/chatlogReducer");
 /**
  * ## CombineReducers
  *
@@ -31,7 +32,7 @@ const groupReducer_1 = require("./group/groupReducer");
  */
 const appReducer = redux_1.combineReducers({
     deviceReducer: deviceReducer_1.deviceReducer,
-    authReducer: authRx_1.authReducer,
+    authReducer: authReducer_1.authReducer,
     teamReducer: teamRx_1.teamReducer,
     groupReducer: groupReducer_1.groupReducer,
     stalkReducer: stalkReducer_1.stalkReducer,
@@ -50,7 +51,7 @@ function getInitialState() {
         deviceReducer: new deviceReducer_1.DeviceInitialState(),
         teamReducer: new teamRx_1.TeamInitState(),
         groupReducer: new groupReducer_1.GroupInitState(),
-        authReducer: new authRx_1.AuthenInitState(),
+        authReducer: new authReducer_1.AuthenInitState(),
         stalkReducer: new stalkReducer_1.StalkInitState(),
         chatroomReducer: new chatroomReducer_1.ChatRoomInitState(),
         chatlogReducer: new chatlogReducer_1.ChatLogInitState(),

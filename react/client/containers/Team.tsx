@@ -11,7 +11,7 @@ import * as teamRx from "../redux/team/teamRx";
 import * as authRx from "../redux/authen/authRx";
 
 import { DialogBox } from "../components/DialogBox";
-import TeamListBox from "./teams/TeamListBox";
+import { TeamListBox } from "./teams/TeamListBox";
 import TeamCreateBox from "./teams/TeamCreateBox";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 
@@ -32,8 +32,6 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
     alertBoxTitle: string = "";
 
     componentWillMount() {
-        console.log("Main", this.props);
-
         this.onSelectTeam = this.onSelectTeam.bind(this);
         this.onToolbarMenuItem = this.onToolbarMenuItem.bind(this);
         this.onCloseDialog = this.onCloseDialog.bind(this);
@@ -75,7 +73,10 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
                 break;
             }
             case userRx.FETCH_USER_FAILURE: {
-                this.props.router.push(`/`);
+                this.alertBoxTitle = userRx.FETCH_USER_FAILURE;
+                this.alertBoxMessage = userReducer.error;
+
+                this.setState({ openDialog: true });
                 break;
             }
             default: {
@@ -125,7 +126,7 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
             <MuiThemeProvider>
                 <div>
                     <SimpleToolbar title={this.toolbar} menus={["logout"]} onSelectedMenuItem={this.onToolbarMenuItem} />
-                    <TeamListBox {...this.props} onSelectTeam={this.onSelectTeam} />
+                    <TeamListBox teams={this.props.teamReducer.teams} onSelectTeam={this.onSelectTeam} />
                     <TeamCreateBox {...this.props} />
                     <DialogBox
                         title={this.alertBoxTitle}
@@ -142,9 +143,5 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
 /**
  * ## Redux boilerplate
  */
-function mapStateToProps(state) {
-    return {
-        ...state
-    };
-}
+function mapStateToProps(state) { return { ...state }; }
 export default connect(mapStateToProps)(Team);

@@ -1,5 +1,4 @@
-﻿
-import * as localForage from "localforage";
+﻿import * as localForage from "localforage";
 
 export class AppSessionToken {
     store: LocalForage;
@@ -11,14 +10,14 @@ export class AppSessionToken {
     }
 
     getSessionToken() {
-        return this.store.getItem('sessionToken');
+        return this.store.getItem("sessionToken");
     }
 
     saveSessionToken(token: string) {
-        return this.store.setItem('sessionToken', token);
+        return this.store.setItem("sessionToken", token);
     }
 
     deleteSessionToken() {
-         this.store.removeItem('sessionToken');
+        this.store.removeItem("sessionToken");
     }
 }

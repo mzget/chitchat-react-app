@@ -6,7 +6,7 @@ import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
 import * as UserService from "../../chats/services/UserService";
-import { ChitChatAccount } from "../../../server/scripts/models/User";
+import { ChitChatAccount } from "../../chats/models/User";
 import Store from "../configureStore";
 
 const FETCH_USER = "FETCH_USER";
@@ -15,16 +15,22 @@ export const FETCH_USER_FAILURE = "FETCH_USER_FAILURE";
 export const FETCH_USER_CANCELLED = "FETCH_USER_CANCELLED";
 
 export const fetchUser = (username) => ({ type: FETCH_USER, payload: username }); // username => ({ type: FETCH_USER, payload: username });
-const fetchUserFulfilled = payload => ({ type: FETCH_USER_SUCCESS, payload });
+const fetchUserFulfilled = payload => ({ type: FETCH_USER_SUCCESS, payload: payload.xhr.response });
 const cancelFetchUser = () => ({ type: FETCH_USER_CANCELLED });
-const fetchUserRejected = payload => ({ type: FETCH_USER_FAILURE, payload, error: true });
+const fetchUserRejected = payload => ({ type: FETCH_USER_FAILURE, payload });
 export const fetchUserEpic = action$ => (
     action$.ofType(FETCH_USER).mergeMap(action =>
-        ajax.getJSON(`${config.api.user}/?username=${action.payload}`,
-            { "x-access-token": Store.getState().authReducer.token }
-        ).map(fetchUserFulfilled)
+        ajax({
+            method: "GET",
+            url: `${config.api.user}/?username=${action.payload}`,
+            headers: {
+                "Content-Type": "application/json",
+                "x-api-key": config.api.apiKey
+            }
+        })
+            .map(fetchUserFulfilled)
             .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
-            .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response))))
+            .catch(error => Rx.Observable.of(fetchUserRejected(error))))
 );
 
 const UPDATE_USER_INFO = "UPDATE_USER_INFO";

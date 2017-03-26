@@ -30,4 +30,5 @@ export class IUserReducer {
     state: string;
     user: any;
     teamProfile: any;
+    error: string;
 }
