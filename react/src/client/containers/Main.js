@@ -17,14 +17,14 @@ const ConnectGroupListEnhancer_1 = require("./group/ConnectGroupListEnhancer");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 const ContactBox_1 = require("./chatlist/ContactBox");
 const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
-const chatroomActions = require("../redux/chatroom/chatroomActions");
-const chatlogsActions = require("../redux/chatlogs/chatlogsActions");
-const chatroomRx = require("../redux/chatroom/chatroomRxEpic");
+const StalkBridgeActions = require("../chats/redux/stalkBridge/stalkBridgeActions");
+const chatroomActions = require("../chats/redux/chatroom/chatroomActions");
+const chatlogsActions = require("../chats/redux/chatlogs/chatlogsActions");
+const chatroomRx = require("../chats/redux/chatroom/chatroomRxEpic");
 const userRx = require("../redux/user/userRx");
 const authRx = require("../redux/authen/authRx");
 const groupRx = require("../redux/group/groupRx");
 const privateGroupRxActions = require("../redux/group/privateGroupRxActions");
-const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
 ;
 class Main extends React.Component {
     constructor() {

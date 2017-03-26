@@ -12,12 +12,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const BackendFactory_1 = require("../../chats/BackendFactory");
+const BackendFactory_1 = require("../../BackendFactory");
 const StalkNotificationAction = require("./StalkNotificationActions");
-const DataModels = require("../../chats/models/ChatDataModels");
-const configureStore_1 = require("../configureStore");
 const ChatLogsActions = require("../chatlogs/chatlogsActions");
 const StalkPushActions = require("./stalkPushActions");
+const configureStore_1 = require("../../../redux/configureStore");
 exports.getSessionToken = () => {
     const backendFactory = BackendFactory_1.BackendFactory.getInstance();
     return configureStore_1.default.getState().stalkReducer.stalkToken;
@@ -47,7 +46,7 @@ function stalkLoginWithToken(uid, token) {
                 backendFactory.getServer().then(server => {
                     server.getMe(msg, (err, res) => {
                         console.log("MyChat-Profile", res);
-                        let account = new DataModels.StalkAccount();
+                        let account = {};
                         account._id = result.decoded._id;
                         account.username = result.decoded.email;
                         let data = (!!res.data) ? res.data : account;
@@ -88,7 +87,7 @@ function stalkLogin(user) {
                 backendFactory.startChatServerListener();
                 stalkManageConnection();
                 StalkNotificationAction.regisNotifyNewMessageEvent();
-                let account = new DataModels.StalkAccount();
+                let account = {};
                 account._id = user._id;
                 account.username = user.username;
                 backendFactory.dataManager.setProfile(account).then(profile => {

@@ -9,7 +9,7 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
-import * as ChatroomRx from "../redux/chatroom/chatroomRxEpic";
+import * as ChatroomRx from "../chats/redux/chatroom/chatroomRxEpic";
 
 import SimpleCardImage from "../components/SimpleCardImage";
 import SimpleCardVideo from "../components/SimpleCardVideo";

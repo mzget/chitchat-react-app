@@ -1,11 +1,16 @@
 "use strict";
+/**
+ * Copyright 2016 Ahoo Studio.co.th.
+ *
+ * This is pure function action for redux app.
+ */
 const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
-const BackendFactory_1 = require("../../chats/BackendFactory");
-const chatslogComponent_1 = require("../../chats/chatslogComponent");
-const ServiceProvider = require("../../chats/services/ServiceProvider");
-const configureStore_1 = require("../configureStore");
+const BackendFactory_1 = require("../../BackendFactory");
+const chatslogComponent_1 = require("../../chatslogComponent");
+const ServiceProvider = require("../../services/ServiceProvider");
+const configureStore_1 = require("../../../redux/configureStore");
 const chatsLogComp = () => configureStore_1.default.getState().chatlogReducer.chatslogComponent;
 exports.STALK_INIT_CHATSLOG = "STALK_INIT_CHATSLOG";
 exports.STALK_GET_CHATSLOG_COMPLETE = "STALK_GET_CHATSLOG_COMPLETE";

@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { withProps, withState, withHandlers, compose, lifecycle, shallowEqual } from "recompose";
 
-import * as chatroomActions from "../../redux/chatroom/chatroomActions";
+import * as chatroomActions from "../../chats/redux/chatroom/chatroomActions";
 
 interface IEnhanceProps {
     dispatch;

@@ -4,16 +4,15 @@
  * This is pure function action for redux app.
  */
 
-import { BackendFactory } from "../../chats/BackendFactory";
+import { BackendFactory } from "../../BackendFactory";
 import * as StalkNotificationAction from "./StalkNotificationActions";
-import * as DataModels from "../../chats/models/ChatDataModels";
-import { IDictionary } from "../../libs/stalk/serverImplemented";
-
-import config from "../../configs/config";
-import Store from "../configureStore";
-
 import * as ChatLogsActions from "../chatlogs/chatlogsActions";
 import * as StalkPushActions from "./stalkPushActions";
+
+import { IDictionary } from "../../../libs/stalk/serverImplemented";
+import { StalkAccount, RoomAccessData } from "../../../libs/shared/Stalk";
+
+import Store from "../../../redux/configureStore";
 
 export const getSessionToken = () => {
     const backendFactory = BackendFactory.getInstance();
@@ -51,7 +50,7 @@ export function stalkLoginWithToken(uid: string, token: string) {
                 backendFactory.getServer().then(server => {
                     server.getMe(msg, (err, res) => {
                         console.log("MyChat-Profile", res);
-                        let account = new DataModels.StalkAccount();
+                        let account = {} as StalkAccount;
                         account._id = result.decoded._id;
                         account.username = result.decoded.email;
 
@@ -96,7 +95,7 @@ export function stalkLogin(user: any) {
 
                 StalkNotificationAction.regisNotifyNewMessageEvent();
 
-                let account = new DataModels.StalkAccount();
+                let account = {} as StalkAccount;
                 account._id = user._id;
                 account.username = user.username;
 

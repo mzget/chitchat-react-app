@@ -16,10 +16,10 @@ const async = require("async");
 const BackendFactory_1 = require("./BackendFactory");
 const serverImplemented_1 = require("../libs/stalk/serverImplemented");
 const serverEventListener_1 = require("../libs/stalk/serverEventListener");
-const secureServiceFactory_1 = require("../libs/chitchat/services/secureServiceFactory");
-const ChatDataModels_1 = require("./models/ChatDataModels");
 const CryptoHelper = require("./utils/CryptoHelper");
 const ServiceProvider = require("./services/ServiceProvider");
+const secureServiceFactory_1 = require("./secure/secureServiceFactory");
+const Message_1 = require("../libs/shared/Message");
 const config_1 = require("../configs/config");
 const StickerPath_1 = require("../consts/StickerPath");
 let serverImp = null;
@@ -63,12 +63,12 @@ class ChatRoomComponent {
                 return chats;
             }).then((chats) => {
                 let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
-                if (message.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
+                if (message.type === Message_1.MessageType[Message_1.MessageType.Text]) {
                     CryptoHelper.decryptionText(message).then(decoded => {
                         saveMessages(chatMessages);
                     }).catch(err => saveMessages(chatMessages));
                 }
-                else if (message.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Sticker]) {
+                else if (message.type === Message_1.MessageType[Message_1.MessageType.Sticker]) {
                     let sticker_id = parseInt(message.body);
                     message.src = StickerPath_1.imagesPath[sticker_id].img;
                     saveMessages(chatMessages);
@@ -87,6 +87,8 @@ class ChatRoomComponent {
             }
         }
     }
+    onRoomJoin(data) { }
+    onLeaveRoom(data) { }
     onMessageRead(dataEvent) {
         console.log("onMessageRead", JSON.stringify(dataEvent));
         let self = this;
@@ -127,7 +129,7 @@ class ChatRoomComponent {
             self.dataManager.messageDAL.getData(rid).then(messages => {
                 let chats = messages.slice(0);
                 async.forEach(chats, function iterator(chat, result) {
-                    if (chat.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
+                    if (chat.type === Message_1.MessageType[Message_1.MessageType.Text]) {
                         if (config_1.default.appConfig.encryption === true) {
                             self.secure.decryption(chat.body).then(function (res) {
                                 chat.body = res;
@@ -216,7 +218,7 @@ class ChatRoomComponent {
                     histories = value.result;
                     if (histories.length > 0) {
                         async.forEach(histories, function (chat, cb) {
-                            if (chat.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
+                            if (chat.type === Message_1.MessageType[Message_1.MessageType.Text]) {
                                 if (config_1.default.appConfig.encryption === true) {
                                     self.secure.decryption(chat.body).then(function (res) {
                                         chat.body = res;

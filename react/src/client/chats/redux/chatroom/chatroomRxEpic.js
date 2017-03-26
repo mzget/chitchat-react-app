@@ -4,12 +4,12 @@
  *
  * This is pure function action for redux app.
  */
-const chatRoomComponent_1 = require("../../chats/chatRoomComponent");
-const configureStore_1 = require("../configureStore");
-const config_1 = require("../../configs/config");
+const chatRoomComponent_1 = require("../../chatRoomComponent");
 const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
+const configureStore_1 = require("../../../redux/configureStore");
+const config_1 = require("../../../configs/config");
 exports.FETCH_PRIVATE_CHATROOM = "FETCH_PRIVATE_CHATROOM";
 exports.FETCH_PRIVATE_CHATROOM_FAILURE = "FETCH_PRIVATE_CHATROOM_FAILURE";
 exports.FETCH_PRIVATE_CHATROOM_SUCCESS = "FETCH_PRIVATE_CHATROOM_SUCCESS";

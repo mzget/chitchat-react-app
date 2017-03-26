@@ -3,19 +3,16 @@
  *
  * This is pure function action for redux app.
  */
-
-import { BackendFactory } from "../../chats/BackendFactory";
-import Store from "../configureStore";
-
+"use strict";
+const BackendFactory_1 = require("../../BackendFactory");
 const LINK_REQUEST = "LINK_REQUEST";
 const LINK_ACCEPTED = "LINK_ACCEPTED";
 const NEW_NOTICE = "NEW_NOTICE";
-
-export function stalkPushInit() {
-    const pushDataListener = BackendFactory.getInstance().pushDataListener;
+function stalkPushInit() {
+    const pushDataListener = BackendFactory_1.BackendFactory.getInstance().pushDataListener;
     pushDataListener.addPushEvents(onPush_handler);
 }
-
+exports.stalkPushInit = stalkPushInit;
 function onPush_handler(dataEvent) {
     console.log(`Event : ${dataEvent}`);
 }

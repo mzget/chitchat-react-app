@@ -1,6 +1,6 @@
 "use strict";
 const recompose_1 = require("recompose");
-const chatroomActions = require("../../redux/chatroom/chatroomActions");
+const chatroomActions = require("../../chats/redux/chatroom/chatroomActions");
 exports.GroupListEnhancer = recompose_1.compose(recompose_1.lifecycle({
     componentWillMount() {
         this.props.fetchGroup();

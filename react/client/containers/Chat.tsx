@@ -16,11 +16,11 @@ import { WarningBar } from "../components/WarningBar";
 import { ChatRoomDialogBoxEnhancer } from "./toolsbox/ChatRoomDialogBoxEnhancer";
 
 import { IComponentProps } from "../utils/IComponentProps";
-import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
-import * as chatroomActions from "../redux/chatroom/chatroomActions";
-import * as chatroomRxEpic from "../redux/chatroom/chatroomRxEpic";
+import * as StalkBridgeActions from "../chats/redux/stalkBridge/stalkBridgeActions";
+import * as chatroomActions from "../chats/redux/chatroom/chatroomActions";
+import * as chatroomRxEpic from "../chats/redux/chatroom/chatroomRxEpic";
 
-import { ContentType, IMessage } from "../chats/models/ChatDataModels";
+import { MessageType, IMessage } from "../libs/shared/Message";
 import { MessageImp } from "../chats/models/MessageImp";
 
 import { imagesPath } from "../consts/StickerPath";
@@ -256,7 +256,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             if (message.uuid == server_msg.uuid) {
                 message.body = server_msg.body;
                 message.createTime = server_msg.createTime;
-                message.uuid = server_msg._id;
+                message.uuid = parseInt(server_msg._id);
                 message.status = "Sent";
             }
         });
@@ -338,30 +338,30 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         if (msg.image != null) {
             message.body = msg.image;
             message.src = msg.src;
-            message.type = ContentType[ContentType.Image];
+            message.type = MessageType[MessageType.Image];
         }
         else if (msg.text != null) {
             message.body = msg.text;
-            message.type = ContentType[ContentType.Text];
+            message.type = MessageType[MessageType.Text];
         }
         else if (msg.location != null) {
-            message.type = ContentType[ContentType.Location];
+            message.type = MessageType[MessageType.Location];
         }
         else if (msg.video != null) {
             message.body = msg.video;
             message.src = msg.src;
-            message.type = ContentType[ContentType.Video];
+            message.type = MessageType[MessageType.Video];
         }
         else if (msg.file != null) {
             message.body = msg.file;
             message.meta = { mimetype: msg.mimetype, size: msg.size };
             message.src = msg.src;
-            message.type = ContentType[ContentType.File];
+            message.type = MessageType[MessageType.File];
         }
         else if (msg.sticker != null) {
             message.body = msg.sticker;
             message.src = imagesPath[msg.sticker].img;
-            message.type = ContentType[ContentType.Sticker];
+            message.type = MessageType[MessageType.Sticker];
         }
 
         message.rid = this.props.chatroomReducer.room._id;

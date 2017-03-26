@@ -5,7 +5,7 @@ const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 const AppActions = require("../app/persistentDataActions");
-const stalkBridgeActions = require("../stalkBridge/stalkBridgeActions");
+const stalkBridgeActions = require("../../chats/redux/stalkBridge/stalkBridgeActions");
 const SIGN_UP = "SIGN_UP";
 exports.SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
 const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
@@ -66,12 +66,12 @@ exports.logout = redux_actions_1.createAction(LOG_OUT, payload => payload);
 const logoutSuccess = redux_actions_1.createAction(exports.LOG_OUT_SUCCESS, payload => payload);
 const logoutFailure = redux_actions_1.createAction(LOG_OUT_FAILURE, payload => payload);
 const logoutCancelled = redux_actions_1.createAction(LOG_OUT_CANCELLED);
-exports.logoutUserEpic = action$ => action$.ofType(LOG_OUT).mergeMap(action => ajax({
+exports.logoutUserEpic = action$ => action$.ofType(LOG_OUT)
+    .mergeMap(action => ajax({
     method: "POST",
     url: `${config_1.default.api.auth}/logout`,
     headers: { "Content-Type": "application/json", "x-access-token": action.payload }
-})
-    .map(response => {
+}).map(response => {
     AppActions.removeSession();
     stalkBridgeActions.stalkLogout();
     return logoutSuccess(response.xhr.response);

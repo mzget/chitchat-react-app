@@ -9,7 +9,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const Subheader_1 = require("material-ui/Subheader");
-const ChatLogsActions = require("../redux/chatlogs/chatlogsActions");
+const ChatLogsActions = require("../chats/redux/chatlogs/chatlogsActions");
 const ListChatLogs_1 = require("./ListChatLogs");
 ;
 ;

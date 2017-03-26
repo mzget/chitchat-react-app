@@ -3,18 +3,16 @@
  *
  * This is pure function action for redux app.
  */
-import config from "../../configs/config";
-import { Record } from "immutable";
 import { createAction, Reducer } from "redux-actions";
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
-import { BackendFactory } from "../../chats/BackendFactory";
-import ChatsLogComponent, { IUnread, Unread } from "../../chats/chatslogComponent";
-import ChatLog from "../../chats/models/chatLog";
-import * as ServiceProvider from "../../chats/services/ServiceProvider";
+import { BackendFactory } from "../../BackendFactory";
+import ChatsLogComponent, { IUnread, Unread } from "../../chatslogComponent";
+import ChatLog from "../../models/chatLog";
+import * as ServiceProvider from "../../services/ServiceProvider";
 
-import Store from "../configureStore";
+import Store from "../../../redux/configureStore";
 const chatsLogComp = () => Store.getState().chatlogReducer.chatslogComponent as ChatsLogComponent;
 
 export const STALK_INIT_CHATSLOG = "STALK_INIT_CHATSLOG";

@@ -2,14 +2,15 @@ import * as async from "async";
 
 import { absSpartan } from "../libs/stalk/spartanEvents";
 import { ServerImplemented } from "../libs/stalk/serverImplemented";
-import { RoomAccessData, RoomType, ContactInfo, MemberRole, StalkAccount } from "./models/ChatDataModels";
+import { RoomType, MemberRole, Room } from "../libs/shared/Room";
+import { StalkAccount, RoomAccessData } from "../libs/shared/Stalk";
+
+import { ContactInfo } from "./models/Contact";
 
 import { IRoomDAL } from "../libs/chitchat/dataAccessLayer/IRoomDAL";
 import { RoomDALFactory } from "../libs/chitchat/dataAccessLayer/RoomDALFactory";
 import { IMessageDAL } from "../libs/chitchat/dataAccessLayer/IMessageDAL";
 import MessageDALFactory from "../libs/chitchat/dataAccessLayer/messageDALFactory";
-
-import { Room } from "../../server/scripts/models/Room";
 
 interface IRoomMap {
     [key: string]: Room;
@@ -69,7 +70,7 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
         let arr: Array<RoomAccessData> = JSON.parse(JSON.stringify(data.roomAccess));
 
         if (!this.myProfile) {
-            this.myProfile = new StalkAccount();
+            this.myProfile = {} as StalkAccount;
             this.myProfile.roomAccess = arr;
         }
         else {

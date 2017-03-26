@@ -5,7 +5,7 @@ import Avatar from "material-ui/Avatar";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
-import { ContentType } from "../../chats/models/ChatDataModels";
+import { MessageType } from "../../libs/shared/Message";
 import { MessageImp } from "../../chats/models/MessageImp";
 import { CardTextWithAvatar } from "../../components/CardTextWithAvatar";
 import { CardImageWithAvatar, CardStickerWithAvatar } from "../../components/CardImageWithAvatar";
@@ -27,7 +27,7 @@ export const getFontIcon = (message: MessageImp) => {
     let exts = message.body.split(".");
     let ext = exts[exts.length - 1].toLowerCase();
 
-    if (message.type == ContentType[ContentType.File]) {
+    if (message.type == MessageType[MessageType.File]) {
         if (ext == "pdf")
             return <FontAwesome style={{ padding: 5, marginLeft: 5 }} name="file-pdf-o" size="3x" />;
         else if (ext == "txt" || ext == "json")
@@ -62,7 +62,7 @@ const renderList = (props: MyProps) => {
         }
 
         switch (message.type) {
-            case ContentType[ContentType.Text]: {
+            case MessageType[MessageType.Text]: {
                 return (
                     <ListItem key={i} containerElement={
                         <CardTextWithAvatar
@@ -76,7 +76,7 @@ const renderList = (props: MyProps) => {
                     </ListItem >
                 );
             }
-            case ContentType[ContentType.Sticker]: {
+            case MessageType[MessageType.Sticker]: {
                 return (
                     <ListItem key={i} style={{ margin: "5px" }} containerElement={
                         <CardStickerWithAvatar
@@ -89,7 +89,7 @@ const renderList = (props: MyProps) => {
                     }>
                     </ListItem>);
             }
-            case ContentType[ContentType.Image]: {
+            case MessageType[MessageType.Image]: {
                 return (
                     <ListItem key={i} style={{ margin: "5px" }} containerElement={
                         <CardImageWithAvatar
@@ -102,7 +102,7 @@ const renderList = (props: MyProps) => {
                     }>
                     </ListItem>);
             }
-            case ContentType[ContentType.Video]:
+            case MessageType[MessageType.Video]:
                 {
                     return (
                         <ListItem key={i} style={{ margin: "5px" }} containerElement={
@@ -116,7 +116,7 @@ const renderList = (props: MyProps) => {
                         }>
                         </ListItem>);
                 }
-            case ContentType[ContentType.File]:
+            case MessageType[MessageType.File]:
                 {
                     return (
                         <ListItem key={i} style={{ margin: "5px" }} containerElement={

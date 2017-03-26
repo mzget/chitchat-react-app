@@ -7,14 +7,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const ChatDataModels_1 = require("../models/ChatDataModels");
+const secureServiceFactory_1 = require("../secure/secureServiceFactory");
+const Message_1 = require("../../libs/shared/Message");
 const config_1 = require("../../configs/config");
-const secureServiceFactory_1 = require("../../libs/chitchat/services/secureServiceFactory");
 exports.decryptionText = (message) => __awaiter(this, void 0, void 0, function* () {
     if (!message)
         return message;
     let secure = secureServiceFactory_1.default.getService();
-    if (message.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
+    if (message.type === Message_1.MessageType[Message_1.MessageType.Text]) {
         if (config_1.default.appConfig.encryption === true) {
             let result = yield secure.decryption(message.body);
             message.body = result;

@@ -20,18 +20,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const chatRoomComponent_1 = require("../../chats/chatRoomComponent");
-const BackendFactory_1 = require("../../chats/BackendFactory");
-const secureServiceFactory_1 = require("../../libs/chitchat/services/secureServiceFactory");
-const serverEventListener_1 = require("../../libs/stalk/serverEventListener");
-const httpStatusCode_1 = require("../../libs/stalk/utils/httpStatusCode");
-const ChatDataModels_1 = require("../../chats/models/ChatDataModels");
+const ServiceProvider = require("../../services/ServiceProvider");
+const chatRoomComponent_1 = require("../../chatRoomComponent");
+const BackendFactory_1 = require("../../BackendFactory");
+const secureServiceFactory_1 = require("../../secure/secureServiceFactory");
 const NotificationManager = require("../stalkBridge/StalkNotificationActions");
-const ServiceProvider = require("../../chats/services/ServiceProvider");
-const redux_actions_1 = require("redux-actions");
-const configureStore_1 = require("../configureStore");
+const serverEventListener_1 = require("../../../libs/stalk/serverEventListener");
+const httpStatusCode_1 = require("../../../libs/stalk/utils/httpStatusCode");
 const chatlogsActions_1 = require("../chatlogs/chatlogsActions");
-const config_1 = require("../../configs/config");
+const Room_1 = require("../../../libs/shared/Room");
+const Message_1 = require("../../../libs/shared/Message");
+const config_1 = require("../../../configs/config");
+const configureStore_1 = require("../../../redux/configureStore");
+const redux_actions_1 = require("redux-actions");
 const secure = secureServiceFactory_1.default.getService();
 /**
  * ChatRoomActionsType
@@ -57,7 +58,7 @@ function initChatRoom(currentRoom) {
     if (!currentRoom)
         throw new Error("Empty roomInfo");
     let room_name = currentRoom.name;
-    if (!room_name && currentRoom.type === ChatDataModels_1.RoomType.privateChat) {
+    if (!room_name && currentRoom.type === Room_1.RoomType.privateChat) {
         currentRoom.members.some((v, id, arr) => {
             if (v._id !== configureStore_1.default.getState().userReducer.user._id) {
                 currentRoom.name = v.username;
@@ -185,13 +186,13 @@ const send_message_failure = (error) => ({ type: ChatRoomActionsType.SEND_MESSAG
 function sendMessage(msg) {
     return (dispatch) => {
         dispatch(send_message_request());
-        if (msg.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location]) {
+        if (msg.type === Message_1.MessageType[Message_1.MessageType.Location]) {
             BackendFactory_1.BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
                 dispatch(sendMessageResponse(err, res));
             });
             return;
         }
-        if (msg.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text] && config_1.default.appConfig.encryption === true) {
+        if (msg.type === Message_1.MessageType[Message_1.MessageType.Text] && config_1.default.appConfig.encryption === true) {
             secure.encryption(msg.body).then(result => {
                 msg.body = result;
                 BackendFactory_1.BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
@@ -219,7 +220,7 @@ function sendMessageResponse(err, res) {
             console.log("server response!", res);
             if (res.code == httpStatusCode_1.default.success && res.data.hasOwnProperty("resultMsg")) {
                 let _msg = __assign({}, res.data.resultMsg);
-                if (_msg.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text] && config_1.default.appConfig.encryption) {
+                if (_msg.type === Message_1.MessageType[Message_1.MessageType.Text] && config_1.default.appConfig.encryption) {
                     secure.decryption(_msg.body).then(res => {
                         _msg.body = res;
                         dispatch(send_message_success(_msg));

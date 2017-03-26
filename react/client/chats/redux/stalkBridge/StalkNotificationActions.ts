@@ -7,13 +7,12 @@
  *
  */
 
+import { BackendFactory } from "../../BackendFactory";
+import { MessageImp } from "../../models/MessageImp";
+import * as CryptoHelper from "../../utils/CryptoHelper";
+import { MessageType } from "../../../libs/shared/Message";
 
-import { BackendFactory } from "../../chats/BackendFactory";
-import { ContentType } from "../../chats/models/ChatDataModels";
-import { MessageImp } from "../../chats/models/MessageImp";
-import * as CryptoHelper from "../../chats/utils/CryptoHelper";
-
-import Store from "../configureStore";
+import Store from "../../../redux/configureStore";
 
 export const STALK_NOTICE_NEW_MESSAGE = "STALK_NOTICE_NEW_MESSAGE";
 const stalkNotiNewMessage = (payload) => ({ type: STALK_NOTICE_NEW_MESSAGE, payload });
@@ -34,17 +33,17 @@ export const unsubscribeGlobalNotifyMessageEvent = () => {
 
 export const notify = (messageImp: MessageImp) => {
     let message = "";
-    if (messageImp.type === ContentType[ContentType.Text]) {
+    if (messageImp.type === MessageType[MessageType.Text]) {
         CryptoHelper.decryptionText(messageImp).then((decoded) => {
             message = decoded.body;
             Store.dispatch(stalkNotiNewMessage(message));
         });
     }
-    else if (messageImp.type === ContentType[ContentType.Location]) {
+    else if (messageImp.type === MessageType[MessageType.Location]) {
         message = "Sent you location";
         Store.dispatch(stalkNotiNewMessage(message));
     }
-    else if (messageImp.type === ContentType[ContentType.Image]) {
+    else if (messageImp.type === MessageType[MessageType.Image]) {
         message = "Sent you image";
         Store.dispatch(stalkNotiNewMessage(message));
     }

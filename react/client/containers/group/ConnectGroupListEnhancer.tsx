@@ -11,7 +11,7 @@ const bobo = GroupListEnhancer(({ groups, fetchGroup, onselectGroup, subHeader }
         subHeader={subHeader} />
 );
 
-export const ConnectGroupListEnhancer = connect()(bobo);
+export const ConnectGroupListEnhancer = connect()(bobo) as any;
 
 
 

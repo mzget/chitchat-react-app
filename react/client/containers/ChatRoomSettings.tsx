@@ -10,7 +10,7 @@ import { ConnectEditGroupMember } from "./roomSettings/EditGroupMember";
 import { ConnectGroupDetail } from "./roomSettings/GroupDetailEnhancer";
 import { GroupMemberEnhancer } from "./roomSettings/GroupMemberEnhancer";
 
-import * as chatroomActions from "../redux/chatroom/chatroomActions";
+import * as chatroomActions from "../chats/redux/chatroom/chatroomActions";
 import * as groupRx from "../redux/group/groupRx";
 
 import { Room, RoomType } from "../../shared/models/Room";

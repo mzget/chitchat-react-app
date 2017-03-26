@@ -1,8 +1,8 @@
 "use strict";
 const redux_observable_1 = require("redux-observable");
 const userRx = require("./user/userRx");
-const chatroomRxEpic = require("./chatroom/chatroomRxEpic");
-const chatlogsActions = require("./chatlogs/chatlogsActions");
+const chatroomRxEpic = require("../chats/redux/chatroom/chatroomRxEpic");
+const chatlogsActions = require("../chats/redux/chatlogs/chatlogsActions");
 const authRx = require("./authen/authRx");
 const teamRx = require("./team/teamRx");
 const adminRx = require("./admin/adminRx");

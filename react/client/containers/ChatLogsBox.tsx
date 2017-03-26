@@ -7,9 +7,9 @@ import ChatLog from "../chats/models/chatLog";
 
 import Store from "../redux/configureStore";
 import * as userRx from "../redux/user/userRx";
-import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
-import * as chatroomActions from "../redux/chatroom/chatroomActions";
-import * as ChatLogsActions from "../redux/chatlogs/chatlogsActions";
+import * as StalkBridgeActions from "../chats/redux/stalkBridge/stalkBridgeActions";
+import * as chatroomActions from "../chats/redux/chatroom/chatroomActions";
+import * as ChatLogsActions from "../chats/redux/chatlogs/chatlogsActions";
 
 import ListChatLogs from "./ListChatLogs";
 

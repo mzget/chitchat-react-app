@@ -7,10 +7,10 @@
  *
  */
 "use strict";
-const BackendFactory_1 = require("../../chats/BackendFactory");
-const ChatDataModels_1 = require("../../chats/models/ChatDataModels");
-const CryptoHelper = require("../../chats/utils/CryptoHelper");
-const configureStore_1 = require("../configureStore");
+const BackendFactory_1 = require("../../BackendFactory");
+const CryptoHelper = require("../../utils/CryptoHelper");
+const Message_1 = require("../../../libs/shared/Message");
+const configureStore_1 = require("../../../redux/configureStore");
 exports.STALK_NOTICE_NEW_MESSAGE = "STALK_NOTICE_NEW_MESSAGE";
 const stalkNotiNewMessage = (payload) => ({ type: exports.STALK_NOTICE_NEW_MESSAGE, payload });
 const init = (onSuccess) => {
@@ -25,17 +25,17 @@ exports.unsubscribeGlobalNotifyMessageEvent = () => {
 };
 exports.notify = (messageImp) => {
     let message = "";
-    if (messageImp.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]) {
+    if (messageImp.type === Message_1.MessageType[Message_1.MessageType.Text]) {
         CryptoHelper.decryptionText(messageImp).then((decoded) => {
             message = decoded.body;
             configureStore_1.default.dispatch(stalkNotiNewMessage(message));
         });
     }
-    else if (messageImp.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location]) {
+    else if (messageImp.type === Message_1.MessageType[Message_1.MessageType.Location]) {
         message = "Sent you location";
         configureStore_1.default.dispatch(stalkNotiNewMessage(message));
     }
-    else if (messageImp.type === ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image]) {
+    else if (messageImp.type === Message_1.MessageType[Message_1.MessageType.Image]) {
         message = "Sent you image";
         configureStore_1.default.dispatch(stalkNotiNewMessage(message));
     }

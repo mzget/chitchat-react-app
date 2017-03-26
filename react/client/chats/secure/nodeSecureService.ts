@@ -1,4 +1,4 @@
-import CryptoJS = require('crypto-js');
+import CryptoJS = require("crypto-js");
 
 import { ISecureService } from "./ISecureService";
 
@@ -55,7 +55,7 @@ export default class NodeSecureService implements ISecureService {
             let iv = CryptoJS.enc.Utf8.parse(self.passiv);
             let bytes = CryptoJS.AES.decrypt(content, key, { iv: iv, padding: CryptoJS.pad.Pkcs7, mode: CryptoJS.mode.CBC });
 
-            console.log(key, iv, bytes, content)
+            console.log(key, iv, bytes, content);
             try {
                 let plaintext = bytes.toString(CryptoJS.enc.Utf8);
                 resolve(plaintext);

@@ -10,7 +10,10 @@
  */
 "use strict";
 const redux_1 = require("redux");
-const stalkBridgeActions_1 = require("./stalkBridge/stalkBridgeActions");
+const stalkBridgeActions_1 = require("../chats/redux/stalkBridge/stalkBridgeActions");
+const stalkReducer_1 = require("../chats/redux/stalkBridge/stalkReducer");
+const chatroomReducer_1 = require("../chats/redux/chatroom/chatroomReducer");
+const chatlogReducer_1 = require("../chats/redux/chatlogs/chatlogReducer");
 /**
 * ## Reducers
 */
@@ -19,9 +22,6 @@ const teamRx_1 = require("./team/teamRx");
 const userReducer_1 = require("./user/userReducer");
 const adminReducer_1 = require("./admin/adminReducer");
 const authRx_1 = require("./authen/authRx");
-const stalkReducer_1 = require("./stalkBridge/stalkReducer");
-const chatroomReducer_1 = require("./chatroom/chatroomReducer");
-const chatlogReducer_1 = require("./chatlogs/chatlogReducer");
 const groupReducer_1 = require("./group/groupReducer");
 /**
  * ## CombineReducers

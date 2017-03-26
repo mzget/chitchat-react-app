@@ -1,8 +1,8 @@
 import { combineEpics } from "redux-observable";
 
 import * as userRx from "./user/userRx";
-import * as chatroomRxEpic from "./chatroom/chatroomRxEpic";
-import * as chatlogsActions from "./chatlogs/chatlogsActions";
+import * as chatroomRxEpic from "../chats/redux/chatroom/chatroomRxEpic";
+import * as chatlogsActions from "../chats/redux/chatlogs/chatlogsActions";
 import * as authRx from "./authen/authRx";
 import * as teamRx from "./team/teamRx";
 import * as adminRx from "./admin/adminRx";

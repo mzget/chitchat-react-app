@@ -3,13 +3,14 @@
  *
  * This is pure function action for redux app.
  */
-import ChatRoomComponent from "../../chats/chatRoomComponent";
-import Store from "../configureStore";
-import config from "../../configs/config";
+import ChatRoomComponent from "../../chatRoomComponent";
 
 import { createAction } from "redux-actions";
 import Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
+
+import Store from "../../../redux/configureStore";
+import config from "../../../configs/config";
 
 export const FETCH_PRIVATE_CHATROOM = "FETCH_PRIVATE_CHATROOM";
 export const FETCH_PRIVATE_CHATROOM_FAILURE = "FETCH_PRIVATE_CHATROOM_FAILURE";

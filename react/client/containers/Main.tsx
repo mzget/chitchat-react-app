@@ -14,14 +14,14 @@ import ChatLogsBox from "./ChatLogsBox";
 import ContactBox from "./chatlist/ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 
-import * as chatroomActions from "../redux/chatroom/chatroomActions";
-import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
-import * as chatroomRx from "../redux/chatroom/chatroomRxEpic";
+import * as StalkBridgeActions from "../chats/redux/stalkBridge/stalkBridgeActions";
+import * as chatroomActions from "../chats/redux/chatroom/chatroomActions";
+import * as chatlogsActions from "../chats/redux/chatlogs/chatlogsActions";
+import * as chatroomRx from "../chats/redux/chatroom/chatroomRxEpic";
 import * as userRx from "../redux/user/userRx";
 import * as authRx from "../redux/authen/authRx";
 import * as groupRx from "../redux/group/groupRx";
 import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
-import * as StalkBridgeActions from "../redux/stalkBridge/stalkBridgeActions";
 
 interface IComponentNameState {
     header: string;

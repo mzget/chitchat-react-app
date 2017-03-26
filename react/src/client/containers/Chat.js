@@ -20,10 +20,10 @@ const UploadingDialog_1 = require("./UploadingDialog");
 const GridListSimple_1 = require("../components/GridListSimple");
 const WarningBar_1 = require("../components/WarningBar");
 const ChatRoomDialogBoxEnhancer_1 = require("./toolsbox/ChatRoomDialogBoxEnhancer");
-const StalkBridgeActions = require("../redux/stalkBridge/stalkBridgeActions");
-const chatroomActions = require("../redux/chatroom/chatroomActions");
-const chatroomRxEpic = require("../redux/chatroom/chatroomRxEpic");
-const ChatDataModels_1 = require("../chats/models/ChatDataModels");
+const StalkBridgeActions = require("../chats/redux/stalkBridge/stalkBridgeActions");
+const chatroomActions = require("../chats/redux/chatroom/chatroomActions");
+const chatroomRxEpic = require("../chats/redux/chatroom/chatroomRxEpic");
+const Message_1 = require("../libs/shared/Message");
 const MessageImp_1 = require("../chats/models/MessageImp");
 const StickerPath_1 = require("../consts/StickerPath");
 const FileType = require("../../shared/FileType");
@@ -219,7 +219,7 @@ class Chat extends React.Component {
             if (message.uuid == server_msg.uuid) {
                 message.body = server_msg.body;
                 message.createTime = server_msg.createTime;
-                message.uuid = server_msg._id;
+                message.uuid = parseInt(server_msg._id);
                 message.status = "Sent";
             }
         });
@@ -282,30 +282,30 @@ class Chat extends React.Component {
         if (msg.image != null) {
             message.body = msg.image;
             message.src = msg.src;
-            message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image];
+            message.type = Message_1.MessageType[Message_1.MessageType.Image];
         }
         else if (msg.text != null) {
             message.body = msg.text;
-            message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text];
+            message.type = Message_1.MessageType[Message_1.MessageType.Text];
         }
         else if (msg.location != null) {
-            message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Location];
+            message.type = Message_1.MessageType[Message_1.MessageType.Location];
         }
         else if (msg.video != null) {
             message.body = msg.video;
             message.src = msg.src;
-            message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Video];
+            message.type = Message_1.MessageType[Message_1.MessageType.Video];
         }
         else if (msg.file != null) {
             message.body = msg.file;
             message.meta = { mimetype: msg.mimetype, size: msg.size };
             message.src = msg.src;
-            message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.File];
+            message.type = Message_1.MessageType[Message_1.MessageType.File];
         }
         else if (msg.sticker != null) {
             message.body = msg.sticker;
             message.src = StickerPath_1.imagesPath[msg.sticker].img;
-            message.type = ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Sticker];
+            message.type = Message_1.MessageType[Message_1.MessageType.Sticker];
         }
         message.rid = this.props.chatroomReducer.room._id;
         message.sender = this.props.userReducer.user._id;

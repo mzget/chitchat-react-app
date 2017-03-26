@@ -3,7 +3,7 @@ const React = require("react");
 const List_1 = require("material-ui/List");
 const Avatar_1 = require("material-ui/Avatar");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
-const ChatDataModels_1 = require("../../chats/models/ChatDataModels");
+const Message_1 = require("../../libs/shared/Message");
 const CardTextWithAvatar_1 = require("../../components/CardTextWithAvatar");
 const CardImageWithAvatar_1 = require("../../components/CardImageWithAvatar");
 const CardFileWithAvatar_1 = require("../../components/CardFileWithAvatar");
@@ -13,7 +13,7 @@ const FontAwesome = require("react-fontawesome");
 exports.getFontIcon = (message) => {
     let exts = message.body.split(".");
     let ext = exts[exts.length - 1].toLowerCase();
-    if (message.type == ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.File]) {
+    if (message.type == Message_1.MessageType[Message_1.MessageType.File]) {
         if (ext == "pdf")
             return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "file-pdf-o", size: "3x" });
         else if (ext == "txt" || ext == "json")
@@ -39,24 +39,24 @@ const renderList = (props) => {
             return null;
         }
         switch (message.type) {
-            case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Text]: {
+            case Message_1.MessageType[Message_1.MessageType.Text]: {
                 return (React.createElement(List_1.ListItem, { key: i, containerElement: React.createElement(CardTextWithAvatar_1.CardTextWithAvatar, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : "", avatar: (message.user.avatar) ?
                             React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), cardText: message.body }) }));
             }
-            case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Sticker]: {
+            case Message_1.MessageType[Message_1.MessageType.Sticker]: {
                 return (React.createElement(List_1.ListItem, { key: i, style: { margin: "5px" }, containerElement: React.createElement(CardImageWithAvatar_1.CardStickerWithAvatar, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : "", avatar: (message.user.avatar) ?
                             React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), imageSrc: message.src }) }));
             }
-            case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Image]: {
+            case Message_1.MessageType[Message_1.MessageType.Image]: {
                 return (React.createElement(List_1.ListItem, { key: i, style: { margin: "5px" }, containerElement: React.createElement(CardImageWithAvatar_1.CardImageWithAvatar, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : "", avatar: (message.user.avatar) ?
                             React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), imageSrc: message.src }) }));
             }
-            case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.Video]:
+            case Message_1.MessageType[Message_1.MessageType.Video]:
                 {
                     return (React.createElement(List_1.ListItem, { key: i, style: { margin: "5px" }, containerElement: React.createElement(CardVideoWithAvatar_1.CardVideoWithAvatar, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : "", avatar: (message.user.avatar) ?
                                 React.createElement(Avatar_1.default, { src: message.user.avatar }) : React.createElement(Avatar_1.default, null, message.user.username.charAt(0)), src: message.src }) }));
                 }
-            case ChatDataModels_1.ContentType[ChatDataModels_1.ContentType.File]:
+            case Message_1.MessageType[Message_1.MessageType.File]:
                 {
                     return (React.createElement(List_1.ListItem, { key: i, style: { margin: "5px" }, containerElement: React.createElement(CardFileWithAvatar_1.CardFileWithAvatar, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : "", avatar: (message.user.avatar) ?
                                 React.createElement(Avatar_1.default, { src: message.user.avatar }) :

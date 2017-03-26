@@ -6,24 +6,26 @@
 import * as async from "async";
 
 import { IRoomAccessListenerImp } from "./abstracts/IRoomAccessListenerImp";
-import { Member } from "./models/Member";
 import ChatLog from "./models/chatLog";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
 import { BackendFactory } from "./BackendFactory";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import { ServerImplemented, IDictionary } from "../libs/stalk/serverImplemented";
-import * as DataModels from "./models/ChatDataModels";
+import { IMessage, MessageType, IMessageMeta } from "../libs/shared/Message";
+import { Room, RoomStatus, RoomType } from "../libs/shared/Room";
+import { RoomAccessData, StalkAccount } from "../libs/shared/Stalk";
+import { ContactInfo } from "./models/Contact";
 import { MessageImp } from "./models/MessageImp";
+import { MemberImp } from "./models/MemberImp";
 import * as ServiceProvider from "./services/ServiceProvider";
 
 import * as contactActions from "../redux/app/contactActions";
 import Store from "../redux/configureStore";
-import { Room } from "../../shared/models/Room";
 
 export interface ChatLogMap { [key: string]: ChatLog; };
-export interface IUnread { message: DataModels.IMessage; rid: string; count: number; };
-export class Unread { message: DataModels.IMessage; rid: string; count: number; };
+export interface IUnread { message: IMessage; rid: string; count: number; };
+export class Unread { message: IMessage; rid: string; count: number; };
 
 export default class ChatsLogComponent implements IRoomAccessListenerImp {
     serverImp: ServerImplemented = null;
@@ -89,7 +91,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
 
     onAccessRoom(dataEvent) {
         let self = this;
-        let roomAccess: DataModels.RoomAccessData[] = dataEvent.roomAccess;
+        let roomAccess = dataEvent.roomAccess as Array<RoomAccessData>;
 
         const addRoomData = () => {
             async.map(roomAccess, function iterator(item, resultCallback) {
@@ -133,12 +135,12 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         }
     }
 
-    public getUnreadMessages(user_id: string, roomAccess: DataModels.RoomAccessData[], callback: (err, logsData: Array<IUnread>) => void) {
+    public getUnreadMessages(user_id: string, roomAccess: RoomAccessData[], callback: (err, logsData: Array<IUnread>) => void) {
         let self = this;
         let unreadLogs = new Array<IUnread>();
 
         // create a queue object with concurrency 2
-        let q = async.queue(function (task: DataModels.RoomAccessData, callback: () => void) {
+        let q = async.queue(function (task: RoomAccessData, callback: () => void) {
             if (!!task.roomId && !!task.accessTime) {
                 self.getUnreadMessage(user_id, task).then(value => {
                     unreadLogs.push(value);
@@ -165,7 +167,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
         });
     }
 
-    public async getUnreadMessage(user_id: string, roomAccess: DataModels.RoomAccessData) {
+    public async getUnreadMessage(user_id: string, roomAccess: RoomAccessData) {
         let response = await ServiceProvider.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString());
         let value = await response.json();
 
@@ -183,9 +185,9 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
     }
 
     private decorateRoomInfoData(roomInfo: Room) {
-        if (roomInfo.type === DataModels.RoomType.privateChat) {
+        if (roomInfo.type == RoomType.privateChat) {
             if (Array.isArray(roomInfo.members)) {
-                let others = roomInfo.members.filter((value) => !this.dataManager.isMySelf(value._id)) as Array<Member>;
+                let others = roomInfo.members.filter((value) => !this.dataManager.isMySelf(value._id)) as Array<MemberImp>;
                 if (others.length > 0) {
                     let contact = others[0];
 
@@ -277,7 +279,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
                         callback();
                     });
                 });
-            }, 2);
+            }, 10);
 
             // assign a callback
             q.drain = function () {
@@ -304,7 +306,7 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
             if (unread.message.body != null) {
                 let displayMsg = unread.message.body;
                 switch (`${unread.message.type}`) {
-                    case DataModels.ContentType[DataModels.ContentType.Text]:
+                    case MessageType[MessageType.Text]:
                         /*
                             self.main.decodeService(displayMsg, function (err, res) {
                                 if (!err) {
@@ -316,37 +318,37 @@ export default class ChatsLogComponent implements IRoomAccessListenerImp {
                             self.addChatLog(log, done);
                         });
                         break;
-                    case DataModels.ContentType[DataModels.ContentType.Sticker]:
+                    case MessageType[MessageType.Sticker]:
                         displayMsg = sender + " sent a sticker.";
                         self.setLogProp(log, displayMsg, function (log) {
                             self.addChatLog(log, done);
                         });
                         break;
-                    case DataModels.ContentType[DataModels.ContentType.Voice]:
+                    case MessageType[MessageType.Voice]:
                         displayMsg = sender + " sent a voice message.";
                         self.setLogProp(log, displayMsg, function (log) {
                             self.addChatLog(log, done);
                         });
                         break;
-                    case DataModels.ContentType[DataModels.ContentType.Image]:
+                    case MessageType[MessageType.Image]:
                         displayMsg = sender + " sent a image.";
                         self.setLogProp(log, displayMsg, function (log) {
                             self.addChatLog(log, done);
                         });
                         break;
-                    case DataModels.ContentType[DataModels.ContentType.Video]:
+                    case MessageType[MessageType.Video]:
                         displayMsg = sender + " sent a video.";
                         self.setLogProp(log, displayMsg, function (log) {
                             self.addChatLog(log, done);
                         });
                         break;
-                    case DataModels.ContentType[DataModels.ContentType.Location]:
+                    case MessageType[MessageType.Location]:
                         displayMsg = sender + " sent a location.";
                         self.setLogProp(log, displayMsg, function (log) {
                             self.addChatLog(log, done);
                         });
                         break;
-                    case DataModels.ContentType[DataModels.ContentType.File]:
+                    case MessageType[MessageType.File]:
                         self.setLogProp(log, displayMsg, function (log) {
                             self.addChatLog(log, done);
                         });

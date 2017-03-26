@@ -1,10 +1,11 @@
 import Store from "../configureStore";
 
-import { Member } from "../../chats/models/Member";
+import { MemberImp } from "../../chats/models/MemberImp";
 
 export async function getContactProfile(contactId: string) {
-    const {members} = Store.getState().teamReducer;
-    let _members = members as Array<Member>;
+    const { members } = Store.getState().teamReducer;
+    
+    let _members = members as Array<MemberImp>;
     let contacts = _members.filter((v, i, arr) => {
         return v._id === contactId;
     });

@@ -4,23 +4,26 @@
  * This is pure function action for redux app.
  */
 
-import ChatRoomComponent from "../../chats/chatRoomComponent";
-import { BackendFactory } from "../../chats/BackendFactory";
-import SecureServiceFactory from "../../libs/chitchat/services/secureServiceFactory";
-import ServerEventListener from "../../libs/stalk/serverEventListener";
-import HTTPStatus from "../../libs/stalk/utils/httpStatusCode";
-import { ContentType, IMessage, RoomType } from "../../chats/models/ChatDataModels";
+import * as ServiceProvider from "../../services/ServiceProvider";
+import ChatRoomComponent from "../../chatRoomComponent";
+import { BackendFactory } from "../../BackendFactory";
+import SecureServiceFactory from "../../secure/secureServiceFactory";
+
 import * as NotificationManager from "../stalkBridge/StalkNotificationActions";
-import { Member } from "../../chats/models/Member";
-import * as ServiceProvider from "../../chats/services/ServiceProvider";
+import ServerEventListener from "../../../libs/stalk/serverEventListener";
+import HTTPStatus from "../../../libs/stalk/utils/httpStatusCode";
+
+import { updateLastAccessRoom } from "../chatlogs/chatlogsActions";
+
+import { Room, RoomType, IMember } from "../../../libs/shared/Room";
+import { MessageType, IMessage } from "../../../libs/shared/Message";
+import { MemberImp } from "../../models/MemberImp";
+
+import config from "../../../configs/config";
+import Store from "../../../redux/configureStore";
 
 import { createAction } from "redux-actions";
 
-import Store from "../configureStore";
-import { updateLastAccessRoom } from "../chatlogs/chatlogsActions";
-
-import { Room } from "../../../shared/models/Room";
-import config from "../../configs/config";
 const secure = SecureServiceFactory.getService();
 
 /**
@@ -192,14 +195,14 @@ export function sendMessage(msg: IMessage) {
     return (dispatch) => {
         dispatch(send_message_request());
 
-        if (msg.type === ContentType[ContentType.Location]) {
+        if (msg.type === MessageType[MessageType.Location]) {
             BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
                 dispatch(sendMessageResponse(err, res));
             });
             return;
         }
 
-        if (msg.type === ContentType[ContentType.Text] && config.appConfig.encryption === true) {
+        if (msg.type === MessageType[MessageType.Text] && config.appConfig.encryption === true) {
             secure.encryption(msg.body).then(result => {
                 msg.body = result;
                 BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
@@ -228,7 +231,7 @@ function sendMessageResponse(err, res) {
 
             if (res.code == HTTPStatus.success && res.data.hasOwnProperty("resultMsg")) {
                 let _msg = { ...res.data.resultMsg } as IMessage;
-                if (_msg.type === ContentType[ContentType.Text] && config.appConfig.encryption) {
+                if (_msg.type === MessageType[MessageType.Text] && config.appConfig.encryption) {
                     secure.decryption(_msg.body).then(res => {
                         _msg.body = res;
                         dispatch(send_message_success(_msg));
@@ -338,12 +341,12 @@ export const getPersistendChatroom = (roomId: string) => (dispatch => {
 
 export const createChatRoom = (myUser, contactUser) => {
     if (myUser && contactUser) {
-        let owner = {} as Member;
+        let owner = {} as IMember;
         owner._id = myUser._id;
         owner.user_role = (myUser.role) ? myUser.role : "user";
         owner.username = myUser.username;
 
-        let contact = {} as Member;
+        let contact = {} as IMember;
         contact._id = contactUser._id;
         contact.user_role = (contactUser.role) ? contactUser.role : "user";
         contact.username = contactUser.username;

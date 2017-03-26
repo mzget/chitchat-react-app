@@ -1,14 +1,15 @@
+import SecureServiceFactory from "../secure/secureServiceFactory";
 import { MessageImp } from "../models/MessageImp";
-import { ContentType } from "../models/ChatDataModels";
+import { MessageType } from "../../libs/shared/Message";
+
 import config from "../../configs/config";
-import SecureServiceFactory from "../../libs/chitchat/services/secureServiceFactory";
 
 export const decryptionText = async (message: MessageImp) => {
     if (!message) return message;
 
     let secure = SecureServiceFactory.getService();
 
-    if (message.type === ContentType[ContentType.Text]) {
+    if (message.type === MessageType[MessageType.Text]) {
         if (config.appConfig.encryption === true) {
             let result = await secure.decryption(message.body);
 

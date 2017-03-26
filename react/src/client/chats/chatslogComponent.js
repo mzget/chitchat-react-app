@@ -16,7 +16,8 @@ const async = require("async");
 const chatLog_1 = require("./models/chatLog");
 const BackendFactory_1 = require("./BackendFactory");
 const CryptoHelper = require("./utils/CryptoHelper");
-const DataModels = require("./models/ChatDataModels");
+const Message_1 = require("../libs/shared/Message");
+const Room_1 = require("../libs/shared/Room");
 const ServiceProvider = require("./services/ServiceProvider");
 const contactActions = require("../redux/app/contactActions");
 const configureStore_1 = require("../redux/configureStore");
@@ -157,7 +158,7 @@ class ChatsLogComponent {
         });
     }
     decorateRoomInfoData(roomInfo) {
-        if (roomInfo.type === DataModels.RoomType.privateChat) {
+        if (roomInfo.type == Room_1.RoomType.privateChat) {
             if (Array.isArray(roomInfo.members)) {
                 let others = roomInfo.members.filter((value) => !this.dataManager.isMySelf(value._id));
                 if (others.length > 0) {
@@ -242,7 +243,7 @@ class ChatsLogComponent {
                         callback();
                     });
                 });
-            }, 2);
+            }, 10);
             // assign a callback
             q.drain = function () {
                 resolve(self.chatslog);
@@ -265,7 +266,7 @@ class ChatsLogComponent {
                 if (unread.message.body != null) {
                     let displayMsg = unread.message.body;
                     switch (`${unread.message.type}`) {
-                        case DataModels.ContentType[DataModels.ContentType.Text]:
+                        case Message_1.MessageType[Message_1.MessageType.Text]:
                             /*
                                 self.main.decodeService(displayMsg, function (err, res) {
                                     if (!err) {
@@ -277,37 +278,37 @@ class ChatsLogComponent {
                                 self.addChatLog(log, done);
                             });
                             break;
-                        case DataModels.ContentType[DataModels.ContentType.Sticker]:
+                        case Message_1.MessageType[Message_1.MessageType.Sticker]:
                             displayMsg = sender + " sent a sticker.";
                             self.setLogProp(log, displayMsg, function (log) {
                                 self.addChatLog(log, done);
                             });
                             break;
-                        case DataModels.ContentType[DataModels.ContentType.Voice]:
+                        case Message_1.MessageType[Message_1.MessageType.Voice]:
                             displayMsg = sender + " sent a voice message.";
                             self.setLogProp(log, displayMsg, function (log) {
                                 self.addChatLog(log, done);
                             });
                             break;
-                        case DataModels.ContentType[DataModels.ContentType.Image]:
+                        case Message_1.MessageType[Message_1.MessageType.Image]:
                             displayMsg = sender + " sent a image.";
                             self.setLogProp(log, displayMsg, function (log) {
                                 self.addChatLog(log, done);
                             });
                             break;
-                        case DataModels.ContentType[DataModels.ContentType.Video]:
+                        case Message_1.MessageType[Message_1.MessageType.Video]:
                             displayMsg = sender + " sent a video.";
                             self.setLogProp(log, displayMsg, function (log) {
                                 self.addChatLog(log, done);
                             });
                             break;
-                        case DataModels.ContentType[DataModels.ContentType.Location]:
+                        case Message_1.MessageType[Message_1.MessageType.Location]:
                             displayMsg = sender + " sent a location.";
                             self.setLogProp(log, displayMsg, function (log) {
                                 self.addChatLog(log, done);
                             });
                             break;
-                        case DataModels.ContentType[DataModels.ContentType.File]:
+                        case Message_1.MessageType[Message_1.MessageType.File]:
                             self.setLogProp(log, displayMsg, function (log) {
                                 self.addChatLog(log, done);
                             });

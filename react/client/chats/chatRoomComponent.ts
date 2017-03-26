@@ -13,12 +13,15 @@ import { ServerImplemented } from "../libs/stalk/serverImplemented";
 import ChatRoomApiProvider from "../libs/stalk/chatRoomApiProvider";
 import ServerEventListener from "../libs/stalk/serverEventListener";
 import { absSpartan } from "../libs/stalk/spartanEvents";
-import SecureServiceFactory from "../libs/chitchat/services/secureServiceFactory";
-import { ContentType, IMember, IMessage } from "./models/ChatDataModels";
-import { MessageImp } from "./models/MessageImp";
-import { ISecureService } from "../libs/chitchat/services/ISecureService";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import * as ServiceProvider from "./services/ServiceProvider";
+
+import { ISecureService } from "./secure/ISecureService";
+import SecureServiceFactory from "./secure/secureServiceFactory";
+
+import { MessageType, IMessage } from "../libs/shared/Message";
+import { Room, IMember } from "../libs/shared/Room";
+import { MessageImp } from "./models/MessageImp";
 
 import config from "../configs/config";
 import { imagesPath } from "../consts/StickerPath";
@@ -83,12 +86,12 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
             }).then((chats: IMessage[]) => {
                 let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
 
-                if (message.type === ContentType[ContentType.Text]) {
+                if (message.type === MessageType[MessageType.Text]) {
                     CryptoHelper.decryptionText(message).then(decoded => {
                         saveMessages(chatMessages);
                     }).catch(err => saveMessages(chatMessages));
                 }
-                else if (message.type === ContentType[ContentType.Sticker]) {
+                else if (message.type === MessageType[MessageType.Sticker]) {
                     let sticker_id = parseInt(message.body);
 
                     message.src = imagesPath[sticker_id].img;
@@ -109,6 +112,10 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
             }
         }
     }
+
+    onRoomJoin(data) { }
+
+    onLeaveRoom(data) { }
 
     onMessageRead(dataEvent) {
         console.log("onMessageRead", JSON.stringify(dataEvent));
@@ -164,7 +171,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
             self.dataManager.messageDAL.getData(rid).then(messages => {
                 let chats = messages.slice(0) as Array<IMessage>;
                 async.forEach(chats, function iterator(chat, result) {
-                    if (chat.type === ContentType[ContentType.Text]) {
+                    if (chat.type === MessageType[MessageType.Text]) {
                         if (config.appConfig.encryption === true) {
                             self.secure.decryption(chat.body).then(function (res) {
                                 chat.body = res;
@@ -257,7 +264,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                 histories = value.result;
                 if (histories.length > 0) {
                     async.forEach(histories, function (chat, cb) {
-                        if (chat.type === ContentType[ContentType.Text]) {
+                        if (chat.type === MessageType[MessageType.Text]) {
                             if (config.appConfig.encryption === true) {
                                 self.secure.decryption(chat.body).then(function (res) {
                                     chat.body = res;

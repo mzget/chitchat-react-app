@@ -1,5 +1,5 @@
-﻿import { ChitChatAccount } from "../../../server/scripts/models/User";
-import { ITeamProfile } from "../../../server/scripts/models/TeamProfile";
+﻿import { ChitChatAccount } from "./User";
+import { ITeamProfile } from "./TeamProfile";
 
 export class ITeamMember extends ChitChatAccount {
     _id: string;

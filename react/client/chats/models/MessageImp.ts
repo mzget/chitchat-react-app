@@ -1,4 +1,4 @@
-import { IMessage, IMessageMeta } from "./ChatDataModels";
+import { IMessage, IMessageMeta } from "./Message";
 
 export class MessageImp implements IMessage {
     _id: string;

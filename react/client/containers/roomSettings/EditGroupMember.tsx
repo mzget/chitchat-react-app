@@ -13,7 +13,7 @@ import Toggle from "material-ui/Toggle";
 
 import * as editGroupRxActions from "../../redux/group/editGroupRxActions";
 
-import { ChitChatAccount } from "../../../server/scripts/models/User";
+import { ChitChatAccount } from "../../chats/models/User";
 
 interface IEnhanceProps {
     members: Array<ChitChatAccount>;
@@ -106,4 +106,4 @@ const EnhanceEditGroupMember = enhance(({
         onSubmit={onSubmit} />
 );
 
-export const ConnectEditGroupMember = connect()(EnhanceEditGroupMember);
+export const ConnectEditGroupMember = connect()(EnhanceEditGroupMember) as any;

@@ -5,8 +5,8 @@ import { IComponentProps } from "../../utils/IComponentProps";
 
 import * as userRx from "../../redux/user/userRx";
 import * as teamRx from "../../redux/team/teamRx";
-import * as chatroomActions from "../../redux/chatroom/chatroomActions";
-import * as chatroomRx from "../../redux/chatroom/chatroomRxEpic";
+import * as chatroomActions from "../../chats/redux/chatroom/chatroomActions";
+import * as chatroomRx from "../../chats/redux/chatroom/chatroomRxEpic";
 
 import { MemberList } from "./MemberList";
 
