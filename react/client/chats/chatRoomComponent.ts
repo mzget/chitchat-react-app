@@ -310,16 +310,17 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
 
             return messages;
         }
-        self.getTopEdgeMessageTime(function done(err, res) {
-            self.chatRoomApi.getOlderMessageChunk(self.roomId, res, function response(err, res) {
-                // todo
-                /**
-                 * Merge messages record to chatMessages array.
-                 * Never save message to persistend layer.
-                 */
-                if (res.code === 200) {
-                    let datas = res.data as Array<IMessage>;
-                    let earlyMessages: Array<IMessage> = datas;
+
+        self.getTopEdgeMessageTime(function done(err, time) {
+            ServiceProvider.getOlderMessagesCount(self.roomId, time, true)
+                .then(response => response.json())
+                .then((messages: Array<IMessage>) => {
+                    // todo
+                    /**
+                     * Merge messages record to chatMessages array.
+                     * Never save message to persistend layer.
+                     */
+                    let earlyMessages: Array<IMessage> = messages.slice();
                     if (earlyMessages.length > 0) {
                         waitForRoomMessage().then(messages => {
                             if (!!messages && messages.length > 0) {
@@ -361,11 +362,9 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                     else {
                         callback(null, null);
                     }
-                }
-                else {
-                    callback(res, null);
-                }
-            });
+                }).catch(err => {
+                    callback(err, null);
+                });
         });
     }
 

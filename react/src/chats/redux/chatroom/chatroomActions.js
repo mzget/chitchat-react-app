@@ -134,11 +134,10 @@ exports.getPersistendMessage = getPersistendMessage;
 const onEarlyMessageReady = redux_actions_1.createAction(ChatRoomActionsType.ON_EARLY_MESSAGE_READY, (data) => data);
 function checkOlderMessages() {
     return dispatch => {
-        let token = configureStore_1.default.getState().authReducer.token;
         let room = configureStore_1.default.getState().chatroomReducer.room;
         chatRoomComponent_1.default.getInstance().getTopEdgeMessageTime(function done(err, res) {
-            ServiceProvider.checkOlderMessagesCount(room._id, res, token).then(response => response.json()).then(result => {
-                console.log("checkOlderMessagesCount", result);
+            ServiceProvider.getOlderMessagesCount(room._id, res, false).then(response => response.json()).then(result => {
+                console.log("getOlderMessagesCount", result);
                 if (result.success && result.result > 0) {
                     //               console.log("onOlderMessageReady is true ! Show load earlier message on top view.");
                     dispatch(onEarlyMessageReady(true));

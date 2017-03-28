@@ -1,5 +1,5 @@
 {
-  "name": "chitchat-app",
+  "name": "chitchat-webapp",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
@@ -10,7 +10,7 @@
     "@types/isomorphic-fetch": "^0.0.31",
     "@types/localforage": "0.0.33",
     "@types/material-ui": "^0.16.57",
-    "@types/node": "^6.0.52",
+    "@types/node": "^7.0.11",
     "@types/react-file-reader-input": "^0.0.5",
     "@types/react-fontawesome": "^1.5.0",
     "@types/react-redux": "^4.4.35",
@@ -23,7 +23,7 @@
     "redux-devtools": "^3.3.1",
     "redux-devtools-dock-monitor": "^1.1.1",
     "redux-devtools-log-monitor": "^1.1.1",
-    "tslint": "^4.4.2"
+    "tslint": "^4.5.1"
   },
   "dependencies": {
     "async": "^2.2.0",

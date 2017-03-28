@@ -264,59 +264,57 @@ class ChatRoomComponent {
                 return messages;
             });
         }
-        self.getTopEdgeMessageTime(function done(err, res) {
-            self.chatRoomApi.getOlderMessageChunk(self.roomId, res, function response(err, res) {
+        self.getTopEdgeMessageTime(function done(err, time) {
+            ServiceProvider.getOlderMessagesCount(self.roomId, time, true)
+                .then(response => response.json())
+                .then((messages) => {
                 // todo
                 /**
                  * Merge messages record to chatMessages array.
                  * Never save message to persistend layer.
                  */
-                if (res.code === 200) {
-                    let datas = res.data;
-                    let earlyMessages = datas;
-                    if (earlyMessages.length > 0) {
-                        waitForRoomMessage().then(messages => {
-                            if (!!messages && messages.length > 0) {
-                                let mergedArray = [];
-                                mergedArray = earlyMessages.concat(messages);
-                                let resultsArray = [];
-                                async.map(mergedArray, function iterator(item, cb) {
-                                    let hasMessage = resultsArray.some(function itor(value, id, arr) {
-                                        if (!!value && value._id === item._id) {
-                                            return true;
-                                        }
-                                    });
-                                    if (hasMessage === false) {
-                                        resultsArray.push(item);
-                                        cb(null, null);
+                let earlyMessages = messages.slice();
+                if (earlyMessages.length > 0) {
+                    waitForRoomMessage().then(messages => {
+                        if (!!messages && messages.length > 0) {
+                            let mergedArray = [];
+                            mergedArray = earlyMessages.concat(messages);
+                            let resultsArray = [];
+                            async.map(mergedArray, function iterator(item, cb) {
+                                let hasMessage = resultsArray.some(function itor(value, id, arr) {
+                                    if (!!value && value._id === item._id) {
+                                        return true;
                                     }
-                                    else {
-                                        cb(null, null);
-                                    }
-                                }, function done(err, results) {
-                                    let merged = resultsArray.sort(self.compareMessage);
-                                    self.dataManager.messageDAL.saveData(self.roomId, merged).then(value => {
-                                        callback(null, value);
-                                    });
                                 });
-                            }
-                            else {
-                                let merged = earlyMessages.sort(self.compareMessage);
+                                if (hasMessage === false) {
+                                    resultsArray.push(item);
+                                    cb(null, null);
+                                }
+                                else {
+                                    cb(null, null);
+                                }
+                            }, function done(err, results) {
+                                let merged = resultsArray.sort(self.compareMessage);
                                 self.dataManager.messageDAL.saveData(self.roomId, merged).then(value => {
                                     callback(null, value);
                                 });
-                            }
-                        }).catch(err => {
-                            console.error(err + ": Cannot get room message/");
-                        });
-                    }
-                    else {
-                        callback(null, null);
-                    }
+                            });
+                        }
+                        else {
+                            let merged = earlyMessages.sort(self.compareMessage);
+                            self.dataManager.messageDAL.saveData(self.roomId, merged).then(value => {
+                                callback(null, value);
+                            });
+                        }
+                    }).catch(err => {
+                        console.error(err + ": Cannot get room message/");
+                    });
                 }
                 else {
-                    callback(res, null);
+                    callback(null, null);
                 }
+            }).catch(err => {
+                callback(err, null);
             });
         });
     }
