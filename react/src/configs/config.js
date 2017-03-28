@@ -15,7 +15,7 @@ const rest_api = (host) => ({
 });
 const devConfig = {
     Stalk: {
-        chat: "git.animation-genius.com",
+        chat: "localhost",
         port: "3010",
         api: {
             user: "http://git.animation-genius.com:9000/api/stalk/user"
@@ -47,7 +47,7 @@ const composeMyconfig = (config) => {
 };
 const getConfig = () => {
     if (process.env.NODE_ENV === `development`) {
-        return composeMyconfig(devConfig)(api_dev);
+        return composeMyconfig(devConfig)(api_master);
     }
     else if (process.env.NODE_ENV === `production`) {
         return composeMyconfig(masterConfig)(api_master);
