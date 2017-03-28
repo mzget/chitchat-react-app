@@ -302,84 +302,77 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         });
     }
 
-    public async getOlderMessageChunk() {
+    public getOlderMessageChunk(callback: (err, res) => void) {
         let self = this;
 
-        async function waitForRoomMessages() {
+        async function waitForRoomMessage() {
             let messages = await self.dataManager.messageDAL.getData(self.roomId) as IMessage[];
 
             return messages;
         }
 
-        async function saveRoomMessages(merged: Array<IMessage>) {
-            let value = await self.dataManager.messageDAL.saveData(self.roomId, merged);
+        self.getTopEdgeMessageTime(function done(err, time) {
+            ServiceProvider.getOlderMessagesCount(self.roomId, time, true)
+                .then(response => response.json())
+                .then((messages: Array<IMessage>) => {
+                    // todo
+                    /**
+                     * Merge messages record to chatMessages array.
+                     * Never save message to persistend layer.
+                     */
+                    let earlyMessages: Array<IMessage> = messages.slice();
+                    if (earlyMessages.length > 0) {
+                        waitForRoomMessage().then(messages => {
+                            if (!!messages && messages.length > 0) {
+                                let mergedArray: Array<IMessage> = [];
+                                mergedArray = earlyMessages.concat(messages);
 
-            return value;
-        }
+                                let resultsArray: Array<IMessage> = [];
+                                async.map(mergedArray, function iterator(item, cb) {
+                                    let hasMessage = resultsArray.some(function itor(value, id, arr) {
+                                        if (!!value && value._id === item._id) {
+                                            return true;
+                                        }
+                                    });
 
-        let time = await self.getTopEdgeMessageTime() as Date;
-        if (time) {
-            let response = await ServiceProvider.getOlderMessagesCount(self.roomId, time.toString(), true);
-            let result = await response.json();
-
-            console.log("getOlderMessageChunk value", result);
-            // todo
-            /**
-             * Merge messages record to chatMessages array.
-             * Never save message to persistend layer.
-             */
-            if (result.success && result.result.length > 0) {
-                let earlyMessages = result.result as Array<IMessage>;
-                let persistMessages = await waitForRoomMessages();
-
-                if (!!persistMessages && persistMessages.length > 0) {
-                    let mergedMessageArray = new Array<IMessage>();
-                    mergedMessageArray = earlyMessages.concat(persistMessages);
-
-                    let resultsArray = new Array<IMessage>();
-                    let results = await new Promise((resolve: (data: Array<IMessage>) => void, rejected) => {
-                        async.map(mergedMessageArray, function iterator(item, cb) {
-                            let hasMessage = resultsArray.some(function itor(value, id, arr) {
-                                if (!!value && value._id === item._id) {
-                                    return true;
-                                }
-                            });
-
-                            if (hasMessage === false) {
-                                resultsArray.push(item);
-                                cb(null, null);
+                                    if (hasMessage === false) {
+                                        resultsArray.push(item);
+                                        cb(null, null);
+                                    }
+                                    else {
+                                        cb(null, null);
+                                    }
+                                }, function done(err, results) {
+                                    let merged = resultsArray.sort(self.compareMessage);
+                                    self.dataManager.messageDAL.saveData(self.roomId, merged).then(value => {
+                                        callback(null, value);
+                                    });
+                                });
                             }
                             else {
-                                cb(null, null);
+                                let merged = earlyMessages.sort(self.compareMessage);
+                                self.dataManager.messageDAL.saveData(self.roomId, merged).then(value => {
+                                    callback(null, value);
+                                });
                             }
-                        }, function done(err, results) {
-                            let merged = resultsArray.sort(self.compareMessage);
-
-                            resolve(merged);
+                        }).catch(err => {
+                            console.error(err + ": Cannot get room message/");
                         });
-                    });
-
-                    return await saveRoomMessages(results);
-                }
-                else {
-                    let merged = earlyMessages.sort(self.compareMessage);
-                    return await saveRoomMessages(merged);
-                }
-            }
-            else {
-                return new Array();
-            }
-        }
-        else {
-            throw new Error("getTopEdgeMessageTime fail");
-        }
+                    }
+                    else {
+                        callback(null, null);
+                    }
+                }).catch(err => {
+                    callback(err, null);
+                });
+        });
     }
 
-    public async getTopEdgeMessageTime() {
+    public getTopEdgeMessageTime(callback: (err, res) => void) {
         let self = this;
+        let topEdgeMessageTime: Date = new Date();
 
         async function waitRoomMessage() {
-            let topEdgeMessageTime = new Date();
             let messages = await self.dataManager.messageDAL.getData(self.roomId) as IMessage[];
 
             if (!!messages && messages.length > 0) {
@@ -388,16 +381,12 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
                 }
             }
             console.log("topEdgeMessageTime is: ", topEdgeMessageTime);
-
-            return topEdgeMessageTime;
         }
 
-        return new Promise((resolve: (data: Date) => void, reject) => {
-            waitRoomMessage().then((topEdgeMessageTime) => {
-                resolve(topEdgeMessageTime);
-            }).catch(err => {
-                reject(err);
-            });
+        waitRoomMessage().then(() => {
+            callback(null, topEdgeMessageTime);
+        }).catch(err => {
+            console.error(err + "\/Cannot get room message/");
         });
     }
 
@@ -426,11 +415,12 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         });
     }
 
-    public async updateWhoReadMyMessages() {
+    public updateWhoReadMyMessages() {
         let self = this;
 
-        let res = await self.getTopEdgeMessageTime();
-        self.chatRoomApi.getMessagesReaders(res.toString());
+        self.getTopEdgeMessageTime((err, res) => {
+            self.chatRoomApi.getMessagesReaders(res);
+        });
     }
 
     public getMemberProfile(member: IMember, callback: (err, res) => void) {
@@ -438,8 +428,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
     }
 
     public async getMessages() {
-        let messages = await this.dataManager.messageDAL.getData(this.roomId);
-        return messages;
+        return await this.dataManager.messageDAL.getData(this.roomId);
     }
 
     public dispose() {
