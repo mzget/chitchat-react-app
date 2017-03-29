@@ -7,6 +7,7 @@ const { ajax } = Rx.Observable;
 
 import * as UserService from "../../chats/services/UserService";
 import { ChitChatAccount } from "../../chats/models/User";
+import * as StalkBridgeActions from "../../chats/redux/stalkBridge/stalkBridgeActions";
 import Store from "../configureStore";
 
 const FETCH_USER = "FETCH_USER";
@@ -15,7 +16,7 @@ export const FETCH_USER_FAILURE = "FETCH_USER_FAILURE";
 export const FETCH_USER_CANCELLED = "FETCH_USER_CANCELLED";
 
 export const fetchUser = (username) => ({ type: FETCH_USER, payload: username }); // username => ({ type: FETCH_USER, payload: username });
-const fetchUserFulfilled = payload => ({ type: FETCH_USER_SUCCESS, payload: payload.xhr.response });
+const fetchUserFulfilled = payload => ({ type: FETCH_USER_SUCCESS, payload });
 const cancelFetchUser = () => ({ type: FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: FETCH_USER_FAILURE, payload });
 export const fetchUserEpic = action$ => (
@@ -28,9 +29,21 @@ export const fetchUserEpic = action$ => (
                 "x-api-key": config.api.apiKey
             }
         })
-            .map(fetchUserFulfilled)
+            .map(response => fetchUserFulfilled(response.xhr.response))
             .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
-            .catch(error => Rx.Observable.of(fetchUserRejected(error))))
+            .catch(error => Rx.Observable.of(fetchUserRejected(error)))
+            ._do(x => {
+                if (x.type == FETCH_USER_SUCCESS) {
+                    if (x.payload.result && x.payload.result.length > 0) {
+                        let user = x.payload.result[0];
+
+                        let stalkReducer = Store.getState().stalkReducer;
+                        if (stalkReducer.state !== StalkBridgeActions.STALK_INIT) {
+                            StalkBridgeActions.stalkLogin(user);
+                        }
+                    }
+                }
+            }))
 );
 
 const UPDATE_USER_INFO = "UPDATE_USER_INFO";
