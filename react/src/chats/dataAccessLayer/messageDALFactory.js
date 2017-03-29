@@ -1,9 +1,9 @@
-"use strict";
 /**
  * MessageDALFactory.
  *
  * Copyright 2016 Ahoo Studio.co.th.
  */
+"use strict";
 class MessageDALFactory {
     static getObject() {
         if (!!global.userAgent) {
@@ -14,5 +14,4 @@ class MessageDALFactory {
         }
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = MessageDALFactory;
+exports.MessageDALFactory = MessageDALFactory;

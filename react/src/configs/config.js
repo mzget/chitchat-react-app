@@ -18,7 +18,7 @@ const devConfig = {
         chat: "localhost",
         port: "3010",
         api: {
-            user: "http://git.animation-genius.com:9000/api/stalk/user"
+            user: `${api_dev}/api/stalk/user`
         }
     },
     appConfig: {
@@ -47,7 +47,7 @@ const composeMyconfig = (config) => {
 };
 const getConfig = () => {
     if (process.env.NODE_ENV === `development`) {
-        return composeMyconfig(devConfig)(api_master);
+        return composeMyconfig(devConfig)(api_dev);
     }
     else if (process.env.NODE_ENV === `production`) {
         return composeMyconfig(masterConfig)(api_master);

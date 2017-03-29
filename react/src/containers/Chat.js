@@ -172,7 +172,7 @@ class Chat extends React.Component {
                 this.setState((previousState) => (__assign({}, previousState, { earlyMessageReady: chatroomReducer.earlyMessageReady })));
                 break;
             }
-            case chatroomActions.ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS: {
+            case chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS: {
                 chatroomActions.getMessages().then(messages => {
                     this.setState(previousState => (__assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false, messages: messages })));
                 });

@@ -2,6 +2,7 @@ import { combineEpics } from "redux-observable";
 
 import * as userRx from "./user/userRx";
 import * as chatroomRxEpic from "../chats/redux/chatroom/chatroomRxEpic";
+import * as messageRxEpic from "../chats/redux/chatroom/messageRxEpic";
 import * as chatlogsActions from "../chats/redux/chatlogs/chatlogsActions";
 import * as authRx from "./authen/authRx";
 import * as teamRx from "./team/teamRx";
@@ -55,6 +56,8 @@ export const rootEpic = combineEpics(
     chatroomRxEpic.getPersistendMessageEpic,
     chatroomRxEpic.createPrivateChatRoomEpic,
     chatroomRxEpic.uploadFileEpic,
+    /// @message rx.
+    // messageRxEpic.fetchOlderMessageCount_Epic,
 
     ///@chatlogs
     chatlogsActions.updateLastAccessRoomEpic

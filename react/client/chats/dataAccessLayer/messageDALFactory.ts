@@ -3,7 +3,8 @@
  *
  * Copyright 2016 Ahoo Studio.co.th.
  */
-export default class MessageDALFactory {
+
+export class MessageDALFactory {
     static getObject() {
         if (!!global.userAgent) {
             const { MessageDAL } = require("./messageDAL");

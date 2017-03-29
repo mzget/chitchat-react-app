@@ -193,7 +193,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
                 break;
             }
-            case chatroomActions.ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS: {
+            case chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS: {
                 chatroomActions.getMessages().then(messages => {
                     this.setState(previousState => ({
                         ...previousState,

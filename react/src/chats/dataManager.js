@@ -1,8 +1,8 @@
 "use strict";
 const async = require("async");
 const Room_1 = require("../libs/shared/Room");
-const RoomDALFactory_1 = require("../libs/chitchat/dataAccessLayer/RoomDALFactory");
-const messageDALFactory_1 = require("../libs/chitchat/dataAccessLayer/messageDALFactory");
+const RoomDALFactory_1 = require("./dataAccessLayer/RoomDALFactory");
+const messageDALFactory_1 = require("./dataAccessLayer/messageDALFactory");
 class DataManager {
     constructor() {
         this.orgGroups = {};
@@ -13,7 +13,7 @@ class DataManager {
         this.isOrgMembersReady = false;
         this.getContactInfoFailEvents = new Array();
         this.roomDAL = RoomDALFactory_1.RoomDALFactory.getObject();
-        this.messageDAL = messageDALFactory_1.default.getObject();
+        this.messageDAL = messageDALFactory_1.MessageDALFactory.getObject();
     }
     addContactInfoFailEvents(func) {
         this.getContactInfoFailEvents.push(func);

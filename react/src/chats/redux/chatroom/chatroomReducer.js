@@ -88,8 +88,8 @@ exports.chatroomReducer = (state = new exports.ChatRoomInitState(), action) => {
             return state.set("state", chatroomActions_1.ChatRoomActionsType.ON_EARLY_MESSAGE_READY)
                 .set("earlyMessageReady", payload);
         }
-        case chatroomActions_1.ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS: {
-            return state.set("state", chatroomActions_1.ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS);
+        case chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS: {
+            return state.set("state", chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS);
         }
         case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
             return state
