@@ -7,10 +7,10 @@ import { StalkAccount, RoomAccessData } from "../libs/shared/Stalk";
 
 import { ContactInfo } from "./models/Contact";
 
-import { IRoomDAL } from "../libs/chitchat/dataAccessLayer/IRoomDAL";
-import { RoomDALFactory } from "../libs/chitchat/dataAccessLayer/RoomDALFactory";
-import { IMessageDAL } from "../libs/chitchat/dataAccessLayer/IMessageDAL";
-import MessageDALFactory from "../libs/chitchat/dataAccessLayer/messageDALFactory";
+import { IRoomDAL } from "./dataAccessLayer/IRoomDAL";
+import { RoomDALFactory } from "./dataAccessLayer/RoomDALFactory";
+import { IMessageDAL } from "./dataAccessLayer/IMessageDAL";
+import { MessageDALFactory } from "./dataAccessLayer/messageDALFactory";
 
 interface IRoomMap {
     [key: string]: Room;

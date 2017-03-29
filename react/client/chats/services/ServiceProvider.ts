@@ -25,7 +25,7 @@ export const getUnreadMessage = (room_id: string, user_id: string, lastAccessTim
     });
 };
 
-export const getOlderMessagesCount = (room_id: string, topEdgeMessageTime: string, queryMessage: boolean = false) => {
+export const getOlderMessagesCount = (room_id: string, topEdgeMessageTime: string, queryMessage: boolean) => {
     return fetch(`${config.api.chatroom}/olderMessagesCount/?message=${queryMessage}`, {
         body: JSON.stringify({
             room_id: room_id,
