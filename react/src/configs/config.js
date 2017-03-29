@@ -1,7 +1,5 @@
 "use strict";
-const api_master = "http://git.animation-genius.com:9000";
-const api_dev = "http://localhost:9000";
-const rest_api = (host) => ({
+const chitchat_api = (host) => ({
     apiKey: "chitchat1234",
     host: `${host}`,
     api: `${host}/api`,
@@ -13,44 +11,40 @@ const rest_api = (host) => ({
     chatroom: `${host}/api/chatroom`,
     fileUpload: `${host}/chats/upload`
 });
-const devConfig = {
-    Stalk: {
-        chat: "localhost",
-        port: "3010",
-        api: {
-            user: `${api_dev}/api/stalk/user`
-        }
-    },
+const stalk_api = (host, port, api) => ({
+    chat: `${host}`,
+    port: `${port}`,
+    api: {
+        user: `${api}/api/stalk/user`
+    }
+});
+const baseConfig = {
+    Stalk: {},
+    api: {},
     appConfig: {
         encryption: false
-    },
-    api: {}
-};
-const masterConfig = {
-    Stalk: {
-        chat: "git.animation-genius.com",
-        port: "3010",
-        api: {
-            user: "http://git.animation-genius.com:9000/api/stalk/user"
-        }
-    },
-    appConfig: {
-        encryption: false
-    },
-    api: {}
+    }
 };
 const composeMyconfig = (config) => {
-    return (host) => {
-        config.api = rest_api(host);
-        return config;
+    return (chitchat_host) => {
+        config.api = chitchat_api(chitchat_host);
+        return (stalk_host, stalk_port, api) => {
+            config.Stalk = stalk_api(stalk_host, stalk_port, api);
+            return config;
+        };
     };
 };
+const api_stalk_master = "git.animation-genius.com";
+const api_stalk_dev = "git.animation-genius.com";
+const statkPort = "3010";
+const api_master = "http://git.animation-genius.com:9000";
+const api_dev = "http://localhost:9000";
 const getConfig = () => {
     if (process.env.NODE_ENV === `development`) {
-        return composeMyconfig(devConfig)(api_dev);
+        return composeMyconfig(baseConfig)(api_dev)(api_stalk_master, statkPort, api_dev);
     }
     else if (process.env.NODE_ENV === `production`) {
-        return composeMyconfig(masterConfig)(api_master);
+        return composeMyconfig(baseConfig)(api_master)(api_stalk_master, statkPort, api_master);
     }
 };
 const config = getConfig();

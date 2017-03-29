@@ -9,6 +9,7 @@ import ServerEventListener from "../libs/stalk/serverEventListener";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
 import PushDataListener from "./pushDataListener";
+import { ChatsLogComponent } from "./chatslogComponent";
 
 export class BackendFactory {
     private static instance: BackendFactory;
@@ -26,6 +27,7 @@ export class BackendFactory {
     pushDataListener: PushDataListener;
     dataManager: DataManager;
     dataListener: DataListener;
+    chatLogComp: ChatsLogComponent;
 
     constructor(token = null) {
         console.log("BackendFactory: ", token);
@@ -34,6 +36,12 @@ export class BackendFactory {
         this.pushDataListener = new PushDataListener();
         this.dataManager = new DataManager();
         this.dataListener = new DataListener(this.dataManager);
+    }
+
+    createChatlogs() {
+        this.chatLogComp = new ChatsLogComponent();
+
+        return this.chatLogComp;
     }
 
     getServer(): Promise<ServerImplemented> {
