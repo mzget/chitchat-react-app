@@ -21,7 +21,7 @@ exports.getUnreadMessage = (room_id, user_id, lastAccessTime) => {
         headers: chitchat_headers
     });
 };
-exports.getOlderMessagesCount = (room_id, topEdgeMessageTime, queryMessage = false) => {
+exports.getOlderMessagesCount = (room_id, topEdgeMessageTime, queryMessage) => {
     return fetch(`${config_1.default.api.chatroom}/olderMessagesCount/?message=${queryMessage}`, {
         body: JSON.stringify({
             room_id: room_id,
