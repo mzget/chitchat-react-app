@@ -21,17 +21,14 @@ exports.getUnreadMessage = (room_id, user_id, lastAccessTime) => {
         headers: chitchat_headers
     });
 };
-exports.checkOlderMessagesCount = (room_id, topEdgeMessageTime, token) => {
-    return fetch(`${config_1.default.api.chatroom}/checkOlderMessagesCount`, {
+exports.getOlderMessagesCount = (room_id, topEdgeMessageTime, queryMessage) => {
+    return fetch(`${config_1.default.api.chatroom}/olderMessagesCount/?message=${queryMessage}`, {
         body: JSON.stringify({
             room_id: room_id,
             topEdgeMessageTime: topEdgeMessageTime
         }),
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "x-access-token": token
-        }
+        headers: chitchat_headers
     });
 };
 exports.getChatHistory = (room_id, lastMessageTime, token) => {

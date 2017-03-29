@@ -256,88 +256,96 @@ class ChatRoomComponent {
             });
         });
     }
-    getOlderMessageChunk(callback) {
-        let self = this;
-        function waitForRoomMessage() {
-            return __awaiter(this, void 0, void 0, function* () {
-                let messages = yield self.dataManager.messageDAL.getData(self.roomId);
-                return messages;
-            });
-        }
-        self.getTopEdgeMessageTime(function done(err, res) {
-            self.chatRoomApi.getOlderMessageChunk(self.roomId, res, function response(err, res) {
+    getOlderMessageChunk() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let self = this;
+            function waitForRoomMessages() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    let messages = yield self.dataManager.messageDAL.getData(self.roomId);
+                    return messages;
+                });
+            }
+            function saveRoomMessages(merged) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    let value = yield self.dataManager.messageDAL.saveData(self.roomId, merged);
+                    return value;
+                });
+            }
+            let time = yield self.getTopEdgeMessageTime();
+            if (time) {
+                let response = yield ServiceProvider.getOlderMessagesCount(self.roomId, time.toString(), true);
+                let result = yield response.json();
+                console.log("getOlderMessageChunk value", result);
                 // todo
                 /**
                  * Merge messages record to chatMessages array.
                  * Never save message to persistend layer.
                  */
-                if (res.code === 200) {
-                    let datas = res.data;
-                    let earlyMessages = datas;
-                    if (earlyMessages.length > 0) {
-                        waitForRoomMessage().then(messages => {
-                            if (!!messages && messages.length > 0) {
-                                let mergedArray = [];
-                                mergedArray = earlyMessages.concat(messages);
-                                let resultsArray = [];
-                                async.map(mergedArray, function iterator(item, cb) {
-                                    let hasMessage = resultsArray.some(function itor(value, id, arr) {
-                                        if (!!value && value._id === item._id) {
-                                            return true;
-                                        }
-                                    });
-                                    if (hasMessage === false) {
-                                        resultsArray.push(item);
-                                        cb(null, null);
+                if (result.success && result.result.length > 0) {
+                    let earlyMessages = result.result;
+                    let persistMessages = yield waitForRoomMessages();
+                    if (!!persistMessages && persistMessages.length > 0) {
+                        let mergedMessageArray = new Array();
+                        mergedMessageArray = earlyMessages.concat(persistMessages);
+                        let resultsArray = new Array();
+                        let results = yield new Promise((resolve, rejected) => {
+                            async.map(mergedMessageArray, function iterator(item, cb) {
+                                let hasMessage = resultsArray.some(function itor(value, id, arr) {
+                                    if (!!value && value._id === item._id) {
+                                        return true;
                                     }
-                                    else {
-                                        cb(null, null);
-                                    }
-                                }, function done(err, results) {
-                                    let merged = resultsArray.sort(self.compareMessage);
-                                    self.dataManager.messageDAL.saveData(self.roomId, merged).then(value => {
-                                        callback(null, value);
-                                    });
                                 });
-                            }
-                            else {
-                                let merged = earlyMessages.sort(self.compareMessage);
-                                self.dataManager.messageDAL.saveData(self.roomId, merged).then(value => {
-                                    callback(null, value);
-                                });
-                            }
-                        }).catch(err => {
-                            console.error(err + ": Cannot get room message/");
+                                if (hasMessage === false) {
+                                    resultsArray.push(item);
+                                    cb(null, null);
+                                }
+                                else {
+                                    cb(null, null);
+                                }
+                            }, function done(err, results) {
+                                let merged = resultsArray.sort(self.compareMessage);
+                                resolve(merged);
+                            });
                         });
+                        return yield saveRoomMessages(results);
                     }
                     else {
-                        callback(null, null);
+                        let merged = earlyMessages.sort(self.compareMessage);
+                        return yield saveRoomMessages(merged);
                     }
                 }
                 else {
-                    callback(res, null);
+                    return new Array();
                 }
-            });
+            }
+            else {
+                throw new Error("getTopEdgeMessageTime fail");
+            }
         });
     }
-    getTopEdgeMessageTime(callback) {
-        let self = this;
-        let topEdgeMessageTime = new Date();
-        function waitRoomMessage() {
-            return __awaiter(this, void 0, void 0, function* () {
-                let messages = yield self.dataManager.messageDAL.getData(self.roomId);
-                if (!!messages && messages.length > 0) {
-                    if (!!messages[0].createTime) {
-                        topEdgeMessageTime = messages[0].createTime;
+    getTopEdgeMessageTime() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let self = this;
+            function waitRoomMessage() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    let topEdgeMessageTime = new Date();
+                    let messages = yield self.dataManager.messageDAL.getData(self.roomId);
+                    if (!!messages && messages.length > 0) {
+                        if (!!messages[0].createTime) {
+                            topEdgeMessageTime = messages[0].createTime;
+                        }
                     }
-                }
-                console.log("topEdgeMessageTime is: ", topEdgeMessageTime);
+                    console.log("topEdgeMessageTime is: ", topEdgeMessageTime);
+                    return topEdgeMessageTime;
+                });
+            }
+            return new Promise((resolve, reject) => {
+                waitRoomMessage().then((topEdgeMessageTime) => {
+                    resolve(topEdgeMessageTime);
+                }).catch(err => {
+                    reject(err);
+                });
             });
-        }
-        waitRoomMessage().then(() => {
-            callback(null, topEdgeMessageTime);
-        }).catch(err => {
-            console.error(err + "\/Cannot get room message/");
         });
     }
     compareMessage(a, b) {
@@ -362,9 +370,10 @@ class ChatRoomComponent {
         });
     }
     updateWhoReadMyMessages() {
-        let self = this;
-        self.getTopEdgeMessageTime((err, res) => {
-            self.chatRoomApi.getMessagesReaders(res);
+        return __awaiter(this, void 0, void 0, function* () {
+            let self = this;
+            let res = yield self.getTopEdgeMessageTime();
+            self.chatRoomApi.getMessagesReaders(res.toString());
         });
     }
     getMemberProfile(member, callback) {
@@ -372,7 +381,8 @@ class ChatRoomComponent {
     }
     getMessages() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.dataManager.messageDAL.getData(this.roomId);
+            let messages = yield this.dataManager.messageDAL.getData(this.roomId);
+            return messages;
         });
     }
     dispose() {

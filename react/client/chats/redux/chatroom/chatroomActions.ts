@@ -45,7 +45,6 @@ export class ChatRoomActionsType {
     static REPLACE_MESSAGE = "REPLACE_MESSAGE";
     static ON_NEW_MESSAGE = "ON_NEW_MESSAGE";
     static ON_EARLY_MESSAGE_READY = "ON_EARLY_MESSAGE_READY";
-    static LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
 }
 
 export const CHATROOM_REDUCER_EMPTY_STATE = "CHATROOM_REDUCER_EMPTY_STATE";
@@ -142,23 +141,25 @@ export function getPersistendMessage(currentRid: string) {
 const onEarlyMessageReady = createAction(ChatRoomActionsType.ON_EARLY_MESSAGE_READY, (data: boolean) => data);
 export function checkOlderMessages() {
     return dispatch => {
-        let token = Store.getState().authReducer.token;
         let room = Store.getState().chatroomReducer.room;
 
-        ChatRoomComponent.getInstance().getTopEdgeMessageTime(function done(err, res) {
-            ServiceProvider.checkOlderMessagesCount(room._id, res, token).then(response => response.json()).then(result => {
-                console.log("checkOlderMessagesCount", result);
-                if (result.success && result.result > 0) {
-                    //               console.log("onOlderMessageReady is true ! Show load earlier message on top view.");
-                    dispatch(onEarlyMessageReady(true));
-                }
-                else {
-                    //                console.log("onOlderMessageReady is false ! Don't show load earlier message on top view.");
+        ChatRoomComponent.getInstance().getTopEdgeMessageTime().then(res => {
+            ServiceProvider.getOlderMessagesCount(room._id, res.toString(), false)
+                .then(response => response.json())
+                .then(result => {
+                    console.log("getOlderMessagesCount", result);
+                    if (result.success && result.result > 0) {
+                        //               console.log("onOlderMessageReady is true ! Show load earlier message on top view.");
+                        dispatch(onEarlyMessageReady(true));
+                    }
+                    else {
+                        //                console.log("onOlderMessageReady is false ! Don't show load earlier message on top view.");
+                        dispatch(onEarlyMessageReady(false));
+                    }
+                }).catch(err => {
+                    console.warn("getOlderMessagesCount fail", err);
                     dispatch(onEarlyMessageReady(false));
-                }
-            }).catch(err => {
-                dispatch(onEarlyMessageReady(false));
-            });
+                });
         });
     };
 }
@@ -310,13 +311,15 @@ export const ENABLE_CHATROOM = "ENABLE_CHATROOM";
 export const disableChatRoom = () => ({ type: DISABLE_CHATROOM });
 export const enableChatRoom = () => ({ type: ENABLE_CHATROOM });
 
-const loadEarlyMessage_success = () => ({ type: ChatRoomActionsType.LOAD_EARLY_MESSAGE_SUCCESS });
+
+export const LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
+const loadEarlyMessage_success = (payload) => ({ type: LOAD_EARLY_MESSAGE_SUCCESS, payload });
 export function loadEarlyMessageChunk() {
     return dispatch => {
-        ChatRoomComponent.getInstance().getOlderMessageChunk(function done(err, res) {
-            dispatch(loadEarlyMessage_success());
-            // @check older message again.
-            dispatch(checkOlderMessages());
+        ChatRoomComponent.getInstance().getOlderMessageChunk().then(res => {
+            dispatch(loadEarlyMessage_success(res));
+        }).catch(err => {
+            console.warn("loadEarlyMessageChunk fail", err);
         });
     };
 }
