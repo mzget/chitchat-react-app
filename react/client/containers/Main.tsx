@@ -1,18 +1,17 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
 import { Flex, Box } from "reflexbox";
+import * as immutable from "immutable";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 
-import { IComponentProps } from "../utils/IComponentProps";
-
-import { WarningBar } from "../components/WarningBar";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { ConnectProfileEnhancer } from "./profile/ProfileBox";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
 import ChatLogsBox from "./ChatLogsBox";
 import ContactBox from "./chatlist/ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
+import { StalkCompEnhancer } from "./stalk/StalkComponent";
 
 import * as StalkBridgeActions from "../chats/redux/stalkBridge/stalkBridgeActions";
 import * as chatroomActions from "../chats/redux/chatroom/chatroomActions";
@@ -22,6 +21,8 @@ import * as userRx from "../redux/user/userRx";
 import * as authRx from "../redux/authen/authRx";
 import * as groupRx from "../redux/group/groupRx";
 import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
+
+import { IComponentProps } from "../utils/IComponentProps";
 
 interface IComponentNameState {
     header: string;
@@ -164,10 +165,6 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                             menus={this.menus}
                             onSelectedMenuItem={this.onSelectMenuItem} />
                     </div>
-                    {
-                        (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
-                            <WarningBar /> : null
-                    }
                     <div style={{ height: this.bodyHeight, overflowY: "auto" }} id={"app_body"}>
                         <ConnectProfileEnhancer router={this.props.router} />
                         <ConnectGroupListEnhancer fetchGroup={() => this.fetch_orgGroups()}
@@ -180,6 +177,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                         <ContactBox {...this.props} />
                         <ChatLogsBox {...this.props} />
                         <SnackbarToolBox />
+                        <StalkCompEnhancer />
                     </div>
                 </div>
             </MuiThemeProvider>

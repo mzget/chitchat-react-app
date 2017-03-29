@@ -379,5 +379,4 @@ class ChatsLogComponent {
         });
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = ChatsLogComponent;
+exports.ChatsLogComponent = ChatsLogComponent;

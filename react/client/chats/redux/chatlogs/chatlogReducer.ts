@@ -19,8 +19,7 @@ import { Record } from "immutable";
 export const ChatLogInitState = Record({
     isFetching: false,
     state: null,
-    chatsLog: null,
-    chatslogComponent: null
+    chatsLog: null
 });
 const initialState = new ChatLogInitState();
 
@@ -29,8 +28,7 @@ export function chatlogReducer(state = initialState, action) {
 
     switch (action.type) {
         case ChatlogsActions.STALK_INIT_CHATSLOG: {
-            return state.set("chatslogComponent", action.payload)
-                .set("state", ChatlogsActions.STALK_INIT_CHATSLOG);
+            return state.set("state", ChatlogsActions.STALK_INIT_CHATSLOG);
         }
         case ChatlogsActions.STALK_GET_CHATSLOG_COMPLETE: {
             return state.set("chatsLog", action.payload).set("state", ChatlogsActions.STALK_GET_CHATSLOG_COMPLETE);

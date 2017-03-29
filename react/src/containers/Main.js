@@ -10,13 +10,13 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
-const WarningBar_1 = require("../components/WarningBar");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const ProfileBox_1 = require("./profile/ProfileBox");
 const ConnectGroupListEnhancer_1 = require("./group/ConnectGroupListEnhancer");
 const ChatLogsBox_1 = require("./ChatLogsBox");
 const ContactBox_1 = require("./chatlist/ContactBox");
 const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
+const StalkComponent_1 = require("./stalk/StalkComponent");
 const StalkBridgeActions = require("../chats/redux/stalkBridge/stalkBridgeActions");
 const chatroomActions = require("../chats/redux/chatroom/chatroomActions");
 const chatlogsActions = require("../chats/redux/chatlogs/chatlogsActions");
@@ -141,15 +141,14 @@ class Main extends React.Component {
             React.createElement("div", { style: { overflowY: "hidden" } },
                 React.createElement("div", { style: { height: this.headerHeight }, id: "toolbar" },
                     React.createElement(SimpleToolbar_1.SimpleToolbar, { title: this.props.teamReducer.team.name, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
-                (this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
-                    React.createElement(WarningBar_1.WarningBar, null) : null,
                 React.createElement("div", { style: { height: this.bodyHeight, overflowY: "auto" }, id: "app_body" },
                     React.createElement(ProfileBox_1.ConnectProfileEnhancer, { router: this.props.router }),
                     React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => this.fetch_orgGroups(), groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
                     React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => { this.fetch_privateGroups(); }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
                     React.createElement(ContactBox_1.default, __assign({}, this.props)),
                     React.createElement(ChatLogsBox_1.default, __assign({}, this.props)),
-                    React.createElement(SnackbarToolBox_1.SnackbarToolBox, null)))));
+                    React.createElement(SnackbarToolBox_1.SnackbarToolBox, null),
+                    React.createElement(StalkComponent_1.StalkCompEnhancer, null)))));
     }
 }
 const mapStateToProps = (state) => (__assign({}, state));
