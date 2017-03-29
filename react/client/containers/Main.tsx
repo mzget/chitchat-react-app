@@ -65,12 +65,6 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
         this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight));
 
         switch (userReducer.state) {
-            case userRx.FETCH_USER_SUCCESS: {
-                if (userReducer.user) {
-                    this.joinChatServer(nextProps);
-                }
-                break;
-            }
             case userRx.FETCH_AGENT_SUCCESS:
                 this.joinChatServer(nextProps);
                 break;
