@@ -7,6 +7,11 @@ const chitchat_headers = {
     "Content-Type": "application/json",
     "x-api-key": config.api.apiKey
 };
+const withToken = (headers) => (token) => {
+    headers["x-access-token"] = token;
+
+    return headers;
+};
 
 export const getRoomInfo = (room_id: string, token: string): Promise<any> => {
     return fetch(`${config.api.chatroom}/roomInfo?room_id=${room_id}`, {
@@ -50,13 +55,10 @@ export const getChatHistory = (room_id: string, lastMessageTime: Date, token: st
     });
 };
 
-export function getLastAccessRoomInfo(token: string) {
-    return fetch(`${config.Stalk.api.user}/lastAccessRoom`, {
+export function getLastAccessRoomInfo(token: string, team_id: string) {
+    return fetch(`${config.Stalk.api.user}/lastAccessRoom/?team_id=${team_id}`, {
         method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "x-access-token": token
-        }
+        headers: withToken(chitchat_headers)(token)
     });
 }
 

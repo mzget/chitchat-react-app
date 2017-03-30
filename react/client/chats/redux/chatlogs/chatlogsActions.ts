@@ -167,11 +167,11 @@ export const GET_LAST_ACCESS_ROOM_SUCCESS = "GET_LAST_ACCESS_ROOM_SUCCESS";
 export const GET_LAST_ACCESS_ROOM_FAILURE = "GET_LAST_ACCESS_ROOM_FAILURE";
 const getLastAccessRoomSuccess = (payload) => ({ type: GET_LAST_ACCESS_ROOM_SUCCESS, payload });
 const getLastAccessRoomFailure = (error) => ({ type: GET_LAST_ACCESS_ROOM_FAILURE, payload: error });
-export function getLastAccessRoom() {
+export function getLastAccessRoom(team_id: string) {
     return dispatch => {
         let token = Store.getState().authReducer.token;
 
-        ServiceProvider.getLastAccessRoomInfo(token).then(response => response.json())
+        ServiceProvider.getLastAccessRoomInfo(token, team_id).then(response => response.json())
             .then(json => {
                 if (json.success) {
                     dispatch(getLastAccessRoomSuccess(json.result));

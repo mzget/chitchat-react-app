@@ -41,10 +41,16 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
         this.state = {
             header: "Home"
         };
-        const { teamReducer } = this.props;
+        
+        const { teamReducer, stalkReducer, chatlogReducer } = this.props;
 
         if (!teamReducer.team) {
             this.props.router.replace("/");
+        }
+        else if (teamReducer.team &&
+            stalkReducer.state == StalkBridgeActions.STALK_INIT_SUCCESS
+            && chatlogReducer.state == chatlogsActions.STALK_INIT_CHATSLOG) {
+            this.props.dispatch(chatlogsActions.getLastAccessRoom(teamReducer.team._id));
         }
 
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
@@ -86,15 +92,6 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                     }
                 }
                 break;
-            default:
-                break;
-        }
-
-        switch (chatlogReducer.state) {
-            case chatlogsActions.STALK_INIT_CHATSLOG: {
-                this.props.dispatch(chatlogsActions.getLastAccessRoom());
-                break;
-            }
             default:
                 break;
         }
