@@ -9,6 +9,7 @@ const serverEventListener_1 = require("../libs/stalk/serverEventListener");
 const dataManager_1 = require("./dataManager");
 const dataListener_1 = require("./dataListener");
 const pushDataListener_1 = require("./pushDataListener");
+const chatslogComponent_1 = require("./chatslogComponent");
 class BackendFactory {
     static getInstance() {
         if (BackendFactory.instance == null || BackendFactory.instance == undefined) {
@@ -22,6 +23,10 @@ class BackendFactory {
         this.pushDataListener = new pushDataListener_1.default();
         this.dataManager = new dataManager_1.default();
         this.dataListener = new dataListener_1.default(this.dataManager);
+    }
+    createChatlogs() {
+        this.chatLogComp = new chatslogComponent_1.ChatsLogComponent();
+        return this.chatLogComp;
     }
     getServer() {
         return new Promise((resolve, rejected) => {

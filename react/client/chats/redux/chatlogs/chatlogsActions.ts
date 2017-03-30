@@ -8,12 +8,11 @@ import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
 import { BackendFactory } from "../../BackendFactory";
-import ChatsLogComponent, { IUnread, Unread } from "../../chatslogComponent";
+import { ChatsLogComponent, IUnread, Unread } from "../../chatslogComponent";
 import ChatLog from "../../models/chatLog";
 import * as ServiceProvider from "../../services/ServiceProvider";
 
 import Store from "../../../redux/configureStore";
-const chatsLogComp = () => Store.getState().chatlogReducer.chatslogComponent as ChatsLogComponent;
 
 export const STALK_INIT_CHATSLOG = "STALK_INIT_CHATSLOG";
 export const STALK_GET_CHATSLOG_COMPLETE = "STALK_GET_CHATSLOG_COMPLETE";
@@ -23,26 +22,28 @@ export const STALK_CHATLOG_CONTACT_COMPLETE = "STALK_CHATLOG_CONTACT_COMPLETE";
 
 const listenerImp = (newMsg) => {
     let dataManager = BackendFactory.getInstance().dataManager;
+    let chatsLogComp = BackendFactory.getInstance().chatLogComp;
 
     if (!dataManager.isMySelf(newMsg.sender)) {
-        chatsLogComp().increaseChatsLogCount(1);
+        chatsLogComp.increaseChatsLogCount(1);
 
         let unread: IUnread = new Unread();
         unread.message = newMsg;
         unread.rid = newMsg.rid;
-        let count = (!!chatsLogComp().getUnreadItem(newMsg.rid)) ? chatsLogComp().getUnreadItem(newMsg.rid).count : 0;
+        let count = (!!chatsLogComp.getUnreadItem(newMsg.rid)) ? chatsLogComp.getUnreadItem(newMsg.rid).count : 0;
         count++;
         unread.count = count;
-        chatsLogComp().addUnreadMessage(unread);
+        chatsLogComp.addUnreadMessage(unread);
         onUnreadMessageMapChanged(unread);
         //             chatLogDAL.savePersistedUnreadMsgMap(unread);
     }
 };
 
 function updateLastAccessTimeEventHandler(newRoomAccess) {
+    let chatsLogComp = BackendFactory.getInstance().chatLogComp;
     let user_id = Store.getState().userReducer.user._id;
-    chatsLogComp().getUnreadMessage(user_id, newRoomAccess.roomAccess[0]).then(function (unread) {
-        chatsLogComp().addUnreadMessage(unread);
+    chatsLogComp.getUnreadMessage(user_id, newRoomAccess.roomAccess[0]).then(function (unread) {
+        chatsLogComp.addUnreadMessage(unread);
 
         calculateUnreadCount();
         onUnreadMessageMapChanged(unread);
@@ -54,7 +55,7 @@ function updateLastAccessTimeEventHandler(newRoomAccess) {
 
 export function initChatsLog() {
     let dataManager = BackendFactory.getInstance().dataManager;
-    let chatsLogComponent = new ChatsLogComponent();
+    let chatsLogComponent = BackendFactory.getInstance().createChatlogs();
 
     dataManager.contactsProfileChanged = (contact) => {
         chatsLogComponent.getRoomsInfo();
@@ -74,18 +75,18 @@ export function initChatsLog() {
         getUnreadMessages();
     };
 
-    Store.dispatch({
-        type: STALK_INIT_CHATSLOG, payload: chatsLogComponent
-    });
+    Store.dispatch({ type: STALK_INIT_CHATSLOG });
 }
 
 function getUnreadMessages() {
     let dataManager = BackendFactory.getInstance().dataManager;
+    let chatsLogComp = BackendFactory.getInstance().chatLogComp;
     let user_id = Store.getState().userReducer.user._id;
-    chatsLogComp().getUnreadMessages(user_id, dataManager.getRoomAccess(), function done(err, unreadLogs) {
+
+    chatsLogComp.getUnreadMessages(user_id, dataManager.getRoomAccess(), function done(err, unreadLogs) {
         if (!!unreadLogs) {
             unreadLogs.map(function element(unread) {
-                chatsLogComp().addUnreadMessage(unread);
+                chatsLogComp.addUnreadMessage(unread);
             });
 
             calculateUnreadCount();
@@ -96,27 +97,33 @@ function getUnreadMessages() {
 }
 
 function calculateUnreadCount() {
-    chatsLogComp().calculateChatsLogCount();
+    let chatsLogComp = BackendFactory.getInstance().chatLogComp;
+    chatsLogComp.calculateChatsLogCount();
 }
 
 function increaseLogsCount(count: number) {
-    chatsLogComp().increaseChatsLogCount(count);
+    let chatsLogComp = BackendFactory.getInstance().chatLogComp;
+    chatsLogComp.increaseChatsLogCount(count);
 }
 
 function decreaseLogsCount(count: number) {
-    chatsLogComp().decreaseChatsLogCount(count);
+    let chatsLogComp = BackendFactory.getInstance().chatLogComp;
+    chatsLogComp.decreaseChatsLogCount(count);
 }
 
 export function getChatsLogCount() {
-    return chatsLogComp ? chatsLogComp().getChatsLogCount() : null;
+    let chatsLogComp = BackendFactory.getInstance().chatLogComp;
+    return chatsLogComp ? chatsLogComp.getChatsLogCount() : null;
 }
 
 function getUnreadMessageMap() {
-    return chatsLogComp().getUnreadMessageMap();
+    let chatsLogComp = BackendFactory.getInstance().chatLogComp;
+    return chatsLogComp.getUnreadMessageMap();
 }
 
 function getChatsLog() {
-    let chatsLog = chatsLogComp().getChatsLog();
+    let chatsLogComp = BackendFactory.getInstance().chatLogComp;
+    let chatsLog = chatsLogComp.getChatsLog();
 
     Store.dispatch({
         type: STALK_GET_CHATSLOG_COMPLETE,
@@ -129,8 +136,10 @@ function onUnreadMessageMapChanged(unread: IUnread) {
         type: STALK_UNREAD_MAP_CHANGED, payload: unread
     });
 
-    chatsLogComp().checkRoomInfo(unread).then(function () {
-        let chatsLog = chatsLogComp().getChatsLog();
+    let chatsLogComp = BackendFactory.getInstance().chatLogComp;
+
+    chatsLogComp.checkRoomInfo(unread).then(function () {
+        let chatsLog = chatsLogComp.getChatsLog();
         Store.dispatch({
             type: STALK_CHATLOG_MAP_CHANGED,
             payload: chatsLog
@@ -141,7 +150,8 @@ function onUnreadMessageMapChanged(unread: IUnread) {
 }
 
 function getUnreadMessageComplete() {
-    chatsLogComp().getRoomsInfo();
+    let chatsLogComp = BackendFactory.getInstance().chatLogComp;
+    chatsLogComp.getRoomsInfo();
 }
 
 const getChatLogContact = (chatlog: ChatLog) => {
@@ -157,11 +167,11 @@ export const GET_LAST_ACCESS_ROOM_SUCCESS = "GET_LAST_ACCESS_ROOM_SUCCESS";
 export const GET_LAST_ACCESS_ROOM_FAILURE = "GET_LAST_ACCESS_ROOM_FAILURE";
 const getLastAccessRoomSuccess = (payload) => ({ type: GET_LAST_ACCESS_ROOM_SUCCESS, payload });
 const getLastAccessRoomFailure = (error) => ({ type: GET_LAST_ACCESS_ROOM_FAILURE, payload: error });
-export function getLastAccessRoom() {
+export function getLastAccessRoom(team_id: string) {
     return dispatch => {
         let token = Store.getState().authReducer.token;
 
-        ServiceProvider.getLastAccessRoomInfo(token).then(response => response.json())
+        ServiceProvider.getLastAccessRoomInfo(token, team_id).then(response => response.json())
             .then(json => {
                 if (json.success) {
                     dispatch(getLastAccessRoomSuccess(json.result));

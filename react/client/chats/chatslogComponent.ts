@@ -27,7 +27,7 @@ export interface ChatLogMap { [key: string]: ChatLog; };
 export interface IUnread { message: IMessage; rid: string; count: number; };
 export class Unread { message: IMessage; rid: string; count: number; };
 
-export default class ChatsLogComponent implements IRoomAccessListenerImp {
+export class ChatsLogComponent implements IRoomAccessListenerImp {
     serverImp: ServerImplemented = null;
     dataManager: DataManager = null;
     dataListener: DataListener = null;

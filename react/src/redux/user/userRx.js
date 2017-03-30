@@ -4,13 +4,14 @@ const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 const UserService = require("../../chats/services/UserService");
+const StalkBridgeActions = require("../../chats/redux/stalkBridge/stalkBridgeActions");
 const configureStore_1 = require("../configureStore");
 const FETCH_USER = "FETCH_USER";
 exports.FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS";
 exports.FETCH_USER_FAILURE = "FETCH_USER_FAILURE";
 exports.FETCH_USER_CANCELLED = "FETCH_USER_CANCELLED";
 exports.fetchUser = (username) => ({ type: FETCH_USER, payload: username }); // username => ({ type: FETCH_USER, payload: username });
-const fetchUserFulfilled = payload => ({ type: exports.FETCH_USER_SUCCESS, payload: payload.xhr.response });
+const fetchUserFulfilled = payload => ({ type: exports.FETCH_USER_SUCCESS, payload });
 const cancelFetchUser = () => ({ type: exports.FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: exports.FETCH_USER_FAILURE, payload });
 exports.fetchUserEpic = action$ => (action$.ofType(FETCH_USER).mergeMap(action => ajax({
@@ -21,9 +22,20 @@ exports.fetchUserEpic = action$ => (action$.ofType(FETCH_USER).mergeMap(action =
         "x-api-key": config_1.default.api.apiKey
     }
 })
-    .map(fetchUserFulfilled)
+    .map(response => fetchUserFulfilled(response.xhr.response))
     .takeUntil(action$.ofType(exports.FETCH_USER_CANCELLED))
-    .catch(error => Rx.Observable.of(fetchUserRejected(error)))));
+    .catch(error => Rx.Observable.of(fetchUserRejected(error)))
+    ._do(x => {
+    if (x.type == exports.FETCH_USER_SUCCESS) {
+        if (x.payload.result && x.payload.result.length > 0) {
+            let user = x.payload.result[0];
+            let stalkReducer = configureStore_1.default.getState().stalkReducer;
+            if (stalkReducer.state !== StalkBridgeActions.STALK_INIT) {
+                StalkBridgeActions.stalkLogin(user);
+            }
+        }
+    }
+})));
 const UPDATE_USER_INFO = "UPDATE_USER_INFO";
 exports.UPDATE_USER_INFO_SUCCESS = "UPDATE_USER_INFO_SUCCESS";
 exports.UPDATE_USER_INFO_FAILURE = "UPDATE_USER_INFO_FAILURE";
