@@ -63,8 +63,7 @@ function initChatsLog() {
     chatsLogComponent.addNewRoomAccessEvent = function (data) {
         getUnreadMessages();
     };
-    configureStore_1.default.dispatch({ type: exports.STALK_INIT_CHATSLOG
-    });
+    configureStore_1.default.dispatch({ type: exports.STALK_INIT_CHATSLOG });
 }
 exports.initChatsLog = initChatsLog;
 function getUnreadMessages() {
@@ -140,10 +139,10 @@ exports.GET_LAST_ACCESS_ROOM_SUCCESS = "GET_LAST_ACCESS_ROOM_SUCCESS";
 exports.GET_LAST_ACCESS_ROOM_FAILURE = "GET_LAST_ACCESS_ROOM_FAILURE";
 const getLastAccessRoomSuccess = (payload) => ({ type: exports.GET_LAST_ACCESS_ROOM_SUCCESS, payload });
 const getLastAccessRoomFailure = (error) => ({ type: exports.GET_LAST_ACCESS_ROOM_FAILURE, payload: error });
-function getLastAccessRoom() {
+function getLastAccessRoom(team_id) {
     return dispatch => {
         let token = configureStore_1.default.getState().authReducer.token;
-        ServiceProvider.getLastAccessRoomInfo(token).then(response => response.json())
+        ServiceProvider.getLastAccessRoomInfo(token, team_id).then(response => response.json())
             .then(json => {
             if (json.success) {
                 dispatch(getLastAccessRoomSuccess(json.result));

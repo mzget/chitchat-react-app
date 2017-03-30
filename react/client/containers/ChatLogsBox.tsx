@@ -1,8 +1,9 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import * as immutable from "immutable";
 import Subheader from "material-ui/Subheader";
 
-import ChatsLogComponent, { ChatLogMap, IUnread, Unread } from "../chats/chatslogComponent";
+import { ChatsLogComponent, ChatLogMap, IUnread, Unread } from "../chats/chatslogComponent";
 import ChatLog from "../chats/models/chatLog";
 
 import Store from "../redux/configureStore";
@@ -43,21 +44,25 @@ class ChatLogsBox extends React.Component<IComponentNameProps, IComponentNameSta
     componentWillReceiveProps(nextProps: IComponentNameProps) {
         let { chatroomReducer, stalkReducer, chatlogReducer } = nextProps;
 
-        switch (chatlogReducer.state) {
-            case ChatLogsActions.STALK_GET_CHATSLOG_COMPLETE:
-                this.convertObjToArr(chatlogReducer.chatsLog);
-                break;
-            case ChatLogsActions.STALK_UNREAD_MAP_CHANGED:
-                this.convertObjToArr(chatlogReducer.chatsLog);
-                break;
-            case ChatLogsActions.STALK_CHATLOG_CONTACT_COMPLETE:
-                this.convertObjToArr(chatlogReducer.chatsLog);
-                break;
-            case ChatLogsActions.STALK_CHATLOG_MAP_CHANGED:
-                this.convertObjToArr(chatlogReducer.chatsLog);
-                break;
-            default:
-                break;
+        let prevChatlogs = immutable.fromJS(this.props.chatlogReducer.chatsLog);
+        let nextChatlogs = immutable.fromJS(chatlogReducer.chatsLog);
+        if (!!nextChatlogs && !nextChatlogs.equals(prevChatlogs)) {
+            switch (chatlogReducer.state) {
+                case ChatLogsActions.STALK_GET_CHATSLOG_COMPLETE:
+                    this.convertObjToArr(chatlogReducer.chatsLog);
+                    break;
+                case ChatLogsActions.STALK_UNREAD_MAP_CHANGED:
+                    this.convertObjToArr(chatlogReducer.chatsLog);
+                    break;
+                case ChatLogsActions.STALK_CHATLOG_CONTACT_COMPLETE:
+                    this.convertObjToArr(chatlogReducer.chatsLog);
+                    break;
+                case ChatLogsActions.STALK_CHATLOG_MAP_CHANGED:
+                    this.convertObjToArr(chatlogReducer.chatsLog);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

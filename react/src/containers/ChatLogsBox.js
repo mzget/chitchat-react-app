@@ -8,6 +8,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 const React = require("react");
+const immutable = require("immutable");
 const Subheader_1 = require("material-ui/Subheader");
 const ChatLogsActions = require("../chats/redux/chatlogs/chatlogsActions");
 const ListChatLogs_1 = require("./ListChatLogs");
@@ -23,21 +24,25 @@ class ChatLogsBox extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         let { chatroomReducer, stalkReducer, chatlogReducer } = nextProps;
-        switch (chatlogReducer.state) {
-            case ChatLogsActions.STALK_GET_CHATSLOG_COMPLETE:
-                this.convertObjToArr(chatlogReducer.chatsLog);
-                break;
-            case ChatLogsActions.STALK_UNREAD_MAP_CHANGED:
-                this.convertObjToArr(chatlogReducer.chatsLog);
-                break;
-            case ChatLogsActions.STALK_CHATLOG_CONTACT_COMPLETE:
-                this.convertObjToArr(chatlogReducer.chatsLog);
-                break;
-            case ChatLogsActions.STALK_CHATLOG_MAP_CHANGED:
-                this.convertObjToArr(chatlogReducer.chatsLog);
-                break;
-            default:
-                break;
+        let prevChatlogs = immutable.fromJS(this.props.chatlogReducer.chatsLog);
+        let nextChatlogs = immutable.fromJS(chatlogReducer.chatsLog);
+        if (!!nextChatlogs && !nextChatlogs.equals(prevChatlogs)) {
+            switch (chatlogReducer.state) {
+                case ChatLogsActions.STALK_GET_CHATSLOG_COMPLETE:
+                    this.convertObjToArr(chatlogReducer.chatsLog);
+                    break;
+                case ChatLogsActions.STALK_UNREAD_MAP_CHANGED:
+                    this.convertObjToArr(chatlogReducer.chatsLog);
+                    break;
+                case ChatLogsActions.STALK_CHATLOG_CONTACT_COMPLETE:
+                    this.convertObjToArr(chatlogReducer.chatsLog);
+                    break;
+                case ChatLogsActions.STALK_CHATLOG_MAP_CHANGED:
+                    this.convertObjToArr(chatlogReducer.chatsLog);
+                    break;
+                default:
+                    break;
+            }
         }
     }
     convertObjToArr(obj) {
