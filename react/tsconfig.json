@@ -1,0 +1,19 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2015",
+    "jsx": "react",
+    "rootDirs": [
+      "client/**/*"
+    ],
+    "outDir": "src",
+    "typeRoots": [
+      "node_modules/@types",
+      "node_modules/@reactivex/rxjs"
+    ]
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
