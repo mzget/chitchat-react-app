@@ -8,7 +8,7 @@ import * as Colors from "material-ui/styles/colors";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { ConnectProfileEnhancer } from "./profile/ProfileBox";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
-import ChatLogsBox from "./ChatLogsBox";
+import {ChatLogsBoxEnhancer} from "./chatlog/ChatLogsBox";
 import ContactBox from "./chatlist/ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
@@ -166,7 +166,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                             groups={this.props.groupReducer.privateGroups}
                             subHeader={"Groups"} />
                         <ContactBox {...this.props} />
-                        <ChatLogsBox {...this.props} />
+                        <ChatLogsBoxEnhancer router={this.props.router} />
                         <SnackbarToolBox />
                         <StalkCompEnhancer />
                     </div>

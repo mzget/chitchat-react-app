@@ -68,3 +68,12 @@ function updateLastAccessRoomInfo(token, room_id) {
     });
 }
 exports.updateLastAccessRoomInfo = updateLastAccessRoomInfo;
+function removeLastAccessRoomInfo(user_id, room_id) {
+    return Rx.Observable.ajax({
+        url: `${config_1.default.Stalk.api.user}/lastAccessRoom`,
+        method: "DELETE",
+        headers: chitchat_headers,
+        body: JSON.stringify({ room_id: room_id, user_id: user_id })
+    });
+}
+exports.removeLastAccessRoomInfo = removeLastAccessRoomInfo;
