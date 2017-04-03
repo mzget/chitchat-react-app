@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const immutable_1 = require("immutable");
 const authRx = require("./authRx");
 const AppActions = require("../app/persistentDataActions");

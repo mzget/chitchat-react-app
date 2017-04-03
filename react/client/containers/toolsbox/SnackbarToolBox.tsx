@@ -7,9 +7,6 @@ import { IComponentProps } from "../../utils/IComponentProps";
 import { DialogBox } from "../../components/DialogBox";
 import { SnackbarSimple } from "../../components/SnackbarSimple";
 
-import * as StalkBridgeActions from "../../redux/stalkBridge/stalkBridgeActions";
-import * as StalkNotificationActions from "../../redux/stalkBridge/StalkNotificationActions";
-
 import * as AlertMsg from "../../consts/AlertMsg";
 
 interface IComponentNameState {

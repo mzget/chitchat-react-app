@@ -24,7 +24,8 @@
     "redux-devtools-dock-monitor": "^1.1.1",
     "redux-devtools-extension": "^2.13.0",
     "redux-devtools-log-monitor": "^1.2.0",
-    "tslint": "^4.5.1"
+    "tslint": "^5.0.0",
+    "typescript": "^2.2.2"
   },
   "dependencies": {
     "async": "^2.2.0",

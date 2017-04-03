@@ -192,21 +192,21 @@ export async function getMessages() {
 const send_message_request = () => ({ type: ChatRoomActionsType.SEND_MESSAGE_REQUEST });
 const send_message_success = (data: any) => ({ type: ChatRoomActionsType.SEND_MESSAGE_SUCCESS, payload: data });
 const send_message_failure = (error?: any) => ({ type: ChatRoomActionsType.SEND_MESSAGE_FAILURE, payload: error });
-export function sendMessage(msg: IMessage) {
+export function sendMessage(message: IMessage) {
     return (dispatch) => {
         dispatch(send_message_request());
 
-        if (msg.type === MessageType[MessageType.Location]) {
-            BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
+        if (message.type === MessageType[MessageType.Location]) {
+            BackendFactory.getInstance().getChatApi().chat("*", message, (err, res) => {
                 dispatch(sendMessageResponse(err, res));
             });
             return;
         }
 
-        if (msg.type === MessageType[MessageType.Text] && config.appConfig.encryption === true) {
-            secure.encryption(msg.body).then(result => {
-                msg.body = result;
-                BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
+        if (message.type === MessageType[MessageType.Text] && config.appConfig.encryption === true) {
+            secure.encryption(message.body).then(result => {
+                message.body = result;
+                BackendFactory.getInstance().getChatApi().chat("*", message, (err, res) => {
                     dispatch(sendMessageResponse(err, res));
                 });
             }).catch(err => {
@@ -215,7 +215,7 @@ export function sendMessage(msg: IMessage) {
             });
         }
         else {
-            BackendFactory.getInstance().getChatApi().chat("*", msg, (err, res) => {
+            BackendFactory.getInstance().getChatApi().chat("*", message, (err, res) => {
                 dispatch(sendMessageResponse(err, res));
             });
         }

@@ -12,7 +12,7 @@ import { CardImageWithAvatar, CardStickerWithAvatar } from "../../components/Car
 import { CardFileWithAvatar } from "../../components/CardFileWithAvatar";
 import { CardVideoWithAvatar } from "../../components/CardVideoWithAvatar";
 
-import * as FileType from "../../../shared/FileType";
+import * as FileType from "../../libs/shared/FileType";
 
 const FontAwesome = require("react-fontawesome");
 

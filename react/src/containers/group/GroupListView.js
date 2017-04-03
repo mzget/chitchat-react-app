@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const Subheader_1 = require("material-ui/Subheader");
 const GroupList_1 = require("./GroupList");

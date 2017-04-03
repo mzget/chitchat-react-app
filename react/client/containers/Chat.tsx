@@ -26,6 +26,8 @@ import { MessageImp } from "../chats/models/MessageImp";
 import { imagesPath } from "../consts/StickerPath";
 import * as FileType from "../libs/shared/FileType";
 
+import { decorateMessage } from "../actions/chatroom/chatroomMessageUtils";
+
 interface IComponentNameState {
     messages: any[];
     isLoadingEarlierMessages;
@@ -317,7 +319,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     prepareSend(msg) {
-        let message = this.decorateMessage(msg);
+        let message = decorateMessage(msg);
         this.send(message);
 
         let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
@@ -330,52 +332,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             let chatBox = document.getElementById("app_body");
             chatBox.scrollTop = chatBox.scrollHeight;
         });
-    }
-
-    decorateMessage(msg): IMessage {
-        let message = new MessageImp();
-
-        if (msg.image != null) {
-            message.body = msg.image;
-            message.src = msg.src;
-            message.type = MessageType[MessageType.Image];
-        }
-        else if (msg.text != null) {
-            message.body = msg.text;
-            message.type = MessageType[MessageType.Text];
-        }
-        else if (msg.location != null) {
-            message.type = MessageType[MessageType.Location];
-        }
-        else if (msg.video != null) {
-            message.body = msg.video;
-            message.src = msg.src;
-            message.type = MessageType[MessageType.Video];
-        }
-        else if (msg.file != null) {
-            message.body = msg.file;
-            message.meta = { mimetype: msg.mimetype, size: msg.size };
-            message.src = msg.src;
-            message.type = MessageType[MessageType.File];
-        }
-        else if (msg.sticker != null) {
-            message.body = msg.sticker;
-            message.src = imagesPath[msg.sticker].img;
-            message.type = MessageType[MessageType.Sticker];
-        }
-
-        message.rid = this.props.chatroomReducer.room._id;
-        message.sender = this.props.userReducer.user._id;
-        message.user = {
-            _id: this.props.userReducer.user._id,
-            username: this.props.userReducer.user.username,
-            avatar: this.props.userReducer.user.avatar
-        };
-        message.target = "*";
-        message.uuid = Math.round(Math.random() * 10000); // simulating server-side unique id generation
-        message.status = "Sending...";
-
-        return message;
     }
 
     send(message: IMessage) {

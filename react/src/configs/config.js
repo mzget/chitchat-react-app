@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const chitchat_api = (host) => ({
     apiKey: "chitchat1234",
     host: `${host}`,
@@ -36,17 +37,16 @@ const composeMyconfig = (config) => {
 };
 const api_stalk_master = "git.animation-genius.com";
 const api_stalk_dev = "git.animation-genius.com";
-const statkPort = "3010";
+const stalkPort = "3010";
 const api_master = "http://git.animation-genius.com:9000";
 const api_dev = "http://localhost:9000";
 const getConfig = () => {
     if (process.env.NODE_ENV === `development`) {
-        return composeMyconfig(baseConfig)(api_dev)(api_stalk_master, statkPort, api_dev);
+        return composeMyconfig(baseConfig)(api_dev)(api_stalk_master, stalkPort, api_dev);
     }
     else if (process.env.NODE_ENV === `production`) {
-        return composeMyconfig(baseConfig)(api_master)(api_stalk_master, statkPort, api_master);
+        return composeMyconfig(baseConfig)(api_master)(api_stalk_master, stalkPort, api_master);
     }
 };
 const config = getConfig();
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = config;

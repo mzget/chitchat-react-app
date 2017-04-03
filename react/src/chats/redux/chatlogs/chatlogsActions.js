@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
@@ -29,6 +30,7 @@ const listenerImp = (newMsg) => {
         unread.count = count;
         chatsLogComp.addUnreadMessage(unread);
         onUnreadMessageMapChanged(unread);
+        //             chatLogDAL.savePersistedUnreadMsgMap(unread);
     }
 };
 function updateLastAccessTimeEventHandler(newRoomAccess) {

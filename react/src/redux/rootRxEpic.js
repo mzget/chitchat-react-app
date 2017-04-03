@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const redux_observable_1 = require("redux-observable");
 const userRx = require("./user/userRx");
 const chatroomRxEpic = require("../chats/redux/chatroom/chatroomRxEpic");

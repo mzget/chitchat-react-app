@@ -4,6 +4,7 @@
  * Copyright 2016 Ahoo Studio.co.th.
  */
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class MessageDALFactory {
     static getObject() {
         if (!!global.userAgent) {
@@ -11,6 +12,8 @@ class MessageDALFactory {
             return new MessageDAL();
         }
         else {
+            // const NodeMessageDAL = require("./nodeMessageDAL");
+            // return new NodeMessageDAL();
         }
     }
 }

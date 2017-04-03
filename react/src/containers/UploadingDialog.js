@@ -1,12 +1,5 @@
 "use strict";
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
@@ -23,7 +16,7 @@ class UploadingDialog extends React.Component {
     constructor() {
         super(...arguments);
         this.closeDialog = () => {
-            this.setState(previouseState => (__assign({}, previouseState, { openState: false })));
+            this.setState(previouseState => (Object.assign({}, previouseState, { openState: false })));
         };
         this.cancelFileUpload = () => {
             let { chatroomReducer } = this.props;
@@ -46,17 +39,17 @@ class UploadingDialog extends React.Component {
         let self = this;
         switch (chatroomReducer.state) {
             case ChatroomRx.CHATROOM_UPLOAD_FILE:
-                this.setState(previouseState => (__assign({}, previouseState, { openState: true })));
+                this.setState(previouseState => (Object.assign({}, previouseState, { openState: true })));
                 break;
             case ChatroomRx.CHATROOM_UPLOAD_FILE_SUCCESS: {
-                this.setState(previouseState => (__assign({}, previouseState, { dialogTitle: "Upload Success!" })));
+                this.setState(previouseState => (Object.assign({}, previouseState, { dialogTitle: "Upload Success!" })));
                 setTimeout(function () {
                     self.closeDialog();
                 }, 3000);
                 break;
             }
             case ChatroomRx.CHATROOM_UPLOAD_FILE_FAILURE: {
-                this.setState(previouseState => (__assign({}, previouseState, { dialogTitle: "Upload Fail!" })));
+                this.setState(previouseState => (Object.assign({}, previouseState, { dialogTitle: "Upload Fail!" })));
                 setTimeout(function () {
                     self.closeDialog();
                 }, 3000);
@@ -94,7 +87,6 @@ class UploadingDialog extends React.Component {
  * ## Redux boilerplate
  */
 function mapStateToProps(state) {
-    return __assign({}, state);
+    return Object.assign({}, state);
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = react_redux_1.connect(mapStateToProps)(UploadingDialog);

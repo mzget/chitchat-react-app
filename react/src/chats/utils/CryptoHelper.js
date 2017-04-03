@@ -7,6 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const secureServiceFactory_1 = require("../secure/secureServiceFactory");
 const Message_1 = require("../../libs/shared/Message");
 const config_1 = require("../../configs/config");

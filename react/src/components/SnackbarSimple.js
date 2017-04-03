@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const Snackbar_1 = require("material-ui/Snackbar");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");

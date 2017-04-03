@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const async = require("async");
 const Room_1 = require("../libs/shared/Room");
 const RoomDALFactory_1 = require("./dataAccessLayer/RoomDALFactory");
@@ -168,6 +169,28 @@ class DataManager {
         if (!this.contactsMember)
             this.contactsMember = {};
         if (!this.contactsMember[_id]) {
+            // @ Need to get new contact info.
+            /*
+            ServerImplemented.getInstance().getMemberProfile(_id, (err, res) => {
+                console.log("getMemberProfile : ", err, JSON.stringify(res));
+
+                let data = JSON.parse(JSON.stringify(res.data));
+                let contact: ContactInfo = new ContactInfo();
+                contact._id = data._id;
+                contact.displayname = data.displayname;
+                contact.image = data.image;
+                contact.status = data.status;
+
+                console.warn(contact);
+                self.contactsMember[contact._id] = contact;
+
+                if (self.onContactsDataReady != null) {
+                    self.onContactsDataReady();
+                }
+
+                console.log("We need to save contacts list to persistence data layer.");
+            });
+            */
         }
     }
     updateContactImage(contactId, url) {
@@ -268,5 +291,4 @@ class DataManager {
             return false;
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = DataManager;

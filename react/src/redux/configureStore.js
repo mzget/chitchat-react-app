@@ -9,6 +9,7 @@
  *
  */
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * ## Imports
  *
@@ -31,5 +32,4 @@ function configureStore() {
 ;
 // !!! Note >>> Do not edit these 2 line below. I make it for call global store. @ Mzget.
 const store = configureStore();
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = store;
