@@ -1,8 +1,11 @@
 # chitchat-react-app
 ChitChat react-app code sample. The implementation of react, redux, rxjs ...
 
-# stalk-react-sample
-An implementation of stalk chat service in react.js application
+Realtime powered by stalk chat service.
+
+Demo #  http://git.animation-genius.com:9000/
+
+Demo # http://mzget.github.io/chitchat-react-app/
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
