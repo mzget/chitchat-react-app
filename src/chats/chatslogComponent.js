@@ -241,20 +241,21 @@ class ChatsLogComponent {
             q.push(value, function (err) { });
         });
     }
-    manageChatLog() {
+    manageChatLog(chatrooms) {
         let self = this;
         return new Promise((resolve, rejected) => {
             // create a queue object with concurrency 2
             let q = async.queue(function (task, callback) {
                 let unread = task;
-                self.dataManager.roomDAL.get(unread.rid).then(room => {
-                    if (!room)
-                        callback();
-                    self.organizeChatLogMap(unread, room, () => {
-                        callback();
-                    });
+                let rooms = chatrooms.filter(v => v._id == unread.rid);
+                let room = (rooms.length > 0) ? rooms[0] : null;
+                if (!room) {
+                    callback();
+                }
+                self.organizeChatLogMap(unread, room, () => {
+                    callback();
                 });
-            }, 10);
+            }, 2);
             // assign a callback
             q.drain = function () {
                 resolve(self.chatslog);
@@ -346,31 +347,30 @@ class ChatsLogComponent {
         this.chatslog.set(chatLog.id, chatLog);
         done();
     }
-    checkRoomInfo(unread) {
+    checkRoomInfo(unread, chatrooms) {
         let self = this;
         return new Promise((resolve, rejected) => {
-            this.dataManager.roomDAL.get(unread.rid).then(roomInfo => {
-                if (!roomInfo) {
-                    console.warn("No have roomInfo in room store.", unread.rid);
-                    this.getRoomInfo(unread.rid, (err, room) => {
-                        if (!!room) {
-                            self.dataManager.roomDAL.save(room._id, room);
-                            this.organizeChatLogMap(unread, room, () => {
-                                resolve();
-                            });
-                        }
-                        else {
-                            rejected();
-                        }
-                    });
-                }
-                else {
-                    console.log("organize chats log of room: ", roomInfo.name);
-                    this.organizeChatLogMap(unread, roomInfo, () => {
-                        resolve();
-                    });
-                }
-            });
+            let rooms = (!!chatrooms && chatrooms.length > 0) ? chatrooms.filter(v => v._id == unread.rid) : [];
+            let roomInfo = rooms[0];
+            if (!roomInfo) {
+                console.warn("No have roomInfo in room store.", unread.rid);
+                this.getRoomInfo(unread.rid, (err, room) => {
+                    if (!!room) {
+                        this.organizeChatLogMap(unread, room, () => {
+                            resolve(room);
+                        });
+                    }
+                    else {
+                        rejected(err);
+                    }
+                });
+            }
+            else {
+                console.log("organize chats log of room: ", roomInfo.name);
+                this.organizeChatLogMap(unread, roomInfo, () => {
+                    resolve();
+                });
+            }
         });
     }
     getChatsLogCount() {

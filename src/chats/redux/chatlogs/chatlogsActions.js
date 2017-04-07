@@ -61,7 +61,8 @@ function initChatsLog() {
         getUnreadMessages();
     };
     chatsLogComponent.getRoomsInfoCompleteEvent = () => {
-        chatsLogComponent.manageChatLog().then(chatlog => {
+        let { chatrooms } = configureStore_1.default.getState().chatroomReducer;
+        chatsLogComponent.manageChatLog(chatrooms).then(chatlog => {
             getChatsLog();
         });
     };
@@ -119,15 +120,18 @@ function getChatsLog() {
     });
 }
 function onUnreadMessageMapChanged(unread) {
-    let chatsLogComp = BackendFactory_1.BackendFactory.getInstance().chatLogComp;
-    chatsLogComp.checkRoomInfo(unread).then(function () {
+    return __awaiter(this, void 0, void 0, function* () {
+        let chatsLogComp = BackendFactory_1.BackendFactory.getInstance().chatLogComp;
+        let { chatrooms } = configureStore_1.default.getState().chatroomReducer;
+        let room = yield chatsLogComp.checkRoomInfo(unread, chatrooms);
+        if (room) {
+            updateRooms(room);
+        }
         let chatsLog = chatsLogComp.getChatsLog();
         configureStore_1.default.dispatch({
             type: exports.STALK_CHATLOG_MAP_CHANGED,
             payload: chatsLog
         });
-    }).catch(function () {
-        console.warn("Cannot get roomInfo of ", unread.rid);
     });
 }
 function getUnreadMessageComplete() {
@@ -186,7 +190,7 @@ exports.updateLastAccessRoomEpic = action$ => action$.ofType(UPDATE_LAST_ACCESS_
     .catch(error => Rx.Observable.of(updateLastAccessRoomFailure(error.xhr.response)));
 function updateRooms(room) {
     return __awaiter(this, void 0, void 0, function* () {
-        let { chatrooms } = configureStore_1.default.getState().chatRoomReducer;
+        let { chatrooms } = configureStore_1.default.getState().chatroomReducer;
         if (Array.isArray(chatrooms) && chatrooms.length > 0) {
             chatrooms.forEach(v => {
                 if (v._id == room._id) {

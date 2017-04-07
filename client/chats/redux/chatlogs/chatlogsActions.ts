@@ -65,7 +65,8 @@ export function initChatsLog() {
         getUnreadMessages();
     };
     chatsLogComponent.getRoomsInfoCompleteEvent = () => {
-        chatsLogComponent.manageChatLog().then(chatlog => {
+        let { chatrooms } = Store.getState().chatroomReducer;
+        chatsLogComponent.manageChatLog(chatrooms).then(chatlog => {
             getChatsLog();
         });
     };
@@ -135,17 +136,20 @@ function getChatsLog() {
     });
 }
 
-function onUnreadMessageMapChanged(unread: IUnread) {
+async function onUnreadMessageMapChanged(unread: IUnread) {
     let chatsLogComp = BackendFactory.getInstance().chatLogComp;
 
-    chatsLogComp.checkRoomInfo(unread).then(function () {
-        let chatsLog = chatsLogComp.getChatsLog();
-        Store.dispatch({
-            type: STALK_CHATLOG_MAP_CHANGED,
-            payload: chatsLog
-        });
-    }).catch(function () {
-        console.warn("Cannot get roomInfo of ", unread.rid);
+    let { chatrooms }: { chatrooms: Array<Room> } = Store.getState().chatroomReducer;
+
+    let room = await chatsLogComp.checkRoomInfo(unread, chatrooms);
+    if (room) {
+        updateRooms(room);
+    }
+
+    let chatsLog = chatsLogComp.getChatsLog();
+    Store.dispatch({
+        type: STALK_CHATLOG_MAP_CHANGED,
+        payload: chatsLog
     });
 }
 
@@ -214,7 +218,7 @@ export const updateLastAccessRoomEpic = action$ =>
 
 
 async function updateRooms(room) {
-    let { chatrooms } = Store.getState().chatRoomReducer;
+    let { chatrooms } = Store.getState().chatroomReducer;
 
     if (Array.isArray(chatrooms) && chatrooms.length > 0) {
         chatrooms.forEach(v => {
