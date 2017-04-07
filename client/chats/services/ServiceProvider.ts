@@ -13,13 +13,10 @@ const withToken = (headers) => (token) => {
     return headers;
 };
 
-export const getRoomInfo = (room_id: string, token: string): Promise<any> => {
+export const getRoomInfo = (room_id: string): Promise<any> => {
     return fetch(`${config.api.chatroom}/roomInfo?room_id=${room_id}`, {
         method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "x-access-token": token
-        }
+        headers: chitchat_headers
     });
 };
 

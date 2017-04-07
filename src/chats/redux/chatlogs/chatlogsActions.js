@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Copyright 2016 Ahoo Studio.co.th.
@@ -14,9 +22,9 @@ const ServiceProvider = require("../../services/ServiceProvider");
 const configureStore_1 = require("../../../redux/configureStore");
 exports.STALK_INIT_CHATSLOG = "STALK_INIT_CHATSLOG";
 exports.STALK_GET_CHATSLOG_COMPLETE = "STALK_GET_CHATSLOG_COMPLETE";
-exports.STALK_UNREAD_MAP_CHANGED = "STALK_UNREAD_MAP_CHANGED";
 exports.STALK_CHATLOG_MAP_CHANGED = "STALK_CHATLOG_MAP_CHANGED";
 exports.STALK_CHATLOG_CONTACT_COMPLETE = "STALK_CHATLOG_CONTACT_COMPLETE";
+exports.STALK_CHATROOMS_READY = "STALK_CHATROOMS_READY";
 const listenerImp = (newMsg) => {
     let dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
     let chatsLogComp = BackendFactory_1.BackendFactory.getInstance().chatLogComp;
@@ -48,12 +56,9 @@ function updateLastAccessTimeEventHandler(newRoomAccess) {
 function initChatsLog() {
     let dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
     let chatsLogComponent = BackendFactory_1.BackendFactory.getInstance().createChatlogs();
-    dataManager.contactsProfileChanged = (contact) => {
-        chatsLogComponent.getRoomsInfo();
-    };
-    chatsLogComponent.onReady = function () {
+    chatsLogComponent.onReady = function (rooms) {
+        configureStore_1.default.dispatch({ type: exports.STALK_CHATROOMS_READY, payload: rooms });
         getUnreadMessages();
-        chatsLogComponent.onReady = null;
     };
     chatsLogComponent.getRoomsInfoCompleteEvent = () => {
         chatsLogComponent.manageChatLog().then(chatlog => {
@@ -72,14 +77,16 @@ function getUnreadMessages() {
     let dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
     let chatsLogComp = BackendFactory_1.BackendFactory.getInstance().chatLogComp;
     let user_id = configureStore_1.default.getState().userReducer.user._id;
-    chatsLogComp.getUnreadMessages(user_id, dataManager.getRoomAccess(), function done(err, unreadLogs) {
+    let { roomAccess, state } = configureStore_1.default.getState().chatlogReducer;
+    chatsLogComp.getUnreadMessages(user_id, roomAccess, function done(err, unreadLogs) {
         if (!!unreadLogs) {
-            unreadLogs.map(function element(unread) {
-                chatsLogComp.addUnreadMessage(unread);
-            });
+            chatsLogComp.setUnreadMessageMap(unreadLogs);
             calculateUnreadCount();
+            getUnreadMessageComplete();
         }
-        getUnreadMessageComplete();
+        if (roomAccess.length == 0) {
+            getChatsLog();
+        }
     });
 }
 function calculateUnreadCount() {
@@ -112,9 +119,6 @@ function getChatsLog() {
     });
 }
 function onUnreadMessageMapChanged(unread) {
-    configureStore_1.default.dispatch({
-        type: exports.STALK_UNREAD_MAP_CHANGED, payload: unread
-    });
     let chatsLogComp = BackendFactory_1.BackendFactory.getInstance().chatLogComp;
     chatsLogComp.checkRoomInfo(unread).then(function () {
         let chatsLog = chatsLogComp.getChatsLog();
@@ -128,7 +132,10 @@ function onUnreadMessageMapChanged(unread) {
 }
 function getUnreadMessageComplete() {
     let chatsLogComp = BackendFactory_1.BackendFactory.getInstance().chatLogComp;
-    chatsLogComp.getRoomsInfo();
+    let { _id } = configureStore_1.default.getState().userReducer.user;
+    let { chatrooms } = configureStore_1.default.getState().chatroomReducer;
+    chatsLogComp.getRoomsInfo(_id, chatrooms);
+    // $rootScope.$broadcast('getunreadmessagecomplete', {});
 }
 const getChatLogContact = (chatlog) => {
     let dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
@@ -177,3 +184,24 @@ exports.updateLastAccessRoomEpic = action$ => action$.ofType(UPDATE_LAST_ACCESS_
 })
     .takeUntil(action$.ofType(UPDATE_LAST_ACCESS_ROOM_CANCELLED))
     .catch(error => Rx.Observable.of(updateLastAccessRoomFailure(error.xhr.response)));
+function updateRooms(room) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let { chatrooms } = configureStore_1.default.getState().chatRoomReducer;
+        if (Array.isArray(chatrooms) && chatrooms.length > 0) {
+            chatrooms.forEach(v => {
+                if (v._id == room._id) {
+                    v = room;
+                }
+            });
+            let id = chatrooms.indexOf(room);
+            if (id < 0) {
+                chatrooms.push(room);
+            }
+        }
+        else {
+            chatrooms = new Array();
+            chatrooms.push(room);
+        }
+        configureStore_1.default.dispatch({ type: exports.STALK_CHATROOMS_READY, payload: chatrooms });
+    });
+}

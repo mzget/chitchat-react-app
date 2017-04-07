@@ -23,9 +23,10 @@ import * as ServiceProvider from "./services/ServiceProvider";
 import * as contactActions from "../redux/app/contactActions";
 import Store from "../redux/configureStore";
 
-export interface ChatLogMap { [key: string]: ChatLog; };
-export interface IUnread { message: IMessage; rid: string; count: number; };
-export class Unread { message: IMessage; rid: string; count: number; };
+export type ChatLogMap = Map<string, ChatLog>;
+export type UnreadMap = Map<string, IUnread>;
+export interface IUnread { message: IMessage; rid: string; count: number; }
+export class Unread { message: IMessage; rid: string; count: number; }
 
 export class ChatsLogComponent implements IRoomAccessListenerImp {
     serverImp: ServerImplemented = null;
@@ -34,17 +35,21 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
 
     private chatlog_count: number = 0;
     public _isReady: boolean;
-    public onReady: () => void;
+    public onReady: (rooms: Array<Room>) => void;
     public getRoomsInfoCompleteEvent: () => void;
-    private convertDateService;
-    private chatslog: ChatLogMap = {};
-    public getChatsLog(): ChatLogMap {
-        return this.chatslog;
+    private chatslog = new Map<string, ChatLog>();
+    public getChatsLog(): Array<ChatLog> {
+        return Array.from(this.chatslog.values());
     }
 
-    private unreadMessageMap: Map<string, IUnread> = new Map<string, IUnread>();
-    public getUnreadMessageMap(): Map<string, IUnread> {
+    private unreadMessageMap = new Map<string, IUnread>();
+    public getUnreadMessageMap(): UnreadMap {
         return this.unreadMessageMap;
+    }
+    public setUnreadMessageMap(unreads: Array<IUnread>) {
+        unreads.map(v => {
+            this.unreadMessageMap.set(v.rid, v);
+        });
     }
     public addUnreadMessage(unread: IUnread) {
         this.unreadMessageMap.set(unread.rid, unread);
@@ -53,9 +58,8 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         return this.unreadMessageMap.get(room_id);
     }
 
-    constructor(_convertDateService?) {
+    constructor() {
         this._isReady = false;
-        this.convertDateService = _convertDateService;
         this.dataManager = BackendFactory.getInstance().dataManager;
         this.dataListener = BackendFactory.getInstance().dataListener;
 
@@ -91,7 +95,12 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
 
     onAccessRoom(dataEvent) {
         let self = this;
+
+        this.unreadMessageMap.clear();
+        this.chatslog.clear();
+
         let roomAccess = dataEvent.roomAccess as Array<RoomAccessData>;
+        let results = new Array<Room>();
 
         const addRoomData = () => {
             async.map(roomAccess, function iterator(item, resultCallback) {
@@ -100,8 +109,8 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
                         resultCallback(null, null);
                     }
                     else {
-                        self.dataManager.roomDAL.save(room._id, room);
-                        resultCallback(null, null);
+                        results.push(room);
+                        resultCallback(null, room);
                     }
                 });
             }, (err, results) => {
@@ -113,7 +122,7 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
             self._isReady = true;
 
             if (!!self.onReady) {
-                self.onReady();
+                self.onReady(results);
             }
         };
 
@@ -201,60 +210,69 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
 
     private getRoomInfo(room_id: string, callback: (err, room: Room) => void) {
         let self = this;
-        let token = Store.getState().authReducer.token;
-        ServiceProvider.getRoomInfo(room_id, token).then(response => response.json()).then(function (json) {
-            console.log("getRoomInfo result", json);
-            if (json.success) {
-                let roomInfos: Array<Room> = JSON.parse(JSON.stringify(json.result));
-                let room = self.decorateRoomInfoData(roomInfos[0]);
-                callback(null, room);
-            }
-            else {
-                callback(json.message, null);
-            }
-        }).catch(err => {
-            console.warn("getRoomInfo fail: ", err);
-            callback(err, null);
-        });
+
+        ServiceProvider.getRoomInfo(room_id)
+            .then(response => response.json())
+            .then(function (json) {
+                console.log("getRoomInfo value:", json);
+                if (json.success) {
+                    let roomInfos = json.result as Array<Room>;
+                    let room = self.decorateRoomInfoData(roomInfos[0]);
+                    callback(null, room);
+                }
+                else {
+                    callback(json.message, null);
+                }
+            }).catch(err => {
+                callback(err, null);
+            });
     }
 
-    public getRoomsInfo() {
+    public getRoomsInfo(user_id: string, chatrooms: Array<Room>) {
         let self = this;
-        let results = new Array<Room>();
 
         // create a queue object with concurrency 2
         let q = async.queue(function (task, callback) {
             let value = task as IUnread;
-            self.dataManager.roomDAL.get(value.rid).then(roomInfo => {
-                if (!!roomInfo) {
-                    let room = self.decorateRoomInfoData(roomInfo);
-                    self.dataManager.roomDAL.save(room._id, room);
-                    results.push(room);
-                    callback();
-                }
-                else {
-                    console.warn("Can't find roomInfo from persisted data: ", value.rid);
+            let rooms = chatrooms.filter(v => v._id == value.rid);
+            let roomInfo = (rooms.length > 0) ? rooms[0] : null as Room;
+            if (!!roomInfo) {
+                let room = self.decorateRoomInfoData(roomInfo);
+                chatrooms.forEach(v => {
+                    if (v._id == room._id) {
+                        v = room;
+                    }
+                });
 
-                    self.getRoomInfo(value.rid, (err, room) => {
-                        if (!!room) {
-                            self.dataManager.roomDAL.save(room._id, room);
-                            results.push(room);
+                self.organizeChatLogMap(value, room, function done() {
+                    callback();
+                });
+            }
+            else {
+                console.log("Can't find roomInfo from persisted data: ", value.rid);
+
+                self.getRoomInfo(value.rid, (err, room) => {
+                    if (!!room) {
+                        chatrooms.forEach(v => {
+                            if (v._id == room._id) {
+                                v = room;
+                            }
+                        });
+
+                        self.organizeChatLogMap(value, room, function done() {
                             callback();
-                        }
-                        else {
-                            callback(err);
-                        }
-                    });
-                }
-            });
+                        });
+                    }
+                    else {
+                        console.warn(err);
+                        callback();
+                    }
+                });
+            }
         }, 10);
 
         // assign a callback
         q.drain = function () {
-            results.map(room => {
-                self.dataManager.roomDAL.save(room._id.toString(), room);
-            });
-
             console.log("getRoomsInfo Completed.");
             if (self.getRoomsInfoCompleteEvent())
                 self.getRoomsInfoCompleteEvent();
@@ -372,9 +390,8 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
 
         callback(log);
     }
-
     private addChatLog(chatLog: ChatLog, done: () => void) {
-        this.chatslog[chatLog.id] = chatLog;
+        this.chatslog.set(chatLog.id, chatLog);
         done();
     }
 

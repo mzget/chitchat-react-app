@@ -1,9 +1,9 @@
 ﻿import { absSpartan } from "../libs/stalk/spartanEvents";
-import { IMessage, StalkAccount } from "./models/ChatDataModels";
+import { StalkAccount } from "../libs/shared/Stalk";
+import { IMessage } from "../libs/shared/Message";
+import { Room } from "../libs/shared/Room";
 
 import DataManager from "./dataManager";
-
-import { Room } from "../../server/scripts/models/Room";
 
 export default class DataListener implements absSpartan.IServerListener, absSpartan.IChatServerListener {
     private dataManager: DataManager;
@@ -57,10 +57,9 @@ export default class DataListener implements absSpartan.IServerListener, absSpar
     }
 
     onAccessRoom(dataEvent) {
-        console.info("DataListener.onAccessRoom: ", dataEvent);
-
         if (Array.isArray(dataEvent) && dataEvent.length > 0) {
             let data = dataEvent[0];
+            console.info("onAccessRoom: ", data);
 
             this.dataManager.setRoomAccessForUser(data);
 

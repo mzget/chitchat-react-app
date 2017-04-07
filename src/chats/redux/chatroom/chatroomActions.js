@@ -294,6 +294,8 @@ function loadEarlyMessageChunk() {
     return dispatch => {
         chatRoomComponent_1.default.getInstance().getOlderMessageChunk().then(res => {
             dispatch(loadEarlyMessage_success(res));
+            // @check older message again.
+            dispatch(checkOlderMessages());
         }).catch(err => {
             console.warn("loadEarlyMessageChunk fail", err);
         });

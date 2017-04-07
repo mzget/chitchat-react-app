@@ -11,13 +11,10 @@ const withToken = (headers) => (token) => {
     headers["x-access-token"] = token;
     return headers;
 };
-exports.getRoomInfo = (room_id, token) => {
+exports.getRoomInfo = (room_id) => {
     return fetch(`${config_1.default.api.chatroom}/roomInfo?room_id=${room_id}`, {
         method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "x-access-token": token
-        }
+        headers: chitchat_headers
     });
 };
 exports.getUnreadMessage = (room_id, user_id, lastAccessTime) => {

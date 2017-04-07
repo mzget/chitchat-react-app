@@ -8,6 +8,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const chatroomActions_1 = require("./chatroomActions");
 const ChatRoomRx = require("./chatroomRxEpic");
 const chatroomActions = require("./chatroomActions");
+const chatlogsActions = require("../chatlogs/chatlogsActions");
 const immutable_1 = require("immutable");
 /**
  * ## Initial State
@@ -23,7 +24,8 @@ exports.ChatRoomInitState = immutable_1.Record({
     uploadingFile: null,
     fileInfo: null,
     error: null,
-    chatDisabled: false
+    chatDisabled: false,
+    chatrooms: null
 });
 const initialState = new exports.ChatRoomInitState();
 exports.chatroomReducer = (state = new exports.ChatRoomInitState(), action) => {
@@ -114,6 +116,9 @@ exports.chatroomReducer = (state = new exports.ChatRoomInitState(), action) => {
         case ChatRoomRx.CREATE_PRIVATE_CHATROOM_SUCCESS: {
             return state.set("room", action.payload.result[0])
                 .set("state", ChatRoomRx.CREATE_PRIVATE_CHATROOM_SUCCESS);
+        }
+        case chatlogsActions.STALK_CHATROOMS_READY: {
+            return state.set("chatrooms", action.payload);
         }
         case chatroomActions.CHATROOM_REDUCER_EMPTY_STATE: {
             return state.set("state", null);

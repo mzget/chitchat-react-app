@@ -5,6 +5,7 @@
  */
 
 import * as ChatlogsActions from "../chatlogs/chatlogsActions";
+import * as ChatlogRxActions from "../chatlogs/chatlogRxActions";
 
 import { Record } from "immutable";
 
@@ -19,7 +20,8 @@ import { Record } from "immutable";
 export const ChatLogInitState = Record({
     isFetching: false,
     state: null,
-    chatsLog: null
+    chatsLog: null,
+    roomAccess: null
 });
 const initialState = new ChatLogInitState();
 
@@ -39,17 +41,50 @@ export function chatlogReducer(state = initialState, action) {
 
             return nextState;
         }
-        case ChatlogsActions.STALK_UNREAD_MAP_CHANGED: {
-            return state.set("state", ChatlogsActions.STALK_UNREAD_MAP_CHANGED);
-        }
         case ChatlogsActions.STALK_CHATLOG_MAP_CHANGED: {
             let nextState = state.set("chatsLog", action.payload)
                 .set("state", ChatlogsActions.STALK_CHATLOG_MAP_CHANGED);
             return nextState;
         }
 
+        case ChatlogRxActions.GET_LAST_ACCESS_ROOM: {
+            return state.set("isFetching", true);
+        }
         case ChatlogsActions.GET_LAST_ACCESS_ROOM_SUCCESS: {
-            return state.set("state", ChatlogsActions.GET_LAST_ACCESS_ROOM_SUCCESS);
+            let data = action.payload;
+            if (Array.isArray(data) && data.length > 0) {
+                return state.set("roomAccess", data[0].roomAccess).set("isFetching", false);
+            }
+            else {
+                return state.set("isFetching", false);
+            }
+        }
+        case ChatlogRxActions.GET_LAST_ACCESS_ROOM_FAILURE: {
+            return state.set("roomAccess", null).set("isFetching", false);
+        }
+
+        case ChatlogRxActions.UPDATE_LAST_ACCESS_ROOM_SUCCESS: {
+            return state.set("roomAccess", action.payload).set("isFetching", false);
+        }
+
+        case ChatlogRxActions.STALK_REMOVE_ROOM_ACCESS: {
+            return state.set("isFetching", true)
+                .set("state", ChatlogRxActions.STALK_REMOVE_ROOM_ACCESS);
+        }
+        case ChatlogRxActions.STALK_REMOVE_ROOM_ACCESS_SUCCESS: {
+            let data = action.payload;
+            if (Array.isArray(data) && data.length > 0) {
+                return state.set("roomAccess", data[0].roomAccess)
+                    .set("isFetching", false)
+                    .set("state", ChatlogRxActions.STALK_REMOVE_ROOM_ACCESS_SUCCESS);
+            }
+            else {
+                return state.set("isFetching", false)
+                    .set("state", ChatlogRxActions.STALK_REMOVE_ROOM_ACCESS_SUCCESS);
+            }
+        }
+        case ChatlogRxActions.STALK_REMOVE_ROOM_ACCESS_FAILURE: {
+            return state.set("isFetching", false);
         }
 
         default:

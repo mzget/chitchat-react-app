@@ -8,6 +8,8 @@ import { ChatRoomActionsType } from "./chatroomActions";
 import * as ChatRoomRx from "./chatroomRxEpic";
 import * as chatroomActions from "./chatroomActions";
 import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
+import * as chatlogsActions from "../chatlogs/chatlogsActions";
+
 import { Record } from "immutable";
 
 /**
@@ -24,7 +26,8 @@ export const ChatRoomInitState = Record({
     uploadingFile: null,
     fileInfo: null,
     error: null,
-    chatDisabled: false
+    chatDisabled: false,
+    chatrooms: null
 });
 const initialState = new ChatRoomInitState();
 
@@ -131,6 +134,10 @@ export const chatroomReducer = (state = new ChatRoomInitState(), action) => {
                 .set("state", ChatRoomRx.CREATE_PRIVATE_CHATROOM_SUCCESS);
         }
 
+
+        case chatlogsActions.STALK_CHATROOMS_READY: {
+            return state.set("chatrooms", action.payload);
+        }
 
         case chatroomActions.CHATROOM_REDUCER_EMPTY_STATE: {
             return state.set("state", null);

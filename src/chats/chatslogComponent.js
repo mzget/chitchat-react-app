@@ -21,24 +21,19 @@ const Message_1 = require("../libs/shared/Message");
 const Room_1 = require("../libs/shared/Room");
 const ServiceProvider = require("./services/ServiceProvider");
 const contactActions = require("../redux/app/contactActions");
-const configureStore_1 = require("../redux/configureStore");
-;
-;
 class Unread {
 }
 exports.Unread = Unread;
-;
 class ChatsLogComponent {
-    constructor(_convertDateService) {
+    constructor() {
         this.serverImp = null;
         this.dataManager = null;
         this.dataListener = null;
         this.chatlog_count = 0;
-        this.chatslog = {};
+        this.chatslog = new Map();
         this.unreadMessageMap = new Map();
         this.chatListeners = new Array();
         this._isReady = false;
-        this.convertDateService = _convertDateService;
         this.dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
         this.dataListener = BackendFactory_1.BackendFactory.getInstance().dataListener;
         this.dataListener.addOnRoomAccessListener(this.onAccessRoom.bind(this));
@@ -53,10 +48,15 @@ class ChatsLogComponent {
         console.log("ChatsLogComponent : constructor");
     }
     getChatsLog() {
-        return this.chatslog;
+        return Array.from(this.chatslog.values());
     }
     getUnreadMessageMap() {
         return this.unreadMessageMap;
+    }
+    setUnreadMessageMap(unreads) {
+        unreads.map(v => {
+            this.unreadMessageMap.set(v.rid, v);
+        });
     }
     addUnreadMessage(unread) {
         this.unreadMessageMap.set(unread.rid, unread);
@@ -79,7 +79,10 @@ class ChatsLogComponent {
     }
     onAccessRoom(dataEvent) {
         let self = this;
+        this.unreadMessageMap.clear();
+        this.chatslog.clear();
         let roomAccess = dataEvent.roomAccess;
+        let results = new Array();
         const addRoomData = () => {
             async.map(roomAccess, function iterator(item, resultCallback) {
                 self.getRoomInfo(item.roomId, (err, room) => {
@@ -87,8 +90,8 @@ class ChatsLogComponent {
                         resultCallback(null, null);
                     }
                     else {
-                        self.dataManager.roomDAL.save(room._id, room);
-                        resultCallback(null, null);
+                        results.push(room);
+                        resultCallback(null, room);
                     }
                 });
             }, (err, results) => {
@@ -98,7 +101,7 @@ class ChatsLogComponent {
         const done = () => {
             self._isReady = true;
             if (!!self.onReady) {
-                self.onReady();
+                self.onReady(results);
             }
         };
         addRoomData();
@@ -173,11 +176,12 @@ class ChatsLogComponent {
     }
     getRoomInfo(room_id, callback) {
         let self = this;
-        let token = configureStore_1.default.getState().authReducer.token;
-        ServiceProvider.getRoomInfo(room_id, token).then(response => response.json()).then(function (json) {
-            console.log("getRoomInfo result", json);
+        ServiceProvider.getRoomInfo(room_id)
+            .then(response => response.json())
+            .then(function (json) {
+            console.log("getRoomInfo value:", json);
             if (json.success) {
-                let roomInfos = JSON.parse(JSON.stringify(json.result));
+                let roomInfos = json.result;
                 let room = self.decorateRoomInfoData(roomInfos[0]);
                 callback(null, room);
             }
@@ -185,43 +189,49 @@ class ChatsLogComponent {
                 callback(json.message, null);
             }
         }).catch(err => {
-            console.warn("getRoomInfo fail: ", err);
             callback(err, null);
         });
     }
-    getRoomsInfo() {
+    getRoomsInfo(user_id, chatrooms) {
         let self = this;
-        let results = new Array();
         // create a queue object with concurrency 2
         let q = async.queue(function (task, callback) {
             let value = task;
-            self.dataManager.roomDAL.get(value.rid).then(roomInfo => {
-                if (!!roomInfo) {
-                    let room = self.decorateRoomInfoData(roomInfo);
-                    self.dataManager.roomDAL.save(room._id, room);
-                    results.push(room);
+            let rooms = chatrooms.filter(v => v._id == value.rid);
+            let roomInfo = (rooms.length > 0) ? rooms[0] : null;
+            if (!!roomInfo) {
+                let room = self.decorateRoomInfoData(roomInfo);
+                chatrooms.forEach(v => {
+                    if (v._id == room._id) {
+                        v = room;
+                    }
+                });
+                self.organizeChatLogMap(value, room, function done() {
                     callback();
-                }
-                else {
-                    console.warn("Can't find roomInfo from persisted data: ", value.rid);
-                    self.getRoomInfo(value.rid, (err, room) => {
-                        if (!!room) {
-                            self.dataManager.roomDAL.save(room._id, room);
-                            results.push(room);
+                });
+            }
+            else {
+                console.log("Can't find roomInfo from persisted data: ", value.rid);
+                self.getRoomInfo(value.rid, (err, room) => {
+                    if (!!room) {
+                        chatrooms.forEach(v => {
+                            if (v._id == room._id) {
+                                v = room;
+                            }
+                        });
+                        self.organizeChatLogMap(value, room, function done() {
                             callback();
-                        }
-                        else {
-                            callback(err);
-                        }
-                    });
-                }
-            });
+                        });
+                    }
+                    else {
+                        console.warn(err);
+                        callback();
+                    }
+                });
+            }
         }, 10);
         // assign a callback
         q.drain = function () {
-            results.map(room => {
-                self.dataManager.roomDAL.save(room._id.toString(), room);
-            });
             console.log("getRoomsInfo Completed.");
             if (self.getRoomsInfoCompleteEvent())
                 self.getRoomsInfoCompleteEvent();
@@ -333,7 +343,7 @@ class ChatsLogComponent {
         callback(log);
     }
     addChatLog(chatLog, done) {
-        this.chatslog[chatLog.id] = chatLog;
+        this.chatslog.set(chatLog.id, chatLog);
         done();
     }
     checkRoomInfo(unread) {

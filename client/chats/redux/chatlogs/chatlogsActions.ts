@@ -9,6 +9,8 @@ const { ajax } = Rx.Observable;
 
 import { BackendFactory } from "../../BackendFactory";
 import { ChatsLogComponent, IUnread, Unread } from "../../chatslogComponent";
+import { RoomAccessData, StalkAccount } from "../../../libs/shared/stalk";
+import { Room } from "../../../libs/shared/Room";
 import ChatLog from "../../models/chatLog";
 import * as ServiceProvider from "../../services/ServiceProvider";
 
@@ -16,9 +18,9 @@ import Store from "../../../redux/configureStore";
 
 export const STALK_INIT_CHATSLOG = "STALK_INIT_CHATSLOG";
 export const STALK_GET_CHATSLOG_COMPLETE = "STALK_GET_CHATSLOG_COMPLETE";
-export const STALK_UNREAD_MAP_CHANGED = "STALK_UNREAD_MAP_CHANGED";
 export const STALK_CHATLOG_MAP_CHANGED = "STALK_CHATLOG_MAP_CHANGED";
 export const STALK_CHATLOG_CONTACT_COMPLETE = "STALK_CHATLOG_CONTACT_COMPLETE";
+export const STALK_CHATROOMS_READY = "STALK_CHATROOMS_READY";
 
 const listenerImp = (newMsg) => {
     let dataManager = BackendFactory.getInstance().dataManager;
@@ -57,12 +59,10 @@ export function initChatsLog() {
     let dataManager = BackendFactory.getInstance().dataManager;
     let chatsLogComponent = BackendFactory.getInstance().createChatlogs();
 
-    dataManager.contactsProfileChanged = (contact) => {
-        chatsLogComponent.getRoomsInfo();
-    };
-    chatsLogComponent.onReady = function () {
+    chatsLogComponent.onReady = function (rooms: Array<Room>) {
+        Store.dispatch({ type: STALK_CHATROOMS_READY, payload: rooms });
+
         getUnreadMessages();
-        chatsLogComponent.onReady = null;
     };
     chatsLogComponent.getRoomsInfoCompleteEvent = () => {
         chatsLogComponent.manageChatLog().then(chatlog => {
@@ -81,18 +81,22 @@ export function initChatsLog() {
 function getUnreadMessages() {
     let dataManager = BackendFactory.getInstance().dataManager;
     let chatsLogComp = BackendFactory.getInstance().chatLogComp;
-    let user_id = Store.getState().userReducer.user._id;
 
-    chatsLogComp.getUnreadMessages(user_id, dataManager.getRoomAccess(), function done(err, unreadLogs) {
+    let user_id = Store.getState().userReducer.user._id;
+    let { roomAccess, state } = Store.getState().chatlogReducer;
+
+    chatsLogComp.getUnreadMessages(user_id, roomAccess, function done(err, unreadLogs) {
         if (!!unreadLogs) {
-            unreadLogs.map(function element(unread) {
-                chatsLogComp.addUnreadMessage(unread);
-            });
+            chatsLogComp.setUnreadMessageMap(unreadLogs);
 
             calculateUnreadCount();
+
+            getUnreadMessageComplete();
         }
 
-        getUnreadMessageComplete();
+        if (roomAccess.length == 0) {
+            getChatsLog();
+        }
     });
 }
 
@@ -132,10 +136,6 @@ function getChatsLog() {
 }
 
 function onUnreadMessageMapChanged(unread: IUnread) {
-    Store.dispatch({
-        type: STALK_UNREAD_MAP_CHANGED, payload: unread
-    });
-
     let chatsLogComp = BackendFactory.getInstance().chatLogComp;
 
     chatsLogComp.checkRoomInfo(unread).then(function () {
@@ -151,7 +151,12 @@ function onUnreadMessageMapChanged(unread: IUnread) {
 
 function getUnreadMessageComplete() {
     let chatsLogComp = BackendFactory.getInstance().chatLogComp;
-    chatsLogComp.getRoomsInfo();
+    let { _id } = Store.getState().userReducer.user;
+    let { chatrooms } = Store.getState().chatroomReducer;
+
+    chatsLogComp.getRoomsInfo(_id, chatrooms);
+
+    // $rootScope.$broadcast('getunreadmessagecomplete', {});
 }
 
 const getChatLogContact = (chatlog: ChatLog) => {
@@ -206,3 +211,28 @@ export const updateLastAccessRoomEpic = action$ =>
     })
         .takeUntil(action$.ofType(UPDATE_LAST_ACCESS_ROOM_CANCELLED))
         .catch(error => Rx.Observable.of(updateLastAccessRoomFailure(error.xhr.response)));
+
+
+async function updateRooms(room) {
+    let { chatrooms } = Store.getState().chatRoomReducer;
+
+    if (Array.isArray(chatrooms) && chatrooms.length > 0) {
+        chatrooms.forEach(v => {
+            if (v._id == room._id) {
+                v = room;
+            }
+        });
+
+        let id = chatrooms.indexOf(room);
+        if (id < 0) {
+            chatrooms.push(room);
+        }
+    }
+    else {
+        chatrooms = new Array<Room>();
+        chatrooms.push(room);
+    }
+
+
+    Store.dispatch({ type: STALK_CHATROOMS_READY, payload: chatrooms });
+}

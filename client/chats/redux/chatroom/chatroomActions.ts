@@ -318,6 +318,8 @@ export function loadEarlyMessageChunk() {
     return dispatch => {
         ChatRoomComponent.getInstance().getOlderMessageChunk().then(res => {
             dispatch(loadEarlyMessage_success(res));
+            // @check older message again.
+            dispatch(checkOlderMessages());
         }).catch(err => {
             console.warn("loadEarlyMessageChunk fail", err);
         });
