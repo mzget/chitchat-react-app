@@ -6,8 +6,8 @@ import config from "../../configs/config";
 import { ProfileDetail } from "./ProfileDetail";
 import * as userRx from "../../redux/user/userRx";
 
-import { ChitChatAccount } from "../../../server/scripts/models/User";
-import { ITeamProfile } from "../../../server/scripts/models/TeamProfile";
+import { ChitChatAccount } from "../../../chitchat/chats/models/User";
+import { ITeamProfile } from "../../../chitchat/chats/models/TeamProfile";
 
 interface IEnhanceProps {
     user: ChitChatAccount;
