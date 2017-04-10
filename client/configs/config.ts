@@ -47,7 +47,7 @@ const api_master = "http://git.animation-genius.com:9000";
 const api_dev = "http://localhost:9000";
 const getConfig = () => {
     if (process.env.NODE_ENV === `development`) {
-        return composeMyconfig(baseConfig)(api_master)(api_stalk_master, stalkPort, api_master);
+        return composeMyconfig(baseConfig)(api_dev)(api_stalk_master, stalkPort, api_dev);
     }
     else if (process.env.NODE_ENV === `production`) {
         return composeMyconfig(baseConfig)(api_master)(api_stalk_master, stalkPort, api_master);

@@ -2,7 +2,7 @@ import * as React from "react";
 /**
  * Redux + Immutable
  */
-import { Map } from "immutable";
+import * as immutable from "immutable";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { Link } from "react-router";
@@ -14,17 +14,17 @@ import Subheader from "material-ui/Subheader";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
-import * as chatlogsActions from "../redux/chatlogs/chatlogsActions";
+import * as chatlogsActions from "../chitchat/chats/redux/chatlogs/chatlogsActions";
 import * as AuthRx from "../redux/authen/authRx";
 import * as AppActions from "../redux/app/persistentDataActions";
 
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { DialogBox } from "../components/DialogBox";
-import AuthenBox from "./authen/AuthenBox";
+import { AuthenBox } from "./authen/AuthenBox";
 
 interface IComponentNameState {
     alert: boolean;
-};
+}
 
 class Home extends React.Component<IComponentProps, IComponentNameState> {
     alertMessage: string = "";
@@ -82,29 +82,38 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
             chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer
         } = nextProps as IComponentProps;
 
-        switch (authReducer.state) {
-            case AuthRx.AUTH_USER_SUCCESS: {
-                AppActions.saveSession();
-                this.props.router.push(`/team/${authReducer.user}`);
-                break;
+        let next = immutable.fromJS(authReducer);
+        let prev = immutable.fromJS(this.props.authReducer);
+        console.log(next, prev);
+        if (next && !!next.equals(prev)) {
+            switch (authReducer.state) {
+                case AuthRx.AUTH_USER_SUCCESS: {
+                    AppActions.saveSession();
+                    this.props.router.push(`/team/${authReducer.user}`);
+                    break;
+                }
+                case AuthRx.AUTH_USER_FAILURE: {
+                    this.alertTitle = AuthRx.AUTH_USER_FAILURE;
+                    this.alertMessage = authReducer.error;
+                    this.setState(previous => ({ ...previous, alert: true }));
+                    break;
+                }
+                case AuthRx.TOKEN_AUTH_USER_SUCCESS: {
+                    this.props.router.push(`/team/${authReducer.user}`);
+                    break;
+                }
+                case AppActions.GET_SESSION_TOKEN_SUCCESS: {
+                    if (authReducer.state !== this.props.authReducer.state)
+                        this.props.dispatch(AuthRx.tokenAuthUser(authReducer.token));
+                    break;
+                }
+                case AuthRx.SIGN_UP_FAILURE: {
+                    this.onAuthBoxError(authReducer.error);
+                    break;
+                }
+                default:
+                    break;
             }
-            case AuthRx.AUTH_USER_FAILURE: {
-                this.alertTitle = AuthRx.AUTH_USER_FAILURE;
-                this.alertMessage = authReducer.error;
-                this.setState(previous => ({ ...previous, alert: true }));
-                break;
-            }
-            case AuthRx.TOKEN_AUTH_USER_SUCCESS: {
-                this.props.router.push(`/team/${authReducer.user}`);
-                break;
-            }
-            case AppActions.GET_SESSION_TOKEN_SUCCESS: {
-                if (authReducer.state !== this.props.authReducer.state)
-                    this.props.dispatch(AuthRx.tokenAuthUser(authReducer.token));
-                break;
-            }
-            default:
-                break;
         }
     }
 
@@ -123,8 +132,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
                             <Flex flexColumn={true} >
                                 <Flex align="center">
                                     <Box p={2} flexAuto></Box>
-                                    <AuthenBox {...this.props}
-                                        onError={this.onAuthBoxError} />
+                                    <AuthenBox {...this.props} onError={this.onAuthBoxError} />
                                     <Box p={2} flexAuto></Box>
                                 </Flex>
                                 <Box flexAuto justify="flex-end"></Box>

@@ -8,25 +8,25 @@ import * as stalkBridgeActions from "../../chitchat/chats/redux/stalkBridge/stal
 
 const SIGN_UP = "SIGN_UP";
 export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
-const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
+export const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
 const SIGN_UP_CANCELLED = "SIGN_UP_CANCELLED";
 
 export const signup = (user) => ({ type: SIGN_UP, payload: user }); // username => ({ type: FETCH_USER, payload: username });
 const signupSuccess = payload => ({ type: SIGN_UP_SUCCESS, payload });
-const signupFailure = payload => ({ type: SIGN_UP_FAILURE, payload, error: true });
+const signupFailure = payload => ({ type: SIGN_UP_FAILURE, payload });
 const signupCancelled = () => ({ type: SIGN_UP_CANCELLED });
-export const signupUserEpic = action$ => (
+export const signupUserEpic = action$ =>
     action$.ofType(SIGN_UP)
         .mergeMap(action => ajax({
             method: "POST",
             url: `${config.api.user}/signup`,
             body: JSON.stringify({ user: action.payload }),
             headers: { "Content-Type": "application/json", "x-api-key": config.api.apiKey }
-        }).map(response => signupSuccess(response.xhr.response))
+        })
+            .map(response => signupSuccess(response.xhr.response))
             .takeUntil(action$.ofType(SIGN_UP_CANCELLED))
             .catch(error => Rx.Observable.of(signupFailure(error.xhr.response)))
-        )
-);
+        );
 
 
 export const AUTH_USER = "AUTH_USER";

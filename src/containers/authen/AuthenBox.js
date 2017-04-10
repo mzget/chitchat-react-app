@@ -7,8 +7,6 @@ const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const SigninBox_1 = require("./SigninBox");
 const SignupBox_1 = require("./SignupBox");
 const AuthRx = require("../../redux/authen/authRx");
-;
-;
 class AuthenBox extends React.Component {
     componentWillMount() {
         this.state = {
@@ -44,4 +42,4 @@ class AuthenBox extends React.Component {
                         React.createElement(material_ui_1.RaisedButton, { primary: true, label: "Sign in", onClick: this.onSigninPressed, style: { margin: 8 } }, " "))))));
     }
 }
-exports.default = AuthenBox;
+exports.AuthenBox = AuthenBox;

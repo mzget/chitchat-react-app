@@ -5,7 +5,6 @@ const reflexbox_1 = require("reflexbox");
 const MemberList_1 = require("../chatlist/MemberList");
 const ContactProfileView_1 = require("./ContactProfileView");
 const adminRx = require("../../redux/admin/adminRx");
-;
 class TeamMemberBox extends React.Component {
     componentWillMount() {
         this.state = {

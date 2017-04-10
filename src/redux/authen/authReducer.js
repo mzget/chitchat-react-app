@@ -14,6 +14,9 @@ exports.authReducer = (state = new exports.AuthenInitState(), action) => {
     switch (action.type) {
         case authRx.SIGN_UP_SUCCESS:
             return state.set("state", authRx.SIGN_UP_SUCCESS);
+        case authRx.SIGN_UP_FAILURE:
+            return state.set("state", authRx.SIGN_UP_FAILURE)
+                .set("error", action.payload.message);
         case authRx.AUTH_USER: {
             return state.set("user", action.payload.email);
         }

@@ -10,13 +10,13 @@ import * as AuthRx from "../../redux/authen/authRx";
 interface IComponentNameProps {
     onError: (error: string) => void;
     dispatch;
-};
+}
 
 interface IComponentNameState {
     showSignin: boolean;
-};
+}
 
-class AuthenBox extends React.Component<IComponentNameProps, IComponentNameState> {
+export class AuthenBox extends React.Component<IComponentNameProps, IComponentNameState> {
     componentWillMount() {
         this.state = {
             showSignin: true
@@ -65,5 +65,3 @@ class AuthenBox extends React.Component<IComponentNameProps, IComponentNameState
             </MuiThemeProvider >);
     }
 }
-
-export default AuthenBox;
