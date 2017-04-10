@@ -9,13 +9,13 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
-import * as ChatroomRx from "../chats/redux/chatroom/chatroomRxEpic";
+import * as ChatroomRx from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
 
 import SimpleCardImage from "../components/SimpleCardImage";
 import SimpleCardVideo from "../components/SimpleCardVideo";
 import LinearProgressSimple from "../components/LinearProgressSimple";
 
-import * as FileType from "../libs/shared/FileType";
+import * as FileType from "../chitchat/libs/shared/FileType";
 
 interface IComponentNameState {
     dialogTitle: string;

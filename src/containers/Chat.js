@@ -13,11 +13,11 @@ const UploadingDialog_1 = require("./UploadingDialog");
 const GridListSimple_1 = require("../components/GridListSimple");
 const WarningBar_1 = require("../components/WarningBar");
 const ChatRoomDialogBoxEnhancer_1 = require("./toolsbox/ChatRoomDialogBoxEnhancer");
-const StalkBridgeActions = require("../chats/redux/stalkBridge/stalkBridgeActions");
-const chatroomActions = require("../chats/redux/chatroom/chatroomActions");
-const chatroomRxEpic = require("../chats/redux/chatroom/chatroomRxEpic");
-const StickerPath_1 = require("../consts/StickerPath");
-const FileType = require("../libs/shared/FileType");
+const StalkBridgeActions = require("../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
+const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
+const chatroomRxEpic = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
+const StickerPath_1 = require("../chitchat/consts/StickerPath");
+const FileType = require("../chitchat/libs/shared/FileType");
 const chatroomMessageUtils_1 = require("../actions/chatroom/chatroomMessageUtils");
 ;
 class Chat extends React.Component {

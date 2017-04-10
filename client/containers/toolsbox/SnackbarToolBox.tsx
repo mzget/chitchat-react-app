@@ -7,7 +7,7 @@ import { IComponentProps } from "../../utils/IComponentProps";
 import { DialogBox } from "../../components/DialogBox";
 import { SnackbarSimple } from "../../components/SnackbarSimple";
 
-import * as AlertMsg from "../../consts/AlertMsg";
+import * as AlertMsg from "../../chitchat/consts/AlertMsg";
 
 interface IComponentNameState {
     openSnackbar: boolean;

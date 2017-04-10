@@ -6,8 +6,8 @@ const { ajax } = Rx.Observable;
 
 import Store from "../configureStore";
 
-import { BackendFactory } from "../../chats/BackendFactory";
-import { Room, RoomType } from "../../../shared/models/Room";
+import { BackendFactory } from "../../chitchat/chats/BackendFactory";
+import { Room, RoomType } from "../../chitchat/libs/shared/Room";
 
 const GET_ORG_GROUP = "GET_ORG_GROUP";
 export const GET_ORG_GROUP_SUCCESS = "GET_ORG_GROUP_SUCCESS";
@@ -27,11 +27,10 @@ export const getOrgGroup_Epic = action$ => (
             .catch(error => Rx.Observable.of(getOrgGroupFailure(error.xhr.response)))
             .do(response => {
                 if (response.type == GET_ORG_GROUP_SUCCESS) {
-                    const dataManager = BackendFactory.getInstance().dataManager;
                     let rooms = response.payload.result as Array<Room>;
 
                     Rx.Observable.from(rooms)._do(x => {
-                        dataManager.roomDAL.save(x._id, x);
+                        // dataManager.roomDAL.save(x._id, x);
                     }).subscribe();
                 }
             })

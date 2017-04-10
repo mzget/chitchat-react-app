@@ -6,11 +6,14 @@ const recompose_1 = require("recompose");
 const config_1 = require("../../configs/config");
 const ProfileDetail_1 = require("./ProfileDetail");
 const userRx = require("../../redux/user/userRx");
+const mapStateToProps = (state) => ({
+    userReducer: state.userReducer
+});
 const submit = (props) => {
     let user = Object.assign({}, props.user);
     props.dispatch(userRx.updateUserInfo(user));
 };
-const enhance = recompose_1.compose(recompose_1.withState("user", "updateUser", ({ user }) => user), recompose_1.withState("imageFile", "setImageFile", null), recompose_1.lifecycle({
+const enhance = recompose_1.compose(react_redux_1.connect(mapStateToProps), recompose_1.withState("user", "updateUser", ({ user }) => user), recompose_1.withState("imageFile", "setImageFile", null), recompose_1.lifecycle({
     componentWillReceiveProps(nextProps) {
         let { userReducer } = nextProps;
         if (userReducer.state == userRx.UPLOAD_USER_AVATAR_FAILURE) {
@@ -73,8 +76,4 @@ const enhance = recompose_1.compose(recompose_1.withState("user", "updateUser", 
         }
     }
 }));
-const ProfileDetailEnhancer = enhance(({ user, teamProfile, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange, alert }) => React.createElement(ProfileDetail_1.ProfileDetail, { user: user, teamProfile: teamProfile, onFirstNameChange: onFirstNameChange, onLastNameChange: onLastNameChange, onTelNumberChange: onTelNumberChange, onFileReaderChange: onFileReaderChange, onSubmit: onSubmit }));
-const mapStateToProps = (state) => ({
-    userReducer: state.userReducer
-});
-exports.ConnectProfileDetailEnhancer = react_redux_1.connect(mapStateToProps)(ProfileDetailEnhancer);
+exports.ProfileDetailEnhancer = enhance(({ user, teamProfile, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange, alert }) => React.createElement(ProfileDetail_1.ProfileDetail, { user: user, teamProfile: teamProfile, onFirstNameChange: onFirstNameChange, onLastNameChange: onLastNameChange, onTelNumberChange: onTelNumberChange, onFileReaderChange: onFileReaderChange, onSubmit: onSubmit }));

@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const Subheader_1 = require("material-ui/Subheader");
-const ChatLogsActions = require("../../chats/redux/chatlogs/chatlogsActions");
-const ChatLogRxActions = require("../../chats/redux/chatlogs/chatlogRxActions");
+const ChatLogsActions = require("../../chitchat/chats/redux/chatlogs/chatlogsActions");
+const ChatLogRxActions = require("../../chitchat/chats/redux/chatlogs/chatlogRxActions");
 const ListChatLogs_1 = require("./ListChatLogs");
 class ChatLogsBox extends React.Component {
     componentWillMount() {
@@ -19,9 +19,6 @@ class ChatLogsBox extends React.Component {
         let { chatlogReducer } = nextProps;
         switch (chatlogReducer.state) {
             case ChatLogsActions.STALK_GET_CHATSLOG_COMPLETE:
-                this.convertObjToArr(chatlogReducer.chatsLog);
-                break;
-            case ChatLogsActions.STALK_UNREAD_MAP_CHANGED:
                 this.convertObjToArr(chatlogReducer.chatsLog);
                 break;
             case ChatLogsActions.STALK_CHATLOG_CONTACT_COMPLETE:

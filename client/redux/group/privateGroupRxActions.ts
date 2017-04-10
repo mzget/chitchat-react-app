@@ -1,10 +1,10 @@
-﻿import * as Rx from "@reactivex/rxjs";
+﻿import * as Rx from "rxjs";
 const { Observable: { ajax }, AjaxResponse } = Rx;
 
 import config from "../../configs/config";
 import Store from "../configureStore";
-import { BackendFactory } from "../../chats/BackendFactory";
-import { Room, RoomType } from "../../../shared/models/Room";
+import { BackendFactory } from "../../chitchat/chats/BackendFactory";
+import { Room, RoomType } from "../../chitchat/libs/shared/Room";
 
 const GET_PRIVATE_GROUP = "GET_PRIVATE_GROUP";
 export const GET_PRIVATE_GROUP_SUCCESS = "GET_PRIVATE_GROUP_SUCCESS";
@@ -23,11 +23,10 @@ export const getPrivateGroup_Epic = action$ => (
             .catch(error => Rx.Observable.of(getPrivateGroupFailure(error.xhr.response)))
             .do(response => {
                 if (response.type == GET_PRIVATE_GROUP_SUCCESS) {
-                    const dataManager = BackendFactory.getInstance().dataManager;
                     let rooms = response.payload.result as Array<Room>;
 
                     Rx.Observable.from(rooms)._do(x => {
-                        dataManager.roomDAL.save(x._id, x);
+                        // dataManager.roomDAL.save(x._id, x);
                     }).subscribe();
                 }
             })

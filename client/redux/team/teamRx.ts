@@ -6,7 +6,7 @@ const { ajax } = Rx.Observable;
 
 import Store from "../configureStore";
 import * as userRx from "../user/userRx";
-import { ITeamMember } from "../../chats/models/ITeamMember";
+import { ITeamMember } from "../../chitchat/chats/models/ITeamMember";
 
 const FETCH_USER_TEAMS = "FETCH_USER_TEAMS";
 const FETCH_USER_TEAMS_SUCCESS = "FETCH_USER_TEAMS_SUCCESS";

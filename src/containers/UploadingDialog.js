@@ -6,11 +6,11 @@ const reflexbox_1 = require("reflexbox");
 const Dialog_1 = require("material-ui/Dialog");
 const FlatButton_1 = require("material-ui/FlatButton");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
-const ChatroomRx = require("../chats/redux/chatroom/chatroomRxEpic");
+const ChatroomRx = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
 const SimpleCardImage_1 = require("../components/SimpleCardImage");
 const SimpleCardVideo_1 = require("../components/SimpleCardVideo");
 const LinearProgressSimple_1 = require("../components/LinearProgressSimple");
-const FileType = require("../libs/shared/FileType");
+const FileType = require("../chitchat/libs/shared/FileType");
 ;
 class UploadingDialog extends React.Component {
     constructor() {

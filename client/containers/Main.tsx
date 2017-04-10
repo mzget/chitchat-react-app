@@ -6,17 +6,18 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 
 import { SimpleToolbar } from "../components/SimpleToolbar";
-import { ConnectProfileEnhancer } from "./profile/ProfileBox";
+import { ProfileEnhancer } from "./profile/ProfileBox";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
-import {ChatLogsBoxEnhancer} from "./chatlog/ChatLogsBox";
+import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
 import ContactBox from "./chatlist/ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
 
-import * as StalkBridgeActions from "../chats/redux/stalkBridge/stalkBridgeActions";
-import * as chatroomActions from "../chats/redux/chatroom/chatroomActions";
-import * as chatlogsActions from "../chats/redux/chatlogs/chatlogsActions";
-import * as chatroomRx from "../chats/redux/chatroom/chatroomRxEpic";
+import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
+import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
+import * as chatlogsActions from "../chitchat/chats/redux/chatlogs/chatlogsActions";
+import * as chatlogRxActions from "../chitchat/chats/redux/chatlogs/chatlogRxActions";
+import * as chatroomRx from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
 import * as userRx from "../redux/user/userRx";
 import * as authRx from "../redux/authen/authRx";
 import * as groupRx from "../redux/group/groupRx";
@@ -41,16 +42,16 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
         this.state = {
             header: "Home"
         };
-        
-        const { teamReducer, stalkReducer, chatlogReducer } = this.props;
+
+        const { teamReducer, stalkReducer, chatlogReducer, authReducer } = this.props;
 
         if (!teamReducer.team) {
             this.props.router.replace("/");
         }
         else if (teamReducer.team &&
             stalkReducer.state == StalkBridgeActions.STALK_INIT_SUCCESS
-            && chatlogReducer.state == chatlogsActions.STALK_INIT_CHATSLOG) {
-            this.props.dispatch(chatlogsActions.getLastAccessRoom(teamReducer.team._id));
+            && chatlogReducer.state == chatlogsActions.STALK_INIT_CHATLOG) {
+            this.props.dispatch(chatlogRxActions.getLastAccessRoom(authReducer.token, teamReducer.team._id));
         }
 
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
@@ -157,7 +158,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                             onSelectedMenuItem={this.onSelectMenuItem} />
                     </div>
                     <div style={{ height: this.bodyHeight, overflowY: "auto" }} id={"app_body"}>
-                        <ConnectProfileEnhancer router={this.props.router} />
+                        <ProfileEnhancer router={this.props.router} />
                         <ConnectGroupListEnhancer fetchGroup={() => this.fetch_orgGroups()}
                             groups={this.props.groupReducer.orgGroups}
                             subHeader={"OrgGroups"} />

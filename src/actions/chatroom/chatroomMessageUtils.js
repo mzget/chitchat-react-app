@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Message_1 = require("../../libs/shared/Message");
-const MessageImp_1 = require("../../chats/models/MessageImp");
-const StickerPath_1 = require("../../consts/StickerPath");
+const Message_1 = require("../../chitchat/libs/shared/Message");
+const MessageImp_1 = require("../../chitchat/chats/models/MessageImp");
+const StickerPath_1 = require("../../chitchat/consts/StickerPath");
 const configureStore_1 = require("../../redux/configureStore");
 function decorateMessage(msg) {
     let { chatroomReducer, userReducer } = configureStore_1.default.getState();

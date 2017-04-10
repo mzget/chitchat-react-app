@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const redux_observable_1 = require("redux-observable");
 const userRx = require("./user/userRx");
-const chatroomRxEpic = require("../chats/redux/chatroom/chatroomRxEpic");
-const chatlogsActions = require("../chats/redux/chatlogs/chatlogsActions");
-const chatlogRxActions = require("../chats/redux/chatlogs/chatlogRxActions");
+const chatroomRxEpic = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
+const chatlogsActions = require("../chitchat/chats/redux/chatlogs/chatlogsActions");
+const chatlogRxActions = require("../chitchat/chats/redux/chatlogs/chatlogRxActions");
 const authRx = require("./authen/authRx");
 const teamRx = require("./team/teamRx");
 const adminRx = require("./admin/adminRx");

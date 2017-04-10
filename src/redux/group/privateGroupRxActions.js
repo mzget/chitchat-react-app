@@ -1,10 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Rx = require("@reactivex/rxjs");
+const Rx = require("rxjs");
 const { Observable: { ajax }, AjaxResponse } = Rx;
 const config_1 = require("../../configs/config");
 const configureStore_1 = require("../configureStore");
-const BackendFactory_1 = require("../../chats/BackendFactory");
 const GET_PRIVATE_GROUP = "GET_PRIVATE_GROUP";
 exports.GET_PRIVATE_GROUP_SUCCESS = "GET_PRIVATE_GROUP_SUCCESS";
 exports.GET_PRIVATE_GROUP_FAILURE = "GET_PRIVATE_GROUP_FAILURE";
@@ -20,10 +19,9 @@ exports.getPrivateGroup_Epic = action$ => (action$.ofType(GET_PRIVATE_GROUP)
     .catch(error => Rx.Observable.of(getPrivateGroupFailure(error.xhr.response)))
     .do(response => {
     if (response.type == exports.GET_PRIVATE_GROUP_SUCCESS) {
-        const dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
         let rooms = response.payload.result;
         Rx.Observable.from(rooms)._do(x => {
-            dataManager.roomDAL.save(x._id, x);
+            // dataManager.roomDAL.save(x._id, x);
         }).subscribe();
     }
 })));

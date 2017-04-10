@@ -4,7 +4,7 @@ import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
 import * as AppActions from "../app/persistentDataActions";
-import * as stalkBridgeActions from "../../chats/redux/stalkBridge/stalkBridgeActions";
+import * as stalkBridgeActions from "../../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 
 const SIGN_UP = "SIGN_UP";
 export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";

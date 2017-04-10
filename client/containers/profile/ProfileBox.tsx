@@ -16,7 +16,13 @@ interface IEnhancerProps {
     onClickMyProfile: (item) => void;
 }
 
+const mapStateToProps = (state) => ({
+    teamReducer: state.teamReducer,
+    userReducer: state.userReducer
+});
+
 const enhanced = compose(
+    connect(mapStateToProps),
     lifecycle({
         componentWillMount() {
             this.props.dispatch(UserRx.getTeamProfile(this.props.teamReducer.team._id));
@@ -37,15 +43,9 @@ const ProfileView = (props: { user, onClickMyProfile: (item) => void }) => (
         <ProfileListView item={props.user} onSelected={props.onClickMyProfile} />
     </div>
 );
-const EnhancerProfile = enhanced(({ teamReducer, userReducer, onClickMyProfile }: IEnhancerProps) =>
+export const ProfileEnhancer = enhanced(({ teamReducer, userReducer, onClickMyProfile }: IEnhancerProps) =>
     <ProfileView
         user={userReducer.user}
         onClickMyProfile={onClickMyProfile}
     />
-);
-
-const mapStateToProps = (state) => ({
-    teamReducer: state.teamReducer,
-    userReducer: state.userReducer
-});
-export const ConnectProfileEnhancer = connect(mapStateToProps)(EnhancerProfile);
+) as React.ComponentClass<{ router }>;

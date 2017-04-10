@@ -6,7 +6,7 @@ const FlatButton_1 = require("material-ui/FlatButton");
 const Colors = require("material-ui/styles/colors");
 const CreateOrgChartForm_1 = require("./CreateOrgChartForm");
 const OrgChartListView_1 = require("./OrgChartListView");
-const OrgChart_1 = require("../../chats/models/OrgChart");
+const OrgChart_1 = require("../../chitchat/chats/models/OrgChart");
 const adminRx = require("../../redux/admin/adminRx");
 class IComponentNameProps {
 }

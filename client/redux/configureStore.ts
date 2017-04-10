@@ -32,7 +32,7 @@ const createStoreWithMiddleware = composeWithDevTools(applyMiddleware(...middlew
 function configureStore() {
     let initialState = rootReducer.getInitialState();
     return createStoreWithMiddleware(rootReducer.rootReducer, initialState);
-};
+}
 
 // !!! Note >>> Do not edit these 2 line below. I make it for call global store. @ Mzget.
 const store = configureStore();

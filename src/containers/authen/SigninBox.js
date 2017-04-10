@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const SigninForm_1 = require("../../components/SigninForm");
-const CryptoHelper = require("../../chats/utils/CryptoHelper");
+const CryptoHelper = require("../../chitchat/chats/utils/CryptoHelper");
 const AuthRx = require("../../redux/authen/authRx");
 ;
 ;

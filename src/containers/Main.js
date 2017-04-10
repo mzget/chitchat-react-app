@@ -10,10 +10,11 @@ const ChatLogsBox_1 = require("./chatlog/ChatLogsBox");
 const ContactBox_1 = require("./chatlist/ContactBox");
 const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
 const StalkComponent_1 = require("./stalk/StalkComponent");
-const StalkBridgeActions = require("../chats/redux/stalkBridge/stalkBridgeActions");
-const chatroomActions = require("../chats/redux/chatroom/chatroomActions");
-const chatlogsActions = require("../chats/redux/chatlogs/chatlogsActions");
-const chatroomRx = require("../chats/redux/chatroom/chatroomRxEpic");
+const StalkBridgeActions = require("../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
+const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
+const chatlogsActions = require("../chitchat/chats/redux/chatlogs/chatlogsActions");
+const chatlogRxActions = require("../chitchat/chats/redux/chatlogs/chatlogRxActions");
+const chatroomRx = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
 const userRx = require("../redux/user/userRx");
 const authRx = require("../redux/authen/authRx");
 const groupRx = require("../redux/group/groupRx");
@@ -42,14 +43,14 @@ class Main extends React.Component {
         this.state = {
             header: "Home"
         };
-        const { teamReducer, stalkReducer, chatlogReducer } = this.props;
+        const { teamReducer, stalkReducer, chatlogReducer, authReducer } = this.props;
         if (!teamReducer.team) {
             this.props.router.replace("/");
         }
         else if (teamReducer.team &&
             stalkReducer.state == StalkBridgeActions.STALK_INIT_SUCCESS
-            && chatlogReducer.state == chatlogsActions.STALK_INIT_CHATSLOG) {
-            this.props.dispatch(chatlogsActions.getLastAccessRoom(teamReducer.team._id));
+            && chatlogReducer.state == chatlogsActions.STALK_INIT_CHATLOG) {
+            this.props.dispatch(chatlogRxActions.getLastAccessRoom(authReducer.token, teamReducer.team._id));
         }
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
         this.fetch_orgGroups = this.fetch_orgGroups.bind(this);
@@ -126,7 +127,7 @@ class Main extends React.Component {
                 React.createElement("div", { style: { height: this.headerHeight }, id: "toolbar" },
                     React.createElement(SimpleToolbar_1.SimpleToolbar, { title: this.props.teamReducer.team.name, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
                 React.createElement("div", { style: { height: this.bodyHeight, overflowY: "auto" }, id: "app_body" },
-                    React.createElement(ProfileBox_1.ConnectProfileEnhancer, { router: this.props.router }),
+                    React.createElement(ProfileBox_1.ProfileEnhancer, { router: this.props.router }),
                     React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => this.fetch_orgGroups(), groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
                     React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => { this.fetch_privateGroups(); }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
                     React.createElement(ContactBox_1.default, Object.assign({}, this.props)),

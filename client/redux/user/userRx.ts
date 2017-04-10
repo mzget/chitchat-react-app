@@ -5,9 +5,9 @@ import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
-import * as UserService from "../../chats/services/UserService";
-import { ChitChatAccount } from "../../chats/models/User";
-import * as StalkBridgeActions from "../../chats/redux/stalkBridge/stalkBridgeActions";
+import * as UserService from "../../chitchat/chats/services/UserService";
+import { ChitChatAccount } from "../../chitchat/chats/models/User";
+import * as StalkBridgeActions from "../../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 import Store from "../configureStore";
 
 const FETCH_USER = "FETCH_USER";

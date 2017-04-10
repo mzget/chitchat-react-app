@@ -3,10 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const Subheader_1 = require("material-ui/Subheader");
 const teamRx = require("../../redux/team/teamRx");
-const chatroomActions = require("../../chats/redux/chatroom/chatroomActions");
-const chatroomRx = require("../../chats/redux/chatroom/chatroomRxEpic");
+const chatroomActions = require("../../chitchat/chats/redux/chatroom/chatroomActions");
+const chatroomRx = require("../../chitchat/chats/redux/chatroom/chatroomRxEpic");
 const MemberList_1 = require("./MemberList");
-;
 class ContactBox extends React.Component {
     componentWillMount() {
         console.log("ContactBox", this.props);

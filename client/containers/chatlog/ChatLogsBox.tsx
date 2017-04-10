@@ -2,15 +2,15 @@ import * as React from "react";
 import { connect } from "react-redux";
 import Subheader from "material-ui/Subheader";
 
-import { ChatsLogComponent, ChatLogMap, IUnread, Unread } from "../../chats/chatslogComponent";
-import ChatLog from "../../chats/models/chatLog";
+import { ChatsLogComponent, ChatLogMap, IUnread, Unread } from "../../chitchat/chats/chatslogComponent";
+import ChatLog from "../../chitchat/chats/models/chatLog";
 
 import Store from "../../redux/configureStore";
 import * as userRx from "../../redux/user/userRx";
-import * as StalkBridgeActions from "../../chats/redux/stalkBridge/stalkBridgeActions";
-import * as chatroomActions from "../../chats/redux/chatroom/chatroomActions";
-import * as ChatLogsActions from "../../chats/redux/chatlogs/chatlogsActions";
-import * as ChatLogRxActions from "../../chats/redux/chatlogs/chatlogRxActions";
+import * as StalkBridgeActions from "../../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
+import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
+import * as ChatLogsActions from "../../chitchat/chats/redux/chatlogs/chatlogsActions";
+import * as ChatLogRxActions from "../../chitchat/chats/redux/chatlogs/chatlogRxActions";
 
 import { ListChatLogs } from "./ListChatLogs";
 
@@ -45,9 +45,6 @@ export class ChatLogsBox extends React.Component<IComponentNameProps, IComponent
 
         switch (chatlogReducer.state) {
             case ChatLogsActions.STALK_GET_CHATSLOG_COMPLETE:
-                this.convertObjToArr(chatlogReducer.chatsLog);
-                break;
-            case ChatLogsActions.STALK_UNREAD_MAP_CHANGED:
                 this.convertObjToArr(chatlogReducer.chatsLog);
                 break;
             case ChatLogsActions.STALK_CHATLOG_CONTACT_COMPLETE:

@@ -9,8 +9,8 @@ import Avatar from "material-ui/Avatar";
 
 import * as FileReaderInput from "react-file-reader-input";
 
-import { ChitChatAccount } from "../../../chitchat/chats/models/User";
-import { ITeamProfile } from "../../../chitchat/chats/models/TeamProfile";
+import { ChitChatAccount } from "../../chitchat/chats/models/User";
+import { ITeamProfile } from "../../chitchat/chats/models/TeamProfile";
 
 const styles = {
     span: {

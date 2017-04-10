@@ -12,7 +12,7 @@ const DialogBox_1 = require("../components/DialogBox");
 const adminRx = require("../redux/admin/adminRx");
 const groupRx = require("../redux/group/groupRx");
 const privateGroupRxActions = require("../redux/group/privateGroupRxActions");
-const UserRole_1 = require("../chats/models/UserRole");
+const UserRole_1 = require("../chitchat/chats/models/UserRole");
 var BoxState;
 (function (BoxState) {
     BoxState[BoxState["idle"] = 0] = "idle";

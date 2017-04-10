@@ -2,11 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const SignupForm_1 = require("../../components/SignupForm");
-const CryptoHelper = require("../../chats/utils/CryptoHelper");
+const CryptoHelper = require("../../chitchat/chats/utils/CryptoHelper");
 const ValidateUtils = require("../../utils/ValidationUtils");
 const AuthRx = require("../../redux/authen/authRx");
-;
-;
 class SignupBox extends React.Component {
     componentWillMount() {
         this.state = {

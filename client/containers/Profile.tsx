@@ -8,7 +8,7 @@ import Subheader from "material-ui/Subheader";
 import { IComponentProps } from "../utils/IComponentProps";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { DialogBox } from "../components/DialogBox";
-import { ConnectProfileDetailEnhancer } from "./profile/ProfileDetailEnhancer";
+import { ProfileDetailEnhancer } from "./profile/ProfileDetailEnhancer";
 
 import * as userRx from "../redux/user/userRx";
 
@@ -65,7 +65,7 @@ class Profile extends React.Component<IComponentProps, IComponentNameState> {
                     <SimpleToolbar title={"Profile"} onBackPressed={this.onBackPressed} />
                 </div>
                 <div id={"app_body"} style={{ backgroundColor: Colors.indigo50, height: this.bodyHeight, overflowY: "auto" }}>
-                    <ConnectProfileDetailEnhancer
+                    <ProfileDetailEnhancer
                         user={this.props.userReducer.user}
                         teamProfile={this.props.userReducer.teamProfile}
                         alert={this.onAlert} />

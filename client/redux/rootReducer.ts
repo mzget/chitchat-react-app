@@ -12,7 +12,7 @@
 import { combineReducers } from "redux";
 
 import { LOG_OUT_SUCCESS } from "./authen/authRx";
-import { STALK_ON_SOCKET_RECONNECT } from "../chats/redux/stalkBridge/stalkBridgeActions";
+import { STALK_ON_SOCKET_RECONNECT } from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 
 /**
 * ## Reducers
@@ -23,9 +23,9 @@ import { UserInitState, userReducer } from "./user/userReducer";
 import { AdminInitState, adminReducer } from "./admin/adminReducer";
 import { AuthenInitState, authReducer } from "./authen/authReducer";
 import { GroupInitState, groupReducer } from "./group/groupReducer";
-import { stalkReducer, StalkInitState } from "../chats/redux/stalkBridge/stalkReducer";
-import { chatroomReducer, ChatRoomInitState } from "../chats/redux/chatroom/chatroomReducer";
-import { chatlogReducer, ChatLogInitState } from "../chats/redux/chatlogs/chatlogReducer";
+import { stalkReducer, StalkInitState } from "../chitchat/chats/redux/stalkBridge/stalkReducer";
+import { chatroomReducer, ChatRoomInitState } from "../chitchat/chats/redux/chatroom/chatroomReducer";
+import { chatlogReducer, ChatLogInitState } from "../chitchat/chats/redux/chatlogs/chatlogReducer";
 
 /**
  * ## CombineReducers

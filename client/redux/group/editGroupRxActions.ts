@@ -5,7 +5,7 @@ const { ajax } = Rx.Observable;
 
 import Store from "../configureStore";
 
-import { Room, RoomType, IMember } from "../../../shared/models/Room";
+import { Room, RoomType, IMember } from "../../chitchat/libs/shared/Room";
 
 const EDIT_GROUP_MEMBER = "EDIT_GROUP_MEMBER";
 export const EDIT_GROUP_MEMBER_SUCCESS = "EDIT_GROUP_MEMBER_SUCCESS";

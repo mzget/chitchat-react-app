@@ -16,15 +16,15 @@ import { WarningBar } from "../components/WarningBar";
 import { ChatRoomDialogBoxEnhancer } from "./toolsbox/ChatRoomDialogBoxEnhancer";
 
 import { IComponentProps } from "../utils/IComponentProps";
-import * as StalkBridgeActions from "../chats/redux/stalkBridge/stalkBridgeActions";
-import * as chatroomActions from "../chats/redux/chatroom/chatroomActions";
-import * as chatroomRxEpic from "../chats/redux/chatroom/chatroomRxEpic";
+import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
+import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
+import * as chatroomRxEpic from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
 
-import { MessageType, IMessage } from "../libs/shared/Message";
-import { MessageImp } from "../chats/models/MessageImp";
+import { MessageType, IMessage } from "../chitchat/libs/shared/Message";
+import { MessageImp } from "../chitchat/chats/models/MessageImp";
 
-import { imagesPath } from "../consts/StickerPath";
-import * as FileType from "../libs/shared/FileType";
+import { imagesPath } from "../chitchat/consts/StickerPath";
+import * as FileType from "../chitchat/libs/shared/FileType";
 
 import { decorateMessage } from "../actions/chatroom/chatroomMessageUtils";
 

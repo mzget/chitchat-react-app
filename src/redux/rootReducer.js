@@ -12,7 +12,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const redux_1 = require("redux");
 const authRx_1 = require("./authen/authRx");
-const stalkBridgeActions_1 = require("../chats/redux/stalkBridge/stalkBridgeActions");
+const stalkBridgeActions_1 = require("../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
 /**
 * ## Reducers
 */
@@ -22,9 +22,9 @@ const userReducer_1 = require("./user/userReducer");
 const adminReducer_1 = require("./admin/adminReducer");
 const authReducer_1 = require("./authen/authReducer");
 const groupReducer_1 = require("./group/groupReducer");
-const stalkReducer_1 = require("../chats/redux/stalkBridge/stalkReducer");
-const chatroomReducer_1 = require("../chats/redux/chatroom/chatroomReducer");
-const chatlogReducer_1 = require("../chats/redux/chatlogs/chatlogReducer");
+const stalkReducer_1 = require("../chitchat/chats/redux/stalkBridge/stalkReducer");
+const chatroomReducer_1 = require("../chitchat/chats/redux/chatroom/chatroomReducer");
+const chatlogReducer_1 = require("../chitchat/chats/redux/chatlogs/chatlogReducer");
 /**
  * ## CombineReducers
  *

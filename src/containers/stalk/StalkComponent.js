@@ -4,7 +4,7 @@ const React = require("react");
 const react_redux_1 = require("react-redux");
 const WarningBar_1 = require("../../components/WarningBar");
 const LinearProgressDialog_1 = require("../../components/LinearProgressDialog");
-const StalkBridgeActions = require("../../chats/redux/stalkBridge/stalkBridgeActions");
+const StalkBridgeActions = require("../../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
 class IStalktProps {
 }
 class StalkComponent extends React.Component {
