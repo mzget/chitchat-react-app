@@ -5,6 +5,7 @@ const getConfig = () => ChitChatFactory.getInstance().config;
 
 const chitchat_headers = () => ({
     "Content-Type": "application/json",
+    "cache-control": "no-cache",
     "x-api-key": getConfig().api.apiKey
 });
 const withToken = (headers) => (token) => {
@@ -28,12 +29,8 @@ export const getUnreadMessage = (room_id: string, user_id: string, lastAccessTim
 };
 
 export const getOlderMessagesCount = (room_id: string, topEdgeMessageTime: string, queryMessage: boolean) => {
-    return fetch(`${getConfig().api.chatroom}/olderMessagesCount/?message=${queryMessage}`, {
-        body: JSON.stringify({
-            room_id: room_id,
-            topEdgeMessageTime: topEdgeMessageTime
-        }),
-        method: "POST",
+    return fetch(`${getConfig().api.chatroom}/olderMessagesCount/?message=${queryMessage}&room_id=${room_id}&topEdgeMessageTime=${topEdgeMessageTime}`, {
+        method: "GET",
         headers: chitchat_headers
     });
 };

@@ -111,7 +111,7 @@ function onOutSideRoomDelegate(event, data) {
 
 const onNewMessage = (message: IMessage) => ({ type: ChatRoomActionsType.ON_NEW_MESSAGE, payload: message });
 
-const onEarlyMessageReady = (data: boolean) => ({ type: ChatRoomActionsType.ON_EARLY_MESSAGE_READY, data });
+const onEarlyMessageReady = (data: boolean) => ({ type: ChatRoomActionsType.ON_EARLY_MESSAGE_READY, payload: data });
 export function checkOlderMessages() {
     return dispatch => {
         let room = getStore().getState().chatroomReducer.room;

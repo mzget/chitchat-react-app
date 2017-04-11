@@ -102,7 +102,7 @@ function onOutSideRoomDelegate(event, data) {
     }
 }
 const onNewMessage = (message) => ({ type: ChatRoomActionsType.ON_NEW_MESSAGE, payload: message });
-const onEarlyMessageReady = (data) => ({ type: ChatRoomActionsType.ON_EARLY_MESSAGE_READY, data });
+const onEarlyMessageReady = (data) => ({ type: ChatRoomActionsType.ON_EARLY_MESSAGE_READY, payload: data });
 function checkOlderMessages() {
     return dispatch => {
         let room = getStore().getState().chatroomReducer.room;
