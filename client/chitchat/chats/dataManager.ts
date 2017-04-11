@@ -43,8 +43,12 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
         this.getContactInfoFailEvents.splice(id, 1);
     }
 
+    public messageDAL: IMessageDAL;
+
     constructor() {
         console.log(global.userAgent);
+
+        this.messageDAL = MessageDALFactory.getObject();
     }
 
     // @ Profile...

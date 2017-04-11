@@ -25,7 +25,7 @@ import { MessageImp } from "./models/MessageImp";
 
 import { ChitChatFactory } from "./chitchatFactory";
 import { imagesPath } from "../consts/StickerPath";
-const getConfig =( ) => ChitChatFactory.getInstance().config;
+const getConfig = () => ChitChatFactory.getInstance().config;
 
 let serverImp: ServerImplemented = null;
 
@@ -169,33 +169,41 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         let self = this;
 
         return new Promise((resolve, reject) => {
-            self.dataManager.messageDAL.getData(rid).then(messages => {
-                let chats = messages.slice(0) as Array<IMessage>;
-                async.forEach(chats, function iterator(chat, result) {
-                    if (chat.type === MessageType[MessageType.Text]) {
-                        if (getConfig().appConfig.encryption === true) {
-                            self.secure.decryption(chat.body).then(function (res) {
-                                chat.body = res;
+            self.dataManager.messageDAL.getData(rid)
+                .then(messages => {
+                    if (messages && messages.length > 0) {
+                        let chats = messages.slice(0) as Array<IMessage>;
+                        async.forEach(chats, function iterator(chat, result) {
+                            if (chat.type === MessageType[MessageType.Text]) {
+                                if (getConfig().appConfig.encryption === true) {
+                                    self.secure.decryption(chat.body).then(function (res) {
+                                        chat.body = res;
 
+                                        result(null);
+                                    }).catch(err => result(null));
+                                }
+                                else {
+                                    result(null);
+                                }
+                            }
+                            else {
                                 result(null);
-                            }).catch(err => result(null));
-                        }
-                        else {
-                            result(null);
-                        }
+                            }
+                        }, (err) => {
+                            console.log("decoded chats completed.", chats.length);
+
+                            self.dataManager.messageDAL.saveData(rid, chats);
+                            resolve(chats);
+                        });
                     }
                     else {
-                        result(null);
+                        console.log("chatMessages is empty!");
+                        resolve(new Array<IMessage>());
                     }
-                }, (err) => {
-                    console.log("decoded chats completed.", chats.length);
-                    self.dataManager.messageDAL.saveData(rid, chats);
-                    resolve(chats);
+                }).catch(err => {
+                    console.log("chatMessages is empty!", err);
+                    resolve(new Array<IMessage>());
                 });
-            }).catch(err => {
-                console.log("chatMessages is empty!");
-                resolve(new Array<IMessage>());
-            });
         });
     }
 

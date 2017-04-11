@@ -7,7 +7,7 @@
     "@types/async": "^2.0.37",
     "@types/crypto-js": "^3.1.32",
     "@types/isomorphic-fetch": "^0.0.31",
-    "@types/localforage": "0.0.33",
+    "@types/localforage": "^0.0.34",
     "@types/material-ui": "^0.16.60",
     "@types/node": "^7.0.11",
     "@types/react-file-reader-input": "^0.0.5",

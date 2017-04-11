@@ -22,9 +22,11 @@
   version "0.0.31"
   resolved "https://registry.yarnpkg.com/@types/isomorphic-fetch/-/isomorphic-fetch-0.0.31.tgz#ec120166ce22f0b134e8770f40c97cd076068fae"
 
-"@types/localforage@0.0.33":
-  version "0.0.33"
-  resolved "https://registry.yarnpkg.com/@types/localforage/-/localforage-0.0.33.tgz#dac2f28cdce54c3095bc4d5555b4e89cb7c5063c"
+"@types/localforage@^0.0.34":
+  version "0.0.34"
+  resolved "https://registry.yarnpkg.com/@types/localforage/-/localforage-0.0.34.tgz#5e31c32dd8791ec4b9ff3ef47c9cb55b2d0d9438"
+  dependencies:
+    localforage "*"
 
 "@types/material-ui@^0.16.60":
   version "0.16.60"
@@ -3412,7 +3414,7 @@ loader-utils@0.2.x, loader-utils@^0.2.11, loader-utils@^0.2.16, loader-utils@^0.
     json5 "^0.5.0"
     object-assign "^4.0.1"
 
-localforage@^1.5.0:
+localforage@*, localforage@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/localforage/-/localforage-1.5.0.tgz#6b994e19b56611fa85df3992df397ac4ab66e815"
   dependencies:

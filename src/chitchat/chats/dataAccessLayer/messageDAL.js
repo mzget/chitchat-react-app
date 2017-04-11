@@ -23,7 +23,7 @@ class MessageDAL {
     }
     removeData(rid, callback) {
         this.store.removeItem(rid).then(() => {
-            console.info('room_id %s is removed: ', rid);
+            console.info("room_id %s is removed: ", rid);
             if (callback) {
                 callback(null, null);
             }
@@ -32,7 +32,7 @@ class MessageDAL {
         });
     }
     clearData(next) {
-        console.warn('MessageDAL.clearData');
+        console.warn("MessageDAL.clearData");
         this.store.clear((err) => {
             if (err != null) {
                 console.warn("Clear database fail", err);

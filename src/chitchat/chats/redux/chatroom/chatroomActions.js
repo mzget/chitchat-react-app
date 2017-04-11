@@ -33,9 +33,6 @@ const secure = secureServiceFactory_1.default.getService();
  */
 class ChatRoomActionsType {
 }
-ChatRoomActionsType.GET_PERSISTEND_MESSAGE_REQUEST = "GET_PERSISTEND_MESSAGE_REQUEST";
-ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS = "GET_PERSISTEND_MESSAGE_SUCCESS";
-ChatRoomActionsType.GET_PERSISTEND_MESSAGE_FAILURE = "GET_PERSISTEND_MESSAGE_FAILURE";
 ChatRoomActionsType.GET_NEWER_MESSAGE_FAILURE = "GET_NEWER_MESSAGE_FAILURE";
 ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS = "GET_NEWER_MESSAGE_SUCCESS";
 ChatRoomActionsType.SEND_MESSAGE_REQUEST = "SEND_MESSAGE_REQUEST";
@@ -105,27 +102,6 @@ function onOutSideRoomDelegate(event, data) {
     }
 }
 const onNewMessage = (message) => ({ type: ChatRoomActionsType.ON_NEW_MESSAGE, payload: message });
-function getPersistendMessage_request() { return { type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_REQUEST }; }
-function getPersistendMessage_success(data) {
-    return {
-        type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS,
-        payload: data
-    };
-}
-const getPersistendMessage_failure = () => ({ type: ChatRoomActionsType.GET_PERSISTEND_MESSAGE_FAILURE });
-function getPersistendMessage(currentRid) {
-    return (dispatch) => {
-        dispatch(getPersistendMessage_request());
-        chatRoomComponent_1.default.getInstance().getPersistentMessage(currentRid).then(function (messages) {
-            console.log("getPersistendMessage of room %s: completed.", currentRid);
-            dispatch(getPersistendMessage_success());
-        }).catch(err => dispatch(getPersistendMessage_failure()));
-        // @ Next call 2 method below. -->
-        // getNewerMessageFromNet();
-        // checkOlderMessages();
-    };
-}
-exports.getPersistendMessage = getPersistendMessage;
 const onEarlyMessageReady = (data) => ({ type: ChatRoomActionsType.ON_EARLY_MESSAGE_READY, data });
 function checkOlderMessages() {
     return dispatch => {

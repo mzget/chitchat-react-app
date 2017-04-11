@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const async = require("async");
 const Room_1 = require("../libs/shared/Room");
+const messageDALFactory_1 = require("./dataAccessLayer/messageDALFactory");
 class DataManager {
     constructor() {
         this.orgGroups = {};
@@ -12,6 +13,7 @@ class DataManager {
         this.isOrgMembersReady = false;
         this.getContactInfoFailEvents = new Array();
         console.log(global.userAgent);
+        this.messageDAL = messageDALFactory_1.MessageDALFactory.getObject();
     }
     addContactInfoFailEvents(func) {
         this.getContactInfoFailEvents.push(func);

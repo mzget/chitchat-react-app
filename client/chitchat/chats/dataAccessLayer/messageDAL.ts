@@ -31,18 +31,17 @@ export class MessageDAL implements IMessageDAL {
 
     removeData(rid: string, callback?: (err, res) => void) {
         this.store.removeItem(rid).then(() => {
-            console.info('room_id %s is removed: ', rid);
+            console.info("room_id %s is removed: ", rid);
             if (callback) {
                 callback(null, null);
             }
         }).catch((err) => {
             console.warn(err);
         });
-
     }
 
     clearData(next: (err?: Error) => void) {
-        console.warn('MessageDAL.clearData');
+        console.warn("MessageDAL.clearData");
         this.store.clear((err) => {
             if (err != null) {
                 console.warn("Clear database fail", err);

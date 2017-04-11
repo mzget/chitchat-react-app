@@ -128,30 +128,37 @@ class ChatRoomComponent {
     getPersistentMessage(rid) {
         let self = this;
         return new Promise((resolve, reject) => {
-            self.dataManager.messageDAL.getData(rid).then(messages => {
-                let chats = messages.slice(0);
-                async.forEach(chats, function iterator(chat, result) {
-                    if (chat.type === Message_1.MessageType[Message_1.MessageType.Text]) {
-                        if (getConfig().appConfig.encryption === true) {
-                            self.secure.decryption(chat.body).then(function (res) {
-                                chat.body = res;
+            self.dataManager.messageDAL.getData(rid)
+                .then(messages => {
+                if (messages && messages.length > 0) {
+                    let chats = messages.slice(0);
+                    async.forEach(chats, function iterator(chat, result) {
+                        if (chat.type === Message_1.MessageType[Message_1.MessageType.Text]) {
+                            if (getConfig().appConfig.encryption === true) {
+                                self.secure.decryption(chat.body).then(function (res) {
+                                    chat.body = res;
+                                    result(null);
+                                }).catch(err => result(null));
+                            }
+                            else {
                                 result(null);
-                            }).catch(err => result(null));
+                            }
                         }
                         else {
                             result(null);
                         }
-                    }
-                    else {
-                        result(null);
-                    }
-                }, (err) => {
-                    console.log("decoded chats completed.", chats.length);
-                    self.dataManager.messageDAL.saveData(rid, chats);
-                    resolve(chats);
-                });
+                    }, (err) => {
+                        console.log("decoded chats completed.", chats.length);
+                        self.dataManager.messageDAL.saveData(rid, chats);
+                        resolve(chats);
+                    });
+                }
+                else {
+                    console.log("chatMessages is empty!");
+                    resolve(new Array());
+                }
             }).catch(err => {
-                console.log("chatMessages is empty!");
+                console.log("chatMessages is empty!", err);
                 resolve(new Array());
             });
         });
