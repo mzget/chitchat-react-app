@@ -20,7 +20,8 @@ exports.ChatLogInitState = immutable_1.Record({
     isFetching: false,
     state: null,
     chatsLog: null,
-    roomAccess: null
+    roomAccess: null,
+    error: null
 });
 const initialState = new exports.ChatLogInitState();
 function chatlogReducer(state = initialState, action) {
@@ -57,6 +58,9 @@ function chatlogReducer(state = initialState, action) {
         }
         case ChatlogRxActions.UPDATE_LAST_ACCESS_ROOM_SUCCESS: {
             return state.set("roomAccess", action.payload).set("isFetching", false);
+        }
+        case ChatlogRxActions.UPDATE_LAST_ACCESS_ROOM_FAILURE: {
+            return state.set("error", action.payload.message).set("isFetching", false);
         }
         case ChatlogRxActions.STALK_REMOVE_ROOM_ACCESS: {
             return state.set("isFetching", true)

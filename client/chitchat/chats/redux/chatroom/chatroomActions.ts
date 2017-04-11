@@ -16,7 +16,7 @@ import * as NotificationManager from "../stalkBridge/StalkNotificationActions";
 import ServerEventListener from "../../../libs/stalk/serverEventListener";
 import HTTPStatus from "../../../libs/stalk/utils/httpStatusCode";
 
-import { updateLastAccessRoom } from "../chatlogs/chatlogsActions";
+import { updateLastAccessRoom } from "../chatlogs/chatlogRxActions";
 
 import { Room, RoomType, IMember } from "../../../libs/shared/Room";
 import { MessageType, IMessage } from "../../../libs/shared/Message";

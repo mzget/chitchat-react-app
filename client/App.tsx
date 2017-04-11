@@ -18,6 +18,9 @@ import Main from "./containers/Main";
 import Admin from "./containers/Admin";
 
 chitchatFactory.initStore(Store);
+Store.subscribe(() =>
+    chitchatFactory.setAuthStore(Store.getState().userReducer.user, Store.getState().authReducer.token)
+);
 
 class App extends React.Component<any, any> {
     render() {

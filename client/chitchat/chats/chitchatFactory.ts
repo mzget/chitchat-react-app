@@ -1,5 +1,10 @@
 import { IStalkApi, IChitChatApi, IConfig } from "./iConfig";
 
+export type AuthStore = {
+    user: any;
+    chitchat_token: string;
+}
+
 export class ChitChatFactory {
     private static instance: ChitChatFactory;
     public static getInstance(): ChitChatFactory {
@@ -24,4 +29,9 @@ export class ChitChatFactory {
 
     public getStore() { return this.store; }
     public getConfig(): IConfig { return this.config; }
+
+    authStore: AuthStore;
+    public setAuthStore(user: any, chitchat_token: string) {
+        this.authStore = { user: user, chitchat_token: chitchat_token };
+    }
 }

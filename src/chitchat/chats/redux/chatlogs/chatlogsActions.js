@@ -17,7 +17,6 @@ const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 const BackendFactory_1 = require("../../BackendFactory");
 const chatslogComponent_1 = require("../../chatslogComponent");
-const ServiceProvider = require("../../services/ServiceProvider");
 const chatroomActions = require("../chatroom/chatroomActions");
 const chitchatFactory_1 = require("../../chitchatFactory");
 const getStore = () => chitchatFactory_1.ChitChatFactory.getInstance().store;
@@ -146,24 +145,6 @@ const getChatLogContact = (chatlog) => {
     });
     return (contacts.length > 0) ? contacts[0]._id : null;
 };
-const UPDATE_LAST_ACCESS_ROOM = "UPDATE_LAST_ACCESS_ROOM";
-exports.UPDATE_LAST_ACCESS_ROOM_SUCCESS = "UPDATE_LAST_ACCESS_ROOM_SUCCESS";
-exports.UPDATE_LAST_ACCESS_ROOM_FAILURE = "UPDATE_LAST_ACCESS_ROOM_FAILURE";
-const UPDATE_LAST_ACCESS_ROOM_CANCELLED = "UPDATE_LAST_ACCESS_ROOM_CANCELLED";
-exports.updateLastAccessRoom = (room_id) => ({ type: UPDATE_LAST_ACCESS_ROOM, room_id });
-const updateLastAccessRoomSuccess = (payload) => ({ type: exports.UPDATE_LAST_ACCESS_ROOM_SUCCESS, payload });
-const updateLastAccessRoomFailure = (error) => ({ type: exports.UPDATE_LAST_ACCESS_ROOM_FAILURE, error });
-exports.updateLastAccessRoomCancelled = () => ({ type: UPDATE_LAST_ACCESS_ROOM_CANCELLED });
-exports.updateLastAccessRoomEpic = action$ => action$.ofType(UPDATE_LAST_ACCESS_ROOM).mergeMap(action => {
-    let token = getStore().getState().authReducer.token;
-    return ServiceProvider.updateLastAccessRoomInfo(token, action.payload);
-}).map(response => updateLastAccessRoomSuccess(response.xhr.response)).do(x => {
-    if (x.payload.success) {
-        BackendFactory_1.BackendFactory.getInstance().dataListener.onUpdatedLastAccessTime(x.payload.result);
-    }
-})
-    .takeUntil(action$.ofType(UPDATE_LAST_ACCESS_ROOM_CANCELLED))
-    .catch(error => Rx.Observable.of(updateLastAccessRoomFailure(error.xhr.response)));
 function updateRooms(room) {
     return __awaiter(this, void 0, void 0, function* () {
         let { chatrooms } = getStore().getState().chatroomReducer;

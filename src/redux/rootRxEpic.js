@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const redux_observable_1 = require("redux-observable");
 const userRx = require("./user/userRx");
 const chatroomRxEpic = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
-const chatlogsActions = require("../chitchat/chats/redux/chatlogs/chatlogsActions");
 const chatlogRxActions = require("../chitchat/chats/redux/chatlogs/chatlogRxActions");
 const authRx = require("./authen/authRx");
 const teamRx = require("./team/teamRx");
@@ -30,6 +29,6 @@ chatroomRxEpic.getPrivateChatRoomEpic, chatroomRxEpic.getPersistendMessageEpic, 
 /// @message rx.
 // messageRxEpic.fetchOlderMessageCount_Epic,
 ///@chatlogs
-chatlogRxActions.getLastAccessRoom_Epic, chatlogsActions.updateLastAccessRoomEpic, 
+chatlogRxActions.getLastAccessRoom_Epic, chatlogRxActions.updateLastAccessRoom_Epic, 
 // chatlogRxActions.stalkInitChatlogs_Epic
 chatlogRxActions.removeRoomAccess_Epic, chitchatRxActions.stalkInitChatlog_Epic);

@@ -170,27 +170,6 @@ const getChatLogContact = (chatlog: ChatLog) => {
     return (contacts.length > 0) ? contacts[0]._id : null;
 };
 
-const UPDATE_LAST_ACCESS_ROOM = "UPDATE_LAST_ACCESS_ROOM";
-export const UPDATE_LAST_ACCESS_ROOM_SUCCESS = "UPDATE_LAST_ACCESS_ROOM_SUCCESS";
-export const UPDATE_LAST_ACCESS_ROOM_FAILURE = "UPDATE_LAST_ACCESS_ROOM_FAILURE";
-const UPDATE_LAST_ACCESS_ROOM_CANCELLED = "UPDATE_LAST_ACCESS_ROOM_CANCELLED";
-export const updateLastAccessRoom = (room_id) => ({ type: UPDATE_LAST_ACCESS_ROOM, room_id });
-const updateLastAccessRoomSuccess = (payload) => ({ type: UPDATE_LAST_ACCESS_ROOM_SUCCESS, payload });
-const updateLastAccessRoomFailure = (error) => ({ type: UPDATE_LAST_ACCESS_ROOM_FAILURE, error });
-export const updateLastAccessRoomCancelled = () => ({ type: UPDATE_LAST_ACCESS_ROOM_CANCELLED });
-export const updateLastAccessRoomEpic = action$ =>
-    action$.ofType(UPDATE_LAST_ACCESS_ROOM).mergeMap(action => {
-        let token = getStore().getState().authReducer.token;
-        return ServiceProvider.updateLastAccessRoomInfo(token, action.payload);
-    }).map(response => updateLastAccessRoomSuccess(response.xhr.response)).do(x => {
-        if (x.payload.success) {
-            BackendFactory.getInstance().dataListener.onUpdatedLastAccessTime(x.payload.result);
-        }
-    })
-        .takeUntil(action$.ofType(UPDATE_LAST_ACCESS_ROOM_CANCELLED))
-        .catch(error => Rx.Observable.of(updateLastAccessRoomFailure(error.xhr.response)));
-
-
 async function updateRooms(room) {
     let { chatrooms } = getStore().getState().chatroomReducer;
 

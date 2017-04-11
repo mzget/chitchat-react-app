@@ -63,7 +63,7 @@ export const rootEpic = combineEpics(
 
     ///@chatlogs
     chatlogRxActions.getLastAccessRoom_Epic,
-    chatlogsActions.updateLastAccessRoomEpic,
+    chatlogRxActions.updateLastAccessRoom_Epic,
     // chatlogRxActions.stalkInitChatlogs_Epic
     chatlogRxActions.removeRoomAccess_Epic,
 

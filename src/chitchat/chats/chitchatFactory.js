@@ -18,5 +18,8 @@ class ChitChatFactory {
     }
     getStore() { return this.store; }
     getConfig() { return this.config; }
+    setAuthStore(user, chitchat_token) {
+        this.authStore = { user: user, chitchat_token: chitchat_token };
+    }
 }
 exports.ChitChatFactory = ChitChatFactory;

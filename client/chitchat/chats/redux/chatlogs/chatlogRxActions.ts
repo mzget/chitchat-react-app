@@ -13,6 +13,7 @@ import * as ServiceProvider from "../../services/ServiceProvider";
 
 import { ChitChatFactory } from "../../chitchatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
+const authReducer = () => ChitChatFactory.getInstance().authStore;
 
 export const STALK_REMOVE_ROOM_ACCESS = "STALK_REMOVE_ROOM_ACCESS";
 export const STALK_REMOVE_ROOM_ACCESS_FAILURE = "STALK_REMOVE_ROOM_ACCESS_FAILURE";
@@ -57,19 +58,18 @@ const waitForRemovedRoom = async (data) => {
     }, 100);
 };
 
-
 const UPDATE_LAST_ACCESS_ROOM = "UPDATE_LAST_ACCESS_ROOM";
 export const UPDATE_LAST_ACCESS_ROOM_SUCCESS = "UPDATE_LAST_ACCESS_ROOM_SUCCESS";
 export const UPDATE_LAST_ACCESS_ROOM_FAILURE = "UPDATE_LAST_ACCESS_ROOM_FAILURE";
 const UPDATE_LAST_ACCESS_ROOM_CANCELLED = "UPDATE_LAST_ACCESS_ROOM_CANCELLED";
-export const updateLastAccessRoom = (room_id) => ({ type: UPDATE_LAST_ACCESS_ROOM, room_id });
+export const updateLastAccessRoom = (room_id) => ({ type: UPDATE_LAST_ACCESS_ROOM, payload: room_id });
 const updateLastAccessRoomSuccess = (payload) => ({ type: UPDATE_LAST_ACCESS_ROOM_SUCCESS, payload });
-const updateLastAccessRoomFailure = (error) => ({ type: UPDATE_LAST_ACCESS_ROOM_FAILURE, error });
+const updateLastAccessRoomFailure = (error) => ({ type: UPDATE_LAST_ACCESS_ROOM_FAILURE, payload: error });
 export const updateLastAccessRoomCancelled = () => ({ type: UPDATE_LAST_ACCESS_ROOM_CANCELLED });
 export const updateLastAccessRoom_Epic = action$ =>
     action$.ofType(UPDATE_LAST_ACCESS_ROOM)
         .mergeMap(action => {
-            let { _id } = getStore().getState().userReducer.user;
+            let { _id } = authReducer().user;
             return ServiceProvider.updateLastAccessRoomInfo(_id, action.payload);
         })
         .map(response => {
@@ -106,11 +106,7 @@ export const updateLastAccessRoom_Epic = action$ =>
             }
         })
         .takeUntil(action$.ofType(UPDATE_LAST_ACCESS_ROOM_CANCELLED))
-        .catch(error => {
-            console.warn("updateLastAccessRoomInfo fail", error);
-
-            Rx.Observable.of(updateLastAccessRoomFailure(error.xhr.response));
-        });
+        .catch(error => Rx.Observable.of(updateLastAccessRoomFailure(error.xhr.response)));
 
 
 export const GET_LAST_ACCESS_ROOM = "GET_LAST_ACCESS_ROOM";

@@ -21,7 +21,7 @@ const secureServiceFactory_1 = require("../../secure/secureServiceFactory");
 const NotificationManager = require("../stalkBridge/StalkNotificationActions");
 const serverEventListener_1 = require("../../../libs/stalk/serverEventListener");
 const httpStatusCode_1 = require("../../../libs/stalk/utils/httpStatusCode");
-const chatlogsActions_1 = require("../chatlogs/chatlogsActions");
+const chatlogRxActions_1 = require("../chatlogs/chatlogRxActions");
 const Room_1 = require("../../../libs/shared/Room");
 const Message_1 = require("../../../libs/shared/Message");
 const chitchatFactory_1 = require("../../chitchatFactory");
@@ -254,9 +254,9 @@ function leaveRoomAction() {
                 chatRoomComponent_1.default.getInstance().dispose();
                 NotificationManager.regisNotifyNewMessageEvent();
             });
-            dispatch(chatlogsActions_1.updateLastAccessRoom(room_id));
+            dispatch(chatlogRxActions_1.updateLastAccessRoom(room_id));
         }).catch(err => {
-            dispatch(chatlogsActions_1.updateLastAccessRoom(room_id));
+            dispatch(chatlogRxActions_1.updateLastAccessRoom(room_id));
         });
     };
 }

@@ -17,6 +17,7 @@ const Profile_1 = require("./containers/Profile");
 const Main_1 = require("./containers/Main");
 const Admin_1 = require("./containers/Admin");
 chitchat_1.chitchatFactory.initStore(configureStore_1.default);
+configureStore_1.default.subscribe(() => chitchat_1.chitchatFactory.setAuthStore(configureStore_1.default.getState().userReducer.user, configureStore_1.default.getState().authReducer.token));
 class App extends React.Component {
     render() {
         return (React.createElement(react_redux_1.Provider, { store: configureStore_1.default },

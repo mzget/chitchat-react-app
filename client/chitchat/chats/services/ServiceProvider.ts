@@ -59,15 +59,14 @@ export function getLastAccessRoomInfo(token: string, team_id: string) {
     });
 }
 
-export function updateLastAccessRoomInfo(token: string, room_id: string) {
+export function updateLastAccessRoomInfo(user_id: string, room_id: string) {
     return Rx.Observable.ajax({
         url: `${getConfig().Stalk.api.user}/lastAccessRoom`,
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "x-access-token": token
-        },
-        body: JSON.stringify({ room_id: room_id })
+        headers: chitchat_headers,
+        body: JSON.stringify({
+            room_id: room_id, user_id: user_id
+        })
     });
 }
 
