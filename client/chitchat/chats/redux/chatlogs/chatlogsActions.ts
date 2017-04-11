@@ -12,6 +12,7 @@ import { RoomAccessData, StalkAccount } from "../../../libs/shared/stalk";
 import { Room } from "../../../libs/shared/Room";
 import ChatLog from "../../models/chatLog";
 import * as ServiceProvider from "../../services/ServiceProvider";
+import * as chatroomActions from "../chatroom/chatroomActions";
 
 import { ChitChatFactory } from "../../chitchatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
@@ -20,7 +21,6 @@ export const STALK_INIT_CHATLOG = "STALK_INIT_CHATLOG";
 export const STALK_GET_CHATSLOG_COMPLETE = "STALK_GET_CHATSLOG_COMPLETE";
 export const STALK_CHATLOG_MAP_CHANGED = "STALK_CHATLOG_MAP_CHANGED";
 export const STALK_CHATLOG_CONTACT_COMPLETE = "STALK_CHATLOG_CONTACT_COMPLETE";
-export const STALK_CHATROOMS_READY = "STALK_CHATROOMS_READY";
 
 const listenerImp = (newMsg) => {
     let dataManager = BackendFactory.getInstance().dataManager;
@@ -59,7 +59,7 @@ export function initChatsLog() {
     let chatsLogComponent = BackendFactory.getInstance().createChatlogs();
 
     chatsLogComponent.onReady = function (rooms: Array<Room>) {
-        getStore().dispatch({ type: STALK_CHATROOMS_READY, payload: rooms });
+        getStore().dispatch(chatroomActions.updateChatRoom(rooms));
 
         getUnreadMessages();
     };
@@ -212,5 +212,5 @@ async function updateRooms(room) {
     }
 
 
-    getStore().dispatch({ type: STALK_CHATROOMS_READY, payload: chatrooms });
+    getStore().dispatch(chatroomActions.updateChatRoom(chatrooms));
 }

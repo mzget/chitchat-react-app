@@ -9,6 +9,8 @@ import Store from "../configureStore";
 import { BackendFactory } from "../../chitchat/chats/BackendFactory";
 import { Room, RoomType } from "../../chitchat/libs/shared/Room";
 
+import { updateChatRoom } from "../../chitchat/chats/redux/chatroom/chatroomActions";
+
 const GET_ORG_GROUP = "GET_ORG_GROUP";
 export const GET_ORG_GROUP_SUCCESS = "GET_ORG_GROUP_SUCCESS";
 const GET_ORG_GROUP_FAILURE = "GET_ORG_GROUP_FAILURE";
@@ -28,10 +30,7 @@ export const getOrgGroup_Epic = action$ => (
             .do(response => {
                 if (response.type == GET_ORG_GROUP_SUCCESS) {
                     let rooms = response.payload.result as Array<Room>;
-
-                    Rx.Observable.from(rooms)._do(x => {
-                        // dataManager.roomDAL.save(x._id, x);
-                    }).subscribe();
+                    Store.dispatch(updateChatRoom(rooms));
                 }
             })
     ));

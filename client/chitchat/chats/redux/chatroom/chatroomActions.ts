@@ -4,6 +4,9 @@
  * This is pure function action for redux app.
  */
 
+import Rx = require("rxjs/Rx");
+
+
 import * as ServiceProvider from "../../services/ServiceProvider";
 import ChatRoomComponent from "../../chatRoomComponent";
 import { BackendFactory } from "../../BackendFactory";
@@ -310,7 +313,6 @@ export const ENABLE_CHATROOM = "ENABLE_CHATROOM";
 export const disableChatRoom = () => ({ type: DISABLE_CHATROOM });
 export const enableChatRoom = () => ({ type: ENABLE_CHATROOM });
 
-
 export const LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
 const loadEarlyMessage_success = (payload) => ({ type: LOAD_EARLY_MESSAGE_SUCCESS, payload });
 export function loadEarlyMessageChunk() {
@@ -334,13 +336,19 @@ const getPersistChatroomSuccess = (roomInfo: Room) => ({ type: GET_PERSISTEND_CH
 export const getPersistendChatroom = (roomId: string) => (dispatch => {
     dispatch({ type: GET_PERSISTEND_CHATROOM, payload: roomId });
 
-    const dataManager = BackendFactory.getInstance().dataManager;
-    dataManager.roomDAL.get(roomId).then(room => {
-        if (room)
-            dispatch(getPersistChatroomSuccess(room));
-        else
-            dispatch(getPersistChatroomFail());
+    const { chatrooms }: { chatrooms: Array<Room> } = getStore().getState().chatroomReducer;
+    const rooms = chatrooms.filter((room, index, array) => {
+        if (room._id.toString() == roomId) {
+            return room;
+        }
     });
+
+    if (rooms.length > 0) {
+        dispatch(getPersistChatroomSuccess(rooms[0]));
+    }
+    else {
+        dispatch(getPersistChatroomFail());
+    }
 });
 
 export const createChatRoom = (myUser, contactUser) => {
@@ -364,4 +372,32 @@ export const createChatRoom = (myUser, contactUser) => {
 
         return null;
     }
+};
+
+export const UPDATE_CHATROOMS = "UPDATE_CHATROOMS";
+export const UPDATED_CHATROOMS = "UPDATED_CHATROOMS";
+export const updatedChatRoomSuccess = (chatrooms: Array<Room>) => ({ type: UPDATED_CHATROOMS, payload: chatrooms });
+export const updateChatRoom = (rooms: Array<Room>) => {
+    return dispatch => {
+        dispatch({ type: UPDATE_CHATROOMS, payload: rooms });
+
+        let chatrooms = getStore().getState().chatroomReducer.chatrooms as Array<Room>;
+        if (chatrooms) {
+            Rx.Observable.from(rooms)._do(
+                (x: Room) => {
+                    let id = chatrooms.indexOf(x);
+                    if (id < 0) { chatrooms.push(x); }
+                },
+                err => { },
+                () => {
+                    dispatch(updatedChatRoomSuccess(chatrooms));
+                }
+            ).subscribe();
+        }
+        else {
+            chatrooms = rooms.slice();
+
+            dispatch(updatedChatRoomSuccess(chatrooms));
+        }
+    };
 };

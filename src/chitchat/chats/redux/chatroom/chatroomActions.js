@@ -13,6 +13,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const Rx = require("rxjs/Rx");
 const ServiceProvider = require("../../services/ServiceProvider");
 const chatRoomComponent_1 = require("../../chatRoomComponent");
 const BackendFactory_1 = require("../../BackendFactory");
@@ -310,13 +311,18 @@ const getPersistChatroomFail = () => ({ type: exports.GET_PERSISTEND_CHATROOM_FA
 const getPersistChatroomSuccess = (roomInfo) => ({ type: exports.GET_PERSISTEND_CHATROOM_SUCCESS, roomInfo });
 exports.getPersistendChatroom = (roomId) => (dispatch => {
     dispatch({ type: GET_PERSISTEND_CHATROOM, payload: roomId });
-    const dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
-    dataManager.roomDAL.get(roomId).then(room => {
-        if (room)
-            dispatch(getPersistChatroomSuccess(room));
-        else
-            dispatch(getPersistChatroomFail());
+    const { chatrooms } = getStore().getState().chatroomReducer;
+    const rooms = chatrooms.filter((room, index, array) => {
+        if (room._id.toString() == roomId) {
+            return room;
+        }
     });
+    if (rooms.length > 0) {
+        dispatch(getPersistChatroomSuccess(rooms[0]));
+    }
+    else {
+        dispatch(getPersistChatroomFail());
+    }
 });
 exports.createChatRoom = (myUser, contactUser) => {
     if (myUser && contactUser) {
@@ -335,4 +341,27 @@ exports.createChatRoom = (myUser, contactUser) => {
         console.warn("Not yet ready for create chatroom");
         return null;
     }
+};
+exports.UPDATE_CHATROOMS = "UPDATE_CHATROOMS";
+exports.UPDATED_CHATROOMS = "UPDATED_CHATROOMS";
+exports.updatedChatRoomSuccess = (chatrooms) => ({ type: exports.UPDATED_CHATROOMS, payload: chatrooms });
+exports.updateChatRoom = (rooms) => {
+    return dispatch => {
+        dispatch({ type: exports.UPDATE_CHATROOMS, payload: rooms });
+        let chatrooms = getStore().getState().chatroomReducer.chatrooms;
+        if (chatrooms) {
+            Rx.Observable.from(rooms)._do((x) => {
+                let id = chatrooms.indexOf(x);
+                if (id < 0) {
+                    chatrooms.push(x);
+                }
+            }, err => { }, () => {
+                dispatch(exports.updatedChatRoomSuccess(chatrooms));
+            }).subscribe();
+        }
+        else {
+            chatrooms = rooms.slice();
+            dispatch(exports.updatedChatRoomSuccess(chatrooms));
+        }
+    };
 };

@@ -4,7 +4,7 @@
  * This is pure function for redux app.
  */
 
-import { ChatRoomActionsType } from "./chatroomActions";
+import { ChatRoomActionsType, UPDATE_CHATROOMS } from "./chatroomActions";
 import * as ChatRoomRx from "./chatroomRxEpic";
 import * as chatroomActions from "./chatroomActions";
 import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
@@ -134,7 +134,7 @@ export const chatroomReducer = (state = initialState, action) => {
                 .set("state", ChatRoomRx.CREATE_PRIVATE_CHATROOM_SUCCESS);
         }
 
-        case chatlogsActions.STALK_CHATROOMS_READY: {
+        case chatroomActions.UPDATED_CHATROOMS: {
             return state.set("chatrooms", action.payload);
         }
 

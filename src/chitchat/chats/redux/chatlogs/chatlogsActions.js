@@ -18,13 +18,13 @@ const { ajax } = Rx.Observable;
 const BackendFactory_1 = require("../../BackendFactory");
 const chatslogComponent_1 = require("../../chatslogComponent");
 const ServiceProvider = require("../../services/ServiceProvider");
+const chatroomActions = require("../chatroom/chatroomActions");
 const chitchatFactory_1 = require("../../chitchatFactory");
 const getStore = () => chitchatFactory_1.ChitChatFactory.getInstance().store;
 exports.STALK_INIT_CHATLOG = "STALK_INIT_CHATLOG";
 exports.STALK_GET_CHATSLOG_COMPLETE = "STALK_GET_CHATSLOG_COMPLETE";
 exports.STALK_CHATLOG_MAP_CHANGED = "STALK_CHATLOG_MAP_CHANGED";
 exports.STALK_CHATLOG_CONTACT_COMPLETE = "STALK_CHATLOG_CONTACT_COMPLETE";
-exports.STALK_CHATROOMS_READY = "STALK_CHATROOMS_READY";
 const listenerImp = (newMsg) => {
     let dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
     let chatsLogComp = BackendFactory_1.BackendFactory.getInstance().chatLogComp;
@@ -56,7 +56,7 @@ function updateLastAccessTimeEventHandler(newRoomAccess) {
 function initChatsLog() {
     let chatsLogComponent = BackendFactory_1.BackendFactory.getInstance().createChatlogs();
     chatsLogComponent.onReady = function (rooms) {
-        getStore().dispatch({ type: exports.STALK_CHATROOMS_READY, payload: rooms });
+        getStore().dispatch(chatroomActions.updateChatRoom(rooms));
         getUnreadMessages();
     };
     chatsLogComponent.getRoomsInfoCompleteEvent = () => {
@@ -182,6 +182,6 @@ function updateRooms(room) {
             chatrooms = new Array();
             chatrooms.push(room);
         }
-        getStore().dispatch({ type: exports.STALK_CHATROOMS_READY, payload: chatrooms });
+        getStore().dispatch(chatroomActions.updateChatRoom(chatrooms));
     });
 }

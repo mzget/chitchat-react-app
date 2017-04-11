@@ -5,6 +5,7 @@ const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 const configureStore_1 = require("../configureStore");
+const chatroomActions_1 = require("../../chitchat/chats/redux/chatroom/chatroomActions");
 const GET_ORG_GROUP = "GET_ORG_GROUP";
 exports.GET_ORG_GROUP_SUCCESS = "GET_ORG_GROUP_SUCCESS";
 const GET_ORG_GROUP_FAILURE = "GET_ORG_GROUP_FAILURE";
@@ -19,9 +20,7 @@ exports.getOrgGroup_Epic = action$ => (action$.ofType(GET_ORG_GROUP).mergeMap(ac
     .do(response => {
     if (response.type == exports.GET_ORG_GROUP_SUCCESS) {
         let rooms = response.payload.result;
-        Rx.Observable.from(rooms)._do(x => {
-            // dataManager.roomDAL.save(x._id, x);
-        }).subscribe();
+        configureStore_1.default.dispatch(chatroomActions_1.updateChatRoom(rooms));
     }
 })));
 const CREATE_ORG_GROUP = "CREATE_ORG_GROUP";
