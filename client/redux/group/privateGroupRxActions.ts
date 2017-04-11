@@ -6,6 +6,8 @@ import Store from "../configureStore";
 import { BackendFactory } from "../../chitchat/chats/BackendFactory";
 import { Room, RoomType } from "../../chitchat/libs/shared/Room";
 
+import { updateChatRoom } from "../../chitchat/chats/redux/chatroom/chatroomActions";
+
 const GET_PRIVATE_GROUP = "GET_PRIVATE_GROUP";
 export const GET_PRIVATE_GROUP_SUCCESS = "GET_PRIVATE_GROUP_SUCCESS";
 export const GET_PRIVATE_GROUP_FAILURE = "GET_PRIVATE_GROUP_FAILURE";
@@ -24,10 +26,7 @@ export const getPrivateGroup_Epic = action$ => (
             .do(response => {
                 if (response.type == GET_PRIVATE_GROUP_SUCCESS) {
                     let rooms = response.payload.result as Array<Room>;
-
-                    Rx.Observable.from(rooms)._do(x => {
-                        // dataManager.roomDAL.save(x._id, x);
-                    }).subscribe();
+                    Store.dispatch(updateChatRoom(rooms));
                 }
             })
         ));

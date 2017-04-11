@@ -4,6 +4,7 @@ const Rx = require("rxjs");
 const { Observable: { ajax }, AjaxResponse } = Rx;
 const config_1 = require("../../configs/config");
 const configureStore_1 = require("../configureStore");
+const chatroomActions_1 = require("../../chitchat/chats/redux/chatroom/chatroomActions");
 const GET_PRIVATE_GROUP = "GET_PRIVATE_GROUP";
 exports.GET_PRIVATE_GROUP_SUCCESS = "GET_PRIVATE_GROUP_SUCCESS";
 exports.GET_PRIVATE_GROUP_FAILURE = "GET_PRIVATE_GROUP_FAILURE";
@@ -20,9 +21,7 @@ exports.getPrivateGroup_Epic = action$ => (action$.ofType(GET_PRIVATE_GROUP)
     .do(response => {
     if (response.type == exports.GET_PRIVATE_GROUP_SUCCESS) {
         let rooms = response.payload.result;
-        Rx.Observable.from(rooms)._do(x => {
-            // dataManager.roomDAL.save(x._id, x);
-        }).subscribe();
+        configureStore_1.default.dispatch(chatroomActions_1.updateChatRoom(rooms));
     }
 })));
 const CREATE_PRIVATE_GROUP = "CREATE_PRIVATE_GROUP";
