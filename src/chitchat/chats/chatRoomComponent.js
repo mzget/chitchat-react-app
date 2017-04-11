@@ -126,11 +126,11 @@ class ChatRoomComponent {
         self.dataManager.messageDAL.saveData(self.roomId, self.chatMessages);
     }
     getPersistentMessage(rid) {
-        let self = this;
-        return new Promise((resolve, reject) => {
-            self.dataManager.messageDAL.getData(rid)
-                .then(messages => {
-                if (messages && messages.length > 0) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let self = this;
+            let messages = yield self.dataManager.messageDAL.getData(rid);
+            if (messages && messages.length > 0) {
+                let prom = new Promise((resolve, reject) => {
                     let chats = messages.slice(0);
                     async.forEach(chats, function iterator(chat, result) {
                         if (chat.type === Message_1.MessageType[Message_1.MessageType.Text]) {
@@ -152,15 +152,14 @@ class ChatRoomComponent {
                         self.dataManager.messageDAL.saveData(rid, chats);
                         resolve(chats);
                     });
-                }
-                else {
-                    console.log("chatMessages is empty!");
-                    resolve(new Array());
-                }
-            }).catch(err => {
-                console.log("chatMessages is empty!", err);
-                resolve(new Array());
-            });
+                });
+                let chats = yield prom;
+                return chats;
+            }
+            else {
+                console.log("chatMessages is empty!");
+                return new Array();
+            }
         });
     }
     getNewerMessageRecord(sessionToken, callback) {

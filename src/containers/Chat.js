@@ -19,7 +19,6 @@ const chatroomRxEpic = require("../chitchat/chats/redux/chatroom/chatroomRxEpic"
 const StickerPath_1 = require("../chitchat/consts/StickerPath");
 const FileType = require("../chitchat/libs/shared/FileType");
 const chatroomMessageUtils_1 = require("../actions/chatroom/chatroomMessageUtils");
-;
 class Chat extends React.Component {
     constructor() {
         super(...arguments);
@@ -146,7 +145,7 @@ class Chat extends React.Component {
                 this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
-            case chatroomActions.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
+            case chatroomRxEpic.GET_PERSISTEND_MESSAGE_SUCCESS: {
                 chatroomActions.getMessages().then(messages => {
                     this.setState(previousState => (Object.assign({}, previousState, { messages: messages })));
                 });

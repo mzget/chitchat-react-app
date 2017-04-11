@@ -35,7 +35,7 @@ interface IComponentNameState {
     earlyMessageReady;
     openButtomMenu: boolean;
     onAlert: boolean;
-};
+}
 
 class Chat extends React.Component<IComponentProps, IComponentNameState> {
     options = "Options";
@@ -165,7 +165,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
-            case chatroomActions.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
+            case chatroomRxEpic.GET_PERSISTEND_MESSAGE_SUCCESS: {
                 chatroomActions.getMessages().then(messages => {
                     this.setState(previousState => ({
                         ...previousState,

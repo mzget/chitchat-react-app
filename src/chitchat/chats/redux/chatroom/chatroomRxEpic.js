@@ -57,11 +57,11 @@ exports.createPrivateChatRoomEpic = action$ => {
 };
 const GET_PERSISTEND_MESSAGE = "GET_PERSISTEND_MESSAGE";
 const GET_PERSISTEND_MESSAGE_CANCELLED = "GET_PERSISTEND_MESSAGE_CANCELLED";
-const GET_PERSISTEND_MESSAGE_SUCCESS = "GET_PERSISTEND_MESSAGE_SUCCESS";
+exports.GET_PERSISTEND_MESSAGE_SUCCESS = "GET_PERSISTEND_MESSAGE_SUCCESS";
 const GET_PERSISTEND_MESSAGE_FAILURE = "GET_PERSISTEND_MESSAGE_FAILURE";
-exports.getPersistendMessage = (currentRid) => ({ type: GET_PERSISTEND_MESSAGE, currentRid });
+exports.getPersistendMessage = (currentRid) => ({ type: GET_PERSISTEND_MESSAGE, payload: currentRid });
 const getPersistendMessage_cancel = () => ({ type: GET_PERSISTEND_MESSAGE_CANCELLED });
-const getPersistendMessage_success = (payload) => ({ type: GET_PERSISTEND_MESSAGE_SUCCESS, payload });
+const getPersistendMessage_success = (payload) => ({ type: exports.GET_PERSISTEND_MESSAGE_SUCCESS, payload });
 const getPersistendMessage_failure = (error) => ({ type: GET_PERSISTEND_MESSAGE_FAILURE, payload: error });
 exports.getPersistendMessageEpic = action$ => {
     return action$.ofType(GET_PERSISTEND_MESSAGE)

@@ -165,46 +165,44 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         self.dataManager.messageDAL.saveData(self.roomId, self.chatMessages);
     }
 
-    public getPersistentMessage(rid: string): Promise<any> {
+    public async getPersistentMessage(rid: string) {
         let self = this;
+        let messages = await self.dataManager.messageDAL.getData(rid);
 
-        return new Promise((resolve, reject) => {
-            self.dataManager.messageDAL.getData(rid)
-                .then(messages => {
-                    if (messages && messages.length > 0) {
-                        let chats = messages.slice(0) as Array<IMessage>;
-                        async.forEach(chats, function iterator(chat, result) {
-                            if (chat.type === MessageType[MessageType.Text]) {
-                                if (getConfig().appConfig.encryption === true) {
-                                    self.secure.decryption(chat.body).then(function (res) {
-                                        chat.body = res;
+        if (messages && messages.length > 0) {
+            let prom = new Promise((resolve: (data: Array<IMessage>) => void, reject) => {
+                let chats = messages.slice(0) as Array<IMessage>;
+                async.forEach(chats, function iterator(chat, result) {
+                    if (chat.type === MessageType[MessageType.Text]) {
+                        if (getConfig().appConfig.encryption === true) {
+                            self.secure.decryption(chat.body).then(function (res) {
+                                chat.body = res;
 
-                                        result(null);
-                                    }).catch(err => result(null));
-                                }
-                                else {
-                                    result(null);
-                                }
-                            }
-                            else {
                                 result(null);
-                            }
-                        }, (err) => {
-                            console.log("decoded chats completed.", chats.length);
-
-                            self.dataManager.messageDAL.saveData(rid, chats);
-                            resolve(chats);
-                        });
+                            }).catch(err => result(null));
+                        }
+                        else {
+                            result(null);
+                        }
                     }
                     else {
-                        console.log("chatMessages is empty!");
-                        resolve(new Array<IMessage>());
+                        result(null);
                     }
-                }).catch(err => {
-                    console.log("chatMessages is empty!", err);
-                    resolve(new Array<IMessage>());
+                }, (err) => {
+                    console.log("decoded chats completed.", chats.length);
+
+                    self.dataManager.messageDAL.saveData(rid, chats);
+                    resolve(chats);
                 });
-        });
+            });
+
+            let chats = await prom;
+            return chats;
+        }
+        else {
+            console.log("chatMessages is empty!");
+            return new Array<IMessage>();
+        }
     }
 
     public async getNewerMessageRecord(sessionToken: string, callback: (results: Array<IMessage>) => void) {

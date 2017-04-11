@@ -5,7 +5,7 @@
  */
 
 import { ChatRoomActionsType, UPDATE_CHATROOMS } from "./chatroomActions";
-import * as ChatRoomRx from "./chatroomRxEpic";
+import * as chatroomRxActions from "./chatroomRxEpic";
 import * as chatroomActions from "./chatroomActions";
 import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
 import * as chatlogsActions from "../chatlogs/chatlogsActions";
@@ -51,28 +51,28 @@ export const chatroomReducer = (state = initialState, action) => {
                 .set("chatDisabled", false);
         }
 
-        case ChatRoomRx.FETCH_PRIVATE_CHATROOM_SUCCESS:
+        case chatroomRxActions.FETCH_PRIVATE_CHATROOM_SUCCESS:
             return state.set("room", action.payload.result[0])
-                .set("state", ChatRoomRx.FETCH_PRIVATE_CHATROOM_SUCCESS);
+                .set("state", chatroomRxActions.FETCH_PRIVATE_CHATROOM_SUCCESS);
 
-        case ChatRoomRx.FETCH_PRIVATE_CHATROOM_CANCELLED:
+        case chatroomRxActions.FETCH_PRIVATE_CHATROOM_CANCELLED:
             return state;
 
-        case ChatRoomRx.FETCH_PRIVATE_CHATROOM_FAILURE:
-            return state.set("state", ChatRoomRx.FETCH_PRIVATE_CHATROOM_FAILURE)
+        case chatroomRxActions.FETCH_PRIVATE_CHATROOM_FAILURE:
+            return state.set("state", chatroomRxActions.FETCH_PRIVATE_CHATROOM_FAILURE)
                 .set("room", null);
 
-        case ChatRoomRx.CHATROOM_UPLOAD_FILE: {
-            return state.set("state", ChatRoomRx.CHATROOM_UPLOAD_FILE)
+        case chatroomRxActions.CHATROOM_UPLOAD_FILE: {
+            return state.set("state", chatroomRxActions.CHATROOM_UPLOAD_FILE)
                 .set("uploadingFile", action.payload.data.target.result)
                 .set("fileInfo", action.payload.file); // action.payload.form['file']
         }
-        case ChatRoomRx.CHATROOM_UPLOAD_FILE_FAILURE: {
-            return state.set("state", ChatRoomRx.CHATROOM_UPLOAD_FILE_FAILURE)
+        case chatroomRxActions.CHATROOM_UPLOAD_FILE_FAILURE: {
+            return state.set("state", chatroomRxActions.CHATROOM_UPLOAD_FILE_FAILURE)
                 .set("error", JSON.stringify(action.payload.message));
         }
-        case ChatRoomRx.CHATROOM_UPLOAD_FILE_SUCCESS: {
-            return state.set("state", ChatRoomRx.CHATROOM_UPLOAD_FILE_SUCCESS)
+        case chatroomRxActions.CHATROOM_UPLOAD_FILE_SUCCESS: {
+            return state.set("state", chatroomRxActions.CHATROOM_UPLOAD_FILE_SUCCESS)
                 .set("responseFile", action.payload);
         }
 
@@ -122,16 +122,16 @@ export const chatroomReducer = (state = initialState, action) => {
                 .set("room", null);
         }
 
-        case ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
-            return state.set("state", ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS);
+        case chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS: {
+            return state.set("state", chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS);
         }
         case ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
             return state.set("state", ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS);
         }
 
-        case ChatRoomRx.CREATE_PRIVATE_CHATROOM_SUCCESS: {
+        case chatroomRxActions.CREATE_PRIVATE_CHATROOM_SUCCESS: {
             return state.set("room", action.payload.result[0])
-                .set("state", ChatRoomRx.CREATE_PRIVATE_CHATROOM_SUCCESS);
+                .set("state", chatroomRxActions.CREATE_PRIVATE_CHATROOM_SUCCESS);
         }
 
         case chatroomActions.UPDATED_CHATROOMS: {
