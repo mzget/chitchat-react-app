@@ -11,6 +11,7 @@ import * as adminRx from "./admin/adminRx";
 import * as groupRx from "./group/groupRx";
 import * as privateGroupRxActions from "./group/privateGroupRxActions";
 import * as editGroupRxActions from "./group/editGroupRxActions";
+import * as chitchatRxActions from "../actions/chitchatRxActions";
 
 export const rootEpic = combineEpics(
     // @Admin
@@ -61,7 +62,10 @@ export const rootEpic = combineEpics(
     // messageRxEpic.fetchOlderMessageCount_Epic,
 
     ///@chatlogs
+    chatlogRxActions.getLastAccessRoom_Epic,
     chatlogsActions.updateLastAccessRoomEpic,
     // chatlogRxActions.stalkInitChatlogs_Epic
-    chatlogRxActions.removeRoomAccess_Epic
+    chatlogRxActions.removeRoomAccess_Epic,
+
+    chitchatRxActions.stalkInitChatlog_Epic
 );

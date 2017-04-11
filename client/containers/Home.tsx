@@ -84,8 +84,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
 
         let next = immutable.fromJS(authReducer);
         let prev = immutable.fromJS(this.props.authReducer);
-        console.log(next, prev);
-        if (next && !!next.equals(prev)) {
+        if (next && !next.equals(prev)) {
             switch (authReducer.state) {
                 case AuthRx.AUTH_USER_SUCCESS: {
                     AppActions.saveSession();

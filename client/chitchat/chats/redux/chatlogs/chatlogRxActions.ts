@@ -4,7 +4,7 @@
  * This is pure function action for redux app.
  */
 
-import * as Rx from "rxjs";
+import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
 import { BackendFactory } from "../../BackendFactory";

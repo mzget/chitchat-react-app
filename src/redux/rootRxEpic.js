@@ -11,6 +11,7 @@ const adminRx = require("./admin/adminRx");
 const groupRx = require("./group/groupRx");
 const privateGroupRxActions = require("./group/privateGroupRxActions");
 const editGroupRxActions = require("./group/editGroupRxActions");
+const chitchatRxActions = require("../actions/chitchatRxActions");
 exports.rootEpic = redux_observable_1.combineEpics(
 // @Admin
 adminRx.createNewOrgChartEpic, adminRx.getOrgChartEpic, adminRx.updateUserOrgChartEpic, userRx.fetchUserEpic, userRx.fetchContactEpic, userRx.fetchAgentEpic, userRx.getTeamProfileEpic, userRx.uploadUserAvatar_Epic, userRx.updateUserInfo_Epic, 
@@ -29,6 +30,6 @@ chatroomRxEpic.getPrivateChatRoomEpic, chatroomRxEpic.getPersistendMessageEpic, 
 /// @message rx.
 // messageRxEpic.fetchOlderMessageCount_Epic,
 ///@chatlogs
-chatlogsActions.updateLastAccessRoomEpic, 
+chatlogRxActions.getLastAccessRoom_Epic, chatlogsActions.updateLastAccessRoomEpic, 
 // chatlogRxActions.stalkInitChatlogs_Epic
-chatlogRxActions.removeRoomAccess_Epic);
+chatlogRxActions.removeRoomAccess_Epic, chitchatRxActions.stalkInitChatlog_Epic);

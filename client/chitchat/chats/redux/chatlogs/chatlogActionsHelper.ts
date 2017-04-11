@@ -5,8 +5,8 @@ import * as UserService from "../../services/UserService";
 import { ContactInfo } from "../../models/Contact";
 
 export async function getContactProfile(userId: string) {
+    /*
     let self = this;
-
     let dataManager = BackendFactory.getInstance().dataManager;
     let user = dataManager.getContactProfile(userId) as ContactInfo;
 
@@ -39,4 +39,5 @@ export async function getContactProfile(userId: string) {
             resolve(user);
         }
     });
+    */
 }

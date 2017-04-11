@@ -48,11 +48,6 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
         if (!teamReducer.team) {
             this.props.router.replace("/");
         }
-        else if (teamReducer.team &&
-            stalkReducer.state == StalkBridgeActions.STALK_INIT_SUCCESS
-            && chatlogReducer.state == chatlogsActions.STALK_INIT_CHATLOG) {
-            this.props.dispatch(chatlogRxActions.getLastAccessRoom(authReducer.token, teamReducer.team._id));
-        }
 
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
         this.fetch_orgGroups = this.fetch_orgGroups.bind(this);

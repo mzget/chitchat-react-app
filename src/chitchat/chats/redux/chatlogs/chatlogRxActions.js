@@ -13,7 +13,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Rx = require("rxjs");
+const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 const BackendFactory_1 = require("../../BackendFactory");
 const ServiceProvider = require("../../services/ServiceProvider");

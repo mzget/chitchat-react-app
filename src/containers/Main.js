@@ -12,8 +12,6 @@ const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
 const StalkComponent_1 = require("./stalk/StalkComponent");
 const StalkBridgeActions = require("../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
 const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
-const chatlogsActions = require("../chitchat/chats/redux/chatlogs/chatlogsActions");
-const chatlogRxActions = require("../chitchat/chats/redux/chatlogs/chatlogRxActions");
 const chatroomRx = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
 const userRx = require("../redux/user/userRx");
 const authRx = require("../redux/authen/authRx");
@@ -46,11 +44,6 @@ class Main extends React.Component {
         const { teamReducer, stalkReducer, chatlogReducer, authReducer } = this.props;
         if (!teamReducer.team) {
             this.props.router.replace("/");
-        }
-        else if (teamReducer.team &&
-            stalkReducer.state == StalkBridgeActions.STALK_INIT_SUCCESS
-            && chatlogReducer.state == chatlogsActions.STALK_INIT_CHATLOG) {
-            this.props.dispatch(chatlogRxActions.getLastAccessRoom(authReducer.token, teamReducer.team._id));
         }
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
         this.fetch_orgGroups = this.fetch_orgGroups.bind(this);
