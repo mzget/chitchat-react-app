@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs");
 const { ajax } = Rx.Observable;

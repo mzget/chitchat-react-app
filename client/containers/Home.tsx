@@ -31,10 +31,10 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
     alertTitle: string = "";
     clientWidth = document.documentElement.clientWidth;
     clientHeight = document.documentElement.clientHeight;
-    headerHeight = null;
+    headerHeight = 56;
     subHeaderHeight = null;
     bodyHeight = null;
-    footerHeight = null;
+    footerHeight = 24;
 
     closeAlert() {
         this.alertTitle = "";
@@ -50,7 +50,9 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
         this.setState(prevState => ({ ...prevState, alert: true }));
     }
 
-    componentWillMount() {
+    constructor(props) {
+        super(props);
+
         console.log("Home", global.userAgent);
 
         this.state = {
@@ -62,25 +64,18 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
         this.props.dispatch(AppActions.getSession());
     }
 
-    componentDidMount() {
+    componentWillReceiveProps(nextProps) {
+        let { location: { query: { userId, username, roomId, contactId } },
+            chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer
+        } = nextProps as IComponentProps;
+
         let toolbar = document.getElementById("toolbar");
         let warning_bar = document.getElementById("warning_bar");
         let app_body = document.getElementById("app_body");
         let app_footer = document.getElementById("app_footer");
 
-        this.headerHeight = toolbar.clientHeight;
         this.subHeaderHeight = (warning_bar) ? warning_bar.clientHeight : 0;
-        this.footerHeight = app_footer.clientHeight;
         this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight + this.footerHeight));
-
-        this.setState(previous => ({ ...previous }));
-    }
-
-
-    componentWillReceiveProps(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } },
-            chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer
-        } = nextProps as IComponentProps;
 
         let next = immutable.fromJS(authReducer);
         let prev = immutable.fromJS(this.props.authReducer);
@@ -120,36 +115,34 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
         let { location: { query: { userId, username, roomId, contactId } } } = this.props;
 
         return (
-            <MuiThemeProvider>
-                <div>
-                    <div id={"toolbar"} style={{ height: this.headerHeight }} >
-                        <SimpleToolbar title={"ChitChat team communication."} />
-                        <Subheader>{null}</Subheader>
-                    </div>
-                    <div style={{ backgroundColor: Colors.indigo50 }}>
-                        <div id={"app_body"} style={{ height: this.bodyHeight, backgroundColor: Colors.indigo50 }}>
-                            <Flex flexColumn={true} >
-                                <Flex align="center">
-                                    <Box p={2} flexAuto></Box>
-                                    <AuthenBox {...this.props} onError={this.onAuthBoxError} />
-                                    <Box p={2} flexAuto></Box>
-                                </Flex>
-                                <Box flexAuto justify="flex-end"></Box>
-                                <DialogBox
-                                    title={this.alertTitle}
-                                    message={this.alertMessage}
-                                    open={this.state.alert}
-                                    handleClose={this.closeAlert} />
-                            </Flex>
-                        </div>
-                        <div id={"app_footer"} style={{ width: this.clientWidth, fontSize: 16, padding: 2 }}>
-                            <Flex px={2} align="center" justify="center">
-                                <span>Powered by Stalk realtime messaging service.</span>
-                            </Flex>
-                        </div>
-                    </div>
+            <div style={{ overflow: "hidden" }}>
+                <div id={"toolbar"} style={{ height: this.headerHeight }}>
+                    <SimpleToolbar title={"ChitChat team communication."} />
                 </div>
-            </MuiThemeProvider >
+                <div id={"app_body"} style={{ backgroundColor: Colors.indigo50, height: this.bodyHeight }}>
+                    <Flex flexColumn={true} >
+                        <Flex align="center">
+                            <Box p={2} flexAuto></Box>
+                            <AuthenBox {...this.props} onError={this.onAuthBoxError} />
+                            <Box p={2} flexAuto></Box>
+                        </Flex>
+                        <Box flexAuto justify="flex-end"></Box>
+                        <DialogBox
+                            title={this.alertTitle}
+                            message={this.alertMessage}
+                            open={this.state.alert}
+                            handleClose={this.closeAlert} />
+                    </Flex>
+                </div>
+                <div id={"app_footer"} style={{
+                    width: this.clientWidth, height: this.footerHeight,
+                    fontSize: 16, textAlign: "center", backgroundColor: Colors.indigo50
+                }}>
+                    <Flex px={2} align="center" justify="center">
+                        <span>Powered by Stalk realtime messaging service.</span>
+                    </Flex>
+                </div>
+            </div>
         );
     }
 }

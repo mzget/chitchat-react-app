@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const SelectField_1 = require("material-ui/SelectField");
 const MenuItem_1 = require("material-ui/MenuItem");

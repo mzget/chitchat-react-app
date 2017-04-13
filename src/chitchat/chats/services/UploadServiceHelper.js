@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const async_1 = require("async");
 const chitchatFactory_1 = require("../chitchatFactory");
 const config = chitchatFactory_1.ChitChatFactory.getInstance().config;

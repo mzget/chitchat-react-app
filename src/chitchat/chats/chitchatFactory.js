@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 class ChitChatFactory {
     static getInstance() {
         return ChitChatFactory.instance;

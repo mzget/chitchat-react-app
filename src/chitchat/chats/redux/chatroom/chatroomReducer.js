@@ -4,7 +4,6 @@
  * This is pure function for redux app.
  */
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const chatroomActions_1 = require("./chatroomActions");
 const chatroomRxActions = require("./chatroomRxEpic");
 const chatroomActions = require("./chatroomActions");

@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const api_stalk = "git.animation-genius.com";
 const stalkPort = "3010";
 const chitchat_api = "http://localhost:9000"; //"http://git.animation-genius.com:9000";

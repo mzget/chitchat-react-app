@@ -1,5 +1,12 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const Subheader_1 = require("material-ui/Subheader");
@@ -44,7 +51,7 @@ class ChatLogsBox extends React.Component {
         }).map(function (key) {
             return chatsLog[key];
         });
-        this.setState(Object.assign({}, this.state, { chatsLog: arr }));
+        this.setState(__assign({}, this.state, { chatsLog: arr }));
     }
     removedLog(log) {
         console.log("removedLog", log);

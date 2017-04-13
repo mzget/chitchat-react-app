@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const Message_1 = require("../../chitchat/libs/shared/Message");
 const MessageImp_1 = require("../../chitchat/chats/models/MessageImp");
 const StickerPath_1 = require("../../chitchat/consts/StickerPath");

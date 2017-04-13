@@ -1,5 +1,12 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 const React = require("react");
 const reflexbox_1 = require("reflexbox");
 const MemberList_1 = require("../chatlist/MemberList");
@@ -22,7 +29,7 @@ class TeamMemberBox extends React.Component {
                 break;
             }
             case adminRx.UPDATE_USER_ORG_CHART_SUCCESS: {
-                this.setState(previous => (Object.assign({}, previous, { member: null })));
+                this.setState(previous => (__assign({}, previous, { member: null })));
                 this.props.dispatch(adminRx.emptyState());
                 break;
             }
@@ -34,14 +41,14 @@ class TeamMemberBox extends React.Component {
         let { adminReducer: { orgCharts } } = this.props;
         console.log("onSelectMember", item);
         if (item.teamProfiles.length === 0) {
-            this.setState(previous => (Object.assign({}, previous, { member: item, dropdownValue: -1 })));
+            this.setState(previous => (__assign({}, previous, { member: item, dropdownValue: -1 })));
         }
         else {
             let charts = orgCharts;
             let chart_ids = charts.findIndex((v, i, arr) => {
                 return v._id.toString() === item.teamProfiles[0].org_chart_id;
             });
-            this.setState(previous => (Object.assign({}, previous, { member: item, dropdownValue: chart_ids })));
+            this.setState(previous => (__assign({}, previous, { member: item, dropdownValue: chart_ids })));
         }
     }
     onSubmit() {
@@ -62,7 +69,7 @@ class TeamMemberBox extends React.Component {
     render() {
         return (React.createElement(reflexbox_1.Flex, { flexColumn: false },
             React.createElement(reflexbox_1.Flex, { flexColumn: true, align: "center" }, (!!this.state.member) ?
-                React.createElement(ContactProfileView_1.ContactProfileView, { member: this.state.member, onSubmit: this.onSubmit, dropdownItems: this.props.adminReducer.orgCharts, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => { console.log(value); this.setState(previous => (Object.assign({}, previous, { dropdownValue: value }))); } })
+                React.createElement(ContactProfileView_1.ContactProfileView, { member: this.state.member, onSubmit: this.onSubmit, dropdownItems: this.props.adminReducer.orgCharts, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => { console.log(value); this.setState(previous => (__assign({}, previous, { dropdownValue: value }))); } })
                 :
                     React.createElement(MemberList_1.MemberList, { onSelected: this.onSelectMember, items: this.props.teamReducer.members }))));
     }

@@ -4,7 +4,6 @@
  * This is pure function action for redux app.
  */
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 const chatlogsActions_1 = require("../chitchat/chats/redux/chatlogs/chatlogsActions");

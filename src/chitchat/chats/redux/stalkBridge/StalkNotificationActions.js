@@ -7,7 +7,6 @@
  *
  */
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const BackendFactory_1 = require("../../BackendFactory");
 const CryptoHelper = require("../../utils/CryptoHelper");
 const Message_1 = require("../../../libs/shared/Message");

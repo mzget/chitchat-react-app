@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 class DataListener {
     constructor(dataManager) {
         this.onChatEventListeners = new Array();
@@ -153,4 +152,5 @@ class DataListener {
     }
     ;
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = DataListener;

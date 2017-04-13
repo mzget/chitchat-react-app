@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const CryptoJS = require("crypto-js");
 class NodeSecureService {
     constructor() {
@@ -57,4 +56,5 @@ class NodeSecureService {
         });
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = NodeSecureService;

@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const chitchatFactory_1 = require("../chitchatFactory");
 const Rx = require("rxjs/Rx");
 const getConfig = () => chitchatFactory_1.ChitChatFactory.getInstance().config;

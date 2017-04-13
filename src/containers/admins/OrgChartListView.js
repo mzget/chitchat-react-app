@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const List_1 = require("material-ui/List");
 const Divider_1 = require("material-ui/Divider");
