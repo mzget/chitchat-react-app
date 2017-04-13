@@ -1,7 +1,9 @@
 ﻿import * as Rx from "rxjs";
 const { Observable: { ajax }, AjaxResponse } = Rx;
 
-import config from "../../configs/config";
+import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
+const config = () => ChitChatFactory.getInstance().config;
+
 import Store from "../configureStore";
 import { BackendFactory } from "../../chitchat/chats/BackendFactory";
 import { Room, RoomType } from "../../chitchat/libs/shared/Room";
@@ -18,7 +20,7 @@ const getPrivateGroupFailure = (err) => ({ type: GET_PRIVATE_GROUP_FAILURE, payl
 const getPrivateGroupCancelled = () => ({ type: GET_PRIVATE_GROUP_CANCELLED });
 export const getPrivateGroup_Epic = action$ => (
     action$.ofType(GET_PRIVATE_GROUP)
-        .mergeMap(action => ajax.getJSON(`${config.api.group}/private_group`,
+        .mergeMap(action => ajax.getJSON(`${config().api.group}/private_group`,
             { "x-access-token": Store.getState().authReducer.token })
             .map(response => getPrivateGroupSuccess(response))
             .takeUntil(action$.ofType(GET_PRIVATE_GROUP_CANCELLED))
@@ -43,7 +45,7 @@ export const createPrivateGroupCancelled = () => ({ type: CREATE_PRIVATE_GROUP_C
 export const createPrivateGroup_Epic = action$ => (
     action$.ofType(CREATE_PRIVATE_GROUP).mergeMap(action => ajax({
         method: "POST",
-        url: `${config.api.group}/private_group/create`,
+        url: `${config().api.group}/private_group/create`,
         body: JSON.stringify({ room: action.payload }),
         headers: {
             "Content-Type": "application/json",

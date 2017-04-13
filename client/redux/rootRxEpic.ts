@@ -28,7 +28,7 @@ export const rootEpic = combineEpics(
 
     ///@ Signup user.
     authRx.signupUserEpic,
-    authRx.authUserEpic,
+    authRx.authUser_Epic,
     authRx.tokenAuthUserEpic,
     authRx.logoutUserEpic,
 

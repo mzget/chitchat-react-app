@@ -1,6 +1,8 @@
-﻿import { ChitChatFactory } from "../chitchatFactory";
-import * as Rx from "rxjs/Rx";
+﻿import * as Rx from "rxjs/Rx";
+const { ajax } = Rx.Observable;
 
+import { ChitChatFactory } from "../chitchatFactory";
+import { chitchat_headers } from "../utils/chitchatServiceUtils";
 const getConfig = () => ChitChatFactory.getInstance().config;
 
 export function getTeamProfile(token: string, team_id: string) {
@@ -28,5 +30,13 @@ export function setOrgChartId(token: string, user: any, team_id: string, orgChar
             "Content-Type": "application/json",
             "x-access-token": token
         }
+    });
+}
+
+export function fetchUser(username: string) {
+    return ajax({
+        method: "GET",
+        url: `${getConfig().api.user}/?username=${username}`,
+        headers: chitchat_headers()
     });
 }

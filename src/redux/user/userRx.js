@@ -14,14 +14,7 @@ exports.fetchUser = (username) => ({ type: FETCH_USER, payload: username }); // 
 const fetchUserFulfilled = payload => ({ type: exports.FETCH_USER_SUCCESS, payload });
 const cancelFetchUser = () => ({ type: exports.FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: exports.FETCH_USER_FAILURE, payload });
-exports.fetchUserEpic = action$ => (action$.ofType(FETCH_USER).mergeMap(action => ajax({
-    method: "GET",
-    url: `${config_1.default.api.user}/?username=${action.payload}`,
-    headers: {
-        "Content-Type": "application/json",
-        "x-api-key": config_1.default.api.apiKey
-    }
-})
+exports.fetchUserEpic = action$ => (action$.ofType(FETCH_USER).mergeMap(action => UserService.fetchUser(action.payload)
     .map(response => fetchUserFulfilled(response.xhr.response))
     .takeUntil(action$.ofType(exports.FETCH_USER_CANCELLED))
     .catch(error => Rx.Observable.of(fetchUserRejected(error)))

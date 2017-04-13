@@ -1,4 +1,3 @@
-import config from "../../configs/config";
 import { Record } from "immutable";
 import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
@@ -11,6 +10,9 @@ import { Room, RoomType } from "../../chitchat/libs/shared/Room";
 
 import { updateChatRoom } from "../../chitchat/chats/redux/chatroom/chatroomActions";
 
+import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
+const config = () => ChitChatFactory.getInstance().config;
+
 const GET_ORG_GROUP = "GET_ORG_GROUP";
 export const GET_ORG_GROUP_SUCCESS = "GET_ORG_GROUP_SUCCESS";
 const GET_ORG_GROUP_FAILURE = "GET_ORG_GROUP_FAILURE";
@@ -22,7 +24,7 @@ const getOrgGroupCancelled = () => ({ type: GET_ORG_GROUP_CANCELLED });
 export const getOrgGroup_Epic = action$ => (
     action$.ofType(GET_ORG_GROUP).mergeMap(action =>
         ajax.getJSON(
-            `${config.api.group}/org?team_id=${action.payload}`,
+            `${config().api.group}/org?team_id=${action.payload}`,
             { "x-access-token": Store.getState().authReducer.token }
         ).map(response => getOrgGroupSuccess(response))
             .takeUntil(action$.ofType(GET_ORG_GROUP_CANCELLED))
@@ -47,7 +49,7 @@ const createOrgGroupCancelled = createAction(CREATE_ORG_GROUP_CANCELLED);
 export const createOrgGroup_Epic = action$ => (
     action$.ofType(CREATE_ORG_GROUP).mergeMap(action => ajax({
         method: "POST",
-        url: `${config.api.group}/org/create`,
+        url: `${config().api.group}/org/create`,
         body: JSON.stringify({ room: action.payload }),
         headers: {
             "Content-Type": "application/json",
@@ -77,7 +79,7 @@ export const uploadGroupImage_Epic = action$ => (
 
             return ajax({
                 method: "POST",
-                url: `${config.api.group}/uploadImage`,
+                url: `${config().api.group}/uploadImage`,
                 body: body,
                 headers: {
                     "x-access-token": Store.getState().authReducer.token

@@ -26,6 +26,12 @@ const epicMiddleware = createEpicMiddleware(rootRxEpic.rootEpic);
 
 let middlewares = [thunk, epicMiddleware] as Array<any>;
 
+if (process.env.NODE_ENV === `development`) {
+    const { logger } = require(`redux-logger`);
+
+    middlewares.push(logger);
+}
+
 // const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore)(RootReducer.rootReducer, RootReducer.getInitialState());
 const createStoreWithMiddleware = composeWithDevTools(applyMiddleware(...middlewares))(createStore);
 

@@ -1,7 +1,8 @@
 "use strict";
 const Rx = require("rxjs");
 const { Observable: { ajax }, AjaxResponse } = Rx;
-const config_1 = require("../../configs/config");
+const chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
+const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const configureStore_1 = require("../configureStore");
 const chatroomActions_1 = require("../../chitchat/chats/redux/chatroom/chatroomActions");
 const GET_PRIVATE_GROUP = "GET_PRIVATE_GROUP";
@@ -13,7 +14,7 @@ const getPrivateGroupSuccess = (payload) => ({ type: exports.GET_PRIVATE_GROUP_S
 const getPrivateGroupFailure = (err) => ({ type: exports.GET_PRIVATE_GROUP_FAILURE, payload: err });
 const getPrivateGroupCancelled = () => ({ type: GET_PRIVATE_GROUP_CANCELLED });
 exports.getPrivateGroup_Epic = action$ => (action$.ofType(GET_PRIVATE_GROUP)
-    .mergeMap(action => ajax.getJSON(`${config_1.default.api.group}/private_group`, { "x-access-token": configureStore_1.default.getState().authReducer.token })
+    .mergeMap(action => ajax.getJSON(`${config().api.group}/private_group`, { "x-access-token": configureStore_1.default.getState().authReducer.token })
     .map(response => getPrivateGroupSuccess(response))
     .takeUntil(action$.ofType(GET_PRIVATE_GROUP_CANCELLED))
     .catch(error => Rx.Observable.of(getPrivateGroupFailure(error.xhr.response)))
@@ -33,7 +34,7 @@ exports.createPrivateGroupFailure = (error) => ({ type: exports.CREATE_PRIVATE_G
 exports.createPrivateGroupCancelled = () => ({ type: CREATE_PRIVATE_GROUP_CANCELLED });
 exports.createPrivateGroup_Epic = action$ => (action$.ofType(CREATE_PRIVATE_GROUP).mergeMap(action => ajax({
     method: "POST",
-    url: `${config_1.default.api.group}/private_group/create`,
+    url: `${config().api.group}/private_group/create`,
     body: JSON.stringify({ room: action.payload }),
     headers: {
         "Content-Type": "application/json",

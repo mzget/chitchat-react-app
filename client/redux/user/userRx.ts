@@ -20,30 +20,22 @@ const fetchUserFulfilled = payload => ({ type: FETCH_USER_SUCCESS, payload });
 const cancelFetchUser = () => ({ type: FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: FETCH_USER_FAILURE, payload });
 export const fetchUserEpic = action$ => (
-    action$.ofType(FETCH_USER).mergeMap(action =>
-        ajax({
-            method: "GET",
-            url: `${config.api.user}/?username=${action.payload}`,
-            headers: {
-                "Content-Type": "application/json",
-                "x-api-key": config.api.apiKey
-            }
-        })
-            .map(response => fetchUserFulfilled(response.xhr.response))
-            .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
-            .catch(error => Rx.Observable.of(fetchUserRejected(error)))
-            ._do(x => {
-                if (x.type == FETCH_USER_SUCCESS) {
-                    if (x.payload.result && x.payload.result.length > 0) {
-                        let user = x.payload.result[0];
+    action$.ofType(FETCH_USER).mergeMap(action => UserService.fetchUser(action.payload)
+        .map(response => fetchUserFulfilled(response.xhr.response))
+        .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
+        .catch(error => Rx.Observable.of(fetchUserRejected(error)))
+        ._do(x => {
+            if (x.type == FETCH_USER_SUCCESS) {
+                if (x.payload.result && x.payload.result.length > 0) {
+                    let user = x.payload.result[0];
 
-                        let stalkReducer = Store.getState().stalkReducer;
-                        if (stalkReducer.state !== StalkBridgeActions.STALK_INIT) {
-                            StalkBridgeActions.stalkLogin(user);
-                        }
+                    let stalkReducer = Store.getState().stalkReducer;
+                    if (stalkReducer.state !== StalkBridgeActions.STALK_INIT) {
+                        StalkBridgeActions.stalkLogin(user);
                     }
                 }
-            }))
+            }
+        }))
 );
 
 const UPDATE_USER_INFO = "UPDATE_USER_INFO";

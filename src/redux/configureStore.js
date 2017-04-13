@@ -22,6 +22,10 @@ const rootReducer = require("./rootReducer");
 const rootRxEpic = require("./rootRxEpic");
 const epicMiddleware = redux_observable_1.createEpicMiddleware(rootRxEpic.rootEpic);
 let middlewares = [redux_thunk_1.default, epicMiddleware];
+if (process.env.NODE_ENV === `development`) {
+    const { logger } = require(`redux-logger`);
+    middlewares.push(logger);
+}
 // const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore)(RootReducer.rootReducer, RootReducer.getInitialState());
 const createStoreWithMiddleware = redux_devtools_extension_1.composeWithDevTools(redux_1.applyMiddleware(...middlewares))(redux_1.createStore);
 function configureStore() {

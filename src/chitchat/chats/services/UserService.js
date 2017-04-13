@@ -1,6 +1,8 @@
 "use strict";
-const chitchatFactory_1 = require("../chitchatFactory");
 const Rx = require("rxjs/Rx");
+const { ajax } = Rx.Observable;
+const chitchatFactory_1 = require("../chitchatFactory");
+const chitchatServiceUtils_1 = require("../utils/chitchatServiceUtils");
 const getConfig = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 function getTeamProfile(token, team_id) {
     return Rx.Observable.ajax({
@@ -30,3 +32,11 @@ function setOrgChartId(token, user, team_id, orgChartId) {
     });
 }
 exports.setOrgChartId = setOrgChartId;
+function fetchUser(username) {
+    return ajax({
+        method: "GET",
+        url: `${getConfig().api.user}/?username=${username}`,
+        headers: chitchatServiceUtils_1.chitchat_headers()
+    });
+}
+exports.fetchUser = fetchUser;

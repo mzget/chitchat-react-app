@@ -1,10 +1,11 @@
 "use strict";
-const config_1 = require("../../configs/config");
 const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 const configureStore_1 = require("../configureStore");
 const chatroomActions_1 = require("../../chitchat/chats/redux/chatroom/chatroomActions");
+const chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
+const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const GET_ORG_GROUP = "GET_ORG_GROUP";
 exports.GET_ORG_GROUP_SUCCESS = "GET_ORG_GROUP_SUCCESS";
 const GET_ORG_GROUP_FAILURE = "GET_ORG_GROUP_FAILURE";
@@ -13,7 +14,7 @@ exports.getOrgGroup = (team_id) => ({ type: GET_ORG_GROUP, payload: team_id });
 const getOrgGroupSuccess = (payload) => ({ type: exports.GET_ORG_GROUP_SUCCESS, payload });
 const getOrgGroupFailure = (err) => ({ type: GET_ORG_GROUP_FAILURE, payload: err });
 const getOrgGroupCancelled = () => ({ type: GET_ORG_GROUP_CANCELLED });
-exports.getOrgGroup_Epic = action$ => (action$.ofType(GET_ORG_GROUP).mergeMap(action => ajax.getJSON(`${config_1.default.api.group}/org?team_id=${action.payload}`, { "x-access-token": configureStore_1.default.getState().authReducer.token }).map(response => getOrgGroupSuccess(response))
+exports.getOrgGroup_Epic = action$ => (action$.ofType(GET_ORG_GROUP).mergeMap(action => ajax.getJSON(`${config().api.group}/org?team_id=${action.payload}`, { "x-access-token": configureStore_1.default.getState().authReducer.token }).map(response => getOrgGroupSuccess(response))
     .takeUntil(action$.ofType(GET_ORG_GROUP_CANCELLED))
     .catch(error => Rx.Observable.of(getOrgGroupFailure(error.xhr.response)))
     .do(response => {
@@ -32,7 +33,7 @@ const createOrgGroupFailure = redux_actions_1.createAction(exports.CREATE_ORG_GR
 const createOrgGroupCancelled = redux_actions_1.createAction(CREATE_ORG_GROUP_CANCELLED);
 exports.createOrgGroup_Epic = action$ => (action$.ofType(CREATE_ORG_GROUP).mergeMap(action => ajax({
     method: "POST",
-    url: `${config_1.default.api.group}/org/create`,
+    url: `${config().api.group}/org/create`,
     body: JSON.stringify({ room: action.payload }),
     headers: {
         "Content-Type": "application/json",
@@ -57,7 +58,7 @@ exports.uploadGroupImage_Epic = action$ => (action$.ofType(exports.UPLOAD_GROUP_
     body.append("file", action.payload);
     return ajax({
         method: "POST",
-        url: `${config_1.default.api.group}/uploadImage`,
+        url: `${config().api.group}/uploadImage`,
         body: body,
         headers: {
             "x-access-token": configureStore_1.default.getState().authReducer.token

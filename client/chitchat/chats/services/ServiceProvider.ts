@@ -1,18 +1,8 @@
-import { ChitChatFactory } from "../chitchatFactory";
 import * as Rx from "rxjs/Rx";
 
+import { ChitChatFactory } from "../chitchatFactory";
+import { withToken, chitchat_headers } from "../utils/chitchatServiceUtils";
 const getConfig = () => ChitChatFactory.getInstance().config;
-
-const chitchat_headers = () => ({
-    "Content-Type": "application/json",
-    "cache-control": "no-cache",
-    "x-api-key": getConfig().api.apiKey
-});
-const withToken = (headers) => (token) => {
-    headers["x-access-token"] = token;
-
-    return headers;
-};
 
 export const getRoomInfo = (room_id: string): Promise<any> => {
     return fetch(`${getConfig().api.chatroom}/roomInfo?room_id=${room_id}`, {

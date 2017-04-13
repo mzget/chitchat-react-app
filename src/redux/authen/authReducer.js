@@ -21,7 +21,7 @@ exports.authReducer = (state = new exports.AuthenInitState(), action) => {
         }
         case authRx.AUTH_USER_SUCCESS: {
             return state.set("state", authRx.AUTH_USER_SUCCESS)
-                .set("token", action.payload.result);
+                .set("token", action.payload);
         }
         case authRx.AUTH_USER_FAILURE: {
             return state.set("state", authRx.AUTH_USER_FAILURE)
@@ -35,11 +35,11 @@ exports.authReducer = (state = new exports.AuthenInitState(), action) => {
         }
         case authRx.TOKEN_AUTH_USER_SUCCESS: {
             return state.set("state", authRx.TOKEN_AUTH_USER_SUCCESS)
-                .set("user", action.payload.result.email);
+                .set("user", action.payload.email);
         }
         case authRx.TOKEN_AUTH_USER_FAILURE: {
             return state.set("token", null)
-                .set("error", JSON.stringify(action.payload))
+                .set("error", action.payload)
                 .set("state", authRx.TOKEN_AUTH_USER_FAILURE);
         }
         case authRx.LOG_OUT_SUCCESS: {

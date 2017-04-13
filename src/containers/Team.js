@@ -18,7 +18,6 @@ const DialogBox_1 = require("../components/DialogBox");
 const TeamListBox_1 = require("./teams/TeamListBox");
 const TeamCreateBox_1 = require("./teams/TeamCreateBox");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
-;
 /**
  * Containers of chatlist, chatlogs, etc...
  */
@@ -68,9 +67,6 @@ class Team extends React.Component {
                 break;
             }
             default: {
-                if (!userReducer.user) {
-                    this.props.router.push(`/`);
-                }
                 break;
             }
         }

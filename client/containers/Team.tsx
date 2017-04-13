@@ -15,12 +15,12 @@ import { TeamListBox } from "./teams/TeamListBox";
 import TeamCreateBox from "./teams/TeamCreateBox";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 
-import * as StalkBridgeActions from "../chats/redux/stalkBridge/stalkBridgeActions";
-import { ITeam } from "../chats/models/ITeam";
+import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
+import { ITeam } from "../chitchat/chats/models/ITeam";
 
 interface IComponentNameState {
     openDialog: boolean;
-};
+}
 
 /**
  * Containers of chatlist, chatlogs, etc...
@@ -80,9 +80,6 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
                 break;
             }
             default: {
-                if (!userReducer.user) {
-                    this.props.router.push(`/`);
-                }
                 break;
             }
         }
