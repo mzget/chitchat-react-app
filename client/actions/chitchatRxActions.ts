@@ -12,10 +12,6 @@ import { getLastAccessRoom } from "../chitchat/chats/redux/chatlogs/chatlogRxAct
 
 import Store from "../redux/configureStore";
 
-// export const removeRoomAccess = (room_id: string) => ({ type: STALK_REMOVE_ROOM_ACCESS, payload: room_id });
-// const removeRoomAccess_Success = (payload) => ({ type: STALK_REMOVE_ROOM_ACCESS_SUCCESS, payload });
-// const removeRoomAccess_Cancelled = () => ({ type: STALK_REMOVE_ROOM_ACCESS_CANCELLED });
-// const removeRoomAccess_Failure = error => ({ type: STALK_REMOVE_ROOM_ACCESS_FAILURE, payload: error });
 export const stalkInitChatlog_Epic = action$ => (
     action$.ofType(STALK_INIT_CHATLOG)
         .delay(1000)

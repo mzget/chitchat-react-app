@@ -56,7 +56,7 @@ function removeLastAccessRoomInfo(user_id, room_id) {
     return Rx.Observable.ajax({
         url: `${getConfig().Stalk.api.user}/lastAccessRoom`,
         method: "DELETE",
-        headers: chitchatServiceUtils_1.chitchat_headers,
+        headers: chitchatServiceUtils_1.chitchat_headers(),
         body: JSON.stringify({ room_id: room_id, user_id: user_id })
     });
 }

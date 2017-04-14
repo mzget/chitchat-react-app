@@ -29,7 +29,7 @@ const removeRoomAccess_Cancelled = () => ({ type: exports.STALK_REMOVE_ROOM_ACCE
 const removeRoomAccess_Failure = error => ({ type: exports.STALK_REMOVE_ROOM_ACCESS_FAILURE, payload: error });
 exports.removeRoomAccess_Epic = action$ => (action$.ofType(exports.STALK_REMOVE_ROOM_ACCESS)
     .mergeMap(action => {
-    let { _id } = getStore().getState().userReducer.user;
+    let { _id } = authReducer().user;
     return ServiceProvider.removeLastAccessRoomInfo(_id, action.payload);
 }).map(json => {
     let result = json.response;

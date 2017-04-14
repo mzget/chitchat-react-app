@@ -105,7 +105,7 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         const addRoomData = () => {
             async.map(roomAccess, function iterator(item, resultCallback) {
                 self.getRoomInfo(item.roomId, (err, room) => {
-                    if(!!room) {
+                    if (!!room) {
                         results.push(room);
                         resultCallback(null, room);
                     }
