@@ -151,8 +151,8 @@ function getTeamMembersEpic(action$) {
     }));
 }
 exports.getTeamMembersEpic = getTeamMembersEpic;
-const TEAM_SELECTED = "TEAM_SELECTED";
-exports.selectTeam = (team) => ({ type: TEAM_SELECTED, payload: team });
+exports.TEAM_SELECTED = "TEAM_SELECTED";
+exports.selectTeam = (team) => ({ type: exports.TEAM_SELECTED, payload: team });
 const TEAM_REDUCER_CLEAR_ERROR = "TEAM_REDUCER_CLEAR_ERROR";
 exports.clearError = redux_actions_1.createAction(TEAM_REDUCER_CLEAR_ERROR);
 exports.TeamInitState = immutable_1.Record({
@@ -190,7 +190,7 @@ exports.teamReducer = (state = new exports.TeamInitState(), action) => {
         case GET_TEAMS_INFO_FAILURE: {
             return state.set("error", action.payload.message);
         }
-        case TEAM_SELECTED: {
+        case exports.TEAM_SELECTED: {
             return state.set("team", action.payload)
                 .set("teams", null);
         }

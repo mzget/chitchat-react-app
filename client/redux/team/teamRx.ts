@@ -173,7 +173,7 @@ export function getTeamMembersEpic(action$) {
         );
 }
 
-const TEAM_SELECTED = "TEAM_SELECTED";
+export const TEAM_SELECTED = "TEAM_SELECTED";
 export const selectTeam = (team) => ({ type: TEAM_SELECTED, payload: team });
 
 const TEAM_REDUCER_CLEAR_ERROR = "TEAM_REDUCER_CLEAR_ERROR";
