@@ -103,5 +103,7 @@ export async function stalkLogout() {
     const backendFactory = BackendFactory.getInstance();
 
     let server = await backendFactory.getServer();
-    server.logout();
+    if (server) {
+        server.logout();
+    }
 }

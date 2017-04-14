@@ -9,7 +9,13 @@ const config = () => ChitChatFactory.getInstance().config;
 import * as UserService from "../../chitchat/chats/services/UserService";
 import { ChitChatAccount } from "../../chitchat/chats/models/User";
 import * as StalkBridgeActions from "../../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
+import { AUTH_USER_SUCCESS, TOKEN_AUTH_USER_SUCCESS } from "../authen/authRx";
+
 import Store from "../configureStore";
+
+export const onAuth_Epic = action$ =>
+    action$.filter(action => (action.type === AUTH_USER_SUCCESS || action.type === TOKEN_AUTH_USER_SUCCESS))
+        .map(response => fetchUser(Store.getState().authReducer.user));
 
 const FETCH_USER = "FETCH_USER";
 export const FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS";

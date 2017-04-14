@@ -21,9 +21,5 @@ export const stalkInitChatlog_Epic = action$ => (
 
                 return getLastAccessRoom(team_id);
             }
-            else {
-                return { type: STALK_INIT_CHATLOG };
-            }
         })
-        .catch((error) => Rx.Observable.of({ type: STALK_INIT_CHATLOG }))
 );

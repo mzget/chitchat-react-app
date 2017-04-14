@@ -16,8 +16,4 @@ exports.stalkInitChatlog_Epic = action$ => (action$.ofType(chatlogsActions_1.STA
         let team_id = configureStore_1.default.getState().teamReducer.team._id;
         return chatlogRxActions_1.getLastAccessRoom(team_id);
     }
-    else {
-        return { type: chatlogsActions_1.STALK_INIT_CHATLOG };
-    }
-})
-    .catch((error) => Rx.Observable.of({ type: chatlogsActions_1.STALK_INIT_CHATLOG })));
+}));

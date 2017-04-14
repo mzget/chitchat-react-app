@@ -6,7 +6,10 @@ const chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
 const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const UserService = require("../../chitchat/chats/services/UserService");
 const StalkBridgeActions = require("../../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
+const authRx_1 = require("../authen/authRx");
 const configureStore_1 = require("../configureStore");
+exports.onAuth_Epic = action$ => action$.filter(action => (action.type === authRx_1.AUTH_USER_SUCCESS || action.type === authRx_1.TOKEN_AUTH_USER_SUCCESS))
+    .map(response => exports.fetchUser(configureStore_1.default.getState().authReducer.user));
 const FETCH_USER = "FETCH_USER";
 exports.FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS";
 exports.FETCH_USER_FAILURE = "FETCH_USER_FAILURE";

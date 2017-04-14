@@ -76,7 +76,7 @@ const logoutFailure = redux_actions_1.createAction(LOG_OUT_FAILURE, payload => p
 const logoutCancelled = redux_actions_1.createAction(LOG_OUT_CANCELLED);
 exports.logoutUser_Epic = action$ => action$.ofType(LOG_OUT)
     .mergeMap(action => Rx.Observable.fromPromise(authService.logout(action.payload)))
-    .map(response => Rx.Observable.fromPromise(response.json()))
+    .mergeMap(response => Rx.Observable.fromPromise(response.json()))
     .map(result => {
     if (result.success) {
         AppActions.removeSession();

@@ -10,7 +10,6 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
-const immutable = require("immutable");
 const userRx = require("../redux/user/userRx");
 const teamRx = require("../redux/team/teamRx");
 const authRx = require("../redux/authen/authRx");
@@ -36,27 +35,12 @@ class Team extends React.Component {
         this.state = {
             openDialog: false
         };
-        if (params.filter) {
-            this.props.dispatch(userRx.fetchUser(params.filter));
-        }
-    }
-    componentWillReceiveProps(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, userReducer, authReducer, teamReducer } = nextProps;
         switch (userReducer.state) {
             case userRx.FETCH_USER_SUCCESS: {
                 this.toolbar = (!!userReducer.user)
                     ? userReducer.user.username : "Fail username";
-                if (!!this.props.userReducer.user) {
-                    let nextRed = immutable.fromJS(userReducer);
-                    let red = immutable.fromJS(this.props.userReducer);
-                    if (!red.equals(nextRed)) {
-                        this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
-                    }
-                }
-                else {
-                    if (!!userReducer.user.teams && userReducer.user.teams.length > 0) {
-                        this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
-                    }
+                if (!!userReducer.user.teams && userReducer.user.teams.length > 0) {
+                    this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
                 }
                 break;
             }
@@ -70,10 +54,16 @@ class Team extends React.Component {
                 break;
             }
         }
+    }
+    componentWillReceiveProps(nextProps) {
+        let { location: { query: { userId, username, roomId, contactId } }, userReducer, authReducer, teamReducer } = nextProps;
         if (teamReducer.error) {
             this.alertBoxTitle = "Alert!";
             this.alertBoxMessage = teamReducer.error;
             this.setState(previous => (__assign({}, previous, { openDialog: true })));
+        }
+        if (!this.props.userReducer.user) {
+            this.props.router.replace("/");
         }
     }
     onSelectTeam(team) {

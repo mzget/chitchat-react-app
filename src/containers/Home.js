@@ -63,17 +63,12 @@ class Home extends React.Component {
             switch (authReducer.state) {
                 case AuthRx.AUTH_USER_SUCCESS: {
                     AppActions.saveSession();
-                    this.props.router.push(`/team/${authReducer.user}`);
                     break;
                 }
                 case AuthRx.AUTH_USER_FAILURE: {
                     this.alertTitle = AuthRx.AUTH_USER_FAILURE;
                     this.alertMessage = authReducer.error;
                     this.setState(previous => (__assign({}, previous, { alert: true })));
-                    break;
-                }
-                case AuthRx.TOKEN_AUTH_USER_SUCCESS: {
-                    this.props.router.push(`/team/${authReducer.user}`);
                     break;
                 }
                 case AppActions.GET_SESSION_TOKEN_SUCCESS: {
@@ -88,6 +83,9 @@ class Home extends React.Component {
                 default:
                     break;
             }
+        }
+        if (userReducer.user) {
+            this.props.router.push(`/team/${authReducer.user}`);
         }
     }
     render() {

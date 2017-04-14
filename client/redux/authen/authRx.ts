@@ -2,7 +2,7 @@
 import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
-
+import Store from "../configureStore";
 import * as authService from "../../chitchat/chats/services/authService";
 
 import * as AppActions from "../app/persistentDataActions";
@@ -91,7 +91,7 @@ const logoutFailure = createAction(LOG_OUT_FAILURE, payload => payload);
 const logoutCancelled = createAction(LOG_OUT_CANCELLED);
 export const logoutUser_Epic = action$ => action$.ofType(LOG_OUT)
     .mergeMap(action => Rx.Observable.fromPromise(authService.logout(action.payload)))
-    .map(response => Rx.Observable.fromPromise(response.json()))
+    .mergeMap(response => Rx.Observable.fromPromise(response.json()))
     .map(result => {
         if (result.success) {
             AppActions.removeSession();

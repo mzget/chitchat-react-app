@@ -43,32 +43,13 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
             openDialog: false
         };
 
-        if (params.filter) {
-            this.props.dispatch(userRx.fetchUser(params.filter));
-        }
-    }
-
-    componentWillReceiveProps(nextProps: IComponentProps) {
-        let { location: { query: { userId, username, roomId, contactId } },
-            userReducer, authReducer, teamReducer
-        } = nextProps;
-
         switch (userReducer.state) {
             case userRx.FETCH_USER_SUCCESS: {
                 this.toolbar = (!!userReducer.user)
                     ? userReducer.user.username : "Fail username";
 
-                if (!!this.props.userReducer.user) {
-                    let nextRed = immutable.fromJS(userReducer);
-                    let red = immutable.fromJS(this.props.userReducer);
-                    if (!red.equals(nextRed)) {
-                        this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
-                    }
-                }
-                else {
-                    if (!!userReducer.user.teams && userReducer.user.teams.length > 0) {
-                        this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
-                    }
+                if (!!userReducer.user.teams && userReducer.user.teams.length > 0) {
+                    this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
                 }
                 break;
             }
@@ -83,11 +64,21 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
                 break;
             }
         }
+    }
+
+    componentWillReceiveProps(nextProps: IComponentProps) {
+        let { location: { query: { userId, username, roomId, contactId } },
+            userReducer, authReducer, teamReducer
+        } = nextProps;
 
         if (teamReducer.error) {
             this.alertBoxTitle = "Alert!";
             this.alertBoxMessage = teamReducer.error;
             this.setState(previous => ({ ...previous, openDialog: true }));
+        }
+
+        if (!this.props.userReducer.user) {
+            this.props.router.replace("/");
         }
     }
 
