@@ -13,9 +13,8 @@ exports.stalkInitChatlog_Epic = action$ => (action$.ofType(chatlogsActions_1.STA
     .delay(1000)
     .map((x) => {
     if (!!configureStore_1.default.getState().teamReducer.team) {
-        let token = configureStore_1.default.getState().authReducer.token;
         let team_id = configureStore_1.default.getState().teamReducer.team._id;
-        return chatlogRxActions_1.getLastAccessRoom(token, team_id);
+        return chatlogRxActions_1.getLastAccessRoom(team_id);
     }
     else {
         return { type: chatlogsActions_1.STALK_INIT_CHATLOG };

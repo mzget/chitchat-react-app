@@ -19,3 +19,10 @@ function tokenAuth(token) {
     });
 }
 exports.tokenAuth = tokenAuth;
+function logout(token) {
+    return fetch(`${getConfig().api.auth}/logout`, {
+        method: "POST",
+        headers: chitchatServiceUtils_1.withToken(chitchatServiceUtils_1.chitchat_headers())(token)
+    });
+}
+exports.logout = logout;

@@ -140,10 +140,15 @@ class ChatsLogComponent {
             callback(null, unreadLogs);
         };
         // add some items to the queue (batch-wise)
-        q.push(roomAccess, function (err) {
-            if (!!err)
-                console.error("getUnreadMessage err", err);
-        });
+        if (roomAccess && roomAccess.length > 0) {
+            q.push(roomAccess, function (err) {
+                if (!!err)
+                    console.error("getUnreadMessage err", err);
+            });
+        }
+        else {
+            callback(null, null);
+        }
     }
     getUnreadMessage(user_id, roomAccess) {
         return __awaiter(this, void 0, void 0, function* () {

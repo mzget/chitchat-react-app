@@ -8,6 +8,7 @@ import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
 import { BackendFactory } from "../../BackendFactory";
+import { StalkAccount, RoomAccessData } from "../../../libs/shared/Stalk";
 import ChatRoomComponent from "../../chatRoomComponent";
 import * as ServiceProvider from "../../services/ServiceProvider";
 
@@ -62,6 +63,7 @@ const UPDATE_LAST_ACCESS_ROOM = "UPDATE_LAST_ACCESS_ROOM";
 export const UPDATE_LAST_ACCESS_ROOM_SUCCESS = "UPDATE_LAST_ACCESS_ROOM_SUCCESS";
 export const UPDATE_LAST_ACCESS_ROOM_FAILURE = "UPDATE_LAST_ACCESS_ROOM_FAILURE";
 const UPDATE_LAST_ACCESS_ROOM_CANCELLED = "UPDATE_LAST_ACCESS_ROOM_CANCELLED";
+
 export const updateLastAccessRoom = (room_id) => ({ type: UPDATE_LAST_ACCESS_ROOM, payload: room_id });
 const updateLastAccessRoomSuccess = (payload) => ({ type: UPDATE_LAST_ACCESS_ROOM_SUCCESS, payload });
 const updateLastAccessRoomFailure = (error) => ({ type: UPDATE_LAST_ACCESS_ROOM_FAILURE, payload: error });
@@ -76,7 +78,7 @@ export const updateLastAccessRoom_Epic = action$ =>
             console.log("updateLastAccessRoom_Epic", response.xhr.response);
 
             let result = response.xhr.response.result[0];
-            let _tempRoomAccess = result.roomAccess as Array<any>;
+            let _tempRoomAccess = result.roomAccess as Array<RoomAccessData>;
             let roomAccess = getStore().getState().chatlogReducer.get("roomAccess") as Array<any>;
 
             let _newRoomAccess = new Array();
@@ -112,14 +114,15 @@ export const updateLastAccessRoom_Epic = action$ =>
 export const GET_LAST_ACCESS_ROOM = "GET_LAST_ACCESS_ROOM";
 export const GET_LAST_ACCESS_ROOM_SUCCESS = "GET_LAST_ACCESS_ROOM_SUCCESS";
 export const GET_LAST_ACCESS_ROOM_FAILURE = "GET_LAST_ACCESS_ROOM_FAILURE";
-export const getLastAccessRoom = (token: string, team_id: string) => ({ type: GET_LAST_ACCESS_ROOM, payload: { token, team_id } });
+
+export const getLastAccessRoom = (team_id: string) => ({ type: GET_LAST_ACCESS_ROOM, payload: { team_id } });
 const getLastAccessRoomSuccess = (payload) => ({ type: GET_LAST_ACCESS_ROOM_SUCCESS, payload });
 const getLastAccessRoomFailure = (error) => ({ type: GET_LAST_ACCESS_ROOM_FAILURE, payload: error });
 export const getLastAccessRoom_Epic = action$ => (
     action$.ofType(GET_LAST_ACCESS_ROOM)
         .mergeMap(action => {
-            let { token, team_id } = action.payload;
-            return ServiceProvider.getLastAccessRoomInfo(token, team_id)
+            let { team_id } = action.payload;
+            return ServiceProvider.getLastAccessRoomInfo(team_id)
                 .then(response => response.json())
                 .then(json => json);
         })

@@ -20,3 +20,10 @@ export function tokenAuth(token: string) {
         headers: chitchat_headers()
     });
 }
+
+export function logout(token: string) {
+    return fetch(`${getConfig().api.auth}/logout`, {
+        method: "POST",
+        headers: withToken(chitchat_headers())(token)
+    });
+}

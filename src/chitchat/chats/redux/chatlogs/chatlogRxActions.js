@@ -103,13 +103,13 @@ exports.updateLastAccessRoom_Epic = action$ => action$.ofType(UPDATE_LAST_ACCESS
 exports.GET_LAST_ACCESS_ROOM = "GET_LAST_ACCESS_ROOM";
 exports.GET_LAST_ACCESS_ROOM_SUCCESS = "GET_LAST_ACCESS_ROOM_SUCCESS";
 exports.GET_LAST_ACCESS_ROOM_FAILURE = "GET_LAST_ACCESS_ROOM_FAILURE";
-exports.getLastAccessRoom = (token, team_id) => ({ type: exports.GET_LAST_ACCESS_ROOM, payload: { token, team_id } });
+exports.getLastAccessRoom = (team_id) => ({ type: exports.GET_LAST_ACCESS_ROOM, payload: { team_id } });
 const getLastAccessRoomSuccess = (payload) => ({ type: exports.GET_LAST_ACCESS_ROOM_SUCCESS, payload });
 const getLastAccessRoomFailure = (error) => ({ type: exports.GET_LAST_ACCESS_ROOM_FAILURE, payload: error });
 exports.getLastAccessRoom_Epic = action$ => (action$.ofType(exports.GET_LAST_ACCESS_ROOM)
     .mergeMap(action => {
-    let { token, team_id } = action.payload;
-    return ServiceProvider.getLastAccessRoomInfo(token, team_id)
+    let { team_id } = action.payload;
+    return ServiceProvider.getLastAccessRoomInfo(team_id)
         .then(response => response.json())
         .then(json => json);
 })

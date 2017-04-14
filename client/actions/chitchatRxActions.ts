@@ -17,10 +17,9 @@ export const stalkInitChatlog_Epic = action$ => (
         .delay(1000)
         .map((x) => {
             if (!!Store.getState().teamReducer.team) {
-                let token = Store.getState().authReducer.token;
                 let team_id = Store.getState().teamReducer.team._id;
 
-                return getLastAccessRoom(token, team_id);
+                return getLastAccessRoom(team_id);
             }
             else {
                 return { type: STALK_INIT_CHATLOG };

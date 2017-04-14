@@ -3,7 +3,8 @@ const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs");
 const { ajax } = Rx.Observable;
 const configureStore_1 = require("../configureStore");
-const config_1 = require("../../configs/config");
+const chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
+const config = () => chitchatFactory_1.ChitchatFactory.getInstance().config;
 const UserService = require("../../chitchat/chats/services/UserService");
 const CREATE_NEW_ORG_CHART = "CREATE_NEW_ORG_CHART";
 exports.CREATE_NEW_ORG_CHART_SUCCESS = "CREATE_NEW_ORG_CHART_SUCCESS";
@@ -16,7 +17,7 @@ const createNewOrgChartCancelled = redux_actions_1.createAction(CREATE_NEW_ORG_C
 exports.createNewOrgChartEpic = action$ => action$.ofType(CREATE_NEW_ORG_CHART)
     .mergeMap(action => ajax({
     method: "POST",
-    url: `${config_1.default.api.orgChart}/create`,
+    url: `${config().api.orgChart}/create`,
     body: JSON.stringify({ chart: action.payload }),
     headers: {
         "Content-Type": "application/json",
@@ -34,7 +35,7 @@ const getOrgChartSuccess = redux_actions_1.createAction(exports.GET_ORG_CHART_SU
 const getOrgChartFailure = redux_actions_1.createAction(exports.GET_ORG_CHART_FAILURE, error => error);
 const getOrgChartCancelled = redux_actions_1.createAction(GET_ORG_CHART_CANCELLED);
 exports.getOrgChartEpic = action$ => action$.ofType(GET_ORG_CHART)
-    .mergeMap(action => ajax.getJSON(`${config_1.default.api.orgChart}/team/${action.payload}`, {
+    .mergeMap(action => ajax.getJSON(`${config().api.orgChart}/team/${action.payload}`, {
     "x-access-token": configureStore_1.default.getState().authReducer.token
 }).map(json => getOrgChartSuccess(json))
     .takeUntil(action$.ofType(GET_ORG_CHART_CANCELLED))

@@ -41,10 +41,10 @@ const listenerImp = (newMsg) => {
     }
 };
 
-function updateLastAccessTimeEventHandler(newRoomAccess) {
+function updateLastAccessTimeEventHandler(newRoomAccess: RoomAccessData) {
     let chatsLogComp = BackendFactory.getInstance().chatLogComp;
     let user_id = getStore().getState().stalkReducer.user._id;
-    chatsLogComp.getUnreadMessage(user_id, newRoomAccess.roomAccess[0]).then(function (unread) {
+    chatsLogComp.getUnreadMessage(user_id, newRoomAccess).then(function (unread) {
         chatsLogComp.addUnreadMessage(unread);
 
         calculateUnreadCount();

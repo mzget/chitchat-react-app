@@ -1,5 +1,5 @@
 ﻿import { absSpartan } from "../libs/stalk/spartanEvents";
-import { StalkAccount } from "../libs/shared/Stalk";
+import { StalkAccount, RoomAccessData } from "../libs/shared/Stalk";
 import { IMessage } from "../libs/shared/Message";
 import { Room } from "../libs/shared/Room";
 
@@ -36,10 +36,10 @@ export default class DataListener implements absSpartan.IServerListener, absSpar
 
 
     private onUpdateRoomAccessEventListeners = new Array();
-    public addOnUpdateRoomAccessListener = (listener: (data) => void) => {
+    public addOnUpdateRoomAccessListener = (listener: (data: RoomAccessData) => void) => {
         this.onUpdateRoomAccessEventListeners.push(listener);
     }
-    public removeOnUpdateRoomAccessListener = (listener: (data) => void) => {
+    public removeOnUpdateRoomAccessListener = (listener: (data: RoomAccessData) => void) => {
         let id = this.onUpdateRoomAccessEventListeners.indexOf(listener);
         this.onUpdateRoomAccessEventListeners.splice(id, 1);
     }
@@ -69,15 +69,12 @@ export default class DataListener implements absSpartan.IServerListener, absSpar
         }
     }
 
-    onUpdatedLastAccessTime(dataEvent) {
+    onUpdatedLastAccessTime(dataEvent: RoomAccessData) {
         console.info("DataListener.onUpdatedLastAccessTime: ", dataEvent);
 
-        if (Array.isArray(dataEvent) && dataEvent.length > 0) {
-            let data = dataEvent[0];
-            this.dataManager.updateRoomAccessForUser(data);
+        this.dataManager.updateRoomAccessForUser(dataEvent);
 
-            this.onUpdateRoomAccessEventListeners.map(item => item(data));
-        }
+        this.onUpdateRoomAccessEventListeners.map(item => item(dataEvent));
     }
 
     onAddRoomAccess(dataEvent) {

@@ -130,8 +130,8 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         addRoomData();
     }
 
-    public updatedLastAccessTimeEvent: (data) => void;
-    onUpdatedLastAccessTime(dataEvent) {
+    public updatedLastAccessTimeEvent: (data: RoomAccessData) => void;
+    onUpdatedLastAccessTime(dataEvent: RoomAccessData) {
         if (!!this.updatedLastAccessTimeEvent) {
             this.updatedLastAccessTimeEvent(dataEvent);
         }
@@ -171,10 +171,15 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         };
 
         // add some items to the queue (batch-wise)
-        q.push(roomAccess, function (err) {
-            if (!!err)
-                console.error("getUnreadMessage err", err);
-        });
+        if (roomAccess && roomAccess.length > 0) {
+            q.push(roomAccess, function (err) {
+                if (!!err)
+                    console.error("getUnreadMessage err", err);
+            });
+        }
+        else {
+            callback(null, null);
+        }
     }
 
     public async getUnreadMessage(user_id: string, roomAccess: RoomAccessData) {

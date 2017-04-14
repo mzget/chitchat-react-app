@@ -37,24 +37,12 @@ class DataManager {
         }
     }
     updateRoomAccessForUser(data) {
-        let arr = JSON.parse(JSON.stringify(data.roomAccess));
-        if (!this.myProfile) {
-            this.myProfile = {};
-            this.myProfile.roomAccess = arr;
-        }
-        else {
-            if (!this.myProfile.roomAccess) {
-                this.myProfile.roomAccess = arr;
+        this.myProfile.roomAccess.forEach(value => {
+            if (value.roomId === data.roomId) {
+                value.accessTime = data.accessTime;
+                return;
             }
-            else {
-                this.myProfile.roomAccess.forEach(value => {
-                    if (value.roomId === arr[0].roomId) {
-                        value.accessTime = arr[0].accessTime;
-                        return;
-                    }
-                });
-            }
-        }
+        });
     }
     getRoomAccess() {
         return this.myProfile.roomAccess;

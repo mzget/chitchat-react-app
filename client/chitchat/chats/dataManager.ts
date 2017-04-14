@@ -66,27 +66,14 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
             this.myProfile.roomAccess = data.roomAccess;
         }
     }
-    public updateRoomAccessForUser(data) {
-        let arr: Array<RoomAccessData> = JSON.parse(JSON.stringify(data.roomAccess));
+    public updateRoomAccessForUser(data: RoomAccessData) {
+        this.myProfile.roomAccess.forEach(value => {
+            if (value.roomId === data.roomId) {
+                value.accessTime = data.accessTime;
 
-        if (!this.myProfile) {
-            this.myProfile = {} as StalkAccount;
-            this.myProfile.roomAccess = arr;
-        }
-        else {
-            if (!this.myProfile.roomAccess) {
-                this.myProfile.roomAccess = arr;
+                return;
             }
-            else {
-                this.myProfile.roomAccess.forEach(value => {
-                    if (value.roomId === arr[0].roomId) {
-                        value.accessTime = arr[0].accessTime;
-
-                        return;
-                    }
-                });
-            }
-        }
+        });
     }
 
     public getRoomAccess(): RoomAccessData[] {

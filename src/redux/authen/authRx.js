@@ -74,17 +74,20 @@ exports.logout = redux_actions_1.createAction(LOG_OUT, payload => payload);
 const logoutSuccess = redux_actions_1.createAction(exports.LOG_OUT_SUCCESS, payload => payload);
 const logoutFailure = redux_actions_1.createAction(LOG_OUT_FAILURE, payload => payload);
 const logoutCancelled = redux_actions_1.createAction(LOG_OUT_CANCELLED);
-exports.logoutUserEpic = action$ => action$.ofType(LOG_OUT)
-    .mergeMap(action => ajax({
-    method: "POST",
-    url: `${config_1.default.api.auth}/logout`,
-    headers: { "Content-Type": "application/json", "x-access-token": action.payload }
-}).map(response => {
-    AppActions.removeSession();
-    stalkBridgeActions.stalkLogout();
-    return logoutSuccess(response.xhr.response);
+exports.logoutUser_Epic = action$ => action$.ofType(LOG_OUT)
+    .mergeMap(action => Rx.Observable.fromPromise(authService.logout(action.payload)))
+    .map(response => Rx.Observable.fromPromise(response.json()))
+    .map(result => {
+    if (result.success) {
+        AppActions.removeSession();
+        stalkBridgeActions.stalkLogout();
+        return logoutSuccess(result.result);
+    }
+    else {
+        return logoutFailure(result.message);
+    }
 })
     .takeUntil(action$.ofType(LOG_OUT_CANCELLED))
-    .catch(error => Rx.Observable.of(logoutFailure(error.xhr.response))));
+    .catch(error => Rx.Observable.of(logoutFailure(error)));
 exports.AUTH_REDUCER_CLEAR_ERROR = "AUTH_REDUCER_CLEAR_ERROR";
 exports.clearError = redux_actions_1.createAction(exports.AUTH_REDUCER_CLEAR_ERROR);

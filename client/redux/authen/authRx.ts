@@ -60,6 +60,7 @@ const TOKEN_AUTH_USER = "TOKEN_AUTH_USER";
 export const TOKEN_AUTH_USER_SUCCESS = "TOKEN_AUTH_USER_SUCCESS";
 export const TOKEN_AUTH_USER_FAILURE = "TOKEN_AUTH_USER_FAILURE";
 const TOKEN_AUTH_USER_CANCELLED = "TOKEN_AUTH_USER_CANCELLED";
+
 export const tokenAuthUser = (token) => ({ type: TOKEN_AUTH_USER, payload: token }); // username => ({ type: FETCH_USER, payload: username });
 const tokenAuthUserSuccess = payload => ({ type: TOKEN_AUTH_USER_SUCCESS, payload });
 const tokenAuthUserFailure = payload => ({ type: TOKEN_AUTH_USER_FAILURE, payload });
@@ -83,23 +84,26 @@ const LOG_OUT = "LOG_OUT";
 export const LOG_OUT_SUCCESS = "LOG_OUT_SUCCESS";
 const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
 const LOG_OUT_CANCELLED = "LOG_OUT_CANCELLED";
+
 export const logout = createAction(LOG_OUT, payload => payload);
 const logoutSuccess = createAction(LOG_OUT_SUCCESS, payload => payload);
 const logoutFailure = createAction(LOG_OUT_FAILURE, payload => payload);
 const logoutCancelled = createAction(LOG_OUT_CANCELLED);
-export const logoutUserEpic = action$ => action$.ofType(LOG_OUT)
-    .mergeMap(action => ajax({
-        method: "POST",
-        url: `${config.api.auth}/logout`,
-        headers: { "Content-Type": "application/json", "x-access-token": action.payload }
-    }).map(response => {
-        AppActions.removeSession();
-        stalkBridgeActions.stalkLogout();
-        return logoutSuccess(response.xhr.response);
+export const logoutUser_Epic = action$ => action$.ofType(LOG_OUT)
+    .mergeMap(action => Rx.Observable.fromPromise(authService.logout(action.payload)))
+    .map(response => Rx.Observable.fromPromise(response.json()))
+    .map(result => {
+        if (result.success) {
+            AppActions.removeSession();
+            stalkBridgeActions.stalkLogout();
+            return logoutSuccess(result.result);
+        }
+        else {
+            return logoutFailure(result.message);
+        }
     })
-        .takeUntil(action$.ofType(LOG_OUT_CANCELLED))
-        .catch(error => Rx.Observable.of(logoutFailure(error.xhr.response)))
-    );
+    .takeUntil(action$.ofType(LOG_OUT_CANCELLED))
+    .catch(error => Rx.Observable.of(logoutFailure(error)));
 
 
 export const AUTH_REDUCER_CLEAR_ERROR = "AUTH_REDUCER_CLEAR_ERROR";
