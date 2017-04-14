@@ -215,6 +215,9 @@ export const teamReducer = (state = new TeamInitState(), action: ReduxActions.Ac
         case GET_TEAMS_INFO_SUCCESS: {
             return state.set("teams", action.payload.result);
         }
+        case GET_TEAMS_INFO_FAILURE: {
+            return state.set("error", action.payload.message);
+        }
 
         case TEAM_SELECTED: {
             return state.set("team", action.payload)

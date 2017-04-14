@@ -84,15 +84,10 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
             }
         }
 
-        switch (teamReducer.state) {
-            case teamRx.CREATE_TEAM_FAILURE: {
-                this.alertBoxTitle = teamRx.CREATE_TEAM_FAILURE;
-                this.alertBoxMessage = teamReducer.error;
-                this.setState(previous => ({ ...previous, openDialog: true }));
-                break;
-            }
-            default:
-                break;
+        if (teamReducer.error) {
+            this.alertBoxTitle = "Alert!";
+            this.alertBoxMessage = teamReducer.error;
+            this.setState(previous => ({ ...previous, openDialog: true }));
         }
     }
 
