@@ -7,7 +7,7 @@ import * as Colors from "material-ui/styles/colors";
 import { IComponentProps } from "../../utils/IComponentProps";
 import { CreateOrgChartForm } from "./CreateOrgChartForm";
 import { OrgChartListView } from "./OrgChartListView";
-import { IOrgChart, OrgLevel } from "../../chats/models/OrgChart";
+import { IOrgChart, OrgLevel } from "../../chitchat/chats/models/OrgChart";
 
 import * as adminRx from "../../redux/admin/adminRx";
 

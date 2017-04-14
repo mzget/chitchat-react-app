@@ -8,13 +8,13 @@ import { ContactProfileView } from "./ContactProfileView";
 
 import * as adminRx from "../../redux/admin/adminRx";
 
-import { ITeamMember } from "../../chats/models/ITeamMember";
-import { IOrgChart } from "../../chats/models/OrgChart";
+import { ITeamMember } from "../../chitchat/chats/models/ITeamMember";
+import { IOrgChart } from "../../chitchat/chats/models/OrgChart";
 
 interface IComponentState {
     member: ITeamMember;
     dropdownValue: number;
-};
+}
 export class TeamMemberBox extends React.Component<IComponentProps, IComponentState> {
 
     orgChart_id: string;

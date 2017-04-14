@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { SigninForm } from "../../components/SigninForm";
 
-import * as CryptoHelper from "../../chats/utils/CryptoHelper";
+import * as CryptoHelper from "../../chitchat/chats/utils/CryptoHelper";
 import * as ValidateUtils from "../../utils/ValidationUtils";
 import * as AuthRx from "../../redux/authen/authRx";
 

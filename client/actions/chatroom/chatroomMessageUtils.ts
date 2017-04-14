@@ -1,8 +1,8 @@
 
-import { MessageType, IMessage } from "../../libs/shared/Message";
-import { MessageImp } from "../../chats/models/MessageImp";
+import { MessageType, IMessage } from "../../chitchat/libs/shared/Message";
+import { MessageImp } from "../../chitchat/chats/models/MessageImp";
 
-import { imagesPath } from "../../consts/StickerPath";
+import { imagesPath } from "../../chitchat/consts/StickerPath";
 
 import Store from "../../redux/configureStore";
 

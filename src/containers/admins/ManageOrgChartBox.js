@@ -1,12 +1,19 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 const React = require("react");
 const reflexbox_1 = require("reflexbox");
 const FlatButton_1 = require("material-ui/FlatButton");
 const Colors = require("material-ui/styles/colors");
 const CreateOrgChartForm_1 = require("./CreateOrgChartForm");
 const OrgChartListView_1 = require("./OrgChartListView");
-const OrgChart_1 = require("../../chats/models/OrgChart");
+const OrgChart_1 = require("../../chitchat/chats/models/OrgChart");
 const adminRx = require("../../redux/admin/adminRx");
 class IComponentNameProps {
 }
@@ -35,7 +42,7 @@ class ManageOrgChartBox extends React.Component {
         const { adminReducer } = nextProps;
         switch (adminReducer.state) {
             case adminRx.CREATE_NEW_ORG_CHART_SUCCESS:
-                this.setState(prevState => (Object.assign({}, prevState, { isOpenCreateNewForm: false })));
+                this.setState(prevState => (__assign({}, prevState, { isOpenCreateNewForm: false })));
                 break;
             default:
                 break;
@@ -55,12 +62,13 @@ class ManageOrgChartBox extends React.Component {
         }
     }
     onCreateNew() {
-        this.setState(prevState => (Object.assign({}, prevState, { isOpenCreateNewForm: !this.state.isOpenCreateNewForm })));
+        this.setState(prevState => (__assign({}, prevState, { isOpenCreateNewForm: !this.state.isOpenCreateNewForm })));
     }
     render() {
-        return (React.createElement(reflexbox_1.Flex, { flexColumn: true, justify: "center", style: { backgroundColor: Colors.indigo50 } }, (this.state.isOpenCreateNewForm) ? (React.createElement(CreateOrgChartForm_1.CreateOrgChartForm, { orgChartName: this.state.chart_name, orgChart_description: this.state.chart_description, onOrgChartNameChange: (e, text) => { this.setState(previous => (Object.assign({}, previous, { chart_name: text }))); }, onOrgChartDescriptionChange: (e, text) => { this.setState(previous => (Object.assign({}, previous, { chart_description: text }))); }, dropdownItems: this.orgLevels, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => { this.setState(previous => (Object.assign({}, previous, { dropdownValue: value }))); }, onSubmit: this.onSubmit })) : (React.createElement("div", null,
+        return (React.createElement(reflexbox_1.Flex, { flexColumn: true, justify: "center", style: { backgroundColor: Colors.indigo50 } }, (this.state.isOpenCreateNewForm) ? (React.createElement(CreateOrgChartForm_1.CreateOrgChartForm, { orgChartName: this.state.chart_name, orgChart_description: this.state.chart_description, onOrgChartNameChange: (e, text) => { this.setState(previous => (__assign({}, previous, { chart_name: text }))); }, onOrgChartDescriptionChange: (e, text) => { this.setState(previous => (__assign({}, previous, { chart_description: text }))); }, dropdownItems: this.orgLevels, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => { this.setState(previous => (__assign({}, previous, { dropdownValue: value }))); }, onSubmit: this.onSubmit })) : (React.createElement("div", null,
             React.createElement(OrgChartListView_1.OrgChartListView, { items: this.props.adminReducer.orgCharts }),
             React.createElement(FlatButton_1.default, { label: "Create New", primary: true, onClick: this.onCreateNew })))));
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ManageOrgChartBox;

@@ -1,4 +1,3 @@
-import config from "../../configs/config";
 import { Record } from "immutable";
 import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
@@ -6,8 +5,13 @@ const { ajax } = Rx.Observable;
 
 import Store from "../configureStore";
 
-import { BackendFactory } from "../../chats/BackendFactory";
-import { Room, RoomType } from "../../../shared/models/Room";
+import { BackendFactory } from "../../chitchat/chats/BackendFactory";
+import { Room, RoomType } from "../../chitchat/libs/shared/Room";
+
+import { updateChatRoom } from "../../chitchat/chats/redux/chatroom/chatroomActions";
+
+import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
+const config = () => ChitChatFactory.getInstance().config;
 
 const GET_ORG_GROUP = "GET_ORG_GROUP";
 export const GET_ORG_GROUP_SUCCESS = "GET_ORG_GROUP_SUCCESS";
@@ -20,19 +24,15 @@ const getOrgGroupCancelled = () => ({ type: GET_ORG_GROUP_CANCELLED });
 export const getOrgGroup_Epic = action$ => (
     action$.ofType(GET_ORG_GROUP).mergeMap(action =>
         ajax.getJSON(
-            `${config.api.group}/org?team_id=${action.payload}`,
+            `${config().api.group}/org?team_id=${action.payload}`,
             { "x-access-token": Store.getState().authReducer.token }
         ).map(response => getOrgGroupSuccess(response))
             .takeUntil(action$.ofType(GET_ORG_GROUP_CANCELLED))
             .catch(error => Rx.Observable.of(getOrgGroupFailure(error.xhr.response)))
             .do(response => {
                 if (response.type == GET_ORG_GROUP_SUCCESS) {
-                    const dataManager = BackendFactory.getInstance().dataManager;
                     let rooms = response.payload.result as Array<Room>;
-
-                    Rx.Observable.from(rooms)._do(x => {
-                        dataManager.roomDAL.save(x._id, x);
-                    }).subscribe();
+                    Store.dispatch(updateChatRoom(rooms));
                 }
             })
     ));
@@ -49,7 +49,7 @@ const createOrgGroupCancelled = createAction(CREATE_ORG_GROUP_CANCELLED);
 export const createOrgGroup_Epic = action$ => (
     action$.ofType(CREATE_ORG_GROUP).mergeMap(action => ajax({
         method: "POST",
-        url: `${config.api.group}/org/create`,
+        url: `${config().api.group}/org/create`,
         body: JSON.stringify({ room: action.payload }),
         headers: {
             "Content-Type": "application/json",
@@ -79,7 +79,7 @@ export const uploadGroupImage_Epic = action$ => (
 
             return ajax({
                 method: "POST",
-                url: `${config.api.group}/uploadImage`,
+                url: `${config().api.group}/uploadImage`,
                 body: body,
                 headers: {
                     "x-access-token": Store.getState().authReducer.token

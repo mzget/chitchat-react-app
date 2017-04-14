@@ -1,11 +1,10 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs");
 const { ajax } = Rx.Observable;
 const configureStore_1 = require("../configureStore");
 const config_1 = require("../../configs/config");
-const UserService = require("../../chats/services/UserService");
+const UserService = require("../../chitchat/chats/services/UserService");
 const CREATE_NEW_ORG_CHART = "CREATE_NEW_ORG_CHART";
 exports.CREATE_NEW_ORG_CHART_SUCCESS = "CREATE_NEW_ORG_CHART_SUCCESS";
 const CREATE_NEW_ORG_CHART_FAILURE = "CREATE_NEW_ORG_CHART_FAILURE";

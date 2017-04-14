@@ -6,8 +6,8 @@ import config from "../../configs/config";
 import { ProfileDetail } from "./ProfileDetail";
 import * as userRx from "../../redux/user/userRx";
 
-import { ChitChatAccount } from "../../../server/scripts/models/User";
-import { ITeamProfile } from "../../../server/scripts/models/TeamProfile";
+import { ChitChatAccount } from "../../chitchat/chats/models/User";
+import { ITeamProfile } from "../../chitchat/chats/models/TeamProfile";
 
 interface IEnhanceProps {
     user: ChitChatAccount;
@@ -20,11 +20,16 @@ interface IEnhanceProps {
     userReducer;
 }
 
+const mapStateToProps = (state) => ({
+    userReducer: state.userReducer
+});
+
 const submit = (props: IEnhanceProps) => {
     let user = { ...props.user } as ChitChatAccount;
     props.dispatch(userRx.updateUserInfo(user));
 };
 const enhance = compose(
+    connect(mapStateToProps),
     withState("user", "updateUser", ({ user }) => user),
     withState("imageFile", "setImageFile", null),
     lifecycle({
@@ -98,7 +103,7 @@ const enhance = compose(
         }
     })
 );
-const ProfileDetailEnhancer = enhance(({
+export const ProfileDetailEnhancer = enhance(({
   user, teamProfile,
     onFirstNameChange, onLastNameChange,
     onTelNumberChange, onSubmit,
@@ -112,9 +117,4 @@ const ProfileDetailEnhancer = enhance(({
         onTelNumberChange={onTelNumberChange}
         onFileReaderChange={onFileReaderChange}
         onSubmit={onSubmit} />
-);
-
-const mapStateToProps = (state) => ({
-    userReducer: state.userReducer
-});
-export const ConnectProfileDetailEnhancer = connect(mapStateToProps)(ProfileDetailEnhancer);
+) as React.ComponentClass<{ user, teamProfile, alert }>;

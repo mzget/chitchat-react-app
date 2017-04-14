@@ -14,13 +14,16 @@ export const authReducer = (state = new AuthenInitState(), action) => {
     switch (action.type) {
         case authRx.SIGN_UP_SUCCESS:
             return state.set("state", authRx.SIGN_UP_SUCCESS);
+        case authRx.SIGN_UP_FAILURE:
+            return state.set("state", authRx.SIGN_UP_FAILURE)
+                .set("error", action.payload.message);
 
         case authRx.AUTH_USER: {
             return state.set("user", action.payload.email);
         }
         case authRx.AUTH_USER_SUCCESS: {
             return state.set("state", authRx.AUTH_USER_SUCCESS)
-                .set("token", action.payload.result);
+                .set("token", action.payload);
         }
         case authRx.AUTH_USER_FAILURE: {
             return state.set("state", authRx.AUTH_USER_FAILURE)
@@ -36,11 +39,11 @@ export const authReducer = (state = new AuthenInitState(), action) => {
 
         case authRx.TOKEN_AUTH_USER_SUCCESS: {
             return state.set("state", authRx.TOKEN_AUTH_USER_SUCCESS)
-                .set("user", action.payload.result.email);
+                .set("user", action.payload.email);
         }
         case authRx.TOKEN_AUTH_USER_FAILURE: {
             return state.set("token", null)
-                .set("error", JSON.stringify(action.payload))
+                .set("error", action.payload)
                 .set("state", authRx.TOKEN_AUTH_USER_FAILURE);
         }
 

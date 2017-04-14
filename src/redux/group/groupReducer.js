@@ -1,10 +1,9 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const immutable_1 = require("immutable");
 const groupRx = require("./groupRx");
 const privateGroupRxActions = require("./privateGroupRxActions");
 const editGroupRxActions = require("./editGroupRxActions");
-const Room_1 = require("../../libs/shared/Room");
+const Room_1 = require("../../chitchat/libs/shared/Room");
 exports.GroupInitState = immutable_1.Record({
     isFetching: false,
     state: null,

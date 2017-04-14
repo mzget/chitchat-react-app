@@ -1,5 +1,12 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
@@ -13,13 +20,12 @@ const UploadingDialog_1 = require("./UploadingDialog");
 const GridListSimple_1 = require("../components/GridListSimple");
 const WarningBar_1 = require("../components/WarningBar");
 const ChatRoomDialogBoxEnhancer_1 = require("./toolsbox/ChatRoomDialogBoxEnhancer");
-const StalkBridgeActions = require("../chats/redux/stalkBridge/stalkBridgeActions");
-const chatroomActions = require("../chats/redux/chatroom/chatroomActions");
-const chatroomRxEpic = require("../chats/redux/chatroom/chatroomRxEpic");
-const StickerPath_1 = require("../consts/StickerPath");
-const FileType = require("../libs/shared/FileType");
+const StalkBridgeActions = require("../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
+const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
+const chatroomRxEpic = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
+const StickerPath_1 = require("../chitchat/consts/StickerPath");
+const FileType = require("../chitchat/libs/shared/FileType");
 const chatroomMessageUtils_1 = require("../actions/chatroom/chatroomMessageUtils");
-;
 class Chat extends React.Component {
     constructor() {
         super(...arguments);
@@ -138,7 +144,7 @@ class Chat extends React.Component {
             }
             case chatroomActions.ChatRoomActionsType.ON_NEW_MESSAGE: {
                 chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => (Object.assign({}, previousState, { messages: messages })), () => {
+                    this.setState(previousState => (__assign({}, previousState, { messages: messages })), () => {
                         let chatBox = document.getElementById("app_body");
                         chatBox.scrollTop = chatBox.scrollHeight;
                     });
@@ -146,9 +152,9 @@ class Chat extends React.Component {
                 this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
-            case chatroomActions.ChatRoomActionsType.GET_PERSISTEND_MESSAGE_SUCCESS: {
+            case chatroomRxEpic.GET_PERSISTEND_MESSAGE_SUCCESS: {
                 chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => (Object.assign({}, previousState, { messages: messages })));
+                    this.setState(previousState => (__assign({}, previousState, { messages: messages })));
                 });
                 this.props.dispatch(chatroomActions.checkOlderMessages());
                 this.props.dispatch(chatroomActions.getNewerMessageFromNet());
@@ -156,17 +162,17 @@ class Chat extends React.Component {
             }
             case chatroomActions.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
                 chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => (Object.assign({}, previousState, { messages: messages })));
+                    this.setState(previousState => (__assign({}, previousState, { messages: messages })));
                 });
                 break;
             }
             case chatroomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
-                this.setState((previousState) => (Object.assign({}, previousState, { earlyMessageReady: chatroomReducer.earlyMessageReady })));
+                this.setState((previousState) => (__assign({}, previousState, { earlyMessageReady: chatroomReducer.earlyMessageReady })));
                 break;
             }
             case chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS: {
                 chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => (Object.assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false, messages: messages })));
+                    this.setState(previousState => (__assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false, messages: messages })));
                 });
                 break;
             }
@@ -175,7 +181,7 @@ class Chat extends React.Component {
         }
     }
     onLoadEarlierMessages() {
-        this.setState(previousState => (Object.assign({}, previousState, { isLoadingEarlierMessages: true })));
+        this.setState(previousState => (__assign({}, previousState, { isLoadingEarlierMessages: true })));
         this.props.dispatch(chatroomActions.loadEarlyMessageChunk());
     }
     roomInitialize(props) {
@@ -203,7 +209,7 @@ class Chat extends React.Component {
                 messages.push(_messages[i]);
             }
         }
-        this.setState(Object.assign({}, this.state, { messages: messages }));
+        this.setState(__assign({}, this.state, { messages: messages }));
     }
     setMessageTemp(server_msg) {
         let _messages = this.state.messages.slice();
@@ -215,10 +221,10 @@ class Chat extends React.Component {
                 message.status = "Sent";
             }
         });
-        this.setState(Object.assign({}, this.state, { messages: _messages }));
+        this.setState(__assign({}, this.state, { messages: _messages }));
     }
     onTypingTextChange(event) {
-        this.setState(Object.assign({}, this.state, { typingText: event.target.value }));
+        this.setState(__assign({}, this.state, { typingText: event.target.value }));
     }
     onSubmitTextChat() {
         if (this.state.typingText.length <= 0)
@@ -264,7 +270,7 @@ class Chat extends React.Component {
         this.send(message);
         let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
         _messages.push(message);
-        this.setState(previousState => (Object.assign({}, previousState, { typingText: "", messages: _messages })), () => {
+        this.setState(previousState => (__assign({}, previousState, { typingText: "", messages: _messages })), () => {
             let chatBox = document.getElementById("app_body");
             chatBox.scrollTop = chatBox.scrollHeight;
         });
@@ -274,7 +280,7 @@ class Chat extends React.Component {
     }
     onToggleSticker() {
         this.h_body = (this.state.openButtomMenu) ? this.h_body + this.h_stickerBox : this.h_body - this.h_stickerBox;
-        this.setState(previousState => (Object.assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu })), () => {
+        this.setState(previousState => (__assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu })), () => {
             let chatBox = document.getElementById("app_body");
             chatBox.scrollTop = chatBox.scrollHeight;
         });
@@ -316,5 +322,6 @@ class Chat extends React.Component {
 /**
  * ## Redux boilerplate
  */
-const mapStateToProps = (state) => (Object.assign({}, state));
+const mapStateToProps = (state) => (__assign({}, state));
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = react_redux_1.connect(mapStateToProps)(Chat);

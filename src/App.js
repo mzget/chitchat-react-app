@@ -1,8 +1,8 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const react_router_1 = require("react-router");
+const chitchat_1 = require("./chitchat");
 /**
  * ### configureStore
  *  ```configureStore``` will connect the ```reducers```,
@@ -15,6 +15,8 @@ const Team_1 = require("./containers/Team");
 const Profile_1 = require("./containers/Profile");
 const Main_1 = require("./containers/Main");
 const Admin_1 = require("./containers/Admin");
+chitchat_1.chitchatFactory.initStore(configureStore_1.default);
+configureStore_1.default.subscribe(() => chitchat_1.chitchatFactory.setAuthStore(configureStore_1.default.getState().userReducer.user, configureStore_1.default.getState().authReducer.token));
 class App extends React.Component {
     render() {
         return (React.createElement(react_redux_1.Provider, { store: configureStore_1.default },
@@ -28,4 +30,5 @@ class App extends React.Component {
                 React.createElement(react_router_1.Route, { path: "/admin/(:filter)", component: Admin_1.default }))));
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = App;

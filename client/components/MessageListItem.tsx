@@ -1,9 +1,9 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { List, ListItem } from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
+import { List, ListItem } from "material-ui/List";
+import Avatar from "material-ui/Avatar";
 
-import { MessageImp } from "../chats/models/MessageImp";
+import { MessageImp } from "../chitchat/chats/models/MessageImp";
 import BadgeSimple from "../components/BadgeSimple";
 
 export const IncomingList = (props: { message: MessageImp, onSelected: (item) => void }) => (
@@ -18,7 +18,7 @@ export const IncomingList = (props: { message: MessageImp, onSelected: (item) =>
                 <span>{props.message.createTime}</span>
             </p >
         }
-        />
+    />
 );
 
 export const OutComingList = (props: { message: MessageImp, onSelected: (item) => void }) => (
@@ -30,6 +30,6 @@ export const OutComingList = (props: { message: MessageImp, onSelected: (item) =
                 <span>{props.message.createTime}</span>
             </p >
         }
-        style={{ textAlign: 'right' }}
-        />
+        style={{ textAlign: "right" }}
+    />
 );

@@ -4,8 +4,8 @@
  * Redux actions creator.
  */
 
-import { BackendFactory } from "../../chats/BackendFactory";
-import HttpStatus from "../../libs/stalk/utils/httpStatusCode";
+import { BackendFactory } from "../../chitchat/chats/BackendFactory";
+import HttpStatus from "../../chitchat/libs/stalk/utils/httpStatusCode";
 
 export class MessageActionsType {
     static STOP = "STOP";

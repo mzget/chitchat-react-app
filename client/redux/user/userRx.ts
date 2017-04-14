@@ -1,13 +1,14 @@
-import config from "../../configs/config";
 import { Record } from "immutable";
 import { createAction } from "redux-actions";
 
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
-import * as UserService from "../../chats/services/UserService";
-import { ChitChatAccount } from "../../chats/models/User";
-import * as StalkBridgeActions from "../../chats/redux/stalkBridge/stalkBridgeActions";
+import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
+const config = () => ChitChatFactory.getInstance().config;
+import * as UserService from "../../chitchat/chats/services/UserService";
+import { ChitChatAccount } from "../../chitchat/chats/models/User";
+import * as StalkBridgeActions from "../../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 import Store from "../configureStore";
 
 const FETCH_USER = "FETCH_USER";
@@ -20,36 +21,29 @@ const fetchUserFulfilled = payload => ({ type: FETCH_USER_SUCCESS, payload });
 const cancelFetchUser = () => ({ type: FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: FETCH_USER_FAILURE, payload });
 export const fetchUserEpic = action$ => (
-    action$.ofType(FETCH_USER).mergeMap(action =>
-        ajax({
-            method: "GET",
-            url: `${config.api.user}/?username=${action.payload}`,
-            headers: {
-                "Content-Type": "application/json",
-                "x-api-key": config.api.apiKey
-            }
-        })
-            .map(response => fetchUserFulfilled(response.xhr.response))
-            .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
-            .catch(error => Rx.Observable.of(fetchUserRejected(error)))
-            ._do(x => {
-                if (x.type == FETCH_USER_SUCCESS) {
-                    if (x.payload.result && x.payload.result.length > 0) {
-                        let user = x.payload.result[0];
+    action$.ofType(FETCH_USER).mergeMap(action => UserService.fetchUser(action.payload)
+        .map(response => fetchUserFulfilled(response.xhr.response))
+        .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
+        .catch(error => Rx.Observable.of(fetchUserRejected(error)))
+        ._do(x => {
+            if (x.type == FETCH_USER_SUCCESS) {
+                if (x.payload.result && x.payload.result.length > 0) {
+                    let user = x.payload.result[0];
 
-                        let stalkReducer = Store.getState().stalkReducer;
-                        if (stalkReducer.state !== StalkBridgeActions.STALK_INIT) {
-                            StalkBridgeActions.stalkLogin(user);
-                        }
+                    let stalkReducer = Store.getState().stalkReducer;
+                    if (stalkReducer.state !== StalkBridgeActions.STALK_INIT) {
+                        StalkBridgeActions.stalkLogin(user);
                     }
                 }
-            }))
+            }
+        }))
 );
 
 const UPDATE_USER_INFO = "UPDATE_USER_INFO";
 export const UPDATE_USER_INFO_SUCCESS = "UPDATE_USER_INFO_SUCCESS";
 export const UPDATE_USER_INFO_FAILURE = "UPDATE_USER_INFO_FAILURE";
 export const UPDATE_USER_INFO_CANCELLED = "UPDATE_USER_INFO_CANCELLED";
+
 export const updateUserInfo = createAction(UPDATE_USER_INFO, (user: ChitChatAccount) => user);
 export const updateUserInfoSuccess = createAction(UPDATE_USER_INFO_SUCCESS, (result) => result);
 export const updateUserInfoFailure = createAction(UPDATE_USER_INFO_FAILURE, (error) => error);
@@ -57,7 +51,7 @@ export const updateUserInfoCancelled = createAction(UPDATE_USER_INFO_CANCELLED);
 export const updateUserInfo_Epic = action$ => (
     action$.ofType(UPDATE_USER_INFO).mergeMap(action => ajax({
         method: "POST",
-        url: `${config.api.user}/userInfo`,
+        url: `${config().api.user}/userInfo`,
         body: JSON.stringify({ user: action.payload }),
         headers: {
             "Content-Type": "application/json",
@@ -78,7 +72,7 @@ const fetchAgentByIdSuccess = (payload) => ({ type: FETCH_AGENT_BY_ID_SUCCESS, p
 const fetchAgentByIdFailure = (payload) => ({ type: FETCH_AGENT_BY_ID_FAILURE, payload });
 const fetchAgentByIdCancelled = () => ({ type: FETCH_AGENT_BY_ID_CANCELLED });
 export const fetchAgentIdEpic = action$ => (action$.ofType(FETCH_AGENT_BY_ID)
-    .margeMap(action => ajax.getJSON(`${config.api.user}/agent/${action.payload}`)
+    .margeMap(action => ajax.getJSON(`${config().api.user}/agent/${action.payload}`)
         .map(fetchAgentByIdSuccess)
         .takeUntil(action$.ofType(FETCH_AGENT_BY_ID_CANCELLED))
         .catch(error => Rx.Observable.of(fetchAgentByIdFailure(error.xhr.response))))
@@ -95,7 +89,7 @@ const fetchAgentCancelled = () => ({ type: FETCH_AGENT_CANCELLED });
 export const fetchAgentEpic = action$ => (
     action$.ofType(FETCH_AGENT)
         .mergeMap(action =>
-            ajax.getJSON(`${config.api.user}/agent/${action.payload}`)
+            ajax.getJSON(`${config().api.user}/agent/${action.payload}`)
                 .map(fetchAgentSuccess)
                 .takeUntil(action$.ofType(FETCH_AGENT_CANCELLED))
                 .catch(error => Rx.Observable.of(fetchAgentFailure(error.xhr.response))))
@@ -108,7 +102,7 @@ export const fetchContact = (contactId: string) => ({ type: FETCH_CONTACT, paylo
 const fetchContactSuccess = payload => ({ type: FETCH_CONTACT_SUCCESS, payload });
 export const fetchContactEpic = action$ => action$.ofType(FETCH_CONTACT)
     .mergeMap(action =>
-        ajax.getJSON(`${config.api.user}/contact/?id=${action.payload}`)
+        ajax.getJSON(`${config().api.user}/contact/?id=${action.payload}`)
             .map(fetchContactSuccess)
             .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
             .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))
@@ -151,7 +145,7 @@ export const uploadUserAvatar_Epic = action$ => (
 
             return ajax({
                 method: "POST",
-                url: `${config.api.user}/uploadImage`,
+                url: `${config().api.user}/uploadImage`,
                 body: body,
                 headers: {
                     "x-access-token": Store.getState().authReducer.token

@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const chitchat_api = (host) => ({
     apiKey: "chitchat1234",
     host: `${host}`,
@@ -49,4 +48,5 @@ const getConfig = () => {
     }
 };
 const config = getConfig();
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = config;

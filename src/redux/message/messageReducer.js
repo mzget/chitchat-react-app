@@ -4,7 +4,6 @@
  * This is pure function for redux app.
  */
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const messageActions_1 = require("./messageActions");
 const immutable_1 = require("immutable");
 /**

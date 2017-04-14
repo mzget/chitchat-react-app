@@ -1,0 +1,574 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{b7166b02-9556-4d09-ad11-55da75c02987}</ProjectGuid>
+    <ProjectHome />
+    <ProjectView>ShowAllFiles</ProjectView>
+    <StartupFile />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <TypeScriptSourceMap>true</TypeScriptSourceMap>
+    <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
+    <EnableTypeScript>true</EnableTypeScript>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Content Include="client\App.tsx" />
+    <Content Include="client\containers\profile\ProfileBox.tsx" />
+    <Content Include="client\containers\profile\ProfileDetail.tsx" />
+    <Content Include="client\containers\profile\ProfileDetailEnhancer.tsx" />
+    <Content Include="client\containers\profile\ProfileListView.tsx" />
+    <Content Include="package.json" />
+    <Content Include="tsconfig.json" />
+    <Content Include="README.md" />
+    <Content Include="public\index.html" />
+    <Content Include="public\favicon.ico" />
+    <Content Include="src\App.css" />
+    <Content Include="src\index.css" />
+    <Content Include="src\logo.svg" />
+    <Compile Include="src\App.js" />
+    <Compile Include="src\App.test.js" />
+    <Compile Include="src\index.js" />
+    <TypeScriptCompile Include="chitchat\chats\BackendFactory.ts" />
+    <TypeScriptCompile Include="chitchat\chats\chatRoomComponent.ts" />
+    <TypeScriptCompile Include="chitchat\chats\chatslogComponent.ts" />
+    <TypeScriptCompile Include="chitchat\chats\chitchatFactory.ts" />
+    <TypeScriptCompile Include="chitchat\chats\dataListener.ts" />
+    <TypeScriptCompile Include="chitchat\chats\dataManager.ts" />
+    <TypeScriptCompile Include="chitchat\chats\iConfig.ts" />
+    <TypeScriptCompile Include="chitchat\chats\pushDataListener.ts" />
+    <TypeScriptCompile Include="chitchat\consts\AlertMsg.ts" />
+    <TypeScriptCompile Include="chitchat\consts\StickerPath.ts" />
+    <TypeScriptCompile Include="chitchat\chats\abstracts\IRoomAccessListenerImp.ts" />
+    <TypeScriptCompile Include="chitchat\chats\dataAccessLayer\AppSessionToken.ts" />
+    <TypeScriptCompile Include="chitchat\chats\dataAccessLayer\IMessageDAL.ts" />
+    <TypeScriptCompile Include="chitchat\chats\dataAccessLayer\IRoomDAL.ts" />
+    <TypeScriptCompile Include="chitchat\chats\dataAccessLayer\messageDAL.ts" />
+    <TypeScriptCompile Include="chitchat\chats\dataAccessLayer\messageDALFactory.ts" />
+    <TypeScriptCompile Include="chitchat\chats\dataAccessLayer\nodeMessageDAL.ts" />
+    <TypeScriptCompile Include="chitchat\chats\dataAccessLayer\RoomDAL.ts" />
+    <TypeScriptCompile Include="chitchat\chats\dataAccessLayer\RoomDALFactory.ts" />
+    <TypeScriptCompile Include="chitchat\chats\models\chatLog.ts" />
+    <TypeScriptCompile Include="chitchat\chats\models\Contact.ts" />
+    <TypeScriptCompile Include="chitchat\chats\models\ITeam.ts" />
+    <TypeScriptCompile Include="chitchat\chats\models\ITeamMember.ts" />
+    <TypeScriptCompile Include="chitchat\chats\models\JobLevel.ts" />
+    <TypeScriptCompile Include="chitchat\chats\models\MemberImp.ts" />
+    <TypeScriptCompile Include="chitchat\chats\models\MessageImp.ts" />
+    <TypeScriptCompile Include="chitchat\chats\models\OrgChart.ts" />
+    <TypeScriptCompile Include="chitchat\chats\models\TeamProfile.ts" />
+    <TypeScriptCompile Include="chitchat\chats\models\User.ts" />
+    <TypeScriptCompile Include="chitchat\chats\models\UserRole.ts" />
+    <TypeScriptCompile Include="chitchat\chats\secure\ISecureService.ts" />
+    <TypeScriptCompile Include="chitchat\chats\secure\nodeSecureService.ts" />
+    <TypeScriptCompile Include="chitchat\chats\secure\secureService.ts" />
+    <TypeScriptCompile Include="chitchat\chats\secure\secureServiceFactory.ts" />
+    <TypeScriptCompile Include="chitchat\chats\services\ServiceProvider.ts" />
+    <TypeScriptCompile Include="chitchat\chats\services\UploadServiceHelper.ts" />
+    <TypeScriptCompile Include="chitchat\chats\services\UserService.ts" />
+    <TypeScriptCompile Include="chitchat\chats\utils\CryptoHelper.ts" />
+    <TypeScriptCompile Include="chitchat\chats\redux\chatlogs\chatlogActionsHelper.ts" />
+    <TypeScriptCompile Include="chitchat\chats\redux\chatlogs\chatlogReducer.ts" />
+    <TypeScriptCompile Include="chitchat\chats\redux\chatlogs\chatlogRxActions.ts" />
+    <TypeScriptCompile Include="chitchat\chats\redux\chatlogs\chatlogsActions.ts" />
+    <TypeScriptCompile Include="chitchat\chats\redux\chatroom\chatroomActions.ts" />
+    <TypeScriptCompile Include="chitchat\chats\redux\chatroom\chatroomReducer.ts" />
+    <TypeScriptCompile Include="chitchat\chats\redux\chatroom\chatroomRxEpic.ts" />
+    <TypeScriptCompile Include="chitchat\chats\redux\chatroom\messageRxEpic.ts" />
+    <TypeScriptCompile Include="chitchat\chats\redux\stalkBridge\stalkBridgeActions.ts" />
+    <TypeScriptCompile Include="chitchat\chats\redux\stalkBridge\StalkNotificationActions.ts" />
+    <TypeScriptCompile Include="chitchat\chats\redux\stalkBridge\stalkPushActions.ts" />
+    <TypeScriptCompile Include="chitchat\chats\redux\stalkBridge\stalkReducer.ts" />
+    <TypeScriptCompile Include="chitchat\libs\pomelo\EventEmitter.ts" />
+    <TypeScriptCompile Include="chitchat\libs\pomelo\pomeloclient.ts" />
+    <TypeScriptCompile Include="chitchat\libs\pomelo\reactWSClient.ts" />
+    <TypeScriptCompile Include="chitchat\libs\pomelo\rnWSClient.ts" />
+    <TypeScriptCompile Include="chitchat\libs\shared\Constant.ts" />
+    <TypeScriptCompile Include="chitchat\libs\shared\FileType.ts" />
+    <TypeScriptCompile Include="chitchat\libs\shared\IChatRoom.ts" />
+    <TypeScriptCompile Include="chitchat\libs\shared\IProfile.ts" />
+    <TypeScriptCompile Include="chitchat\libs\shared\Message.ts" />
+    <TypeScriptCompile Include="chitchat\libs\shared\Room.ts" />
+    <TypeScriptCompile Include="chitchat\libs\shared\Stalk.ts" />
+    <TypeScriptCompile Include="chitchat\libs\shared\UserRole.ts" />
+    <TypeScriptCompile Include="chitchat\libs\stalk\chatRoomApiProvider.ts" />
+    <TypeScriptCompile Include="chitchat\libs\stalk\friendApiProvider.ts" />
+    <TypeScriptCompile Include="chitchat\libs\stalk\serverEventListener.ts" />
+    <TypeScriptCompile Include="chitchat\libs\stalk\serverImplemented.ts" />
+    <TypeScriptCompile Include="chitchat\libs\stalk\socketComponent.ts" />
+    <TypeScriptCompile Include="chitchat\libs\stalk\spartanEvents.ts" />
+    <TypeScriptCompile Include="chitchat\libs\stalk\utils\httpStatusCode.ts" />
+    <TypeScriptCompile Include="chitchat\libs\stalk\utils\tokenDecode.ts" />
+    <TypeScriptCompile Include="client\chats\BackendFactory.ts" />
+    <TypeScriptCompile Include="client\chats\chatRoomComponent.ts" />
+    <TypeScriptCompile Include="client\chats\chatslogComponent.ts" />
+    <TypeScriptCompile Include="client\chats\dataListener.ts" />
+    <TypeScriptCompile Include="client\chats\dataManager.ts" />
+    <TypeScriptCompile Include="client\chats\pushDataListener.ts" />
+    <TypeScriptCompile Include="client\configs\config.ts" />
+    <TypeScriptCompile Include="client\configs\IConfig.ts" />
+    <TypeScriptCompile Include="client\consts\AlertMsg.ts" />
+    <TypeScriptCompile Include="client\consts\StickerPath.ts" />
+    <TypeScriptCompile Include="client\redux\configureStore.ts" />
+    <TypeScriptCompile Include="client\redux\rootReducer.ts" />
+    <TypeScriptCompile Include="client\redux\rootRxEpic.ts" />
+    <TypeScriptCompile Include="client\utils\IComponentProps.ts" />
+    <TypeScriptCompile Include="client\utils\ValidationUtils.ts" />
+    <TypeScriptCompile Include="client\actions\chatroom\chatroomMessageUtils.ts" />
+    <TypeScriptCompile Include="client\chats\abstracts\IRoomAccessListenerImp.ts" />
+    <TypeScriptCompile Include="client\chats\dataAccessLayer\AppSessionToken.ts" />
+    <TypeScriptCompile Include="client\chats\dataAccessLayer\IMessageDAL.ts" />
+    <TypeScriptCompile Include="client\chats\dataAccessLayer\IRoomDAL.ts" />
+    <TypeScriptCompile Include="client\chats\dataAccessLayer\messageDAL.ts" />
+    <TypeScriptCompile Include="client\chats\dataAccessLayer\messageDALFactory.ts" />
+    <TypeScriptCompile Include="client\chats\dataAccessLayer\nodeMessageDAL.ts" />
+    <TypeScriptCompile Include="client\chats\dataAccessLayer\RoomDAL.ts" />
+    <TypeScriptCompile Include="client\chats\dataAccessLayer\RoomDALFactory.ts" />
+    <TypeScriptCompile Include="client\chats\models\chatLog.ts" />
+    <TypeScriptCompile Include="client\chats\models\Contact.ts" />
+    <TypeScriptCompile Include="client\chats\models\ITeam.ts" />
+    <TypeScriptCompile Include="client\chats\models\ITeamMember.ts" />
+    <TypeScriptCompile Include="client\chats\models\JobLevel.ts" />
+    <TypeScriptCompile Include="client\chats\models\MemberImp.ts" />
+    <TypeScriptCompile Include="client\chats\models\MessageImp.ts" />
+    <TypeScriptCompile Include="client\chats\models\OrgChart.ts" />
+    <TypeScriptCompile Include="client\chats\models\TeamProfile.ts" />
+    <TypeScriptCompile Include="client\chats\models\User.ts" />
+    <TypeScriptCompile Include="client\chats\models\UserRole.ts" />
+    <TypeScriptCompile Include="client\chats\secure\ISecureService.ts" />
+    <TypeScriptCompile Include="client\chats\secure\nodeSecureService.ts" />
+    <TypeScriptCompile Include="client\chats\secure\secureService.ts" />
+    <TypeScriptCompile Include="client\chats\secure\secureServiceFactory.ts" />
+    <TypeScriptCompile Include="client\chats\services\ServiceProvider.ts" />
+    <TypeScriptCompile Include="client\chats\services\UploadServiceHelper.ts" />
+    <TypeScriptCompile Include="client\chats\services\UserService.ts" />
+    <TypeScriptCompile Include="client\chats\utils\CryptoHelper.ts" />
+    <TypeScriptCompile Include="client\chats\redux\chatlogs\chatlogReducer.ts" />
+    <TypeScriptCompile Include="client\chats\redux\chatlogs\chatlogRxActions.ts" />
+    <TypeScriptCompile Include="client\chats\redux\chatlogs\chatlogsActions.ts" />
+    <TypeScriptCompile Include="client\chats\redux\chatroom\chatroomActions.ts" />
+    <TypeScriptCompile Include="client\chats\redux\chatroom\chatroomReducer.ts" />
+    <TypeScriptCompile Include="client\chats\redux\chatroom\chatroomRxEpic.ts" />
+    <TypeScriptCompile Include="client\chats\redux\chatroom\messageRxEpic.ts" />
+    <TypeScriptCompile Include="client\chats\redux\stalkBridge\stalkBridgeActions.ts" />
+    <TypeScriptCompile Include="client\chats\redux\stalkBridge\StalkNotificationActions.ts" />
+    <TypeScriptCompile Include="client\chats\redux\stalkBridge\stalkPushActions.ts" />
+    <TypeScriptCompile Include="client\chats\redux\stalkBridge\stalkReducer.ts" />
+    <TypeScriptCompile Include="client\libs\pomelo\EventEmitter.ts" />
+    <TypeScriptCompile Include="client\libs\pomelo\pomeloclient.ts" />
+    <TypeScriptCompile Include="client\libs\pomelo\reactWSClient.ts" />
+    <TypeScriptCompile Include="client\libs\pomelo\rnWSClient.ts" />
+    <TypeScriptCompile Include="client\libs\shared\Constant.ts" />
+    <TypeScriptCompile Include="client\libs\shared\FileType.ts" />
+    <TypeScriptCompile Include="client\libs\shared\IChatRoom.ts" />
+    <TypeScriptCompile Include="client\libs\shared\IProfile.ts" />
+    <TypeScriptCompile Include="client\libs\shared\Message.ts" />
+    <TypeScriptCompile Include="client\libs\shared\Room.ts" />
+    <TypeScriptCompile Include="client\libs\shared\Stalk.ts" />
+    <TypeScriptCompile Include="client\libs\shared\UserRole.ts" />
+    <TypeScriptCompile Include="client\libs\stalk\chatRoomApiProvider.ts" />
+    <TypeScriptCompile Include="client\libs\stalk\friendApiProvider.ts" />
+    <TypeScriptCompile Include="client\libs\stalk\serverEventListener.ts" />
+    <TypeScriptCompile Include="client\libs\stalk\serverImplemented.ts" />
+    <TypeScriptCompile Include="client\libs\stalk\socketComponent.ts" />
+    <TypeScriptCompile Include="client\libs\stalk\spartanEvents.ts" />
+    <TypeScriptCompile Include="client\libs\stalk\utils\httpStatusCode.ts" />
+    <TypeScriptCompile Include="client\libs\stalk\utils\tokenDecode.ts" />
+    <TypeScriptCompile Include="client\redux\admin\adminReducer.ts" />
+    <TypeScriptCompile Include="client\redux\admin\adminRx.ts" />
+    <TypeScriptCompile Include="client\redux\app\contactActions.ts" />
+    <TypeScriptCompile Include="client\redux\app\persistentDataActions.ts" />
+    <TypeScriptCompile Include="client\redux\authen\authReducer.ts" />
+    <TypeScriptCompile Include="client\redux\authen\authRx.ts" />
+    <TypeScriptCompile Include="client\redux\device\deviceActions.ts" />
+    <TypeScriptCompile Include="client\redux\device\deviceReducer.ts" />
+    <TypeScriptCompile Include="client\redux\group\editGroupRxActions.ts" />
+    <TypeScriptCompile Include="client\redux\group\groupReducer.ts" />
+    <TypeScriptCompile Include="client\redux\group\groupRx.ts" />
+    <TypeScriptCompile Include="client\redux\group\privateGroupRxActions.ts" />
+    <TypeScriptCompile Include="client\redux\message\messageActions.ts" />
+    <TypeScriptCompile Include="client\redux\message\messageReducer.ts" />
+    <TypeScriptCompile Include="client\redux\team\teamRx.ts" />
+    <TypeScriptCompile Include="client\redux\user\userReducer.ts" />
+    <TypeScriptCompile Include="client\redux\user\userRx.ts" />
+    <Compile Include="src\chats\BackendFactory.js" />
+    <Compile Include="src\chats\chatRoomComponent.js" />
+    <Compile Include="src\chats\chatslogComponent.js" />
+    <Compile Include="src\chats\dataListener.js" />
+    <Compile Include="src\chats\dataManager.js" />
+    <Compile Include="src\chats\pushDataListener.js" />
+    <Compile Include="src\components\AppBar.js" />
+    <Compile Include="src\components\AvartarSimple.js" />
+    <Compile Include="src\components\BadgeSimple.js" />
+    <Compile Include="src\components\CardFileWithAvatar.js" />
+    <Compile Include="src\components\CardImageWithAvatar.js" />
+    <Compile Include="src\components\CardTextWithAvatar.js" />
+    <Compile Include="src\components\CardVideoWithAvatar.js" />
+    <Compile Include="src\components\CircularProgressSimple.js" />
+    <Compile Include="src\components\DialogBox.js" />
+    <Compile Include="src\components\GridListSimple.js" />
+    <Compile Include="src\components\LinearProgressDialog.js" />
+    <Compile Include="src\components\LinearProgressSimple.js" />
+    <Compile Include="src\components\MenuListView.js" />
+    <Compile Include="src\components\MessageListItem.js" />
+    <Compile Include="src\components\SigninForm.js" />
+    <Compile Include="src\components\SignupForm.js" />
+    <Compile Include="src\components\SimpleCardImage.js" />
+    <Compile Include="src\components\SimpleCardVideo.js" />
+    <Compile Include="src\components\SimpleToolbar.js" />
+    <Compile Include="src\components\SnackbarSimple.js" />
+    <Compile Include="src\components\WarningBar.js" />
+    <Compile Include="src\configs\config.js" />
+    <Compile Include="src\configs\IConfig.js" />
+    <Compile Include="src\consts\AlertMsg.js" />
+    <Compile Include="src\consts\StickerPath.js" />
+    <Compile Include="src\containers\Admin.js" />
+    <Compile Include="src\containers\Chat.js" />
+    <Compile Include="src\containers\ChatRoomSettings.js" />
+    <Compile Include="src\containers\Home.js" />
+    <Compile Include="src\containers\Main.js" />
+    <Compile Include="src\containers\Profile.js" />
+    <Compile Include="src\containers\Team.js" />
+    <Compile Include="src\containers\TypingBox.js" />
+    <Compile Include="src\containers\UploadingDialog.js" />
+    <Compile Include="src\redux\configureStore.js" />
+    <Compile Include="src\redux\rootReducer.js" />
+    <Compile Include="src\redux\rootRxEpic.js" />
+    <Compile Include="src\utils\IComponentProps.js" />
+    <Compile Include="src\utils\ValidationUtils.js" />
+    <Compile Include="src\actions\chatroom\chatroomMessageUtils.js" />
+    <Compile Include="src\chats\abstracts\IRoomAccessListenerImp.js" />
+    <Compile Include="src\chats\dataAccessLayer\AppSessionToken.js" />
+    <Compile Include="src\chats\dataAccessLayer\IMessageDAL.js" />
+    <Compile Include="src\chats\dataAccessLayer\IRoomDAL.js" />
+    <Compile Include="src\chats\dataAccessLayer\messageDAL.js" />
+    <Compile Include="src\chats\dataAccessLayer\messageDALFactory.js" />
+    <Compile Include="src\chats\dataAccessLayer\nodeMessageDAL.js" />
+    <Compile Include="src\chats\dataAccessLayer\RoomDAL.js" />
+    <Compile Include="src\chats\dataAccessLayer\RoomDALFactory.js" />
+    <Compile Include="src\chats\models\chatLog.js" />
+    <Compile Include="src\chats\models\Contact.js" />
+    <Compile Include="src\chats\models\ITeam.js" />
+    <Compile Include="src\chats\models\ITeamMember.js" />
+    <Compile Include="src\chats\models\JobLevel.js" />
+    <Compile Include="src\chats\models\MemberImp.js" />
+    <Compile Include="src\chats\models\MessageImp.js" />
+    <Compile Include="src\chats\models\OrgChart.js" />
+    <Compile Include="src\chats\models\TeamProfile.js" />
+    <Compile Include="src\chats\models\User.js" />
+    <Compile Include="src\chats\models\UserRole.js" />
+    <Compile Include="src\chats\secure\ISecureService.js" />
+    <Compile Include="src\chats\secure\nodeSecureService.js" />
+    <Compile Include="src\chats\secure\secureService.js" />
+    <Compile Include="src\chats\secure\secureServiceFactory.js" />
+    <Compile Include="src\chats\services\ServiceProvider.js" />
+    <Compile Include="src\chats\services\UploadServiceHelper.js" />
+    <Compile Include="src\chats\services\UserService.js" />
+    <Compile Include="src\chats\utils\CryptoHelper.js" />
+    <Compile Include="src\chats\redux\chatlogs\chatlogReducer.js" />
+    <Compile Include="src\chats\redux\chatlogs\chatlogRxActions.js" />
+    <Compile Include="src\chats\redux\chatlogs\chatlogsActions.js" />
+    <Compile Include="src\chats\redux\chatroom\chatroomActions.js" />
+    <Compile Include="src\chats\redux\chatroom\chatroomReducer.js" />
+    <Compile Include="src\chats\redux\chatroom\chatroomRxEpic.js" />
+    <Compile Include="src\chats\redux\chatroom\messageRxEpic.js" />
+    <Compile Include="src\chats\redux\stalkBridge\stalkBridgeActions.js" />
+    <Compile Include="src\chats\redux\stalkBridge\StalkNotificationActions.js" />
+    <Compile Include="src\chats\redux\stalkBridge\stalkPushActions.js" />
+    <Compile Include="src\chats\redux\stalkBridge\stalkReducer.js" />
+    <Compile Include="src\containers\admins\ContactProfileView.js" />
+    <Compile Include="src\containers\admins\CreateGroupBox.js" />
+    <Compile Include="src\containers\admins\CreateGroupView.js" />
+    <Compile Include="src\containers\admins\CreateOrgChartForm.js" />
+    <Compile Include="src\containers\admins\ManageOrgChartBox.js" />
+    <Compile Include="src\containers\admins\OrgChartListView.js" />
+    <Compile Include="src\containers\admins\SelectOrgChartView.js" />
+    <Compile Include="src\containers\admins\TeamMemberBox.js" />
+    <Compile Include="src\containers\admins\TeamRoleListView.js" />
+    <Compile Include="src\containers\authen\AuthenBox.js" />
+    <Compile Include="src\containers\authen\SigninBox.js" />
+    <Compile Include="src\containers\authen\SignupBox.js" />
+    <Compile Include="src\containers\chat\ChatBox.js" />
+    <Compile Include="src\containers\chatlist\ContactBox.js" />
+    <Compile Include="src\containers\chatlist\MemberList.js" />
+    <Compile Include="src\containers\chatlog\ChatLogsBox.js" />
+    <Compile Include="src\containers\chatlog\ListChatLogs.js" />
+    <Compile Include="src\containers\chatlogs\ChatLogsBox.js" />
+    <Compile Include="src\containers\chatlogs\ListChatLogs.js" />
+    <Compile Include="src\containers\group\ConnectGroupListEnhancer.js" />
+    <Compile Include="src\containers\group\GroupList.js" />
+    <Compile Include="src\containers\group\GroupListEnhancer.js" />
+    <Compile Include="src\containers\group\GroupListView.js" />
+    <Compile Include="src\containers\profile\ProfileBox.js" />
+    <Compile Include="src\containers\profile\ProfileDetail.js" />
+    <Compile Include="src\containers\profile\ProfileDetailEnhancer.js" />
+    <Compile Include="src\containers\profile\ProfileListView.js" />
+    <Compile Include="src\containers\roomSettings\EditGroupMember.js" />
+    <Compile Include="src\containers\roomSettings\GroupDetail.js" />
+    <Compile Include="src\containers\roomSettings\GroupDetailEnhancer.js" />
+    <Compile Include="src\containers\roomSettings\GroupMember.js" />
+    <Compile Include="src\containers\roomSettings\GroupMemberEnhancer.js" />
+    <Compile Include="src\containers\stalk\StalkComponent.js" />
+    <Compile Include="src\containers\teams\FindTeamListBox.js" />
+    <Compile Include="src\containers\teams\FindTeamView.js" />
+    <Compile Include="src\containers\teams\TeamCreateBox.js" />
+    <Compile Include="src\containers\teams\TeamCreateView.js" />
+    <Compile Include="src\containers\teams\TeamListBox.js" />
+    <Compile Include="src\containers\teams\TeamListView.js" />
+    <Compile Include="src\containers\toolsbox\ChatRoomDialogBoxEnhancer.js" />
+    <Compile Include="src\containers\toolsbox\SnackbarToolBox.js" />
+    <Content Include="src\images\assets\pdf.png" />
+    <Content Include="src\images\assets\pdf_128.png" />
+    <Content Include="src\images\stickers\sticker0.png" />
+    <Content Include="src\images\stickers\sticker1.png" />
+    <Content Include="src\images\stickers\sticker10.png" />
+    <Content Include="src\images\stickers\sticker11.png" />
+    <Content Include="src\images\stickers\sticker12.png" />
+    <Content Include="src\images\stickers\sticker13.png" />
+    <Content Include="src\images\stickers\sticker14.png" />
+    <Content Include="src\images\stickers\sticker15.png" />
+    <Content Include="src\images\stickers\sticker16.png" />
+    <Content Include="src\images\stickers\sticker17.png" />
+    <Content Include="src\images\stickers\sticker18.png" />
+    <Content Include="src\images\stickers\sticker19.png" />
+    <Content Include="src\images\stickers\sticker2.png" />
+    <Content Include="src\images\stickers\sticker20.png" />
+    <Content Include="src\images\stickers\sticker21.png" />
+    <Content Include="src\images\stickers\sticker22.png" />
+    <Content Include="src\images\stickers\sticker23.png" />
+    <Content Include="src\images\stickers\sticker24.png" />
+    <Content Include="src\images\stickers\sticker25.png" />
+    <Content Include="src\images\stickers\sticker26.png" />
+    <Content Include="src\images\stickers\sticker27.png" />
+    <Content Include="src\images\stickers\sticker28.png" />
+    <Content Include="src\images\stickers\sticker29.png" />
+    <Content Include="src\images\stickers\sticker3.png" />
+    <Content Include="src\images\stickers\sticker30.png" />
+    <Content Include="src\images\stickers\sticker31.png" />
+    <Content Include="src\images\stickers\sticker32.png" />
+    <Content Include="src\images\stickers\sticker33.png" />
+    <Content Include="src\images\stickers\sticker34.png" />
+    <Content Include="src\images\stickers\sticker35.png" />
+    <Content Include="src\images\stickers\sticker36.png" />
+    <Content Include="src\images\stickers\sticker37.png" />
+    <Content Include="src\images\stickers\sticker38.png" />
+    <Content Include="src\images\stickers\sticker39.png" />
+    <Content Include="src\images\stickers\sticker4.png" />
+    <Content Include="src\images\stickers\sticker40.png" />
+    <Content Include="src\images\stickers\sticker41.png" />
+    <Content Include="src\images\stickers\sticker42.png" />
+    <Content Include="src\images\stickers\sticker5.png" />
+    <Content Include="src\images\stickers\sticker6.png" />
+    <Content Include="src\images\stickers\sticker7.png" />
+    <Content Include="src\images\stickers\sticker8.png" />
+    <Content Include="src\images\stickers\sticker9.png" />
+    <Compile Include="src\libs\pomelo\EventEmitter.js" />
+    <Compile Include="src\libs\pomelo\pomeloclient.js" />
+    <Compile Include="src\libs\pomelo\reactWSClient.js" />
+    <Compile Include="src\libs\pomelo\rnWSClient.js" />
+    <Compile Include="src\libs\shared\Constant.js" />
+    <Compile Include="src\libs\shared\FileType.js" />
+    <Compile Include="src\libs\shared\IChatRoom.js" />
+    <Compile Include="src\libs\shared\IProfile.js" />
+    <Compile Include="src\libs\shared\Message.js" />
+    <Compile Include="src\libs\shared\Room.js" />
+    <Compile Include="src\libs\shared\Stalk.js" />
+    <Compile Include="src\libs\shared\UserRole.js" />
+    <Compile Include="src\libs\stalk\chatRoomApiProvider.js" />
+    <Compile Include="src\libs\stalk\friendApiProvider.js" />
+    <Compile Include="src\libs\stalk\serverEventListener.js" />
+    <Compile Include="src\libs\stalk\serverImplemented.js" />
+    <Compile Include="src\libs\stalk\socketComponent.js" />
+    <Compile Include="src\libs\stalk\spartanEvents.js" />
+    <Compile Include="src\libs\chitchat\dataAccessLayer\AppSessionToken.js" />
+    <Compile Include="src\libs\chitchat\dataAccessLayer\IMessageDAL.js" />
+    <Compile Include="src\libs\chitchat\dataAccessLayer\IRoomDAL.js" />
+    <Compile Include="src\libs\chitchat\dataAccessLayer\messageDAL.js" />
+    <Compile Include="src\libs\chitchat\dataAccessLayer\messageDALFactory.js" />
+    <Compile Include="src\libs\chitchat\dataAccessLayer\nodeMessageDAL.js" />
+    <Compile Include="src\libs\chitchat\dataAccessLayer\RoomDAL.js" />
+    <Compile Include="src\libs\chitchat\dataAccessLayer\RoomDALFactory.js" />
+    <Compile Include="src\libs\stalk\utils\httpStatusCode.js" />
+    <Compile Include="src\libs\stalk\utils\tokenDecode.js" />
+    <Compile Include="src\redux\admin\adminReducer.js" />
+    <Compile Include="src\redux\admin\adminRx.js" />
+    <Compile Include="src\redux\app\contactActions.js" />
+    <Compile Include="src\redux\app\persistentDataActions.js" />
+    <Compile Include="src\redux\authen\authReducer.js" />
+    <Compile Include="src\redux\authen\authRx.js" />
+    <Compile Include="src\redux\device\deviceActions.js" />
+    <Compile Include="src\redux\device\deviceReducer.js" />
+    <Compile Include="src\redux\group\editGroupRxActions.js" />
+    <Compile Include="src\redux\group\groupReducer.js" />
+    <Compile Include="src\redux\group\groupRx.js" />
+    <Compile Include="src\redux\group\privateGroupRxActions.js" />
+    <Compile Include="src\redux\message\messageActions.js" />
+    <Compile Include="src\redux\message\messageReducer.js" />
+    <Compile Include="src\redux\team\teamRx.js" />
+    <Compile Include="src\redux\user\userReducer.js" />
+    <Compile Include="src\redux\user\userRx.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="chitchat" />
+    <Folder Include="chitchat\chats" />
+    <Folder Include="chitchat\chats\abstracts" />
+    <Folder Include="chitchat\chats\dataAccessLayer" />
+    <Folder Include="chitchat\chats\models" />
+    <Folder Include="chitchat\chats\redux" />
+    <Folder Include="chitchat\chats\redux\chatlogs" />
+    <Folder Include="chitchat\chats\redux\chatroom" />
+    <Folder Include="chitchat\chats\redux\stalkBridge" />
+    <Folder Include="chitchat\chats\secure" />
+    <Folder Include="chitchat\chats\services" />
+    <Folder Include="chitchat\chats\utils" />
+    <Folder Include="chitchat\consts" />
+    <Folder Include="chitchat\libs" />
+    <Folder Include="chitchat\libs\pomelo" />
+    <Folder Include="chitchat\libs\shared" />
+    <Folder Include="chitchat\libs\stalk" />
+    <Folder Include="chitchat\libs\stalk\utils" />
+    <Folder Include="client" />
+    <Folder Include="client\actions" />
+    <Folder Include="client\actions\chatroom" />
+    <Folder Include="client\chats" />
+    <Folder Include="client\chats\abstracts" />
+    <Folder Include="client\chats\dataAccessLayer" />
+    <Folder Include="client\chats\models" />
+    <Folder Include="client\chats\redux" />
+    <Folder Include="client\chats\redux\chatlogs" />
+    <Folder Include="client\chats\redux\chatroom" />
+    <Folder Include="client\chats\redux\stalkBridge" />
+    <Folder Include="client\chats\secure" />
+    <Folder Include="client\chats\services" />
+    <Folder Include="client\chats\utils" />
+    <Folder Include="client\components" />
+    <Folder Include="client\configs" />
+    <Folder Include="client\consts" />
+    <Folder Include="client\containers" />
+    <Folder Include="client\containers\admins" />
+    <Folder Include="client\containers\authen" />
+    <Folder Include="client\containers\chat" />
+    <Folder Include="client\containers\chatlist" />
+    <Folder Include="client\containers\chatlog" />
+    <Folder Include="client\containers\group" />
+    <Folder Include="client\containers\profile" />
+    <Folder Include="client\containers\roomSettings" />
+    <Folder Include="client\containers\stalk" />
+    <Folder Include="client\containers\teams" />
+    <Folder Include="client\containers\toolsbox" />
+    <Folder Include="client\libs" />
+    <Folder Include="client\libs\pomelo" />
+    <Folder Include="client\libs\shared" />
+    <Folder Include="client\libs\stalk" />
+    <Folder Include="client\libs\stalk\utils" />
+    <Folder Include="client\redux" />
+    <Folder Include="client\redux\admin" />
+    <Folder Include="client\redux\app" />
+    <Folder Include="client\redux\authen" />
+    <Folder Include="client\redux\device" />
+    <Folder Include="client\redux\group" />
+    <Folder Include="client\redux\message" />
+    <Folder Include="client\redux\team" />
+    <Folder Include="client\redux\user" />
+    <Folder Include="client\utils" />
+    <Folder Include="public" />
+    <Folder Include="src" />
+    <Folder Include="src\actions" />
+    <Folder Include="src\actions\chatroom" />
+    <Folder Include="src\chats" />
+    <Folder Include="src\chats\abstracts" />
+    <Folder Include="src\chats\dataAccessLayer" />
+    <Folder Include="src\chats\models" />
+    <Folder Include="src\chats\redux" />
+    <Folder Include="src\chats\redux\chatlogs" />
+    <Folder Include="src\chats\redux\chatroom" />
+    <Folder Include="src\chats\redux\stalkBridge" />
+    <Folder Include="src\chats\secure" />
+    <Folder Include="src\chats\services" />
+    <Folder Include="src\chats\utils" />
+    <Folder Include="src\components" />
+    <Folder Include="src\configs" />
+    <Folder Include="src\consts" />
+    <Folder Include="src\containers" />
+    <Folder Include="src\containers\admins" />
+    <Folder Include="src\containers\authen" />
+    <Folder Include="src\containers\chat" />
+    <Folder Include="src\containers\chatlist" />
+    <Folder Include="src\containers\chatlog" />
+    <Folder Include="src\containers\chatlogs" />
+    <Folder Include="src\containers\group" />
+    <Folder Include="src\containers\profile" />
+    <Folder Include="src\containers\roomSettings" />
+    <Folder Include="src\containers\stalk" />
+    <Folder Include="src\containers\teams" />
+    <Folder Include="src\containers\toolsbox" />
+    <Folder Include="src\images" />
+    <Folder Include="src\images\assets" />
+    <Folder Include="src\images\stickers" />
+    <Folder Include="src\libs" />
+    <Folder Include="src\libs\chitchat" />
+    <Folder Include="src\libs\chitchat\dataAccessLayer" />
+    <Folder Include="src\libs\pomelo" />
+    <Folder Include="src\libs\shared" />
+    <Folder Include="src\libs\stalk" />
+    <Folder Include="src\libs\stalk\utils" />
+    <Folder Include="src\redux" />
+    <Folder Include="src\redux\admin" />
+    <Folder Include="src\redux\app" />
+    <Folder Include="src\redux\authen" />
+    <Folder Include="src\redux\device" />
+    <Folder Include="src\redux\group" />
+    <Folder Include="src\redux\message" />
+    <Folder Include="src\redux\team" />
+    <Folder Include="src\redux\user" />
+    <Folder Include="src\utils" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

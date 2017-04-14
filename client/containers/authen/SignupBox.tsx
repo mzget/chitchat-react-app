@@ -2,14 +2,14 @@ import * as React from "react";
 
 import { SignupForm } from "../../components/SignupForm";
 
-import * as CryptoHelper from "../../chats/utils/CryptoHelper";
+import * as CryptoHelper from "../../chitchat/chats/utils/CryptoHelper";
 import * as ValidateUtils from "../../utils/ValidationUtils";
 import * as AuthRx from "../../redux/authen/authRx";
 
 interface IComponentNameProps {
     onError: (error: string) => void;
     dispatch;
-};
+}
 
 interface IComponentNameState {
     email: string;
@@ -17,7 +17,7 @@ interface IComponentNameState {
     confirmPassword: string;
     firstname: string;
     lastname: string;
-};
+}
 
 class SignupBox extends React.Component<IComponentNameProps, IComponentNameState> {
     componentWillMount() {

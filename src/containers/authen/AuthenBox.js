@@ -1,5 +1,12 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 const React = require("react");
 const reflexbox_1 = require("reflexbox");
 const material_ui_1 = require("material-ui");
@@ -7,8 +14,6 @@ const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const SigninBox_1 = require("./SigninBox");
 const SignupBox_1 = require("./SignupBox");
 const AuthRx = require("../../redux/authen/authRx");
-;
-;
 class AuthenBox extends React.Component {
     componentWillMount() {
         this.state = {
@@ -34,7 +39,7 @@ class AuthenBox extends React.Component {
             React.createElement(reflexbox_1.Flex, { flexColumn: true },
                 (this.state.showSignin) ?
                     React.createElement(SigninBox_1.default, { dispatch: this.props.dispatch, onError: this.props.onError }) :
-                    React.createElement(SignupBox_1.default, Object.assign({}, this.props, { onError: this.props.onError })),
+                    React.createElement(SignupBox_1.default, __assign({}, this.props, { onError: this.props.onError })),
                 (this.state.showSignin) ?
                     (React.createElement(reflexbox_1.Flex, { justify: "center", align: "center", p: 2 },
                         React.createElement("p", null, "New to chitchat?"),
@@ -44,4 +49,4 @@ class AuthenBox extends React.Component {
                         React.createElement(material_ui_1.RaisedButton, { primary: true, label: "Sign in", onClick: this.onSigninPressed, style: { margin: 8 } }, " "))))));
     }
 }
-exports.default = AuthenBox;
+exports.AuthenBox = AuthenBox;

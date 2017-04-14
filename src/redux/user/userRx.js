@@ -1,11 +1,11 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const config_1 = require("../../configs/config");
 const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
-const UserService = require("../../chats/services/UserService");
-const StalkBridgeActions = require("../../chats/redux/stalkBridge/stalkBridgeActions");
+const chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
+const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
+const UserService = require("../../chitchat/chats/services/UserService");
+const StalkBridgeActions = require("../../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
 const configureStore_1 = require("../configureStore");
 const FETCH_USER = "FETCH_USER";
 exports.FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS";
@@ -15,14 +15,7 @@ exports.fetchUser = (username) => ({ type: FETCH_USER, payload: username }); // 
 const fetchUserFulfilled = payload => ({ type: exports.FETCH_USER_SUCCESS, payload });
 const cancelFetchUser = () => ({ type: exports.FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: exports.FETCH_USER_FAILURE, payload });
-exports.fetchUserEpic = action$ => (action$.ofType(FETCH_USER).mergeMap(action => ajax({
-    method: "GET",
-    url: `${config_1.default.api.user}/?username=${action.payload}`,
-    headers: {
-        "Content-Type": "application/json",
-        "x-api-key": config_1.default.api.apiKey
-    }
-})
+exports.fetchUserEpic = action$ => (action$.ofType(FETCH_USER).mergeMap(action => UserService.fetchUser(action.payload)
     .map(response => fetchUserFulfilled(response.xhr.response))
     .takeUntil(action$.ofType(exports.FETCH_USER_CANCELLED))
     .catch(error => Rx.Observable.of(fetchUserRejected(error)))
@@ -47,7 +40,7 @@ exports.updateUserInfoFailure = redux_actions_1.createAction(exports.UPDATE_USER
 exports.updateUserInfoCancelled = redux_actions_1.createAction(exports.UPDATE_USER_INFO_CANCELLED);
 exports.updateUserInfo_Epic = action$ => (action$.ofType(UPDATE_USER_INFO).mergeMap(action => ajax({
     method: "POST",
-    url: `${config_1.default.api.user}/userInfo`,
+    url: `${config().api.user}/userInfo`,
     body: JSON.stringify({ user: action.payload }),
     headers: {
         "Content-Type": "application/json",
@@ -65,7 +58,7 @@ const fetchAgentByIdSuccess = (payload) => ({ type: FETCH_AGENT_BY_ID_SUCCESS, p
 const fetchAgentByIdFailure = (payload) => ({ type: FETCH_AGENT_BY_ID_FAILURE, payload });
 const fetchAgentByIdCancelled = () => ({ type: FETCH_AGENT_BY_ID_CANCELLED });
 exports.fetchAgentIdEpic = action$ => (action$.ofType(FETCH_AGENT_BY_ID)
-    .margeMap(action => ajax.getJSON(`${config_1.default.api.user}/agent/${action.payload}`)
+    .margeMap(action => ajax.getJSON(`${config().api.user}/agent/${action.payload}`)
     .map(fetchAgentByIdSuccess)
     .takeUntil(action$.ofType(FETCH_AGENT_BY_ID_CANCELLED))
     .catch(error => Rx.Observable.of(fetchAgentByIdFailure(error.xhr.response)))));
@@ -78,7 +71,7 @@ const fetchAgentSuccess = (payload) => ({ type: exports.FETCH_AGENT_SUCCESS, pay
 const fetchAgentFailure = (payload) => ({ type: FETCH_AGENT_FAILURE, payload });
 const fetchAgentCancelled = () => ({ type: FETCH_AGENT_CANCELLED });
 exports.fetchAgentEpic = action$ => (action$.ofType(FETCH_AGENT)
-    .mergeMap(action => ajax.getJSON(`${config_1.default.api.user}/agent/${action.payload}`)
+    .mergeMap(action => ajax.getJSON(`${config().api.user}/agent/${action.payload}`)
     .map(fetchAgentSuccess)
     .takeUntil(action$.ofType(FETCH_AGENT_CANCELLED))
     .catch(error => Rx.Observable.of(fetchAgentFailure(error.xhr.response)))));
@@ -87,7 +80,7 @@ const FETCH_CONTACT_SUCCESS = "FETCH_CONTACT_SUCCESS";
 exports.fetchContact = (contactId) => ({ type: FETCH_CONTACT, payload: contactId });
 const fetchContactSuccess = payload => ({ type: FETCH_CONTACT_SUCCESS, payload });
 exports.fetchContactEpic = action$ => action$.ofType(FETCH_CONTACT)
-    .mergeMap(action => ajax.getJSON(`${config_1.default.api.user}/contact/?id=${action.payload}`)
+    .mergeMap(action => ajax.getJSON(`${config().api.user}/contact/?id=${action.payload}`)
     .map(fetchContactSuccess)
     .takeUntil(action$.ofType(exports.FETCH_USER_CANCELLED))
     .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response))));
@@ -121,7 +114,7 @@ exports.uploadUserAvatar_Epic = action$ => (action$.ofType(UPLOAD_USER_AVATAR)
     body.append("file", action.payload);
     return ajax({
         method: "POST",
-        url: `${config_1.default.api.user}/uploadImage`,
+        url: `${config().api.user}/uploadImage`,
         body: body,
         headers: {
             "x-access-token": configureStore_1.default.getState().authReducer.token

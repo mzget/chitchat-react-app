@@ -9,9 +9,9 @@ import { LinearProgressDialog } from "../../components/LinearProgressDialog";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 
-import * as StalkBridgeActions from "../../chats/redux/stalkBridge/stalkBridgeActions";
-import * as chatroomActions from "../../chats/redux/chatroom/chatroomActions";
-import * as chatroomRx from "../../chats/redux/chatroom/chatroomRxEpic";
+import * as StalkBridgeActions from "../../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
+import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
+import * as chatroomRx from "../../chitchat/chats/redux/chatroom/chatroomRxEpic";
 
 abstract class IStalktProps implements IComponentProps {
     footerHeight;

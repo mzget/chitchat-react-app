@@ -1,19 +1,25 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const ProfileBox_1 = require("./profile/ProfileBox");
 const ConnectGroupListEnhancer_1 = require("./group/ConnectGroupListEnhancer");
-const ChatLogsBox_1 = require("./ChatLogsBox");
+const ChatLogsBox_1 = require("./chatlog/ChatLogsBox");
 const ContactBox_1 = require("./chatlist/ContactBox");
 const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
 const StalkComponent_1 = require("./stalk/StalkComponent");
-const StalkBridgeActions = require("../chats/redux/stalkBridge/stalkBridgeActions");
-const chatroomActions = require("../chats/redux/chatroom/chatroomActions");
-const chatlogsActions = require("../chats/redux/chatlogs/chatlogsActions");
-const chatroomRx = require("../chats/redux/chatroom/chatroomRxEpic");
+const StalkBridgeActions = require("../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
+const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
+const chatroomRx = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
 const userRx = require("../redux/user/userRx");
 const authRx = require("../redux/authen/authRx");
 const groupRx = require("../redux/group/groupRx");
@@ -42,14 +48,9 @@ class Main extends React.Component {
         this.state = {
             header: "Home"
         };
-        const { teamReducer, stalkReducer, chatlogReducer } = this.props;
+        const { teamReducer, stalkReducer, chatlogReducer, authReducer } = this.props;
         if (!teamReducer.team) {
             this.props.router.replace("/");
-        }
-        else if (teamReducer.team &&
-            stalkReducer.state == StalkBridgeActions.STALK_INIT_SUCCESS
-            && chatlogReducer.state == chatlogsActions.STALK_INIT_CHATSLOG) {
-            this.props.dispatch(chatlogsActions.getLastAccessRoom(teamReducer.team._id));
         }
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
         this.fetch_orgGroups = this.fetch_orgGroups.bind(this);
@@ -126,14 +127,15 @@ class Main extends React.Component {
                 React.createElement("div", { style: { height: this.headerHeight }, id: "toolbar" },
                     React.createElement(SimpleToolbar_1.SimpleToolbar, { title: this.props.teamReducer.team.name, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
                 React.createElement("div", { style: { height: this.bodyHeight, overflowY: "auto" }, id: "app_body" },
-                    React.createElement(ProfileBox_1.ConnectProfileEnhancer, { router: this.props.router }),
+                    React.createElement(ProfileBox_1.ProfileEnhancer, { router: this.props.router }),
                     React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => this.fetch_orgGroups(), groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
                     React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => { this.fetch_privateGroups(); }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
-                    React.createElement(ContactBox_1.default, Object.assign({}, this.props)),
-                    React.createElement(ChatLogsBox_1.default, Object.assign({}, this.props)),
+                    React.createElement(ContactBox_1.default, __assign({}, this.props)),
+                    React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, { router: this.props.router }),
                     React.createElement(SnackbarToolBox_1.SnackbarToolBox, null),
                     React.createElement(StalkComponent_1.StalkCompEnhancer, null)))));
     }
 }
-const mapStateToProps = (state) => (Object.assign({}, state));
+const mapStateToProps = (state) => (__assign({}, state));
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = react_redux_1.connect(mapStateToProps)(Main);

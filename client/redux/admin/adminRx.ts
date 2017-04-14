@@ -1,10 +1,10 @@
 ﻿import { createAction } from "redux-actions";
 import * as Rx from "rxjs";
-const {ajax  } = Rx.Observable;
+const { ajax } = Rx.Observable;
 
 import Store from "../configureStore";
 import config from "../../configs/config";
-import * as UserService from "../../chats/services/UserService";
+import * as UserService from "../../chitchat/chats/services/UserService";
 
 
 const CREATE_NEW_ORG_CHART = "CREATE_NEW_ORG_CHART";

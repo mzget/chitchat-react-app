@@ -3,30 +3,32 @@ import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
+import * as authService from "../../chitchat/chats/services/authService";
+
 import * as AppActions from "../app/persistentDataActions";
-import * as stalkBridgeActions from "../../chats/redux/stalkBridge/stalkBridgeActions";
+import * as stalkBridgeActions from "../../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 
 const SIGN_UP = "SIGN_UP";
 export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
-const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
+export const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
 const SIGN_UP_CANCELLED = "SIGN_UP_CANCELLED";
 
 export const signup = (user) => ({ type: SIGN_UP, payload: user }); // username => ({ type: FETCH_USER, payload: username });
 const signupSuccess = payload => ({ type: SIGN_UP_SUCCESS, payload });
-const signupFailure = payload => ({ type: SIGN_UP_FAILURE, payload, error: true });
+const signupFailure = payload => ({ type: SIGN_UP_FAILURE, payload });
 const signupCancelled = () => ({ type: SIGN_UP_CANCELLED });
-export const signupUserEpic = action$ => (
+export const signupUserEpic = action$ =>
     action$.ofType(SIGN_UP)
         .mergeMap(action => ajax({
             method: "POST",
             url: `${config.api.user}/signup`,
             body: JSON.stringify({ user: action.payload }),
             headers: { "Content-Type": "application/json", "x-api-key": config.api.apiKey }
-        }).map(response => signupSuccess(response.xhr.response))
+        })
+            .map(response => signupSuccess(response.xhr.response))
             .takeUntil(action$.ofType(SIGN_UP_CANCELLED))
             .catch(error => Rx.Observable.of(signupFailure(error.xhr.response)))
-        )
-);
+        );
 
 
 export const AUTH_USER = "AUTH_USER";
@@ -37,17 +39,21 @@ export const authUser = (user: { email: string, password: string }) => ({ type: 
 const authUserSuccess = payload => ({ type: AUTH_USER_SUCCESS, payload });
 const authUserFailure = payload => ({ type: AUTH_USER_FAILURE, payload });
 const authUserCancelled = () => ({ type: AUTH_USER_CANCELLED });
-export const authUserEpic = action$ =>
-    action$.ofType(AUTH_USER).mergeMap(action => ajax({
-        method: "POST",
-        url: `${config.api.auth}`,
-        body: JSON.stringify(action.payload),
-        headers: { "Content-Type": "application/json", "x-api-key": config.api.apiKey }
-    })
-        .map(response => authUserSuccess(response.xhr.response))
+export const authUser_Epic = action$ =>
+    action$.ofType(AUTH_USER)
+        .mergeMap(action => Rx.Observable.fromPromise(authService.auth(action.payload)))
+        .mergeMap(response => Rx.Observable.from(response.json()))
+        .map((result: any) => {
+            if (result.success) {
+                return authUserSuccess(result.result);
+            }
+            else {
+                return authUserFailure(result.message);
+            }
+        })
         .takeUntil(action$.ofType(AUTH_USER_CANCELLED))
-        .catch(error => Rx.Observable.of(authUserFailure((error.xhr.response) ? error.xhr.response.message : error.message)))
-    );
+        .catch(error =>
+            Rx.Observable.of(authUserFailure((error))));
 
 
 const TOKEN_AUTH_USER = "TOKEN_AUTH_USER";
@@ -60,17 +66,18 @@ const tokenAuthUserFailure = payload => ({ type: TOKEN_AUTH_USER_FAILURE, payloa
 const tokenAuthUserCancelled = () => ({ type: TOKEN_AUTH_USER_CANCELLED });
 export const tokenAuthUserEpic = action$ => (
     action$.ofType(TOKEN_AUTH_USER)
-        .mergeMap(action => ajax({
-            method: "POST",
-            url: `${config.api.auth}/verify`,
-            body: JSON.stringify({ token: action.payload }),
-            headers: { "Content-Type": "application/json" }
+        .mergeMap(action => Rx.Observable.fromPromise(authService.tokenAuth(action.payload)))
+        .mergeMap(response => Rx.Observable.fromPromise(response.json()))
+        .map((result: any) => {
+            if (result.success) {
+                return tokenAuthUserSuccess(result.result);
+            }
+            else {
+                return tokenAuthUserFailure(result.message);
+            }
         })
-            .map(response => tokenAuthUserSuccess(response.xhr.response))
-            .takeUntil(action$.ofType(TOKEN_AUTH_USER_CANCELLED))
-            .catch(error => Rx.Observable.of(tokenAuthUserFailure((error.xhr.response) ? error.xhr.response.message : error.message)))
-        )
-);
+        .takeUntil(action$.ofType(TOKEN_AUTH_USER_CANCELLED))
+        .catch(error => Rx.Observable.of(tokenAuthUserFailure(error))));
 
 const LOG_OUT = "LOG_OUT";
 export const LOG_OUT_SUCCESS = "LOG_OUT_SUCCESS";
