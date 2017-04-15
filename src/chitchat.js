@@ -1,13 +1,13 @@
 "use strict";
 const api_stalk = "git.animation-genius.com";
-const stalkPort = "3010";
-const chitchat_api = "http://localhost:9000"; //"http://localhost:9000"; "http://git.animation-genius.com:9000"
+const stalkPort = 3010;
+const chitchat_api = "http://git.animation-genius.com:9000"; //"http://localhost:9000"; "http://git.animation-genius.com:9000"
 const chitchatFactory_1 = require("./chitchat/chats/chitchatFactory");
 exports.chitchatFactory = chitchatFactory_1.ChitChatFactory.createInstance();
 const config = {
     Stalk: {
         chat: `${api_stalk}`,
-        port: `${stalkPort}`,
+        port: stalkPort,
         api: {
             user: `${chitchat_api}/api/stalk/user`
         }

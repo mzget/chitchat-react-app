@@ -62,7 +62,8 @@ class Team extends React.Component {
             this.alertBoxMessage = teamReducer.error;
             this.setState(previous => (__assign({}, previous, { openDialog: true })));
         }
-        if (!this.props.userReducer.user) {
+        if (!userReducer.user ||
+            authReducer.state == authRx.LOG_OUT_SUCCESS) {
             this.props.router.replace("/");
         }
     }

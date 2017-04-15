@@ -27,7 +27,7 @@ import { IComponentProps } from "../utils/IComponentProps";
 
 interface IComponentNameState {
     header: string;
-};
+}
 
 class Main extends React.Component<IComponentProps, IComponentNameState> {
 

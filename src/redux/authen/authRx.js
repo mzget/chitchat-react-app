@@ -1,8 +1,8 @@
 "use strict";
-const config_1 = require("../../configs/config");
 const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
-const { ajax } = Rx.Observable;
+const { Observable } = Rx;
+const { ajax, fromPromise } = Observable;
 const authService = require("../../chitchat/chats/services/authService");
 const AppActions = require("../app/persistentDataActions");
 const stalkBridgeActions = require("../../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
@@ -15,15 +15,16 @@ const signupSuccess = payload => ({ type: exports.SIGN_UP_SUCCESS, payload });
 const signupFailure = payload => ({ type: exports.SIGN_UP_FAILURE, payload });
 const signupCancelled = () => ({ type: SIGN_UP_CANCELLED });
 exports.signupUserEpic = action$ => action$.ofType(SIGN_UP)
-    .mergeMap(action => ajax({
-    method: "POST",
-    url: `${config_1.default.api.user}/signup`,
-    body: JSON.stringify({ user: action.payload }),
-    headers: { "Content-Type": "application/json", "x-api-key": config_1.default.api.apiKey }
-})
-    .map(response => signupSuccess(response.xhr.response))
+    .mergeMap(action => Observable.fromPromise(authService.signup(action.payload))
+    .mergeMap(response => Observable.fromPromise(response.json())
+    .map(result => {
+    if (result.success) {
+        return signupSuccess(result.result);
+    }
+    throw new Error(result.message);
+}).catch(err => Observable.of(signupFailure(err.message)))))
     .takeUntil(action$.ofType(SIGN_UP_CANCELLED))
-    .catch(error => Rx.Observable.of(signupFailure(error.xhr.response))));
+    .catch(error => Rx.Observable.of(signupFailure(error)));
 exports.AUTH_USER = "AUTH_USER";
 exports.AUTH_USER_SUCCESS = "AUTH_USER_SUCCESS";
 exports.AUTH_USER_FAILURE = "AUTH_USER_FAILURE";

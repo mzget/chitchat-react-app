@@ -24,7 +24,6 @@ const userRx = require("../redux/user/userRx");
 const authRx = require("../redux/authen/authRx");
 const groupRx = require("../redux/group/groupRx");
 const privateGroupRxActions = require("../redux/group/privateGroupRxActions");
-;
 class Main extends React.Component {
     constructor() {
         super(...arguments);

@@ -58,6 +58,11 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
         this.state = {
             alert: false
         };
+        this.headerHeight = 56;
+        this.footerHeight = 24;
+        this.clientHeight = document.documentElement.clientHeight;
+        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight + this.footerHeight));
+
         this.closeAlert = this.closeAlert.bind(this);
         this.onAuthBoxError = this.onAuthBoxError.bind(this);
 
@@ -75,7 +80,6 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
         let app_footer = document.getElementById("app_footer");
 
         this.subHeaderHeight = (warning_bar) ? warning_bar.clientHeight : 0;
-        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight + this.footerHeight));
 
         let next = immutable.fromJS(authReducer);
         let prev = immutable.fromJS(this.props.authReducer);

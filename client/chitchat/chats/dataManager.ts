@@ -46,8 +46,6 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
     public messageDAL: IMessageDAL;
 
     constructor() {
-        console.log(global.userAgent);
-
         this.messageDAL = MessageDALFactory.getObject();
     }
 

@@ -1,6 +1,6 @@
 export interface IStalkApi {
     chat: string;
-    port: number | string;
+    port: number;
     api: {
         user: string;
     };

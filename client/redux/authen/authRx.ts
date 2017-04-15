@@ -1,7 +1,9 @@
 ﻿import config from "../../configs/config";
 import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
-const { ajax } = Rx.Observable;
+const { Observable } = Rx;
+const { ajax, fromPromise } = Observable;
+
 import Store from "../configureStore";
 import * as authService from "../../chitchat/chats/services/authService";
 
@@ -19,22 +21,24 @@ const signupFailure = payload => ({ type: SIGN_UP_FAILURE, payload });
 const signupCancelled = () => ({ type: SIGN_UP_CANCELLED });
 export const signupUserEpic = action$ =>
     action$.ofType(SIGN_UP)
-        .mergeMap(action => ajax({
-            method: "POST",
-            url: `${config.api.user}/signup`,
-            body: JSON.stringify({ user: action.payload }),
-            headers: { "Content-Type": "application/json", "x-api-key": config.api.apiKey }
-        })
-            .map(response => signupSuccess(response.xhr.response))
-            .takeUntil(action$.ofType(SIGN_UP_CANCELLED))
-            .catch(error => Rx.Observable.of(signupFailure(error.xhr.response)))
-        );
+        .mergeMap(action => Observable.fromPromise(authService.signup(action.payload))
+            .mergeMap(response => Observable.fromPromise(response.json())
+                .map(result => {
+                    if (result.success) {
+                        return signupSuccess(result.result);
+                    }
+                    throw new Error(result.message);
+                }).catch(err => Observable.of(signupFailure(err.message)))
+            ))
+        .takeUntil(action$.ofType(SIGN_UP_CANCELLED))
+        .catch(error => Rx.Observable.of(signupFailure(error)));
 
 
 export const AUTH_USER = "AUTH_USER";
 export const AUTH_USER_SUCCESS = "AUTH_USER_SUCCESS";
 export const AUTH_USER_FAILURE = "AUTH_USER_FAILURE";
 const AUTH_USER_CANCELLED = "AUTH_USER_CANCELLED";
+
 export const authUser = (user: { email: string, password: string }) => ({ type: AUTH_USER, payload: user }); // username => ({ type: FETCH_USER, payload: username });
 const authUserSuccess = payload => ({ type: AUTH_USER_SUCCESS, payload });
 const authUserFailure = payload => ({ type: AUTH_USER_FAILURE, payload });

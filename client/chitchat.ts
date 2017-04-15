@@ -1,6 +1,6 @@
 const api_stalk = "git.animation-genius.com";
-const stalkPort = "3010";
-const chitchat_api = "http://localhost:9000"; //"http://localhost:9000"; "http://git.animation-genius.com:9000"
+const stalkPort = 3010;
+const chitchat_api = "http://git.animation-genius.com:9000"; //"http://localhost:9000"; "http://git.animation-genius.com:9000"
 
 import { ChitChatFactory } from "./chitchat/chats/chitchatFactory";
 import { IConfig } from "./chitchat/chats/iConfig";
@@ -8,7 +8,7 @@ export const chitchatFactory = ChitChatFactory.createInstance();
 const config = {
     Stalk: {
         chat: `${api_stalk}`,
-        port: `${stalkPort}`,
+        port: stalkPort,
         api: {
             user: `${chitchat_api}/api/stalk/user`
         }

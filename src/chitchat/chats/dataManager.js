@@ -11,7 +11,6 @@ class DataManager {
         this.contactsMember = {};
         this.isOrgMembersReady = false;
         this.getContactInfoFailEvents = new Array();
-        console.log(global.userAgent);
         this.messageDAL = messageDALFactory_1.MessageDALFactory.getObject();
     }
     addContactInfoFailEvents(func) {
