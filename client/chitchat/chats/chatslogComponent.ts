@@ -102,22 +102,21 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         let roomAccess = dataEvent.roomAccess as Array<RoomAccessData>;
         let results = new Array<Room>();
 
-        const addRoomData = () => {
-            async.map(roomAccess, function iterator(item, resultCallback) {
-                self.getRoomInfo(item.roomId, (err, room) => {
-                    if (!!room) {
-                        results.push(room);
-                        resultCallback(null, room);
-                    }
-                    else {
-                        resultCallback(null, null);
-                    }
+        async.each(roomAccess, (item, resultCallback) => {
+            self.getRoomInfo(item.roomId)
+                .then(room => {
+                    results.push(room);
+                    resultCallback();
+                }).catch(err => {
+                    if (err)
+                        console.warn("getRoomInfo", err);
+
+                    resultCallback();
                 });
-            }, (err, results) => {
-                console.log("onAccessRoom.finished!");
-                done();
-            });
-        };
+        }, (err) => {
+            console.log("onAccessRoom.finished!", err);
+            done();
+        });
 
         const done = () => {
             self._isReady = true;
@@ -126,8 +125,6 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
                 self.onReady(results);
             }
         };
-
-        addRoomData();
     }
 
     public updatedLastAccessTimeEvent: (data: RoomAccessData) => void;
@@ -154,9 +151,11 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
             if (!!task.roomId && !!task.accessTime) {
                 self.getUnreadMessage(user_id, task).then(value => {
                     unreadLogs.push(value);
-
                     callback();
                 }).catch(err => {
+                    if (err)
+                        console.warn("getUnreadMessage", err);
+
                     callback();
                 });
             } else {
@@ -215,24 +214,22 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         return roomInfo;
     }
 
-    private getRoomInfo(room_id: string, callback: (err, room: Room) => void) {
+    private async getRoomInfo(room_id: string) {
         let self = this;
 
-        ServiceProvider.getRoomInfo(room_id)
-            .then(response => response.json())
-            .then(function (json) {
-                console.log("getRoomInfo value:", json);
-                if (json.success) {
-                    let roomInfos = json.result as Array<Room>;
-                    let room = self.decorateRoomInfoData(roomInfos[0]);
-                    callback(null, room);
-                }
-                else {
-                    callback(json.message, null);
-                }
-            }).catch(err => {
-                callback(err, null);
-            });
+        let response = await ServiceProvider.getRoomInfo(room_id);
+        let json = await response.json();
+
+        console.log("getRoomInfo value:", json);
+        if (json.success) {
+            let roomInfos = json.result as Array<Room>;
+            let room = self.decorateRoomInfoData(roomInfos[0]);
+
+            return room;
+        }
+        else {
+            throw new Error(json.message);
+        }
     }
 
     public getRoomsInfo(user_id: string, chatrooms: Array<Room>) {

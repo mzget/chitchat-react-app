@@ -82,29 +82,26 @@ class ChatsLogComponent {
         this.chatslog.clear();
         let roomAccess = dataEvent.roomAccess;
         let results = new Array();
-        const addRoomData = () => {
-            async.map(roomAccess, function iterator(item, resultCallback) {
-                self.getRoomInfo(item.roomId, (err, room) => {
-                    if (!!room) {
-                        results.push(room);
-                        resultCallback(null, room);
-                    }
-                    else {
-                        resultCallback(null, null);
-                    }
-                });
-            }, (err, results) => {
-                console.log("onAccessRoom.finished!");
-                done();
+        async.each(roomAccess, (item, resultCallback) => {
+            self.getRoomInfo(item.roomId)
+                .then(room => {
+                results.push(room);
+                resultCallback();
+            }).catch(err => {
+                if (err)
+                    console.warn("getRoomInfo", err);
+                resultCallback();
             });
-        };
+        }, (err) => {
+            console.log("onAccessRoom.finished!", err);
+            done();
+        });
         const done = () => {
             self._isReady = true;
             if (!!self.onReady) {
                 self.onReady(results);
             }
         };
-        addRoomData();
     }
     onUpdatedLastAccessTime(dataEvent) {
         if (!!this.updatedLastAccessTimeEvent) {
@@ -127,6 +124,8 @@ class ChatsLogComponent {
                     unreadLogs.push(value);
                     callback();
                 }).catch(err => {
+                    if (err)
+                        console.warn("getUnreadMessage", err);
                     callback();
                 });
             }
@@ -179,22 +178,20 @@ class ChatsLogComponent {
         }
         return roomInfo;
     }
-    getRoomInfo(room_id, callback) {
-        let self = this;
-        ServiceProvider.getRoomInfo(room_id)
-            .then(response => response.json())
-            .then(function (json) {
+    getRoomInfo(room_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let self = this;
+            let response = yield ServiceProvider.getRoomInfo(room_id);
+            let json = yield response.json();
             console.log("getRoomInfo value:", json);
             if (json.success) {
                 let roomInfos = json.result;
                 let room = self.decorateRoomInfoData(roomInfos[0]);
-                callback(null, room);
+                return room;
             }
             else {
-                callback(json.message, null);
+                throw new Error(json.message);
             }
-        }).catch(err => {
-            callback(err, null);
         });
     }
     getRoomsInfo(user_id, chatrooms) {

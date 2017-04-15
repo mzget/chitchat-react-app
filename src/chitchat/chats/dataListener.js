@@ -54,7 +54,6 @@ class DataListener {
         }
     }
     onUpdatedLastAccessTime(dataEvent) {
-        console.info("DataListener.onUpdatedLastAccessTime: ", dataEvent);
         this.dataManager.updateRoomAccessForUser(dataEvent);
         this.onUpdateRoomAccessEventListeners.map(item => item(dataEvent));
     }

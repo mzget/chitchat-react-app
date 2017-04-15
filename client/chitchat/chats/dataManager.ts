@@ -53,11 +53,10 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
     public getMyProfile(): StalkAccount {
         return this.myProfile;
     }
-    public setProfile(data: StalkAccount): Promise<StalkAccount> {
-        return new Promise((resolve, reject) => {
-            this.myProfile = data;
-            resolve(this.myProfile);
-        });
+    public async setProfile(data: StalkAccount) {
+        this.myProfile = data;
+
+        return await this.myProfile;
     }
     public setRoomAccessForUser(data: StalkAccount) {
         if (!!this.myProfile && !!data.roomAccess) {

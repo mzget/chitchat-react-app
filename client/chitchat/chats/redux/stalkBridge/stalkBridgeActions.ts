@@ -32,13 +32,22 @@ export const STALK_INIT_SUCCESS = "STALK_INIT_SUCCESS";
 export const STALK_INIT_FAILURE = "STALK_INIT_FAILURE";
 
 export function stalkLogin(user: any) {
-    console.log("stalkLogin init status");
     if (getStore().getState().stalkReducer.isInit) return;
 
     getStore().dispatch({ type: STALK_INIT });
 
     const backendFactory = BackendFactory.getInstance();
+
+    let account = {} as StalkAccount;
+    account._id = user._id;
+    account.username = user.username;
+    backendFactory.dataManager.setProfile(account).then(profile => {
+        ChatLogsActions.initChatsLog();
+    });
+    backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
+
     backendFactory.stalkInit().then(value => {
+        console.log("StalkInit Value.", value);
         backendFactory.checkIn(user._id, null, user).then(value => {
             let result: { success: boolean, token: any } = JSON.parse(JSON.stringify(value.data));
             if (result.success) {
@@ -48,16 +57,6 @@ export function stalkLogin(user: any) {
                 stalkManageConnection();
 
                 StalkNotificationAction.regisNotifyNewMessageEvent();
-
-                let account = {} as StalkAccount;
-                account._id = user._id;
-                account.username = user.username;
-
-                backendFactory.dataManager.setProfile(account).then(profile => {
-                    console.log("set chat profile success", profile);
-                    ChatLogsActions.initChatsLog();
-                });
-                backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
                 StalkPushActions.stalkPushInit();
 
                 getStore().dispatch({ type: STALK_INIT_SUCCESS, payload: { token: result.token, user: account } });
@@ -71,8 +70,7 @@ export function stalkLogin(user: any) {
             getStore().dispatch({ type: STALK_INIT_FAILURE });
         });
     }).catch(err => {
-        console.warn("StalkInit Fail.", err);
-
+        console.log("StalkInit Fail.", err);
         getStore().dispatch({ type: STALK_INIT_FAILURE });
     });
 }

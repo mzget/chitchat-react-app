@@ -32,12 +32,19 @@ exports.STALK_INIT = "STALK_INIT";
 exports.STALK_INIT_SUCCESS = "STALK_INIT_SUCCESS";
 exports.STALK_INIT_FAILURE = "STALK_INIT_FAILURE";
 function stalkLogin(user) {
-    console.log("stalkLogin init status");
     if (getStore().getState().stalkReducer.isInit)
         return;
     getStore().dispatch({ type: exports.STALK_INIT });
     const backendFactory = BackendFactory_1.BackendFactory.getInstance();
+    let account = {};
+    account._id = user._id;
+    account.username = user.username;
+    backendFactory.dataManager.setProfile(account).then(profile => {
+        ChatLogsActions.initChatsLog();
+    });
+    backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
     backendFactory.stalkInit().then(value => {
+        console.log("StalkInit Value.", value);
         backendFactory.checkIn(user._id, null, user).then(value => {
             let result = JSON.parse(JSON.stringify(value.data));
             if (result.success) {
@@ -46,14 +53,6 @@ function stalkLogin(user) {
                 backendFactory.startChatServerListener();
                 stalkManageConnection();
                 StalkNotificationAction.regisNotifyNewMessageEvent();
-                let account = {};
-                account._id = user._id;
-                account.username = user.username;
-                backendFactory.dataManager.setProfile(account).then(profile => {
-                    console.log("set chat profile success", profile);
-                    ChatLogsActions.initChatsLog();
-                });
-                backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
                 StalkPushActions.stalkPushInit();
                 getStore().dispatch({ type: exports.STALK_INIT_SUCCESS, payload: { token: result.token, user: account } });
             }
@@ -66,7 +65,7 @@ function stalkLogin(user) {
             getStore().dispatch({ type: exports.STALK_INIT_FAILURE });
         });
     }).catch(err => {
-        console.warn("StalkInit Fail.", err);
+        console.log("StalkInit Fail.", err);
         getStore().dispatch({ type: exports.STALK_INIT_FAILURE });
     });
 }
