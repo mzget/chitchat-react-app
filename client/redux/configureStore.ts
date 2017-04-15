@@ -29,7 +29,6 @@ let createStoreWithMiddleware = null;
 
 if (process.env.NODE_ENV === `development`) {
     const { logger } = require(`redux-logger`);
-
     middlewares.push(logger);
 
     const reduxDevtools = require("redux-devtools-extension");
@@ -37,6 +36,7 @@ if (process.env.NODE_ENV === `development`) {
     createStoreWithMiddleware = composeWithDevTools(applyMiddleware(...middlewares))(createStore);
 }
 else {
+    console.log = function () { };
     createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 }
 

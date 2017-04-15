@@ -60,8 +60,11 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
         });
     }
     public setRoomAccessForUser(data: StalkAccount) {
-        if (!!data.roomAccess) {
+        if (!!this.myProfile && !!data.roomAccess) {
             this.myProfile.roomAccess = data.roomAccess;
+        }
+        else {
+            this.myProfile = data;
         }
     }
     public updateRoomAccessForUser(data: RoomAccessData) {

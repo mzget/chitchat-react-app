@@ -30,9 +30,10 @@ class Main extends React.Component {
         this.menus = ["menu", "log out"];
         this.clientWidth = document.documentElement.clientWidth;
         this.clientHeight = document.documentElement.clientHeight;
-        this.headerHeight = null;
+        this.headerHeight = 0;
         this.subHeaderHeight = null;
         this.bodyHeight = null;
+        this.footerHeight = 0;
         this.fetch_privateChatRoom = (roommateId, owerId) => {
             this.props.dispatch(chatroomRx.fetchPrivateChatRoom(owerId, roommateId));
         };
@@ -51,16 +52,16 @@ class Main extends React.Component {
         if (!teamReducer.team) {
             this.props.router.replace("/");
         }
+        this.headerHeight = 56;
+        this.footerHeight = 32;
+        this.clientHeight = document.documentElement.clientHeight;
+        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.footerHeight));
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
         this.fetch_orgGroups = this.fetch_orgGroups.bind(this);
         this.fetch_privateGroups = this.fetch_privateGroups.bind(this);
     }
     componentWillReceiveProps(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer } = nextProps;
-        let warning_bar = document.getElementById("warning_bar");
-        this.headerHeight = document.getElementById("toolbar").clientHeight;
-        this.subHeaderHeight = (warning_bar) ? warning_bar.clientHeight : 0;
-        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight));
         switch (userReducer.state) {
             case userRx.FETCH_AGENT_SUCCESS:
                 this.joinChatServer(nextProps);
@@ -123,15 +124,16 @@ class Main extends React.Component {
     render() {
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement("div", { style: { overflowY: "hidden" } },
-                React.createElement("div", { style: { height: this.headerHeight }, id: "toolbar" },
+                React.createElement("div", { id: "toolbar", style: { height: this.headerHeight } },
                     React.createElement(SimpleToolbar_1.SimpleToolbar, { title: this.props.teamReducer.team.name, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
-                React.createElement("div", { style: { height: this.bodyHeight, overflowY: "auto" }, id: "app_body" },
+                React.createElement("div", { id: "app_body", style: { height: this.bodyHeight, overflowY: "auto" } },
                     React.createElement(ProfileBox_1.ProfileEnhancer, { router: this.props.router }),
                     React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => this.fetch_orgGroups(), groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
                     React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => { this.fetch_privateGroups(); }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
                     React.createElement(ContactBox_1.default, __assign({}, this.props)),
                     React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, { router: this.props.router }),
-                    React.createElement(SnackbarToolBox_1.SnackbarToolBox, null),
+                    React.createElement(SnackbarToolBox_1.SnackbarToolBox, null)),
+                React.createElement("div", { id: "app_footer", style: { height: this.footerHeight } },
                     React.createElement(StalkComponent_1.StalkCompEnhancer, null)))));
     }
 }

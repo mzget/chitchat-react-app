@@ -31,8 +31,11 @@ class DataManager {
         });
     }
     setRoomAccessForUser(data) {
-        if (!!data.roomAccess) {
+        if (!!this.myProfile && !!data.roomAccess) {
             this.myProfile.roomAccess = data.roomAccess;
+        }
+        else {
+            this.myProfile = data;
         }
     }
     updateRoomAccessForUser(data) {

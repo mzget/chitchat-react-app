@@ -99,7 +99,7 @@ exports.updateLastAccessRoom_Epic = action$ => action$.ofType(UPDATE_LAST_ACCESS
     }
 })
     .takeUntil(action$.ofType(UPDATE_LAST_ACCESS_ROOM_CANCELLED))
-    .catch(error => Rx.Observable.of(updateLastAccessRoomFailure(error.xhr.response)));
+    .catch(error => Rx.Observable.of(updateLastAccessRoomFailure(error.message)));
 exports.GET_LAST_ACCESS_ROOM = "GET_LAST_ACCESS_ROOM";
 exports.GET_LAST_ACCESS_ROOM_SUCCESS = "GET_LAST_ACCESS_ROOM_SUCCESS";
 exports.GET_LAST_ACCESS_ROOM_FAILURE = "GET_LAST_ACCESS_ROOM_FAILURE";

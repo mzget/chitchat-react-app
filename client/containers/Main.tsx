@@ -34,9 +34,10 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
     menus = ["menu", "log out"];
     clientWidth = document.documentElement.clientWidth;
     clientHeight = document.documentElement.clientHeight;
-    headerHeight = null;
+    headerHeight = 0;
     subHeaderHeight = null;
     bodyHeight = null;
+    footerHeight = 0;
 
     componentWillMount() {
         this.state = {
@@ -48,6 +49,10 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
         if (!teamReducer.team) {
             this.props.router.replace("/");
         }
+        this.headerHeight = 56;
+        this.footerHeight = 32;
+        this.clientHeight = document.documentElement.clientHeight;
+        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.footerHeight));
 
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
         this.fetch_orgGroups = this.fetch_orgGroups.bind(this);
@@ -59,12 +64,6 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
             location: { query: { userId, username, roomId, contactId } },
             userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer
         } = nextProps;
-
-        let warning_bar = document.getElementById("warning_bar");
-
-        this.headerHeight = document.getElementById("toolbar").clientHeight;
-        this.subHeaderHeight = (warning_bar) ? warning_bar.clientHeight : 0;
-        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight));
 
         switch (userReducer.state) {
             case userRx.FETCH_AGENT_SUCCESS:
@@ -146,13 +145,13 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
         return (
             <MuiThemeProvider>
                 <div style={{ overflowY: "hidden" }}>
-                    <div style={{ height: this.headerHeight }} id={"toolbar"}>
+                    <div id={"toolbar"} style={{ height: this.headerHeight }}>
                         <SimpleToolbar
                             title={this.props.teamReducer.team.name}
                             menus={this.menus}
                             onSelectedMenuItem={this.onSelectMenuItem} />
                     </div>
-                    <div style={{ height: this.bodyHeight, overflowY: "auto" }} id={"app_body"}>
+                    <div id={"app_body"} style={{ height: this.bodyHeight, overflowY: "auto" }}>
                         <ProfileEnhancer router={this.props.router} />
                         <ConnectGroupListEnhancer fetchGroup={() => this.fetch_orgGroups()}
                             groups={this.props.groupReducer.orgGroups}
@@ -164,6 +163,8 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                         <ContactBox {...this.props} />
                         <ChatLogsBoxEnhancer router={this.props.router} />
                         <SnackbarToolBox />
+                    </div>
+                    <div id={"app_footer"} style={{ height: this.footerHeight }}>
                         <StalkCompEnhancer />
                     </div>
                 </div>

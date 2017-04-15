@@ -202,7 +202,8 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
     private decorateRoomInfoData(roomInfo: Room) {
         if (roomInfo.type == RoomType.privateChat) {
             if (Array.isArray(roomInfo.members)) {
-                let others = roomInfo.members.filter((value) => !this.dataManager.isMySelf(value._id)) as Array<MemberImp>;
+                let others = roomInfo.members.filter((value) =>
+                    !this.dataManager.isMySelf(value._id)) as Array<MemberImp>;
                 if (others.length > 0) {
                     let contact = others[0];
 

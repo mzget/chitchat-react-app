@@ -30,6 +30,7 @@ if (process.env.NODE_ENV === `development`) {
     createStoreWithMiddleware = composeWithDevTools(redux_1.applyMiddleware(...middlewares))(redux_1.createStore);
 }
 else {
+    console.log = function () { };
     createStoreWithMiddleware = redux_1.applyMiddleware(...middlewares)(redux_1.createStore);
 }
 function configureStore() {
