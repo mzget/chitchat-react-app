@@ -29,7 +29,7 @@ export const stalkInitChatlog_Epic = action$ =>
 
 export const getTeamsInfo_Epic = (action$) => (
     action$.filter(action => action.type == FETCH_USER_SUCCESS)
-        .mapTo(x => {
+        .map(x => {
             let { userReducer } = Store.getState();
             if (!!userReducer.user.teams && userReducer.user.teams.length > 0) {
                 return getTeamsInfo(userReducer.user.teams);

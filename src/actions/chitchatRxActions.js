@@ -22,7 +22,7 @@ exports.stalkInitChatlog_Epic = action$ => action$.filter(action => (action.type
     }
 });
 exports.getTeamsInfo_Epic = (action$) => (action$.filter(action => action.type == userRx_1.FETCH_USER_SUCCESS)
-    .mapTo(x => {
+    .map(x => {
     let { userReducer } = configureStore_1.default.getState();
     if (!!userReducer.user.teams && userReducer.user.teams.length > 0) {
         return teamRx_1.getTeamsInfo(userReducer.user.teams);
