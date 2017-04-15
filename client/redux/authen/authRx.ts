@@ -57,7 +57,7 @@ export const authUser_Epic = action$ =>
         })
         .takeUntil(action$.ofType(AUTH_USER_CANCELLED))
         .catch(error =>
-            Rx.Observable.of(authUserFailure((error))));
+            Rx.Observable.of(authUserFailure((error.message))));
 
 
 const TOKEN_AUTH_USER = "TOKEN_AUTH_USER";
@@ -82,7 +82,7 @@ export const tokenAuthUserEpic = action$ => (
             }
         })
         .takeUntil(action$.ofType(TOKEN_AUTH_USER_CANCELLED))
-        .catch(error => Rx.Observable.of(tokenAuthUserFailure(error))));
+        .catch(error => Rx.Observable.of(tokenAuthUserFailure(error.message))));
 
 const LOG_OUT = "LOG_OUT";
 export const LOG_OUT_SUCCESS = "LOG_OUT_SUCCESS";

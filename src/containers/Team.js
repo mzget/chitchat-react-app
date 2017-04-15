@@ -31,19 +31,12 @@ class Team extends React.Component {
         this.onToolbarMenuItem = this.onToolbarMenuItem.bind(this);
         this.onCloseDialog = this.onCloseDialog.bind(this);
         let { location: { query: { userId, username, roomId, contactId } }, params, userReducer } = this.props;
-        this.toolbar = "Teams";
         this.state = {
             openDialog: false
         };
+        this.toolbar = (!!userReducer.user)
+            ? userReducer.user.username : "Fail username";
         switch (userReducer.state) {
-            case userRx.FETCH_USER_SUCCESS: {
-                this.toolbar = (!!userReducer.user)
-                    ? userReducer.user.username : "Fail username";
-                if (!!userReducer.user.teams && userReducer.user.teams.length > 0) {
-                    this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
-                }
-                break;
-            }
             case userRx.FETCH_USER_FAILURE: {
                 this.alertBoxTitle = userRx.FETCH_USER_FAILURE;
                 this.alertBoxMessage = userReducer.error;

@@ -30,4 +30,4 @@ chatroomRxEpic.getPrivateChatRoomEpic, chatroomRxEpic.getPersistendMessageEpic, 
 ///@chatlogs
 chatlogRxActions.getLastAccessRoom_Epic, chatlogRxActions.updateLastAccessRoom_Epic, 
 // chatlogRxActions.stalkInitChatlogs_Epic
-chatlogRxActions.removeRoomAccess_Epic, chitchatRxActions.stalkInitChatlog_Epic);
+chatlogRxActions.removeRoomAccess_Epic, chitchatRxActions.stalkInitChatlog_Epic, chitchatRxActions.getTeamsInfo_Epic);

@@ -68,5 +68,6 @@ export const rootEpic = combineEpics(
     // chatlogRxActions.stalkInitChatlogs_Epic
     chatlogRxActions.removeRoomAccess_Epic,
 
-    chitchatRxActions.stalkInitChatlog_Epic
+    chitchatRxActions.stalkInitChatlog_Epic,
+    chitchatRxActions.getTeamsInfo_Epic
 );

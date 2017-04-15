@@ -8,7 +8,8 @@ import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
 import { STALK_INIT_CHATLOG } from "../chitchat/chats/redux/chatlogs/chatlogsActions";
-import { TEAM_SELECTED } from "../redux/team/teamRx";
+import { TEAM_SELECTED, getTeamsInfo } from "../redux/team/teamRx";
+import { FETCH_USER_SUCCESS } from "../redux/user/userRx";
 import { getLastAccessRoom } from "../chitchat/chats/redux/chatlogs/chatlogRxActions";
 
 import Store from "../redux/configureStore";
@@ -25,3 +26,16 @@ export const stalkInitChatlog_Epic = action$ =>
                 return { type: "" };
             }
         });
+
+export const getTeamsInfo_Epic = (action$) => (
+    action$.filter(action => action.type == FETCH_USER_SUCCESS)
+        .mapTo(x => {
+            let { userReducer } = Store.getState();
+            if (!!userReducer.user.teams && userReducer.user.teams.length > 0) {
+                return getTeamsInfo(userReducer.user.teams);
+            }
+            else {
+                return null;
+            }
+        })
+);
