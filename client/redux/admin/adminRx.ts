@@ -3,7 +3,9 @@ import * as Rx from "rxjs";
 const { ajax } = Rx.Observable;
 
 import Store from "../configureStore";
-import config from "../../configs/config";
+import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
+const config = () => ChitChatFactory.getInstance().config;
+
 import * as UserService from "../../chitchat/chats/services/UserService";
 
 
@@ -19,7 +21,7 @@ export const createNewOrgChartEpic = action$ =>
     action$.ofType(CREATE_NEW_ORG_CHART)
         .mergeMap(action => ajax({
             method: "POST",
-            url: `${config.api.orgChart}/create`,
+            url: `${config().api.orgChart}/create`,
             body: JSON.stringify({ chart: action.payload }),
             headers: {
                 "Content-Type": "application/json",
@@ -40,7 +42,7 @@ const getOrgChartFailure = createAction(GET_ORG_CHART_FAILURE, error => error);
 const getOrgChartCancelled = createAction(GET_ORG_CHART_CANCELLED);
 export const getOrgChartEpic = action$ =>
     action$.ofType(GET_ORG_CHART)
-        .mergeMap(action => ajax.getJSON(`${config.api.orgChart}/team/${action.payload}`, {
+        .mergeMap(action => ajax.getJSON(`${config().api.orgChart}/team/${action.payload}`, {
             "x-access-token": Store.getState().authReducer.token
         }).map(json => getOrgChartSuccess(json))
             .takeUntil(action$.ofType(GET_ORG_CHART_CANCELLED))

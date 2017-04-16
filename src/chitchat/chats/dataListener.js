@@ -46,20 +46,15 @@ class DataListener {
     onAccessRoom(dataEvent) {
         if (Array.isArray(dataEvent) && dataEvent.length > 0) {
             let data = dataEvent[0];
-            console.info("onAccessRoom: ", data);
             this.dataManager.setRoomAccessForUser(data);
-            this.onRoomAccessEventListeners.map(value => {
-                value(data);
+            this.onRoomAccessEventListeners.map(listener => {
+                listener(data);
             });
         }
     }
     onUpdatedLastAccessTime(dataEvent) {
-        console.info("DataListener.onUpdatedLastAccessTime: ", dataEvent);
-        if (Array.isArray(dataEvent) && dataEvent.length > 0) {
-            let data = dataEvent[0];
-            this.dataManager.updateRoomAccessForUser(data);
-            this.onUpdateRoomAccessEventListeners.map(item => item(data));
-        }
+        this.dataManager.updateRoomAccessForUser(dataEvent);
+        this.onUpdateRoomAccessEventListeners.map(item => item(dataEvent));
     }
     onAddRoomAccess(dataEvent) {
         let datas = JSON.parse(JSON.stringify(dataEvent));

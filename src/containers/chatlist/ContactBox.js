@@ -6,8 +6,7 @@ const chatroomActions = require("../../chitchat/chats/redux/chatroom/chatroomAct
 const chatroomRx = require("../../chitchat/chats/redux/chatroom/chatroomRxEpic");
 const MemberList_1 = require("./MemberList");
 class ContactBox extends React.Component {
-    componentWillMount() {
-        console.log("ContactBox", this.props);
+    componentDidMount() {
         this.onselectMember = this.onselectMember.bind(this);
         this.props.dispatch(teamRx.getTeamMembers(this.props.teamReducer.team._id));
     }

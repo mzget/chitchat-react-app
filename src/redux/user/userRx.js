@@ -6,7 +6,10 @@ const chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
 const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const UserService = require("../../chitchat/chats/services/UserService");
 const StalkBridgeActions = require("../../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
+const authRx_1 = require("../authen/authRx");
 const configureStore_1 = require("../configureStore");
+exports.onAuth_Epic = action$ => action$.filter(action => (action.type === authRx_1.AUTH_USER_SUCCESS || action.type === authRx_1.TOKEN_AUTH_USER_SUCCESS))
+    .map(response => exports.fetchUser(configureStore_1.default.getState().authReducer.user));
 const FETCH_USER = "FETCH_USER";
 exports.FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS";
 exports.FETCH_USER_FAILURE = "FETCH_USER_FAILURE";
@@ -15,10 +18,11 @@ exports.fetchUser = (username) => ({ type: FETCH_USER, payload: username }); // 
 const fetchUserFulfilled = payload => ({ type: exports.FETCH_USER_SUCCESS, payload });
 const cancelFetchUser = () => ({ type: exports.FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: exports.FETCH_USER_FAILURE, payload });
-exports.fetchUserEpic = action$ => (action$.ofType(FETCH_USER).mergeMap(action => UserService.fetchUser(action.payload)
+exports.fetchUserEpic = action$ => action$.ofType(FETCH_USER)
+    .mergeMap(action => UserService.fetchUser(action.payload)
     .map(response => fetchUserFulfilled(response.xhr.response))
     .takeUntil(action$.ofType(exports.FETCH_USER_CANCELLED))
-    .catch(error => Rx.Observable.of(fetchUserRejected(error)))
+    .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))
     ._do(x => {
     if (x.type == exports.FETCH_USER_SUCCESS) {
         if (x.payload.result && x.payload.result.length > 0) {
@@ -29,7 +33,7 @@ exports.fetchUserEpic = action$ => (action$.ofType(FETCH_USER).mergeMap(action =
             }
         }
     }
-})));
+}));
 const UPDATE_USER_INFO = "UPDATE_USER_INFO";
 exports.UPDATE_USER_INFO_SUCCESS = "UPDATE_USER_INFO_SUCCESS";
 exports.UPDATE_USER_INFO_FAILURE = "UPDATE_USER_INFO_FAILURE";

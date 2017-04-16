@@ -1,10 +1,11 @@
-import * as React from "react";
+﻿import * as React from "react";
 /**
  * Redux + Immutable
  */
 import * as immutable from "immutable";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import { shallowEqual } from "recompose";
 import { Link } from "react-router";
 import { Flex, Box } from "reflexbox";
 
@@ -19,7 +20,6 @@ import * as AuthRx from "../redux/authen/authRx";
 import * as AppActions from "../redux/app/persistentDataActions";
 
 import { SimpleToolbar } from "../components/SimpleToolbar";
-import { DialogBox } from "../components/DialogBox";
 import { AuthenBox } from "./authen/AuthenBox";
 
 interface IComponentNameState {
@@ -27,46 +27,34 @@ interface IComponentNameState {
 }
 
 class Home extends React.Component<IComponentProps, IComponentNameState> {
-    alertMessage: string = "";
-    alertTitle: string = "";
     clientWidth = document.documentElement.clientWidth;
     clientHeight = document.documentElement.clientHeight;
     headerHeight = 56;
     subHeaderHeight = null;
     bodyHeight = null;
     footerHeight = 24;
-
-    closeAlert() {
-        this.alertTitle = "";
-        this.alertMessage = "";
-        this.setState(prevState => ({ ...prevState, alert: false }), () =>
-            this.props.dispatch(AuthRx.clearError())
-        );
-    }
-
-    onAuthBoxError(error: string) {
-        this.alertTitle = "Authentication!";
-        this.alertMessage = error;
-        this.setState(prevState => ({ ...prevState, alert: true }));
-    }
+    alertTitle: string;
+    alertMessage: string;
 
     constructor(props) {
         super(props);
 
-        console.log("Home", global.userAgent);
+        console.log("Home", global.userAgent, this.props);
 
         this.state = {
             alert: false
         };
-        this.closeAlert = this.closeAlert.bind(this);
-        this.onAuthBoxError = this.onAuthBoxError.bind(this);
+        this.headerHeight = 56;
+        this.footerHeight = 24;
+        this.clientHeight = document.documentElement.clientHeight;
+        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight + this.footerHeight));
 
         this.props.dispatch(AppActions.getSession());
     }
 
     componentWillReceiveProps(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } },
-            chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer
+            chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer, alertReducer
         } = nextProps as IComponentProps;
 
         let toolbar = document.getElementById("toolbar");
@@ -75,7 +63,6 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
         let app_footer = document.getElementById("app_footer");
 
         this.subHeaderHeight = (warning_bar) ? warning_bar.clientHeight : 0;
-        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight + this.footerHeight));
 
         let next = immutable.fromJS(authReducer);
         let prev = immutable.fromJS(this.props.authReducer);
@@ -83,7 +70,6 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
             switch (authReducer.state) {
                 case AuthRx.AUTH_USER_SUCCESS: {
                     AppActions.saveSession();
-                    this.props.router.push(`/team/${authReducer.user}`);
                     break;
                 }
                 case AuthRx.AUTH_USER_FAILURE: {
@@ -92,28 +78,25 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
                     this.setState(previous => ({ ...previous, alert: true }));
                     break;
                 }
-                case AuthRx.TOKEN_AUTH_USER_SUCCESS: {
-                    this.props.router.push(`/team/${authReducer.user}`);
-                    break;
-                }
                 case AppActions.GET_SESSION_TOKEN_SUCCESS: {
                     if (authReducer.state !== this.props.authReducer.state)
                         this.props.dispatch(AuthRx.tokenAuthUser(authReducer.token));
-                    break;
-                }
-                case AuthRx.SIGN_UP_FAILURE: {
-                    this.onAuthBoxError(authReducer.error);
                     break;
                 }
                 default:
                     break;
             }
         }
+
+        if (userReducer.user) {
+            this.props.router.push(`/team/${authReducer.user}`);
+        }
+        if (alertReducer.error) {
+            this.props.onError(alertReducer.error);
+        }
     }
 
     public render(): JSX.Element {
-        let { location: { query: { userId, username, roomId, contactId } } } = this.props;
-
         return (
             <div style={{ overflow: "hidden" }}>
                 <div id={"toolbar"} style={{ height: this.headerHeight }}>
@@ -123,15 +106,10 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
                     <Flex flexColumn={true} >
                         <Flex align="center">
                             <Box p={2} flexAuto></Box>
-                            <AuthenBox {...this.props} onError={this.onAuthBoxError} />
+                            <AuthenBox {...this.props} onError={this.props.onError} />
                             <Box p={2} flexAuto></Box>
                         </Flex>
                         <Box flexAuto justify="flex-end"></Box>
-                        <DialogBox
-                            title={this.alertTitle}
-                            message={this.alertMessage}
-                            open={this.state.alert}
-                            handleClose={this.closeAlert} />
                     </Flex>
                 </div>
                 <div id={"app_footer"} style={{
@@ -151,4 +129,4 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
  * ## Redux boilerplate
  */
 const mapStateToProps = (state) => ({ ...state });
-export default connect(mapStateToProps)(Home);
+export const HomeWithState = connect(mapStateToProps)(Home) as React.ComponentClass<any>;

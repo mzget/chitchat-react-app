@@ -16,6 +16,7 @@ import * as chatroomActions from "../chatroom/chatroomActions";
 
 import { ChitChatFactory } from "../../chitchatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
+const authReducer = () => ChitChatFactory.getInstance().authStore;
 
 export const STALK_INIT_CHATLOG = "STALK_INIT_CHATLOG";
 export const STALK_GET_CHATSLOG_COMPLETE = "STALK_GET_CHATSLOG_COMPLETE";
@@ -41,17 +42,19 @@ const listenerImp = (newMsg) => {
     }
 };
 
-function updateLastAccessTimeEventHandler(newRoomAccess) {
+function updateLastAccessTimeEventHandler(newRoomAccess: RoomAccessData) {
     let chatsLogComp = BackendFactory.getInstance().chatLogComp;
-    let user_id = getStore().getState().stalkReducer.user._id;
-    chatsLogComp.getUnreadMessage(user_id, newRoomAccess.roomAccess[0]).then(function (unread) {
+    let { _id } = authReducer().user;
+
+    chatsLogComp.getUnreadMessage(_id, newRoomAccess).then(function (unread) {
         chatsLogComp.addUnreadMessage(unread);
 
         calculateUnreadCount();
         onUnreadMessageMapChanged(unread);
         // chatLogDAL.savePersistedUnreadMsgMap(unread);
     }).catch(err => {
-        console.warn("updateLastAccessTimeEventHandler fail", err);
+        if (err)
+            console.warn("updateLastAccessTimeEventHandler fail", err);
     });
 }
 
@@ -81,10 +84,10 @@ export function initChatsLog() {
 function getUnreadMessages() {
     let chatsLogComp = BackendFactory.getInstance().chatLogComp;
 
-    let user_id = getStore().getState().stalkReducer.user._id;
+    let { _id } = authReducer().user;
     let { roomAccess, state } = getStore().getState().chatlogReducer;
 
-    chatsLogComp.getUnreadMessages(user_id, roomAccess, function done(err, unreadLogs) {
+    chatsLogComp.getUnreadMessages(_id, roomAccess, function done(err, unreadLogs) {
         if (!!unreadLogs) {
             chatsLogComp.setUnreadMessageMap(unreadLogs);
 
@@ -153,7 +156,7 @@ async function onUnreadMessageMapChanged(unread: IUnread) {
 
 function getUnreadMessageComplete() {
     let chatsLogComp = BackendFactory.getInstance().chatLogComp;
-    let { _id } = getStore().getState().stalkReducer.user;
+    let { _id } = authReducer().user;
     let { chatrooms } = getStore().getState().chatroomReducer;
 
     chatsLogComp.getRoomsInfo(_id, chatrooms);

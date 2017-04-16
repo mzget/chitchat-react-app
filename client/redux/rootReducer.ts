@@ -26,6 +26,7 @@ import { GroupInitState, groupReducer } from "./group/groupReducer";
 import { stalkReducer, StalkInitState } from "../chitchat/chats/redux/stalkBridge/stalkReducer";
 import { chatroomReducer, ChatRoomInitState } from "../chitchat/chats/redux/chatroom/chatroomReducer";
 import { chatlogReducer, ChatLogInitState } from "../chitchat/chats/redux/chatlogs/chatlogReducer";
+import { alertReducer, AlertInitState } from "./app/alertReducer";
 
 /**
  * ## CombineReducers
@@ -43,6 +44,7 @@ const appReducer = combineReducers({
     chatlogReducer,
     userReducer,
     adminReducer,
+    alertReducer
 });
 
 /*
@@ -61,6 +63,7 @@ export function getInitialState() {
         chatlogReducer: new ChatLogInitState(),
         userReducer: new UserInitState(),
         adminReducer: new AdminInitState(),
+        alertReducer: new AlertInitState()
     };
     return _initState;
 }

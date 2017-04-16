@@ -70,9 +70,9 @@ exports.updateLastAccessRoom_Epic = action$ => action$.ofType(UPDATE_LAST_ACCESS
     return ServiceProvider.updateLastAccessRoomInfo(_id, action.payload);
 })
     .map(response => {
-    console.log("updateLastAccessRoom_Epic", response.xhr.response);
-    let result = response.xhr.response.result[0];
-    let _tempRoomAccess = result.roomAccess;
+    console.log("updateLastAccessRoom value", response.xhr.response);
+    let results = response.xhr.response.result[0];
+    let _tempRoomAccess = results.roomAccess;
     let roomAccess = getStore().getState().chatlogReducer.get("roomAccess");
     let _newRoomAccess = new Array();
     if (Array.isArray(roomAccess)) {
@@ -90,6 +90,9 @@ exports.updateLastAccessRoom_Epic = action$ => action$.ofType(UPDATE_LAST_ACCESS
             });
         }
     }
+    else {
+        _newRoomAccess = _tempRoomAccess.slice();
+    }
     BackendFactory_1.BackendFactory.getInstance().dataListener.onUpdatedLastAccessTime(_tempRoomAccess[0]);
     return updateLastAccessRoomSuccess(_newRoomAccess);
 })
@@ -99,17 +102,17 @@ exports.updateLastAccessRoom_Epic = action$ => action$.ofType(UPDATE_LAST_ACCESS
     }
 })
     .takeUntil(action$.ofType(UPDATE_LAST_ACCESS_ROOM_CANCELLED))
-    .catch(error => Rx.Observable.of(updateLastAccessRoomFailure(error.xhr.response)));
+    .catch(error => Rx.Observable.of(updateLastAccessRoomFailure(error.message)));
 exports.GET_LAST_ACCESS_ROOM = "GET_LAST_ACCESS_ROOM";
 exports.GET_LAST_ACCESS_ROOM_SUCCESS = "GET_LAST_ACCESS_ROOM_SUCCESS";
 exports.GET_LAST_ACCESS_ROOM_FAILURE = "GET_LAST_ACCESS_ROOM_FAILURE";
-exports.getLastAccessRoom = (token, team_id) => ({ type: exports.GET_LAST_ACCESS_ROOM, payload: { token, team_id } });
+exports.getLastAccessRoom = (team_id) => ({ type: exports.GET_LAST_ACCESS_ROOM, payload: { team_id } });
 const getLastAccessRoomSuccess = (payload) => ({ type: exports.GET_LAST_ACCESS_ROOM_SUCCESS, payload });
 const getLastAccessRoomFailure = (error) => ({ type: exports.GET_LAST_ACCESS_ROOM_FAILURE, payload: error });
 exports.getLastAccessRoom_Epic = action$ => (action$.ofType(exports.GET_LAST_ACCESS_ROOM)
     .mergeMap(action => {
-    let { token, team_id } = action.payload;
-    return ServiceProvider.getLastAccessRoomInfo(token, team_id)
+    let { team_id } = action.payload;
+    return ServiceProvider.getLastAccessRoomInfo(team_id)
         .then(response => response.json())
         .then(json => json);
 })

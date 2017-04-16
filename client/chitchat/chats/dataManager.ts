@@ -46,8 +46,6 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
     public messageDAL: IMessageDAL;
 
     constructor() {
-        console.log(global.userAgent);
-
         this.messageDAL = MessageDALFactory.getObject();
     }
 
@@ -55,38 +53,29 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
     public getMyProfile(): StalkAccount {
         return this.myProfile;
     }
-    public setProfile(data: StalkAccount): Promise<StalkAccount> {
-        return new Promise((resolve, reject) => {
-            this.myProfile = data;
-            resolve(this.myProfile);
-        });
+    public async setProfile(data: StalkAccount) {
+        this.myProfile = data;
+
+        return await this.myProfile;
     }
     public setRoomAccessForUser(data: StalkAccount) {
-        if (!!data.roomAccess) {
+        if (!!this.myProfile && !!data.roomAccess) {
             this.myProfile.roomAccess = data.roomAccess;
         }
-    }
-    public updateRoomAccessForUser(data) {
-        let arr: Array<RoomAccessData> = JSON.parse(JSON.stringify(data.roomAccess));
-
-        if (!this.myProfile) {
-            this.myProfile = {} as StalkAccount;
-            this.myProfile.roomAccess = arr;
-        }
         else {
-            if (!this.myProfile.roomAccess) {
-                this.myProfile.roomAccess = arr;
-            }
-            else {
-                this.myProfile.roomAccess.forEach(value => {
-                    if (value.roomId === arr[0].roomId) {
-                        value.accessTime = arr[0].accessTime;
-
-                        return;
-                    }
-                });
-            }
+            this.myProfile = data;
         }
+    }
+    public updateRoomAccessForUser(data: RoomAccessData) {
+        if (!this.myProfile.roomAccess) return;
+
+        this.myProfile.roomAccess.forEach(value => {
+            if (value.roomId === data.roomId) {
+                value.accessTime = data.accessTime;
+
+                return;
+            }
+        });
     }
 
     public getRoomAccess(): RoomAccessData[] {

@@ -9,7 +9,13 @@ const config = () => ChitChatFactory.getInstance().config;
 import * as UserService from "../../chitchat/chats/services/UserService";
 import { ChitChatAccount } from "../../chitchat/chats/models/User";
 import * as StalkBridgeActions from "../../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
+import { AUTH_USER_SUCCESS, TOKEN_AUTH_USER_SUCCESS } from "../authen/authRx";
+
 import Store from "../configureStore";
+
+export const onAuth_Epic = action$ =>
+    action$.filter(action => (action.type === AUTH_USER_SUCCESS || action.type === TOKEN_AUTH_USER_SUCCESS))
+        .map(response => fetchUser(Store.getState().authReducer.user));
 
 const FETCH_USER = "FETCH_USER";
 export const FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS";
@@ -20,24 +26,24 @@ export const fetchUser = (username) => ({ type: FETCH_USER, payload: username })
 const fetchUserFulfilled = payload => ({ type: FETCH_USER_SUCCESS, payload });
 const cancelFetchUser = () => ({ type: FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: FETCH_USER_FAILURE, payload });
-export const fetchUserEpic = action$ => (
-    action$.ofType(FETCH_USER).mergeMap(action => UserService.fetchUser(action.payload)
-        .map(response => fetchUserFulfilled(response.xhr.response))
-        .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
-        .catch(error => Rx.Observable.of(fetchUserRejected(error)))
-        ._do(x => {
-            if (x.type == FETCH_USER_SUCCESS) {
-                if (x.payload.result && x.payload.result.length > 0) {
-                    let user = x.payload.result[0];
+export const fetchUserEpic = action$ =>
+    action$.ofType(FETCH_USER)
+        .mergeMap(action => UserService.fetchUser(action.payload)
+            .map(response => fetchUserFulfilled(response.xhr.response))
+            .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
+            .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))
+            ._do(x => {
+                if (x.type == FETCH_USER_SUCCESS) {
+                    if (x.payload.result && x.payload.result.length > 0) {
+                        let user = x.payload.result[0];
 
-                    let stalkReducer = Store.getState().stalkReducer;
-                    if (stalkReducer.state !== StalkBridgeActions.STALK_INIT) {
-                        StalkBridgeActions.stalkLogin(user);
+                        let stalkReducer = Store.getState().stalkReducer;
+                        if (stalkReducer.state !== StalkBridgeActions.STALK_INIT) {
+                            StalkBridgeActions.stalkLogin(user);
+                        }
                     }
                 }
-            }
-        }))
-);
+            }));
 
 const UPDATE_USER_INFO = "UPDATE_USER_INFO";
 export const UPDATE_USER_INFO_SUCCESS = "UPDATE_USER_INFO_SUCCESS";

@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const async = require("async");
 const Room_1 = require("../libs/shared/Room");
 const messageDALFactory_1 = require("./dataAccessLayer/messageDALFactory");
@@ -11,7 +19,6 @@ class DataManager {
         this.contactsMember = {};
         this.isOrgMembersReady = false;
         this.getContactInfoFailEvents = new Array();
-        console.log(global.userAgent);
         this.messageDAL = messageDALFactory_1.MessageDALFactory.getObject();
     }
     addContactInfoFailEvents(func) {
@@ -26,35 +33,28 @@ class DataManager {
         return this.myProfile;
     }
     setProfile(data) {
-        return new Promise((resolve, reject) => {
+        return __awaiter(this, void 0, void 0, function* () {
             this.myProfile = data;
-            resolve(this.myProfile);
+            return yield this.myProfile;
         });
     }
     setRoomAccessForUser(data) {
-        if (!!data.roomAccess) {
+        if (!!this.myProfile && !!data.roomAccess) {
             this.myProfile.roomAccess = data.roomAccess;
+        }
+        else {
+            this.myProfile = data;
         }
     }
     updateRoomAccessForUser(data) {
-        let arr = JSON.parse(JSON.stringify(data.roomAccess));
-        if (!this.myProfile) {
-            this.myProfile = {};
-            this.myProfile.roomAccess = arr;
-        }
-        else {
-            if (!this.myProfile.roomAccess) {
-                this.myProfile.roomAccess = arr;
+        if (!this.myProfile.roomAccess)
+            return;
+        this.myProfile.roomAccess.forEach(value => {
+            if (value.roomId === data.roomId) {
+                value.accessTime = data.accessTime;
+                return;
             }
-            else {
-                this.myProfile.roomAccess.forEach(value => {
-                    if (value.roomId === arr[0].roomId) {
-                        value.accessTime = arr[0].accessTime;
-                        return;
-                    }
-                });
-            }
-        }
+        });
     }
     getRoomAccess() {
         return this.myProfile.roomAccess;

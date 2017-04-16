@@ -38,14 +38,11 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
 
         let { location: { query: { userId, username, roomId, contactId } }, params, userReducer } = this.props;
 
-        this.toolbar = "Teams";
         this.state = {
             openDialog: false
         };
-
-        if (params.filter) {
-            this.props.dispatch(userRx.fetchUser(params.filter));
-        }
+        this.toolbar = (!!userReducer.user)
+            ? userReducer.user.username : "Fail username";
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
@@ -53,41 +50,15 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
             userReducer, authReducer, teamReducer
         } = nextProps;
 
-        switch (userReducer.state) {
-            case userRx.FETCH_USER_SUCCESS: {
-                this.toolbar = (!!userReducer.user)
-                    ? userReducer.user.username : "Fail username";
-
-                if (!!this.props.userReducer.user) {
-                    let nextRed = immutable.fromJS(userReducer);
-                    let red = immutable.fromJS(this.props.userReducer);
-                    if (!red.equals(nextRed)) {
-                        this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
-                    }
-                }
-                else {
-                    if (!!userReducer.user.teams && userReducer.user.teams.length > 0) {
-                        this.props.dispatch(teamRx.getTeamsInfo(userReducer.user.teams));
-                    }
-                }
-                break;
-            }
-            case userRx.FETCH_USER_FAILURE: {
-                this.alertBoxTitle = userRx.FETCH_USER_FAILURE;
-                this.alertBoxMessage = userReducer.error;
-
-                this.setState({ openDialog: true });
-                break;
-            }
-            default: {
-                break;
-            }
-        }
-
         if (teamReducer.error) {
             this.alertBoxTitle = "Alert!";
             this.alertBoxMessage = teamReducer.error;
             this.setState(previous => ({ ...previous, openDialog: true }));
+        }
+
+        if (!userReducer.user ||
+            authReducer.state == authRx.LOG_OUT_SUCCESS) {
+            this.props.router.replace("/");
         }
     }
 

@@ -19,6 +19,7 @@ export const rootEpic = combineEpics(
     adminRx.getOrgChartEpic,
     adminRx.updateUserOrgChartEpic,
 
+    userRx.onAuth_Epic,
     userRx.fetchUserEpic,
     userRx.fetchContactEpic,
     userRx.fetchAgentEpic,
@@ -30,7 +31,7 @@ export const rootEpic = combineEpics(
     authRx.signupUserEpic,
     authRx.authUser_Epic,
     authRx.tokenAuthUserEpic,
-    authRx.logoutUserEpic,
+    authRx.logoutUser_Epic,
 
     ///@Teams
     teamRx.fetchUserTeamsEpic,
@@ -67,5 +68,6 @@ export const rootEpic = combineEpics(
     // chatlogRxActions.stalkInitChatlogs_Epic
     chatlogRxActions.removeRoomAccess_Epic,
 
-    chitchatRxActions.stalkInitChatlog_Epic
+    chitchatRxActions.stalkInitChatlog_Epic,
+    chitchatRxActions.getTeamsInfo_Epic
 );

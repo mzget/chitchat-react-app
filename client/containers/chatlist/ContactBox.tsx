@@ -16,9 +16,7 @@ class ContactBox extends React.Component<IComponentProps, IComponentNameState> {
 
     _tempContact_id: string;
 
-    componentWillMount() {
-        console.log("ContactBox", this.props);
-
+    componentDidMount() {
         this.onselectMember = this.onselectMember.bind(this);
 
         this.props.dispatch(teamRx.getTeamMembers(this.props.teamReducer.team._id));

@@ -1,5 +1,5 @@
 ﻿import { absSpartan } from "../libs/stalk/spartanEvents";
-import { StalkAccount } from "../libs/shared/Stalk";
+import { StalkAccount, RoomAccessData } from "../libs/shared/Stalk";
 import { IMessage } from "../libs/shared/Message";
 import { Room } from "../libs/shared/Room";
 
@@ -35,11 +35,11 @@ export default class DataListener implements absSpartan.IServerListener, absSpar
     }
 
 
-    private onUpdateRoomAccessEventListeners = new Array();
-    public addOnUpdateRoomAccessListener = (listener: (data) => void) => {
+    private onUpdateRoomAccessEventListeners = new Array<(data: RoomAccessData) => void>();
+    public addOnUpdateRoomAccessListener = (listener: (data: RoomAccessData) => void) => {
         this.onUpdateRoomAccessEventListeners.push(listener);
     }
-    public removeOnUpdateRoomAccessListener = (listener: (data) => void) => {
+    public removeOnUpdateRoomAccessListener = (listener: (data: RoomAccessData) => void) => {
         let id = this.onUpdateRoomAccessEventListeners.indexOf(listener);
         this.onUpdateRoomAccessEventListeners.splice(id, 1);
     }
@@ -59,25 +59,19 @@ export default class DataListener implements absSpartan.IServerListener, absSpar
     onAccessRoom(dataEvent: Array<any>) {
         if (Array.isArray(dataEvent) && dataEvent.length > 0) {
             let data = dataEvent[0] as StalkAccount;
-            console.info("onAccessRoom: ", data);
 
             this.dataManager.setRoomAccessForUser(data);
 
-            this.onRoomAccessEventListeners.map(value => {
-                value(data);
+            this.onRoomAccessEventListeners.map(listener => {
+                listener(data);
             });
         }
     }
 
-    onUpdatedLastAccessTime(dataEvent) {
-        console.info("DataListener.onUpdatedLastAccessTime: ", dataEvent);
+    onUpdatedLastAccessTime(dataEvent: RoomAccessData) {
+        this.dataManager.updateRoomAccessForUser(dataEvent);
 
-        if (Array.isArray(dataEvent) && dataEvent.length > 0) {
-            let data = dataEvent[0];
-            this.dataManager.updateRoomAccessForUser(data);
-
-            this.onUpdateRoomAccessEventListeners.map(item => item(data));
-        }
+        this.onUpdateRoomAccessEventListeners.map(item => item(dataEvent));
     }
 
     onAddRoomAccess(dataEvent) {

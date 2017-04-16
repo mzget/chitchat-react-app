@@ -1,8 +1,8 @@
 "use strict";
-const config_1 = require("../../configs/config");
 const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
-const { ajax } = Rx.Observable;
+const { Observable } = Rx;
+const { ajax, fromPromise } = Observable;
 const authService = require("../../chitchat/chats/services/authService");
 const AppActions = require("../app/persistentDataActions");
 const stalkBridgeActions = require("../../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
@@ -15,15 +15,16 @@ const signupSuccess = payload => ({ type: exports.SIGN_UP_SUCCESS, payload });
 const signupFailure = payload => ({ type: exports.SIGN_UP_FAILURE, payload });
 const signupCancelled = () => ({ type: SIGN_UP_CANCELLED });
 exports.signupUserEpic = action$ => action$.ofType(SIGN_UP)
-    .mergeMap(action => ajax({
-    method: "POST",
-    url: `${config_1.default.api.user}/signup`,
-    body: JSON.stringify({ user: action.payload }),
-    headers: { "Content-Type": "application/json", "x-api-key": config_1.default.api.apiKey }
-})
-    .map(response => signupSuccess(response.xhr.response))
+    .mergeMap(action => Observable.fromPromise(authService.signup(action.payload))
+    .mergeMap(response => Observable.fromPromise(response.json())
+    .map(result => {
+    if (result.success) {
+        return signupSuccess(result.result);
+    }
+    throw new Error(result.message);
+}).catch(err => Observable.of(signupFailure(err.message)))))
     .takeUntil(action$.ofType(SIGN_UP_CANCELLED))
-    .catch(error => Rx.Observable.of(signupFailure(error.xhr.response))));
+    .catch(error => Rx.Observable.of(signupFailure(error)));
 exports.AUTH_USER = "AUTH_USER";
 exports.AUTH_USER_SUCCESS = "AUTH_USER_SUCCESS";
 exports.AUTH_USER_FAILURE = "AUTH_USER_FAILURE";
@@ -44,7 +45,7 @@ exports.authUser_Epic = action$ => action$.ofType(exports.AUTH_USER)
     }
 })
     .takeUntil(action$.ofType(AUTH_USER_CANCELLED))
-    .catch(error => Rx.Observable.of(authUserFailure((error))));
+    .catch(error => Rx.Observable.of(authUserFailure((error.message))));
 const TOKEN_AUTH_USER = "TOKEN_AUTH_USER";
 exports.TOKEN_AUTH_USER_SUCCESS = "TOKEN_AUTH_USER_SUCCESS";
 exports.TOKEN_AUTH_USER_FAILURE = "TOKEN_AUTH_USER_FAILURE";
@@ -65,7 +66,7 @@ exports.tokenAuthUserEpic = action$ => (action$.ofType(TOKEN_AUTH_USER)
     }
 })
     .takeUntil(action$.ofType(TOKEN_AUTH_USER_CANCELLED))
-    .catch(error => Rx.Observable.of(tokenAuthUserFailure(error))));
+    .catch(error => Rx.Observable.of(tokenAuthUserFailure(error.message))));
 const LOG_OUT = "LOG_OUT";
 exports.LOG_OUT_SUCCESS = "LOG_OUT_SUCCESS";
 const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
@@ -74,17 +75,20 @@ exports.logout = redux_actions_1.createAction(LOG_OUT, payload => payload);
 const logoutSuccess = redux_actions_1.createAction(exports.LOG_OUT_SUCCESS, payload => payload);
 const logoutFailure = redux_actions_1.createAction(LOG_OUT_FAILURE, payload => payload);
 const logoutCancelled = redux_actions_1.createAction(LOG_OUT_CANCELLED);
-exports.logoutUserEpic = action$ => action$.ofType(LOG_OUT)
-    .mergeMap(action => ajax({
-    method: "POST",
-    url: `${config_1.default.api.auth}/logout`,
-    headers: { "Content-Type": "application/json", "x-access-token": action.payload }
-}).map(response => {
-    AppActions.removeSession();
-    stalkBridgeActions.stalkLogout();
-    return logoutSuccess(response.xhr.response);
+exports.logoutUser_Epic = action$ => action$.ofType(LOG_OUT)
+    .mergeMap(action => Rx.Observable.fromPromise(authService.logout(action.payload)))
+    .mergeMap(response => Rx.Observable.fromPromise(response.json()))
+    .map(result => {
+    if (result.success) {
+        AppActions.removeSession();
+        stalkBridgeActions.stalkLogout();
+        return logoutSuccess(result.result);
+    }
+    else {
+        return logoutFailure(result.message);
+    }
 })
     .takeUntil(action$.ofType(LOG_OUT_CANCELLED))
-    .catch(error => Rx.Observable.of(logoutFailure(error.xhr.response))));
+    .catch(error => Rx.Observable.of(logoutFailure(error)));
 exports.AUTH_REDUCER_CLEAR_ERROR = "AUTH_REDUCER_CLEAR_ERROR";
 exports.clearError = redux_actions_1.createAction(exports.AUTH_REDUCER_CLEAR_ERROR);

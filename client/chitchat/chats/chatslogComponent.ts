@@ -1,13 +1,14 @@
-/**
+﻿/**
  * Copyright 2016 Ahoo Studio.co.th.
  *
  * ChatRoomComponent for handle some business logic of chat room.
  */
 import * as async from "async";
+import { ChitChatFactory } from "./chitchatFactory";
+const authReducer = () => ChitChatFactory.getInstance().authStore;
 
 import { IRoomAccessListenerImp } from "./abstracts/IRoomAccessListenerImp";
 import ChatLog from "./models/chatLog";
-import DataManager from "./dataManager";
 import DataListener from "./dataListener";
 import { BackendFactory } from "./BackendFactory";
 import * as CryptoHelper from "./utils/CryptoHelper";
@@ -30,7 +31,6 @@ export class Unread { message: IMessage; rid: string; count: number; }
 
 export class ChatsLogComponent implements IRoomAccessListenerImp {
     serverImp: ServerImplemented = null;
-    dataManager: DataManager = null;
     dataListener: DataListener = null;
 
     private chatlog_count: number = 0;
@@ -57,21 +57,27 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
     public getUnreadItem(room_id: string): IUnread {
         return this.unreadMessageMap.get(room_id);
     }
+    public updatedLastAccessTimeEvent: (data: RoomAccessData) => void;
+    private onUpdateLastAccess(data: RoomAccessData) {
+        if (!!this.updatedLastAccessTimeEvent) {
+            this.updatedLastAccessTimeEvent(data);
+        }
+    }
 
     constructor() {
         this._isReady = false;
-        this.dataManager = BackendFactory.getInstance().dataManager;
         this.dataListener = BackendFactory.getInstance().dataListener;
 
         this.dataListener.addOnRoomAccessListener(this.onAccessRoom.bind(this));
         this.dataListener.addOnChatListener(this.onChat.bind(this));
         this.dataListener.addOnAddRoomAccessListener(this.onAddRoomAccess.bind(this));
-        this.dataListener.addOnUpdateRoomAccessListener(this.onUpdatedLastAccessTime.bind(this));
+        this.dataListener.addOnUpdateRoomAccessListener(this.onUpdateLastAccess.bind(this));
 
         BackendFactory.getInstance().getServer().then(server => {
             this.serverImp = server;
         }).catch(err => {
-            console.log(err);
+            if (err)
+                console.warn("Stalk server fail", err);
         });
 
         console.log("ChatsLogComponent : constructor");
@@ -102,23 +108,6 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         let roomAccess = dataEvent.roomAccess as Array<RoomAccessData>;
         let results = new Array<Room>();
 
-        const addRoomData = () => {
-            async.map(roomAccess, function iterator(item, resultCallback) {
-                self.getRoomInfo(item.roomId, (err, room) => {
-                    if (!!room) {
-                        results.push(room);
-                        resultCallback(null, room);
-                    }
-                    else {
-                        resultCallback(null, null);
-                    }
-                });
-            }, (err, results) => {
-                console.log("onAccessRoom.finished!");
-                done();
-            });
-        };
-
         const done = () => {
             self._isReady = true;
 
@@ -127,15 +116,23 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
             }
         };
 
-        addRoomData();
+        async.each(roomAccess, (item, resultCallback) => {
+            self.getRoomInfo(item.roomId)
+                .then(room => {
+                    results.push(room);
+                    resultCallback();
+                }).catch(err => {
+                    if (err)
+                        console.warn("getRoomInfo", err);
+
+                    resultCallback();
+                });
+        }, (err) => {
+            console.log("onAccessRoom.finished!", err);
+            done();
+        });
     }
 
-    public updatedLastAccessTimeEvent: (data) => void;
-    onUpdatedLastAccessTime(dataEvent) {
-        if (!!this.updatedLastAccessTimeEvent) {
-            this.updatedLastAccessTimeEvent(dataEvent);
-        }
-    }
     public addNewRoomAccessEvent: (data) => void;
     onAddRoomAccess(dataEvent) {
         console.warn("ChatsLogComponent.onAddRoomAccess", JSON.stringify(dataEvent));
@@ -154,9 +151,11 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
             if (!!task.roomId && !!task.accessTime) {
                 self.getUnreadMessage(user_id, task).then(value => {
                     unreadLogs.push(value);
-
                     callback();
                 }).catch(err => {
+                    if (err)
+                        console.warn("getUnreadMessage", err);
+
                     callback();
                 });
             } else {
@@ -171,10 +170,15 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         };
 
         // add some items to the queue (batch-wise)
-        q.push(roomAccess, function (err) {
-            if (!!err)
-                console.error("getUnreadMessage err", err);
-        });
+        if (roomAccess && roomAccess.length > 0) {
+            q.push(roomAccess, function (err) {
+                if (!!err)
+                    console.error("getUnreadMessage err", err);
+            });
+        }
+        else {
+            callback(null, null);
+        }
     }
 
     public async getUnreadMessage(user_id: string, roomAccess: RoomAccessData) {
@@ -197,7 +201,8 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
     private decorateRoomInfoData(roomInfo: Room) {
         if (roomInfo.type == RoomType.privateChat) {
             if (Array.isArray(roomInfo.members)) {
-                let others = roomInfo.members.filter((value) => !this.dataManager.isMySelf(value._id)) as Array<MemberImp>;
+                let others = roomInfo.members.filter((value) =>
+                    value._id != authReducer().user._id) as Array<MemberImp>;
                 if (others.length > 0) {
                     let contact = others[0];
 
@@ -209,24 +214,22 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         return roomInfo;
     }
 
-    private getRoomInfo(room_id: string, callback: (err, room: Room) => void) {
+    private async getRoomInfo(room_id: string) {
         let self = this;
 
-        ServiceProvider.getRoomInfo(room_id)
-            .then(response => response.json())
-            .then(function (json) {
-                console.log("getRoomInfo value:", json);
-                if (json.success) {
-                    let roomInfos = json.result as Array<Room>;
-                    let room = self.decorateRoomInfoData(roomInfos[0]);
-                    callback(null, room);
-                }
-                else {
-                    callback(json.message, null);
-                }
-            }).catch(err => {
-                callback(err, null);
-            });
+        let response = await ServiceProvider.getRoomInfo(room_id);
+        let json = await response.json();
+
+        console.log("getRoomInfo value:", json);
+        if (json.success) {
+            let roomInfos = json.result as Array<Room>;
+            let room = self.decorateRoomInfoData(roomInfos[0]);
+
+            return room;
+        }
+        else {
+            throw new Error(json.message);
+        }
     }
 
     public getRoomsInfo(user_id: string, chatrooms: Array<Room>) {
@@ -252,22 +255,19 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
             else {
                 console.log("Can't find roomInfo from persisted data: ", value.rid);
 
-                self.getRoomInfo(value.rid, (err, room) => {
-                    if (!!room) {
-                        chatrooms.forEach(v => {
-                            if (v._id == room._id) {
-                                v = room;
-                            }
-                        });
+                self.getRoomInfo(value.rid).then(room => {
+                    chatrooms.forEach(v => {
+                        if (v._id == room._id) {
+                            v = room;
+                        }
+                    });
 
-                        self.organizeChatLogMap(value, room, function done() {
-                            callback();
-                        });
-                    }
-                    else {
-                        console.warn(err);
+                    self.organizeChatLogMap(value, room, function done() {
                         callback();
-                    }
+                    });
+                }).catch(err => {
+                    console.warn(err);
+                    callback();
                 });
             }
         }, 10);

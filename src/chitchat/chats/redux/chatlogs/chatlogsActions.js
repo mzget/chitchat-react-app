@@ -19,6 +19,7 @@ const chatslogComponent_1 = require("../../chatslogComponent");
 const chatroomActions = require("../chatroom/chatroomActions");
 const chitchatFactory_1 = require("../../chitchatFactory");
 const getStore = () => chitchatFactory_1.ChitChatFactory.getInstance().store;
+const authReducer = () => chitchatFactory_1.ChitChatFactory.getInstance().authStore;
 exports.STALK_INIT_CHATLOG = "STALK_INIT_CHATLOG";
 exports.STALK_GET_CHATSLOG_COMPLETE = "STALK_GET_CHATSLOG_COMPLETE";
 exports.STALK_CHATLOG_MAP_CHANGED = "STALK_CHATLOG_MAP_CHANGED";
@@ -40,14 +41,15 @@ const listenerImp = (newMsg) => {
 };
 function updateLastAccessTimeEventHandler(newRoomAccess) {
     let chatsLogComp = BackendFactory_1.BackendFactory.getInstance().chatLogComp;
-    let user_id = getStore().getState().stalkReducer.user._id;
-    chatsLogComp.getUnreadMessage(user_id, newRoomAccess.roomAccess[0]).then(function (unread) {
+    let { _id } = authReducer().user;
+    chatsLogComp.getUnreadMessage(_id, newRoomAccess).then(function (unread) {
         chatsLogComp.addUnreadMessage(unread);
         calculateUnreadCount();
         onUnreadMessageMapChanged(unread);
         // chatLogDAL.savePersistedUnreadMsgMap(unread);
     }).catch(err => {
-        console.warn("updateLastAccessTimeEventHandler fail", err);
+        if (err)
+            console.warn("updateLastAccessTimeEventHandler fail", err);
     });
 }
 function initChatsLog() {
@@ -72,9 +74,9 @@ function initChatsLog() {
 exports.initChatsLog = initChatsLog;
 function getUnreadMessages() {
     let chatsLogComp = BackendFactory_1.BackendFactory.getInstance().chatLogComp;
-    let user_id = getStore().getState().stalkReducer.user._id;
+    let { _id } = authReducer().user;
     let { roomAccess, state } = getStore().getState().chatlogReducer;
-    chatsLogComp.getUnreadMessages(user_id, roomAccess, function done(err, unreadLogs) {
+    chatsLogComp.getUnreadMessages(_id, roomAccess, function done(err, unreadLogs) {
         if (!!unreadLogs) {
             chatsLogComp.setUnreadMessageMap(unreadLogs);
             calculateUnreadCount();
@@ -131,7 +133,7 @@ function onUnreadMessageMapChanged(unread) {
 }
 function getUnreadMessageComplete() {
     let chatsLogComp = BackendFactory_1.BackendFactory.getInstance().chatLogComp;
-    let { _id } = getStore().getState().stalkReducer.user;
+    let { _id } = authReducer().user;
     let { chatrooms } = getStore().getState().chatroomReducer;
     chatsLogComp.getRoomsInfo(_id, chatrooms);
     // $rootScope.$broadcast('getunreadmessagecomplete', {});

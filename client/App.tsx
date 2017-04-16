@@ -9,7 +9,7 @@ import { chitchatFactory } from "./chitchat";
  */
 import Store from "./redux/configureStore";
 
-import Home from "./containers/Home";
+import { HomeEnhanced } from "./containers/HomeEnhanced";
 import Chat from "./containers/Chat";
 import ChatRoomSettings from "./containers/ChatRoomSettings";
 import Team from "./containers/Team";
@@ -27,7 +27,7 @@ class App extends React.Component<any, any> {
         return (
             <Provider store={Store}>
                 <Router history={browserHistory}>
-                    <Route path="/(:filter)" component={Home} />
+                    <Route path="/(:filter)" component={HomeEnhanced} />
                     <Route path="/chat/(:filter)" component={Chat} />
                     <Route path="/chat/:filter/:room_id" component={ChatRoomSettings} />
                     <Route path="/team/(:filter)" component={Team} />

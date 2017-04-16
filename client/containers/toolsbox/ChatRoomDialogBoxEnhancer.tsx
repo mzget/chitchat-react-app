@@ -1,7 +1,7 @@
 import * as React from "react";
 import { compose, withPropsOnChange, withHandlers } from "recompose";
 
-import { DialogBox, ICompProps } from "../../components/DialogBox";
+import { DialogBox, IDialoxBoxProps } from "../../components/DialogBox";
 
 const enhance = compose(
     withPropsOnChange(["open", "title", "message", "handleClose"], ({
@@ -13,4 +13,4 @@ const enhance = compose(
     })
 );
 
-export const ChatRoomDialogBoxEnhancer = enhance(DialogBox) as React.ComponentClass<ICompProps>;
+export const ChatRoomDialogBoxEnhancer = enhance(DialogBox) as React.ComponentClass<IDialoxBoxProps>;

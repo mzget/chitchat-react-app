@@ -19,3 +19,18 @@ function tokenAuth(token) {
     });
 }
 exports.tokenAuth = tokenAuth;
+function logout(token) {
+    return fetch(`${getConfig().api.auth}/logout`, {
+        method: "POST",
+        headers: chitchatServiceUtils_1.withToken(chitchatServiceUtils_1.chitchat_headers())(token)
+    });
+}
+exports.logout = logout;
+function signup(user) {
+    return fetch(`${getConfig().api.user}/signup`, {
+        method: "POST",
+        headers: chitchatServiceUtils_1.chitchat_headers(),
+        body: JSON.stringify({ user: user })
+    });
+}
+exports.signup = signup;
