@@ -6,6 +6,7 @@ import {
     UPDATE_USER_INFO_FAILURE
 } from "../user/userRx";
 import * as authRx from "../authen/authRx";
+import { UPDATE_LAST_ACCESS_ROOM_FAILURE } from "../../chitchat/chats/redux/chatlogs/chatlogRxActions";
 
 export const CLEAR_ALERT = "CLEAR_ALERT";
 
@@ -40,6 +41,13 @@ export const alertReducer = (state = new AlertInitState(), action: ReduxActions.
         }
         case authRx.AUTH_REDUCER_CLEAR_ERROR: {
             return state.set("error", null);
+        }
+
+        /**
+         * Chatlog reducer...
+         */
+        case UPDATE_LAST_ACCESS_ROOM_FAILURE: {
+            return state.set("error", action.payload.message);
         }
 
         case CLEAR_ALERT:

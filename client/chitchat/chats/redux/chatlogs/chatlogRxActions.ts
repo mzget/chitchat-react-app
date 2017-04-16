@@ -75,10 +75,10 @@ export const updateLastAccessRoom_Epic = action$ =>
             return ServiceProvider.updateLastAccessRoomInfo(_id, action.payload);
         })
         .map(response => {
-            console.log("updateLastAccessRoom_Epic", response.xhr.response);
+            console.log("updateLastAccessRoom value", response.xhr.response);
 
-            let result = response.xhr.response.result[0];
-            let _tempRoomAccess = result.roomAccess as Array<RoomAccessData>;
+            let results = response.xhr.response.result[0];
+            let _tempRoomAccess = results.roomAccess as Array<RoomAccessData>;
             let roomAccess = getStore().getState().chatlogReducer.get("roomAccess") as Array<any>;
 
             let _newRoomAccess = new Array();
@@ -96,6 +96,9 @@ export const updateLastAccessRoom_Epic = action$ =>
                         return value;
                     });
                 }
+            }
+            else {
+                _newRoomAccess = _tempRoomAccess.slice();
             }
 
             BackendFactory.getInstance().dataListener.onUpdatedLastAccessTime(_tempRoomAccess[0]);

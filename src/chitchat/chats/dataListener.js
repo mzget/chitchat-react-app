@@ -44,7 +44,6 @@ class DataListener {
         this.onLeaveRoomListeners.splice(id, 1);
     }
     onAccessRoom(dataEvent) {
-        console.log("onAccessRoom: ", dataEvent);
         if (Array.isArray(dataEvent) && dataEvent.length > 0) {
             let data = dataEvent[0];
             this.dataManager.setRoomAccessForUser(data);

@@ -47,6 +47,8 @@ class DataManager {
         }
     }
     updateRoomAccessForUser(data) {
+        if (!this.myProfile.roomAccess)
+            return;
         this.myProfile.roomAccess.forEach(value => {
             if (value.roomId === data.roomId) {
                 value.accessTime = data.accessTime;

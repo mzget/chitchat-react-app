@@ -1,13 +1,14 @@
-/**
+﻿/**
  * Copyright 2016 Ahoo Studio.co.th.
  *
  * ChatRoomComponent for handle some business logic of chat room.
  */
 import * as async from "async";
+import { ChitChatFactory } from "./chitchatFactory";
+const authReducer = () => ChitChatFactory.getInstance().authStore;
 
 import { IRoomAccessListenerImp } from "./abstracts/IRoomAccessListenerImp";
 import ChatLog from "./models/chatLog";
-import DataManager from "./dataManager";
 import DataListener from "./dataListener";
 import { BackendFactory } from "./BackendFactory";
 import * as CryptoHelper from "./utils/CryptoHelper";
@@ -30,7 +31,6 @@ export class Unread { message: IMessage; rid: string; count: number; }
 
 export class ChatsLogComponent implements IRoomAccessListenerImp {
     serverImp: ServerImplemented = null;
-    dataManager: DataManager = null;
     dataListener: DataListener = null;
 
     private chatlog_count: number = 0;
@@ -57,16 +57,21 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
     public getUnreadItem(room_id: string): IUnread {
         return this.unreadMessageMap.get(room_id);
     }
+    public updatedLastAccessTimeEvent: (data: RoomAccessData) => void;
+    private onUpdateLastAccess(data: RoomAccessData) {
+        if (!!this.updatedLastAccessTimeEvent) {
+            this.updatedLastAccessTimeEvent(data);
+        }
+    }
 
     constructor() {
         this._isReady = false;
-        this.dataManager = BackendFactory.getInstance().dataManager;
         this.dataListener = BackendFactory.getInstance().dataListener;
 
         this.dataListener.addOnRoomAccessListener(this.onAccessRoom.bind(this));
         this.dataListener.addOnChatListener(this.onChat.bind(this));
         this.dataListener.addOnAddRoomAccessListener(this.onAddRoomAccess.bind(this));
-        this.dataListener.addOnUpdateRoomAccessListener(this.onUpdatedLastAccessTime.bind(this));
+        this.dataListener.addOnUpdateRoomAccessListener(this.onUpdateLastAccess.bind(this));
 
         BackendFactory.getInstance().getServer().then(server => {
             this.serverImp = server;
@@ -103,6 +108,14 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         let roomAccess = dataEvent.roomAccess as Array<RoomAccessData>;
         let results = new Array<Room>();
 
+        const done = () => {
+            self._isReady = true;
+
+            if (!!self.onReady) {
+                self.onReady(results);
+            }
+        };
+
         async.each(roomAccess, (item, resultCallback) => {
             self.getRoomInfo(item.roomId)
                 .then(room => {
@@ -118,22 +131,8 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
             console.log("onAccessRoom.finished!", err);
             done();
         });
-
-        const done = () => {
-            self._isReady = true;
-
-            if (!!self.onReady) {
-                self.onReady(results);
-            }
-        };
     }
 
-    public updatedLastAccessTimeEvent: (data: RoomAccessData) => void;
-    onUpdatedLastAccessTime(dataEvent: RoomAccessData) {
-        if (!!this.updatedLastAccessTimeEvent) {
-            this.updatedLastAccessTimeEvent(dataEvent);
-        }
-    }
     public addNewRoomAccessEvent: (data) => void;
     onAddRoomAccess(dataEvent) {
         console.warn("ChatsLogComponent.onAddRoomAccess", JSON.stringify(dataEvent));
@@ -203,7 +202,7 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         if (roomInfo.type == RoomType.privateChat) {
             if (Array.isArray(roomInfo.members)) {
                 let others = roomInfo.members.filter((value) =>
-                    !this.dataManager.isMySelf(value._id)) as Array<MemberImp>;
+                    value._id != authReducer().user._id) as Array<MemberImp>;
                 if (others.length > 0) {
                     let contact = others[0];
 
@@ -256,22 +255,19 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
             else {
                 console.log("Can't find roomInfo from persisted data: ", value.rid);
 
-                self.getRoomInfo(value.rid, (err, room) => {
-                    if (!!room) {
-                        chatrooms.forEach(v => {
-                            if (v._id == room._id) {
-                                v = room;
-                            }
-                        });
+                self.getRoomInfo(value.rid).then(room => {
+                    chatrooms.forEach(v => {
+                        if (v._id == room._id) {
+                            v = room;
+                        }
+                    });
 
-                        self.organizeChatLogMap(value, room, function done() {
-                            callback();
-                        });
-                    }
-                    else {
-                        console.warn(err);
+                    self.organizeChatLogMap(value, room, function done() {
                         callback();
-                    }
+                    });
+                }).catch(err => {
+                    console.warn(err);
+                    callback();
                 });
             }
         }, 10);

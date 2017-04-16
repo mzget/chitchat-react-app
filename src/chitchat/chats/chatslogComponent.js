@@ -13,6 +13,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
  * ChatRoomComponent for handle some business logic of chat room.
  */
 const async = require("async");
+const chitchatFactory_1 = require("./chitchatFactory");
+const authReducer = () => chitchatFactory_1.ChitChatFactory.getInstance().authStore;
 const chatLog_1 = require("./models/chatLog");
 const BackendFactory_1 = require("./BackendFactory");
 const CryptoHelper = require("./utils/CryptoHelper");
@@ -26,19 +28,17 @@ exports.Unread = Unread;
 class ChatsLogComponent {
     constructor() {
         this.serverImp = null;
-        this.dataManager = null;
         this.dataListener = null;
         this.chatlog_count = 0;
         this.chatslog = new Map();
         this.unreadMessageMap = new Map();
         this.chatListeners = new Array();
         this._isReady = false;
-        this.dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
         this.dataListener = BackendFactory_1.BackendFactory.getInstance().dataListener;
         this.dataListener.addOnRoomAccessListener(this.onAccessRoom.bind(this));
         this.dataListener.addOnChatListener(this.onChat.bind(this));
         this.dataListener.addOnAddRoomAccessListener(this.onAddRoomAccess.bind(this));
-        this.dataListener.addOnUpdateRoomAccessListener(this.onUpdatedLastAccessTime.bind(this));
+        this.dataListener.addOnUpdateRoomAccessListener(this.onUpdateLastAccess.bind(this));
         BackendFactory_1.BackendFactory.getInstance().getServer().then(server => {
             this.serverImp = server;
         }).catch(err => {
@@ -64,6 +64,11 @@ class ChatsLogComponent {
     getUnreadItem(room_id) {
         return this.unreadMessageMap.get(room_id);
     }
+    onUpdateLastAccess(data) {
+        if (!!this.updatedLastAccessTimeEvent) {
+            this.updatedLastAccessTimeEvent(data);
+        }
+    }
     addOnChatListener(listener) {
         this.chatListeners.push(listener);
     }
@@ -83,6 +88,12 @@ class ChatsLogComponent {
         this.chatslog.clear();
         let roomAccess = dataEvent.roomAccess;
         let results = new Array();
+        const done = () => {
+            self._isReady = true;
+            if (!!self.onReady) {
+                self.onReady(results);
+            }
+        };
         async.each(roomAccess, (item, resultCallback) => {
             self.getRoomInfo(item.roomId)
                 .then(room => {
@@ -97,17 +108,6 @@ class ChatsLogComponent {
             console.log("onAccessRoom.finished!", err);
             done();
         });
-        const done = () => {
-            self._isReady = true;
-            if (!!self.onReady) {
-                self.onReady(results);
-            }
-        };
-    }
-    onUpdatedLastAccessTime(dataEvent) {
-        if (!!this.updatedLastAccessTimeEvent) {
-            this.updatedLastAccessTimeEvent(dataEvent);
-        }
     }
     onAddRoomAccess(dataEvent) {
         console.warn("ChatsLogComponent.onAddRoomAccess", JSON.stringify(dataEvent));
@@ -169,7 +169,7 @@ class ChatsLogComponent {
     decorateRoomInfoData(roomInfo) {
         if (roomInfo.type == Room_1.RoomType.privateChat) {
             if (Array.isArray(roomInfo.members)) {
-                let others = roomInfo.members.filter((value) => !this.dataManager.isMySelf(value._id));
+                let others = roomInfo.members.filter((value) => value._id != authReducer().user._id);
                 if (others.length > 0) {
                     let contact = others[0];
                     roomInfo.name = (contact.username) ? contact.username : "EMPTY ROOM";
@@ -215,21 +215,18 @@ class ChatsLogComponent {
             }
             else {
                 console.log("Can't find roomInfo from persisted data: ", value.rid);
-                self.getRoomInfo(value.rid, (err, room) => {
-                    if (!!room) {
-                        chatrooms.forEach(v => {
-                            if (v._id == room._id) {
-                                v = room;
-                            }
-                        });
-                        self.organizeChatLogMap(value, room, function done() {
-                            callback();
-                        });
-                    }
-                    else {
-                        console.warn(err);
+                self.getRoomInfo(value.rid).then(room => {
+                    chatrooms.forEach(v => {
+                        if (v._id == room._id) {
+                            v = room;
+                        }
+                    });
+                    self.organizeChatLogMap(value, room, function done() {
                         callback();
-                    }
+                    });
+                }).catch(err => {
+                    console.warn(err);
+                    callback();
                 });
             }
         }, 10);

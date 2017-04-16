@@ -45,6 +45,7 @@ const listenerImp = (newMsg) => {
 function updateLastAccessTimeEventHandler(newRoomAccess: RoomAccessData) {
     let chatsLogComp = BackendFactory.getInstance().chatLogComp;
     let { _id } = authReducer().user;
+
     chatsLogComp.getUnreadMessage(_id, newRoomAccess).then(function (unread) {
         chatsLogComp.addUnreadMessage(unread);
 
@@ -52,7 +53,8 @@ function updateLastAccessTimeEventHandler(newRoomAccess: RoomAccessData) {
         onUnreadMessageMapChanged(unread);
         // chatLogDAL.savePersistedUnreadMsgMap(unread);
     }).catch(err => {
-        console.warn("updateLastAccessTimeEventHandler fail", err);
+        if (err)
+            console.warn("updateLastAccessTimeEventHandler fail", err);
     });
 }
 

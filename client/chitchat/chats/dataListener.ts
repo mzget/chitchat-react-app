@@ -35,7 +35,7 @@ export default class DataListener implements absSpartan.IServerListener, absSpar
     }
 
 
-    private onUpdateRoomAccessEventListeners = new Array();
+    private onUpdateRoomAccessEventListeners = new Array<(data: RoomAccessData) => void>();
     public addOnUpdateRoomAccessListener = (listener: (data: RoomAccessData) => void) => {
         this.onUpdateRoomAccessEventListeners.push(listener);
     }
@@ -57,7 +57,6 @@ export default class DataListener implements absSpartan.IServerListener, absSpar
     }
 
     onAccessRoom(dataEvent: Array<any>) {
-        console.log("onAccessRoom: ", dataEvent);
         if (Array.isArray(dataEvent) && dataEvent.length > 0) {
             let data = dataEvent[0] as StalkAccount;
 

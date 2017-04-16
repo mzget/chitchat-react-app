@@ -2,6 +2,7 @@
 const immutable_1 = require("immutable");
 const userRx_1 = require("../user/userRx");
 const authRx = require("../authen/authRx");
+const chatlogRxActions_1 = require("../../chitchat/chats/redux/chatlogs/chatlogRxActions");
 exports.CLEAR_ALERT = "CLEAR_ALERT";
 exports.AlertInitState = immutable_1.Record({
     error: null
@@ -33,6 +34,12 @@ exports.alertReducer = (state = new exports.AlertInitState(), action) => {
         }
         case authRx.AUTH_REDUCER_CLEAR_ERROR: {
             return state.set("error", null);
+        }
+        /**
+         * Chatlog reducer...
+         */
+        case chatlogRxActions_1.UPDATE_LAST_ACCESS_ROOM_FAILURE: {
+            return state.set("error", action.payload.message);
         }
         case exports.CLEAR_ALERT:
             return state.set("error", null);

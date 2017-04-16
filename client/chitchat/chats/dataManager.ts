@@ -67,6 +67,8 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
         }
     }
     public updateRoomAccessForUser(data: RoomAccessData) {
+        if (!this.myProfile.roomAccess) return;
+
         this.myProfile.roomAccess.forEach(value => {
             if (value.roomId === data.roomId) {
                 value.accessTime = data.accessTime;

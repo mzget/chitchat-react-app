@@ -48,7 +48,8 @@ function updateLastAccessTimeEventHandler(newRoomAccess) {
         onUnreadMessageMapChanged(unread);
         // chatLogDAL.savePersistedUnreadMsgMap(unread);
     }).catch(err => {
-        console.warn("updateLastAccessTimeEventHandler fail", err);
+        if (err)
+            console.warn("updateLastAccessTimeEventHandler fail", err);
     });
 }
 function initChatsLog() {
