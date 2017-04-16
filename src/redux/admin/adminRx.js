@@ -4,7 +4,7 @@ const Rx = require("rxjs");
 const { ajax } = Rx.Observable;
 const configureStore_1 = require("../configureStore");
 const chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
-const config = () => chitchatFactory_1.ChitchatFactory.getInstance().config;
+const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const UserService = require("../../chitchat/chats/services/UserService");
 const CREATE_NEW_ORG_CHART = "CREATE_NEW_ORG_CHART";
 exports.CREATE_NEW_ORG_CHART_SUCCESS = "CREATE_NEW_ORG_CHART_SUCCESS";
