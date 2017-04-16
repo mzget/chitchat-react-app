@@ -71,7 +71,8 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         BackendFactory.getInstance().getServer().then(server => {
             this.serverImp = server;
         }).catch(err => {
-            console.log(err);
+            if (err)
+                console.warn("Stalk server fail", err);
         });
 
         console.log("ChatsLogComponent : constructor");

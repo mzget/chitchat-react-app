@@ -28,6 +28,6 @@ exports.getTeamsInfo_Epic = (action$) => (action$.filter(action => action.type =
         return teamRx_1.getTeamsInfo(userReducer.user.teams);
     }
     else {
-        return null;
+        return { type: "" };
     }
 }));

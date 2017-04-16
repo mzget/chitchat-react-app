@@ -22,7 +22,7 @@ export interface IComponentProps {
     stalkReducer;
     teamReducer;
     groupReducer;
-};
+}
 
 
 export class IUserReducer {

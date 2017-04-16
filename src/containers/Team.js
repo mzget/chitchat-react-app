@@ -10,7 +10,6 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
-const userRx = require("../redux/user/userRx");
 const teamRx = require("../redux/team/teamRx");
 const authRx = require("../redux/authen/authRx");
 const DialogBox_1 = require("../components/DialogBox");
@@ -36,17 +35,6 @@ class Team extends React.Component {
         };
         this.toolbar = (!!userReducer.user)
             ? userReducer.user.username : "Fail username";
-        switch (userReducer.state) {
-            case userRx.FETCH_USER_FAILURE: {
-                this.alertBoxTitle = userRx.FETCH_USER_FAILURE;
-                this.alertBoxMessage = userReducer.error;
-                this.setState({ openDialog: true });
-                break;
-            }
-            default: {
-                break;
-            }
-        }
     }
     componentWillReceiveProps(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } }, userReducer, authReducer, teamReducer } = nextProps;

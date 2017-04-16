@@ -13,25 +13,23 @@ const React = require("react");
  */
 const immutable = require("immutable");
 const react_redux_1 = require("react-redux");
+const recompose_1 = require("recompose");
 const reflexbox_1 = require("reflexbox");
 const Colors = require("material-ui/styles/colors");
 const AuthRx = require("../redux/authen/authRx");
 const AppActions = require("../redux/app/persistentDataActions");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
-const DialogBox_1 = require("../components/DialogBox");
 const AuthenBox_1 = require("./authen/AuthenBox");
 class Home extends React.Component {
     constructor(props) {
         super(props);
-        this.alertMessage = "";
-        this.alertTitle = "";
         this.clientWidth = document.documentElement.clientWidth;
         this.clientHeight = document.documentElement.clientHeight;
         this.headerHeight = 56;
         this.subHeaderHeight = null;
         this.bodyHeight = null;
         this.footerHeight = 24;
-        console.log("Home", global.userAgent);
+        console.log("Home", global.userAgent, this.props);
         this.state = {
             alert: false
         };
@@ -39,19 +37,7 @@ class Home extends React.Component {
         this.footerHeight = 24;
         this.clientHeight = document.documentElement.clientHeight;
         this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight + this.footerHeight));
-        this.closeAlert = this.closeAlert.bind(this);
-        this.onAuthBoxError = this.onAuthBoxError.bind(this);
         this.props.dispatch(AppActions.getSession());
-    }
-    closeAlert() {
-        this.alertTitle = "";
-        this.alertMessage = "";
-        this.setState(prevState => (__assign({}, prevState, { alert: false })), () => this.props.dispatch(AuthRx.clearError()));
-    }
-    onAuthBoxError(error) {
-        this.alertTitle = "Authentication!";
-        this.alertMessage = error;
-        this.setState(prevState => (__assign({}, prevState, { alert: true })));
     }
     componentWillReceiveProps(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer } = nextProps;
@@ -79,10 +65,6 @@ class Home extends React.Component {
                         this.props.dispatch(AuthRx.tokenAuthUser(authReducer.token));
                     break;
                 }
-                case AuthRx.SIGN_UP_FAILURE: {
-                    this.onAuthBoxError(authReducer.error);
-                    break;
-                }
                 default:
                     break;
             }
@@ -90,9 +72,16 @@ class Home extends React.Component {
         if (userReducer.user) {
             this.props.router.push(`/team/${authReducer.user}`);
         }
+        if (userReducer.error) {
+            if (recompose_1.shallowEqual(userReducer.error, this.props.userReducer.error))
+                this.props.onError(userReducer.error);
+        }
+        else if (authReducer.error) {
+            if (recompose_1.shallowEqual(authReducer.error, this.props.userReducer.error))
+                this.props.onError(authReducer.error);
+        }
     }
     render() {
-        let { location: { query: { userId, username, roomId, contactId } } } = this.props;
         return (React.createElement("div", { style: { overflow: "hidden" } },
             React.createElement("div", { id: "toolbar", style: { height: this.headerHeight } },
                 React.createElement(SimpleToolbar_1.SimpleToolbar, { title: "ChitChat team communication." })),
@@ -100,10 +89,9 @@ class Home extends React.Component {
                 React.createElement(reflexbox_1.Flex, { flexColumn: true },
                     React.createElement(reflexbox_1.Flex, { align: "center" },
                         React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
-                        React.createElement(AuthenBox_1.AuthenBox, __assign({}, this.props, { onError: this.onAuthBoxError })),
+                        React.createElement(AuthenBox_1.AuthenBox, __assign({}, this.props, { onError: this.props.onError })),
                         React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
-                    React.createElement(reflexbox_1.Box, { flexAuto: true, justify: "flex-end" }),
-                    React.createElement(DialogBox_1.DialogBox, { title: this.alertTitle, message: this.alertMessage, open: this.state.alert, handleClose: this.closeAlert }))),
+                    React.createElement(reflexbox_1.Box, { flexAuto: true, justify: "flex-end" }))),
             React.createElement("div", { id: "app_footer", style: {
                     width: this.clientWidth, height: this.footerHeight,
                     fontSize: 16, textAlign: "center", backgroundColor: Colors.indigo50
@@ -116,5 +104,4 @@ class Home extends React.Component {
  * ## Redux boilerplate
  */
 const mapStateToProps = (state) => (__assign({}, state));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapStateToProps)(Home);
+exports.HomeWithState = react_redux_1.connect(mapStateToProps)(Home);

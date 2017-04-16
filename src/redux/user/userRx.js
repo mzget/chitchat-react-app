@@ -18,10 +18,11 @@ exports.fetchUser = (username) => ({ type: FETCH_USER, payload: username }); // 
 const fetchUserFulfilled = payload => ({ type: exports.FETCH_USER_SUCCESS, payload });
 const cancelFetchUser = () => ({ type: exports.FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: exports.FETCH_USER_FAILURE, payload });
-exports.fetchUserEpic = action$ => (action$.ofType(FETCH_USER).mergeMap(action => UserService.fetchUser(action.payload)
+exports.fetchUserEpic = action$ => action$.ofType(FETCH_USER)
+    .mergeMap(action => UserService.fetchUser(action.payload)
     .map(response => fetchUserFulfilled(response.xhr.response))
     .takeUntil(action$.ofType(exports.FETCH_USER_CANCELLED))
-    .catch(error => Rx.Observable.of(fetchUserRejected(error)))
+    .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))
     ._do(x => {
     if (x.type == exports.FETCH_USER_SUCCESS) {
         if (x.payload.result && x.payload.result.length > 0) {
@@ -32,7 +33,7 @@ exports.fetchUserEpic = action$ => (action$.ofType(FETCH_USER).mergeMap(action =
             }
         }
     }
-})));
+}));
 const UPDATE_USER_INFO = "UPDATE_USER_INFO";
 exports.UPDATE_USER_INFO_SUCCESS = "UPDATE_USER_INFO_SUCCESS";
 exports.UPDATE_USER_INFO_FAILURE = "UPDATE_USER_INFO_FAILURE";

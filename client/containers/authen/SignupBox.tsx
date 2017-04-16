@@ -19,7 +19,7 @@ interface IComponentNameState {
     lastname: string;
 }
 
-class SignupBox extends React.Component<IComponentNameProps, IComponentNameState> {
+export class SignupBox extends React.Component<IComponentNameProps, IComponentNameState> {
     componentWillMount() {
         this.state = {
             email: "",
@@ -85,5 +85,3 @@ class SignupBox extends React.Component<IComponentNameProps, IComponentNameState
         );
     }
 }
-
-export default SignupBox;

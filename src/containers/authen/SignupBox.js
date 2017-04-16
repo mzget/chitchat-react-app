@@ -65,5 +65,4 @@ class SignupBox extends React.Component {
                 }, onSubmit: this.onSubmitForm })));
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = SignupBox;
+exports.SignupBox = SignupBox;

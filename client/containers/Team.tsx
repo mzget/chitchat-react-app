@@ -43,19 +43,6 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
         };
         this.toolbar = (!!userReducer.user)
             ? userReducer.user.username : "Fail username";
-
-        switch (userReducer.state) {
-            case userRx.FETCH_USER_FAILURE: {
-                this.alertBoxTitle = userRx.FETCH_USER_FAILURE;
-                this.alertBoxMessage = userReducer.error;
-
-                this.setState({ openDialog: true });
-                break;
-            }
-            default: {
-                break;
-            }
-        }
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
