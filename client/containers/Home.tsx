@@ -54,7 +54,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
 
     componentWillReceiveProps(nextProps) {
         let { location: { query: { userId, username, roomId, contactId } },
-            chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer
+            chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer, alertReducer
         } = nextProps as IComponentProps;
 
         let toolbar = document.getElementById("toolbar");
@@ -91,13 +91,8 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
         if (userReducer.user) {
             this.props.router.push(`/team/${authReducer.user}`);
         }
-        if (userReducer.error) {
-            if (shallowEqual(userReducer.error, this.props.userReducer.error))
-                this.props.onError(userReducer.error);
-        }
-        else if (authReducer.error) {
-            if (shallowEqual(authReducer.error, this.props.authReducer.error))
-                this.props.onError(authReducer.error);
+        if (alertReducer.error) {
+            this.props.onError(alertReducer.error);
         }
     }
 

@@ -6,7 +6,6 @@ import * as AppActions from "../app/persistentDataActions";
 export const AuthenInitState = Record({
     token: null,
     isFetching: false,
-    error: null,
     state: null,
     user: null
 });
@@ -14,9 +13,6 @@ export const authReducer = (state = new AuthenInitState(), action) => {
     switch (action.type) {
         case authRx.SIGN_UP_SUCCESS:
             return state.set("state", authRx.SIGN_UP_SUCCESS);
-        case authRx.SIGN_UP_FAILURE:
-            return state.set("state", authRx.SIGN_UP_FAILURE)
-                .set("error", action.payload);
 
         case authRx.AUTH_USER: {
             return state.set("user", action.payload.email);
@@ -28,8 +24,7 @@ export const authReducer = (state = new AuthenInitState(), action) => {
         case authRx.AUTH_USER_FAILURE: {
             return state.set("state", authRx.AUTH_USER_FAILURE)
                 .set("token", null)
-                .set("user", null)
-                .set("error", JSON.stringify(action.payload));
+                .set("user", null);
         }
 
         case AppActions.GET_SESSION_TOKEN_SUCCESS: {
@@ -43,7 +38,6 @@ export const authReducer = (state = new AuthenInitState(), action) => {
         }
         case authRx.TOKEN_AUTH_USER_FAILURE: {
             return state.set("token", null)
-                .set("error", action.payload)
                 .set("state", authRx.TOKEN_AUTH_USER_FAILURE);
         }
 
@@ -53,9 +47,6 @@ export const authReducer = (state = new AuthenInitState(), action) => {
                 .set("user", null);
         }
 
-        case authRx.AUTH_REDUCER_CLEAR_ERROR: {
-            return state.set("error", null).set("state", authRx.AUTH_REDUCER_CLEAR_ERROR);
-        }
         default:
             return state;
     }

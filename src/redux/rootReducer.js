@@ -24,6 +24,7 @@ const groupReducer_1 = require("./group/groupReducer");
 const stalkReducer_1 = require("../chitchat/chats/redux/stalkBridge/stalkReducer");
 const chatroomReducer_1 = require("../chitchat/chats/redux/chatroom/chatroomReducer");
 const chatlogReducer_1 = require("../chitchat/chats/redux/chatlogs/chatlogReducer");
+const alertReducer_1 = require("./app/alertReducer");
 /**
  * ## CombineReducers
  *
@@ -40,6 +41,7 @@ const appReducer = redux_1.combineReducers({
     chatlogReducer: chatlogReducer_1.chatlogReducer,
     userReducer: userReducer_1.userReducer,
     adminReducer: adminReducer_1.adminReducer,
+    alertReducer: alertReducer_1.alertReducer
 });
 /*
  *
@@ -57,6 +59,7 @@ function getInitialState() {
         chatlogReducer: new chatlogReducer_1.ChatLogInitState(),
         userReducer: new userReducer_1.UserInitState(),
         adminReducer: new adminReducer_1.AdminInitState(),
+        alertReducer: new alertReducer_1.AlertInitState()
     };
     return _initState;
 }

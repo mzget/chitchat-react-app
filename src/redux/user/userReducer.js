@@ -9,8 +9,7 @@ exports.UserInitState = immutable_1.Record({
     state: null,
     user: null,
     teamProfile: null,
-    userAvatarResult: null,
-    error: null
+    userAvatarResult: null
 });
 const userInitState = new exports.UserInitState();
 exports.userReducer = (state = userInitState, action) => {
@@ -18,10 +17,6 @@ exports.userReducer = (state = userInitState, action) => {
         case userRx_1.FETCH_USER_SUCCESS:
             return state.set("user", action.payload.result[0])
                 .set("state", userRx_1.FETCH_USER_SUCCESS);
-        case userRx_1.FETCH_USER_FAILURE: {
-            return state.set("state", userRx_1.FETCH_USER_FAILURE)
-                .set("error", action.payload.message);
-        }
         case authRx_1.LOG_OUT_SUCCESS: {
             return userInitState;
         }
@@ -37,10 +32,6 @@ exports.userReducer = (state = userInitState, action) => {
                 return state;
             }
         }
-        case userRx_1.UPLOAD_USER_AVATAR_FAILURE: {
-            return state.set("state", userRx_1.UPLOAD_USER_AVATAR_FAILURE)
-                .set("error", action.payload.message.toString());
-        }
         case userRx_1.UPLOAD_USER_AVATAR_SUCCESS: {
             return state.set("state", userRx_1.UPLOAD_USER_AVATAR_SUCCESS)
                 .set("userAvatarResult", action.payload.result);
@@ -48,13 +39,8 @@ exports.userReducer = (state = userInitState, action) => {
         case userRx_1.UPDATE_USER_INFO_SUCCESS: {
             return state.set("state", userRx_1.UPDATE_USER_INFO_SUCCESS);
         }
-        case userRx_1.UPDATE_USER_INFO_FAILURE: {
-            return state.set("state", userRx_1.UPDATE_USER_INFO_FAILURE)
-                .set("error", action.payload.message);
-        }
         case userRx_1.USERRX_EMPTY_STATE: {
-            return state.set("error", null)
-                .set("userAvatarResult", null)
+            return state.set("userAvatarResult", null)
                 .set("state", null);
         }
         default:

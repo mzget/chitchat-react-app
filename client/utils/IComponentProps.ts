@@ -22,6 +22,7 @@ export interface IComponentProps {
     stalkReducer;
     teamReducer;
     groupReducer;
+    alertReducer;
 }
 
 
