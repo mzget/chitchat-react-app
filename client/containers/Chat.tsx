@@ -14,7 +14,6 @@ import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import UploadingDialog from "./UploadingDialog";
 import GridListSimple from "../components/GridListSimple";
 import { WarningBar } from "../components/WarningBar";
-import { ChatRoomDialogBoxEnhancer } from "./toolsbox/ChatRoomDialogBoxEnhancer";
 
 import { IComponentProps } from "../utils/IComponentProps";
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
@@ -51,9 +50,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     bottom = this.clientHeight * 0.1;
     h_stickerBox = this.clientHeight * 0.3;
 
-    alertTitle = "";
-    alertMessage = "";
-
     componentWillMount() {
         this.state = {
             messages: new Array(),
@@ -71,6 +67,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.onToggleSticker = this.onToggleSticker.bind(this);
         this.onBackPressed = this.onBackPressed.bind(this);
         this.onMenuSelect = this.onMenuSelect.bind(this);
+        this.fileReaderChange = this.fileReaderChange.bind(this);
 
         let { chatroomReducer, userReducer, params } = this.props;
 
@@ -349,10 +346,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
             }
             else {
-                this.alertTitle = "Alert!";
-                this.alertMessage = "Fail to upload file";
-
-                this.setState({ onAlert: true });
+                this.props.onError("Fail to upload file");
             }
         });
     }
@@ -428,11 +422,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                     value={this.state.typingText}
                     fileReaderChange={this.fileReaderChange}
                     onSticker={this.onToggleSticker} />
-                <ChatRoomDialogBoxEnhancer
-                    title={this.alertTitle}
-                    message={this.alertMessage}
-                    open={this.state.onAlert}
-                    handleClose={() => this.setState({ onAlert: !this.state.onAlert })} />
                 <UploadingDialog />
                 <SnackbarToolBox />
             </div>
@@ -444,4 +433,4 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
  * ## Redux boilerplate
  */
 const mapStateToProps = (state) => ({ ...state });
-export default connect(mapStateToProps)(Chat);
+export const ChatPage = connect(mapStateToProps)(Chat) as React.ComponentClass<any>;
