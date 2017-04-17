@@ -23,7 +23,8 @@ interface IEnhanceProps {
 }
 
 const mapStateToProps = (state) => ({
-    userReducer: state.userReducer
+    userReducer: state.userReducer,
+    alertReducer: state.alertReducer
 });
 
 const submit = (props: IEnhanceProps) => {
@@ -36,14 +37,9 @@ const enhance = compose(
     withState("imageFile", "setImageFile", null),
     lifecycle({
         componentWillReceiveProps(nextProps) {
-            let { userReducer } = nextProps;
+            let { userReducer, alertReducer } = nextProps;
 
-            if (userReducer.state == userRx.UPLOAD_USER_AVATAR_FAILURE) {
-                if (!shallowEqual(this.props.userReducer, userReducer)) {
-                    this.props.alert(userReducer.error);
-                }
-            }
-            else if (userReducer.state == userRx.UPLOAD_USER_AVATAR_SUCCESS) {
+            if (userReducer.state == userRx.UPLOAD_USER_AVATAR_SUCCESS) {
                 if (!shallowEqual(this.props.userReducer, userReducer)) {
                     this.props.setImageFile(prev => null);
                     let avatarUrl = `${config().api.host}${userReducer.userAvatarResult.path}`;
@@ -53,15 +49,14 @@ const enhance = compose(
                     this.props.updateUser(prev => user, () => { submit(this.props); });
                 }
             }
-            else if (userReducer.state == userRx.UPDATE_USER_INFO_FAILURE) {
-                if (!shallowEqual(this.props.userReducer, userReducer)) {
-                    this.props.alert(userReducer.error);
-                }
-            }
             else if (userReducer.state == userRx.UPDATE_USER_INFO_SUCCESS) {
                 if (!shallowEqual(this.props.userReducer, userReducer)) {
                     this.props.alert(userRx.UPDATE_USER_INFO_SUCCESS);
                 }
+            }
+
+            if (!!alertReducer.error) {
+                this.props.alert(alertReducer.error);
             }
         }
     }),
