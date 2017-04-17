@@ -15,7 +15,6 @@ const enhanced = recompose_1.compose(react_redux_1.connect(mapStateToProps), rec
     }
 }), recompose_1.withHandlers({
     onClickMyProfile: (props) => item => {
-        console.log("click", item);
         props.router.push("/team/profile/:user");
     }
 }), recompose_1.pure);
