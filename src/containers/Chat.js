@@ -11,7 +11,8 @@ const React = require("react");
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
 const Colors = require("material-ui/styles/colors");
-const config_1 = require("../configs/config");
+const chitchatFactory_1 = require("../chitchat/chats/chitchatFactory");
+const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const TypingBox_1 = require("./TypingBox");
 const ChatBox_1 = require("./chat/ChatBox");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
@@ -237,14 +238,14 @@ class Chat extends React.Component {
     onSubmitImageChat(file, responseUrl) {
         let msg = {
             image: file.name,
-            src: `${config_1.default.api.host}/${responseUrl}`
+            src: `${config().api.host}/${responseUrl}`
         };
         this.prepareSend(msg);
     }
     onSubmitVideoChat(file, responseUrl) {
         let msg = {
             video: file.name,
-            src: `${config_1.default.api.host}/${responseUrl}`
+            src: `${config().api.host}/${responseUrl}`
         };
         this.prepareSend(msg);
     }
@@ -254,7 +255,7 @@ class Chat extends React.Component {
             file: file.name,
             mimetype: mimetype,
             size: size,
-            src: `${config_1.default.api.host}/${path}`
+            src: `${config().api.host}/${path}`
         };
         this.prepareSend(msg);
     }

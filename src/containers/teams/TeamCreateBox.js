@@ -12,7 +12,6 @@ const TeamCreateView_1 = require("./TeamCreateView");
 const FindTeamView_1 = require("./FindTeamView");
 const FindTeamListBox_1 = require("./FindTeamListBox");
 const TeamRx = require("../../redux/team/teamRx");
-;
 class TeamCreateBox extends React.Component {
     componentWillMount() {
         this.state = {

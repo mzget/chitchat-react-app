@@ -5,7 +5,7 @@ import Divider from "material-ui/Divider";
 import Subheader from "material-ui/Subheader";
 import { grey400, darkBlack, lightBlack } from "material-ui/styles/colors";
 
-import { IOrgChart, OrgLevel } from "../../chats/models/OrgChart";
+import { IOrgChart, OrgLevel } from "../../chitchat/chats/models/OrgChart";
 
 interface IComponentProps {
     items: Array<IOrgChart>;

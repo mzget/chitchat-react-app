@@ -1,19 +1,19 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
 
-import { TeamCreateView } from './TeamCreateView';
-import { FindTeamView } from './FindTeamView';
-import { FindTeamListBox } from './FindTeamListBox';
+import { TeamCreateView } from "./TeamCreateView";
+import { FindTeamView } from "./FindTeamView";
+import { FindTeamListBox } from "./FindTeamListBox";
 
-import * as TeamRx from '../../redux/team/teamRx';
+import * as TeamRx from "../../redux/team/teamRx";
 import { IComponentProps } from "../../utils/IComponentProps";
-import { ITeam } from '../../../server/scripts/models/ITeam';
+import { ITeam } from "../../chitchat/chats/models/ITeam";
 
 
 interface IComponentNameState {
     team_name: string;
     is_FindTeam: boolean;
-};
+}
 
 class TeamCreateBox extends React.Component<IComponentProps, IComponentNameState> {
     componentWillMount() {

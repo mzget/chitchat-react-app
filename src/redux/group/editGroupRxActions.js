@@ -1,8 +1,9 @@
 "use strict";
-const config_1 = require("../../configs/config");
 const redux_actions_1 = require("redux-actions");
 const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
+const chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
+const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const configureStore_1 = require("../configureStore");
 const EDIT_GROUP_MEMBER = "EDIT_GROUP_MEMBER";
 exports.EDIT_GROUP_MEMBER_SUCCESS = "EDIT_GROUP_MEMBER_SUCCESS";
@@ -14,7 +15,7 @@ const editGroupMemberFailure = redux_actions_1.createAction(EDIT_GROUP_MEMBER_FA
 const editGroupMemberCancelled = redux_actions_1.createAction(EDIT_GROUP_MEMBER_CANCELLED);
 exports.editGroupMember_Epic = action$ => (action$.ofType(EDIT_GROUP_MEMBER).mergeMap(action => ajax({
     method: "POST",
-    url: `${config_1.default.api.group}/editMember/${action.payload.room_id}`,
+    url: `${config().api.group}/editMember/${action.payload.room_id}`,
     body: JSON.stringify({ members: action.payload.members }),
     headers: {
         "Content-Type": "application/json",
@@ -42,7 +43,7 @@ const editGroupDetailFailure = redux_actions_1.createAction(exports.EDIT_GROUP_D
 const editGroupDetailCancelled = redux_actions_1.createAction(EDIT_GROUP_DETAIL_CANCELLED);
 exports.editGroupDetail_Epic = action$ => (action$.ofType(EDIT_GROUP_DETAIL).mergeMap(action => ajax({
     method: "POST",
-    url: `${config_1.default.api.group}/update`,
+    url: `${config().api.group}/update`,
     body: JSON.stringify({ room: action.payload }),
     headers: {
         "Content-Type": "application/json",

@@ -1,5 +1,4 @@
-﻿import config from "../../configs/config";
-import { createAction } from "redux-actions";
+﻿import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
 const { Observable } = Rx;
 const { ajax, fromPromise } = Observable;

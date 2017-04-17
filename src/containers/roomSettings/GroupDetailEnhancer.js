@@ -7,13 +7,14 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-const GroupDetail_1 = require("./GroupDetail");
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const recompose_1 = require("recompose");
-const config_1 = require("../../configs/config");
+const GroupDetail_1 = require("./GroupDetail");
 const editGroupRxActions = require("../../redux/group/editGroupRxActions");
 const groupRx = require("../../redux/group/groupRx");
+const chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
+const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const submit = (props) => {
     console.log(props);
     let group = __assign({}, props.group);
@@ -33,7 +34,7 @@ const enhance = recompose_1.compose(recompose_1.withState("group_name", "setGrou
         else if (groupReducer.state == groupRx.UPLOAD_GROUP_IMAGE_SUCCESS) {
             if (!recompose_1.shallowEqual(this.props.groupReducer, groupReducer)) {
                 this.props.setImageFile(prev => null);
-                this.props.setImageUrl(prev => `${config_1.default.api.host}${groupReducer.groupImageResult.path}`, () => {
+                this.props.setImageUrl(prev => `${config().api.host}${groupReducer.groupImageResult.path}`, () => {
                     submit(this.props);
                 });
             }

@@ -4,7 +4,8 @@ import * as async from "async";
 import { Flex, Box } from "reflexbox";
 import * as Colors from "material-ui/styles/colors";
 
-import Config from "../configs/config";
+import { ChitChatFactory } from "../chitchat/chats/chitchatFactory";
+const config = () => ChitChatFactory.getInstance().config;
 
 import { TypingBox } from "./TypingBox";
 import { ChatBox } from "./chat/ChatBox";
@@ -283,7 +284,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     onSubmitImageChat(file: File, responseUrl: string) {
         let msg = {
             image: file.name,
-            src: `${Config.api.host}/${responseUrl}`
+            src: `${config().api.host}/${responseUrl}`
         };
 
         this.prepareSend(msg);
@@ -292,7 +293,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     onSubmitVideoChat(file: File, responseUrl: string) {
         let msg = {
             video: file.name,
-            src: `${Config.api.host}/${responseUrl}`
+            src: `${config().api.host}/${responseUrl}`
         };
 
         this.prepareSend(msg);
@@ -304,7 +305,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             file: file.name,
             mimetype: mimetype,
             size: size,
-            src: `${Config.api.host}/${path}`
+            src: `${config().api.host}/${path}`
         };
 
         this.prepareSend(msg);

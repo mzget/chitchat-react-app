@@ -7,8 +7,7 @@ import { List, ListItem } from "material-ui/List";
 import Divider from "material-ui/Divider";
 import Avatar from "material-ui/Avatar";
 
-
-import { ChitChatAccount } from "../../../server/scripts/models/User";
+import { ChitChatAccount } from "../../chitchat/chats/models/User";
 
 export const GroupMember = (props: { members: Array<ChitChatAccount> }) => (
     <MuiThemeProvider>

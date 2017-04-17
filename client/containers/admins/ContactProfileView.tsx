@@ -3,8 +3,8 @@ import * as React from "react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { RaisedButton, TextField, MenuItem, SelectField, Subheader } from "material-ui";
 
-import { ChitChatAccount } from "../../chats/models/User";
-import { IOrgChart } from "../../chats/models/OrgChart";
+import { ChitChatAccount } from "../../chitchat/chats/models/User";
+import { IOrgChart } from "../../chitchat/chats/models/OrgChart";
 
 interface IComponentProps {
     member: ChitChatAccount;

@@ -5,14 +5,14 @@ import Avatar from "material-ui/Avatar";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
-import { MessageType } from "../../libs/shared/Message";
-import { MessageImp } from "../../chats/models/MessageImp";
+import { MessageType } from "../../chitchat/libs/shared/Message";
+import { MessageImp } from "../../chitchat/chats/models/MessageImp";
+import * as FileType from "../../chitchat/libs/shared/FileType";
+
 import { CardTextWithAvatar } from "../../components/CardTextWithAvatar";
 import { CardImageWithAvatar, CardStickerWithAvatar } from "../../components/CardImageWithAvatar";
 import { CardFileWithAvatar } from "../../components/CardFileWithAvatar";
 import { CardVideoWithAvatar } from "../../components/CardVideoWithAvatar";
-
-import * as FileType from "../../libs/shared/FileType";
 
 const FontAwesome = require("react-fontawesome");
 
