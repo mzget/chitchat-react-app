@@ -15,7 +15,7 @@ import ChatRoomSettings from "./containers/ChatRoomSettings";
 import Team from "./containers/Team";
 import { ProfilePageEnhanced } from "./containers/ProfilePageEnhanced";
 import Main from "./containers/Main";
-import Admin from "./containers/Admin";
+import { AdminPageEnhanced } from "./containers/AdminPageEnhanced";
 
 chitchatFactory.initStore(Store);
 Store.subscribe(() =>
@@ -33,7 +33,7 @@ class App extends React.Component<any, any> {
                     <Route path="/team/(:filter)" component={Team} />
                     <Route path="/team/(:filter)/:user" component={ProfilePageEnhanced} />
                     <Route path="/chatslist/(:filter)" component={Main} />
-                    <Route path="/admin/(:filter)" component={Admin} />
+                    <Route path="/admin/(:filter)" component={AdminPageEnhanced} />
                 </Router>
             </Provider>
         );

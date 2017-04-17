@@ -14,7 +14,7 @@ const ChatRoomSettings_1 = require("./containers/ChatRoomSettings");
 const Team_1 = require("./containers/Team");
 const ProfilePageEnhanced_1 = require("./containers/ProfilePageEnhanced");
 const Main_1 = require("./containers/Main");
-const Admin_1 = require("./containers/Admin");
+const AdminPageEnhanced_1 = require("./containers/AdminPageEnhanced");
 chitchat_1.chitchatFactory.initStore(configureStore_1.default);
 configureStore_1.default.subscribe(() => chitchat_1.chitchatFactory.setAuthStore(configureStore_1.default.getState().userReducer.user, configureStore_1.default.getState().authReducer.token));
 class App extends React.Component {
@@ -27,7 +27,7 @@ class App extends React.Component {
                 React.createElement(react_router_1.Route, { path: "/team/(:filter)", component: Team_1.default }),
                 React.createElement(react_router_1.Route, { path: "/team/(:filter)/:user", component: ProfilePageEnhanced_1.ProfilePageEnhanced }),
                 React.createElement(react_router_1.Route, { path: "/chatslist/(:filter)", component: Main_1.default }),
-                React.createElement(react_router_1.Route, { path: "/admin/(:filter)", component: Admin_1.default }))));
+                React.createElement(react_router_1.Route, { path: "/admin/(:filter)", component: AdminPageEnhanced_1.AdminPageEnhanced }))));
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
