@@ -13,7 +13,7 @@ function getContactProfile(userId) {
     return __awaiter(this, void 0, void 0, function* () {
         let members = getTeam().members;
         return new Promise((resolve, rejected) => {
-            if (members && members.length > 0) {
+            if (!members || members.length <= 0) {
                 return rejected("No have members");
             }
             let users = members.filter(value => {

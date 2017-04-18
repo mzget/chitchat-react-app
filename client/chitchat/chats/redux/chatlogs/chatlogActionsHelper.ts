@@ -10,7 +10,7 @@ export async function getContactProfile(userId: string) {
 
     return new Promise((resolve: (data: ITeamMember) => void, rejected) => {
 
-        if (members && members.length > 0) {
+        if (!members || members.length <= 0) {
             return rejected("No have members");
         }
 
