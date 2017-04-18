@@ -21,11 +21,13 @@ import SecureServiceFactory from "./secure/secureServiceFactory";
 
 import { MessageType, IMessage } from "../libs/shared/Message";
 import { Room, IMember } from "../libs/shared/Room";
+import { RoomAccessData } from "../libs/shared/Stalk";
 import { MessageImp } from "./models/MessageImp";
 
-import { ChitChatFactory } from "./chitchatFactory";
 import { imagesPath } from "../consts/StickerPath";
+import { ChitChatFactory } from "./chitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
+const getStore = () => ChitChatFactory.getInstance().store;
 
 let serverImp: ServerImplemented = null;
 
@@ -210,7 +212,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         let lastMessageTime = new Date();
 
         const getLastMessageTime = (cb: (boo: boolean) => void) => {
-            let roomAccess = self.dataManager.getRoomAccess();
+            let { roomAccess }: { roomAccess: Array<RoomAccessData> } = getStore().getState().chatlogReducer;
             async.some(roomAccess, (item, cb) => {
                 if (item.roomId === self.roomId) {
                     lastMessageTime = item.accessTime;
@@ -232,7 +234,8 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
             }
             // Save persistent chats log here.
             let results = await self.dataManager.messageDAL.saveData(self.roomId, _results) as Array<IMessage>;
-            callback(results);
+
+            callback(_results);
         };
 
         const getNewerMessage = async () => {

@@ -38,7 +38,7 @@ class ChatsLogComponent {
         this.dataListener.addOnRoomAccessListener(this.onAccessRoom.bind(this));
         this.dataListener.addOnChatListener(this.onChat.bind(this));
         this.dataListener.addOnAddRoomAccessListener(this.onAddRoomAccess.bind(this));
-        this.dataListener.addOnUpdateRoomAccessListener(this.onUpdateLastAccess.bind(this));
+        this.dataListener.addOnUpdateRoomAccessListener(this.onUpdatedLastAccessTime.bind(this));
         BackendFactory_1.BackendFactory.getInstance().getServer().then(server => {
             this.serverImp = server;
         }).catch(err => {
@@ -64,7 +64,7 @@ class ChatsLogComponent {
     getUnreadItem(room_id) {
         return this.unreadMessageMap.get(room_id);
     }
-    onUpdateLastAccess(data) {
+    onUpdatedLastAccessTime(data) {
         if (!!this.updatedLastAccessTimeEvent) {
             this.updatedLastAccessTimeEvent(data);
         }
@@ -167,17 +167,30 @@ class ChatsLogComponent {
         });
     }
     decorateRoomInfoData(roomInfo) {
-        if (roomInfo.type == Room_1.RoomType.privateChat) {
-            if (Array.isArray(roomInfo.members)) {
-                let others = roomInfo.members.filter((value) => value._id != authReducer().user._id);
-                if (others.length > 0) {
-                    let contact = others[0];
-                    roomInfo.name = (contact.username) ? contact.username : "EMPTY ROOM";
-                    roomInfo.image = (contact.avatar) ? contact.avatar : null;
+        return __awaiter(this, void 0, void 0, function* () {
+            if (roomInfo.type == Room_1.RoomType.privateChat) {
+                if (Array.isArray(roomInfo.members)) {
+                    let others = roomInfo.members.filter((value) => value._id != authReducer().user._id);
+                    if (others.length > 0) {
+                        let contact = others[0];
+                        let avatar = null;
+                        if (!contact.avatar) {
+                            try {
+                                let user = yield chatlogActionsHelper.getContactProfile(contact._id);
+                                avatar = user.avatar;
+                            }
+                            catch (err) {
+                                if (err)
+                                    console.warn("getContactProfile fail", err);
+                            }
+                        }
+                        roomInfo.name = (contact.username) ? contact.username : "EMPTY ROOM";
+                        roomInfo.image = (contact.avatar) ? contact.avatar : avatar;
+                    }
                 }
             }
-        }
-        return roomInfo;
+            return roomInfo;
+        });
     }
     getRoomInfo(room_id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -187,7 +200,7 @@ class ChatsLogComponent {
             console.log("getRoomInfo value:", json);
             if (json.success) {
                 let roomInfos = json.result;
-                let room = self.decorateRoomInfoData(roomInfos[0]);
+                let room = yield self.decorateRoomInfoData(roomInfos[0]);
                 return room;
             }
             else {
@@ -203,13 +216,16 @@ class ChatsLogComponent {
             let rooms = chatrooms.filter(v => v._id == value.rid);
             let roomInfo = (rooms.length > 0) ? rooms[0] : null;
             if (!!roomInfo) {
-                let room = self.decorateRoomInfoData(roomInfo);
-                chatrooms.forEach(v => {
-                    if (v._id == room._id) {
-                        v = room;
-                    }
-                });
-                self.organizeChatLogMap(value, room, function done() {
+                self.decorateRoomInfoData(roomInfo).then(room => {
+                    chatrooms.forEach(v => {
+                        if (v._id == room._id) {
+                            v = room;
+                        }
+                    });
+                    self.organizeChatLogMap(value, room, function done() {
+                        callback();
+                    });
+                }).catch(err => {
                     callback();
                 });
             }
@@ -273,8 +289,15 @@ class ChatsLogComponent {
             log.setNotiCount(unread.count);
             if (!!unread.message) {
                 log.setLastMessageTime(unread.message.createTime.toString());
-                let contact = yield chatlogActionsHelper.getContactProfile(unread.message.sender);
-                let sender = (!!contact) ? contact.displayname : "";
+                let contact = null;
+                try {
+                    contact = yield chatlogActionsHelper.getContactProfile(unread.message.sender);
+                }
+                catch (err) {
+                    if (err)
+                        console.warn("getContactProfile fail", err);
+                }
+                let sender = (!!contact) ? contact.username : "";
                 if (unread.message.body != null) {
                     let displayMsg = unread.message.body;
                     switch (`${unread.message.type}`) {
@@ -354,15 +377,14 @@ class ChatsLogComponent {
             let roomInfo = rooms[0];
             if (!roomInfo) {
                 console.warn("No have roomInfo in room store.", unread.rid);
-                this.getRoomInfo(unread.rid, (err, room) => {
-                    if (!!room) {
-                        this.organizeChatLogMap(unread, room, () => {
-                            resolve(room);
-                        });
-                    }
-                    else {
-                        rejected(err);
-                    }
+                self.getRoomInfo(unread.rid).then(room => {
+                    this.organizeChatLogMap(unread, room, () => {
+                        resolve(room);
+                    });
+                }).catch(err => {
+                    if (err)
+                        console.warn("getRoomInfo fail", err);
+                    rejected(err);
                 });
             }
             else {

@@ -20,5 +20,8 @@ class ChitChatFactory {
     setAuthStore(user, chitchat_token) {
         this.authStore = { user: user, chitchat_token: chitchat_token };
     }
+    setTeamStore(store) {
+        this.teamStore = store;
+    }
 }
 exports.ChitChatFactory = ChitChatFactory;

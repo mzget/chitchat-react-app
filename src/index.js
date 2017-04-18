@@ -1,4 +1,4 @@
-global.userAgent = navigator.userAgent;
+global.userAgent = "react-js";
 
 import React from 'react';
 import ReactDOM from 'react-dom';

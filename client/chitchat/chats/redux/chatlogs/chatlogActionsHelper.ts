@@ -1,43 +1,45 @@
-
-import { BackendFactory } from "../../BackendFactory";
 import * as UserService from "../../services/UserService";
 
-import { ContactInfo } from "../../models/Contact";
+import { ITeamMember } from "../../models/IteamMember";
+
+import { ChitChatFactory } from "../../chitchatFactory";
+const getTeam = () => ChitChatFactory.getInstance().teamStore;
 
 export async function getContactProfile(userId: string) {
-    /*
-    let self = this;
-    let dataManager = BackendFactory.getInstance().dataManager;
-    let user = dataManager.getContactProfile(userId) as ContactInfo;
+    let members = getTeam().members;
+    let users = members.filter(value => {
+        return value._id == userId;
+    });
 
-    return new Promise((resolve: (data: ContactInfo) => void, rejected) => {
-        if (!user) {
-            UserService.getUserInfo(userId)
-                .then(result => result.json())
-                .then(result => {
-                    console.log("getUserInfo value", result);
-
-                    if (result.success) {
-                        let user = result.data[0];
-                        let contact: ContactInfo = {
-                            _id: user._id, displayname: `${user.first_name} ${user.last_name}`, status: "", image: user.avatar
-                        };
-                        dataManager.setContactProfile(user._id, contact);
-
-                        resolve(contact);
-                    }
-                    else {
-                        dataManager.setContactProfile(userId, {} as ContactInfo);
-                        rejected(result.message);
-                    }
-                }).catch(err => {
-                    console.warn("getUserInfo fail", err);
-                    rejected(err);
-                });
-        }
-        else {
+    return new Promise((resolve: (data: ITeamMember) => void, rejected) => {
+        if (users.length > 0) {
+            let user = users[0];
             resolve(user);
         }
+        else {
+            rejected("No implemented functions");
+            // UserService.getUserInfo(userId)
+            //     .then(result => result.json())
+            //     .then(result => {
+            //         console.log("getUserInfo value", result);
+
+            //         if (result.success) {
+            //             let user = result.data[0];
+            //             let contact: ContactInfo = {
+            //                 _id: user._id, displayname: `${user.first_name} ${user.last_name}`, status: "", image: user.avatar
+            //             };
+            //             dataManager.setContactProfile(user._id, contact);
+
+            //             resolve(contact);
+            //         }
+            //         else {
+            //             dataManager.setContactProfile(userId, {} as ContactInfo);
+            //             rejected(result.message);
+            //         }
+            //     }).catch(err => {
+            //         console.warn("getUserInfo fail", err);
+            //         rejected(err);
+            //     });
+        }
     });
-    */
 }

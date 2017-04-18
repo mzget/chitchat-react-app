@@ -34,6 +34,7 @@ const Message_1 = require("../../../libs/shared/Message");
 const chitchatFactory_1 = require("../../chitchatFactory");
 const getStore = () => chitchatFactory_1.ChitChatFactory.getInstance().store;
 const getConfig = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
+const authReducer = () => chitchatFactory_1.ChitChatFactory.getInstance().authStore;
 const secure = secureServiceFactory_1.default.getService();
 /**
  * ChatRoomActionsType
@@ -140,11 +141,13 @@ function getNewerMessage_success(messages) {
 }
 function getNewerMessageFromNet() {
     return dispatch => {
-        let token = getStore().getState().authReducer.token;
+        let token = authReducer().chitchat_token;
         chatRoomComponent_1.default.getInstance().getNewerMessageRecord(token, (results) => {
             dispatch(getNewerMessage_success(results));
             // @Todo next joinroom function is ready to call.
         }).catch(err => {
+            if (err)
+                console.warn("getNewerMessageRecord fail", err);
             dispatch(getNewerMessage_failure());
         });
     };

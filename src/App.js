@@ -16,7 +16,13 @@ const ProfilePageEnhanced_1 = require("./containers/ProfilePageEnhanced");
 const Main_1 = require("./containers/Main");
 const AdminPageEnhanced_1 = require("./containers/AdminPageEnhanced");
 chitchat_1.chitchatFactory.initStore(configureStore_1.default);
-configureStore_1.default.subscribe(() => chitchat_1.chitchatFactory.setAuthStore(configureStore_1.default.getState().userReducer.user, configureStore_1.default.getState().authReducer.token));
+configureStore_1.default.subscribe(() => {
+    chitchat_1.chitchatFactory.setAuthStore(configureStore_1.default.getState().userReducer.user, configureStore_1.default.getState().authReducer.token);
+    chitchat_1.chitchatFactory.setTeamStore({
+        team: configureStore_1.default.getState().teamReducer.team,
+        members: configureStore_1.default.getState().teamReducer.members
+    });
+});
 class App extends React.Component {
     render() {
         return (React.createElement(react_redux_1.Provider, { store: configureStore_1.default },

@@ -23,9 +23,10 @@ import { MessageType, IMessage } from "../../../libs/shared/Message";
 import { MemberImp } from "../../models/MemberImp";
 
 import { ChitChatFactory } from "../../chitchatFactory";
-
 const getStore = () => ChitChatFactory.getInstance().store;
 const getConfig = () => ChitChatFactory.getInstance().config;
+const authReducer = () => ChitChatFactory.getInstance().authStore;
+
 const secure = SecureServiceFactory.getService();
 
 /**
@@ -145,11 +146,12 @@ function getNewerMessage_success(messages: any) {
 }
 export function getNewerMessageFromNet() {
     return dispatch => {
-        let token = getStore().getState().authReducer.token;
+        let token = authReducer().chitchat_token;
         ChatRoomComponent.getInstance().getNewerMessageRecord(token, (results) => {
             dispatch(getNewerMessage_success(results));
             // @Todo next joinroom function is ready to call.
         }).catch(err => {
+            if (err) console.warn("getNewerMessageRecord fail", err);
             dispatch(getNewerMessage_failure());
         });
     };

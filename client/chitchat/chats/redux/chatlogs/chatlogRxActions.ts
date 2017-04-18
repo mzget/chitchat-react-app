@@ -133,5 +133,4 @@ export const getLastAccessRoom_Epic = action$ => (
             BackendFactory.getInstance().dataListener.onAccessRoom(json.result);
             return getLastAccessRoomSuccess(json.result);
         })
-        .catch(json => Rx.Observable.of(getLastAccessRoomFailure(json.message)))
-);
+        .catch(json => Rx.Observable.of(getLastAccessRoomFailure(json.message))));
