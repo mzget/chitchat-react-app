@@ -4,9 +4,9 @@ import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
 
 import { ChatPage } from "./Chat";
 
-export const ChatPageEnhanced = DialogBoxEnhancer(({ title, message, open, handleClose, onError, location, router }: any) => (
+export const ChatPageEnhanced = DialogBoxEnhancer(({ title, message, open, handleClose, onError, location, router, params }: any) => (
     <div>
-        <ChatPage onError={onError} location={location} router={router} />
+        <ChatPage onError={onError} location={location} router={router} params={params} />
         <DialogBox
             title={title}
             message={message}

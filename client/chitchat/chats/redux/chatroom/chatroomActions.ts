@@ -5,7 +5,7 @@
  */
 
 import Rx = require("rxjs/Rx");
-
+import * as R from "ramda";
 
 import * as ServiceProvider from "../../services/ServiceProvider";
 import ChatRoomComponent from "../../chatRoomComponent";
@@ -352,18 +352,10 @@ export const updateChatRoom = (rooms: Array<Room>) => {
     return dispatch => {
         dispatch({ type: UPDATE_CHATROOMS, payload: rooms });
 
-        let chatrooms = getStore().getState().chatroomReducer.chatrooms as Array<Room>;
+        let chatrooms: Array<Room> = getStore().getState().chatroomReducer.get("chatrooms");
         if (chatrooms) {
-            Rx.Observable.from(rooms)._do(
-                (x: Room) => {
-                    let id = chatrooms.indexOf(x);
-                    if (id < 0) { chatrooms.push(x); }
-                },
-                err => { },
-                () => {
-                    dispatch(updatedChatRoomSuccess(chatrooms));
-                }
-            ).subscribe();
+            let _newRooms = R.union(chatrooms, rooms);
+            dispatch(updatedChatRoomSuccess(_newRooms));
         }
         else {
             chatrooms = rooms.slice();

@@ -20,7 +20,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const Rx = require("rxjs/Rx");
+const R = require("ramda");
 const ServiceProvider = require("../../services/ServiceProvider");
 const chatRoomComponent_1 = require("../../chatRoomComponent");
 const BackendFactory_1 = require("../../BackendFactory");
@@ -329,16 +329,10 @@ exports.updatedChatRoomSuccess = (chatrooms) => ({ type: exports.UPDATED_CHATROO
 exports.updateChatRoom = (rooms) => {
     return dispatch => {
         dispatch({ type: exports.UPDATE_CHATROOMS, payload: rooms });
-        let chatrooms = getStore().getState().chatroomReducer.chatrooms;
+        let chatrooms = getStore().getState().chatroomReducer.get("chatrooms");
         if (chatrooms) {
-            Rx.Observable.from(rooms)._do((x) => {
-                let id = chatrooms.indexOf(x);
-                if (id < 0) {
-                    chatrooms.push(x);
-                }
-            }, err => { }, () => {
-                dispatch(exports.updatedChatRoomSuccess(chatrooms));
-            }).subscribe();
+            let _newRooms = R.union(chatrooms, rooms);
+            dispatch(exports.updatedChatRoomSuccess(_newRooms));
         }
         else {
             chatrooms = rooms.slice();

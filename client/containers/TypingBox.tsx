@@ -2,9 +2,11 @@ import * as React from "react";
 import { Flex, Box } from "reflexbox";
 import { RaisedButton, TextField } from "material-ui";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import * as FileReaderInput from "react-file-reader-input";
 import FontIcon from "material-ui/FontIcon";
 import IconButton from "material-ui/IconButton";
+import * as Colors from "material-ui/styles/colors";
+
+import * as FileReaderInput from "react-file-reader-input";
 
 const styles = {
     span: {
@@ -45,7 +47,7 @@ const StickerButton = (props: ITypingBox) => (
 export const TypingBox = (props: ITypingBox) => {
     return (
         < MuiThemeProvider >
-            <div style={props.styles} id={"typing_box"} >
+            <div id={"typing_box"} style={{ margin: 2, backgroundColor: Colors.darkWhite }} >
                 <Flex>
                     <StickerButton {...props} />
                     <FileReaderBox {...props} />
@@ -56,7 +58,8 @@ export const TypingBox = (props: ITypingBox) => {
                         onChange={props.onValueChange}
                         onKeyDown={(e) => {
                             if (e.key === "Enter") props.onSubmit();
-                        }} />
+                        }}
+                        fullWidth={true} />
                     <SendButton {...props} />
                 </Flex>
             </div>

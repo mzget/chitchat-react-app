@@ -378,7 +378,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         let { chatroomReducer, stalkReducer } = this.props;
 
         return (
-            <div style={{ overflowY: "hidden" }}>
+            <div style={{ overflowY: "hidden", backgroundColor: Colors.indigo50 }}>
                 <div style={{ height: this.h_header }} id={"toolbar"}>
                     <SimpleToolbar
                         title={(chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty"}
@@ -415,7 +415,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                         : null
                 }
                 <TypingBox
-                    styles={{ width: this.clientWidth }}
                     disabled={this.props.chatroomReducer.chatDisabled}
                     onSubmit={this.onSubmitTextChat}
                     onValueChange={this.onTypingTextChange}
