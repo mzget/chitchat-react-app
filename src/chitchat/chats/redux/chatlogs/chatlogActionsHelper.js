@@ -12,10 +12,13 @@ const getTeam = () => chitchatFactory_1.ChitChatFactory.getInstance().teamStore;
 function getContactProfile(userId) {
     return __awaiter(this, void 0, void 0, function* () {
         let members = getTeam().members;
-        let users = members.filter(value => {
-            return value._id == userId;
-        });
         return new Promise((resolve, rejected) => {
+            if (members && members.length > 0) {
+                rejected("No have members");
+            }
+            let users = members.filter(value => {
+                return value._id == userId;
+            });
             if (users.length > 0) {
                 let user = users[0];
                 resolve(user);
