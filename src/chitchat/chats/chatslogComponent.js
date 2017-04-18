@@ -295,7 +295,7 @@ class ChatsLogComponent {
                 }
                 catch (err) {
                     if (err)
-                        console.warn("getContactProfile fail", err);
+                        console.warn("get sender contact fail", err);
                 }
                 let sender = (!!contact) ? contact.username : "";
                 if (unread.message.body != null) {
