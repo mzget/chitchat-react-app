@@ -7,12 +7,12 @@ const style = {
 };
 
 import { TeamListView } from "./TeamListView";
-import { ITeam } from "../../chats/models/ITeam";
+import { ITeam } from "../../chitchat/chats/models/ITeam";
 
 abstract class IComponentNameProps {
     teams: Array<any>;
     onSelectTeam: (team: ITeam) => void;
-};
+}
 
 export const TeamListBox = (props: IComponentNameProps) => (
     <div>

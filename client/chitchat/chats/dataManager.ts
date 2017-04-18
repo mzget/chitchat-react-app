@@ -46,6 +46,8 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
     public messageDAL: IMessageDAL;
 
     constructor() {
+        console.log(global.userAgent);
+
         this.messageDAL = MessageDALFactory.getObject();
     }
 
@@ -78,9 +80,9 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
         });
     }
 
-    public getRoomAccess(): RoomAccessData[] {
-        return this.myProfile.roomAccess;
-    }
+    // public getRoomAccess(): RoomAccessData[] {
+    //     return this.myProfile.roomAccess;
+    // }
 
     // <!---------- Group ------------------------------------
     public updateGroupImage(data: Room) {

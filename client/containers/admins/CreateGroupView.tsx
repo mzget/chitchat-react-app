@@ -17,6 +17,9 @@ const styles = {
     },
     avatar: {
         margin: 5
+    },
+    toolbar: {
+        height: 56
     }
 };
 
@@ -37,41 +40,43 @@ const SubmitButton = (props: IComponentProps) => (
 
 export const CreateGroupView = (props: IComponentProps) => (comp: JSX.Element) => (
     <MuiThemeProvider>
-        <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align="center">
-            <Box justify="center" align="center" p={2}>
-                <h3>Create Group</h3>
-                <p>Enter group informations</p>
-            </Box>
-            <FileReaderInput
-                as="url"
-                id="file-input"
-                onChange={(props.onFileReaderChange) ? props.onFileReaderChange : () => { }}
-                disabled={props.disabledImage}>
-                <Avatar
-                    src={props.image}
-                    size={96}
-                    style={styles.avatar}
-                />
-            </FileReaderInput>
-            <TextField
-                hintText="group name"
-                errorText="This field is required"
-                value={props.group_name}
-                onChange={props.onGroupNameChange}
-                onKeyDown={(e) => {
-                    if (e.key === "Enter") props.onSubmit();
-                }} />
-            <span style={styles.span} />
-            <TextField
-                hintText="group description"
-                value={props.group_description}
-                onChange={props.onGroupDescriptionChange}
-                onKeyDown={(e) => {
-                    if (e.key === "Enter") props.onSubmit();
-                }} />
-            <span style={styles.span} />
-            {comp}
-            <SubmitButton {...props} />
-        </Flex>
+        <div style={{ height: (document.documentElement.clientHeight - styles.toolbar.height), backgroundColor: Colors.indigo50 }}>
+            <Flex flexColumn align="center">
+                <Box justify="center" align="center" p={2}>
+                    <h3>Create Group</h3>
+                    <p>Enter group informations</p>
+                </Box>
+                <FileReaderInput
+                    as="url"
+                    id="file-input"
+                    onChange={(props.onFileReaderChange) ? props.onFileReaderChange : () => { }}
+                    disabled={props.disabledImage}>
+                    <Avatar
+                        src={props.image}
+                        size={96}
+                        style={styles.avatar}
+                    />
+                </FileReaderInput>
+                <TextField
+                    hintText="group name"
+                    errorText="This field is required"
+                    value={props.group_name}
+                    onChange={props.onGroupNameChange}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") props.onSubmit();
+                    }} />
+                <span style={styles.span} />
+                <TextField
+                    hintText="group description"
+                    value={props.group_description}
+                    onChange={props.onGroupDescriptionChange}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") props.onSubmit();
+                    }} />
+                <span style={styles.span} />
+                {comp}
+                <SubmitButton {...props} />
+            </Flex>
+        </div>
     </MuiThemeProvider >
 );

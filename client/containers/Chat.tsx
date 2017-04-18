@@ -4,7 +4,8 @@ import * as async from "async";
 import { Flex, Box } from "reflexbox";
 import * as Colors from "material-ui/styles/colors";
 
-import Config from "../configs/config";
+import { ChitChatFactory } from "../chitchat/chats/chitchatFactory";
+const config = () => ChitChatFactory.getInstance().config;
 
 import { TypingBox } from "./TypingBox";
 import { ChatBox } from "./chat/ChatBox";
@@ -13,7 +14,6 @@ import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import UploadingDialog from "./UploadingDialog";
 import GridListSimple from "../components/GridListSimple";
 import { WarningBar } from "../components/WarningBar";
-import { ChatRoomDialogBoxEnhancer } from "./toolsbox/ChatRoomDialogBoxEnhancer";
 
 import { IComponentProps } from "../utils/IComponentProps";
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
@@ -50,9 +50,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     bottom = this.clientHeight * 0.1;
     h_stickerBox = this.clientHeight * 0.3;
 
-    alertTitle = "";
-    alertMessage = "";
-
     componentWillMount() {
         this.state = {
             messages: new Array(),
@@ -70,6 +67,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.onToggleSticker = this.onToggleSticker.bind(this);
         this.onBackPressed = this.onBackPressed.bind(this);
         this.onMenuSelect = this.onMenuSelect.bind(this);
+        this.fileReaderChange = this.fileReaderChange.bind(this);
 
         let { chatroomReducer, userReducer, params } = this.props;
 
@@ -283,7 +281,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     onSubmitImageChat(file: File, responseUrl: string) {
         let msg = {
             image: file.name,
-            src: `${Config.api.host}/${responseUrl}`
+            src: `${config().api.host}/${responseUrl}`
         };
 
         this.prepareSend(msg);
@@ -292,7 +290,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     onSubmitVideoChat(file: File, responseUrl: string) {
         let msg = {
             video: file.name,
-            src: `${Config.api.host}/${responseUrl}`
+            src: `${config().api.host}/${responseUrl}`
         };
 
         this.prepareSend(msg);
@@ -304,7 +302,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             file: file.name,
             mimetype: mimetype,
             size: size,
-            src: `${Config.api.host}/${path}`
+            src: `${config().api.host}/${path}`
         };
 
         this.prepareSend(msg);
@@ -348,10 +346,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
             }
             else {
-                this.alertTitle = "Alert!";
-                this.alertMessage = "Fail to upload file";
-
-                this.setState({ onAlert: true });
+                this.props.onError("Fail to upload file");
             }
         });
     }
@@ -383,7 +378,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         let { chatroomReducer, stalkReducer } = this.props;
 
         return (
-            <div style={{ overflowY: "hidden" }}>
+            <div style={{ overflowY: "hidden", backgroundColor: Colors.indigo50 }}>
                 <div style={{ height: this.h_header }} id={"toolbar"}>
                     <SimpleToolbar
                         title={(chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty"}
@@ -420,18 +415,12 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                         : null
                 }
                 <TypingBox
-                    styles={{ width: this.clientWidth }}
                     disabled={this.props.chatroomReducer.chatDisabled}
                     onSubmit={this.onSubmitTextChat}
                     onValueChange={this.onTypingTextChange}
                     value={this.state.typingText}
                     fileReaderChange={this.fileReaderChange}
                     onSticker={this.onToggleSticker} />
-                <ChatRoomDialogBoxEnhancer
-                    title={this.alertTitle}
-                    message={this.alertMessage}
-                    open={this.state.onAlert}
-                    handleClose={() => this.setState({ onAlert: !this.state.onAlert })} />
                 <UploadingDialog />
                 <SnackbarToolBox />
             </div>
@@ -443,4 +432,4 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
  * ## Redux boilerplate
  */
 const mapStateToProps = (state) => ({ ...state });
-export default connect(mapStateToProps)(Chat);
+export const ChatPage = connect(mapStateToProps)(Chat) as React.ComponentClass<any>;

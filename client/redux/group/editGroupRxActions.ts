@@ -1,7 +1,10 @@
-import config from "../../configs/config";
+
 import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
+
+import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
+const config = () => ChitChatFactory.getInstance().config;
 
 import Store from "../configureStore";
 
@@ -19,7 +22,7 @@ export const editGroupMember_Epic = action$ => (
     action$.ofType(EDIT_GROUP_MEMBER).mergeMap(action =>
         ajax({
             method: "POST",
-            url: `${config.api.group}/editMember/${action.payload.room_id}`,
+            url: `${config().api.group}/editMember/${action.payload.room_id}`,
             body: JSON.stringify({ members: action.payload.members }),
             headers: {
                 "Content-Type": "application/json",
@@ -53,7 +56,7 @@ export const editGroupDetail_Epic = action$ => (
     action$.ofType(EDIT_GROUP_DETAIL).mergeMap(action =>
         ajax({
             method: "POST",
-            url: `${config.api.group}/update`,
+            url: `${config().api.group}/update`,
             body: JSON.stringify({ room: action.payload }),
             headers: {
                 "Content-Type": "application/json",

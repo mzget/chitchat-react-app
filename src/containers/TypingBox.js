@@ -11,9 +11,10 @@ const React = require("react");
 const reflexbox_1 = require("reflexbox");
 const material_ui_1 = require("material-ui");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
-const FileReaderInput = require("react-file-reader-input");
 const FontIcon_1 = require("material-ui/FontIcon");
 const IconButton_1 = require("material-ui/IconButton");
+const Colors = require("material-ui/styles/colors");
+const FileReaderInput = require("react-file-reader-input");
 const styles = {
     span: {
         paddingRight: 2
@@ -28,13 +29,13 @@ const StickerButton = (props) => (React.createElement(IconButton_1.default, { on
     React.createElement(FontIcon_1.default, { className: "material-icons" }, "insert_emoticon")));
 exports.TypingBox = (props) => {
     return (React.createElement(MuiThemeProvider_1.default, null,
-        React.createElement("div", { style: props.styles, id: "typing_box" },
+        React.createElement("div", { id: "typing_box", style: { margin: 2, backgroundColor: Colors.darkWhite } },
             React.createElement(reflexbox_1.Flex, null,
                 React.createElement(StickerButton, __assign({}, props)),
                 React.createElement(FileReaderBox, __assign({}, props)),
                 React.createElement(material_ui_1.TextField, { disabled: props.disabled, hintText: (props.disabled) ? "Chat room disabled!" : "Type your message", value: props.value, onChange: props.onValueChange, onKeyDown: (e) => {
                         if (e.key === "Enter")
                             props.onSubmit();
-                    } }),
+                    }, fullWidth: true }),
                 React.createElement(SendButton, __assign({}, props))))));
 };

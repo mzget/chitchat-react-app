@@ -11,7 +11,7 @@ import Avatar from "material-ui/Avatar";
 
 import BadgeSimple from "../../components/BadgeSimple";
 
-import { Room, RoomStatus, RoomType } from "../../../server/scripts/models/Room";
+import { Room, RoomStatus, RoomType } from "../../chitchat/libs/shared/Room";
 
 interface IComponentProps {
     values: Array<Room>;

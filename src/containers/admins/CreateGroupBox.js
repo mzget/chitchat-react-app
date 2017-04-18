@@ -12,14 +12,14 @@ const react_redux_1 = require("react-redux");
 const Immutable = require("immutable");
 const CreateGroupView_1 = require("./CreateGroupView");
 const SelectOrgChartView_1 = require("./SelectOrgChartView");
-const config_1 = require("../../configs/config");
-const Room_1 = require("../../libs/shared/Room");
+const chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
+const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
+const Room_1 = require("../../chitchat/libs/shared/Room");
 const groupRx = require("../../redux/group/groupRx");
 const privateGroupRx = require("../../redux/group/privateGroupRxActions");
 exports.createOrgGroup = "create-org-group";
 exports.createPjbGroup = "create-projectbase-group";
 exports.createPvGroup = "create-group";
-;
 class CreateGroupBox extends React.Component {
     constructor() {
         super(...arguments);
@@ -60,7 +60,7 @@ class CreateGroupBox extends React.Component {
             let next = Immutable.fromJS(groupReducer);
             if (!next.equals(prev)) {
                 this.groupImage = null;
-                this.group.image = `${config_1.default.api.host}${groupReducer.groupImageResult.path}`;
+                this.group.image = `${config().api.host}${groupReducer.groupImageResult.path}`;
                 this.submit();
             }
         }
@@ -132,7 +132,6 @@ class CreateGroupBox extends React.Component {
                 break;
         }
     }
-    ;
     render() {
         return (React.createElement("div", null,
             " ",

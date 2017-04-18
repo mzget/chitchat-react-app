@@ -7,43 +7,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+const chitchatFactory_1 = require("../../chitchatFactory");
+const getTeam = () => chitchatFactory_1.ChitChatFactory.getInstance().teamStore;
 function getContactProfile(userId) {
     return __awaiter(this, void 0, void 0, function* () {
-        /*
-        let self = this;
-        let dataManager = BackendFactory.getInstance().dataManager;
-        let user = dataManager.getContactProfile(userId) as ContactInfo;
-    
-        return new Promise((resolve: (data: ContactInfo) => void, rejected) => {
-            if (!user) {
-                UserService.getUserInfo(userId)
-                    .then(result => result.json())
-                    .then(result => {
-                        console.log("getUserInfo value", result);
-    
-                        if (result.success) {
-                            let user = result.data[0];
-                            let contact: ContactInfo = {
-                                _id: user._id, displayname: `${user.first_name} ${user.last_name}`, status: "", image: user.avatar
-                            };
-                            dataManager.setContactProfile(user._id, contact);
-    
-                            resolve(contact);
-                        }
-                        else {
-                            dataManager.setContactProfile(userId, {} as ContactInfo);
-                            rejected(result.message);
-                        }
-                    }).catch(err => {
-                        console.warn("getUserInfo fail", err);
-                        rejected(err);
-                    });
+        let members = getTeam().members;
+        return new Promise((resolve, rejected) => {
+            if (members && members.length > 0) {
+                rejected("No have members");
             }
-            else {
+            let users = members.filter(value => {
+                return value._id == userId;
+            });
+            if (users.length > 0) {
+                let user = users[0];
                 resolve(user);
             }
+            else {
+                rejected("No implemented functions");
+            }
         });
-        */
     });
 }
 exports.getContactProfile = getContactProfile;

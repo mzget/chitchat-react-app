@@ -13,7 +13,7 @@ import Toggle from "material-ui/Toggle";
 
 import * as editGroupRxActions from "../../redux/group/editGroupRxActions";
 
-import { ChitChatAccount } from "../../chats/models/User";
+import { ChitChatAccount } from "../../chitchat/chats/models/User";
 
 interface IEnhanceProps {
     members: Array<ChitChatAccount>;

@@ -7,18 +7,14 @@
  *
  * Use react-native-simple-storage for stroage engines.
  */
-const store = require('react-native-simple-store');
-export default class NodeMessageDAL {
-    getData(rid, done) {
-        store.get(rid).then(function (value) {
-            let docs = JSON.parse(JSON.stringify(value));
-            console.log("get persistent message success.");
-            done(null, docs);
-        }).catch(function rejected(err) {
-            console.warn(err);
-        });
+import { IMessageDAL } from "./IMessageDAL";
+
+const store = require("react-native-simple-store");
+export class NodeMessageDAL implements IMessageDAL {
+    getData(rid) {
+        return store.get(rid);
     }
-    saveData(rid, chatRecord, callback) {
+    saveData(rid, chatRecord) {
         return store.save(rid, chatRecord);
     }
     removeData(rid, callback) {

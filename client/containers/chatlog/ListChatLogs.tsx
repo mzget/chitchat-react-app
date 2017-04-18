@@ -14,7 +14,7 @@ import MenuItem from "material-ui/MenuItem";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Avatar from "material-ui/Avatar";
 
-import ChatLog from "../../chats/models/chatLog";
+import ChatLog from "../../chitchat/chats/models/chatLog";
 import BadgeSimple from "../../components/BadgeSimple";
 
 interface IChatlogProps { value: Array<ChatLog>; onSelected: Function; onRemovedLog: (log: ChatLog) => void; }

@@ -4,7 +4,7 @@ import { pure } from "recompose";
 
 import { GroupMember } from "./GroupMember";
 
-import { ChitChatAccount } from "../../../server/scripts/models/User";
+import { ChitChatAccount } from "../../chitchat/chats/models/User";
 interface IEnhanceProps {
     members: Array<ChitChatAccount>;
 }

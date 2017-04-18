@@ -11,11 +11,10 @@ const React = require("react");
 const react_redux_1 = require("react-redux");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
-const MenuListView_1 = require("../components/MenuListView");
+const MenuListView_1 = require("./admins/MenuListView");
 const ManageOrgChartBox_1 = require("./admins/ManageOrgChartBox");
 const CreateGroupBox_1 = require("./admins/CreateGroupBox");
 const TeamMemberBox_1 = require("./admins/TeamMemberBox");
-const DialogBox_1 = require("../components/DialogBox");
 const adminRx = require("../redux/admin/adminRx");
 const groupRx = require("../redux/group/groupRx");
 const privateGroupRxActions = require("../redux/group/privateGroupRxActions");
@@ -27,13 +26,9 @@ var BoxState;
     BoxState[BoxState["isManageTeam"] = 2] = "isManageTeam";
     BoxState[BoxState["isManageMember"] = 3] = "isManageMember";
 })(BoxState || (BoxState = {}));
-;
-;
 class Admin extends React.Component {
     constructor() {
         super(...arguments);
-        this.alertTitle = "";
-        this.alertMessage = "";
         this.manageOrgChart = "Manage ORG Chart";
         this.teamMember = "team-member";
         this.menus = [this.manageOrgChart, CreateGroupBox_1.createOrgGroup, CreateGroupBox_1.createPjbGroup, CreateGroupBox_1.createPvGroup, this.teamMember];
@@ -46,8 +41,6 @@ class Admin extends React.Component {
         };
         this.onBackPressed = this.onBackPressed.bind(this);
         this.onAdminMenuSelected = this.onAdminMenuSelected.bind(this);
-        this.onAlert = this.onAlert.bind(this);
-        this.closeAlert = this.closeAlert.bind(this);
     }
     componentDidMount() {
         const { teamReducer } = this.props;
@@ -64,18 +57,18 @@ class Admin extends React.Component {
         }
         else if (groupReducer.state == groupRx.CREATE_ORG_GROUP_FAILURE ||
             groupReducer.state == privateGroupRxActions.CREATE_PRIVATE_GROUP_FAILURE) {
-            this.onAlert(groupReducer.error);
+            this.props.onError(groupReducer.error);
         }
     }
     onAdminMenuSelected(key) {
-        console.log("onAdminMenuSelected", key);
+        console.log("on-Admin-Menu-Selected", key);
         let { userReducer } = this.props;
         if (key == CreateGroupBox_1.createOrgGroup || key == CreateGroupBox_1.createPjbGroup || key == CreateGroupBox_1.createPvGroup) {
             if (key == CreateGroupBox_1.createOrgGroup && userReducer.teamProfile.team_role != UserRole_1.UserRole[UserRole_1.UserRole.admin]) {
-                return this.onAlert("Request for admin permision");
+                return this.props.onError("Request for admin permision");
             }
             if (key == CreateGroupBox_1.createPjbGroup) {
-                return this.onAlert("Not yet ready...");
+                return this.props.onError("Not yet ready...");
             }
             this.setState(previous => (__assign({}, previous, { boxState: BoxState.isCreateGroup, menuSelected: key })));
         }
@@ -84,7 +77,7 @@ class Admin extends React.Component {
                 this.setState(previous => (__assign({}, previous, { boxState: BoxState.isManageTeam })));
             }
             else {
-                this.onAlert("Request for admin permision");
+                this.props.onError("Request for admin permision");
             }
         }
         else if (key == this.teamMember) {
@@ -92,7 +85,7 @@ class Admin extends React.Component {
                 this.setState(previous => (__assign({}, previous, { boxState: BoxState.isManageMember })));
             }
             else {
-                this.onAlert("Request for admin permision");
+                this.props.onError("Request for admin permision");
             }
         }
     }
@@ -105,27 +98,14 @@ class Admin extends React.Component {
             this.props.router.goBack();
         }
     }
-    closeAlert() {
-        this.alertTitle = "";
-        this.alertMessage = "";
-        this.setState(prevState => (__assign({}, prevState, { alert: false })), () => {
-            this.props.dispatch(groupRx.emptyState());
-            this.props.dispatch(adminRx.emptyState());
-        });
-    }
-    onAlert(error) {
-        this.alertTitle = "Alert!";
-        this.alertMessage = error;
-        this.setState(previous => (__assign({}, previous, { alert: true })));
-    }
     getAdminPanel() {
         switch (this.state.boxState) {
             case BoxState.isManageTeam:
-                return React.createElement(ManageOrgChartBox_1.default, __assign({}, this.props, { onError: this.onAlert }));
+                return React.createElement(ManageOrgChartBox_1.default, __assign({}, this.props, { onError: this.props.onError }));
             case BoxState.isCreateGroup:
-                return React.createElement(CreateGroupBox_1.default, __assign({}, this.props, { groupType: this.state.menuSelected, onError: this.onAlert }));
+                return React.createElement(CreateGroupBox_1.default, __assign({}, this.props, { groupType: this.state.menuSelected, onError: this.props.onError }));
             case BoxState.isManageMember:
-                return React.createElement(TeamMemberBox_1.TeamMemberBox, __assign({}, this.props, { onError: this.onAlert }));
+                return React.createElement(TeamMemberBox_1.TeamMemberBox, __assign({}, this.props, { onError: this.props.onError }));
             default:
                 return React.createElement(MenuListView_1.MenuListview, { menus: this.menus, onSelectItem: this.onAdminMenuSelected });
         }
@@ -134,10 +114,8 @@ class Admin extends React.Component {
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement("div", null,
                 React.createElement(SimpleToolbar_1.SimpleToolbar, { title: "Admin", onBackPressed: this.onBackPressed }),
-                this.getAdminPanel(),
-                React.createElement(DialogBox_1.DialogBox, { title: this.alertTitle, message: this.alertMessage, open: this.state.alert, handleClose: this.closeAlert }))));
+                this.getAdminPanel())));
     }
 }
 const mapstateToProps = (state) => (__assign({}, state));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapstateToProps)(Admin);
+exports.AdminPage = react_redux_1.connect(mapstateToProps)(Admin);

@@ -20,7 +20,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const Rx = require("rxjs/Rx");
+const R = require("ramda");
 const ServiceProvider = require("../../services/ServiceProvider");
 const chatRoomComponent_1 = require("../../chatRoomComponent");
 const BackendFactory_1 = require("../../BackendFactory");
@@ -34,6 +34,7 @@ const Message_1 = require("../../../libs/shared/Message");
 const chitchatFactory_1 = require("../../chitchatFactory");
 const getStore = () => chitchatFactory_1.ChitChatFactory.getInstance().store;
 const getConfig = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
+const authReducer = () => chitchatFactory_1.ChitChatFactory.getInstance().authStore;
 const secure = secureServiceFactory_1.default.getService();
 /**
  * ChatRoomActionsType
@@ -140,11 +141,13 @@ function getNewerMessage_success(messages) {
 }
 function getNewerMessageFromNet() {
     return dispatch => {
-        let token = getStore().getState().authReducer.token;
+        let token = authReducer().chitchat_token;
         chatRoomComponent_1.default.getInstance().getNewerMessageRecord(token, (results) => {
             dispatch(getNewerMessage_success(results));
             // @Todo next joinroom function is ready to call.
         }).catch(err => {
+            if (err)
+                console.warn("getNewerMessageRecord fail", err);
             dispatch(getNewerMessage_failure());
         });
     };
@@ -329,16 +332,10 @@ exports.updatedChatRoomSuccess = (chatrooms) => ({ type: exports.UPDATED_CHATROO
 exports.updateChatRoom = (rooms) => {
     return dispatch => {
         dispatch({ type: exports.UPDATE_CHATROOMS, payload: rooms });
-        let chatrooms = getStore().getState().chatroomReducer.chatrooms;
+        let chatrooms = getStore().getState().chatroomReducer.get("chatrooms");
         if (chatrooms) {
-            Rx.Observable.from(rooms)._do((x) => {
-                let id = chatrooms.indexOf(x);
-                if (id < 0) {
-                    chatrooms.push(x);
-                }
-            }, err => { }, () => {
-                dispatch(exports.updatedChatRoomSuccess(chatrooms));
-            }).subscribe();
+            let _newRooms = R.union(chatrooms, rooms);
+            dispatch(exports.updatedChatRoomSuccess(_newRooms));
         }
         else {
             chatrooms = rooms.slice();

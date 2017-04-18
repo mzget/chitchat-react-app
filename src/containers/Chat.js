@@ -11,7 +11,8 @@ const React = require("react");
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
 const Colors = require("material-ui/styles/colors");
-const config_1 = require("../configs/config");
+const chitchatFactory_1 = require("../chitchat/chats/chitchatFactory");
+const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const TypingBox_1 = require("./TypingBox");
 const ChatBox_1 = require("./chat/ChatBox");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
@@ -19,7 +20,6 @@ const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
 const UploadingDialog_1 = require("./UploadingDialog");
 const GridListSimple_1 = require("../components/GridListSimple");
 const WarningBar_1 = require("../components/WarningBar");
-const ChatRoomDialogBoxEnhancer_1 = require("./toolsbox/ChatRoomDialogBoxEnhancer");
 const StalkBridgeActions = require("../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
 const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
 const chatroomRxEpic = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
@@ -40,8 +40,6 @@ class Chat extends React.Component {
         this.h_typingArea = null;
         this.bottom = this.clientHeight * 0.1;
         this.h_stickerBox = this.clientHeight * 0.3;
-        this.alertTitle = "";
-        this.alertMessage = "";
         this.fileReaderChange = (e, results) => {
             results.forEach(result => {
                 const [progressEvent, file] = result;
@@ -50,9 +48,7 @@ class Chat extends React.Component {
                     this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
                 }
                 else {
-                    this.alertTitle = "Alert!";
-                    this.alertMessage = "Fail to upload file";
-                    this.setState({ onAlert: true });
+                    this.props.onError("Fail to upload file");
                 }
             });
         };
@@ -73,6 +69,7 @@ class Chat extends React.Component {
         this.onToggleSticker = this.onToggleSticker.bind(this);
         this.onBackPressed = this.onBackPressed.bind(this);
         this.onMenuSelect = this.onMenuSelect.bind(this);
+        this.fileReaderChange = this.fileReaderChange.bind(this);
         let { chatroomReducer, userReducer, params } = this.props;
         if (!chatroomReducer.room) {
             this.props.dispatch(chatroomActions.getPersistendChatroom(params.filter));
@@ -237,14 +234,14 @@ class Chat extends React.Component {
     onSubmitImageChat(file, responseUrl) {
         let msg = {
             image: file.name,
-            src: `${config_1.default.api.host}/${responseUrl}`
+            src: `${config().api.host}/${responseUrl}`
         };
         this.prepareSend(msg);
     }
     onSubmitVideoChat(file, responseUrl) {
         let msg = {
             video: file.name,
-            src: `${config_1.default.api.host}/${responseUrl}`
+            src: `${config().api.host}/${responseUrl}`
         };
         this.prepareSend(msg);
     }
@@ -254,7 +251,7 @@ class Chat extends React.Component {
             file: file.name,
             mimetype: mimetype,
             size: size,
-            src: `${config_1.default.api.host}/${path}`
+            src: `${config().api.host}/${path}`
         };
         this.prepareSend(msg);
     }
@@ -297,7 +294,7 @@ class Chat extends React.Component {
     }
     render() {
         let { chatroomReducer, stalkReducer } = this.props;
-        return (React.createElement("div", { style: { overflowY: "hidden" } },
+        return (React.createElement("div", { style: { overflowY: "hidden", backgroundColor: Colors.indigo50 } },
             React.createElement("div", { style: { height: this.h_header }, id: "toolbar" },
                 React.createElement(SimpleToolbar_1.SimpleToolbar, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty", menus: this.toolbarMenus, onSelectedMenuItem: this.onMenuSelect, onBackPressed: this.onBackPressed })),
             (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
@@ -313,8 +310,7 @@ class Chat extends React.Component {
             (this.state.openButtomMenu) ?
                 React.createElement(GridListSimple_1.default, { boxHeight: this.h_stickerBox, srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
                 : null,
-            React.createElement(TypingBox_1.TypingBox, { styles: { width: this.clientWidth }, disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }),
-            React.createElement(ChatRoomDialogBoxEnhancer_1.ChatRoomDialogBoxEnhancer, { title: this.alertTitle, message: this.alertMessage, open: this.state.onAlert, handleClose: () => this.setState({ onAlert: !this.state.onAlert }) }),
+            React.createElement(TypingBox_1.TypingBox, { disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }),
             React.createElement(UploadingDialog_1.default, null),
             React.createElement(SnackbarToolBox_1.SnackbarToolBox, null)));
     }
@@ -323,5 +319,4 @@ class Chat extends React.Component {
  * ## Redux boilerplate
  */
 const mapStateToProps = (state) => (__assign({}, state));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapStateToProps)(Chat);
+exports.ChatPage = react_redux_1.connect(mapStateToProps)(Chat);

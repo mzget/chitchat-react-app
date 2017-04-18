@@ -12,7 +12,7 @@ import Toggle from "material-ui/Toggle";
 
 import BadgeSimple from "../../components/BadgeSimple";
 
-import { ChitChatAccount } from "../../../server/scripts/models/User";
+import { ChitChatAccount } from "../../chitchat/chats/models/User";
 
 interface IComponentProps {
     items: Array<ChitChatAccount>;

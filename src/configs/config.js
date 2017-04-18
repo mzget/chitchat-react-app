@@ -47,6 +47,4 @@ const getConfig = () => {
         return composeMyconfig(baseConfig)(api_master)(api_stalk_master, stalkPort, api_master);
     }
 };
-const config = getConfig();
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = config;
+exports.config = getConfig();

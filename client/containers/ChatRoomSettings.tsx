@@ -5,7 +5,7 @@ import { IComponentProps } from "../utils/IComponentProps";
 
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { DialogBox } from "../components/DialogBox";
-import { MenuListview } from "../components/MenuListView";
+import { MenuListview } from "./admins/MenuListView";
 import { ConnectEditGroupMember } from "./roomSettings/EditGroupMember";
 import { ConnectGroupDetail } from "./roomSettings/GroupDetailEnhancer";
 import { GroupMemberEnhancer } from "./roomSettings/GroupMemberEnhancer";

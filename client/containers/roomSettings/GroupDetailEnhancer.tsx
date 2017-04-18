@@ -1,14 +1,14 @@
-import { GroupDetail } from "./GroupDetail";
-
 import * as React from "react";
 import { connect } from "react-redux";
 import * as Immutable from "immutable";
 import { withProps, withState, withHandlers, compose, lifecycle, shallowEqual } from "recompose";
-
-import config from "../../configs/config";
+import { GroupDetail } from "./GroupDetail";
 import * as editGroupRxActions from "../../redux/group/editGroupRxActions";
 import * as groupRx from "../../redux/group/groupRx";
-import { Room } from "../../../server/scripts/models/Room";
+import { Room } from "../../chitchat/libs/shared/Room";
+import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
+
+const config = () => ChitChatFactory.getInstance().config;
 
 interface IEnhanceProps {
     onSubmit: () => void;
@@ -55,7 +55,7 @@ const enhance = compose(
             else if (groupReducer.state == groupRx.UPLOAD_GROUP_IMAGE_SUCCESS) {
                 if (!shallowEqual(this.props.groupReducer, groupReducer)) {
                     this.props.setImageFile(prev => null);
-                    this.props.setImageUrl(prev => `${config.api.host}${groupReducer.groupImageResult.path}`, () => {
+                    this.props.setImageUrl(prev => `${config().api.host}${groupReducer.groupImageResult.path}`, () => {
                         submit(this.props);
                     });
                 }

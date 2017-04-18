@@ -1,9 +1,14 @@
 import { IStalkApi, IChitChatApi, IConfig } from "./iConfig";
-
+import { ITeamMember } from "./models/IteamMember";
 export type AuthStore = {
     user: any;
     chitchat_token: string;
-}
+};
+
+export type TeamStore = {
+    team: any;
+    members: Array<ITeamMember>,
+};
 
 export class ChitChatFactory {
     private static instance: ChitChatFactory;
@@ -33,5 +38,10 @@ export class ChitChatFactory {
     authStore: AuthStore;
     public setAuthStore(user: any, chitchat_token: string) {
         this.authStore = { user: user, chitchat_token: chitchat_token };
+    }
+
+    teamStore: TeamStore;
+    public setTeamStore(store: TeamStore) {
+        this.teamStore = store;
     }
 }

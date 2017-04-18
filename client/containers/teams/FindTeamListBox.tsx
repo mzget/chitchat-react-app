@@ -6,13 +6,13 @@ const style = {
     margin: 4,
 };
 
-import { TeamListView } from './TeamListView';
-import { ITeam } from '../../../server/scripts/models/ITeam';
+import { TeamListView } from "./TeamListView";
+import { ITeam } from "../../chitchat/chats/models/ITeam";
 
 interface IComponentNameProps {
     findingTeams: Array<ITeam>;
     onSelectTeam: (team: ITeam) => void;
-};
+}
 
 export const FindTeamListBox = (props: IComponentNameProps) => (
     <div>
@@ -21,6 +21,6 @@ export const FindTeamListBox = (props: IComponentNameProps) => (
             items={props.findingTeams}
             onSelectItem={props.onSelectTeam}
             actionChild={<RaisedButton label="Join" primary={true} style={style} />}
-            />
+        />
     </div>
 );

@@ -1,25 +1,10 @@
 "use strict";
-/**
- * NodeMessageDAL.
- *
- * Copyright 2016 Ahoo Studio.co.th.
- *
- *
- *
- * Use react-native-simple-storage for stroage engines.
- */
-const store = require('react-native-simple-store');
+const store = require("react-native-simple-store");
 class NodeMessageDAL {
-    getData(rid, done) {
-        store.get(rid).then(function (value) {
-            let docs = JSON.parse(JSON.stringify(value));
-            console.log("get persistent message success.");
-            done(null, docs);
-        }).catch(function rejected(err) {
-            console.warn(err);
-        });
+    getData(rid) {
+        return store.get(rid);
     }
-    saveData(rid, chatRecord, callback) {
+    saveData(rid, chatRecord) {
         return store.save(rid, chatRecord);
     }
     removeData(rid, callback) {
@@ -27,5 +12,4 @@ class NodeMessageDAL {
     clearData(next) {
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = NodeMessageDAL;
+exports.NodeMessageDAL = NodeMessageDAL;

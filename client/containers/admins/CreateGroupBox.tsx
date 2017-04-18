@@ -6,12 +6,14 @@ import { IComponentProps } from "../../utils/IComponentProps";
 import { CreateGroupView } from "./CreateGroupView";
 import { SelectOrgChartView } from "./SelectOrgChartView";
 
-import config from "../../configs/config";
-import { Room, RoomType, RoomStatus, IMember, MemberRole } from "../../libs/shared/Room";
-import { IOrgChart } from "../../chats/models/OrgChart";
+import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
+const config = () => ChitChatFactory.getInstance().config;
+
+import { Room, RoomType, RoomStatus, IMember, MemberRole } from "../../chitchat/libs/shared/Room";
+import { IOrgChart } from "../../chitchat/chats/models/OrgChart";
 
 import * as groupRx from "../../redux/group/groupRx";
-import *as privateGroupRx from "../../redux/group/privateGroupRxActions";
+import * as privateGroupRx from "../../redux/group/privateGroupRxActions";
 
 export const createOrgGroup: string = "create-org-group";
 export const createPjbGroup: string = "create-projectbase-group";
@@ -25,7 +27,7 @@ interface IComponentNameState {
     groupName: string;
     groupDescription: string;
     dropdownValue: number;
-};
+}
 
 class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
 
@@ -62,7 +64,7 @@ class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
             let next = Immutable.fromJS(groupReducer);
             if (!next.equals(prev)) {
                 this.groupImage = null;
-                this.group.image = `${config.api.host}${groupReducer.groupImageResult.path}`;
+                this.group.image = `${config().api.host}${groupReducer.groupImageResult.path}`;
                 this.submit();
             }
         }
@@ -150,7 +152,7 @@ class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
             default:
                 break;
         }
-    };
+    }
 
     public render(): JSX.Element {
         return (

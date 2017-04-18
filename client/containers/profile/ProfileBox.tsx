@@ -30,7 +30,6 @@ const enhanced = compose(
     }),
     withHandlers({
         onClickMyProfile: (props: IEnhancerProps) => item => {
-            console.log("click", item);
             props.router.push("/team/profile/:user");
         }
     }),
@@ -48,4 +47,4 @@ export const ProfileEnhancer = enhanced(({ teamReducer, userReducer, onClickMyPr
         user={userReducer.user}
         onClickMyProfile={onClickMyProfile}
     />
-) as React.ComponentClass<{ router }>;
+) as React.ComponentClass<any>;

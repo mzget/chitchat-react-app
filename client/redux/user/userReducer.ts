@@ -1,6 +1,4 @@
-import config from "../../configs/config";
 import { Record } from "immutable";
-
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 

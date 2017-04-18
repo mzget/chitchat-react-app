@@ -11,7 +11,7 @@ import Avatar from "material-ui/Avatar";
 
 import BadgeSimple from "../../components/BadgeSimple";
 
-import { ChitChatAccount } from "../../../chitchat/chats/models/User";
+import { ChitChatAccount } from "../../chitchat/chats/models/User";
 
 interface IComponentProps {
     item: ChitChatAccount;
