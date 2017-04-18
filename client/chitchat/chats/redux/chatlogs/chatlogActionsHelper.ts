@@ -7,11 +7,17 @@ const getTeam = () => ChitChatFactory.getInstance().teamStore;
 
 export async function getContactProfile(userId: string) {
     let members = getTeam().members;
-    let users = members.filter(value => {
-        return value._id == userId;
-    });
 
     return new Promise((resolve: (data: ITeamMember) => void, rejected) => {
+
+        if (members && members.length > 0) {
+            rejected("No have members");
+        }
+
+        let users = members.filter(value => {
+            return value._id == userId;
+        });
+
         if (users.length > 0) {
             let user = users[0];
             resolve(user);
