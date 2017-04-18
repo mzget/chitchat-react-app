@@ -20,7 +20,7 @@ const BackendFactory_1 = require("./BackendFactory");
 const CryptoHelper = require("./utils/CryptoHelper");
 const Message_1 = require("../libs/shared/Message");
 const Room_1 = require("../libs/shared/Room");
-const ServiceProvider = require("./services/ServiceProvider");
+const chatroomService = require("./services/chatroomService");
 const chatlogActionsHelper = require("./redux/chatlogs/chatlogActionsHelper");
 class Unread {
 }
@@ -152,7 +152,7 @@ class ChatsLogComponent {
     }
     getUnreadMessage(user_id, roomAccess) {
         return __awaiter(this, void 0, void 0, function* () {
-            let response = yield ServiceProvider.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString());
+            let response = yield chatroomService.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString());
             let value = yield response.json();
             console.log("getUnreadMessage result: ", value);
             if (value.success) {
@@ -195,7 +195,7 @@ class ChatsLogComponent {
     getRoomInfo(room_id) {
         return __awaiter(this, void 0, void 0, function* () {
             let self = this;
-            let response = yield ServiceProvider.getRoomInfo(room_id);
+            let response = yield chatroomService.getRoomInfo(room_id);
             let json = yield response.json();
             console.log("getRoomInfo value:", json);
             if (json.success) {

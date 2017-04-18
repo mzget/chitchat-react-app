@@ -20,7 +20,7 @@ import { ContactInfo } from "./models/Contact";
 import { MessageImp } from "./models/MessageImp";
 import { MemberImp } from "./models/MemberImp";
 
-import * as ServiceProvider from "./services/ServiceProvider";
+import * as chatroomService from "./services/chatroomService";
 import * as chatlogActionsHelper from "./redux/chatlogs/chatlogActionsHelper";
 
 
@@ -182,7 +182,7 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
     }
 
     public async getUnreadMessage(user_id: string, roomAccess: RoomAccessData) {
-        let response = await ServiceProvider.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString());
+        let response = await chatroomService.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString());
         let value = await response.json();
 
         console.log("getUnreadMessage result: ", value);
@@ -231,7 +231,7 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
     private async getRoomInfo(room_id: string) {
         let self = this;
 
-        let response = await ServiceProvider.getRoomInfo(room_id);
+        let response = await chatroomService.getRoomInfo(room_id);
         let json = await response.json();
 
         console.log("getRoomInfo value:", json);

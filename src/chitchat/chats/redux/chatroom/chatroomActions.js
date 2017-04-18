@@ -21,7 +21,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const R = require("ramda");
-const ServiceProvider = require("../../services/ServiceProvider");
+const chatroomService = require("../../services/chatroomService");
 const chatRoomComponent_1 = require("../../chatRoomComponent");
 const BackendFactory_1 = require("../../BackendFactory");
 const secureServiceFactory_1 = require("../../secure/secureServiceFactory");
@@ -86,8 +86,8 @@ function onChatRoomDelegate(event, newMsg) {
             console.log("is contact message");
             // @ Check app not run in background.
             let appState = appReducer().appState;
+            console.log("AppState: ", appState); // active, background, inactive
             if (!!appState) {
-                console.warn("AppState: ", appState); // active, background, inactive
                 if (appState === "active") {
                     BackendFactory_1.BackendFactory.getInstance().getChatApi().updateMessageReader(newMsg._id, newMsg.rid);
                 }
@@ -116,7 +116,7 @@ function checkOlderMessages() {
     return dispatch => {
         let room = getStore().getState().chatroomReducer.room;
         chatRoomComponent_1.default.getInstance().getTopEdgeMessageTime().then(res => {
-            ServiceProvider.getOlderMessagesCount(room._id, res.toString(), false)
+            chatroomService.getOlderMessagesCount(room._id, res.toString(), false)
                 .then(response => response.json())
                 .then((result) => {
                 console.log("getOlderMessagesCount", result);

@@ -5,9 +5,10 @@
  * This is pure function action for redux app.
  */
 const Rx = require("rxjs/Rx");
-const { ajax } = Rx.Observable;
+const { ajax, fromPromise } = Rx.Observable;
 const chatRoomComponent_1 = require("../../chatRoomComponent");
 const chitchatFactory_1 = require("../../chitchatFactory");
+const chatroomService = require("../../services/chatroomService");
 const getConfig = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const getStore = () => chitchatFactory_1.ChitChatFactory.getInstance().store;
 exports.FETCH_PRIVATE_CHATROOM = "FETCH_PRIVATE_CHATROOM";
@@ -17,20 +18,21 @@ exports.FETCH_PRIVATE_CHATROOM_CANCELLED = "FETCH_PRIVATE_CHATROOM_CANCELLED";
 exports.fetchPrivateChatRoom = (ownerId, roommateId) => ({ type: exports.FETCH_PRIVATE_CHATROOM, payload: { ownerId, roommateId } });
 const fetchPrivateChatRoomSuccess = (payload) => ({ type: exports.FETCH_PRIVATE_CHATROOM_SUCCESS, payload });
 const cancelFetchPrivateChatRoom = () => ({ type: exports.FETCH_PRIVATE_CHATROOM_CANCELLED });
-const fetchPrivateChatRoomFailure = payload => ({ type: exports.FETCH_PRIVATE_CHATROOM_FAILURE, payload, error: true });
-exports.getPrivateChatRoomEpic = action$ => action$.ofType(exports.FETCH_PRIVATE_CHATROOM)
-    .mergeMap(action => ajax({
-    url: `${getConfig().api.chatroom}`,
-    method: "POST",
-    body: JSON.stringify(action.payload),
-    headers: {
-        "Content-Type": "application/json",
-        "x-access-token": getStore().getState().authReducer.token
+const fetchPrivateChatRoomFailure = payload => ({ type: exports.FETCH_PRIVATE_CHATROOM_FAILURE, payload });
+exports.getPrivateChatRoom_Epic = action$ => action$.ofType(exports.FETCH_PRIVATE_CHATROOM)
+    .mergeMap(action => fromPromise(chatroomService.getPrivateChatroom(action.payload.ownerId, action.payload.roommateId)))
+    .mergeMap(response => fromPromise(response.json()))
+    .map(json => {
+    console.log("getPrivateChatRoom_Epic", json);
+    if (json.success) {
+        return fetchPrivateChatRoomSuccess(json.result[0]);
     }
-}))
-    .map(json => fetchPrivateChatRoomSuccess(json.response))
+    else {
+        return fetchPrivateChatRoomFailure(json.message);
+    }
+})
     .takeUntil(action$.ofType(exports.FETCH_PRIVATE_CHATROOM_CANCELLED))
-    .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.xhr.response.message)));
+    .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.message)));
 const CREATE_PRIVATE_CHATROOM = "CREATE_PRIVATE_CHATROOM";
 exports.CREATE_PRIVATE_CHATROOM_SUCCESS = "CREATE_PRIVATE_CHATROOM_SUCCESS";
 const CREATE_PRIVATE_CHATROOM_CANCELLED = "CREATE_PRIVATE_CHATROOM_CANCELLED";

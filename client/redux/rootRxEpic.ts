@@ -55,7 +55,7 @@ export const rootEpic = combineEpics(
     privateGroupRxActions.createPrivateGroup_Epic,
 
     ///@ChatRoom
-    chatroomRxEpic.getPrivateChatRoomEpic,
+    chatroomRxEpic.getPrivateChatRoom_Epic,
     chatroomRxEpic.getPersistendMessageEpic,
     chatroomRxEpic.createPrivateChatRoomEpic,
     chatroomRxEpic.uploadFileEpic,

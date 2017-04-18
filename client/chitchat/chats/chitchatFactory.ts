@@ -50,7 +50,7 @@ export class ChitChatFactory {
         this.teamStore = store;
     }
 
-    appStore: AppStore;
+    appStore: AppStore = { appState: "active" }; // active, background, inactive
     public setAppStore(store: AppStore) {
         this.appStore = store;
     }

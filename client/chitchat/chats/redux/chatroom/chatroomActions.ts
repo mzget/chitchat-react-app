@@ -7,7 +7,7 @@
 import Rx = require("rxjs/Rx");
 import * as R from "ramda";
 
-import * as ServiceProvider from "../../services/ServiceProvider";
+import * as chatroomService from "../../services/chatroomService";
 import ChatRoomComponent from "../../chatRoomComponent";
 import { BackendFactory } from "../../BackendFactory";
 import SecureServiceFactory from "../../secure/secureServiceFactory";
@@ -86,8 +86,8 @@ function onChatRoomDelegate(event, newMsg: IMessage) {
             console.log("is contact message");
             // @ Check app not run in background.
             let appState = appReducer().appState;
+            console.log("AppState: ", appState); // active, background, inactive
             if (!!appState) {
-                console.warn("AppState: ", appState); // active, background, inactive
                 if (appState === "active") {
                     BackendFactory.getInstance().getChatApi().updateMessageReader(newMsg._id, newMsg.rid);
                 }
@@ -121,7 +121,7 @@ export function checkOlderMessages() {
         let room = getStore().getState().chatroomReducer.room;
 
         ChatRoomComponent.getInstance().getTopEdgeMessageTime().then(res => {
-            ServiceProvider.getOlderMessagesCount(room._id, res.toString(), false)
+            chatroomService.getOlderMessagesCount(room._id, res.toString(), false)
                 .then(response => response.json())
                 .then((result: any) => {
                     console.log("getOlderMessagesCount", result);

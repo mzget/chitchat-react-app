@@ -4,10 +4,11 @@
  * This is pure function action for redux app.
  */
 import Rx = require("rxjs/Rx");
-const { ajax } = Rx.Observable;
+const { ajax, fromPromise } = Rx.Observable;
 
 import ChatRoomComponent from "../../chatRoomComponent";
 import { ChitChatFactory } from "../../chitchatFactory";
+import * as chatroomService from "../../services/chatroomService";
 
 const getConfig = () => ChitChatFactory.getInstance().config;
 const getStore = () => ChitChatFactory.getInstance().store;
@@ -17,23 +18,25 @@ export const FETCH_PRIVATE_CHATROOM_FAILURE = "FETCH_PRIVATE_CHATROOM_FAILURE";
 export const FETCH_PRIVATE_CHATROOM_SUCCESS = "FETCH_PRIVATE_CHATROOM_SUCCESS";
 export const FETCH_PRIVATE_CHATROOM_CANCELLED = "FETCH_PRIVATE_CHATROOM_CANCELLED";
 
-export const fetchPrivateChatRoom = (ownerId, roommateId) => ({ type: FETCH_PRIVATE_CHATROOM, payload: { ownerId, roommateId } });
+export const fetchPrivateChatRoom = (ownerId: string, roommateId: string) => ({ type: FETCH_PRIVATE_CHATROOM, payload: { ownerId, roommateId } });
 const fetchPrivateChatRoomSuccess = (payload) => ({ type: FETCH_PRIVATE_CHATROOM_SUCCESS, payload });
 const cancelFetchPrivateChatRoom = () => ({ type: FETCH_PRIVATE_CHATROOM_CANCELLED });
-const fetchPrivateChatRoomFailure = payload => ({ type: FETCH_PRIVATE_CHATROOM_FAILURE, payload, error: true });
-export const getPrivateChatRoomEpic = action$ => action$.ofType(FETCH_PRIVATE_CHATROOM)
-    .mergeMap(action => ajax({
-        url: `${getConfig().api.chatroom}`,
-        method: "POST",
-        body: JSON.stringify(action.payload),
-        headers: {
-            "Content-Type": "application/json",
-            "x-access-token": getStore().getState().authReducer.token
-        }
-    }))
-    .map(json => fetchPrivateChatRoomSuccess(json.response))
-    .takeUntil(action$.ofType(FETCH_PRIVATE_CHATROOM_CANCELLED))
-    .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.xhr.response.message)));
+const fetchPrivateChatRoomFailure = payload => ({ type: FETCH_PRIVATE_CHATROOM_FAILURE, payload });
+export const getPrivateChatRoom_Epic = action$ =>
+    action$.ofType(FETCH_PRIVATE_CHATROOM)
+        .mergeMap(action => fromPromise(chatroomService.getPrivateChatroom(action.payload.ownerId, action.payload.roommateId)))
+        .mergeMap(response => fromPromise(response.json()))
+        .map(json => {
+            console.log("getPrivateChatRoom_Epic", json);
+            if (json.success) {
+                return fetchPrivateChatRoomSuccess(json.result[0]);
+            }
+            else {
+                return fetchPrivateChatRoomFailure(json.message);
+            }
+        })
+        .takeUntil(action$.ofType(FETCH_PRIVATE_CHATROOM_CANCELLED))
+        .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.message)));
 
 const CREATE_PRIVATE_CHATROOM = "CREATE_PRIVATE_CHATROOM";
 export const CREATE_PRIVATE_CHATROOM_SUCCESS = "CREATE_PRIVATE_CHATROOM_SUCCESS";
