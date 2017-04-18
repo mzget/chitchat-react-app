@@ -26,6 +26,7 @@ import { ChitChatFactory } from "../../chitchatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 const getConfig = () => ChitChatFactory.getInstance().config;
 const authReducer = () => ChitChatFactory.getInstance().authStore;
+const appReducer = () => ChitChatFactory.getInstance().appStore;
 
 const secure = SecureServiceFactory.getService();
 
@@ -84,15 +85,17 @@ function onChatRoomDelegate(event, newMsg: IMessage) {
         else {
             console.log("is contact message");
             // @ Check app not run in background.
-            let device = getStore().getState().deviceReducer;
-            console.warn("AppState: ", device.appState); // active, background, inactive
-            if (device.appState === "active") {
-                BackendFactory.getInstance().getChatApi().updateMessageReader(newMsg._id, newMsg.rid);
-            }
-            else if (device.appState !== "active") {
-                // @ When user joined room but appState is inActive.
-                // sharedObjectService.getNotifyManager().notify(newMsg, appBackground, localNotifyService);
-                console.warn("Call local notification here...");
+            let appState = appReducer().appState;
+            if (!!appState) {
+                console.warn("AppState: ", appState); // active, background, inactive
+                if (appState === "active") {
+                    BackendFactory.getInstance().getChatApi().updateMessageReader(newMsg._id, newMsg.rid);
+                }
+                else if (appState !== "active") {
+                    // @ When user joined room but appState is inActive.
+                    // sharedObjectService.getNotifyManager().notify(newMsg, appBackground, localNotifyService);
+                    console.warn("Call local notification here...");
+                }
             }
 
             getStore().dispatch(onNewMessage(newMsg));

@@ -23,5 +23,8 @@ class ChitChatFactory {
     setTeamStore(store) {
         this.teamStore = store;
     }
+    setAppStore(store) {
+        this.appStore = store;
+    }
 }
 exports.ChitChatFactory = ChitChatFactory;

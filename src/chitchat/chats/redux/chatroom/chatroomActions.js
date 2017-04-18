@@ -35,6 +35,7 @@ const chitchatFactory_1 = require("../../chitchatFactory");
 const getStore = () => chitchatFactory_1.ChitChatFactory.getInstance().store;
 const getConfig = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const authReducer = () => chitchatFactory_1.ChitChatFactory.getInstance().authStore;
+const appReducer = () => chitchatFactory_1.ChitChatFactory.getInstance().appStore;
 const secure = secureServiceFactory_1.default.getService();
 /**
  * ChatRoomActionsType
@@ -84,15 +85,17 @@ function onChatRoomDelegate(event, newMsg) {
         else {
             console.log("is contact message");
             // @ Check app not run in background.
-            let device = getStore().getState().deviceReducer;
-            console.warn("AppState: ", device.appState); // active, background, inactive
-            if (device.appState === "active") {
-                BackendFactory_1.BackendFactory.getInstance().getChatApi().updateMessageReader(newMsg._id, newMsg.rid);
-            }
-            else if (device.appState !== "active") {
-                // @ When user joined room but appState is inActive.
-                // sharedObjectService.getNotifyManager().notify(newMsg, appBackground, localNotifyService);
-                console.warn("Call local notification here...");
+            let appState = appReducer().appState;
+            if (!!appState) {
+                console.warn("AppState: ", appState); // active, background, inactive
+                if (appState === "active") {
+                    BackendFactory_1.BackendFactory.getInstance().getChatApi().updateMessageReader(newMsg._id, newMsg.rid);
+                }
+                else if (appState !== "active") {
+                    // @ When user joined room but appState is inActive.
+                    // sharedObjectService.getNotifyManager().notify(newMsg, appBackground, localNotifyService);
+                    console.warn("Call local notification here...");
+                }
             }
             getStore().dispatch(onNewMessage(newMsg));
         }
