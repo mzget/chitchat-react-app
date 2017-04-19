@@ -10,19 +10,28 @@ import * as adminRx from "../../redux/admin/adminRx";
 
 import { ITeamMember } from "../../chitchat/chats/models/ITeamMember";
 import { IOrgChart } from "../../chitchat/chats/models/OrgChart";
+import { UserRole } from "../../chitchat/chats/models/UserRole";
 
 interface IComponentState {
     member: ITeamMember;
     dropdownValue: number;
+    teamRoleValue: number;
 }
 export class TeamMemberBox extends React.Component<IComponentProps, IComponentState> {
 
     orgChart_id: string;
+    userRoles = [
+        UserRole[UserRole.personnel],
+        UserRole[UserRole.section_chief],
+        UserRole[UserRole.department_chief],
+        UserRole[UserRole.division_chief],
+        UserRole[UserRole.admin]];
 
     componentWillMount() {
         this.state = {
             member: null,
-            dropdownValue: 0
+            dropdownValue: 0,
+            teamRoleValue: 0
         };
 
         this.onSelectMember = this.onSelectMember.bind(this);
@@ -92,7 +101,16 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
                                 onSubmit={this.onSubmit}
                                 dropdownItems={this.props.adminReducer.orgCharts}
                                 dropdownValue={this.state.dropdownValue}
-                                dropdownChange={(event, id, value) => { console.log(value); this.setState(previous => ({ ...previous, dropdownValue: value })); }}
+                                dropdownChange={(event, id, value) => {
+                                    console.log("org chart change", value);
+                                    this.setState(previous => ({ ...previous, dropdownValue: value }));
+                                }}
+                                teamRoleItems={this.userRoles}
+                                teamRoleValue={this.state.teamRoleValue}
+                                onTeamRoleChange={(event, id, value) => {
+                                    console.log("team role change", value);
+                                    this.setState(prev => ({ ...prev, teamRoleValue: value }));
+                                }}
                             />
                             :
                             <MemberList onSelected={this.onSelectMember} items={this.props.teamReducer.members} />

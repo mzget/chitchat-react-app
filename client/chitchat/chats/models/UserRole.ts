@@ -4,4 +4,4 @@ export enum UserRole {
     department_chief,
     division_chief,
     admin
-};
+}
