@@ -12,11 +12,23 @@ const reflexbox_1 = require("reflexbox");
 const MemberList_1 = require("../chatlist/MemberList");
 const ContactProfileView_1 = require("./ContactProfileView");
 const adminRx = require("../../redux/admin/adminRx");
+const UserRole_1 = require("../../chitchat/chats/models/UserRole");
 class TeamMemberBox extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.userRoles = [
+            UserRole_1.UserRole[UserRole_1.UserRole.personnel],
+            UserRole_1.UserRole[UserRole_1.UserRole.section_chief],
+            UserRole_1.UserRole[UserRole_1.UserRole.department_chief],
+            UserRole_1.UserRole[UserRole_1.UserRole.division_chief],
+            UserRole_1.UserRole[UserRole_1.UserRole.admin]
+        ];
+    }
     componentWillMount() {
         this.state = {
             member: null,
-            dropdownValue: 0
+            dropdownValue: 0,
+            teamRoleValue: 0
         };
         this.onSelectMember = this.onSelectMember.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -69,7 +81,13 @@ class TeamMemberBox extends React.Component {
     render() {
         return (React.createElement(reflexbox_1.Flex, { flexColumn: false },
             React.createElement(reflexbox_1.Flex, { flexColumn: true, align: "center" }, (!!this.state.member) ?
-                React.createElement(ContactProfileView_1.ContactProfileView, { member: this.state.member, onSubmit: this.onSubmit, dropdownItems: this.props.adminReducer.orgCharts, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => { console.log(value); this.setState(previous => (__assign({}, previous, { dropdownValue: value }))); } })
+                React.createElement(ContactProfileView_1.ContactProfileView, { member: this.state.member, onSubmit: this.onSubmit, dropdownItems: this.props.adminReducer.orgCharts, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => {
+                        console.log("org chart change", value);
+                        this.setState(previous => (__assign({}, previous, { dropdownValue: value })));
+                    }, teamRoleItems: this.userRoles, teamRoleValue: this.state.teamRoleValue, onTeamRoleChange: (event, id, value) => {
+                        console.log("team role change", value);
+                        this.setState(prev => (__assign({}, prev, { teamRoleValue: value })));
+                    } })
                 :
                     React.createElement(MemberList_1.MemberList, { onSelected: this.onSelectMember, items: this.props.teamReducer.members }))));
     }

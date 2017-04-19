@@ -7,4 +7,3 @@ var UserRole;
     UserRole[UserRole["division_chief"] = 3] = "division_chief";
     UserRole[UserRole["admin"] = 4] = "admin";
 })(UserRole = exports.UserRole || (exports.UserRole = {}));
-;

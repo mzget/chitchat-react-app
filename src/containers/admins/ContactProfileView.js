@@ -10,9 +10,9 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 const React = require("react");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const material_ui_1 = require("material-ui");
+const SelectOrgChart_1 = require("../../components/SelectOrgChart");
+const SelectTeamRole_1 = require("../../components/SelectTeamRole");
 const SubmitButton = (props) => (React.createElement(material_ui_1.RaisedButton, { primary: true, label: "submit", onClick: props.onSubmit }));
-const SelectOrgChart = (props) => (React.createElement(material_ui_1.SelectField, { floatingLabelText: "Org Charts", value: props.dropdownValue, onChange: props.dropdownChange }, (props.dropdownItems.length > 0) ?
-    props.dropdownItems.map((value, id) => React.createElement(material_ui_1.MenuItem, { key: id, value: id, primaryText: value.chart_name })) : null));
 exports.ContactProfileView = (props) => {
     return (React.createElement(MuiThemeProvider_1.default, null,
         React.createElement("div", null,
@@ -21,6 +21,7 @@ exports.ContactProfileView = (props) => {
             React.createElement("p", null, props.member.firstname),
             React.createElement("p", null, props.member.lastname),
             React.createElement("p", null, props.member.email),
-            React.createElement(SelectOrgChart, __assign({}, props)),
+            React.createElement(SelectOrgChart_1.SelectOrgChart, { dropdownItems: props.dropdownItems, dropdownValue: props.dropdownValue, dropdownChange: props.dropdownChange }),
+            React.createElement(SelectTeamRole_1.SelectTeamRole, { teamRoleItems: props.teamRoleItems, teamRoleValue: props.teamRoleValue, onTeamRoleChange: props.onTeamRoleChange }),
             React.createElement(SubmitButton, __assign({}, props)))));
 };
