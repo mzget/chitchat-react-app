@@ -92,9 +92,7 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
 
     render() {
         return (
-            <Flex flexColumn={false}>
-                <Flex flexColumn align="center">
-                    {
+            
                         (!!this.state.member) ?
                             <ContactProfileView
                                 member={this.state.member}
@@ -114,9 +112,9 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
                             />
                             :
                             <MemberList onSelected={this.onSelectMember} items={this.props.teamReducer.members} />
-                    }
-                </Flex>
-            </Flex>
+
+                            
+              
         );
     }
 }
