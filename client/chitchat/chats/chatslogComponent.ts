@@ -20,7 +20,7 @@ import { ContactInfo } from "./models/Contact";
 import { MessageImp } from "./models/MessageImp";
 import { MemberImp } from "./models/MemberImp";
 
-import * as ServiceProvider from "./services/ServiceProvider";
+import * as chatroomService from "./services/chatroomService";
 import * as chatlogActionsHelper from "./redux/chatlogs/chatlogActionsHelper";
 
 
@@ -58,7 +58,7 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         return this.unreadMessageMap.get(room_id);
     }
     public updatedLastAccessTimeEvent: (data: RoomAccessData) => void;
-    private onUpdateLastAccess(data: RoomAccessData) {
+    onUpdatedLastAccessTime(data: RoomAccessData) {
         if (!!this.updatedLastAccessTimeEvent) {
             this.updatedLastAccessTimeEvent(data);
         }
@@ -71,7 +71,7 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         this.dataListener.addOnRoomAccessListener(this.onAccessRoom.bind(this));
         this.dataListener.addOnChatListener(this.onChat.bind(this));
         this.dataListener.addOnAddRoomAccessListener(this.onAddRoomAccess.bind(this));
-        this.dataListener.addOnUpdateRoomAccessListener(this.onUpdateLastAccess.bind(this));
+        this.dataListener.addOnUpdateRoomAccessListener(this.onUpdatedLastAccessTime.bind(this));
 
         BackendFactory.getInstance().getServer().then(server => {
             this.serverImp = server;
@@ -182,7 +182,7 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
     }
 
     public async getUnreadMessage(user_id: string, roomAccess: RoomAccessData) {
-        let response = await ServiceProvider.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString());
+        let response = await chatroomService.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString());
         let value = await response.json();
 
         console.log("getUnreadMessage result: ", value);
@@ -198,32 +198,47 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         }
     }
 
-    private decorateRoomInfoData(roomInfo: Room) {
+    private async decorateRoomInfoData(roomInfo: Room) {
         if (roomInfo.type == RoomType.privateChat) {
             if (Array.isArray(roomInfo.members)) {
                 let others = roomInfo.members.filter((value) =>
                     value._id != authReducer().user._id) as Array<MemberImp>;
+
                 if (others.length > 0) {
                     let contact = others[0];
+                    let avatar = null;
+
+                    if (!contact.avatar) {
+                        try {
+                            let user = await chatlogActionsHelper.getContactProfile(contact._id);
+                            avatar = user.avatar;
+                        }
+                        catch (err) {
+                            if (err)
+                                console.warn("getContactProfile fail", err);
+                        }
+                    }
 
                     roomInfo.name = (contact.username) ? contact.username : "EMPTY ROOM";
-                    roomInfo.image = (contact.avatar) ? contact.avatar : null;
+                    roomInfo.image = (contact.avatar) ? contact.avatar : avatar;
                 }
             }
         }
+
         return roomInfo;
     }
 
     private async getRoomInfo(room_id: string) {
         let self = this;
 
-        let response = await ServiceProvider.getRoomInfo(room_id);
+        let response = await chatroomService.getRoomInfo(room_id);
         let json = await response.json();
 
         console.log("getRoomInfo value:", json);
+
         if (json.success) {
             let roomInfos = json.result as Array<Room>;
-            let room = self.decorateRoomInfoData(roomInfos[0]);
+            let room = await self.decorateRoomInfoData(roomInfos[0]);
 
             return room;
         }
@@ -241,14 +256,17 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
             let rooms = chatrooms.filter(v => v._id == value.rid);
             let roomInfo = (rooms.length > 0) ? rooms[0] : null as Room;
             if (!!roomInfo) {
-                let room = self.decorateRoomInfoData(roomInfo);
-                chatrooms.forEach(v => {
-                    if (v._id == room._id) {
-                        v = room;
-                    }
-                });
+                self.decorateRoomInfoData(roomInfo).then(room => {
+                    chatrooms.forEach(v => {
+                        if (v._id == room._id) {
+                            v = room;
+                        }
+                    });
 
-                self.organizeChatLogMap(value, room, function done() {
+                    self.organizeChatLogMap(value, room, function done() {
+                        callback();
+                    });
+                }).catch(err => {
                     callback();
                 });
             }
@@ -323,8 +341,16 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         if (!!unread.message) {
             log.setLastMessageTime(unread.message.createTime.toString());
 
-            let contact = await chatlogActionsHelper.getContactProfile(unread.message.sender);
-            let sender = (!!contact) ? contact.displayname : "";
+            let contact = null;
+            try {
+                contact = await chatlogActionsHelper.getContactProfile(unread.message.sender);
+            }
+            catch (err) {
+                if (err)
+                    console.warn("get sender contact fail", err);
+            }
+            let sender = (!!contact) ? contact.username : "";
+
             if (unread.message.body != null) {
                 let displayMsg = unread.message.body;
                 switch (`${unread.message.type}`) {
@@ -406,15 +432,15 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
             if (!roomInfo) {
                 console.warn("No have roomInfo in room store.", unread.rid);
 
-                this.getRoomInfo(unread.rid, (err, room) => {
-                    if (!!room) {
-                        this.organizeChatLogMap(unread, room, () => {
-                            resolve(room);
-                        });
-                    }
-                    else {
-                        rejected(err);
-                    }
+                self.getRoomInfo(unread.rid).then(room => {
+                    this.organizeChatLogMap(unread, room, () => {
+                        resolve(room);
+                    });
+                }).catch(err => {
+                    if (err)
+                        console.warn("getRoomInfo fail", err);
+
+                    rejected(err);
                 });
             }
             else {

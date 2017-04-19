@@ -147,7 +147,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                 <div style={{ overflowY: "hidden" }}>
                     <div id={"toolbar"} style={{ height: this.headerHeight }}>
                         <SimpleToolbar
-                            title={this.props.teamReducer.team.name}
+                            title={(this.props.teamReducer.team) ? this.props.teamReducer.team.name : ""}
                             menus={this.menus}
                             onSelectedMenuItem={this.onSelectMenuItem} />
                     </div>

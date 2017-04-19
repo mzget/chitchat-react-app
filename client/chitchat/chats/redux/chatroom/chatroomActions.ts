@@ -7,7 +7,7 @@
 import Rx = require("rxjs/Rx");
 import * as R from "ramda";
 
-import * as ServiceProvider from "../../services/ServiceProvider";
+import * as chatroomService from "../../services/chatroomService";
 import ChatRoomComponent from "../../chatRoomComponent";
 import { BackendFactory } from "../../BackendFactory";
 import SecureServiceFactory from "../../secure/secureServiceFactory";
@@ -23,9 +23,11 @@ import { MessageType, IMessage } from "../../../libs/shared/Message";
 import { MemberImp } from "../../models/MemberImp";
 
 import { ChitChatFactory } from "../../chitchatFactory";
-
 const getStore = () => ChitChatFactory.getInstance().store;
 const getConfig = () => ChitChatFactory.getInstance().config;
+const authReducer = () => ChitChatFactory.getInstance().authStore;
+const appReducer = () => ChitChatFactory.getInstance().appStore;
+
 const secure = SecureServiceFactory.getService();
 
 /**
@@ -83,15 +85,17 @@ function onChatRoomDelegate(event, newMsg: IMessage) {
         else {
             console.log("is contact message");
             // @ Check app not run in background.
-            let device = getStore().getState().deviceReducer;
-            console.warn("AppState: ", device.appState); // active, background, inactive
-            if (device.appState === "active") {
-                BackendFactory.getInstance().getChatApi().updateMessageReader(newMsg._id, newMsg.rid);
-            }
-            else if (device.appState !== "active") {
-                // @ When user joined room but appState is inActive.
-                // sharedObjectService.getNotifyManager().notify(newMsg, appBackground, localNotifyService);
-                console.warn("Call local notification here...");
+            let appState = appReducer().appState;
+            console.log("AppState: ", appState); // active, background, inactive
+            if (!!appState) {
+                if (appState === "active") {
+                    BackendFactory.getInstance().getChatApi().updateMessageReader(newMsg._id, newMsg.rid);
+                }
+                else if (appState !== "active") {
+                    // @ When user joined room but appState is inActive.
+                    // sharedObjectService.getNotifyManager().notify(newMsg, appBackground, localNotifyService);
+                    console.warn("Call local notification here...");
+                }
             }
 
             getStore().dispatch(onNewMessage(newMsg));
@@ -117,7 +121,7 @@ export function checkOlderMessages() {
         let room = getStore().getState().chatroomReducer.room;
 
         ChatRoomComponent.getInstance().getTopEdgeMessageTime().then(res => {
-            ServiceProvider.getOlderMessagesCount(room._id, res.toString(), false)
+            chatroomService.getOlderMessagesCount(room._id, res.toString(), false)
                 .then(response => response.json())
                 .then((result: any) => {
                     console.log("getOlderMessagesCount", result);
@@ -145,11 +149,12 @@ function getNewerMessage_success(messages: any) {
 }
 export function getNewerMessageFromNet() {
     return dispatch => {
-        let token = getStore().getState().authReducer.token;
+        let token = authReducer().chitchat_token;
         ChatRoomComponent.getInstance().getNewerMessageRecord(token, (results) => {
             dispatch(getNewerMessage_success(results));
             // @Todo next joinroom function is ready to call.
         }).catch(err => {
+            if (err) console.warn("getNewerMessageRecord fail", err);
             dispatch(getNewerMessage_failure());
         });
     };

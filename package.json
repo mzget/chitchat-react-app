@@ -1,6 +1,6 @@
 {
   "name": "chitchat-webapp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "homepage": "http://mzget.github.io/chitchat-react-app",
   "devDependencies": {

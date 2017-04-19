@@ -18,9 +18,13 @@ import Main from "./containers/Main";
 import { AdminPageEnhanced } from "./containers/AdminPageEnhanced";
 
 chitchatFactory.initStore(Store);
-Store.subscribe(() =>
-    chitchatFactory.setAuthStore(Store.getState().userReducer.user, Store.getState().authReducer.token)
-);
+Store.subscribe(() => {
+    chitchatFactory.setAuthStore(Store.getState().userReducer.user, Store.getState().authReducer.token);
+    chitchatFactory.setTeamStore({
+        team: Store.getState().teamReducer.team,
+        members: Store.getState().teamReducer.members
+    });
+});
 
 class App extends React.Component<any, any> {
     render() {

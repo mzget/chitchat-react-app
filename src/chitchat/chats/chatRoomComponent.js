@@ -17,12 +17,13 @@ const BackendFactory_1 = require("./BackendFactory");
 const serverImplemented_1 = require("../libs/stalk/serverImplemented");
 const serverEventListener_1 = require("../libs/stalk/serverEventListener");
 const CryptoHelper = require("./utils/CryptoHelper");
-const ServiceProvider = require("./services/ServiceProvider");
+const chatroomService = require("./services/chatroomService");
 const secureServiceFactory_1 = require("./secure/secureServiceFactory");
 const Message_1 = require("../libs/shared/Message");
-const chitchatFactory_1 = require("./chitchatFactory");
 const StickerPath_1 = require("../consts/StickerPath");
+const chitchatFactory_1 = require("./chitchatFactory");
 const getConfig = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
+const getStore = () => chitchatFactory_1.ChitChatFactory.getInstance().store;
 let serverImp = null;
 class ChatRoomComponent {
     static getInstance() {
@@ -166,7 +167,7 @@ class ChatRoomComponent {
             let self = this;
             let lastMessageTime = new Date();
             const getLastMessageTime = (cb) => {
-                let roomAccess = self.dataManager.getRoomAccess();
+                let { roomAccess } = getStore().getState().chatlogReducer;
                 async.some(roomAccess, (item, cb) => {
                     if (item.roomId === self.roomId) {
                         lastMessageTime = item.accessTime;
@@ -188,7 +189,7 @@ class ChatRoomComponent {
                 }
                 // Save persistent chats log here.
                 let results = yield self.dataManager.messageDAL.saveData(self.roomId, _results);
-                callback(results);
+                callback(_results);
             });
             const getNewerMessage = () => __awaiter(this, void 0, void 0, function* () {
                 let histories = yield self.getNewerMessageFromNet(lastMessageTime, sessionToken);
@@ -216,7 +217,7 @@ class ChatRoomComponent {
     getNewerMessageFromNet(lastMessageTime, sessionToken) {
         return __awaiter(this, void 0, void 0, function* () {
             let self = this;
-            let response = yield ServiceProvider.getChatHistory(self.roomId, lastMessageTime, sessionToken);
+            let response = yield chatroomService.getChatHistory(self.roomId, lastMessageTime, sessionToken);
             let value = yield response.json();
             return new Promise((resolve, reject) => {
                 console.log("getChatHistory: ", value);
@@ -280,7 +281,7 @@ class ChatRoomComponent {
             }
             let time = yield self.getTopEdgeMessageTime();
             if (time) {
-                let response = yield ServiceProvider.getOlderMessagesCount(self.roomId, time.toString(), true);
+                let response = yield chatroomService.getOlderMessagesCount(self.roomId, time.toString(), true);
                 let result = yield response.json();
                 console.log("getOlderMessageChunk value", result);
                 // todo

@@ -31,6 +31,8 @@ export const removeRoomAccess_Epic = action$ => (
             let { _id } = authReducer().user;
             return ServiceProvider.removeLastAccessRoomInfo(_id, action.payload);
         }).map(json => {
+            console.log("removeRoomAccess_Epic", json.response);
+
             let result = json.response;
             if (result.success && result.result.length > 0) {
                 return removeRoomAccess_Success(result.result);
@@ -133,5 +135,4 @@ export const getLastAccessRoom_Epic = action$ => (
             BackendFactory.getInstance().dataListener.onAccessRoom(json.result);
             return getLastAccessRoomSuccess(json.result);
         })
-        .catch(json => Rx.Observable.of(getLastAccessRoomFailure(json.message)))
-);
+        .catch(json => Rx.Observable.of(getLastAccessRoomFailure(json.message))));

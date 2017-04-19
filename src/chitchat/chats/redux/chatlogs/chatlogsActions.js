@@ -40,6 +40,7 @@ const listenerImp = (newMsg) => {
     }
 };
 function updateLastAccessTimeEventHandler(newRoomAccess) {
+    console.log("updateLastAccessTimeEventHandler", newRoomAccess);
     let chatsLogComp = BackendFactory_1.BackendFactory.getInstance().chatLogComp;
     let { _id } = authReducer().user;
     chatsLogComp.getUnreadMessage(_id, newRoomAccess).then(function (unread) {

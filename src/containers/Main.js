@@ -125,7 +125,7 @@ class Main extends React.Component {
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement("div", { style: { overflowY: "hidden" } },
                 React.createElement("div", { id: "toolbar", style: { height: this.headerHeight } },
-                    React.createElement(SimpleToolbar_1.SimpleToolbar, { title: this.props.teamReducer.team.name, menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
+                    React.createElement(SimpleToolbar_1.SimpleToolbar, { title: (this.props.teamReducer.team) ? this.props.teamReducer.team.name : "", menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
                 React.createElement("div", { id: "app_body", style: { height: this.bodyHeight, overflowY: "auto" } },
                     React.createElement(ProfileBox_1.ProfileEnhancer, { router: this.props.router }),
                     React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => this.fetch_orgGroups(), groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),

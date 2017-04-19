@@ -14,18 +14,20 @@ import ChatRoomApiProvider from "../libs/stalk/chatRoomApiProvider";
 import ServerEventListener from "../libs/stalk/serverEventListener";
 import { absSpartan } from "../libs/stalk/spartanEvents";
 import * as CryptoHelper from "./utils/CryptoHelper";
-import * as ServiceProvider from "./services/ServiceProvider";
+import * as chatroomService from "./services/chatroomService";
 
 import { ISecureService } from "./secure/ISecureService";
 import SecureServiceFactory from "./secure/secureServiceFactory";
 
 import { MessageType, IMessage } from "../libs/shared/Message";
 import { Room, IMember } from "../libs/shared/Room";
+import { RoomAccessData } from "../libs/shared/Stalk";
 import { MessageImp } from "./models/MessageImp";
 
-import { ChitChatFactory } from "./chitchatFactory";
 import { imagesPath } from "../consts/StickerPath";
+import { ChitChatFactory } from "./chitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
+const getStore = () => ChitChatFactory.getInstance().store;
 
 let serverImp: ServerImplemented = null;
 
@@ -210,7 +212,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
         let lastMessageTime = new Date();
 
         const getLastMessageTime = (cb: (boo: boolean) => void) => {
-            let roomAccess = self.dataManager.getRoomAccess();
+            let { roomAccess }: { roomAccess: Array<RoomAccessData> } = getStore().getState().chatlogReducer;
             async.some(roomAccess, (item, cb) => {
                 if (item.roomId === self.roomId) {
                     lastMessageTime = item.accessTime;
@@ -232,7 +234,8 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
             }
             // Save persistent chats log here.
             let results = await self.dataManager.messageDAL.saveData(self.roomId, _results) as Array<IMessage>;
-            callback(results);
+
+            callback(_results);
         };
 
         const getNewerMessage = async () => {
@@ -261,7 +264,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
     private async getNewerMessageFromNet(lastMessageTime: Date, sessionToken: string) {
         let self = this;
 
-        let response = await ServiceProvider.getChatHistory(self.roomId, lastMessageTime, sessionToken);
+        let response = await chatroomService.getChatHistory(self.roomId, lastMessageTime, sessionToken);
         let value = await response.json();
 
         return new Promise((resolve, reject) => {
@@ -326,7 +329,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
 
         let time = await self.getTopEdgeMessageTime() as Date;
         if (time) {
-            let response = await ServiceProvider.getOlderMessagesCount(self.roomId, time.toString(), true);
+            let response = await chatroomService.getOlderMessagesCount(self.roomId, time.toString(), true);
             let result = await response.json();
 
             console.log("getOlderMessageChunk value", result);
