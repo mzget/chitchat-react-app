@@ -32,6 +32,17 @@ function setOrgChartId(token, user, team_id, orgChartId) {
     });
 }
 exports.setOrgChartId = setOrgChartId;
+function updateTeamProfile(user_id, team_id, profile) {
+    return Rx.Observable.ajax({
+        method: "POST",
+        url: `${getConfig().api.user}/teamProfile/${team_id}/${user_id}`,
+        body: JSON.stringify({
+            profile: profile
+        }),
+        headers: chitchatServiceUtils_1.chitchat_headers()
+    });
+}
+exports.updateTeamProfile = updateTeamProfile;
 function fetchUser(username) {
     return ajax({
         method: "GET",

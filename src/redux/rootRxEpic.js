@@ -12,7 +12,7 @@ const editGroupRxActions = require("./group/editGroupRxActions");
 const chitchatRxActions = require("../actions/chitchatRxActions");
 exports.rootEpic = redux_observable_1.combineEpics(
 // @Admin
-adminRx.createNewOrgChartEpic, adminRx.getOrgChartEpic, adminRx.updateUserOrgChartEpic, userRx.onAuth_Epic, userRx.fetchUserEpic, userRx.fetchContactEpic, userRx.fetchAgentEpic, userRx.getTeamProfileEpic, userRx.uploadUserAvatar_Epic, userRx.updateUserInfo_Epic, 
+adminRx.createNewOrgChartEpic, adminRx.getOrgChartEpic, adminRx.updateUserOrgChartEpic, adminRx.updateUserTeamRole_Epic, userRx.onAuth_Epic, userRx.fetchUserEpic, userRx.fetchContactEpic, userRx.fetchAgentEpic, userRx.getTeamProfileEpic, userRx.uploadUserAvatar_Epic, userRx.updateUserInfo_Epic, 
 ///@ Signup user.
 authRx.signupUserEpic, authRx.authUser_Epic, authRx.tokenAuthUserEpic, authRx.logoutUser_Epic, 
 ///@Teams

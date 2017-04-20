@@ -33,6 +33,17 @@ export function setOrgChartId(token: string, user: any, team_id: string, orgChar
     });
 }
 
+export function updateTeamProfile(user_id: string, team_id: string, profile: any) {
+    return Rx.Observable.ajax({
+        method: "POST",
+        url: `${getConfig().api.user}/teamProfile/${team_id}/${user_id}`,
+        body: JSON.stringify({
+            profile: profile
+        }),
+        headers: chitchat_headers()
+    });
+}
+
 export function fetchUser(username: string) {
     return ajax({
         method: "GET",
