@@ -12,6 +12,7 @@ import * as chatroomService from "../../services/chatroomService";
 
 const getConfig = () => ChitChatFactory.getInstance().config;
 const getStore = () => ChitChatFactory.getInstance().store;
+const authReducer = () => ChitChatFactory.getInstance().authStore;
 
 export const FETCH_PRIVATE_CHATROOM = "FETCH_PRIVATE_CHATROOM";
 export const FETCH_PRIVATE_CHATROOM_FAILURE = "FETCH_PRIVATE_CHATROOM_FAILURE";
@@ -54,7 +55,7 @@ export const createPrivateChatRoomEpic = action$ => {
             body: action.payload,
             headers: {
                 "Content-Type": "application/json",
-                "x-access-token": getStore().getState().authReducer.token
+                "x-access-token": authReducer().chitchat_token
             }
         }))
         .map(json => createPrivateChatRoomSuccess(json.response))
