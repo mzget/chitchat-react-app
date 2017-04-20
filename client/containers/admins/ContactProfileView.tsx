@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import { RaisedButton, TextField, MenuItem, SelectField, Subheader, Divider, Paper, Card, CardActions, CardHeader, CardText } from "material-ui";
+import { RaisedButton, TextField, MenuItem, SelectField, Subheader, Divider, Paper, Card, CardActions, CardHeader, CardText, CardTitle } from "material-ui";
 
 import { SelectOrgChart } from "../../components/SelectOrgChart";
 import { SelectTeamRole } from "../../components/SelectTeamRole";
@@ -13,6 +13,8 @@ const Profile = require("../../styles/profile");
 const BoxShadow = Profile.Styles.boxShadow;
 const ProfileBox = Profile.Styles.profileBox;
 const DropdownBox = Profile.Styles.dropdownBox;
+const MarginTopBottom = Styles.generalStyles.marginTopBottom;
+const ManageUserBox = Profile.Styles.manageUserBox;
 
 interface IComponentProps {
     member: ChitChatAccount;
@@ -30,37 +32,50 @@ const SubmitButton = (props: IComponentProps) => (
     <RaisedButton primary={true} label="submit" onClick={props.onSubmit} ></RaisedButton>
 );
 const DeleteButton = (props: IComponentProps) => (
-    <RaisedButton  label="delete" backgroundColor="red" labelColor="white"  style={{marginRight: "2%"}}></RaisedButton>
+    <RaisedButton  label="delete" backgroundColor="red" labelColor="white"  fullWidth></RaisedButton>
 );
 
 
 export const ContactProfileView = (props: IComponentProps) => {
-    {
-        console.log(props);
-    }
+
     return (
         <MuiThemeProvider>
             <Row >
                 <Col md={6} mdOffset={3}>
+                    <Card>
+                        <CardTitle title="User Profile" subtitle="User Profile" />
+                    </Card>
                     <div style={Object.assign(Styles.generalStyles.paddingTop2Percent, Styles.generalStyles.paddingLeft2Percent, BoxShadow, {height: "calc(100vh - 56px)", padding: "0"})}>
-                        {/*<Panel collapsible defaultExpanded  bsStyle="primary">*/}
                                 
                                 <div style={Object.assign({ height: "200px", backgroundColor: "#333b3e"}, Styles.generalStyles.flexCenter)}>
                                     {props.member.avatar ? <img src={props.member.avatar} width="150" height="150" /> : <img src="https://thumb.ibb.co/hnoE5k/userdefault.png" width="150" height="150" />}                                    
                                     
                                 </div>
-                     
-                                <div>
-                             
-                                    <div style={Object.assign(ProfileBox, Styles.generalStyles.flexStart)}>
-                                        <Col xs={4} md={3}>
-                                            <strong>Username : </strong>
-                                        </Col>
-                                        <Col xs={8} md={9}>
-                                            <FormGroup style={{margin: "0"}}>
-                                                <FormControl  value={props.member.username} disabled /> 
+                                <div style={Object.assign(ManageUserBox)}>
+                                    <Col md={12} style={Styles.generalStyles.flexEnd}>
+                                        <Col md={4}>
+                                            <FormGroup controlId="formControlsSelect">
+                                                <ControlLabel>Manage User</ControlLabel>
+                                                <FormControl componentClass="select" placeholder="select">
+                                                    <option value="select" disabled selected>Select action</option>
+                                                    <option value="other">Delete User</option>
+                                                </FormControl>
                                             </FormGroup>
                                         </Col>
+                                    </Col>
+                                </div>
+
+                                <Col md={12}>
+                             
+                                    <div style={Object.assign(ProfileBox, Styles.generalStyles.flexStart)}>
+                                            <Col xs={4} md={3}>
+                                                <strong>Username : </strong>
+                                            </Col>
+                                            <Col xs={8} md={9}>
+                                                <FormGroup style={{margin: "0"}}>
+                                                    <FormControl  value={props.member.username} disabled /> 
+                                                </FormGroup>
+                                            </Col>
                                     </div>
 
                                     <div style={Object.assign(ProfileBox, Styles.generalStyles.flexStart)}>
@@ -102,19 +117,15 @@ export const ContactProfileView = (props: IComponentProps) => {
                                             <SelectTeamRole teamRoleItems={props.teamRoleItems} teamRoleValue={props.teamRoleValue} onTeamRoleChange={props.onTeamRoleChange} />
                                         </Col>
                                     </div>
-                                </div>
-                                <div style={Styles.generalStyles.flexCenter}>
-                                    <Col md={12}>
-                                        <FormGroup>
-                                            <FormControl.Static style={{textAlign: "right"}}>
-                                                <DeleteButton {...props} />   
-                                                <SubmitButton  {...props} />   
-                                            </FormControl.Static>
-                                          
-                                        </FormGroup>                      
-                                    </Col>
-                                </div>
-                        {/*</Panel>*/}
+                                </Col>
+                                <Col md={12} style={Styles.generalStyles.flexEnd}>
+                                    <FormGroup>
+                                        <FormControl.Static >
+                                            <SubmitButton  {...props} />   
+                                        </FormControl.Static>
+                                    </FormGroup>                      
+                                </Col>
+                                
                     </div>
                 </Col>
             </Row>

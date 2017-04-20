@@ -1,12 +1,5 @@
 "use strict";
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
@@ -126,17 +119,16 @@ class Main extends React.Component {
             React.createElement("div", { style: { overflowY: "hidden" } },
                 React.createElement("div", { id: "toolbar", style: { height: this.headerHeight } },
                     React.createElement(SimpleToolbar_1.SimpleToolbar, { title: (this.props.teamReducer.team) ? this.props.teamReducer.team.name : "", menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
-                React.createElement("div", { id: "app_body", style: { height: this.bodyHeight, overflowY: "auto" } },
+                React.createElement("div", { id: "app_body", style: { overflowY: "auto" } },
                     React.createElement(ProfileBox_1.ProfileEnhancer, { router: this.props.router }),
                     React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => this.fetch_orgGroups(), groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
                     React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => { this.fetch_privateGroups(); }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
-                    React.createElement(ContactBox_1.default, __assign({}, this.props)),
+                    React.createElement(ContactBox_1.default, Object.assign({}, this.props)),
                     React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, { router: this.props.router }),
                     React.createElement(SnackbarToolBox_1.SnackbarToolBox, null)),
                 React.createElement("div", { id: "app_footer", style: { height: this.footerHeight } },
                     React.createElement(StalkComponent_1.StalkCompEnhancer, null)))));
     }
 }
-const mapStateToProps = (state) => (__assign({}, state));
-Object.defineProperty(exports, "__esModule", { value: true });
+const mapStateToProps = (state) => (Object.assign({}, state));
 exports.default = react_redux_1.connect(mapStateToProps)(Main);

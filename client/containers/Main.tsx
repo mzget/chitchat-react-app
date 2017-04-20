@@ -151,7 +151,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                             menus={this.menus}
                             onSelectedMenuItem={this.onSelectMenuItem} />
                     </div>
-                    <div id={"app_body"} style={{ height: this.bodyHeight, overflowY: "auto" }}>
+                    <div id={"app_body"} style={{  overflowY: "auto" }}>
                         <ProfileEnhancer router={this.props.router} />
                         <ConnectGroupListEnhancer fetchGroup={() => this.fetch_orgGroups()}
                             groups={this.props.groupReducer.orgGroups}
