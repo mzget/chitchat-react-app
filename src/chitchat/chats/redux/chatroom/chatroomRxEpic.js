@@ -24,7 +24,7 @@ exports.getPrivateChatRoom_Epic = action$ => action$.ofType(exports.FETCH_PRIVAT
     .mergeMap(action => fromPromise(chatroomService.getPrivateChatroom(action.payload.ownerId, action.payload.roommateId)))
     .mergeMap(response => fromPromise(response.json()))
     .map(json => {
-    console.log("getPrivateChatRoom_Epic", json);
+    console.log(exports.FETCH_PRIVATE_CHATROOM, json);
     if (json.success) {
         return fetchPrivateChatRoomSuccess(json.result[0]);
     }
@@ -34,16 +34,16 @@ exports.getPrivateChatRoom_Epic = action$ => action$.ofType(exports.FETCH_PRIVAT
 })
     .takeUntil(action$.ofType(exports.FETCH_PRIVATE_CHATROOM_CANCELLED))
     .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.message)));
-const CREATE_PRIVATE_CHATROOM = "CREATE_PRIVATE_CHATROOM";
+exports.CREATE_PRIVATE_CHATROOM = "CREATE_PRIVATE_CHATROOM";
 exports.CREATE_PRIVATE_CHATROOM_SUCCESS = "CREATE_PRIVATE_CHATROOM_SUCCESS";
-const CREATE_PRIVATE_CHATROOM_CANCELLED = "CREATE_PRIVATE_CHATROOM_CANCELLED";
-const CREATE_PRIVATE_CHATROOM_FAILURE = "CREATE_PRIVATE_CHATROOM_FAILURE";
-exports.createPrivateChatRoom = (owner, roommate) => ({ type: CREATE_PRIVATE_CHATROOM, payload: { owner, roommate } });
+exports.CREATE_PRIVATE_CHATROOM_CANCELLED = "CREATE_PRIVATE_CHATROOM_CANCELLED";
+exports.CREATE_PRIVATE_CHATROOM_FAILURE = "CREATE_PRIVATE_CHATROOM_FAILURE";
+exports.createPrivateChatRoom = (owner, roommate) => ({ type: exports.CREATE_PRIVATE_CHATROOM, payload: { owner, roommate } });
 const createPrivateChatRoomSuccess = (payload) => ({ type: exports.CREATE_PRIVATE_CHATROOM_SUCCESS, payload });
-const createPrivateRoomCancelled = () => ({ type: CREATE_PRIVATE_CHATROOM_CANCELLED });
-const createPrivateChatRoomFailure = (payload) => ({ type: CREATE_PRIVATE_CHATROOM_FAILURE, payload });
+const createPrivateRoomCancelled = () => ({ type: exports.CREATE_PRIVATE_CHATROOM_CANCELLED });
+const createPrivateChatRoomFailure = (payload) => ({ type: exports.CREATE_PRIVATE_CHATROOM_FAILURE, payload });
 exports.createPrivateChatRoomEpic = action$ => {
-    return action$.ofType(CREATE_PRIVATE_CHATROOM)
+    return action$.ofType(exports.CREATE_PRIVATE_CHATROOM)
         .mergeMap(action => ajax({
         method: "POST",
         url: `${getConfig().api.group}/private_chat/create`,
@@ -54,7 +54,7 @@ exports.createPrivateChatRoomEpic = action$ => {
         }
     }))
         .map(json => createPrivateChatRoomSuccess(json.response))
-        .takeUntil(action$.ofType(CREATE_PRIVATE_CHATROOM_CANCELLED))
+        .takeUntil(action$.ofType(exports.CREATE_PRIVATE_CHATROOM_CANCELLED))
         .catch(error => Rx.Observable.of(createPrivateChatRoomFailure(error.xhr.response)));
 };
 const GET_PERSISTEND_MESSAGE = "GET_PERSISTEND_MESSAGE";

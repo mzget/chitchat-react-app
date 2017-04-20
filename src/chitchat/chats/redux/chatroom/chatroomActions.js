@@ -59,7 +59,7 @@ function initChatRoom(currentRoom) {
     let room_name = currentRoom.name;
     if (!room_name && currentRoom.type === Room_1.RoomType.privateChat) {
         currentRoom.members.some((v, id, arr) => {
-            if (v._id !== getStore().getState().userReducer.user._id) {
+            if (v._id !== authReducer().user._id) {
                 currentRoom.name = v.username;
                 return true;
             }

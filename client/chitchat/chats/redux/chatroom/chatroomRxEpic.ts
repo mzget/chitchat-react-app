@@ -28,7 +28,7 @@ export const getPrivateChatRoom_Epic = action$ =>
         .mergeMap(action => fromPromise(chatroomService.getPrivateChatroom(action.payload.ownerId, action.payload.roommateId)))
         .mergeMap(response => fromPromise(response.json()))
         .map(json => {
-            console.log("getPrivateChatRoom_Epic", json);
+            console.log(FETCH_PRIVATE_CHATROOM, json);
             if (json.success) {
                 return fetchPrivateChatRoomSuccess(json.result[0]);
             }
@@ -39,10 +39,12 @@ export const getPrivateChatRoom_Epic = action$ =>
         .takeUntil(action$.ofType(FETCH_PRIVATE_CHATROOM_CANCELLED))
         .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.message)));
 
-const CREATE_PRIVATE_CHATROOM = "CREATE_PRIVATE_CHATROOM";
+
+export const CREATE_PRIVATE_CHATROOM = "CREATE_PRIVATE_CHATROOM";
 export const CREATE_PRIVATE_CHATROOM_SUCCESS = "CREATE_PRIVATE_CHATROOM_SUCCESS";
-const CREATE_PRIVATE_CHATROOM_CANCELLED = "CREATE_PRIVATE_CHATROOM_CANCELLED";
-const CREATE_PRIVATE_CHATROOM_FAILURE = "CREATE_PRIVATE_CHATROOM_FAILURE";
+export const CREATE_PRIVATE_CHATROOM_CANCELLED = "CREATE_PRIVATE_CHATROOM_CANCELLED";
+export const CREATE_PRIVATE_CHATROOM_FAILURE = "CREATE_PRIVATE_CHATROOM_FAILURE";
+
 export const createPrivateChatRoom = (owner, roommate) => ({ type: CREATE_PRIVATE_CHATROOM, payload: { owner, roommate } });
 const createPrivateChatRoomSuccess = (payload) => ({ type: CREATE_PRIVATE_CHATROOM_SUCCESS, payload });
 const createPrivateRoomCancelled = () => ({ type: CREATE_PRIVATE_CHATROOM_CANCELLED });
