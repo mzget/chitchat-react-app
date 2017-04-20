@@ -29,6 +29,9 @@ interface IComponentProps {
 const SubmitButton = (props: IComponentProps) => (
     <RaisedButton primary={true} label="submit" onClick={props.onSubmit} ></RaisedButton>
 );
+const DeleteButton = (props: IComponentProps) => (
+    <RaisedButton  label="delete" backgroundColor="red" labelColor="white"  style={{marginRight: "2%"}}></RaisedButton>
+);
 
 
 export const ContactProfileView = (props: IComponentProps) => {
@@ -104,8 +107,10 @@ export const ContactProfileView = (props: IComponentProps) => {
                                     <Col md={12}>
                                         <FormGroup>
                                             <FormControl.Static style={{textAlign: "right"}}>
-                                                <SubmitButton {...props} />   
+                                                <DeleteButton {...props} />   
+                                                <SubmitButton  {...props} />   
                                             </FormControl.Static>
+                                          
                                         </FormGroup>                      
                                     </Col>
                                 </div>

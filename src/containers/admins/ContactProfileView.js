@@ -19,6 +19,7 @@ const BoxShadow = Profile.Styles.boxShadow;
 const ProfileBox = Profile.Styles.profileBox;
 const DropdownBox = Profile.Styles.dropdownBox;
 const SubmitButton = (props) => (React.createElement(material_ui_1.RaisedButton, { primary: true, label: "submit", onClick: props.onSubmit }));
+const DeleteButton = (props) => (React.createElement(material_ui_1.RaisedButton, { label: "delete", backgroundColor: "red", labelColor: "white", style: { marginRight: "2%" } }));
 exports.ContactProfileView = (props) => {
     {
         console.log(props);
@@ -61,5 +62,6 @@ exports.ContactProfileView = (props) => {
                         React.createElement(react_bootstrap_1.Col, { md: 12 },
                             React.createElement(react_bootstrap_1.FormGroup, null,
                                 React.createElement(react_bootstrap_1.FormControl.Static, { style: { textAlign: "right" } },
+                                    React.createElement(DeleteButton, __assign({}, props)),
                                     React.createElement(SubmitButton, __assign({}, props)))))))))));
 };
