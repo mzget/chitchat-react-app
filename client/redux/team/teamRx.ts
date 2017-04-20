@@ -132,6 +132,7 @@ const GET_TEAM_MEMBERS = "GET_TEAM_MEMBERS";
 const GET_TEAM_MEMBERS_SUCCESS = "GET_TEAM_MEMBERS_SUCCESS";
 const GET_TEAM_MEMBERS_FAILURE = "GET_TEAM_MEMBERS_FAILURE";
 const GET_TEAM_MEMBERS_CANCELLED = "GET_TEAM_MEMBERS_CANCELLED";
+
 export function getTeamMembers(team_id: string) {
     return { type: GET_TEAM_MEMBERS, payload: team_id };
 }

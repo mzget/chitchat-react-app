@@ -60,11 +60,11 @@ exports.updateUserOrgChartEpic = action$ => action$.ofType(UPDATE_USER_ORG_CHART
     .takeUntil(action$.ofType(UPDATE_USER_ORG_CHART_CANCELLED))
     .catch((error) => Rx.Observable.of(updateUserOrgChartFailure(error.xhr.response)));
 const UPDATE_USER_TEAM_ROLE = "UPDATE_USER_TEAM_ROLE";
-const UPDATE_USER_TEAM_ROLE_SUCCESS = "UPDATE_USER_TEAM_ROLE_SUCCESS";
+exports.UPDATE_USER_TEAM_ROLE_SUCCESS = "UPDATE_USER_TEAM_ROLE_SUCCESS";
 const UPDATE_USER_TEAM_ROLE_FAILURE = "UPDATE_USER_TEAM_ROLE_FAILURE";
 const UPDATE_USER_TEAM_ROLE_CANCELLED = "UPDATE_USER_TEAM_ROLE_CANCELLED";
 exports.updateUserTeamRole = redux_actions_1.createAction(UPDATE_USER_TEAM_ROLE, (user_id, team_id, profile) => ({ user_id, team_id, profile }));
-const updateUserTeamRole_Success = redux_actions_1.createAction(UPDATE_USER_TEAM_ROLE_SUCCESS, payload => payload);
+const updateUserTeamRole_Success = redux_actions_1.createAction(exports.UPDATE_USER_TEAM_ROLE_SUCCESS, payload => payload);
 const updateUserTeamRole_Failure = redux_actions_1.createAction(UPDATE_USER_TEAM_ROLE_FAILURE, payload => payload);
 exports.updateUserTeamRole_Cancelled = redux_actions_1.createAction(UPDATE_USER_TEAM_ROLE_CANCELLED);
 exports.updateUserTeamRole_Epic = action$ => action$.ofType(UPDATE_USER_TEAM_ROLE)

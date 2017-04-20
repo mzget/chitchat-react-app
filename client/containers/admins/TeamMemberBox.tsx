@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Flex, Box } from "reflexbox";
+import { shallowEqual } from "recompose";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 
@@ -7,6 +8,7 @@ import { MemberList } from "../chatlist/MemberList";
 import { ContactProfileView } from "./ContactProfileView";
 
 import * as adminRx from "../../redux/admin/adminRx";
+import * as teamRx from "../../redux/team/teamRx";
 
 import { ITeamProfile } from "../../chitchat/chats/models/TeamProfile";
 import { ITeamMember } from "../../chitchat/chats/models/ITeamMember";
@@ -41,20 +43,18 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let { adminReducer } = nextProps;
+        let { adminReducer, teamReducer } = nextProps;
 
-        switch (adminReducer.state) {
-            case adminRx.UPDATE_USER_ORG_CHART_FAILURE: {
+        if (!shallowEqual(adminReducer, this.props.adminReducer)) {
+            if (adminReducer.state == adminRx.UPDATE_USER_ORG_CHART_FAILURE) {
                 this.props.onError(adminReducer.error);
-                break;
             }
-            case adminRx.UPDATE_USER_ORG_CHART_SUCCESS: {
+            else if (adminReducer.state == adminRx.UPDATE_USER_ORG_CHART_SUCCESS || adminReducer.state == adminRx.UPDATE_USER_TEAM_ROLE_SUCCESS) {
                 this.setState(previous => ({ ...previous, member: null }));
                 this.props.dispatch(adminRx.emptyState());
-                break;
+
+                this.props.dispatch(teamRx.getTeamMembers(teamReducer.team._id));
             }
-            default:
-                break;
         }
     }
 

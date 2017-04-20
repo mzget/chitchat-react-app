@@ -9,9 +9,11 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const reflexbox_1 = require("reflexbox");
+const recompose_1 = require("recompose");
 const MemberList_1 = require("../chatlist/MemberList");
 const ContactProfileView_1 = require("./ContactProfileView");
 const adminRx = require("../../redux/admin/adminRx");
+const teamRx = require("../../redux/team/teamRx");
 const UserRole_1 = require("../../chitchat/chats/models/UserRole");
 class TeamMemberBox extends React.Component {
     constructor() {
@@ -34,19 +36,16 @@ class TeamMemberBox extends React.Component {
         this.onSubmit = this.onSubmit.bind(this);
     }
     componentWillReceiveProps(nextProps) {
-        let { adminReducer } = nextProps;
-        switch (adminReducer.state) {
-            case adminRx.UPDATE_USER_ORG_CHART_FAILURE: {
+        let { adminReducer, teamReducer } = nextProps;
+        if (!recompose_1.shallowEqual(adminReducer, this.props.adminReducer)) {
+            if (adminReducer.state == adminRx.UPDATE_USER_ORG_CHART_FAILURE) {
                 this.props.onError(adminReducer.error);
-                break;
             }
-            case adminRx.UPDATE_USER_ORG_CHART_SUCCESS: {
+            else if (adminReducer.state == adminRx.UPDATE_USER_ORG_CHART_SUCCESS || adminReducer.state == adminRx.UPDATE_USER_TEAM_ROLE_SUCCESS) {
                 this.setState(previous => (__assign({}, previous, { member: null })));
                 this.props.dispatch(adminRx.emptyState());
-                break;
+                this.props.dispatch(teamRx.getTeamMembers(teamReducer.team._id));
             }
-            default:
-                break;
         }
     }
     onSelectMember(item) {
