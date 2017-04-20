@@ -8,6 +8,7 @@ import { ContactProfileView } from "./ContactProfileView";
 
 import * as adminRx from "../../redux/admin/adminRx";
 
+import { ITeamProfile } from "../../chitchat/chats/models/TeamProfile";
 import { ITeamMember } from "../../chitchat/chats/models/ITeamMember";
 import { IOrgChart } from "../../chitchat/chats/models/OrgChart";
 import { UserRole } from "../../chitchat/chats/models/UserRole";
@@ -20,6 +21,7 @@ interface IComponentState {
 export class TeamMemberBox extends React.Component<IComponentProps, IComponentState> {
 
     orgChart_id: string;
+    userRole: string;
     userRoles = [
         UserRole[UserRole.personnel],
         UserRole[UserRole.section_chief],
@@ -73,7 +75,12 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
             let role_id = this.userRoles.findIndex((v, i) => {
                 return v == item.teamProfiles[0].team_role.toString();
             });
-            this.setState(previous => ({ ...previous, member: item, dropdownValue: chart_ids, teamRoleValue: role_id }));
+            this.setState(previous => ({
+                ...previous,
+                member: item,
+                dropdownValue: chart_ids,
+                teamRoleValue: role_id
+            }));
         }
     }
 
@@ -85,8 +92,17 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
             this.orgChart_id = orgCharts[this.state.dropdownValue]._id;
         }
 
+        this.userRole = this.userRoles[this.state.teamRoleValue];
+
+        console.log(_member, this.orgChart_id, this.userRole);
+
         if (_member) {
-            this.props.dispatch(adminRx.updateUserOrgChart(_member, team._id, this.orgChart_id));
+            if (this.orgChart_id)
+                this.props.dispatch(adminRx.updateUserOrgChart(_member, team._id, this.orgChart_id));
+            if (this.userRole) {
+                let profile = { team_role: this.userRole } as ITeamProfile | any;
+                this.props.dispatch(adminRx.updateUserTeamRole(_member._id, team._id, profile));
+            }
         }
         else {
             if (this.props.onError) {

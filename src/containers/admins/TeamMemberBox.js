@@ -72,8 +72,15 @@ class TeamMemberBox extends React.Component {
         if (orgCharts.length > 0 && this.state.dropdownValue >= 0) {
             this.orgChart_id = orgCharts[this.state.dropdownValue]._id;
         }
+        this.userRole = this.userRoles[this.state.teamRoleValue];
+        console.log(_member, this.orgChart_id, this.userRole);
         if (_member) {
-            this.props.dispatch(adminRx.updateUserOrgChart(_member, team._id, this.orgChart_id));
+            if (this.orgChart_id)
+                this.props.dispatch(adminRx.updateUserOrgChart(_member, team._id, this.orgChart_id));
+            if (this.userRole) {
+                let profile = { team_role: this.userRole };
+                this.props.dispatch(adminRx.updateUserTeamRole(_member._id, team._id, profile));
+            }
         }
         else {
             if (this.props.onError) {
