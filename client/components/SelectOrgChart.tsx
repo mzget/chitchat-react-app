@@ -10,9 +10,10 @@ export interface ISelectChart {
 }
 export const SelectOrgChart = (props: ISelectChart) => (
     <SelectField
-        floatingLabelText="Org Charts"
         value={props.dropdownValue}
-        onChange={props.dropdownChange}  >
+        onChange={props.dropdownChange}
+        style={{width: "100%"}} >
+
         {
             (props.dropdownItems.length > 0) ?
                 props.dropdownItems.map((value, id) =>

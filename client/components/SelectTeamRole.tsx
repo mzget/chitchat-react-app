@@ -8,9 +8,9 @@ export interface ISelectTeamRole {
 }
 export const SelectTeamRole = (props: ISelectTeamRole) => (
     <SelectField
-        floatingLabelText="Team Roles"
         value={props.teamRoleValue}
-        onChange={props.onTeamRoleChange}>
+        onChange={props.onTeamRoleChange}
+        style={{width: "100%"}} >
         {
             (props.teamRoleItems.length > 0) ?
                 props.teamRoleItems.map((value, id) =>

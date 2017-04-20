@@ -14,7 +14,10 @@ import { ITeamProfile } from "../../chitchat/chats/models/TeamProfile";
 import { ITeamMember } from "../../chitchat/chats/models/ITeamMember";
 import { IOrgChart } from "../../chitchat/chats/models/OrgChart";
 import { UserRole } from "../../chitchat/chats/models/UserRole";
-
+import { Button, Row, Col, Panel, ListGroup, ListGroupItem, FormGroup,FormControl, Table, FieldGroup, ControlLabel } from 'react-bootstrap';
+import { RaisedButton, TextField, MenuItem, SelectField, Subheader, Divider, Paper, Card, CardActions, CardHeader, CardText, CardTitle } from "material-ui";
+const Styles = require("../../styles/generalStyles");
+const PageBox = Styles.generalStyles.pageBox;
 interface IComponentState {
     member: ITeamMember;
     dropdownValue: number;
@@ -113,31 +116,36 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
 
     render() {
         return (
-            <Flex flexColumn={false}>
-                <Flex flexColumn align="center">
-                    {
-                        (!!this.state.member) ?
-                            <ContactProfileView
-                                member={this.state.member}
-                                onSubmit={this.onSubmit}
-                                dropdownItems={this.props.adminReducer.orgCharts}
-                                dropdownValue={this.state.dropdownValue}
-                                dropdownChange={(event, id, value) => {
-                                    console.log("org chart change", value);
-                                    this.setState(previous => ({ ...previous, dropdownValue: value }));
-                                }}
-                                teamRoleItems={this.userRoles}
-                                teamRoleValue={this.state.teamRoleValue}
-                                onTeamRoleChange={(event, id, value) => {
-                                    console.log("team role change", value);
-                                    this.setState(prev => ({ ...prev, teamRoleValue: value }));
-                                }}
-                            />
-                            :
-                            <MemberList onSelected={this.onSelectMember} items={this.props.teamReducer.members} />
-                    }
-                </Flex>
-            </Flex>
+                      
+                (!!this.state.member) ?
+                    <ContactProfileView
+                        member={this.state.member}
+                        onSubmit={this.onSubmit}
+                        dropdownItems={this.props.adminReducer.orgCharts}
+                        dropdownValue={this.state.dropdownValue}
+                        dropdownChange={(event, id, value) => {
+                            console.log("org chart change", value);
+                            this.setState(previous => ({ ...previous, dropdownValue: value }));
+                        }}
+                        teamRoleItems={this.userRoles}
+                        teamRoleValue={this.state.teamRoleValue}
+                        onTeamRoleChange={(event, id, value) => {
+                            console.log("team role change", value);
+                            this.setState(prev => ({ ...prev, teamRoleValue: value }));
+                        }}
+                    />
+                    :
+                    <Row>
+                        <Col md={6} mdOffset={3}>
+                            <Card>
+                                <CardTitle title="User List" subtitle="User List" />
+                            </Card>
+                            <div style={PageBox}>
+                                    <MemberList onSelected={this.onSelectMember} items={this.props.teamReducer.members} />
+                            </div>
+                        </Col>
+                    </Row>                      
+              
         );
     }
 }

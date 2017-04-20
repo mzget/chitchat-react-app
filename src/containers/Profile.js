@@ -37,7 +37,7 @@ class Profile extends React.Component {
         return (React.createElement("div", null,
             React.createElement("div", { id: "toolbar", style: { height: this.headerHeight, overflowY: "hidden" } },
                 React.createElement(SimpleToolbar_1.SimpleToolbar, { title: "Profile", onBackPressed: this.onBackPressed })),
-            React.createElement("div", { id: "app_body", style: { backgroundColor: Colors.indigo50, height: this.bodyHeight, overflowY: "auto" } },
+            React.createElement("div", { id: "app_body", style: { backgroundColor: Colors.indigo50, overflowX: "hidden", margin: 0, padding: 0 } },
                 React.createElement(ProfileDetailEnhancer_1.ProfileDetailEnhanced, { user: this.props.userReducer.user, teamProfile: this.props.userReducer.teamProfile, alert: this.props.onError }))));
     }
 }
