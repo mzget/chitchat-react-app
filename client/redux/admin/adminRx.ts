@@ -53,6 +53,7 @@ const UPDATE_USER_ORG_CHART = "UPDATE_USER_ORG_CHART";
 export const UPDATE_USER_ORG_CHART_SUCCESS = "UPDATE_USER_ORG_CHART_SUCCESS";
 export const UPDATE_USER_ORG_CHART_FAILURE = "UPDATE_USER_ORG_CHART_FAILURE";
 const UPDATE_USER_ORG_CHART_CANCELLED = "UPDATE_USER_ORG_CHART_CANCELLED";
+
 export const updateUserOrgChart = (user, team_id, orgChart_id) => ({
     type: UPDATE_USER_ORG_CHART,
     payload: { user: user, team_id: team_id, orgChart_id: orgChart_id }

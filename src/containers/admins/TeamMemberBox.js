@@ -60,7 +60,10 @@ class TeamMemberBox extends React.Component {
             let chart_ids = charts.findIndex((v, i, arr) => {
                 return v._id.toString() === item.teamProfiles[0].org_chart_id;
             });
-            this.setState(previous => (__assign({}, previous, { member: item, dropdownValue: chart_ids })));
+            let role_id = this.userRoles.findIndex((v, i) => {
+                return v == item.teamProfiles[0].team_role.toString();
+            });
+            this.setState(previous => (__assign({}, previous, { member: item, dropdownValue: chart_ids, teamRoleValue: role_id })));
         }
     }
     onSubmit() {
