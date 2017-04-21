@@ -1,56 +1,58 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { shallowEqual } from "recompose";
-import * as async from "async";
-import { Flex, Box } from "reflexbox";
-import * as Colors from "material-ui/styles/colors";
-
-import { ChitChatFactory } from "../chitchat/chats/chitchatFactory";
-const config = () => ChitChatFactory.getInstance().config;
-
-import { TypingBox } from "./TypingBox";
-import { ChatBox } from "./chat/ChatBox";
-import { SimpleToolbar } from "../components/SimpleToolbar";
-import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
-import UploadingDialog from "./UploadingDialog";
-import GridListSimple from "../components/GridListSimple";
-import { WarningBar } from "../components/WarningBar";
-
-import { IComponentProps } from "../utils/IComponentProps";
-import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
-import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
-import * as chatroomRxEpic from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
-
-import { MessageType, IMessage } from "../chitchat/libs/shared/Message";
-import { MessageImp } from "../chitchat/chats/models/MessageImp";
-
-import { imagesPath } from "../chitchat/consts/StickerPath";
-import * as FileType from "../chitchat/libs/shared/FileType";
-
-import { decorateMessage } from "../actions/chatroom/chatroomMessageUtils";
-
-interface IComponentNameState {
-    messages: any[];
-    isLoadingEarlierMessages;
-    typingText: string;
-    earlyMessageReady;
-    openButtomMenu: boolean;
-    onAlert: boolean;
-}
-
-class Chat extends React.Component<IComponentProps, IComponentNameState> {
-    options = "Options";
-    favorite = "Favorite";
-    toolbarMenus = [this.options, this.favorite];
-    clientWidth = document.documentElement.clientWidth;
-    clientHeight = document.documentElement.clientHeight;
-    h_header = null;
-    h_subHeader = 34;
-    h_body = null;
-    h_typingArea = null;
-    bottom = this.clientHeight * 0.1;
-    h_stickerBox = this.clientHeight * 0.3;
-
+"use strict";
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+const React = require("react");
+const react_redux_1 = require("react-redux");
+const reflexbox_1 = require("reflexbox");
+const Colors = require("material-ui/styles/colors");
+const chitchatFactory_1 = require("../chitchat/chats/chitchatFactory");
+const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
+const TypingBox_1 = require("./TypingBox");
+const ChatBox_1 = require("./chat/ChatBox");
+const SimpleToolbar_1 = require("../components/SimpleToolbar");
+const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
+const UploadingDialog_1 = require("./UploadingDialog");
+const GridListSimple_1 = require("../components/GridListSimple");
+const WarningBar_1 = require("../components/WarningBar");
+const StalkBridgeActions = require("../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
+const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
+const chatroomRxEpic = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
+const StickerPath_1 = require("../chitchat/consts/StickerPath");
+const FileType = require("../chitchat/libs/shared/FileType");
+const chatroomMessageUtils_1 = require("../actions/chatroom/chatroomMessageUtils");
+class Chat extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.options = "Options";
+        this.favorite = "Favorite";
+        this.toolbarMenus = [this.options, this.favorite];
+        this.clientWidth = document.documentElement.clientWidth;
+        this.clientHeight = document.documentElement.clientHeight;
+        this.h_header = null;
+        this.h_subHeader = 34;
+        this.h_body = null;
+        this.h_typingArea = null;
+        this.bottom = this.clientHeight * 0.1;
+        this.h_stickerBox = this.clientHeight * 0.3;
+        this.fileReaderChange = (e, results) => {
+            results.forEach(result => {
+                const [progressEvent, file] = result;
+                console.log(file.name, file.type);
+                if (file.type && file.type.length > 0) {
+                    this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
+                }
+                else {
+                    this.props.onError("Fail to upload file");
+                }
+            });
+        };
+    }
     componentWillMount() {
         this.state = {
             messages: new Array(),
@@ -60,7 +62,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             openButtomMenu: false,
             onAlert: false
         };
-
         this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
         this.onTypingTextChange = this.onTypingTextChange.bind(this);
         this.onSubmitStickerChat = this.onSubmitStickerChat.bind(this);
@@ -69,9 +70,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.onBackPressed = this.onBackPressed.bind(this);
         this.onMenuSelect = this.onMenuSelect.bind(this);
         this.fileReaderChange = this.fileReaderChange.bind(this);
-
         let { chatroomReducer, userReducer, params } = this.props;
-
         if (!chatroomReducer.room) {
             this.props.dispatch(chatroomActions.getPersistendChatroom(params.filter));
         }
@@ -79,21 +78,17 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             this.roomInitialize(this.props);
         }
     }
-
     componentWillUnmount() {
         this.props.dispatch(chatroomActions.leaveRoomAction());
     }
-
-    componentWillReceiveProps(nextProps: IComponentProps) {
+    componentWillReceiveProps(nextProps) {
         let { chatroomReducer, stalkReducer } = nextProps;
-
         let warning_bar = document.getElementById("warning_bar");
         let typing_box = document.getElementById("typing_box");
         this.h_header = document.getElementById("toolbar").clientHeight;
         this.h_typingArea = typing_box.clientHeight;
         this.h_subHeader = (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
-
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_CONNECTION_PROBLEM:
                 this.props.dispatch(chatroomActions.disableChatRoom());
@@ -104,7 +99,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             default:
                 break;
         }
-
         switch (chatroomReducer.state) {
             case chatroomActions.JOIN_ROOM_FAILURE: {
                 this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
@@ -114,20 +108,16 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
                 break;
             }
-
             case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
-                if (!shallowEqual(chatroomReducer, this.props.chatroomReducer))
-                    this.roomInitialize(nextProps);
+                this.roomInitialize(nextProps);
                 break;
             }
             case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
                 this.props.router.push(`/`);
                 break;
             }
-
             case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
                 let { responseFile, fileInfo } = chatroomReducer;
-
                 if (responseFile.mimetype.match(FileType.imageType)) {
                     this.onSubmitImageChat(fileInfo, responseFile.path);
                 }
@@ -137,10 +127,8 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 else if (responseFile.mimetype.match(FileType.textType) || fileInfo.type.match(FileType.file)) {
                     this.onSubmitFile(fileInfo, responseFile);
                 }
-
                 break;
             }
-
             case chatroomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
                 // this.setMessageStatus(chatroomReducer.responseMessage.uuid, "ErrorButton");
                 this.props.dispatch(chatroomActions.emptyState());
@@ -153,80 +141,51 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             }
             case chatroomActions.ChatRoomActionsType.ON_NEW_MESSAGE: {
                 chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => ({
-                        ...previousState,
-                        messages: messages
-                    }), () => {
+                    this.setState(previousState => (__assign({}, previousState, { messages: messages })), () => {
                         let chatBox = document.getElementById("app_body");
                         chatBox.scrollTop = chatBox.scrollHeight;
                     });
                 });
-
                 this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
             case chatroomRxEpic.GET_PERSISTEND_MESSAGE_SUCCESS: {
                 chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => ({
-                        ...previousState,
-                        messages: messages
-                    }));
+                    this.setState(previousState => (__assign({}, previousState, { messages: messages })));
                 });
-
                 this.props.dispatch(chatroomActions.checkOlderMessages());
                 this.props.dispatch(chatroomActions.getNewerMessageFromNet());
-
                 break;
             }
             case chatroomActions.GET_NEWER_MESSAGE_SUCCESS: {
                 chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => ({
-                        ...previousState,
-                        messages: messages
-                    }));
+                    this.setState(previousState => (__assign({}, previousState, { messages: messages })));
                 });
                 break;
             }
             case chatroomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
-                this.setState((previousState) => ({
-                    ...previousState,
-                    earlyMessageReady: chatroomReducer.earlyMessageReady
-                }));
-
+                this.setState((previousState) => (__assign({}, previousState, { earlyMessageReady: chatroomReducer.earlyMessageReady })));
                 break;
             }
             case chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS: {
                 chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => ({
-                        ...previousState,
-                        isLoadingEarlierMessages: false,
-                        earlyMessageReady: false,
-                        messages: messages
-                    }));
+                    this.setState(previousState => (__assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false, messages: messages })));
                 });
-
                 break;
             }
             default:
                 break;
         }
     }
-
     onLoadEarlierMessages() {
-        this.setState(previousState => ({
-            ...previousState,
-            isLoadingEarlierMessages: true,
-        }));
-
+        this.setState(previousState => (__assign({}, previousState, { isLoadingEarlierMessages: true })));
         this.props.dispatch(chatroomActions.loadEarlyMessageChunk());
     }
-
-    roomInitialize(props: IComponentProps) {
+    roomInitialize(props) {
         let { chatroomReducer, userReducer, params } = props;
         if (!userReducer.user) {
             return this.props.dispatch(chatroomActions.leaveRoomAction());
         }
-
         // todo
         // - Init chatroom service.
         // - getPersistedMessage.
@@ -234,27 +193,24 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         chatroomActions.initChatRoom(chatroomReducer.room);
         this.props.dispatch(chatroomActions.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
     }
-
     setMessageStatus(uniqueId, status) {
         let messages = [];
         let _messages = this.state.messages.slice();
-
         for (let i = 0; i < _messages.length; i++) {
             if (_messages[i].uuid == uniqueId) {
                 let clone = Object.assign({}, _messages[i]);
                 clone.status = status;
                 messages.push(clone);
-            } else {
+            }
+            else {
                 messages.push(_messages[i]);
             }
         }
-
-        this.setState({ ...this.state, messages: messages });
+        this.setState(__assign({}, this.state, { messages: messages }));
     }
-
-    setMessageTemp(server_msg: MessageImp) {
+    setMessageTemp(server_msg) {
         let _messages = this.state.messages.slice();
-        _messages.forEach((message: MessageImp) => {
+        _messages.forEach((message) => {
             if (message.uuid == server_msg.uuid) {
                 message.body = server_msg.body;
                 message.createTime = server_msg.createTime;
@@ -262,43 +218,34 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 message.status = "Sent";
             }
         });
-
-        this.setState({ ...this.state, messages: _messages });
+        this.setState(__assign({}, this.state, { messages: _messages }));
     }
-
     onTypingTextChange(event) {
-        this.setState({ ...this.state, typingText: event.target.value });
+        this.setState(__assign({}, this.state, { typingText: event.target.value }));
     }
-
     onSubmitTextChat() {
-        if (this.state.typingText.length <= 0) return;
-
+        if (this.state.typingText.length <= 0)
+            return;
         let msg = {
             text: this.state.typingText
         };
-
         this.prepareSend(msg);
     }
-
-    onSubmitImageChat(file: File, responseUrl: string) {
+    onSubmitImageChat(file, responseUrl) {
         let msg = {
             image: file.name,
             src: `${config().api.host}/${responseUrl}`
         };
-
         this.prepareSend(msg);
     }
-
-    onSubmitVideoChat(file: File, responseUrl: string) {
+    onSubmitVideoChat(file, responseUrl) {
         let msg = {
             video: file.name,
             src: `${config().api.host}/${responseUrl}`
         };
-
         this.prepareSend(msg);
     }
-
-    onSubmitFile(file: File, responseFile: any) {
+    onSubmitFile(file, responseFile) {
         let { path, mimetype, size } = responseFile;
         let msg = {
             file: file.name,
@@ -306,68 +253,38 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             size: size,
             src: `${config().api.host}/${path}`
         };
-
         this.prepareSend(msg);
     }
-
-    onSubmitStickerChat(id: number) {
+    onSubmitStickerChat(id) {
         let msg = {
             sticker: id
         };
         this.onToggleSticker();
         this.prepareSend(msg);
     }
-
     prepareSend(msg) {
-        let message = decorateMessage(msg);
+        let message = chatroomMessageUtils_1.decorateMessage(msg);
         this.send(message);
-
         let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
         _messages.push(message);
-        this.setState(previousState => ({
-            ...previousState,
-            typingText: "",
-            messages: _messages
-        }), () => {
+        this.setState(previousState => (__assign({}, previousState, { typingText: "", messages: _messages })), () => {
             let chatBox = document.getElementById("app_body");
             chatBox.scrollTop = chatBox.scrollHeight;
         });
     }
-
-    send(message: IMessage) {
+    send(message) {
         this.props.dispatch(chatroomActions.sendMessage(message));
     }
-
-    fileReaderChange = (e, results) => {
-        results.forEach(result => {
-            const [progressEvent, file] = result;
-
-            console.log(file.name, file.type);
-
-            if (file.type && file.type.length > 0) {
-                this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
-            }
-            else {
-                this.props.onError("Fail to upload file");
-            }
-        });
-    }
-
     onToggleSticker() {
         this.h_body = (this.state.openButtomMenu) ? this.h_body + this.h_stickerBox : this.h_body - this.h_stickerBox;
-        this.setState(previousState => ({
-            ...previousState,
-            openButtomMenu: !previousState.openButtomMenu
-        }), () => {
+        this.setState(previousState => (__assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu })), () => {
             let chatBox = document.getElementById("app_body");
             chatBox.scrollTop = chatBox.scrollHeight;
         });
     }
-
     onBackPressed() {
         this.props.router.goBack();
     }
-
     onMenuSelect(id, value) {
         let { chatroomReducer } = this.props;
         console.log(id, value);
@@ -375,56 +292,31 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             this.props.router.push(`/chat/settings/${chatroomReducer.room._id}`);
         }
     }
-
-    render(): JSX.Element {
+    render() {
         let { chatroomReducer, stalkReducer } = this.props;
-
-        return (
-            <div style={{ overflowY: "hidden", backgroundColor: Colors.indigo50 }}>
-                {
-                    (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
-                        <WarningBar /> : null
-                }
-                <div style={{ height: this.h_body, overflowY: "auto", backgroundColor: Colors.indigo50 }} id={"app_body"}>
-                    <Flex flexColumn={true}>
-                        {
-                            (this.state.earlyMessageReady) ?
-                                <Flex align="center" justify="center">
-                                    <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
-                                </Flex>
-                                :
-                                null
-                        }
-                        <ChatBox
-                            styles={{ overflowX: "hidden" }}
-                            value={this.state.messages}
-                            onSelected={(message: IMessage) => { }} />
-                    </Flex>
-                </div>
-                {
-                    (this.state.openButtomMenu) ?
-                        <GridListSimple
-                            boxHeight={this.h_stickerBox}
-                            srcs={imagesPath}
-                            onSelected={this.onSubmitStickerChat} />
-                        : null
-                }
-                <TypingBox
-                    disabled={this.props.chatroomReducer.chatDisabled}
-                    onSubmit={this.onSubmitTextChat}
-                    onValueChange={this.onTypingTextChange}
-                    value={this.state.typingText}
-                    fileReaderChange={this.fileReaderChange}
-                    onSticker={this.onToggleSticker} />
-                <UploadingDialog />
-                <SnackbarToolBox />
-            </div>
-        );
+        return (React.createElement("div", { style: { overflowY: "hidden", backgroundColor: Colors.indigo50 } },
+            React.createElement("div", { style: { height: this.h_header }, id: "toolbar" },
+                React.createElement(SimpleToolbar_1.SimpleToolbar, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty", menus: this.toolbarMenus, onSelectedMenuItem: this.onMenuSelect, onBackPressed: this.onBackPressed })),
+            (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
+                React.createElement(WarningBar_1.WarningBar, null) : null,
+            React.createElement("div", { style: { height: this.h_body, overflowY: "auto", backgroundColor: Colors.indigo50 }, id: "app_body" },
+                React.createElement(reflexbox_1.Flex, { flexColumn: true },
+                    (this.state.earlyMessageReady) ?
+                        React.createElement(reflexbox_1.Flex, { align: "center", justify: "center" },
+                            React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))
+                        :
+                            null,
+                    React.createElement(ChatBox_1.ChatBox, { styles: { width: this.clientWidth, overflowX: "hidden" }, value: this.state.messages, onSelected: (message) => { } }))),
+            (this.state.openButtomMenu) ?
+                React.createElement(GridListSimple_1.default, { boxHeight: this.h_stickerBox, srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
+                : null,
+            React.createElement(TypingBox_1.TypingBox, { disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }),
+            React.createElement(UploadingDialog_1.default, null),
+            React.createElement(SnackbarToolBox_1.SnackbarToolBox, null)));
     }
 }
-
 /**
  * ## Redux boilerplate
  */
-const mapStateToProps = (state) => ({ ...state });
-export const ChatPage = connect(mapStateToProps)(Chat) as React.ComponentClass<any>;
+const mapStateToProps = (state) => (__assign({}, state));
+exports.ChatPage = react_redux_1.connect(mapStateToProps)(Chat);

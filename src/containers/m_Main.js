@@ -9,16 +9,14 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const react_redux_1 = require("react-redux");
-const reflexbox_1 = require("reflexbox");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const ProfileBox_1 = require("./profile/ProfileBox");
 const ConnectGroupListEnhancer_1 = require("./group/ConnectGroupListEnhancer");
 const ChatLogsBox_1 = require("./chatlog/ChatLogsBox");
-const ContactBox_1 = require("./chatlist/ContactBox");
+const m_ContactBox_1 = require("./chatlist/m_ContactBox");
 const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
 const StalkComponent_1 = require("./stalk/StalkComponent");
-const AppBody_1 = require("./AppBody");
 const StalkBridgeActions = require("../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
 const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
 const chatroomRx = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
@@ -89,6 +87,10 @@ class Main extends React.Component {
                 break;
         }
         switch (chatroomReducer.state) {
+            case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
+                this.props.router.push(`/chat/${chatroomReducer.room._id}`);
+                break;
+            }
             case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
                 console.warn("GET_PERSISTEND_CHATROOM_FAILURE");
                 break;
@@ -125,16 +127,13 @@ class Main extends React.Component {
                 React.createElement("div", { id: "toolbar", style: { height: this.headerHeight, overflowY: "hidden" } },
                     React.createElement(SimpleToolbar_1.SimpleToolbar, { title: (this.props.teamReducer.team) ? this.props.teamReducer.team.name : "", menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
                 React.createElement("div", { id: "app_body", style: { overflowY: "auto" } },
-                    React.createElement(reflexbox_1.Flex, { flexColumn: false },
-                        React.createElement(reflexbox_1.Flex, { flexColumn: true },
-                            React.createElement("div", { style: { overflowY: "auto" } },
-                                React.createElement(ProfileBox_1.ProfileEnhancer, { router: this.props.router }),
-                                React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => this.fetch_orgGroups(), groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
-                                React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => { this.fetch_privateGroups(); }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
-                                React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, { router: this.props.router }),
-                                React.createElement(SnackbarToolBox_1.SnackbarToolBox, null))),
-                        React.createElement(AppBody_1.ConnectedAppBody, null),
-                        React.createElement(ContactBox_1.ContactBox, __assign({}, this.props)))),
+                    React.createElement("div", { style: { overflowY: "auto" } },
+                        React.createElement(ProfileBox_1.ProfileEnhancer, { router: this.props.router }),
+                        React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => this.fetch_orgGroups(), groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
+                        React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => { this.fetch_privateGroups(); }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
+                        React.createElement(m_ContactBox_1.ContactBox, __assign({}, this.props)),
+                        React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, { router: this.props.router }),
+                        React.createElement(SnackbarToolBox_1.SnackbarToolBox, null))),
                 React.createElement("div", { id: "app_footer", style: { height: this.footerHeight } },
                     React.createElement(StalkComponent_1.StalkCompEnhancer, null)))));
     }

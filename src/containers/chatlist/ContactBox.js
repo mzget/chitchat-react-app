@@ -13,11 +13,6 @@ class ContactBox extends React.Component {
     componentWillReceiveProps(nextProps) {
         let { chatroomReducer, teamReducer, userReducer } = nextProps;
         switch (chatroomReducer.state) {
-            case chatroomRx.FETCH_PRIVATE_CHATROOM_SUCCESS:
-                if (chatroomReducer.room) {
-                    this.props.router.push(`/chat/${chatroomReducer.room._id}`);
-                }
-                break;
             case chatroomRx.FETCH_PRIVATE_CHATROOM_FAILURE: {
                 let contacts = teamReducer.members.filter((v, i) => {
                     return v._id === this._tempContact_id;
@@ -46,5 +41,4 @@ class ContactBox extends React.Component {
             React.createElement(MemberList_1.MemberList, { items: this.props.teamReducer.members, onSelected: this.onselectMember })));
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = ContactBox;
+exports.ContactBox = ContactBox;

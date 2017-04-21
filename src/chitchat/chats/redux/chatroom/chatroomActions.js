@@ -42,8 +42,6 @@ const secure = secureServiceFactory_1.default.getService();
  */
 class ChatRoomActionsType {
 }
-ChatRoomActionsType.GET_NEWER_MESSAGE_FAILURE = "GET_NEWER_MESSAGE_FAILURE";
-ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS = "GET_NEWER_MESSAGE_SUCCESS";
 ChatRoomActionsType.SEND_MESSAGE_REQUEST = "SEND_MESSAGE_REQUEST";
 ChatRoomActionsType.SEND_MESSAGE_SUCCESS = "SEND_MESSAGE_SUCCESS";
 ChatRoomActionsType.SEND_MESSAGE_FAILURE = "SEND_MESSAGE_FAILURE";
@@ -136,14 +134,19 @@ function checkOlderMessages() {
     };
 }
 exports.checkOlderMessages = checkOlderMessages;
+exports.GET_NEWER_MESSAGE = "GET_NEWER_MESSAGE";
+exports.GET_NEWER_MESSAGE_FAILURE = "GET_NEWER_MESSAGE_FAILURE";
+exports.GET_NEWER_MESSAGE_SUCCESS = "GET_NEWER_MESSAGE_SUCCESS";
+const getNewerMessage = () => ({ type: exports.GET_NEWER_MESSAGE });
 function getNewerMessage_failure() {
-    return { type: ChatRoomActionsType.GET_NEWER_MESSAGE_FAILURE };
+    return { type: exports.GET_NEWER_MESSAGE_FAILURE };
 }
 function getNewerMessage_success(messages) {
-    return { type: ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS, payload: messages };
+    return { type: exports.GET_NEWER_MESSAGE_SUCCESS, payload: messages };
 }
 function getNewerMessageFromNet() {
     return dispatch => {
+        dispatch(getNewerMessage());
         let token = authReducer().chitchat_token;
         chatRoomComponent_1.default.getInstance().getNewerMessageRecord(token, (results) => {
             dispatch(getNewerMessage_success(results));
@@ -255,20 +258,25 @@ const leaveRoom = () => ({ type: exports.LEAVE_ROOM });
 const leaveRoomSuccess = () => ({ type: exports.LEAVE_ROOM_SUCCESS });
 function leaveRoomAction() {
     return (dispatch) => {
-        let token = getStore().getState().stalkReducer.stalkToken;
-        let room = chatRoomComponent_1.default.getInstance();
-        let room_id = room.getRoomId();
-        dispatch(leaveRoom());
-        BackendFactory_1.BackendFactory.getInstance().getServer().then(server => {
-            server.LeaveChatRoomRequest(token, room_id, (err, res) => {
-                console.log("LeaveChatRoomRequest", err, res);
-                chatRoomComponent_1.default.getInstance().dispose();
-                NotificationManager.regisNotifyNewMessageEvent();
+        let _room = getStore().getState().chatroomReducer.get("room");
+        if (!!_room) {
+            let token = getStore().getState().stalkReducer.stalkToken;
+            let room_id = _room._id;
+            chatRoomComponent_1.default.getInstance().dispose();
+            dispatch(leaveRoom());
+            BackendFactory_1.BackendFactory.getInstance().getServer().then(server => {
+                server.LeaveChatRoomRequest(token, room_id, (err, res) => {
+                    console.log("LeaveChatRoomRequest", err, res);
+                    NotificationManager.regisNotifyNewMessageEvent();
+                });
+                dispatch(chatlogRxActions_1.updateLastAccessRoom(room_id));
+            }).catch(err => {
+                dispatch(chatlogRxActions_1.updateLastAccessRoom(room_id));
             });
-            dispatch(chatlogRxActions_1.updateLastAccessRoom(room_id));
-        }).catch(err => {
-            dispatch(chatlogRxActions_1.updateLastAccessRoom(room_id));
-        });
+        }
+        else {
+            dispatch({ type: "" });
+        }
     };
 }
 exports.leaveRoomAction = leaveRoomAction;

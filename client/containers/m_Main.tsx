@@ -9,7 +9,7 @@ import { SimpleToolbar } from "../components/SimpleToolbar";
 import { ProfileEnhancer } from "./profile/ProfileBox";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
 import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
-import { ContactBox } from "./chatlist/ContactBox";
+import { ContactBox } from "./chatlist/m_ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
 
@@ -95,6 +95,10 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
         }
 
         switch (chatroomReducer.state) {
+            case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
+                this.props.router.push(`/chat/${chatroomReducer.room._id}`);
+                break;
+            }
             case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
                 console.warn("GET_PERSISTEND_CHATROOM_FAILURE");
                 break;
@@ -151,24 +155,19 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                             onSelectedMenuItem={this.onSelectMenuItem} />
                     </div>
                     <div id={"app_body"} style={{ overflowY: "auto" }}>
-                        <Flex flexColumn={false}>
-                            <Flex flexColumn={true}>
-                                <div style={{ overflowY: "auto" }}>
-                                    <ProfileEnhancer router={this.props.router} />
-                                    <ConnectGroupListEnhancer fetchGroup={() => this.fetch_orgGroups()}
-                                        groups={this.props.groupReducer.orgGroups}
-                                        subHeader={"OrgGroups"} />
-                                    <ConnectGroupListEnhancer
-                                        fetchGroup={() => { this.fetch_privateGroups(); }}
-                                        groups={this.props.groupReducer.privateGroups}
-                                        subHeader={"Groups"} />
-                                    <ChatLogsBoxEnhancer router={this.props.router} />
-                                    <SnackbarToolBox />
-                                </div>
-                            </Flex>
-                            <ConnectedAppBody />
+                        <div style={{ overflowY: "auto" }}>
+                            <ProfileEnhancer router={this.props.router} />
+                            <ConnectGroupListEnhancer fetchGroup={() => this.fetch_orgGroups()}
+                                groups={this.props.groupReducer.orgGroups}
+                                subHeader={"OrgGroups"} />
+                            <ConnectGroupListEnhancer
+                                fetchGroup={() => { this.fetch_privateGroups(); }}
+                                groups={this.props.groupReducer.privateGroups}
+                                subHeader={"Groups"} />
                             <ContactBox {...this.props} />
-                        </Flex>
+                            <ChatLogsBoxEnhancer router={this.props.router} />
+                            <SnackbarToolBox />
+                        </div>
                     </div>
                     <div id={"app_footer"} style={{ height: this.footerHeight }}>
                         <StalkCompEnhancer />

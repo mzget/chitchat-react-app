@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { shallowEqual } from "recompose";
 import * as async from "async";
 import { Flex, Box } from "reflexbox";
 import * as Colors from "material-ui/styles/colors";
@@ -116,8 +115,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             }
 
             case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
-                if (!shallowEqual(chatroomReducer, this.props.chatroomReducer))
-                    this.roomInitialize(nextProps);
+                this.roomInitialize(nextProps);
                 break;
             }
             case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
@@ -381,6 +379,13 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
         return (
             <div style={{ overflowY: "hidden", backgroundColor: Colors.indigo50 }}>
+                <div style={{ height: this.h_header }} id={"toolbar"}>
+                    <SimpleToolbar
+                        title={(chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty"}
+                        menus={this.toolbarMenus}
+                        onSelectedMenuItem={this.onMenuSelect}
+                        onBackPressed={this.onBackPressed} />
+                </div>
                 {
                     (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                         <WarningBar /> : null
@@ -396,7 +401,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                                 null
                         }
                         <ChatBox
-                            styles={{ overflowX: "hidden" }}
+                            styles={{ width: this.clientWidth, overflowX: "hidden" }}
                             value={this.state.messages}
                             onSelected={(message: IMessage) => { }} />
                     </Flex>

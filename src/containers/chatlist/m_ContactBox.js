@@ -1,31 +1,23 @@
-﻿import * as React from "react";
-import Subheader from "material-ui/Subheader";
-
-import { IComponentProps } from "../../utils/IComponentProps";
-
-import * as userRx from "../../redux/user/userRx";
-import * as teamRx from "../../redux/team/teamRx";
-import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
-import * as chatroomRx from "../../chitchat/chats/redux/chatroom/chatroomRxEpic";
-
-import { MemberList } from "./MemberList";
-
-interface IComponentNameState { }
-
-export class ContactBox extends React.Component<IComponentProps, IComponentNameState> {
-
-    _tempContact_id: string;
-
+"use strict";
+const React = require("react");
+const Subheader_1 = require("material-ui/Subheader");
+const teamRx = require("../../redux/team/teamRx");
+const chatroomActions = require("../../chitchat/chats/redux/chatroom/chatroomActions");
+const chatroomRx = require("../../chitchat/chats/redux/chatroom/chatroomRxEpic");
+const MemberList_1 = require("./MemberList");
+class ContactBox extends React.Component {
     componentDidMount() {
         this.onselectMember = this.onselectMember.bind(this);
-
         this.props.dispatch(teamRx.getTeamMembers(this.props.teamReducer.team._id));
     }
-
-    componentWillReceiveProps(nextProps: IComponentProps) {
+    componentWillReceiveProps(nextProps) {
         let { chatroomReducer, teamReducer, userReducer } = nextProps;
-
         switch (chatroomReducer.state) {
+            case chatroomRx.FETCH_PRIVATE_CHATROOM_SUCCESS:
+                if (chatroomReducer.room) {
+                    this.props.router.push(`/chat/${chatroomReducer.room._id}`);
+                }
+                break;
             case chatroomRx.FETCH_PRIVATE_CHATROOM_FAILURE: {
                 let contacts = teamReducer.members.filter((v, i) => {
                     return v._id === this._tempContact_id;
@@ -43,18 +35,15 @@ export class ContactBox extends React.Component<IComponentProps, IComponentNameS
                 break;
         }
     }
-
     onselectMember(data) {
         let { userReducer } = this.props;
         this._tempContact_id = data._id;
         this.props.dispatch(chatroomRx.fetchPrivateChatRoom(userReducer.user._id, this._tempContact_id));
     }
-
-    public render(): JSX.Element {
-        return (
-            <div>
-                <Subheader>Chats</Subheader>
-                <MemberList items={this.props.teamReducer.members} onSelected={this.onselectMember} />
-            </div>);
+    render() {
+        return (React.createElement("div", null,
+            React.createElement(Subheader_1.default, null, "Chats"),
+            React.createElement(MemberList_1.MemberList, { items: this.props.teamReducer.members, onSelected: this.onselectMember })));
     }
 }
+exports.ContactBox = ContactBox;

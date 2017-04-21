@@ -4,7 +4,7 @@
  * This is pure function for redux app.
  */
 
-import { ChatRoomActionsType, UPDATE_CHATROOMS } from "./chatroomActions";
+import { ChatRoomActionsType, UPDATE_CHATROOMS, GET_NEWER_MESSAGE_SUCCESS, GET_NEWER_MESSAGE_FAILURE } from "./chatroomActions";
 import * as chatroomRxActions from "./chatroomRxEpic";
 import * as chatroomActions from "./chatroomActions";
 import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
@@ -114,8 +114,8 @@ export const chatroomReducer = (state = initialState, action) => {
         case chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS: {
             return state.set("state", chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS);
         }
-        case ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
-            return state.set("state", ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS);
+        case GET_NEWER_MESSAGE_SUCCESS: {
+            return state.set("state", GET_NEWER_MESSAGE_SUCCESS);
         }
 
         /**Create chat room */

@@ -26,6 +26,7 @@ const userRx = require("../redux/user/userRx");
 const authRx = require("../redux/authen/authRx");
 const groupRx = require("../redux/group/groupRx");
 const privateGroupRxActions = require("../redux/group/privateGroupRxActions");
+const Breakpoints_1 = require("../chitchat/consts/Breakpoints");
 class Main extends React.Component {
     constructor() {
         super(...arguments);
@@ -89,6 +90,11 @@ class Main extends React.Component {
                 break;
         }
         switch (chatroomReducer.state) {
+            case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
+                if (this.clientWidth < Breakpoints_1.MEDIUM_HANDSET)
+                    this.props.router.push(`/chat/${chatroomReducer.room._id}`);
+                break;
+            }
             case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
                 console.warn("GET_PERSISTEND_CHATROOM_FAILURE");
                 break;
@@ -131,10 +137,11 @@ class Main extends React.Component {
                                 React.createElement(ProfileBox_1.ProfileEnhancer, { router: this.props.router }),
                                 React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => this.fetch_orgGroups(), groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
                                 React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => { this.fetch_privateGroups(); }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
+                                (this.clientWidth > Breakpoints_1.MEDIUM_HANDSET) ? null : React.createElement(ContactBox_1.default, __assign({}, this.props)),
                                 React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, { router: this.props.router }),
                                 React.createElement(SnackbarToolBox_1.SnackbarToolBox, null))),
-                        React.createElement(AppBody_1.ConnectedAppBody, null),
-                        React.createElement(ContactBox_1.ContactBox, __assign({}, this.props)))),
+                        (this.clientWidth > Breakpoints_1.MEDIUM_HANDSET) ? React.createElement(AppBody_1.ConnectedAppBody, null) : null,
+                        (this.clientWidth > Breakpoints_1.MEDIUM_HANDSET) ? React.createElement(ContactBox_1.default, __assign({}, this.props)) : null)),
                 React.createElement("div", { id: "app_footer", style: { height: this.footerHeight } },
                     React.createElement(StalkComponent_1.StalkCompEnhancer, null)))));
     }

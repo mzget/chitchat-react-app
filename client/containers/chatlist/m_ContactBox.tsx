@@ -26,6 +26,11 @@ export class ContactBox extends React.Component<IComponentProps, IComponentNameS
         let { chatroomReducer, teamReducer, userReducer } = nextProps;
 
         switch (chatroomReducer.state) {
+            case chatroomRx.FETCH_PRIVATE_CHATROOM_SUCCESS:
+                if (chatroomReducer.room) {
+                    this.props.router.push(`/chat/${chatroomReducer.room._id}`);
+                }
+                break;
             case chatroomRx.FETCH_PRIVATE_CHATROOM_FAILURE: {
                 let contacts = teamReducer.members.filter((v, i) => {
                     return v._id === this._tempContact_id;

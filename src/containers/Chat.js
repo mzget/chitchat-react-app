@@ -9,13 +9,13 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const react_redux_1 = require("react-redux");
+const recompose_1 = require("recompose");
 const reflexbox_1 = require("reflexbox");
 const Colors = require("material-ui/styles/colors");
 const chitchatFactory_1 = require("../chitchat/chats/chitchatFactory");
 const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const TypingBox_1 = require("./TypingBox");
 const ChatBox_1 = require("./chat/ChatBox");
-const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
 const UploadingDialog_1 = require("./UploadingDialog");
 const GridListSimple_1 = require("../components/GridListSimple");
@@ -109,7 +109,8 @@ class Chat extends React.Component {
                 break;
             }
             case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
-                this.roomInitialize(nextProps);
+                if (!recompose_1.shallowEqual(chatroomReducer, this.props.chatroomReducer))
+                    this.roomInitialize(nextProps);
                 break;
             }
             case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
@@ -157,7 +158,7 @@ class Chat extends React.Component {
                 this.props.dispatch(chatroomActions.getNewerMessageFromNet());
                 break;
             }
-            case chatroomActions.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
+            case chatroomActions.GET_NEWER_MESSAGE_SUCCESS: {
                 chatroomActions.getMessages().then(messages => {
                     this.setState(previousState => (__assign({}, previousState, { messages: messages })));
                 });
@@ -295,8 +296,6 @@ class Chat extends React.Component {
     render() {
         let { chatroomReducer, stalkReducer } = this.props;
         return (React.createElement("div", { style: { overflowY: "hidden", backgroundColor: Colors.indigo50 } },
-            React.createElement("div", { style: { height: this.h_header }, id: "toolbar" },
-                React.createElement(SimpleToolbar_1.SimpleToolbar, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty", menus: this.toolbarMenus, onSelectedMenuItem: this.onMenuSelect, onBackPressed: this.onBackPressed })),
             (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                 React.createElement(WarningBar_1.WarningBar, null) : null,
             React.createElement("div", { style: { height: this.h_body, overflowY: "auto", backgroundColor: Colors.indigo50 }, id: "app_body" },
@@ -306,7 +305,7 @@ class Chat extends React.Component {
                             React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))
                         :
                             null,
-                    React.createElement(ChatBox_1.ChatBox, { styles: { width: this.clientWidth, overflowX: "hidden" }, value: this.state.messages, onSelected: (message) => { } }))),
+                    React.createElement(ChatBox_1.ChatBox, { styles: { overflowX: "hidden" }, value: this.state.messages, onSelected: (message) => { } }))),
             (this.state.openButtomMenu) ?
                 React.createElement(GridListSimple_1.default, { boxHeight: this.h_stickerBox, srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
                 : null,

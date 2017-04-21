@@ -2,7 +2,7 @@ import * as React from "react";
 import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
 import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
 
-import { ChatPage } from "./Chat";
+import { ChatPage } from "./m_Chat";
 
 export const ChatPageEnhanced = DialogBoxEnhancer(({ title, message, open, handleClose, onError, location, router, params }: any) => (
     <div>

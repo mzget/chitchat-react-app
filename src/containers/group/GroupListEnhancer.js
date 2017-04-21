@@ -7,6 +7,7 @@ exports.GroupListEnhancer = recompose_1.compose(recompose_1.lifecycle({
     }
 }), recompose_1.withHandlers({
     onselectGroup: (props) => data => {
-        props.dispatch(chatroomActions.getPersistendChatroom(data._id));
+        props.dispatch(chatroomActions.leaveRoomAction());
+        process.nextTick(() => props.dispatch(chatroomActions.getPersistendChatroom(data._id)));
     }
 }));
