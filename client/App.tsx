@@ -11,7 +11,6 @@ import Store from "./redux/configureStore";
 
 import { HomeEnhanced } from "./containers/HomeEnhanced";
 import { ChatPageEnhanced } from "./containers/ChatPageEnhanced";
-import { ChatPage } from "./containers/Chat";
 import ChatRoomSettings from "./containers/ChatRoomSettings";
 import Team from "./containers/Team";
 import { ProfilePageEnhanced } from "./containers/ProfilePageEnhanced";
@@ -38,11 +37,11 @@ class App extends React.Component<any, any> {
             <Provider store={Store}>
                 <Router history={browserHistory}>
                     <Route path="/(:filter)" component={HomeEnhanced} />
-                    <Route path="/chat/(:filter)" component={(this.clientWidth < MEDIUM_HANDSET) ? ChatPageEnhanced : ChatPage} />
                     <Route path="/chat/:filter/:room_id" component={ChatRoomSettings} />
                     <Route path="/team/(:filter)" component={Team} />
                     <Route path="/team/(:filter)/:user" component={(this.clientWidth < MEDIUM_HANDSET) ? ProfilePageEnhanced : Main} />
-                    <Route path="/chatslist/(:filter)" component={(this.clientWidth < MEDIUM_HANDSET) ? m_Main : Main} />
+                    <Route path="/chatslist/:filter" component={(this.clientWidth < MEDIUM_HANDSET) ? m_Main : Main} />
+                    <Route path="/chatslist/:filter/:room_id" component={(this.clientWidth < MEDIUM_HANDSET) ? ChatPageEnhanced : Main} />
                     <Route path="/admin/(:filter)" component={AdminPageEnhanced} />
                 </Router>
             </Provider>

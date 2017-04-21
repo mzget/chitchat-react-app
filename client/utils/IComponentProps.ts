@@ -12,8 +12,9 @@ export interface IComponentProps {
     };
     params;
     router: Router.InjectedRouter;
-    dispatch;
     routing;
+    route;
+    routes;
     adminReducer;
     authReducer;
     userReducer: IUserReducer;
@@ -23,6 +24,7 @@ export interface IComponentProps {
     teamReducer;
     groupReducer;
     alertReducer;
+    dispatch;
 }
 
 

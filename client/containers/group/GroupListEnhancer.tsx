@@ -18,8 +18,9 @@ export const GroupListEnhancer = compose(
     withHandlers({
         onselectGroup: (props: IEnhanceProps) => data => {
             props.dispatch(chatroomActions.leaveRoomAction());
-            process.nextTick(() =>
-                props.dispatch(chatroomActions.getPersistendChatroom(data._id)));
+            process.nextTick(() => {
+                props.dispatch(chatroomActions.getPersistendChatroom(data._id));
+            });
         }
     })
 );

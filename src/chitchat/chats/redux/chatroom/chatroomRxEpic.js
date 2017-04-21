@@ -24,7 +24,6 @@ exports.getPrivateChatRoom_Epic = action$ => action$.ofType(exports.FETCH_PRIVAT
     .mergeMap(action => fromPromise(chatroomService.getPrivateChatroom(action.payload.ownerId, action.payload.roommateId)))
     .mergeMap(response => fromPromise(response.json()))
     .map(json => {
-    console.log(exports.FETCH_PRIVATE_CHATROOM, json);
     if (json.success) {
         return fetchPrivateChatRoomSuccess(json.result[0]);
     }

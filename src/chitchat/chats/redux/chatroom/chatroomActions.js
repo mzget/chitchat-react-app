@@ -298,14 +298,14 @@ function loadEarlyMessageChunk() {
     };
 }
 exports.loadEarlyMessageChunk = loadEarlyMessageChunk;
-const GET_PERSISTEND_CHATROOM = "GET_PERSISTEND_CHATROOM";
+exports.GET_PERSISTEND_CHATROOM = "GET_PERSISTEND_CHATROOM";
 const GET_PERSISTEND_CHATROOM_CANCELLED = "GET_PERSISTEND_CHATROOM_CANCELLED";
 exports.GET_PERSISTEND_CHATROOM_SUCCESS = "GET_PERSISTEND_CHATROOM_SUCCESS";
 exports.GET_PERSISTEND_CHATROOM_FAILURE = "GET_PERSISTEND_CHATROOM_FAILURE";
 const getPersistChatroomFail = () => ({ type: exports.GET_PERSISTEND_CHATROOM_FAILURE });
 const getPersistChatroomSuccess = (roomInfo) => ({ type: exports.GET_PERSISTEND_CHATROOM_SUCCESS, payload: roomInfo });
 exports.getPersistendChatroom = (roomId) => (dispatch => {
-    dispatch({ type: GET_PERSISTEND_CHATROOM, payload: roomId });
+    dispatch({ type: exports.GET_PERSISTEND_CHATROOM, payload: roomId });
     const { chatrooms } = getStore().getState().chatroomReducer;
     const rooms = chatrooms.filter((room, index, array) => {
         if (room._id.toString() == roomId) {

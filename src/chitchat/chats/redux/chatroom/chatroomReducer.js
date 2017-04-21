@@ -84,19 +84,6 @@ exports.chatroomReducer = (state = initialState, action) => {
         case chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS: {
             return state.set("state", chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS);
         }
-        case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
-            return state
-                .set("state", chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS)
-                .set("room", action.payload);
-        }
-        case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
-            return state.set("state", chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE);
-        }
-        case chatroomActions.LEAVE_ROOM: {
-            return state
-                .set("state", chatroomActions.LEAVE_ROOM)
-                .set("room", null);
-        }
         case chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS: {
             return state.set("state", chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS);
         }
@@ -127,6 +114,23 @@ exports.chatroomReducer = (state = initialState, action) => {
             return state.set("state", chatroomRxActions.FETCH_PRIVATE_CHATROOM_FAILURE)
                 .set("isFetching", false)
                 .set("room", null);
+        /** Set room */
+        case chatroomActions.GET_PERSISTEND_CHATROOM:
+            return state.set("isFetching", false);
+        case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
+            return state
+                .set("state", chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS)
+                .set("room", action.payload);
+        }
+        case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
+            return state.set("state", chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE);
+        }
+        /**Set room empty */
+        case chatroomActions.LEAVE_ROOM: {
+            return state
+                .set("state", chatroomActions.LEAVE_ROOM)
+                .set("room", null);
+        }
         case chatroomActions.UPDATED_CHATROOMS: {
             return state.set("chatrooms", action.payload);
         }

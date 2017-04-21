@@ -107,6 +107,15 @@ class Chat extends React.Component {
                 this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
                 break;
             }
+            case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS: {
+                if (!recompose_1.shallowEqual(chatroomReducer, this.props.chatroomReducer))
+                    this.roomInitialize(nextProps);
+                break;
+            }
+            case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_FAILURE: {
+                this.props.router.push(`/`);
+                break;
+            }
             case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
                 if (!recompose_1.shallowEqual(chatroomReducer, this.props.chatroomReducer))
                     this.roomInitialize(nextProps);
