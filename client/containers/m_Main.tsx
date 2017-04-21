@@ -8,7 +8,7 @@ import * as Colors from "material-ui/styles/colors";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { ProfileEnhancer } from "./profile/ProfileBox";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
-import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
+import { ChatLogsBoxEnhancer } from "./chatlog/m_ChatLogsBox";
 import { ContactBox } from "./chatlist/m_ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";

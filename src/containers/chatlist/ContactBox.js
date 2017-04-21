@@ -14,7 +14,6 @@ class ContactBox extends React.Component {
     componentWillReceiveProps(nextProps) {
         let { chatroomReducer, teamReducer, userReducer } = nextProps;
         if (!recompose_1.shallowEqual(chatroomReducer, this.props.chatroomReducer)) {
-            console.log(chatroomReducer.state);
             if (chatroomReducer.state == chatroomRx.FETCH_PRIVATE_CHATROOM_FAILURE) {
                 let contacts = teamReducer.members.filter((v, i) => {
                     return v._id === this._tempContact_id;

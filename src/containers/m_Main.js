@@ -13,7 +13,7 @@ const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const ProfileBox_1 = require("./profile/ProfileBox");
 const ConnectGroupListEnhancer_1 = require("./group/ConnectGroupListEnhancer");
-const ChatLogsBox_1 = require("./chatlog/ChatLogsBox");
+const m_ChatLogsBox_1 = require("./chatlog/m_ChatLogsBox");
 const m_ContactBox_1 = require("./chatlist/m_ContactBox");
 const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
 const StalkComponent_1 = require("./stalk/StalkComponent");
@@ -132,7 +132,7 @@ class Main extends React.Component {
                         React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => this.fetch_orgGroups(), groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
                         React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => { this.fetch_privateGroups(); }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
                         React.createElement(m_ContactBox_1.ContactBox, __assign({}, this.props)),
-                        React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, { router: this.props.router }),
+                        React.createElement(m_ChatLogsBox_1.ChatLogsBoxEnhancer, { router: this.props.router }),
                         React.createElement(SnackbarToolBox_1.SnackbarToolBox, null))),
                 React.createElement("div", { id: "app_footer", style: { height: this.footerHeight } },
                     React.createElement(StalkComponent_1.StalkCompEnhancer, null)))));
