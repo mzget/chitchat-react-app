@@ -13,7 +13,7 @@ import { ContactBox } from "./chatlist/ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
 
-import { ConnectedAppBody } from "./AppBody";
+import { AppBody } from "./AppBody";
 
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
@@ -148,7 +148,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                                     <SnackbarToolBox />
                                 </div>
                             </Flex>
-                            <ConnectedAppBody />
+                            <AppBody {...this.props} />
                             <ContactBox {...this.props} />
                         </Flex>
                     </div>

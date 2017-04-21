@@ -3,22 +3,28 @@ import { connect } from "react-redux";
 
 import { ChatPage } from "./Chat";
 import { Post } from "./Post";
+import { ProfileDetailEnhanced } from "./profile/ProfileDetailEnhancer";
 
 import { IComponentProps } from "../utils/IComponentProps";
 import { SMALL_TABLET, MEDIUM_HANDSET } from "../chitchat/consts/Breakpoints";
 
-class AppBody extends React.Component<IComponentProps, any> {
+export class AppBody extends React.Component<IComponentProps, any> {
+    componentWillReceiveProps(nextProps) {
+        console.log(nextProps);
+    }
+
+
     render() {
-        let { chatroomReducer } = this.props;
+        let { chatroomReducer, params, userReducer, onError } = this.props;
         return (
             <div>
-                {(chatroomReducer.room) ? <ChatPage /> : <Post />}
+                {(params.filter == "profile") ?
+                    <ProfileDetailEnhanced
+                        user={userReducer.user}
+                        teamProfile={userReducer.teamProfile}
+                        alert={onError} /> :
+                    (chatroomReducer.room) ? <ChatPage /> : <Post />}
             </div>
         );
     }
 }
-
-const mapStateToProps = (state) => ({
-    chatroomReducer: state.chatroomReducer
-});
-export const ConnectedAppBody = connect(mapStateToProps)(AppBody);

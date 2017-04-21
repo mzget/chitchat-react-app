@@ -115,7 +115,7 @@ class Main extends React.Component {
                                 React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => { this.fetch_privateGroups(); }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
                                 React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, { router: this.props.router }),
                                 React.createElement(SnackbarToolBox_1.SnackbarToolBox, null))),
-                        React.createElement(AppBody_1.ConnectedAppBody, null),
+                        React.createElement(AppBody_1.AppBody, __assign({}, this.props)),
                         React.createElement(ContactBox_1.ContactBox, __assign({}, this.props)))),
                 React.createElement("div", { id: "app_footer", style: { height: this.footerHeight } },
                     React.createElement(StalkComponent_1.StalkCompEnhancer, null)))));

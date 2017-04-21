@@ -13,8 +13,6 @@ import { ContactBox } from "./chatlist/m_ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
 
-import { ConnectedAppBody } from "./AppBody";
-
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
 import * as chatlogsActions from "../chitchat/chats/redux/chatlogs/chatlogsActions";
