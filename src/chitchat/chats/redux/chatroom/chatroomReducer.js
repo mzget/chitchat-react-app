@@ -100,12 +100,13 @@ exports.chatroomReducer = (state = initialState, action) => {
         case chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS: {
             return state.set("state", chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS);
         }
-        case chatroomActions_1.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
-            return state.set("state", chatroomActions_1.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS);
+        case chatroomActions_1.GET_NEWER_MESSAGE_SUCCESS: {
+            return state.set("state", chatroomActions_1.GET_NEWER_MESSAGE_SUCCESS);
         }
         /**Create chat room */
         case chatroomRxActions.CREATE_PRIVATE_CHATROOM:
-            return state.set("isFetching", true);
+            return state.set("isFetching", true)
+                .set("state", chatroomRxActions.CREATE_PRIVATE_CHATROOM);
         case chatroomRxActions.CREATE_PRIVATE_CHATROOM_SUCCESS: {
             return state.set("room", action.payload.result[0])
                 .set("isFetching", false)
