@@ -9,6 +9,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const react_redux_1 = require("react-redux");
+const recompose_1 = require("recompose");
 const reflexbox_1 = require("reflexbox");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
@@ -25,6 +26,8 @@ const userRx = require("../redux/user/userRx");
 const authRx = require("../redux/authen/authRx");
 const groupRx = require("../redux/group/groupRx");
 const privateGroupRxActions = require("../redux/group/privateGroupRxActions");
+const chatroomActions_1 = require("../chitchat/chats/redux/chatroom/chatroomActions");
+const chatroomRxEpic_1 = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
 class Main extends React.Component {
     constructor() {
         super(...arguments);
@@ -77,6 +80,11 @@ class Main extends React.Component {
             }
             default:
                 break;
+        }
+        if (chatroomReducer.state == chatroomActions_1.GET_PERSISTEND_CHATROOM_SUCCESS || chatroomReducer.state == chatroomRxEpic_1.FETCH_PRIVATE_CHATROOM_SUCCESS) {
+            if (!recompose_1.shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
+                this.props.router.push(`/chatslist/chat/${chatroomReducer.room._id}`);
+            }
         }
     }
     joinChatServer(nextProps) {

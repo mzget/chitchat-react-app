@@ -1,5 +1,6 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
+import { shallowEqual } from "recompose";
 import { Flex, Box } from "reflexbox";
 import * as immutable from "immutable";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -8,7 +9,7 @@ import * as Colors from "material-ui/styles/colors";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { ProfileEnhancer } from "./profile/ProfileBox";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
-import { ChatLogsBoxEnhancer } from "./chatlog/m_ChatLogsBox";
+import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
 import { ContactBox } from "./chatlist/m_ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
@@ -22,6 +23,9 @@ import * as userRx from "../redux/user/userRx";
 import * as authRx from "../redux/authen/authRx";
 import * as groupRx from "../redux/group/groupRx";
 import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
+
+import { GET_PERSISTEND_CHATROOM_SUCCESS } from "../chitchat/chats/redux/chatroom/chatroomActions";
+import { FETCH_PRIVATE_CHATROOM_SUCCESS } from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
 
 import { IComponentProps } from "../utils/IComponentProps";
 import { SMALL_TABLET, MEDIUM_HANDSET } from "../chitchat/consts/Breakpoints";
@@ -77,32 +81,19 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                 break;
         }
 
-        switch (stalkReducer.state) {
-            case StalkBridgeActions.STALK_INIT_SUCCESS:
-                if (this.props.stalkReducer.state !== StalkBridgeActions.STALK_INIT_SUCCESS) {
-                    if (contactId) {
-                        this.fetch_privateChatRoom(contactId, userReducer.user._id);
-                    }
-                    else if (userReducer.contact) {
-                        this.fetch_privateChatRoom(userReducer.contact._id, userReducer.user._id);
-                    }
-                }
-                break;
-            default:
-                break;
-        }
-
         switch (chatroomReducer.state) {
-            case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
-                this.props.router.push(`/chat/${chatroomReducer.room._id}`);
-                break;
-            }
             case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
                 console.warn("GET_PERSISTEND_CHATROOM_FAILURE");
                 break;
             }
             default:
                 break;
+        }
+
+        if (chatroomReducer.state == GET_PERSISTEND_CHATROOM_SUCCESS || chatroomReducer.state == FETCH_PRIVATE_CHATROOM_SUCCESS) {
+            if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
+                this.props.router.push(`/chatslist/chat/${chatroomReducer.room._id}`);
+            }
         }
     }
 
@@ -116,9 +107,6 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
         }
     }
 
-    fetch_privateChatRoom = (roommateId, owerId) => {
-        this.props.dispatch(chatroomRx.fetchPrivateChatRoom(owerId, roommateId));
-    }
     fetch_orgGroups = () => {
         this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
     }

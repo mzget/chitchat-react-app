@@ -9,21 +9,23 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const react_redux_1 = require("react-redux");
+const recompose_1 = require("recompose");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const ProfileBox_1 = require("./profile/ProfileBox");
 const ConnectGroupListEnhancer_1 = require("./group/ConnectGroupListEnhancer");
-const m_ChatLogsBox_1 = require("./chatlog/m_ChatLogsBox");
+const ChatLogsBox_1 = require("./chatlog/ChatLogsBox");
 const m_ContactBox_1 = require("./chatlist/m_ContactBox");
 const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
 const StalkComponent_1 = require("./stalk/StalkComponent");
 const StalkBridgeActions = require("../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
 const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
-const chatroomRx = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
 const userRx = require("../redux/user/userRx");
 const authRx = require("../redux/authen/authRx");
 const groupRx = require("../redux/group/groupRx");
 const privateGroupRxActions = require("../redux/group/privateGroupRxActions");
+const chatroomActions_1 = require("../chitchat/chats/redux/chatroom/chatroomActions");
+const chatroomRxEpic_1 = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
 class Main extends React.Component {
     constructor() {
         super(...arguments);
@@ -34,9 +36,6 @@ class Main extends React.Component {
         this.subHeaderHeight = null;
         this.bodyHeight = null;
         this.footerHeight = 0;
-        this.fetch_privateChatRoom = (roommateId, owerId) => {
-            this.props.dispatch(chatroomRx.fetchPrivateChatRoom(owerId, roommateId));
-        };
         this.fetch_orgGroups = () => {
             this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
         };
@@ -72,31 +71,18 @@ class Main extends React.Component {
                 }
                 break;
         }
-        switch (stalkReducer.state) {
-            case StalkBridgeActions.STALK_INIT_SUCCESS:
-                if (this.props.stalkReducer.state !== StalkBridgeActions.STALK_INIT_SUCCESS) {
-                    if (contactId) {
-                        this.fetch_privateChatRoom(contactId, userReducer.user._id);
-                    }
-                    else if (userReducer.contact) {
-                        this.fetch_privateChatRoom(userReducer.contact._id, userReducer.user._id);
-                    }
-                }
-                break;
-            default:
-                break;
-        }
         switch (chatroomReducer.state) {
-            case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
-                this.props.router.push(`/chat/${chatroomReducer.room._id}`);
-                break;
-            }
             case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
                 console.warn("GET_PERSISTEND_CHATROOM_FAILURE");
                 break;
             }
             default:
                 break;
+        }
+        if (chatroomReducer.state == chatroomActions_1.GET_PERSISTEND_CHATROOM_SUCCESS || chatroomReducer.state == chatroomRxEpic_1.FETCH_PRIVATE_CHATROOM_SUCCESS) {
+            if (!recompose_1.shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
+                this.props.router.push(`/chatslist/chat/${chatroomReducer.room._id}`);
+            }
         }
     }
     joinChatServer(nextProps) {
@@ -132,7 +118,7 @@ class Main extends React.Component {
                         React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => this.fetch_orgGroups(), groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
                         React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => { this.fetch_privateGroups(); }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
                         React.createElement(m_ContactBox_1.ContactBox, __assign({}, this.props)),
-                        React.createElement(m_ChatLogsBox_1.ChatLogsBoxEnhancer, { router: this.props.router }),
+                        React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, { router: this.props.router }),
                         React.createElement(SnackbarToolBox_1.SnackbarToolBox, null))),
                 React.createElement("div", { id: "app_footer", style: { height: this.footerHeight } },
                     React.createElement(StalkComponent_1.StalkCompEnhancer, null)))));

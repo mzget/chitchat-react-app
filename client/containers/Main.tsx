@@ -1,5 +1,6 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
+import { shallowEqual } from "recompose";
 import { Flex, Box } from "reflexbox";
 import * as immutable from "immutable";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -24,6 +25,9 @@ import * as userRx from "../redux/user/userRx";
 import * as authRx from "../redux/authen/authRx";
 import * as groupRx from "../redux/group/groupRx";
 import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
+
+import { GET_PERSISTEND_CHATROOM_SUCCESS } from "../chitchat/chats/redux/chatroom/chatroomActions";
+import { FETCH_PRIVATE_CHATROOM_SUCCESS } from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
 
 import { IComponentProps } from "../utils/IComponentProps";
 import { SMALL_TABLET, MEDIUM_HANDSET } from "../chitchat/consts/Breakpoints";
@@ -86,6 +90,12 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
             }
             default:
                 break;
+        }
+
+        if (chatroomReducer.state == GET_PERSISTEND_CHATROOM_SUCCESS || chatroomReducer.state == FETCH_PRIVATE_CHATROOM_SUCCESS) {
+            if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
+                this.props.router.push(`/chatslist/chat/${chatroomReducer.room._id}`);
+            }
         }
     }
 
