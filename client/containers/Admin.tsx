@@ -127,12 +127,21 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     public render(): JSX.Element {
         return (
             <MuiThemeProvider>
-                <div>
-                    <SimpleToolbar title={"Admin"} onBackPressed={this.onBackPressed} />
+                <div style={{position: "relative",}}>
+                    <div style={{position: "relative", height: "56px"}}>
+                        <div style={{position: "fixed", width: "100%", zIndex: 1}} >
+                            <SimpleToolbar title={"Admin"} onBackPressed={this.onBackPressed} />
+                        </div>
+                    </div>
+                    <div style={{position: "relative", overflowX: "hidden" }} >
                     {
                         this.getAdminPanel()
                     }
+
+                    </div>
+
                 </div>
+                
             </MuiThemeProvider>
         );
     }
