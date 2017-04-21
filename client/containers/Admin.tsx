@@ -133,7 +133,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
                             <SimpleToolbar title={"Admin"} onBackPressed={this.onBackPressed} />
                         </div>
                     </div>
-                    <div style={{position: "relative", overflowX: "hidden" }} >
+                    <div style={{position: "relative", overflowX: "hidden", height: "calc(100vh - 56px)" }} >
                     {
                         this.getAdminPanel()
                     }
