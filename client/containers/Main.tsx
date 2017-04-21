@@ -79,21 +79,6 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                 break;
         }
 
-        switch (stalkReducer.state) {
-            case StalkBridgeActions.STALK_INIT_SUCCESS:
-                if (this.props.stalkReducer.state !== StalkBridgeActions.STALK_INIT_SUCCESS) {
-                    if (contactId) {
-                        this.fetch_privateChatRoom(contactId, userReducer.user._id);
-                    }
-                    else if (userReducer.contact) {
-                        this.fetch_privateChatRoom(userReducer.contact._id, userReducer.user._id);
-                    }
-                }
-                break;
-            default:
-                break;
-        }
-
         switch (chatroomReducer.state) {
             case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
                 console.warn("GET_PERSISTEND_CHATROOM_FAILURE");
@@ -114,9 +99,6 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
         }
     }
 
-    fetch_privateChatRoom = (roommateId, owerId) => {
-        this.props.dispatch(chatroomRx.fetchPrivateChatRoom(owerId, roommateId));
-    }
     fetch_orgGroups = () => {
         this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
     }

@@ -1,4 +1,5 @@
 ﻿import * as React from "react";
+import { shallowEqual } from "recompose";
 import Subheader from "material-ui/Subheader";
 
 import { IComponentProps } from "../../utils/IComponentProps";
@@ -25,29 +26,25 @@ export class ContactBox extends React.Component<IComponentProps, IComponentNameS
     componentWillReceiveProps(nextProps: IComponentProps) {
         let { chatroomReducer, teamReducer, userReducer } = nextProps;
 
-        switch (chatroomReducer.state) {
-            case chatroomRx.FETCH_PRIVATE_CHATROOM_FAILURE: {
+        if (!shallowEqual(chatroomReducer, this.props.chatroomReducer)) {
+            console.log(chatroomReducer.state);
+            if (chatroomReducer.state == chatroomRx.FETCH_PRIVATE_CHATROOM_FAILURE) {
                 let contacts = teamReducer.members.filter((v, i) => {
                     return v._id === this._tempContact_id;
                 });
                 let members = chatroomActions.createChatRoom(userReducer.user, contacts[0]);
                 this.props.dispatch(chatroomRx.createPrivateChatRoom(members.owner, members.contact));
-                break;
             }
-            case chatroomRx.CREATE_PRIVATE_CHATROOM_SUCCESS: {
-                if (chatroomReducer.room) {
-                    this.props.router.push(`/chat/${chatroomReducer.room._id}`);
-                }
-            }
-            default:
-                break;
         }
     }
 
     onselectMember(data) {
         let { userReducer } = this.props;
         this._tempContact_id = data._id;
-        this.props.dispatch(chatroomRx.fetchPrivateChatRoom(userReducer.user._id, this._tempContact_id));
+
+        this.props.dispatch(chatroomActions.leaveRoomAction());
+        process.nextTick(() =>
+            this.props.dispatch(chatroomRx.fetchPrivateChatRoom(userReducer.user._id, this._tempContact_id)));
     }
 
     public render(): JSX.Element {

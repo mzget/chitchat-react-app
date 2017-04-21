@@ -21,7 +21,6 @@ const StalkComponent_1 = require("./stalk/StalkComponent");
 const AppBody_1 = require("./AppBody");
 const StalkBridgeActions = require("../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
 const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
-const chatroomRx = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
 const userRx = require("../redux/user/userRx");
 const authRx = require("../redux/authen/authRx");
 const groupRx = require("../redux/group/groupRx");
@@ -36,9 +35,6 @@ class Main extends React.Component {
         this.subHeaderHeight = null;
         this.bodyHeight = null;
         this.footerHeight = 0;
-        this.fetch_privateChatRoom = (roommateId, owerId) => {
-            this.props.dispatch(chatroomRx.fetchPrivateChatRoom(owerId, roommateId));
-        };
         this.fetch_orgGroups = () => {
             this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
         };
@@ -72,20 +68,6 @@ class Main extends React.Component {
                 if (!userReducer.user) {
                     this.props.router.push("/");
                 }
-                break;
-        }
-        switch (stalkReducer.state) {
-            case StalkBridgeActions.STALK_INIT_SUCCESS:
-                if (this.props.stalkReducer.state !== StalkBridgeActions.STALK_INIT_SUCCESS) {
-                    if (contactId) {
-                        this.fetch_privateChatRoom(contactId, userReducer.user._id);
-                    }
-                    else if (userReducer.contact) {
-                        this.fetch_privateChatRoom(userReducer.contact._id, userReducer.user._id);
-                    }
-                }
-                break;
-            default:
                 break;
         }
         switch (chatroomReducer.state) {

@@ -89,7 +89,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
         let warning_bar = document.getElementById("warning_bar");
         let typing_box = document.getElementById("typing_box");
-        this.h_header = document.getElementById("toolbar").clientHeight;
         this.h_typingArea = typing_box.clientHeight;
         this.h_subHeader = (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));

@@ -105,7 +105,8 @@ exports.chatroomReducer = (state = initialState, action) => {
         }
         /**Create chat room */
         case chatroomRxActions.CREATE_PRIVATE_CHATROOM:
-            return state.set("isFetching", true);
+            return state.set("isFetching", true)
+                .set("state", chatroomRxActions.CREATE_PRIVATE_CHATROOM);
         case chatroomRxActions.CREATE_PRIVATE_CHATROOM_SUCCESS: {
             return state.set("room", action.payload.result[0])
                 .set("isFetching", false)

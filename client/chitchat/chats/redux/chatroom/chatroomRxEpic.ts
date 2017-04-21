@@ -35,6 +35,10 @@ export const getPrivateChatRoom_Epic = action$ =>
             else {
                 return fetchPrivateChatRoomFailure(json.message);
             }
+        })._do(x => {
+            if (x.type == FETCH_PRIVATE_CHATROOM_FAILURE) {
+                console.log("You need to create private chat room!");
+            }
         })
         .takeUntil(action$.ofType(FETCH_PRIVATE_CHATROOM_CANCELLED))
         .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.message)));
