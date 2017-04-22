@@ -18,6 +18,7 @@ const ChatLogsBox_1 = require("./chatlog/ChatLogsBox");
 const ContactBox_1 = require("./chatlist/ContactBox");
 const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
 const StalkComponent_1 = require("./stalk/StalkComponent");
+const ToolbarEnhancer_1 = require("./toolsbox/ToolbarEnhancer");
 const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
 const authRx = require("../redux/authen/authRx");
 const groupRx = require("../redux/group/groupRx");
@@ -31,15 +32,15 @@ const headerHeight = 0;
 const subHeaderHeight = null;
 const bodyHeight = null;
 const footerHeight = 0;
-function onSelectMenuItem(id, value) {
-    console.log(this.menus[id]);
-    let { authReducer } = this.props;
+function listener(props, id, value) {
+    console.log(menus[id]);
+    let { authReducer } = props;
     switch (id) {
         case 0:
-            this.props.history.push(`/admin/${authReducer.user}`);
+            props.history.push(`/admin/${authReducer.user}`);
             break;
         case 1:
-            this.props.dispatch(authRx.logout(this.props.authReducer.token));
+            props.dispatch(authRx.logout(props.authReducer.token));
             break;
         default:
             break;
@@ -76,10 +77,10 @@ const MainEnhancer = recompose_1.compose(react_redux_1.connect(mapStateToProps),
         props.dispatch(privateGroupRxActions.getPrivateGroup(props.teamReducer.team._id));
     }
 }));
-const M_Main = MainEnhancer(({ teamReducer, groupReducer, history, fetch_orgGroups, fetch_privateGroups }) => (React.createElement(MuiThemeProvider_1.default, null,
+const ToolbarEnhanced = ToolbarEnhancer_1.ToolbarEnhancer(({ teamReducer, authReducer, onMenuSelect, listener, history }) => React.createElement(SimpleToolbar_1.SimpleToolbar, { title: (teamReducer.team) ? teamReducer.team.name : "", menus: menus, onSelectedMenuItem: onMenuSelect }));
+const M_Main = MainEnhancer(({ teamReducer, groupReducer, authReducer, history, fetch_orgGroups, fetch_privateGroups }) => (React.createElement(MuiThemeProvider_1.default, null,
     React.createElement("div", null,
-        React.createElement("div", { id: "toolbar", style: { height: headerHeight, overflowY: "hidden" } },
-            React.createElement(SimpleToolbar_1.SimpleToolbar, { title: (teamReducer.team) ? teamReducer.team.name : "", menus: menus, onSelectedMenuItem: onSelectMenuItem })),
+        React.createElement(ToolbarEnhanced, { history: history, teamReducer: teamReducer, authReducer: authReducer, listener: listener }),
         React.createElement("div", { id: "app_body", style: { overflowY: "auto" } },
             React.createElement("div", { style: { overflowY: "auto" } },
                 React.createElement(ProfileBox_1.ProfileEnhancer, { router: history }),

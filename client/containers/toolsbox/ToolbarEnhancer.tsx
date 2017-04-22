@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { compose, withHandlers } from "recompose";
+import { compose, withHandlers, ComponentEnhancer } from "recompose";
 
 const mapStateToProps = (state) => ({ chatroomReducer: state.chatroomReducer });
 export const ToolbarEnhancer = compose(
@@ -13,4 +13,4 @@ export const ToolbarEnhancer = compose(
             props.history.goBack();
         }
     })
-);
+) as ComponentEnhancer<{ onMenuSelect, onBackPressed, listener: (props, id, value) => void, history }, any>;

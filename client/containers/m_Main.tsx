@@ -13,6 +13,7 @@ import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
 import { ContactBox } from "./chatlist/ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
+import { ToolbarEnhancer } from "./toolsbox/ToolbarEnhancer";
 
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
@@ -38,16 +39,16 @@ const subHeaderHeight = null;
 const bodyHeight = null;
 const footerHeight = 0;
 
-function onSelectMenuItem(id, value) {
-    console.log(this.menus[id]);
+function listener(props, id, value) {
+    console.log(menus[id]);
 
-    let { authReducer } = this.props;
+    let { authReducer } = props;
     switch (id) {
         case 0:
-            this.props.history.push(`/admin/${authReducer.user}`);
+            props.history.push(`/admin/${authReducer.user}`);
             break;
         case 1:
-            this.props.dispatch(authRx.logout(this.props.authReducer.token));
+            props.dispatch(authRx.logout(props.authReducer.token));
             break;
         default:
             break;
@@ -93,15 +94,17 @@ const MainEnhancer = compose(
     })
 );
 
-const M_Main = MainEnhancer(({ teamReducer, groupReducer, history, fetch_orgGroups, fetch_privateGroups }: any) => (
+const ToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onMenuSelect, listener, history }: any) =>
+    <SimpleToolbar
+        title={(teamReducer.team) ? teamReducer.team.name : ""}
+        menus={menus}
+        onSelectedMenuItem={onMenuSelect} />
+);
+
+const M_Main = MainEnhancer(({ teamReducer, groupReducer, authReducer, history, fetch_orgGroups, fetch_privateGroups }: any) => (
     <MuiThemeProvider>
         <div >
-            <div id={"toolbar"} style={{ height: headerHeight, overflowY: "hidden" }}>
-                <SimpleToolbar
-                    title={(teamReducer.team) ? teamReducer.team.name : ""}
-                    menus={menus}
-                    onSelectedMenuItem={onSelectMenuItem} />
-            </div>
+            <ToolbarEnhanced history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
             <div id={"app_body"} style={{ overflowY: "auto" }}>
                 <div style={{ overflowY: "auto" }}>
                     <ProfileEnhancer router={history} />
