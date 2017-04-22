@@ -27,10 +27,10 @@ const ToolbarEnhanced = ToolbarEnhancer(({ chatroomReducer, onMenuSelect, onBack
 )) as React.ComponentClass<{ router, listener }>;
 
 
-const ChatPageEnhanced = DialogBoxEnhancer(({ title, message, open, handleClose, onError, location, router, params }: any) => (
+const ChatPageEnhanced = DialogBoxEnhancer(({ title, message, open, handleClose, onError, location, history, match }: any) => (
     <div>
-        <ToolbarEnhanced router={router} listener={listener} />
-        <ChatPage onError={onError} location={location} router={router} params={params} />
+        <ToolbarEnhanced router={history} listener={listener} />
+        <ChatPage onError={onError} location={location} router={history} params={match} />
         <DialogBox
             title={title}
             message={message}

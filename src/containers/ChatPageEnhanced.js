@@ -16,8 +16,8 @@ const listener = (props, id, value) => {
     }
 };
 const ToolbarEnhanced = ToolbarEnhancer_1.ToolbarEnhancer(({ chatroomReducer, onMenuSelect, onBackPressed, router, listener }) => (React.createElement(SimpleToolbar_1.SimpleToolbar, { title: (chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty", menus: toolbarMenus, onSelectedMenuItem: onMenuSelect, onBackPressed: onBackPressed })));
-const ChatPageEnhanced = DialogBoxEnhancer_1.DialogBoxEnhancer(({ title, message, open, handleClose, onError, location, router, params }) => (React.createElement("div", null,
-    React.createElement(ToolbarEnhanced, { router: router, listener: listener }),
-    React.createElement(Chat_1.ChatPage, { onError: onError, location: location, router: router, params: params }),
+const ChatPageEnhanced = DialogBoxEnhancer_1.DialogBoxEnhancer(({ title, message, open, handleClose, onError, location, history, match }) => (React.createElement("div", null,
+    React.createElement(ToolbarEnhanced, { router: history, listener: listener }),
+    React.createElement(Chat_1.ChatPage, { onError: onError, location: location, router: history, params: match }),
     React.createElement(DialogBox_1.DialogBox, { title: title, message: message, open: open, handleClose: handleClose }))));
 exports.ConnectedChatPageEnhanced = ChatPageEnhanced;

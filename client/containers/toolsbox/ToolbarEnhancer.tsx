@@ -10,7 +10,7 @@ export const ToolbarEnhancer = compose(
             props.listener(props, id, value);
         },
         onBackPressed: (props: any) => () => {
-            props.router.goBack();
+            props.history.goBack();
         }
     })
 );

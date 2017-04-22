@@ -13,7 +13,6 @@ import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
 import { ContactBox } from "./chatlist/ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
-
 import { AppBody } from "./AppBody";
 
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
@@ -174,4 +173,4 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
 }
 
 const mapStateToProps = (state) => ({ ...state });
-export default connect(mapStateToProps)(Main);
+export const MainPage = connect(mapStateToProps)(Main);

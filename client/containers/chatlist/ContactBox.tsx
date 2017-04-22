@@ -1,5 +1,6 @@
 ﻿import * as React from "react";
 import { shallowEqual } from "recompose";
+import { connect } from "react-redux";
 import Subheader from "material-ui/Subheader";
 
 import { IComponentProps } from "../../utils/IComponentProps";
@@ -13,7 +14,7 @@ import { MemberList } from "./MemberList";
 
 interface IComponentNameState { }
 
-export class ContactBox extends React.Component<IComponentProps, IComponentNameState> {
+class Contacts extends React.Component<IComponentProps, IComponentNameState> {
 
     _tempContact_id: string;
 
@@ -54,3 +55,10 @@ export class ContactBox extends React.Component<IComponentProps, IComponentNameS
             </div>);
     }
 }
+
+const mapStateToProps = (state) => ({
+    chatroomReducer: state.chatroomReducer,
+    teamReducer: state.teamReducer,
+    userReducer: state.userReducer
+});
+export const ContactBox = connect(mapStateToProps)(Contacts);

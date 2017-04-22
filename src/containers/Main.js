@@ -133,5 +133,4 @@ class Main extends React.Component {
     }
 }
 const mapStateToProps = (state) => (__assign({}, state));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapStateToProps)(Main);
+exports.MainPage = react_redux_1.connect(mapStateToProps)(Main);
