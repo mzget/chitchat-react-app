@@ -35,7 +35,7 @@ class Profile extends React.Component<IComponentProps, IComponentNameState> {
 
     onBackPressed() {
         // Jump to main menu.
-        this.props.router.goBack();
+        this.props.history.goBack();
     }
 
     render() {
@@ -44,7 +44,7 @@ class Profile extends React.Component<IComponentProps, IComponentNameState> {
                 <div id={"toolbar"} style={{ height: this.headerHeight, overflowY: "hidden" }} >
                     <SimpleToolbar title={"Profile"} onBackPressed={this.onBackPressed} />
                 </div>
-                <div id={"app_body"} style={{ backgroundColor: Colors.indigo50,  overflowX: "hidden", margin: 0, padding: 0}}>
+                <div id={"app_body"} style={{ backgroundColor: Colors.indigo50,  overflowX: "hidden", margin: 0, padding: 0, height: this.bodyHeight}}>
                     <ProfileDetailEnhanced
                         user={this.props.userReducer.user}
                         teamProfile={this.props.userReducer.teamProfile}

@@ -45,86 +45,111 @@ export const ContactProfileView = (props: IComponentProps) => {
                     <Card>
                         <CardTitle title="User Profile" subtitle="User Profile" />
                     </Card>
-                    <div style={Object.assign(Styles.generalStyles.paddingTop2Percent, Styles.generalStyles.paddingLeft2Percent, BoxShadow, {height: "calc(100vh - 56px)", padding: "0"})}>
+                    <div style={Object.assign(Styles.generalStyles.paddingTop2Percent, Styles.generalStyles.paddingLeft2Percent, BoxShadow, { padding: "0"})}>
                                 
                                 <div style={Object.assign({ height: "200px", backgroundColor: "#333b3e"}, Styles.generalStyles.flexCenter)}>
                                     {props.member.avatar ? <img src={props.member.avatar} width="150" height="150" /> : <img src="https://thumb.ibb.co/hnoE5k/userdefault.png" width="150" height="150" />}                                    
                                     
                                 </div>
-                                <div style={Object.assign(ManageUserBox)}>
-                                    <Col md={12} style={Styles.generalStyles.flexEnd}>
-                                        <Col md={4}>
-                                            <FormGroup controlId="formControlsSelect">
-                                                <ControlLabel>Manage User</ControlLabel>
-                                                <FormControl componentClass="select" placeholder="select">
-                                                    <option value="select" disabled selected>Select action</option>
-                                                    <option value="other">Delete User</option>
-                                                </FormControl>
-                                            </FormGroup>
-                                        </Col>
-                                    </Col>
-                                </div>
-
-                                <Col md={12}>
-                             
-                                    <div style={Object.assign(ProfileBox, Styles.generalStyles.flexStart)}>
-                                            <Col xs={4} md={3}>
-                                                <strong>Username : </strong>
+                                <div style={{marginLeft: "2%", marginRight: "2%"}}>
+                                    <Row style={Styles.generalStyles.marginZero}>
+                                        <div style={Object.assign(ManageUserBox)}>
+                                            <Col md={10} mdOffset={1} style={Object.assign(Styles.generalStyles.flexEnd, Styles.generalStyles.paddingZero)}>
+                                                <Col xs={6} md={4} style={Styles.generalStyles.paddingZero}>
+                                                    <FormGroup controlId="formControlsSelect">
+                                                        <ControlLabel>Manage User</ControlLabel>
+                                                        <FormControl componentClass="select" placeholder="select">
+                                                            <option value="select" disabled selected>Select action</option>
+                                                            <option value="other">Delete User</option>
+                                                        </FormControl>
+                                                    </FormGroup>
+                                                </Col>
                                             </Col>
-                                            <Col xs={8} md={9}>
-                                                <FormGroup style={{margin: "0"}}>
-                                                    <FormControl  value={props.member.username} disabled /> 
-                                                </FormGroup>
-                                            </Col>
-                                    </div>
+                                        </div>
+                                    </Row>
+                                    <Row style={Styles.generalStyles.marginZero}>
+                                        <Col md={10} mdOffset={1} style={Styles.generalStyles.paddingZero}>
+                                            <Panel>
+                                                <Row>
+                                                    <Col md={12}>
+                                                        <Col xs={12} md={3}>
+                                                            <strong>Username : </strong>
+                                                        </Col>
+                                                        <Col xs={12} md={9}>
+                                                            <FormGroup style={{margin: "0"}}>
+                                                                <FormControl  value={props.member.username} disabled /> 
+                                                            </FormGroup>
+                                                        </Col>
+                                                    </Col>
+                                                </Row>
+                                                
+                                                <Row style={{paddingTop: "2%"}}>
+                                                    <Col md={12}>
+                                                        <Col xs={12} md={3}>
+                                                            <strong>Name : </strong>
+                                                        </Col>
+                                                        <Col xs={12} md={9}>
+                                                            <FormGroup style={{margin: "0"}}>
+                                                                <FormControl  value={props.member.firstname+" "+props.member.lastname} disabled /> 
+                                                            </FormGroup>
+                                                        </Col>
+                                                    </Col>
+                                                </Row>
 
-                                    <div style={Object.assign(ProfileBox, Styles.generalStyles.flexStart)}>
-                                        <Col xs={4} md={3}>
-                                            <strong>Name : </strong>
-                                        </Col>
-                                        <Col xs={8} md={9}>
-                                            <FormGroup style={{margin: "0"}}>
-                                                <FormControl  value={props.member.firstname+" "+props.member.lastname} disabled /> 
-                                            </FormGroup>
+                                                <Row style={{paddingTop: "2%"}}>
+                                                    <Col md={12}>
+                                                        <Col xs={12} md={3}>
+                                                            <strong>Email : </strong>
+                                                        </Col>
+                                                        <Col xs={12} md={9}>
+                                                            <FormGroup style={{margin: "0"}}>
+                                                                <FormControl  value={props.member.email ? props.member.email : "not set"} disabled /> 
+                                                            </FormGroup>
+                                                        </Col>
+                                                    </Col>
+                                                </Row>
+
+                                                <Row style={{paddingTop: "2%"}}>
+                                                    <Col md={12}>
+                                                        <Col xs={12} md={3}>
+                                                            <strong>Select Org. Group : </strong> 
+                                                        </Col>
+                                                        <Col xs={12} md={9}>
+                                                            <SelectOrgChart dropdownItems={props.dropdownItems} dropdownValue={props.dropdownValue} dropdownChange={props.dropdownChange} />
+                                                        </Col>
+                                                    </Col>
+                                                </Row>
+
+                                                <Row style={{paddingTop: "2%"}}>
+                                                    <Col md={12}>
+                                                            <Col xs={12} md={3}>
+                                                                <strong>Select Team Role : </strong> 
+                                                            </Col>
+                                                            <Col xs={12} md={9}>
+                                                                <SelectTeamRole teamRoleItems={props.teamRoleItems} teamRoleValue={props.teamRoleValue} onTeamRoleChange={props.onTeamRoleChange} />
+                                                            </Col>
+                                                    </Col>
+                                                </Row>
                                             
+                                            </Panel>
                                         </Col>
-                                    </div>
-                                    <div style={Object.assign(ProfileBox, Styles.generalStyles.flexStart)}>
-                                        <Col xs={4} md={3}>
-                                            <strong>Email : </strong>
-                                        </Col>
-                                        <Col xs={8} md={9}>
-                                            <FormGroup style={{margin: "0"}}>
-                                                <FormControl  value={props.member.email ? props.member.email : "not set"} disabled /> 
-                                            </FormGroup>
 
+                                    </Row>
+
+                                    <Row>
+                                        <Col md={10} mdOffset={1} >
+                                            <Row>
+                                                <Col md={12} >
+                                                    <FormGroup>
+                                                        <FormControl.Static style={Styles.generalStyles.flexEnd}>
+                                                            <SubmitButton  {...props} />   
+                                                        </FormControl.Static>
+                                                    </FormGroup>                      
+                                                </Col>
+                                            </Row>
                                         </Col>
-                                    </div>
-                                
-                                    <div style={Object.assign(DropdownBox, Styles.generalStyles.flexStart)}>
-                                        <Col xs={4} md={3}>
-                                            <strong>Select Org. Group : </strong> 
-                                        </Col>
-                                        <Col xs={8} md={9}>
-                                            <SelectOrgChart dropdownItems={props.dropdownItems} dropdownValue={props.dropdownValue} dropdownChange={props.dropdownChange} />
-                                        </Col>
-                                    </div>
-                                    <div style={Object.assign(DropdownBox, Styles.generalStyles.flexCenter)}>
-                                        <Col xs={4} md={3}>
-                                            <strong>Select Team Role : </strong> 
-                                        </Col>
-                                        <Col xs={8} md={9}>
-                                            <SelectTeamRole teamRoleItems={props.teamRoleItems} teamRoleValue={props.teamRoleValue} onTeamRoleChange={props.onTeamRoleChange} />
-                                        </Col>
-                                    </div>
-                                </Col>
-                                <Col md={12} style={Styles.generalStyles.flexEnd}>
-                                    <FormGroup>
-                                        <FormControl.Static >
-                                            <SubmitButton  {...props} />   
-                                        </FormControl.Static>
-                                    </FormGroup>                      
-                                </Col>
+                                    </Row>
+                                </div>
                                 
                     </div>
                 </Col>

@@ -28,12 +28,15 @@ export const getPrivateChatRoom_Epic = action$ =>
         .mergeMap(action => fromPromise(chatroomService.getPrivateChatroom(action.payload.ownerId, action.payload.roommateId)))
         .mergeMap(response => fromPromise(response.json()))
         .map(json => {
-            console.log(FETCH_PRIVATE_CHATROOM, json);
             if (json.success) {
                 return fetchPrivateChatRoomSuccess(json.result[0]);
             }
             else {
                 return fetchPrivateChatRoomFailure(json.message);
+            }
+        })._do(x => {
+            if (x.type == FETCH_PRIVATE_CHATROOM_FAILURE) {
+                console.warn("Need to create private chat room!");
             }
         })
         .takeUntil(action$.ofType(FETCH_PRIVATE_CHATROOM_CANCELLED))

@@ -13,6 +13,7 @@ const React = require("react");
  */
 const immutable = require("immutable");
 const react_redux_1 = require("react-redux");
+const react_router_1 = require("react-router");
 const reflexbox_1 = require("reflexbox");
 const Colors = require("material-ui/styles/colors");
 const AuthRx = require("../redux/authen/authRx");
@@ -39,7 +40,7 @@ class Home extends React.Component {
         this.props.dispatch(AppActions.getSession());
     }
     componentWillReceiveProps(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer, alertReducer } = nextProps;
+        let { location: { query }, chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer, alertReducer } = nextProps;
         let toolbar = document.getElementById("toolbar");
         let warning_bar = document.getElementById("warning_bar");
         let app_body = document.getElementById("app_body");
@@ -69,7 +70,7 @@ class Home extends React.Component {
             }
         }
         if (userReducer.user) {
-            this.props.router.push(`/team/${authReducer.user}`);
+            this.props.history.push(`/team/${authReducer.user}`);
         }
         if (alertReducer.error) {
             this.props.onError(alertReducer.error);
@@ -98,4 +99,4 @@ class Home extends React.Component {
  * ## Redux boilerplate
  */
 const mapStateToProps = (state) => (__assign({}, state));
-exports.HomeWithState = react_redux_1.connect(mapStateToProps)(Home);
+exports.HomeWithState = react_router_1.withRouter(react_redux_1.connect(mapStateToProps)(Home));

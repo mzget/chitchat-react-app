@@ -34,9 +34,6 @@ const secure = SecureServiceFactory.getService();
  * ChatRoomActionsType
  */
 export class ChatRoomActionsType {
-    static GET_NEWER_MESSAGE_FAILURE = "GET_NEWER_MESSAGE_FAILURE";
-    static GET_NEWER_MESSAGE_SUCCESS = "GET_NEWER_MESSAGE_SUCCESS";
-
     static SEND_MESSAGE_REQUEST = "SEND_MESSAGE_REQUEST";
     static SEND_MESSAGE_SUCCESS = "SEND_MESSAGE_SUCCESS";
     static SEND_MESSAGE_FAILURE = "SEND_MESSAGE_FAILURE";
@@ -141,14 +138,20 @@ export function checkOlderMessages() {
     };
 }
 
+export const GET_NEWER_MESSAGE = "GET_NEWER_MESSAGE";
+export const GET_NEWER_MESSAGE_FAILURE = "GET_NEWER_MESSAGE_FAILURE";
+export const GET_NEWER_MESSAGE_SUCCESS = "GET_NEWER_MESSAGE_SUCCESS";
+const getNewerMessage = () => ({ type: GET_NEWER_MESSAGE });
 function getNewerMessage_failure() {
-    return { type: ChatRoomActionsType.GET_NEWER_MESSAGE_FAILURE };
+    return { type: GET_NEWER_MESSAGE_FAILURE };
 }
 function getNewerMessage_success(messages: any) {
-    return { type: ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS, payload: messages };
+    return { type: GET_NEWER_MESSAGE_SUCCESS, payload: messages };
 }
 export function getNewerMessageFromNet() {
     return dispatch => {
+        dispatch(getNewerMessage());
+
         let token = authReducer().chitchat_token;
         ChatRoomComponent.getInstance().getNewerMessageRecord(token, (results) => {
             dispatch(getNewerMessage_success(results));
@@ -264,23 +267,28 @@ const leaveRoom = () => ({ type: LEAVE_ROOM });
 const leaveRoomSuccess = () => ({ type: LEAVE_ROOM_SUCCESS });
 export function leaveRoomAction() {
     return (dispatch) => {
-        let token = getStore().getState().stalkReducer.stalkToken;
-        let room = ChatRoomComponent.getInstance();
-        let room_id = room.getRoomId();
+        let _room = getStore().getState().chatroomReducer.get("room");
+        if (!!_room) {
+            let token = getStore().getState().stalkReducer.stalkToken;
+            let room_id = _room._id;
+            ChatRoomComponent.getInstance().dispose();
 
-        dispatch(leaveRoom());
+            dispatch(leaveRoom());
 
-        BackendFactory.getInstance().getServer().then(server => {
-            server.LeaveChatRoomRequest(token, room_id, (err, res) => {
-                console.log("LeaveChatRoomRequest", err, res);
-                ChatRoomComponent.getInstance().dispose();
-                NotificationManager.regisNotifyNewMessageEvent();
+            BackendFactory.getInstance().getServer().then(server => {
+                server.LeaveChatRoomRequest(token, room_id, (err, res) => {
+                    console.log("LeaveChatRoomRequest", err, res);
+                    NotificationManager.regisNotifyNewMessageEvent();
+                });
+
+                dispatch(updateLastAccessRoom(room_id));
+            }).catch(err => {
+                dispatch(updateLastAccessRoom(room_id));
             });
-
-            dispatch(updateLastAccessRoom(room_id));
-        }).catch(err => {
-            dispatch(updateLastAccessRoom(room_id));
-        });
+        }
+        else {
+            dispatch({ type: "" });
+        }
     };
 }
 
@@ -303,7 +311,7 @@ export function loadEarlyMessageChunk() {
     };
 }
 
-const GET_PERSISTEND_CHATROOM = "GET_PERSISTEND_CHATROOM";
+export const GET_PERSISTEND_CHATROOM = "GET_PERSISTEND_CHATROOM";
 const GET_PERSISTEND_CHATROOM_CANCELLED = "GET_PERSISTEND_CHATROOM_CANCELLED";
 export const GET_PERSISTEND_CHATROOM_SUCCESS = "GET_PERSISTEND_CHATROOM_SUCCESS";
 export const GET_PERSISTEND_CHATROOM_FAILURE = "GET_PERSISTEND_CHATROOM_FAILURE";

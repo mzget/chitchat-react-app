@@ -3,10 +3,9 @@
  * Redux + Immutable
  */
 import * as immutable from "immutable";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { shallowEqual } from "recompose";
-import { Link } from "react-router";
+import { withRouter } from "react-router";
 import { Flex, Box } from "reflexbox";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -53,8 +52,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillReceiveProps(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } },
-            chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer, alertReducer
+        let { location: { query }, chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer, alertReducer
         } = nextProps as IComponentProps;
 
         let toolbar = document.getElementById("toolbar");
@@ -89,7 +87,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
         }
 
         if (userReducer.user) {
-            this.props.router.push(`/team/${authReducer.user}`);
+            this.props.history.push(`/team/${authReducer.user}`);
         }
         if (alertReducer.error) {
             this.props.onError(alertReducer.error);
@@ -129,4 +127,4 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
  * ## Redux boilerplate
  */
 const mapStateToProps = (state) => ({ ...state });
-export const HomeWithState = connect(mapStateToProps)(Home) as React.ComponentClass<any>;
+export const HomeWithState = withRouter(connect(mapStateToProps)(Home)) as React.ComponentClass<any>;

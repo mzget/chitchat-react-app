@@ -10,7 +10,6 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const recompose_1 = require("recompose");
-const reflexbox_1 = require("reflexbox");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const ProfileBox_1 = require("./profile/ProfileBox");
@@ -19,7 +18,6 @@ const ChatLogsBox_1 = require("./chatlog/ChatLogsBox");
 const ContactBox_1 = require("./chatlist/ContactBox");
 const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
 const StalkComponent_1 = require("./stalk/StalkComponent");
-const AppBody_1 = require("./AppBody");
 const StalkBridgeActions = require("../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
 const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
 const userRx = require("../redux/user/userRx");
@@ -49,7 +47,6 @@ class Main extends React.Component {
         this.state = {
             header: "Home"
         };
-        console.log("Main", this.props);
         const { teamReducer, stalkReducer, chatlogReducer, authReducer } = this.props;
         if (!teamReducer.team) {
             this.props.history.replace("/");
@@ -63,7 +60,7 @@ class Main extends React.Component {
         this.fetch_privateGroups = this.fetch_privateGroups.bind(this);
     }
     componentWillReceiveProps(nextProps) {
-        let { location, userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer } = nextProps;
+        let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer } = nextProps;
         switch (userReducer.state) {
             case userRx.FETCH_AGENT_SUCCESS:
                 this.joinChatServer(nextProps);
@@ -86,7 +83,7 @@ class Main extends React.Component {
             chatroomReducer.state == chatroomRxEpic_1.FETCH_PRIVATE_CHATROOM_SUCCESS ||
             chatlogReducer.state == chatroomRxEpic_1.CREATE_PRIVATE_CHATROOM_SUCCESS) {
             if (!recompose_1.shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
-                this.props.history.push(`/chatroom/chat/${chatroomReducer.room._id}`);
+                this.props.history.push(`/chatslist/chat/${chatroomReducer.room._id}`);
             }
         }
     }
@@ -118,16 +115,13 @@ class Main extends React.Component {
                 React.createElement("div", { id: "toolbar", style: { height: this.headerHeight, overflowY: "hidden" } },
                     React.createElement(SimpleToolbar_1.SimpleToolbar, { title: (this.props.teamReducer.team) ? this.props.teamReducer.team.name : "", menus: this.menus, onSelectedMenuItem: this.onSelectMenuItem })),
                 React.createElement("div", { id: "app_body", style: { overflowY: "auto" } },
-                    React.createElement(reflexbox_1.Flex, { flexColumn: false },
-                        React.createElement(reflexbox_1.Flex, { flexColumn: true },
-                            React.createElement("div", { style: { overflowY: "auto" } },
-                                React.createElement(ProfileBox_1.ProfileEnhancer, { router: this.props.history }),
-                                React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => this.fetch_orgGroups(), groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
-                                React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => { this.fetch_privateGroups(); }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
-                                React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, { router: this.props.history }),
-                                React.createElement(SnackbarToolBox_1.SnackbarToolBox, null))),
-                        React.createElement(AppBody_1.AppBody, __assign({}, this.props)),
-                        React.createElement(ContactBox_1.ContactBox, __assign({}, this.props)))),
+                    React.createElement("div", { style: { overflowY: "auto" } },
+                        React.createElement(ProfileBox_1.ProfileEnhancer, { router: this.props.history }),
+                        React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => this.fetch_orgGroups(), groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
+                        React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => { this.fetch_privateGroups(); }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
+                        React.createElement(ContactBox_1.ContactBox, __assign({}, this.props)),
+                        React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, { router: this.props.history }),
+                        React.createElement(SnackbarToolBox_1.SnackbarToolBox, null))),
                 React.createElement("div", { id: "app_footer", style: { height: this.footerHeight } },
                     React.createElement(StalkComponent_1.StalkCompEnhancer, null)))));
     }

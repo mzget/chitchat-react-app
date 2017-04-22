@@ -1,19 +1,6 @@
-import { Router } from "react-router";
-
 export interface IComponentProps {
     onError?: (error: string) => void;
-    location: {
-        query: {
-            contactId: string;
-            userId: string;
-            roomId: string;
-            username: string;
-        }
-    };
-    params;
-    router: Router.InjectedRouter;
-    dispatch;
-    routing;
+    location: Location;
     adminReducer;
     authReducer;
     userReducer: IUserReducer;
@@ -23,6 +10,10 @@ export interface IComponentProps {
     teamReducer;
     groupReducer;
     alertReducer;
+    dispatch;
+    match: Match;
+    history: ReactRouter.HistoryBase;
+    staticContext;
 }
 
 
@@ -33,3 +24,18 @@ export class IUserReducer {
     teamProfile: any;
     error: string;
 }
+
+type Location = {
+    hash;
+    key;
+    pathname;
+    search;
+    state;
+};
+type Match = {
+    match;
+    isExact;
+    params;
+    path;
+    url;
+};

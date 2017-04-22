@@ -14,8 +14,6 @@ import { ContactBox } from "./chatlist/ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
 
-import { AppBody } from "./AppBody";
-
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
 import * as chatlogsActions from "../chitchat/chats/redux/chatlogs/chatlogsActions";
@@ -51,7 +49,6 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
             header: "Home"
         };
 
-        console.log("Main", this.props);
         const { teamReducer, stalkReducer, chatlogReducer, authReducer } = this.props;
 
         if (!teamReducer.team) {
@@ -69,7 +66,8 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
 
     componentWillReceiveProps(nextProps: IComponentProps) {
         let {
-            location, userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer
+            location: { query: { userId, username, roomId, contactId } },
+            userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer
         } = nextProps;
 
         switch (userReducer.state) {
@@ -96,7 +94,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
             chatroomReducer.state == FETCH_PRIVATE_CHATROOM_SUCCESS ||
             chatlogReducer.state == CREATE_PRIVATE_CHATROOM_SUCCESS) {
             if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
-                this.props.history.push(`/chatroom/chat/${chatroomReducer.room._id}`);
+                this.props.history.push(`/chatslist/chat/${chatroomReducer.room._id}`);
             }
         }
     }
@@ -145,24 +143,19 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                             onSelectedMenuItem={this.onSelectMenuItem} />
                     </div>
                     <div id={"app_body"} style={{ overflowY: "auto" }}>
-                        <Flex flexColumn={false}>
-                            <Flex flexColumn={true}>
-                                <div style={{ overflowY: "auto" }}>
-                                    <ProfileEnhancer router={this.props.history} />
-                                    <ConnectGroupListEnhancer fetchGroup={() => this.fetch_orgGroups()}
-                                        groups={this.props.groupReducer.orgGroups}
-                                        subHeader={"OrgGroups"} />
-                                    <ConnectGroupListEnhancer
-                                        fetchGroup={() => { this.fetch_privateGroups(); }}
-                                        groups={this.props.groupReducer.privateGroups}
-                                        subHeader={"Groups"} />
-                                    <ChatLogsBoxEnhancer router={this.props.history} />
-                                    <SnackbarToolBox />
-                                </div>
-                            </Flex>
-                            <AppBody {...this.props} />
+                        <div style={{ overflowY: "auto" }}>
+                            <ProfileEnhancer router={this.props.history} />
+                            <ConnectGroupListEnhancer fetchGroup={() => this.fetch_orgGroups()}
+                                groups={this.props.groupReducer.orgGroups}
+                                subHeader={"OrgGroups"} />
+                            <ConnectGroupListEnhancer
+                                fetchGroup={() => { this.fetch_privateGroups(); }}
+                                groups={this.props.groupReducer.privateGroups}
+                                subHeader={"Groups"} />
                             <ContactBox {...this.props} />
-                        </Flex>
+                            <ChatLogsBoxEnhancer router={this.props.history} />
+                            <SnackbarToolBox />
+                        </div>
                     </div>
                     <div id={"app_footer"} style={{ height: this.footerHeight }}>
                         <StalkCompEnhancer />
