@@ -19,7 +19,7 @@ import { ToolbarEnhanced, listener } from "./MainPageToolbar";
 
 export const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer, history, match, onError, fetch_orgGroups, fetch_privateGroups }: any) =>
     <MuiThemeProvider>
-        <div >
+        <div>
             <ToolbarEnhanced history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
             <div id={"app_body"} style={{ overflowY: "auto" }}>
                 <Flex flexColumn={false}>
