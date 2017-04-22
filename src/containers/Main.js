@@ -81,7 +81,9 @@ class Main extends React.Component {
             default:
                 break;
         }
-        if (chatroomReducer.state == chatroomActions_1.GET_PERSISTEND_CHATROOM_SUCCESS || chatroomReducer.state == chatroomRxEpic_1.FETCH_PRIVATE_CHATROOM_SUCCESS) {
+        if (chatroomReducer.state == chatroomActions_1.GET_PERSISTEND_CHATROOM_SUCCESS ||
+            chatroomReducer.state == chatroomRxEpic_1.FETCH_PRIVATE_CHATROOM_SUCCESS ||
+            chatlogReducer.state == chatroomRxEpic_1.CREATE_PRIVATE_CHATROOM_SUCCESS) {
             if (!recompose_1.shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
                 this.props.router.push(`/chatslist/chat/${chatroomReducer.room._id}`);
             }

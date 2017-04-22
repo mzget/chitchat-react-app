@@ -15,7 +15,7 @@ const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const ProfileBox_1 = require("./profile/ProfileBox");
 const ConnectGroupListEnhancer_1 = require("./group/ConnectGroupListEnhancer");
 const ChatLogsBox_1 = require("./chatlog/ChatLogsBox");
-const m_ContactBox_1 = require("./chatlist/m_ContactBox");
+const ContactBox_1 = require("./chatlist/ContactBox");
 const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
 const StalkComponent_1 = require("./stalk/StalkComponent");
 const StalkBridgeActions = require("../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
@@ -79,7 +79,9 @@ class Main extends React.Component {
             default:
                 break;
         }
-        if (chatroomReducer.state == chatroomActions_1.GET_PERSISTEND_CHATROOM_SUCCESS || chatroomReducer.state == chatroomRxEpic_1.FETCH_PRIVATE_CHATROOM_SUCCESS) {
+        if (chatroomReducer.state == chatroomActions_1.GET_PERSISTEND_CHATROOM_SUCCESS ||
+            chatroomReducer.state == chatroomRxEpic_1.FETCH_PRIVATE_CHATROOM_SUCCESS ||
+            chatlogReducer.state == chatroomRxEpic_1.CREATE_PRIVATE_CHATROOM_SUCCESS) {
             if (!recompose_1.shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
                 this.props.router.push(`/chatslist/chat/${chatroomReducer.room._id}`);
             }
@@ -117,7 +119,7 @@ class Main extends React.Component {
                         React.createElement(ProfileBox_1.ProfileEnhancer, { router: this.props.router }),
                         React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => this.fetch_orgGroups(), groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
                         React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => { this.fetch_privateGroups(); }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
-                        React.createElement(m_ContactBox_1.ContactBox, __assign({}, this.props)),
+                        React.createElement(ContactBox_1.ContactBox, __assign({}, this.props)),
                         React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, { router: this.props.router }),
                         React.createElement(SnackbarToolBox_1.SnackbarToolBox, null))),
                 React.createElement("div", { id: "app_footer", style: { height: this.footerHeight } },

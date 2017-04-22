@@ -10,7 +10,7 @@ import { SimpleToolbar } from "../components/SimpleToolbar";
 import { ProfileEnhancer } from "./profile/ProfileBox";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
 import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
-import { ContactBox } from "./chatlist/m_ContactBox";
+import { ContactBox } from "./chatlist/ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
 
@@ -25,7 +25,7 @@ import * as groupRx from "../redux/group/groupRx";
 import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
 
 import { GET_PERSISTEND_CHATROOM_SUCCESS } from "../chitchat/chats/redux/chatroom/chatroomActions";
-import { FETCH_PRIVATE_CHATROOM_SUCCESS } from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
+import { FETCH_PRIVATE_CHATROOM_SUCCESS, CREATE_PRIVATE_CHATROOM_SUCCESS } from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
 
 import { IComponentProps } from "../utils/IComponentProps";
 import { SMALL_TABLET, MEDIUM_HANDSET } from "../chitchat/consts/Breakpoints";
@@ -90,7 +90,9 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                 break;
         }
 
-        if (chatroomReducer.state == GET_PERSISTEND_CHATROOM_SUCCESS || chatroomReducer.state == FETCH_PRIVATE_CHATROOM_SUCCESS) {
+        if (chatroomReducer.state == GET_PERSISTEND_CHATROOM_SUCCESS ||
+            chatroomReducer.state == FETCH_PRIVATE_CHATROOM_SUCCESS ||
+            chatlogReducer.state == CREATE_PRIVATE_CHATROOM_SUCCESS) {
             if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
                 this.props.router.push(`/chatslist/chat/${chatroomReducer.room._id}`);
             }

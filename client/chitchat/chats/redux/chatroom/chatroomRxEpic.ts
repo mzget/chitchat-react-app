@@ -36,7 +36,7 @@ export const getPrivateChatRoom_Epic = action$ =>
             }
         })._do(x => {
             if (x.type == FETCH_PRIVATE_CHATROOM_FAILURE) {
-                console.log("You need to create private chat room!");
+                console.warn("Need to create private chat room!");
             }
         })
         .takeUntil(action$.ofType(FETCH_PRIVATE_CHATROOM_CANCELLED))

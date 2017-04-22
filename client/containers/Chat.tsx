@@ -114,21 +114,26 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 break;
             }
 
-            case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS: {
-                if (!shallowEqual(chatroomReducer, this.props.chatroomReducer))
+            case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
+                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
                     this.roomInitialize(nextProps);
                 break;
             }
-            case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_FAILURE: {
-                this.props.router.push(`/`);
+            case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS: {
+                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
+                    this.roomInitialize(nextProps);
                 break;
             }
-            case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
-                if (!shallowEqual(chatroomReducer, this.props.chatroomReducer))
+            case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_SUCCESS: {
+                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
                     this.roomInitialize(nextProps);
                 break;
             }
             case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
+                this.props.router.push(`/`);
+                break;
+            }
+            case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_FAILURE: {
                 this.props.router.push(`/`);
                 break;
             }
