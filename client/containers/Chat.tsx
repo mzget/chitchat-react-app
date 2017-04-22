@@ -66,6 +66,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
         let { chatroomReducer, userReducer, params } = this.props;
 
+        console.log("Chat", this.props);
         if (!chatroomReducer.room) {
             this.props.dispatch(chatroomActions.getPersistendChatroom(params.filter));
         }
