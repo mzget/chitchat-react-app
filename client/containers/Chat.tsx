@@ -10,7 +10,6 @@ const config = () => ChitChatFactory.getInstance().config;
 
 import { TypingBox } from "./TypingBox";
 import { ChatBox } from "./chat/ChatBox";
-import { SimpleToolbar } from "../components/SimpleToolbar";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import UploadingDialog from "./UploadingDialog";
 import GridListSimple from "../components/GridListSimple";
@@ -39,9 +38,6 @@ interface IComponentNameState {
 }
 
 class Chat extends React.Component<IComponentProps, IComponentNameState> {
-    options = "Options";
-    favorite = "Favorite";
-    toolbarMenus = [this.options, this.favorite];
     clientWidth = document.documentElement.clientWidth;
     clientHeight = document.documentElement.clientHeight;
     h_header = null;
@@ -66,8 +62,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.onSubmitStickerChat = this.onSubmitStickerChat.bind(this);
         this.roomInitialize = this.roomInitialize.bind(this);
         this.onToggleSticker = this.onToggleSticker.bind(this);
-        this.onBackPressed = this.onBackPressed.bind(this);
-        this.onMenuSelect = this.onMenuSelect.bind(this);
         this.fileReaderChange = this.fileReaderChange.bind(this);
 
         let { chatroomReducer, userReducer, params } = this.props;
@@ -375,18 +369,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             let chatBox = document.getElementById("app_body");
             chatBox.scrollTop = chatBox.scrollHeight;
         });
-    }
-
-    onBackPressed() {
-        this.props.router.goBack();
-    }
-
-    onMenuSelect(id, value) {
-        let { chatroomReducer } = this.props;
-        console.log(id, value);
-        if (this.toolbarMenus[id] == this.options) {
-            this.props.router.push(`/chat/settings/${chatroomReducer.room._id}`);
-        }
     }
 
     render(): JSX.Element {

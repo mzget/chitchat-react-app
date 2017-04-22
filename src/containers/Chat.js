@@ -29,9 +29,6 @@ const chatroomMessageUtils_1 = require("../actions/chatroom/chatroomMessageUtils
 class Chat extends React.Component {
     constructor() {
         super(...arguments);
-        this.options = "Options";
-        this.favorite = "Favorite";
-        this.toolbarMenus = [this.options, this.favorite];
         this.clientWidth = document.documentElement.clientWidth;
         this.clientHeight = document.documentElement.clientHeight;
         this.h_header = null;
@@ -67,8 +64,6 @@ class Chat extends React.Component {
         this.onSubmitStickerChat = this.onSubmitStickerChat.bind(this);
         this.roomInitialize = this.roomInitialize.bind(this);
         this.onToggleSticker = this.onToggleSticker.bind(this);
-        this.onBackPressed = this.onBackPressed.bind(this);
-        this.onMenuSelect = this.onMenuSelect.bind(this);
         this.fileReaderChange = this.fileReaderChange.bind(this);
         let { chatroomReducer, userReducer, params } = this.props;
         if (!chatroomReducer.room) {
@@ -295,16 +290,6 @@ class Chat extends React.Component {
             let chatBox = document.getElementById("app_body");
             chatBox.scrollTop = chatBox.scrollHeight;
         });
-    }
-    onBackPressed() {
-        this.props.router.goBack();
-    }
-    onMenuSelect(id, value) {
-        let { chatroomReducer } = this.props;
-        console.log(id, value);
-        if (this.toolbarMenus[id] == this.options) {
-            this.props.router.push(`/chat/settings/${chatroomReducer.room._id}`);
-        }
     }
     render() {
         let { chatroomReducer, stalkReducer } = this.props;

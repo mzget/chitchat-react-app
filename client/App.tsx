@@ -10,7 +10,7 @@ import { chitchatFactory } from "./chitchat";
 import Store from "./redux/configureStore";
 
 import { HomeEnhanced } from "./containers/HomeEnhanced";
-import { ChatPageEnhanced } from "./containers/ChatPageEnhanced";
+import { ConnectedChatPageEnhanced } from "./containers/ChatPageEnhanced";
 import ChatRoomSettings from "./containers/ChatRoomSettings";
 import Team from "./containers/Team";
 import { ProfilePageEnhanced } from "./containers/ProfilePageEnhanced";
@@ -41,7 +41,7 @@ class App extends React.Component<any, any> {
                     <Route path="/team/(:filter)" component={Team} />
                     <Route path="/team/(:filter)/:user" component={(this.clientWidth < SMALL_TABLET) ? ProfilePageEnhanced : Main} />
                     <Route path="/chatslist/:filter" component={(this.clientWidth < SMALL_TABLET) ? m_Main : Main} />
-                    <Route path="/chatslist/:filter/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ChatPageEnhanced : Main} />
+                    <Route path="/chatslist/:filter/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ConnectedChatPageEnhanced : Main} />
                     <Route path="/admin/(:filter)" component={AdminPageEnhanced} />
                 </Router>
             </Provider>
