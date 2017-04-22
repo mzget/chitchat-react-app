@@ -26,7 +26,6 @@ class Profile extends React.Component {
             alert: false
         };
         this.onBackPressed = this.onBackPressed.bind(this);
-        this.headerHeight = document.getElementById("toolbar").clientHeight;
         this.bodyHeight = this.clientHeight - this.headerHeight;
     }
     onBackPressed() {

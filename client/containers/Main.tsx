@@ -14,163 +14,36 @@ import { ContactBox } from "./chatlist/ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
 import { AppBody } from "./AppBody";
+import { MainPageEnhancer } from "./MainPageEnhancer";
+import { ToolbarEnhanced, listener } from "./MainPageToolbar";
 
-import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
-import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
-import * as chatlogsActions from "../chitchat/chats/redux/chatlogs/chatlogsActions";
-import * as chatlogRxActions from "../chitchat/chats/redux/chatlogs/chatlogRxActions";
-import * as chatroomRx from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
-import * as userRx from "../redux/user/userRx";
-import * as authRx from "../redux/authen/authRx";
-import * as groupRx from "../redux/group/groupRx";
-import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
-
-import { GET_PERSISTEND_CHATROOM_SUCCESS } from "../chitchat/chats/redux/chatroom/chatroomActions";
-import { FETCH_PRIVATE_CHATROOM_SUCCESS, CREATE_PRIVATE_CHATROOM_SUCCESS } from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
-
-import { IComponentProps } from "../utils/IComponentProps";
-import { SMALL_TABLET, MEDIUM_HANDSET } from "../chitchat/consts/Breakpoints";
-
-interface IComponentNameState {
-    header: string;
-}
-
-class Main extends React.Component<IComponentProps, IComponentNameState> {
-
-    menus = ["menu", "log out"];
-    clientWidth = document.documentElement.clientWidth;
-    clientHeight = document.documentElement.clientHeight;
-    headerHeight = 0;
-    subHeaderHeight = null;
-    bodyHeight = null;
-    footerHeight = 0;
-
-    componentWillMount() {
-        this.state = {
-            header: "Home"
-        };
-
-        console.log("Main", this.props);
-        const { teamReducer, stalkReducer, chatlogReducer, authReducer } = this.props;
-
-        if (!teamReducer.team) {
-            this.props.history.replace("/");
-        }
-        this.headerHeight = 56;
-        this.footerHeight = 32;
-        this.clientHeight = document.documentElement.clientHeight;
-        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.footerHeight));
-
-        this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
-        this.fetch_orgGroups = this.fetch_orgGroups.bind(this);
-        this.fetch_privateGroups = this.fetch_privateGroups.bind(this);
-    }
-
-    componentWillReceiveProps(nextProps: IComponentProps) {
-        let {
-            location, userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer
-        } = nextProps;
-
-        switch (userReducer.state) {
-            case userRx.FETCH_AGENT_SUCCESS:
-                this.joinChatServer(nextProps);
-                break;
-            default:
-                if (!userReducer.user) {
-                    this.props.history.push("/");
-                }
-                break;
-        }
-
-        switch (chatroomReducer.state) {
-            case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
-                console.warn("GET_PERSISTEND_CHATROOM_FAILURE");
-                break;
-            }
-            default:
-                break;
-        }
-
-        if (chatroomReducer.state == GET_PERSISTEND_CHATROOM_SUCCESS ||
-            chatroomReducer.state == FETCH_PRIVATE_CHATROOM_SUCCESS ||
-            chatlogReducer.state == CREATE_PRIVATE_CHATROOM_SUCCESS) {
-            if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
-                this.props.history.push(`/chatroom/chat/${chatroomReducer.room._id}`);
-            }
-        }
-    }
-
-    joinChatServer(nextProps: IComponentProps) {
-        let { stalkReducer, userReducer } = nextProps;
-
-        if (userReducer.user) {
-            if (stalkReducer.state !== StalkBridgeActions.STALK_INIT) {
-                StalkBridgeActions.stalkLogin(userReducer.user);
-            }
-        }
-    }
-
-    fetch_orgGroups = () => {
-        this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
-    }
-    fetch_privateGroups = () => {
-        this.props.dispatch(privateGroupRxActions.getPrivateGroup(this.props.teamReducer.team._id));
-    }
-
-    onSelectMenuItem(id, value) {
-        console.log(this.menus[id]);
-
-        let { authReducer } = this.props;
-        switch (id) {
-            case 0:
-                this.props.history.push(`/admin/${authReducer.user}`);
-                break;
-            case 1:
-                this.props.dispatch(authRx.logout(this.props.authReducer.token));
-                break;
-            default:
-                break;
-        }
-    }
-
-    public render(): JSX.Element {
-        return (
-            <MuiThemeProvider>
-                <div >
-                    <div id={"toolbar"} style={{ height: this.headerHeight, overflowY: "hidden" }}>
-                        <SimpleToolbar
-                            title={(this.props.teamReducer.team) ? this.props.teamReducer.team.name : ""}
-                            menus={this.menus}
-                            onSelectedMenuItem={this.onSelectMenuItem} />
-                    </div>
-                    <div id={"app_body"} style={{ overflowY: "auto" }}>
-                        <Flex flexColumn={false}>
-                            <Flex flexColumn={true}>
-                                <div style={{ overflowY: "auto" }}>
-                                    <ProfileEnhancer router={this.props.history} />
-                                    <ConnectGroupListEnhancer fetchGroup={() => this.fetch_orgGroups()}
-                                        groups={this.props.groupReducer.orgGroups}
-                                        subHeader={"OrgGroups"} />
-                                    <ConnectGroupListEnhancer
-                                        fetchGroup={() => { this.fetch_privateGroups(); }}
-                                        groups={this.props.groupReducer.privateGroups}
-                                        subHeader={"Groups"} />
-                                    <ChatLogsBoxEnhancer router={this.props.history} />
-                                    <SnackbarToolBox />
-                                </div>
-                            </Flex>
-                            <AppBody {...this.props} />
-                            <ContactBox {...this.props} />
-                        </Flex>
-                    </div>
-                    <div id={"app_footer"} style={{ height: this.footerHeight }}>
-                        <StalkCompEnhancer />
-                    </div>
-                </div>
-            </MuiThemeProvider >
-        );
-    }
-}
-
-const mapStateToProps = (state) => ({ ...state });
-export const MainPage = connect(mapStateToProps)(Main);
+export const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer, history, match, onError, fetch_orgGroups, fetch_privateGroups }: any) =>
+    <MuiThemeProvider>
+        <div >
+            <ToolbarEnhanced history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
+            <div id={"app_body"} style={{ overflowY: "auto" }}>
+                <Flex flexColumn={false}>
+                    <Flex flexColumn={true}>
+                        <div style={{ overflowY: "auto" }}>
+                            <ProfileEnhancer router={history} />
+                            <ConnectGroupListEnhancer fetchGroup={fetch_orgGroups}
+                                groups={groupReducer.orgGroups}
+                                subHeader={"OrgGroups"} />
+                            <ConnectGroupListEnhancer
+                                fetchGroup={fetch_privateGroups}
+                                groups={groupReducer.privateGroups}
+                                subHeader={"Groups"} />
+                            <ChatLogsBoxEnhancer router={history} />
+                            <SnackbarToolBox />
+                        </div>
+                    </Flex>
+                    <AppBody match={match} onError={onError} userReducer={userReducer} />
+                    <ContactBox />
+                </Flex>
+            </div>
+            <div id={"app_footer"}>
+                <StalkCompEnhancer />
+            </div>
+        </div>
+    </MuiThemeProvider >
+);

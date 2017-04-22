@@ -18,8 +18,8 @@ import { ConnectedChatPageEnhanced } from "./containers/ChatPageEnhanced";
 import ChatRoomSettings from "./containers/ChatRoomSettings";
 import Team from "./containers/Team";
 import { ProfilePageEnhanced } from "./containers/ProfilePageEnhanced";
-import { MainPage } from "./containers/Main";
-import { m_MainPage } from "./containers/m_Main";
+import { MainPageEnhanced } from "./containers/Main";
+import { M_MainPageEnhanced } from "./containers/m_Main";
 import { AdminPageEnhanced } from "./containers/AdminPageEnhanced";
 
 import { SMALL_TABLET } from "./chitchat/consts/Breakpoints";
@@ -43,9 +43,9 @@ class App extends React.Component<any, any> {
                     <div>
                         <Route exact path="/" component={HomeEnhanced} />
                         <Route path="/team/:filter" component={Team} />
-                        <Route path="/profile/:filter/:user" component={(this.clientWidth < SMALL_TABLET) ? ProfilePageEnhanced : MainPage} />
-                        <Route path="/chatslist/:filter" component={(this.clientWidth < SMALL_TABLET) ? m_MainPage : MainPage} />
-                        <Route path="/chatroom/:filter/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ConnectedChatPageEnhanced : MainPage} />
+                        <Route path="/profile/:filter/:user" component={(this.clientWidth < SMALL_TABLET) ? ProfilePageEnhanced : MainPageEnhanced} />
+                        <Route path="/chatslist/:filter" component={(this.clientWidth < SMALL_TABLET) ? M_MainPageEnhanced : MainPageEnhanced} />
+                        <Route path="/chatroom/:filter/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ConnectedChatPageEnhanced : MainPageEnhanced} />
                         <Route path="/chatroom/:filter/:room_id" component={ChatRoomSettings} />
                         <Route path="/admin/:filter" component={AdminPageEnhanced} />
                     </div>

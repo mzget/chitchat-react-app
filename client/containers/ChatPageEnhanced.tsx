@@ -18,18 +18,18 @@ const listener = (props, id, value) => {
     }
 };
 
-const ToolbarEnhanced = ToolbarEnhancer(({ chatroomReducer, onMenuSelect, onBackPressed, router, listener }: any) => (
+const ToolbarEnhanced = ToolbarEnhancer(({ chatroomReducer, onMenuSelect, onBackPressed, history, listener }: any) => (
     <SimpleToolbar
         title={(chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty"}
         menus={toolbarMenus}
         onSelectedMenuItem={onMenuSelect}
         onBackPressed={onBackPressed} />
-)) as React.ComponentClass<{ router, listener }>;
+)) as React.ComponentClass<{ history, listener }>;
 
 
 const ChatPageEnhanced = DialogBoxEnhancer(({ title, message, open, handleClose, onError, location, history, match }: any) => (
     <div>
-        <ToolbarEnhanced router={history} listener={listener} />
+        <ToolbarEnhanced history={history} listener={listener} />
         <ChatPage onError={onError} location={location} router={history} params={match} />
         <DialogBox
             title={title}

@@ -36,9 +36,9 @@ class App extends React.Component {
                 React.createElement("div", null,
                     React.createElement(react_router_dom_1.Route, { exact: true, path: "/", component: HomeEnhanced_1.HomeEnhanced }),
                     React.createElement(react_router_dom_1.Route, { path: "/team/:filter", component: Team_1.default }),
-                    React.createElement(react_router_dom_1.Route, { path: "/profile/:filter/:user", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ProfilePageEnhanced_1.ProfilePageEnhanced : Main_1.MainPage }),
-                    React.createElement(react_router_dom_1.Route, { path: "/chatslist/:filter", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? m_Main_1.m_MainPage : Main_1.MainPage }),
-                    React.createElement(react_router_dom_1.Route, { path: "/chatroom/:filter/:room_id", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ChatPageEnhanced_1.ConnectedChatPageEnhanced : Main_1.MainPage }),
+                    React.createElement(react_router_dom_1.Route, { path: "/profile/:filter/:user", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ProfilePageEnhanced_1.ProfilePageEnhanced : Main_1.MainPageEnhanced }),
+                    React.createElement(react_router_dom_1.Route, { path: "/chatslist/:filter", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? m_Main_1.M_MainPageEnhanced : Main_1.MainPageEnhanced }),
+                    React.createElement(react_router_dom_1.Route, { path: "/chatroom/:filter/:room_id", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ChatPageEnhanced_1.ConnectedChatPageEnhanced : Main_1.MainPageEnhanced }),
                     React.createElement(react_router_dom_1.Route, { path: "/chatroom/:filter/:room_id", component: ChatRoomSettings_1.default }),
                     React.createElement(react_router_dom_1.Route, { path: "/admin/:filter", component: AdminPageEnhanced_1.AdminPageEnhanced })))));
     }
