@@ -89,7 +89,7 @@ class Chat extends React.Component {
                 this.props.dispatch(chatroomActions.disableChatRoom());
                 break;
             case StalkBridgeActions.STALK_ON_SOCKET_RECONNECT:
-                this.props.router.replace("/");
+                this.props.history.replace("/");
                 break;
             default:
                 break;
@@ -119,11 +119,11 @@ class Chat extends React.Component {
                 break;
             }
             case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
-                this.props.router.push(`/`);
+                this.props.history.push(`/`);
                 break;
             }
             case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_FAILURE: {
-                this.props.router.push(`/`);
+                this.props.history.push(`/`);
                 break;
             }
             case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {

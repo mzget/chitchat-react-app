@@ -15,7 +15,7 @@ const enhanced = recompose_1.compose(react_redux_1.connect(mapStateToProps), rec
     }
 }), recompose_1.withHandlers({
     onClickMyProfile: (props) => item => {
-        props.router.push(`/team/profile/${item.username}`);
+        props.router.push(`/profile/user/${item.username}`);
     }
 }), recompose_1.pure);
 const ProfileView = (props) => (React.createElement("div", null,

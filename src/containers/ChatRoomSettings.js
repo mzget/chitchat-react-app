@@ -63,7 +63,7 @@ class ChatRoomSettings extends React.Component {
     }
     onBackPressed() {
         // Jump to main menu.
-        this.props.router.goBack();
+        this.props.history.goBack();
     }
     closeAlert() {
         this.alertTitle = "";

@@ -1,6 +1,10 @@
 import * as React from "react";
 import { Provider } from "react-redux";
-import { Router, Route, browserHistory } from "react-router";
+import {
+    BrowserRouter as Router,
+    Route,
+    Link
+} from "react-router-dom";
 
 import { chitchatFactory } from "./chitchat";
 /**
@@ -35,14 +39,16 @@ class App extends React.Component<any, any> {
     render() {
         return (
             <Provider store={Store}>
-                <Router history={browserHistory}>
-                    <Route path="/(:filter)" component={HomeEnhanced} />
-                    <Route path="/chat/:filter/:room_id" component={ChatRoomSettings} />
-                    <Route path="/team/(:filter)" component={Team} />
-                    <Route path="/team/(:filter)/:user" component={(this.clientWidth < SMALL_TABLET) ? ProfilePageEnhanced : Main} />
-                    <Route path="/chatslist/:filter" component={(this.clientWidth < SMALL_TABLET) ? m_Main : Main} />
-                    <Route path="/chatslist/:filter/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ConnectedChatPageEnhanced : Main} />
-                    <Route path="/admin/(:filter)" component={AdminPageEnhanced} />
+                <Router>
+                    <div>
+                        <Route exact path="/" component={HomeEnhanced} />
+                        <Route path="/team/:filter" component={Team} />
+                        <Route path="/profile/:filter/:user" component={(this.clientWidth < SMALL_TABLET) ? ProfilePageEnhanced : Main} />
+                        <Route path="/chatslist/:filter" component={(this.clientWidth < SMALL_TABLET) ? m_Main : Main} />
+                        <Route path="/chatroom/:filter/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ConnectedChatPageEnhanced : Main} />
+                        <Route path="/chatroom/:filter/:room_id" component={ChatRoomSettings} />
+                        <Route path="/admin/:filter" component={AdminPageEnhanced} />
+                    </div>
                 </Router>
             </Provider>
         );

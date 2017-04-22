@@ -45,7 +45,7 @@ class Admin extends React.Component {
     componentDidMount() {
         const { teamReducer } = this.props;
         if (!teamReducer.team) {
-            this.props.router.replace("/");
+            this.props.history.replace("/");
         }
         this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
     }
@@ -95,7 +95,7 @@ class Admin extends React.Component {
         }
         else {
             // Jump to main menu.
-            this.props.router.goBack();
+            this.props.history.goBack();
         }
     }
     getAdminPanel() {

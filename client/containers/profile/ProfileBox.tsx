@@ -30,7 +30,7 @@ const enhanced = compose(
     }),
     withHandlers({
         onClickMyProfile: (props: IEnhancerProps) => item => {
-            props.router.push(`/team/profile/${item.username}`);
+            props.router.push(`/profile/user/${item.username}`);
         }
     }),
     pure

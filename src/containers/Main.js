@@ -49,9 +49,10 @@ class Main extends React.Component {
         this.state = {
             header: "Home"
         };
+        console.log("Main", this.props);
         const { teamReducer, stalkReducer, chatlogReducer, authReducer } = this.props;
         if (!teamReducer.team) {
-            this.props.router.replace("/");
+            this.props.history.replace("/");
         }
         this.headerHeight = 56;
         this.footerHeight = 32;
@@ -62,14 +63,14 @@ class Main extends React.Component {
         this.fetch_privateGroups = this.fetch_privateGroups.bind(this);
     }
     componentWillReceiveProps(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer } = nextProps;
+        let { location, userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer } = nextProps;
         switch (userReducer.state) {
             case userRx.FETCH_AGENT_SUCCESS:
                 this.joinChatServer(nextProps);
                 break;
             default:
                 if (!userReducer.user) {
-                    this.props.router.push("/");
+                    this.props.history.push("/");
                 }
                 break;
         }
@@ -85,7 +86,7 @@ class Main extends React.Component {
             chatroomReducer.state == chatroomRxEpic_1.FETCH_PRIVATE_CHATROOM_SUCCESS ||
             chatlogReducer.state == chatroomRxEpic_1.CREATE_PRIVATE_CHATROOM_SUCCESS) {
             if (!recompose_1.shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
-                this.props.router.push(`/chatslist/chat/${chatroomReducer.room._id}`);
+                this.props.history.push(`/chatroom/chat/${chatroomReducer.room._id}`);
             }
         }
     }
@@ -102,7 +103,7 @@ class Main extends React.Component {
         let { authReducer } = this.props;
         switch (id) {
             case 0:
-                this.props.router.push(`/admin/${authReducer.user}`);
+                this.props.history.push(`/admin/${authReducer.user}`);
                 break;
             case 1:
                 this.props.dispatch(authRx.logout(this.props.authReducer.token));
@@ -120,10 +121,10 @@ class Main extends React.Component {
                     React.createElement(reflexbox_1.Flex, { flexColumn: false },
                         React.createElement(reflexbox_1.Flex, { flexColumn: true },
                             React.createElement("div", { style: { overflowY: "auto" } },
-                                React.createElement(ProfileBox_1.ProfileEnhancer, { router: this.props.router }),
+                                React.createElement(ProfileBox_1.ProfileEnhancer, { router: this.props.history }),
                                 React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => this.fetch_orgGroups(), groups: this.props.groupReducer.orgGroups, subHeader: "OrgGroups" }),
                                 React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: () => { this.fetch_privateGroups(); }, groups: this.props.groupReducer.privateGroups, subHeader: "Groups" }),
-                                React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, { router: this.props.router }),
+                                React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, { router: this.props.history }),
                                 React.createElement(SnackbarToolBox_1.SnackbarToolBox, null))),
                         React.createElement(AppBody_1.AppBody, __assign({}, this.props)),
                         React.createElement(ContactBox_1.ContactBox, __assign({}, this.props)))),

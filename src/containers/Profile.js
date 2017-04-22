@@ -31,7 +31,7 @@ class Profile extends React.Component {
     }
     onBackPressed() {
         // Jump to main menu.
-        this.props.router.goBack();
+        this.props.history.goBack();
     }
     render() {
         return (React.createElement("div", null,

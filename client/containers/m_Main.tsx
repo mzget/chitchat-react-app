@@ -52,7 +52,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
         const { teamReducer, stalkReducer, chatlogReducer, authReducer } = this.props;
 
         if (!teamReducer.team) {
-            this.props.router.replace("/");
+            this.props.history.replace("/");
         }
         this.headerHeight = 56;
         this.footerHeight = 32;
@@ -76,7 +76,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                 break;
             default:
                 if (!userReducer.user) {
-                    this.props.router.push("/");
+                    this.props.history.push("/");
                 }
                 break;
         }
@@ -94,7 +94,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
             chatroomReducer.state == FETCH_PRIVATE_CHATROOM_SUCCESS ||
             chatlogReducer.state == CREATE_PRIVATE_CHATROOM_SUCCESS) {
             if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
-                this.props.router.push(`/chatslist/chat/${chatroomReducer.room._id}`);
+                this.props.history.push(`/chatslist/chat/${chatroomReducer.room._id}`);
             }
         }
     }
@@ -122,7 +122,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
         let { authReducer } = this.props;
         switch (id) {
             case 0:
-                this.props.router.push(`/admin/${authReducer.user}`);
+                this.props.history.push(`/admin/${authReducer.user}`);
                 break;
             case 1:
                 this.props.dispatch(authRx.logout(this.props.authReducer.token));
@@ -144,7 +144,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                     </div>
                     <div id={"app_body"} style={{ overflowY: "auto" }}>
                         <div style={{ overflowY: "auto" }}>
-                            <ProfileEnhancer router={this.props.router} />
+                            <ProfileEnhancer router={this.props.history} />
                             <ConnectGroupListEnhancer fetchGroup={() => this.fetch_orgGroups()}
                                 groups={this.props.groupReducer.orgGroups}
                                 subHeader={"OrgGroups"} />
@@ -153,7 +153,7 @@ class Main extends React.Component<IComponentProps, IComponentNameState> {
                                 groups={this.props.groupReducer.privateGroups}
                                 subHeader={"Groups"} />
                             <ContactBox {...this.props} />
-                            <ChatLogsBoxEnhancer router={this.props.router} />
+                            <ChatLogsBoxEnhancer router={this.props.history} />
                             <SnackbarToolBox />
                         </div>
                     </div>
