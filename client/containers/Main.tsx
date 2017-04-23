@@ -11,10 +11,10 @@ import { SimpleToolbar } from "../components/SimpleToolbar";
 import { ProfileWithRouter } from "./profile/ProfileBox";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
 import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
-import { ContactBox } from "./chatlist/ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
 import { AppBody } from "./AppBody";
+import { RightNav } from "./RightNav";
 
 import { MainPageEnhancer } from "./MainPageEnhancer";
 import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
@@ -47,7 +47,7 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
                             </div>
                         </Flex>
                         <AppBody userReducer={userReducer} match={match} onError={onError} />
-                        <ContactBox />
+                        <RightNav match={match} onError={onError} />
                     </Flex>
                 </div>
                 <div id={"app_footer"}>

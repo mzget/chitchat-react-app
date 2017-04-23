@@ -6,10 +6,10 @@ const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const ProfileBox_1 = require("./profile/ProfileBox");
 const ConnectGroupListEnhancer_1 = require("./group/ConnectGroupListEnhancer");
 const ChatLogsBox_1 = require("./chatlog/ChatLogsBox");
-const ContactBox_1 = require("./chatlist/ContactBox");
 const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
 const StalkComponent_1 = require("./stalk/StalkComponent");
 const AppBody_1 = require("./AppBody");
+const RightNav_1 = require("./RightNav");
 const MainPageEnhancer_1 = require("./MainPageEnhancer");
 const DialogBoxEnhancer_1 = require("./toolsbox/DialogBoxEnhancer");
 const MainPageToolbar_1 = require("./MainPageToolbar");
@@ -29,7 +29,7 @@ const MainPageEnhanced = MainPageEnhancer_1.MainPageEnhancer(({ teamReducer, gro
                             React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, { router: history }),
                             React.createElement(SnackbarToolBox_1.SnackbarToolBox, null))),
                     React.createElement(AppBody_1.AppBody, { userReducer: userReducer, match: match, onError: onError }),
-                    React.createElement(ContactBox_1.ContactBox, null))),
+                    React.createElement(RightNav_1.RightNav, { match: match, onError: onError }))),
             React.createElement("div", { id: "app_footer" },
                 React.createElement(StalkComponent_1.StalkCompEnhancer, null)))));
 });
