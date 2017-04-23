@@ -6,7 +6,7 @@ import * as immutable from "immutable";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 
-import { ProfileEnhancer } from "./profile/ProfileBox";
+import { ProfileWithRouter } from "./profile/ProfileBox";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
 import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
 import { ContactBox } from "./chatlist/ContactBox";
@@ -21,7 +21,7 @@ export const M_MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer,
             <ToolbarEnhanced history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
             <div id={"app_body"} style={{ overflowY: "auto" }}>
                 <div style={{ overflowY: "auto" }}>
-                    <ProfileEnhancer router={history} />
+                    <ProfileWithRouter />
                     <ConnectGroupListEnhancer fetchGroup={fetch_orgGroups}
                         groups={groupReducer.orgGroups}
                         subHeader={"OrgGroups"} />

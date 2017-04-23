@@ -3,7 +3,7 @@ import { HomeWithState } from "./Home";
 import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
 import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
 
-export const HomeEnhanced = DialogBoxEnhancer(({ title, message, open, handleClose, onError, location, router }: any) => (
+export const HomePageWithDialogBox = DialogBoxEnhancer(({ title, message, open, handleClose, onError, location, router }: any) => (
     <div>
         <HomeWithState onError={onError} location={location} router={router} />
         <DialogBox

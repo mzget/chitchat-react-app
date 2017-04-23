@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { shallowEqual, compose, withHandlers, withState, lifecycle } from "recompose";
+import { shallowEqual, compose, withHandlers, withState, lifecycle, ComponentEnhancer } from "recompose";
 
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
 import * as groupRx from "../redux/group/groupRx";
@@ -48,4 +48,4 @@ export const MainPageEnhancer = compose(
             props.dispatch(privateGroupRxActions.getPrivateGroup(props.teamReducer.team._id));
         }
     })
-);
+) as ComponentEnhancer<{ fetch_orgGroups, fetch_privateGroups, history }, any>;

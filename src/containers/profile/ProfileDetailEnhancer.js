@@ -10,10 +10,10 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const recompose_1 = require("recompose");
-const chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
-const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const ProfileDetail_1 = require("./ProfileDetail");
 const userRx = require("../../redux/user/userRx");
+const chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
+const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const mapStateToProps = (state) => ({
     userReducer: state.userReducer,
     alertReducer: state.alertReducer
@@ -22,7 +22,7 @@ const submit = (props) => {
     let user = __assign({}, props.user);
     props.dispatch(userRx.updateUserInfo(user));
 };
-const enhance = recompose_1.compose(react_redux_1.connect(mapStateToProps), recompose_1.withState("user", "updateUser", ({ user }) => user), recompose_1.withState("imageFile", "setImageFile", null), recompose_1.lifecycle({
+const ProfileDetailEnhancer = recompose_1.compose(react_redux_1.connect(mapStateToProps), recompose_1.withState("user", "updateUser", ({ user }) => user), recompose_1.withState("imageFile", "setImageFile", null), recompose_1.lifecycle({
     componentWillReceiveProps(nextProps) {
         let { userReducer, alertReducer } = nextProps;
         if (userReducer.state == userRx.UPLOAD_USER_AVATAR_SUCCESS) {
@@ -35,7 +35,7 @@ const enhance = recompose_1.compose(react_redux_1.connect(mapStateToProps), reco
             }
         }
         else if (userReducer.state == userRx.UPDATE_USER_INFO_SUCCESS) {
-            if (!recompose_1.shallowEqual(this.props.userReducer, userReducer)) {
+            if (!recompose_1.shallowEqual(this.props.userReducer.state, userReducer.state)) {
                 this.props.alert(userRx.UPDATE_USER_INFO_SUCCESS);
             }
         }
@@ -78,4 +78,4 @@ const enhance = recompose_1.compose(react_redux_1.connect(mapStateToProps), reco
         }
     }
 }));
-exports.ProfileDetailEnhanced = enhance(({ user, teamProfile, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange, alert }) => React.createElement(ProfileDetail_1.ProfileDetail, { user: user, teamProfile: teamProfile, onFirstNameChange: onFirstNameChange, onLastNameChange: onLastNameChange, onTelNumberChange: onTelNumberChange, onFileReaderChange: onFileReaderChange, onSubmit: onSubmit }));
+exports.ProfileDetailEnhanced = ProfileDetailEnhancer(({ user, teamProfile, alert, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange }) => React.createElement(ProfileDetail_1.ProfileDetail, { user: user, teamProfile: teamProfile, onFirstNameChange: onFirstNameChange, onLastNameChange: onLastNameChange, onTelNumberChange: onTelNumberChange, onFileReaderChange: onFileReaderChange, onSubmit: onSubmit }));

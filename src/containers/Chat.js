@@ -65,10 +65,10 @@ class Chat extends React.Component {
         this.roomInitialize = this.roomInitialize.bind(this);
         this.onToggleSticker = this.onToggleSticker.bind(this);
         this.fileReaderChange = this.fileReaderChange.bind(this);
-        let { chatroomReducer, userReducer, params } = this.props;
+        let { chatroomReducer, userReducer, match: { params } } = this.props;
         console.log("Chat", this.props);
         if (!chatroomReducer.room) {
-            this.props.dispatch(chatroomActions.getPersistendChatroom(params.filter));
+            this.props.dispatch(chatroomActions.getPersistendChatroom(params.room_id));
         }
         else {
             this.roomInitialize(this.props);
@@ -81,7 +81,6 @@ class Chat extends React.Component {
         let { chatroomReducer, stalkReducer } = nextProps;
         let warning_bar = document.getElementById("warning_bar");
         let typing_box = document.getElementById("typing_box");
-        this.h_typingArea = typing_box.clientHeight;
         this.h_subHeader = (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
         switch (stalkReducer.state) {
@@ -192,7 +191,7 @@ class Chat extends React.Component {
         this.props.dispatch(chatroomActions.loadEarlyMessageChunk());
     }
     roomInitialize(props) {
-        let { chatroomReducer, userReducer, params } = props;
+        let { chatroomReducer, userReducer } = props;
         if (!userReducer.user) {
             return this.props.dispatch(chatroomActions.leaveRoomAction());
         }

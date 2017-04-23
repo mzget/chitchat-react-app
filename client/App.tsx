@@ -3,7 +3,8 @@ import { Provider } from "react-redux";
 import {
     BrowserRouter as Router,
     Route,
-    Link
+    Link,
+    Switch
 } from "react-router-dom";
 
 import { chitchatFactory } from "./chitchat";
@@ -13,12 +14,12 @@ import { chitchatFactory } from "./chitchat";
  */
 import Store from "./redux/configureStore";
 
-import { HomeEnhanced } from "./containers/HomeEnhanced";
+import { HomePageWithDialogBox } from "./containers/HomeEnhanced";
 import { ChatPageEnhanced } from "./containers/ChatPageEnhanced";
 import ChatRoomSettings from "./containers/ChatRoomSettings";
 import Team from "./containers/Team";
 import { ProfilePageEnhanced } from "./containers/ProfilePageEnhanced";
-import { MainPageEnhanced } from "./containers/Main";
+import { MainPageWithDialogBox } from "./containers/Main";
 import { M_MainPageEnhanced } from "./containers/m_Main";
 import { AdminPageEnhanced } from "./containers/AdminPageEnhanced";
 
@@ -40,15 +41,15 @@ class App extends React.Component<any, any> {
         return (
             <Provider store={Store}>
                 <Router>
-                    <div>
-                        <Route exact path="/" component={HomeEnhanced} />
+                    <Switch>
+                        <Route exact path="/" component={HomePageWithDialogBox} />
                         <Route path="/team/:filter" component={Team} />
-                        <Route path="/profile/:filter/:user" component={(this.clientWidth < SMALL_TABLET) ? ProfilePageEnhanced : MainPageEnhanced} />
-                        <Route path="/chatslist/:filter" component={(this.clientWidth < SMALL_TABLET) ? M_MainPageEnhanced : MainPageEnhanced} />
-                        <Route path="/chatroom/chat/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ChatPageEnhanced : MainPageEnhanced} />
+                        <Route path="/profile/:filter/:user" component={(this.clientWidth < SMALL_TABLET) ? ProfilePageEnhanced : MainPageWithDialogBox} />
+                        <Route path="/chatslist/:filter" component={(this.clientWidth < SMALL_TABLET) ? M_MainPageEnhanced : MainPageWithDialogBox} />
+                        <Route path="/chatroom/chat/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ChatPageEnhanced : MainPageWithDialogBox} />
                         <Route path="/chatroom/settings/:room_id" component={ChatRoomSettings} />
                         <Route path="/admin/:filter" component={AdminPageEnhanced} />
-                    </div>
+                    </Switch>
                 </Router>
             </Provider>
         );

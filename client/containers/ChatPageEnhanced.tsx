@@ -1,4 +1,6 @@
 import * as React from "react";
+import { withRouter } from "react-router-dom";
+
 import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
 import { ToolbarEnhancer } from "./toolsbox/ToolbarEnhancer";
 import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
@@ -26,10 +28,10 @@ const ToolbarEnhanced = ToolbarEnhancer(({ chatroomReducer, onMenuSelect, onBack
 )) as React.ComponentClass<{ history, listener }>;
 
 
-export const ChatPageEnhanced = DialogBoxEnhancer(({ title, message, open, handleClose, onError, location, history, match }: any) => (
+export let ChatPageEnhanced = DialogBoxEnhancer(({ title, message, open, handleClose, onError, history, match }: any) => (
     <div>
         <ToolbarEnhanced history={history} listener={listener} />
-        <ChatPage onError={onError} location={location} router={history} params={match} />
+        <ChatPage onError={onError} history={history} match={match} />
         <DialogBox
             title={title}
             message={message}
@@ -37,4 +39,6 @@ export const ChatPageEnhanced = DialogBoxEnhancer(({ title, message, open, handl
             handleClose={handleClose} />
     </div>
 )) as React.ComponentClass<any>;
+
+ChatPageEnhanced = withRouter(ChatPageEnhanced);
 
