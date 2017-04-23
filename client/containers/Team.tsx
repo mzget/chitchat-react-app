@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
+
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import * as immutable from "immutable";
@@ -82,8 +83,6 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     public render(): JSX.Element {
-        let { location: { query }, userReducer, stalkReducer, teamReducer } = this.props;
-
         return (
             <MuiThemeProvider>
                 <div>
@@ -106,4 +105,4 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
  * ## Redux boilerplate
  */
 function mapStateToProps(state) { return { ...state }; }
-export default connect(mapStateToProps)(Team);
+export const TeamPage = connect(mapStateToProps)(Team) as React.ComponentClass<any>;

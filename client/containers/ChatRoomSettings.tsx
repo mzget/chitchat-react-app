@@ -145,4 +145,4 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
 }
 
 const mapStateToProps = (state) => ({ ...state });
-export default connect(mapStateToProps)(ChatRoomSettings);
+export const ChatRoomSettingsPage = connect(mapStateToProps)(ChatRoomSettings) as React.ComponentClass<any>;

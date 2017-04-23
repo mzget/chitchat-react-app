@@ -1,10 +1,11 @@
 import * as React from "react";
 
 import { ContactBox } from "./chatlist/ContactBox";
+import { ChatRoomSettingsPage } from "./ChatRoomSettings";
 
 const getView = (match) => {
     if (match.path.match("/chatroom/chat")) {
-        return null;
+        return <ChatRoomSettingsPage />;
     }
     else {
         return <ContactBox />;

@@ -1,11 +1,13 @@
 import * as React from "react";
+import { withRouter } from "react-router-dom";
+
 import { HomeWithState } from "./Home";
 import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
 import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
 
-export const HomePageWithDialogBox = DialogBoxEnhancer(({ title, message, open, handleClose, onError, location, router }: any) => (
+export let HomePageWithDialogBox = DialogBoxEnhancer(({ title, message, open, handleClose, onError, history }: any) => (
     <div>
-        <HomeWithState onError={onError} location={location} router={router} />
+        <HomeWithState onError={onError} history={history} />
         <DialogBox
             title={title}
             message={message}
@@ -13,3 +15,6 @@ export const HomePageWithDialogBox = DialogBoxEnhancer(({ title, message, open, 
             handleClose={handleClose} />
     </div>
 ));
+
+HomePageWithDialogBox = withRouter(HomePageWithDialogBox);
+

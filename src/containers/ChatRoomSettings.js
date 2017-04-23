@@ -120,5 +120,4 @@ class ChatRoomSettings extends React.Component {
     }
 }
 const mapStateToProps = (state) => (__assign({}, state));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapStateToProps)(ChatRoomSettings);
+exports.ChatRoomSettingsPage = react_redux_1.connect(mapStateToProps)(ChatRoomSettings);
