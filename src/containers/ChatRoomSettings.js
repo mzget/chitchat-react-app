@@ -52,6 +52,20 @@ class ChatRoomSettings extends React.Component {
         let { match: { params } } = this.props;
         this.props.dispatch(chatroomActions.getPersistendChatroom(params.room_id));
     }
+    getViewPanel() {
+        let { match: { params }, teamReducer, chatroomReducer } = this.props;
+        let { room } = chatroomReducer;
+        switch (this.state.boxState) {
+            case BoxState.isEditMember:
+                return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: teamReducer.members, room_id: params.room_id, initMembers: room.members, onFinished: () => this.setState(prev => (__assign({}, prev, { boxState: BoxState.idle }))) });
+            case BoxState.isEditGroup:
+                return React.createElement(GroupDetailEnhancer_1.ConnectGroupDetail, { group: room, image: room.image, group_name: room.name, group_description: room.description, onError: (message) => this.onAlert(message), onFinished: () => this.setState(prev => (__assign({}, prev, { boxState: BoxState.idle }))) });
+            case BoxState.viewMembers:
+                return React.createElement(GroupMemberEnhancer_1.GroupMemberEnhancer, { members: room.members });
+            default:
+                return null;
+        }
+    }
     render() {
         let { chatroomReducer } = this.props;
         let { room } = chatroomReducer;
@@ -102,20 +116,6 @@ class ChatRoomSettings extends React.Component {
         }
         else if (key == GROUP_MEMBERS) {
             this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.viewMembers })));
-        }
-    }
-    getViewPanel() {
-        let { match: { params }, teamReducer, chatroomReducer } = this.props;
-        let { room } = chatroomReducer;
-        switch (this.state.boxState) {
-            case BoxState.isEditMember:
-                return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: teamReducer.members, room_id: params.room_id, initMembers: room.members, onFinished: () => this.setState(prev => (__assign({}, prev, { boxState: BoxState.idle }))) });
-            case BoxState.isEditGroup:
-                return React.createElement(GroupDetailEnhancer_1.ConnectGroupDetail, { group: room, image: room.image, group_name: room.name, group_description: room.description, onError: (message) => this.onAlert(message), onFinished: () => this.setState(prev => (__assign({}, prev, { boxState: BoxState.idle }))) });
-            case BoxState.viewMembers:
-                return React.createElement(GroupMemberEnhancer_1.GroupMemberEnhancer, { members: room.members });
-            default:
-                return null;
         }
     }
 }
