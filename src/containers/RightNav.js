@@ -4,7 +4,7 @@ const ContactBox_1 = require("./chatlist/ContactBox");
 const ChatRoomSettings_1 = require("./ChatRoomSettings");
 const getView = (match) => {
     if (match.path.match("/chatroom/chat")) {
-        return React.createElement(ChatRoomSettings_1.ChatRoomSettingsPage, null);
+        return React.createElement(ChatRoomSettings_1.ChatRoomSettingsPage, { match: match });
     }
     else {
         return React.createElement(ContactBox_1.ContactBox, null);

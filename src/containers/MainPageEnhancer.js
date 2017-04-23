@@ -39,6 +39,8 @@ exports.MainPageEnhancer = recompose_1.compose(react_redux_1.connect(mapStateToP
     }
 }), recompose_1.withHandlers({
     fetch_orgGroups: (props) => () => {
+        if (!props.teamReducer.team)
+            return props.history.replace(`/`);
         props.dispatch(groupRx.getOrgGroup(props.teamReducer.team._id));
     },
     fetch_privateGroups: (props) => () => {

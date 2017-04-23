@@ -15,7 +15,13 @@ const mapStateToProps = (state) => ({
 });
 const enhanced = recompose_1.compose(react_redux_1.connect(mapStateToProps), recompose_1.lifecycle({
     componentWillMount() {
-        this.props.dispatch(UserRx.getTeamProfile(this.props.teamReducer.team._id));
+        let { teamReducer, history } = this.props;
+        if (!teamReducer.team) {
+            history.replace(`/`);
+        }
+        else {
+            this.props.dispatch(UserRx.getTeamProfile(teamReducer.team._id));
+        }
     }
 }), recompose_1.withHandlers({
     onClickMyProfile: (props) => item => {

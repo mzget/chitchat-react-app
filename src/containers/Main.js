@@ -10,12 +10,13 @@ const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
 const StalkComponent_1 = require("./stalk/StalkComponent");
 const AppBody_1 = require("./AppBody");
 const RightNav_1 = require("./RightNav");
+const SubToolbar_1 = require("./SubToolbar");
 const MainPageEnhancer_1 = require("./MainPageEnhancer");
 const DialogBoxEnhancer_1 = require("./toolsbox/DialogBoxEnhancer");
 const MainPageToolbar_1 = require("./MainPageToolbar");
 const DialogBox_1 = require("../components/DialogBox");
 const MainPageEnhanced = MainPageEnhancer_1.MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer, history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
-    // console.log(match, history.location); 
+    // console.log(match, history.location);
     return (React.createElement(MuiThemeProvider_1.default, null,
         React.createElement("div", null,
             React.createElement(MainPageToolbar_1.ToolbarEnhanced, { history: history, teamReducer: teamReducer, authReducer: authReducer, listener: MainPageToolbar_1.listener }),
@@ -28,8 +29,11 @@ const MainPageEnhanced = MainPageEnhancer_1.MainPageEnhancer(({ teamReducer, gro
                             React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: fetch_privateGroups, groups: groupReducer.privateGroups, subHeader: "Groups" }),
                             React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, { router: history }),
                             React.createElement(SnackbarToolBox_1.SnackbarToolBox, null))),
-                    React.createElement(AppBody_1.AppBody, { userReducer: userReducer, match: match, onError: onError }),
-                    React.createElement(RightNav_1.RightNav, { match: match, onError: onError }))),
+                    React.createElement(reflexbox_1.Flex, { flexColumn: true },
+                        React.createElement(SubToolbar_1.SubToolbar, { match: match, onError: onError }),
+                        React.createElement(reflexbox_1.Flex, { flexColumn: false },
+                            React.createElement(AppBody_1.AppBody, { userReducer: userReducer, match: match, onError: onError }),
+                            React.createElement(RightNav_1.RightNav, { match: match, onError: onError }))))),
             React.createElement("div", { id: "app_footer" },
                 React.createElement(StalkComponent_1.StalkCompEnhancer, null)))));
 });

@@ -33,7 +33,13 @@ const enhanced = compose(
     connect(mapStateToProps),
     lifecycle({
         componentWillMount() {
-            this.props.dispatch(UserRx.getTeamProfile(this.props.teamReducer.team._id));
+            let { teamReducer, history } = this.props;
+            if (!teamReducer.team) {
+                history.replace(`/`);
+            }
+            else {
+                this.props.dispatch(UserRx.getTeamProfile(teamReducer.team._id));
+            }
         }
     }),
     withHandlers({
