@@ -14,12 +14,12 @@ import { chitchatFactory } from "./chitchat";
 import Store from "./redux/configureStore";
 
 import { HomeEnhanced } from "./containers/HomeEnhanced";
-import { ConnectedChatPageEnhanced } from "./containers/ChatPageEnhanced";
+import { ChatPageEnhanced } from "./containers/ChatPageEnhanced";
 import ChatRoomSettings from "./containers/ChatRoomSettings";
 import Team from "./containers/Team";
 import { ProfilePageEnhanced } from "./containers/ProfilePageEnhanced";
-import Main from "./containers/Main";
-import m_Main from "./containers/m_Main";
+import { MainPageEnhanced } from "./containers/Main";
+import { M_MainPageEnhanced } from "./containers/m_Main";
 import { AdminPageEnhanced } from "./containers/AdminPageEnhanced";
 
 import { SMALL_TABLET } from "./chitchat/consts/Breakpoints";
@@ -43,10 +43,10 @@ class App extends React.Component<any, any> {
                     <div>
                         <Route exact path="/" component={HomeEnhanced} />
                         <Route path="/team/:filter" component={Team} />
-                        <Route path="/profile/:filter/:user" component={(this.clientWidth < SMALL_TABLET) ? ProfilePageEnhanced : Main} />
-                        <Route path="/chatslist/:filter" component={(this.clientWidth < SMALL_TABLET) ? m_Main : Main} />
-                        <Route path="/chatroom/:filter/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ConnectedChatPageEnhanced : Main} />
-                        <Route path="/chatroom/:filter/:room_id" component={ChatRoomSettings} />
+                        <Route path="/profile/:filter/:user" component={(this.clientWidth < SMALL_TABLET) ? ProfilePageEnhanced : MainPageEnhanced} />
+                        <Route path="/chatslist/:filter" component={(this.clientWidth < SMALL_TABLET) ? M_MainPageEnhanced : MainPageEnhanced} />
+                        <Route path="/chatroom/chat/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ChatPageEnhanced : MainPageEnhanced} />
+                        <Route path="/chatroom/settings/:room_id" component={ChatRoomSettings} />
                         <Route path="/admin/:filter" component={AdminPageEnhanced} />
                     </div>
                 </Router>

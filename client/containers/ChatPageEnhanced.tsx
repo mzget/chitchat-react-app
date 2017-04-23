@@ -11,26 +11,25 @@ const options = "Options";
 const favorite = "Favorite";
 const toolbarMenus = [options, favorite];
 const listener = (props, id, value) => {
-    console.log(id, value);
-    let { chatroomReducer, router } = props;
+    let { chatroomReducer, history } = props;
     if (toolbarMenus[id] == options) {
-        props.router.push(`/chat/settings/${chatroomReducer.room._id}`);
+        history.push(`/chatroom/settings/${chatroomReducer.room._id}`);
     }
 };
 
-const ToolbarEnhanced = ToolbarEnhancer(({ chatroomReducer, onMenuSelect, onBackPressed, router, listener }: any) => (
+const ToolbarEnhanced = ToolbarEnhancer(({ chatroomReducer, onMenuSelect, onBackPressed, history, listener }: any) => (
     <SimpleToolbar
         title={(chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty"}
         menus={toolbarMenus}
         onSelectedMenuItem={onMenuSelect}
         onBackPressed={onBackPressed} />
-)) as React.ComponentClass<{ router, listener }>;
+)) as React.ComponentClass<{ history, listener }>;
 
 
-const ChatPageEnhanced = DialogBoxEnhancer(({ title, message, open, handleClose, onError, location, router, params }: any) => (
+export const ChatPageEnhanced = DialogBoxEnhancer(({ title, message, open, handleClose, onError, location, history, match }: any) => (
     <div>
-        <ToolbarEnhanced router={router} listener={listener} />
-        <ChatPage onError={onError} location={location} router={router} params={params} />
+        <ToolbarEnhanced history={history} listener={listener} />
+        <ChatPage onError={onError} location={location} router={history} params={match} />
         <DialogBox
             title={title}
             message={message}
@@ -38,6 +37,4 @@ const ChatPageEnhanced = DialogBoxEnhancer(({ title, message, open, handleClose,
             handleClose={handleClose} />
     </div>
 )) as React.ComponentClass<any>;
-
-export const ConnectedChatPageEnhanced = ChatPageEnhanced;
 

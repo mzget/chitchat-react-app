@@ -65,5 +65,8 @@ export class ChatLogsBox extends React.Component<IComponentNameProps, IComponent
     }
 }
 
-const mapStateToProps = (state) => ({ chatlogReducer: state.chatlogReducer });
+const mapStateToProps = (state) => ({
+    chatlogReducer: state.chatlogReducer,
+    history: state.history
+});
 export const ChatLogsBoxEnhancer = connect(mapStateToProps)(ChatLogsBox);

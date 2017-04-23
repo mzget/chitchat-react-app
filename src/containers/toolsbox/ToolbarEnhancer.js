@@ -7,6 +7,6 @@ exports.ToolbarEnhancer = recompose_1.compose(react_redux_1.connect(mapStateToPr
         props.listener(props, id, value);
     },
     onBackPressed: (props) => () => {
-        props.router.goBack();
+        props.history.goBack();
     }
 }));

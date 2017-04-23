@@ -1,12 +1,13 @@
 "use strict";
 const React = require("react");
 const recompose_1 = require("recompose");
+const react_redux_1 = require("react-redux");
 const Subheader_1 = require("material-ui/Subheader");
 const teamRx = require("../../redux/team/teamRx");
 const chatroomActions = require("../../chitchat/chats/redux/chatroom/chatroomActions");
 const chatroomRx = require("../../chitchat/chats/redux/chatroom/chatroomRxEpic");
 const MemberList_1 = require("./MemberList");
-class ContactBox extends React.Component {
+class Contacts extends React.Component {
     componentDidMount() {
         this.onselectMember = this.onselectMember.bind(this);
         this.props.dispatch(teamRx.getTeamMembers(this.props.teamReducer.team._id));
@@ -35,4 +36,9 @@ class ContactBox extends React.Component {
             React.createElement(MemberList_1.MemberList, { items: this.props.teamReducer.members, onSelected: this.onselectMember })));
     }
 }
-exports.ContactBox = ContactBox;
+const mapStateToProps = (state) => ({
+    chatroomReducer: state.chatroomReducer,
+    teamReducer: state.teamReducer,
+    userReducer: state.userReducer
+});
+exports.ContactBox = react_redux_1.connect(mapStateToProps)(Contacts);
