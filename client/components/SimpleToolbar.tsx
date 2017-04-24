@@ -32,7 +32,7 @@ interface IComponentProps {
 }
 
 export const SimpleToolbar = (props: IComponentProps) => (
-    <MuiThemeProvider muiTheme={muiTheme}>
+    <MuiThemeProvider muiTheme={muiTheme} style={{height: "56px"}}>
         <Toolbar>
             <ToolbarGroup firstChild={true}>
                 {

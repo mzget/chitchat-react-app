@@ -16,6 +16,7 @@ import { StalkCompEnhancer } from "./stalk/StalkComponent";
 import { AppBody } from "./AppBody";
 import { RightNav } from "./RightNav";
 import { SubToolbar } from "./SubToolbar";
+
 import { ContactBox } from "./chatlist/ContactBox";
 
 import { MainPageEnhancer } from "./Enhancers/MainPageEnhancer";
@@ -25,32 +26,25 @@ import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
 
 const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer, chatroomReducer,
     history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
-
-    // console.log(chatroomReducer);
-
     return (
         <MuiThemeProvider>
-            <div>
-                <div id={"app_body"} >
-                    <Flex>
-                        <Box col={12}>
-                            <ToolbarEnhanced history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
-                        </Box>
-                    </Flex>
-                    <Flex >
-                        <Box col={3} style={{ overflowY: "scroll" }}>
-                            <ProfileWithRouter />
-                            <ConnectGroupListEnhancer
-                                fetchGroup={fetch_orgGroups}
-                                groups={groupReducer.orgGroups}
-                                subHeader={"OrgGroups"} />
-                            <ConnectGroupListEnhancer
-                                fetchGroup={fetch_privateGroups}
-                                groups={groupReducer.privateGroups}
-                                subHeader={"Groups"} />
-                            <ChatLogsBoxEnhancer />
-                            <SnackbarToolBox />
-                        </Box>
+            <div >
+                <ToolbarEnhanced id={"app_bar"} history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
+                <div id={"app_body"} style={{position: "relative", height: "calc(100vh - 56px)"}}>
+                        <Flex style={{height: "100%"}}>
+                                <Box col={3} style={{ overflowY: "scroll"}}>
+                                        <ProfileWithRouter />
+                                        <ConnectGroupListEnhancer
+                                            fetchGroup={fetch_orgGroups}
+                                            groups={groupReducer.orgGroups}
+                                            subHeader={"OrgGroups"} />
+                                        <ConnectGroupListEnhancer
+                                            fetchGroup={fetch_privateGroups}
+                                            groups={groupReducer.privateGroups}
+                                            subHeader={"Groups"} />
+                                        <ChatLogsBoxEnhancer />
+                                        <SnackbarToolBox />
+                                </Box>                                
                         <Box col={9} >
                             <SubToolbar history={history} match={match} onError={onError} chatroomReducer={chatroomReducer} />
                             <Flex>
@@ -61,8 +55,8 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
                                     <RightNav match={match} onError={onError} />
                                 </Box>
                             </Flex>
-                        </Box>
-                    </Flex>
+                        </Box>    
+                        </Flex>
                 </div>
                 <div id={"app_footer"}>
                     <StalkCompEnhancer />
