@@ -19,7 +19,7 @@ const styles = {
 };
 exports.ProfileDetail = (props) => (React.createElement(MuiThemeProvider_1.default, null,
     React.createElement(react_bootstrap_1.Row, null,
-        React.createElement(react_bootstrap_1.Col, { md: 6, mdOffset: 3 },
+        React.createElement(react_bootstrap_1.Col, { md: 10, mdOffset: 1 },
             React.createElement(react_bootstrap_1.Row, null,
                 React.createElement(react_bootstrap_1.Col, { md: 12 },
                     React.createElement(material_ui_2.Card, null,

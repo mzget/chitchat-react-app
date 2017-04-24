@@ -39,7 +39,7 @@ exports.EDIT_GROUP_DETAIL_FAILURE = "EDIT_GROUP_DETAIL_FAILURE";
 const EDIT_GROUP_DETAIL_CANCELLED = "EDIT_GROUP_DETAIL_CANCELLED";
 exports.editGroupDetail = redux_actions_1.createAction(EDIT_GROUP_DETAIL, (room) => room);
 const editGroupDetailSuccess = redux_actions_1.createAction(exports.EDIT_GROUP_DETAIL_SUCCESS, payload => payload);
-const editGroupDetailFailure = redux_actions_1.createAction(exports.EDIT_GROUP_DETAIL_FAILURE, err => err);
+const editGroupDetailFailure = redux_actions_1.createAction(exports.EDIT_GROUP_DETAIL_FAILURE, error => error);
 const editGroupDetailCancelled = redux_actions_1.createAction(EDIT_GROUP_DETAIL_CANCELLED);
 exports.editGroupDetail_Epic = action$ => (action$.ofType(EDIT_GROUP_DETAIL).mergeMap(action => ajax({
     method: "POST",

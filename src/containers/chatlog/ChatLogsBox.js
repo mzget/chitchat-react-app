@@ -30,7 +30,6 @@ class ChatLogsBox extends React.Component {
 }
 exports.ChatLogsBox = ChatLogsBox;
 const mapStateToProps = (state) => ({
-    chatlogReducer: state.chatlogReducer,
-    history: state.history
+    chatlogReducer: state.chatlogReducer
 });
 exports.ChatLogsBoxEnhancer = react_redux_1.connect(mapStateToProps)(ChatLogsBox);

@@ -48,9 +48,10 @@ const EDIT_GROUP_DETAIL = "EDIT_GROUP_DETAIL";
 export const EDIT_GROUP_DETAIL_SUCCESS = "EDIT_GROUP_DETAIL_SUCCESS";
 export const EDIT_GROUP_DETAIL_FAILURE = "EDIT_GROUP_DETAIL_FAILURE";
 const EDIT_GROUP_DETAIL_CANCELLED = "EDIT_GROUP_DETAIL_CANCELLED";
+
 export const editGroupDetail = createAction(EDIT_GROUP_DETAIL, (room: Room) => room);
 const editGroupDetailSuccess = createAction(EDIT_GROUP_DETAIL_SUCCESS, payload => payload);
-const editGroupDetailFailure = createAction(EDIT_GROUP_DETAIL_FAILURE, err => err);
+const editGroupDetailFailure = createAction(EDIT_GROUP_DETAIL_FAILURE, error => error);
 const editGroupDetailCancelled = createAction(EDIT_GROUP_DETAIL_CANCELLED);
 export const editGroupDetail_Epic = action$ => (
     action$.ofType(EDIT_GROUP_DETAIL).mergeMap(action =>
