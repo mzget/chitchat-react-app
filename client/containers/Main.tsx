@@ -25,25 +25,51 @@ import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
 import { ToolbarEnhanced, listener } from "./MainPageToolbar";
 import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
 
+
 const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer,
     history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
+    
+//    var body = document.body;
+    // console.log("clientHeight", body.clientHeight);
+    // console.log("scrollheight", body.scrollHeight);
+    // var nav = document.getElementById("app_body");
+    // console.log("nav", nav.clientHeight);
 
-    // console.log(match, history.location);
+
 
     return (
         <MuiThemeProvider>
-            <div>
-                <div id={"app_body"} >
-                        <Flex>
-                            <Box col={12}>
-                                 <ToolbarEnhanced history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
-
-                            </Box>
-                          
+            <div >
+                <ToolbarEnhanced id={"app_bar"} history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
+                <div id={"app_body"} style={{position: "relative", height: "calc(100vh - 56px)"}}>
+                    {/*<Flex flexColumn={false}>
+                        <Flex flexColumn={true}>
+                            <div style={{ overflowY: "auto" }}>
+                                <ProfileWithRouter />
+                                <ConnectGroupListEnhancer
+                                    fetchGroup={fetch_orgGroups}
+                                    groups={groupReducer.orgGroups}
+                                    subHeader={"OrgGroups"} />
+                                <ConnectGroupListEnhancer
+                                    fetchGroup={fetch_privateGroups}
+                                    groups={groupReducer.privateGroups}
+                                    subHeader={"Groups"} />
+                                <ChatLogsBoxEnhancer router={history} />
+                                <SnackbarToolBox />
+                            </div>
                         </Flex>
-                        <Flex >
+                        <Flex flexColumn={true}>
+                            <SubToolbar match={match} onError={onError} />
+                            <Flex flexColumn={false}>
+                                <AppBody userReducer={userReducer} match={match} onError={onError} />
+                                <RightNav match={match} onError={onError} />
+                            </Flex>
+                        </Flex>
+                    </Flex>*/}
+            
+                        <Flex style={{height: "100%"}}>
 
-                                <Box col={3} style={{overflowY: "scroll"}}>
+                                <Box col={3} style={{ overflowY: "scroll"}}>
                                         <ProfileWithRouter />
                                         <ConnectGroupListEnhancer
                                             fetchGroup={fetch_orgGroups}
@@ -57,10 +83,10 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
                                         <SnackbarToolBox />
                                 </Box>
                                 <Box col={6} >
-                                <SubToolbar match={match} onError={onError} />
+                                    {/*<SubToolbar match={match} onError={onError} />*/}
                                     <AppBody userReducer={userReducer} match={match} onError={onError} />                               
                                 </Box>
-                                <Box col={3} >
+                                <Box col={3} style={{overflowY: "scroll"}}>
                                         <RightNav match={match} onError={onError} />
                                     {/*<ContactBox {...this.props} />                                */}
                                 </Box>
