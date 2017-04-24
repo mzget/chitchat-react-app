@@ -22,7 +22,7 @@ import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
 import { ToolbarEnhanced, listener } from "./MainPageToolbar";
 import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
 
-const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer,
+const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer, chatroomReducer,
     history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
 
     // console.log(match, history.location);
@@ -49,9 +49,9 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
                             </div>
                         </Flex>
                         <Flex flexColumn={true}>
-                            <SubToolbar match={match} onError={onError} />
+                            <SubToolbar history={history} match={match} onError={onError} />
                             <Flex flexColumn={false}>
-                                <AppBody userReducer={userReducer} match={match} onError={onError} />
+                                <AppBody userReducer={userReducer} chatroomReducer={chatroomReducer} match={match} onError={onError} />
                                 <RightNav match={match} onError={onError} />
                             </Flex>
                         </Flex>
