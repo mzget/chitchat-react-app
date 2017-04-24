@@ -39,7 +39,7 @@ interface IProfileDetailProps {
 export const ProfileDetail = (props: IProfileDetailProps) => (
     <MuiThemeProvider>
         <Row >
-            <Col md={6} mdOffset={3}>
+            <Col md={10} mdOffset={1}>
                 <Row>
                     <Col md={12}>
                         <Card>
