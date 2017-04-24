@@ -104,6 +104,12 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
             <MuiThemeProvider >
                 <div>
                     <Flex flexColumn={false}>
+                        <Subheader>NAME : {this.room.name}</Subheader>
+                    </Flex>
+                    <Flex flexColumn={false}>
+                        <Subheader>DESCRIPTION : {this.room.description}</Subheader>
+                    </Flex>
+                    <Flex flexColumn={false}>
                         <Subheader>MEMBERS {this.room.members.length}</Subheader>
                     </Flex>
                     <GroupMemberEnhancer members={this.room.members} />
