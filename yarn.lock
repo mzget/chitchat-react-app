@@ -10,9 +10,13 @@
   version "3.1.33"
   resolved "https://registry.yarnpkg.com/@types/crypto-js/-/crypto-js-3.1.33.tgz#7e6c91603533e0cd9f279a8405a9b9e379880c5d"
 
-"@types/history@*", "@types/history@^2":
+"@types/history@*":
   version "2.0.48"
   resolved "https://registry.yarnpkg.com/@types/history/-/history-2.0.48.tgz#7e2868c3ad73d83c482f1d68f148c4fdc79c8a79"
+
+"@types/history@^4.5.0":
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/@types/history/-/history-4.5.0.tgz#2f5c3aad4fbd00f89e99b83083e354bc5308e307"
 
 "@types/isomorphic-fetch@^0.0.31":
   version "0.0.31"
@@ -35,9 +39,9 @@
   version "7.0.12"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.12.tgz#ae5f67a19c15f752148004db07cbbb372e69efc9"
 
-"@types/ramda@0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.0.6.tgz#576ae4a12af63f0dbb358c639af9422b720bb6df"
+"@types/ramda@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.0.7.tgz#1226d32bc779e05ac9e6f76f960eeb660447fcab"
 
 "@types/react-addons-linked-state-mixin@*":
   version "0.14.17"
@@ -72,14 +76,7 @@
     "@types/react" "*"
     "@types/react-router" "*"
 
-"@types/react-router@*":
-  version "2.0.49"
-  resolved "https://registry.yarnpkg.com/@types/react-router/-/react-router-2.0.49.tgz#96f8ad51f07a5890ab35fd55f05170efd132552a"
-  dependencies:
-    "@types/history" "^2"
-    "@types/react" "*"
-
-"@types/react-router@^4.0.4":
+"@types/react-router@*", "@types/react-router@^4.0.4":
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/@types/react-router/-/react-router-4.0.4.tgz#288455d9e20fb475dc39700b1dbf20b7fea1a2ac"
   dependencies:

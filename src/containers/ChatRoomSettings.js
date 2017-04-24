@@ -9,9 +9,11 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const react_redux_1 = require("react-redux");
-const MenuListView_1 = require("./admins/MenuListView");
+const reflexbox_1 = require("reflexbox");
+const recompose_1 = require("recompose");
+const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
+const Subheader_1 = require("material-ui/Subheader");
 const EditGroupMember_1 = require("./roomSettings/EditGroupMember");
-const GroupDetailEnhancer_1 = require("./roomSettings/GroupDetailEnhancer");
 const GroupMemberEnhancer_1 = require("./roomSettings/GroupMemberEnhancer");
 const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
 const Room_1 = require("../chitchat/libs/shared/Room");
@@ -28,7 +30,7 @@ var BoxState;
 class ChatRoomSettings extends React.Component {
     constructor() {
         super(...arguments);
-        this.menus = [EDIT_GROUP, EDIT_GROUP_MEMBERS, GROUP_MEMBERS];
+        this.menus = [EDIT_GROUP_MEMBERS, GROUP_MEMBERS];
     }
     componentWillMount() {
         this.state = {
@@ -36,31 +38,29 @@ class ChatRoomSettings extends React.Component {
             alert: false
         };
         console.log("ChatRoomSettings", this.props);
+        let { match: { params } } = this.props;
+        this.room = chatroomActions.getRoom(params.room_id);
         this.onMenuSelected = this.onMenuSelected.bind(this);
         this.getViewPanel = this.getViewPanel.bind(this);
     }
-    componentDidMount() {
-        let { match: { params } } = this.props;
-        this.props.dispatch(chatroomActions.getPersistendChatroom(params.room_id));
+    componentWillReceiveProps(nextProps) {
+        let { match } = nextProps;
+        if (!recompose_1.shallowEqual(match, this.props.match)) {
+            this.room = chatroomActions.getRoom(match.params.room_id);
+        }
     }
     getViewPanel() {
-        let { match: { params }, teamReducer, chatroomReducer } = this.props;
-        let { room } = chatroomReducer;
+        let { match: { params }, teamReducer } = this.props;
         switch (this.state.boxState) {
             case BoxState.isEditMember:
-                return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: teamReducer.members, room_id: params.room_id, initMembers: room.members, onFinished: () => this.setState(prev => (__assign({}, prev, { boxState: BoxState.idle }))) });
-            case BoxState.isEditGroup:
-                return React.createElement(GroupDetailEnhancer_1.ConnectGroupDetail, { group: room, image: room.image, group_name: room.name, group_description: room.description, onError: (message) => this.onAlert(message), onFinished: () => this.setState(prev => (__assign({}, prev, { boxState: BoxState.idle }))) });
-            case BoxState.viewMembers:
-                return React.createElement(GroupMemberEnhancer_1.GroupMemberEnhancer, { members: room.members });
+                return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: teamReducer.members, room_id: params.room_id, initMembers: this.room.members, onFinished: () => this.setState(prev => (__assign({}, prev, { boxState: BoxState.idle }))) });
             default:
                 return null;
         }
     }
     onMenuSelected(key) {
         console.log("onMenuSelected", key);
-        let { chatroomReducer } = this.props;
-        let { room } = chatroomReducer;
+        let room = this.room;
         // @Todo ...
         // Check room type and user permision for edit group details.
         if (key == EDIT_GROUP_MEMBERS) {
@@ -84,11 +84,13 @@ class ChatRoomSettings extends React.Component {
         }
     }
     render() {
-        let { chatroomReducer } = this.props;
-        let { room } = chatroomReducer;
-        return (React.createElement("div", null,
-            React.createElement(MenuListView_1.MenuListview, { title: (room) ? room.name : "Settings", menus: this.menus, onSelectItem: this.onMenuSelected }),
-            this.getViewPanel()));
+        return (React.createElement(MuiThemeProvider_1.default, null,
+            React.createElement("div", null,
+                React.createElement(reflexbox_1.Flex, { flexColumn: false },
+                    React.createElement(Subheader_1.default, null,
+                        "MEMBERS ",
+                        this.room.members.length)),
+                React.createElement(GroupMemberEnhancer_1.GroupMemberEnhancer, { members: this.room.members }))));
     }
 }
 const mapStateToProps = (state) => (__assign({}, state));

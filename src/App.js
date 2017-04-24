@@ -39,7 +39,7 @@ class App extends React.Component {
                     React.createElement(react_router_dom_1.Route, { path: "/profile/:filter/:user", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ProfilePageEnhanced_1.ProfilePageEnhanced : Main_1.MainPageWithDialogBox }),
                     React.createElement(react_router_dom_1.Route, { path: "/chatslist/:filter", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? m_Main_1.M_MainPageEnhanced : Main_1.MainPageWithDialogBox }),
                     React.createElement(react_router_dom_1.Route, { path: "/chatroom/chat/:room_id", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ChatPageEnhanced_1.ChatPageEnhanced : Main_1.MainPageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/chatroom/settings/:room_id", component: ChatRoomSettingsPage_1.ChatRoomSettingsEnhanced }),
+                    React.createElement(react_router_dom_1.Route, { path: "/chatroom/settings/:room_id/:edit", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ChatRoomSettingsPage_1.ChatRoomSettingsEnhanced : Main_1.MainPageWithDialogBox }),
                     React.createElement(react_router_dom_1.Route, { path: "/admin/:filter", component: AdminPageEnhanced_1.AdminPageEnhanced })))));
     }
 }

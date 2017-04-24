@@ -1,12 +1,16 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import { Flex, Box } from "reflexbox";
+import { shallowEqual } from "recompose";
 
 import { IComponentProps } from "../utils/IComponentProps";
+
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import Subheader from "material-ui/Subheader";
 
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { MenuListview } from "./admins/MenuListView";
 import { ConnectEditGroupMember } from "./roomSettings/EditGroupMember";
-import { ConnectGroupDetail } from "./roomSettings/GroupDetailEnhancer";
 import { GroupMemberEnhancer } from "./roomSettings/GroupMemberEnhancer";
 
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
@@ -25,7 +29,8 @@ interface IComponentState {
     alert: boolean;
 }
 class ChatRoomSettings extends React.Component<IComponentProps, IComponentState> {
-    menus = [EDIT_GROUP, EDIT_GROUP_MEMBERS, GROUP_MEMBERS];
+    menus = [EDIT_GROUP_MEMBERS, GROUP_MEMBERS];
+    room: Room;
 
     componentWillMount() {
         this.state = {
@@ -35,36 +40,33 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
 
         console.log("ChatRoomSettings", this.props);
 
+        let { match: { params } } = this.props;
+        this.room = chatroomActions.getRoom(params.room_id);
+
         this.onMenuSelected = this.onMenuSelected.bind(this);
         this.getViewPanel = this.getViewPanel.bind(this);
     }
 
-    componentDidMount() {
-        let { match: { params } } = this.props;
-        this.props.dispatch(chatroomActions.getPersistendChatroom(params.room_id));
+    componentWillReceiveProps(nextProps) {
+        let { match } = nextProps;
+
+        if (!shallowEqual(match, this.props.match)) {
+            this.room = chatroomActions.getRoom(match.params.room_id);
+        }
     }
 
+
     getViewPanel() {
-        let { match: { params }, teamReducer, chatroomReducer } = this.props;
-        let { room }: { room: Room } = chatroomReducer;
+        let { match: { params }, teamReducer } = this.props;
+
 
         switch (this.state.boxState) {
             case BoxState.isEditMember:
                 return <ConnectEditGroupMember
                     teamMembers={teamReducer.members}
                     room_id={params.room_id}
-                    initMembers={room.members}
+                    initMembers={this.room.members}
                     onFinished={() => this.setState(prev => ({ ...prev, boxState: BoxState.idle }))} />;
-            case BoxState.isEditGroup:
-                return <ConnectGroupDetail
-                    group={room}
-                    image={room.image}
-                    group_name={room.name}
-                    group_description={room.description}
-                    onError={(message) => this.onAlert(message)}
-                    onFinished={() => this.setState(prev => ({ ...prev, boxState: BoxState.idle }))} />;
-            case BoxState.viewMembers:
-                return <GroupMemberEnhancer members={room.members} />;
             default:
                 return null;
         }
@@ -73,8 +75,7 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
     onMenuSelected(key: string) {
         console.log("onMenuSelected", key);
 
-        let { chatroomReducer } = this.props;
-        let { room }: { room: Room } = chatroomReducer;
+        let room = this.room;
         // @Todo ...
         // Check room type and user permision for edit group details.
         if (key == EDIT_GROUP_MEMBERS) {
@@ -99,16 +100,15 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
     }
 
     render() {
-        let { chatroomReducer } = this.props;
-        let { room }: { room: Room } = chatroomReducer;
-
         return (
-            <div>
-                <MenuListview title={(room) ? room.name : "Settings"} menus={this.menus} onSelectItem={this.onMenuSelected} />
-                {
-                    this.getViewPanel()
-                }
-            </div>
+            <MuiThemeProvider >
+                <div>
+                    <Flex flexColumn={false}>
+                        <Subheader>MEMBERS {this.room.members.length}</Subheader>
+                    </Flex>
+                    <GroupMemberEnhancer members={this.room.members} />
+                </div>
+            </MuiThemeProvider>
         );
     }
 }
