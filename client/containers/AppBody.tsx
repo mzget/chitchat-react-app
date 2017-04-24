@@ -4,8 +4,6 @@ import { ChatPage } from "./Chat";
 import { Post } from "./Post";
 import { ProfileDetailEnhanced } from "./profile/ProfileDetailEnhancer";
 
-import { IComponentProps } from "../utils/IComponentProps";
-
 export const AppBody = ({ match, onError, userReducer }) => (
     <div>
         {

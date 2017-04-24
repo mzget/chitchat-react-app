@@ -16,8 +16,8 @@ import Store from "./redux/configureStore";
 
 import { HomePageWithDialogBox } from "./containers/HomeEnhanced";
 import { ChatPageEnhanced } from "./containers/ChatPageEnhanced";
-import ChatRoomSettings from "./containers/ChatRoomSettings";
-import Team from "./containers/Team";
+import { ChatRoomSettingsEnhanced } from "./containers/ChatRoomSettingsPage";
+import { TeamPage } from "./containers/Team";
 import { ProfilePageEnhanced } from "./containers/ProfilePageEnhanced";
 import { MainPageWithDialogBox } from "./containers/Main";
 import { M_MainPageEnhanced } from "./containers/m_Main";
@@ -41,15 +41,15 @@ class App extends React.Component<any, any> {
         return (
             <Provider store={Store}>
                 <Router>
-                    <Switch>
+                    <div>
                         <Route exact path="/" component={HomePageWithDialogBox} />
-                        <Route path="/team/:filter" component={Team} />
+                        <Route path="/team/:filter" component={TeamPage} />
                         <Route path="/profile/:filter/:user" component={(this.clientWidth < SMALL_TABLET) ? ProfilePageEnhanced : MainPageWithDialogBox} />
                         <Route path="/chatslist/:filter" component={(this.clientWidth < SMALL_TABLET) ? M_MainPageEnhanced : MainPageWithDialogBox} />
                         <Route path="/chatroom/chat/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ChatPageEnhanced : MainPageWithDialogBox} />
-                        <Route path="/chatroom/settings/:room_id" component={ChatRoomSettings} />
+                        <Route path="/chatroom/settings/:room_id" component={ChatRoomSettingsEnhanced} />
                         <Route path="/admin/:filter" component={AdminPageEnhanced} />
-                    </Switch>
+                    </div>
                 </Router>
             </Provider>
         );

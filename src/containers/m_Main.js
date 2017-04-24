@@ -7,7 +7,7 @@ const ChatLogsBox_1 = require("./chatlog/ChatLogsBox");
 const ContactBox_1 = require("./chatlist/ContactBox");
 const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
 const StalkComponent_1 = require("./stalk/StalkComponent");
-const MainPageEnhancer_1 = require("./MainPageEnhancer");
+const MainPageEnhancer_1 = require("./Enhancers/MainPageEnhancer");
 const MainPageToolbar_1 = require("./MainPageToolbar");
 exports.M_MainPageEnhanced = MainPageEnhancer_1.MainPageEnhancer(({ teamReducer, groupReducer, authReducer, history, fetch_orgGroups, fetch_privateGroups }) => (React.createElement(MuiThemeProvider_1.default, null,
     React.createElement("div", null,

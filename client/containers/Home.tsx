@@ -5,7 +5,6 @@
 import * as immutable from "immutable";
 import { connect } from "react-redux";
 import { shallowEqual } from "recompose";
-import { withRouter } from "react-router";
 import { Flex, Box } from "reflexbox";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -35,9 +34,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
     alertTitle: string;
     alertMessage: string;
 
-    constructor(props) {
-        super(props);
-
+    componentWillMount() {
         console.log("Home", global.userAgent, this.props);
 
         this.state = {
@@ -51,8 +48,9 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
         this.props.dispatch(AppActions.getSession());
     }
 
+
     componentWillReceiveProps(nextProps) {
-        let { location: { query }, chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer, alertReducer
+        let { userReducer, authReducer, alertReducer
         } = nextProps as IComponentProps;
 
         let toolbar = document.getElementById("toolbar");
@@ -62,9 +60,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
 
         this.subHeaderHeight = (warning_bar) ? warning_bar.clientHeight : 0;
 
-        let next = immutable.fromJS(authReducer);
-        let prev = immutable.fromJS(this.props.authReducer);
-        if (next && !next.equals(prev)) {
+        if (!shallowEqual(authReducer, this.props.authReducer)) {
             switch (authReducer.state) {
                 case AuthRx.AUTH_USER_SUCCESS: {
                     AppActions.saveSession();
@@ -86,9 +82,12 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
             }
         }
 
-        if (userReducer.user) {
-            this.props.history.push(`/team/${authReducer.user}`);
+        if (!shallowEqual(userReducer.user, this.props.userReducer.user)) {
+            if (userReducer.user) {
+                this.props.history.replace(`/team/${authReducer.user}`);
+            }
         }
+
         if (alertReducer.error) {
             this.props.onError(alertReducer.error);
         }
@@ -127,4 +126,4 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
  * ## Redux boilerplate
  */
 const mapStateToProps = (state) => ({ ...state });
-export const HomeWithState = withRouter(connect(mapStateToProps)(Home)) as React.ComponentClass<any>;
+export const HomeWithState = connect(mapStateToProps)(Home);

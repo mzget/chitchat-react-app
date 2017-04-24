@@ -65,7 +65,6 @@ class Team extends React.Component {
         });
     }
     render() {
-        let { location: { query }, userReducer, stalkReducer, teamReducer } = this.props;
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement("div", null,
                 React.createElement(SimpleToolbar_1.SimpleToolbar, { title: this.toolbar, menus: ["logout"], onSelectedMenuItem: this.onToolbarMenuItem }),
@@ -78,5 +77,4 @@ class Team extends React.Component {
  * ## Redux boilerplate
  */
 function mapStateToProps(state) { return __assign({}, state); }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapStateToProps)(Team);
+exports.TeamPage = react_redux_1.connect(mapStateToProps)(Team);

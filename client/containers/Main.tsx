@@ -11,12 +11,13 @@ import { SimpleToolbar } from "../components/SimpleToolbar";
 import { ProfileWithRouter } from "./profile/ProfileBox";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
 import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
-import { ContactBox } from "./chatlist/ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
 import { AppBody } from "./AppBody";
+import { RightNav } from "./RightNav";
+import { SubToolbar } from "./SubToolbar";
 
-import { MainPageEnhancer } from "./MainPageEnhancer";
+import { MainPageEnhancer } from "./Enhancers/MainPageEnhancer";
 import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
 import { ToolbarEnhanced, listener } from "./MainPageToolbar";
 import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
@@ -24,7 +25,7 @@ import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
 const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer,
     history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
 
-    // console.log(match, history.location); 
+    // console.log(match, history.location);
 
     return (
         <MuiThemeProvider>
@@ -35,7 +36,8 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
                         <Flex flexColumn={true}>
                             <div style={{ overflowY: "auto" }}>
                                 <ProfileWithRouter />
-                                <ConnectGroupListEnhancer fetchGroup={fetch_orgGroups}
+                                <ConnectGroupListEnhancer
+                                    fetchGroup={fetch_orgGroups}
                                     groups={groupReducer.orgGroups}
                                     subHeader={"OrgGroups"} />
                                 <ConnectGroupListEnhancer
@@ -46,8 +48,13 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
                                 <SnackbarToolBox />
                             </div>
                         </Flex>
-                        <AppBody userReducer={userReducer} match={match} onError={onError} />
-                        <ContactBox />
+                        <Flex flexColumn={true}>
+                            <SubToolbar match={match} onError={onError} />
+                            <Flex flexColumn={false}>
+                                <AppBody userReducer={userReducer} match={match} onError={onError} />
+                                <RightNav match={match} onError={onError} />
+                            </Flex>
+                        </Flex>
                     </Flex>
                 </div>
                 <div id={"app_footer"}>
