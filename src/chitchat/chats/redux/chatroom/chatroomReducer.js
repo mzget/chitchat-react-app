@@ -44,14 +44,6 @@ exports.chatroomReducer = (state = initialState, action) => {
             return state.set("state", chatroomActions.ENABLE_CHATROOM)
                 .set("chatDisabled", false);
         }
-        case chatroomRxActions.FETCH_PRIVATE_CHATROOM_SUCCESS:
-            return state.set("room", action.payload.result[0])
-                .set("state", chatroomRxActions.FETCH_PRIVATE_CHATROOM_SUCCESS);
-        case chatroomRxActions.FETCH_PRIVATE_CHATROOM_CANCELLED:
-            return state;
-        case chatroomRxActions.FETCH_PRIVATE_CHATROOM_FAILURE:
-            return state.set("state", chatroomRxActions.FETCH_PRIVATE_CHATROOM_FAILURE)
-                .set("room", null);
         case chatroomRxActions.CHATROOM_UPLOAD_FILE: {
             return state.set("state", chatroomRxActions.CHATROOM_UPLOAD_FILE)
                 .set("uploadingFile", action.payload.data.target.result)
@@ -92,6 +84,39 @@ exports.chatroomReducer = (state = initialState, action) => {
         case chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS: {
             return state.set("state", chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS);
         }
+        case chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS: {
+            return state.set("state", chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS);
+        }
+        case chatroomActions_1.GET_NEWER_MESSAGE_SUCCESS: {
+            return state.set("state", chatroomActions_1.GET_NEWER_MESSAGE_SUCCESS);
+        }
+        /**Create chat room */
+        case chatroomRxActions.CREATE_PRIVATE_CHATROOM:
+            return state.set("isFetching", true)
+                .set("state", chatroomRxActions.CREATE_PRIVATE_CHATROOM);
+        case chatroomRxActions.CREATE_PRIVATE_CHATROOM_SUCCESS: {
+            return state.set("room", action.payload.result[0])
+                .set("isFetching", false)
+                .set("state", chatroomRxActions.CREATE_PRIVATE_CHATROOM_SUCCESS);
+        }
+        case chatroomRxActions.CREATE_PRIVATE_CHATROOM_FAILURE:
+            return state.set("isFetching", false);
+        /**Fetch chat room */
+        case chatroomRxActions.FETCH_PRIVATE_CHATROOM:
+            return state.set("isFetching", true);
+        case chatroomRxActions.FETCH_PRIVATE_CHATROOM_SUCCESS:
+            return state.set("room", action.payload)
+                .set("isFetching", false)
+                .set("state", chatroomRxActions.FETCH_PRIVATE_CHATROOM_SUCCESS);
+        case chatroomRxActions.FETCH_PRIVATE_CHATROOM_CANCELLED:
+            return state.set("isFetching", false);
+        case chatroomRxActions.FETCH_PRIVATE_CHATROOM_FAILURE:
+            return state.set("state", chatroomRxActions.FETCH_PRIVATE_CHATROOM_FAILURE)
+                .set("isFetching", false)
+                .set("room", null);
+        /** Set room */
+        case chatroomActions.GET_PERSISTEND_CHATROOM:
+            return state.set("isFetching", false);
         case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
             return state
                 .set("state", chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS)
@@ -100,20 +125,11 @@ exports.chatroomReducer = (state = initialState, action) => {
         case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
             return state.set("state", chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE);
         }
+        /**Set room empty */
         case chatroomActions.LEAVE_ROOM: {
             return state
                 .set("state", chatroomActions.LEAVE_ROOM)
                 .set("room", null);
-        }
-        case chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS: {
-            return state.set("state", chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS);
-        }
-        case chatroomActions_1.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
-            return state.set("state", chatroomActions_1.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS);
-        }
-        case chatroomRxActions.CREATE_PRIVATE_CHATROOM_SUCCESS: {
-            return state.set("room", action.payload.result[0])
-                .set("state", chatroomRxActions.CREATE_PRIVATE_CHATROOM_SUCCESS);
         }
         case chatroomActions.UPDATED_CHATROOMS: {
             return state.set("chatrooms", action.payload);

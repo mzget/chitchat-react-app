@@ -1,5 +1,8 @@
 "use strict";
 class ChitChatFactory {
+    constructor() {
+        this.appStore = { appState: "active" }; // active, background, inactive
+    }
     static getInstance() {
         return ChitChatFactory.instance;
     }
@@ -22,6 +25,9 @@ class ChitChatFactory {
     }
     setTeamStore(store) {
         this.teamStore = store;
+    }
+    setAppStore(store) {
+        this.appStore = store;
     }
 }
 exports.ChitChatFactory = ChitChatFactory;

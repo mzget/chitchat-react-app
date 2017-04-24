@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
+
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import * as immutable from "immutable";
@@ -36,7 +37,7 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
         this.onToolbarMenuItem = this.onToolbarMenuItem.bind(this);
         this.onCloseDialog = this.onCloseDialog.bind(this);
 
-        let { location: { query: { userId, username, roomId, contactId } }, params, userReducer } = this.props;
+        let { location, userReducer } = this.props;
 
         this.state = {
             openDialog: false
@@ -46,8 +47,7 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let { location: { query: { userId, username, roomId, contactId } },
-            userReducer, authReducer, teamReducer
+        let { location, userReducer, authReducer, teamReducer
         } = nextProps;
 
         if (teamReducer.error) {
@@ -58,13 +58,13 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
 
         if (!userReducer.user ||
             authReducer.state == authRx.LOG_OUT_SUCCESS) {
-            this.props.router.replace("/");
+            this.props.history.replace("/");
         }
     }
 
     onSelectTeam(team: ITeam) {
         this.props.dispatch(teamRx.selectTeam(team));
-        this.props.router.push(`/chatslist/${team.name}`);
+        this.props.history.push(`/chatslist/${team.name}`);
     }
 
     onToolbarMenuItem(id, value) {
@@ -83,8 +83,6 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     public render(): JSX.Element {
-        let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, teamReducer } = this.props;
-
         return (
             <MuiThemeProvider>
                 <div>
@@ -107,4 +105,4 @@ class Team extends React.Component<IComponentProps, IComponentNameState> {
  * ## Redux boilerplate
  */
 function mapStateToProps(state) { return { ...state }; }
-export default connect(mapStateToProps)(Team);
+export const TeamPage = connect(mapStateToProps)(Team) as React.ComponentClass<any>;

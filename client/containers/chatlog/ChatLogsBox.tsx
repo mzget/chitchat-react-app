@@ -37,10 +37,7 @@ export class ChatLogsBox extends React.Component<IComponentNameProps, IComponent
         };
 
         this.removedLog = this.removedLog.bind(this);
-    }
-
-    componentWillReceiveProps(nextProps: IComponentNameProps) {
-        let { chatlogReducer } = nextProps;
+        this.enterRoom = this.enterRoom.bind(this);
     }
 
     removedLog(log: ChatLog) {
@@ -49,20 +46,27 @@ export class ChatLogsBox extends React.Component<IComponentNameProps, IComponent
         this.props.dispatch(ChatLogRxActions.removeRoomAccess(log.id));
     }
 
+    enterRoom(data) {
+        this.props.dispatch(chatroomActions.leaveRoomAction());
+        process.nextTick(() =>
+            this.props.dispatch(chatroomActions.getPersistendChatroom(data.id)));
+    }
+
     public render(): JSX.Element {
         return (
             <div>
                 <Subheader>Recent chats</Subheader>
                 <ListChatLogs
                     value={this.props.chatlogReducer.chatsLog}
-                    onSelected={(data) => {
-                        this.props.router.push(`/chat/${data.id}`);
-                    }}
+                    onSelected={this.enterRoom}
                     onRemovedLog={this.removedLog} />
             </div>
         );
     }
 }
 
-const mapStateToProps = (state) => ({ chatlogReducer: state.chatlogReducer });
+const mapStateToProps = (state) => ({
+    chatlogReducer: state.chatlogReducer,
+    history: state.history
+});
 export const ChatLogsBoxEnhancer = connect(mapStateToProps)(ChatLogsBox);

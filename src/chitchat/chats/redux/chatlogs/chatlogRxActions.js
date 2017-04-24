@@ -32,6 +32,7 @@ exports.removeRoomAccess_Epic = action$ => (action$.ofType(exports.STALK_REMOVE_
     let { _id } = authReducer().user;
     return ServiceProvider.removeLastAccessRoomInfo(_id, action.payload);
 }).map(json => {
+    console.log("removeRoomAccess_Epic", json.response);
     let result = json.response;
     if (result.success && result.result.length > 0) {
         return removeRoomAccess_Success(result.result);

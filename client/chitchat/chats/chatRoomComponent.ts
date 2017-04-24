@@ -14,7 +14,7 @@ import ChatRoomApiProvider from "../libs/stalk/chatRoomApiProvider";
 import ServerEventListener from "../libs/stalk/serverEventListener";
 import { absSpartan } from "../libs/stalk/spartanEvents";
 import * as CryptoHelper from "./utils/CryptoHelper";
-import * as ServiceProvider from "./services/ServiceProvider";
+import * as chatroomService from "./services/chatroomService";
 
 import { ISecureService } from "./secure/ISecureService";
 import SecureServiceFactory from "./secure/secureServiceFactory";
@@ -264,7 +264,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
     private async getNewerMessageFromNet(lastMessageTime: Date, sessionToken: string) {
         let self = this;
 
-        let response = await ServiceProvider.getChatHistory(self.roomId, lastMessageTime, sessionToken);
+        let response = await chatroomService.getChatHistory(self.roomId, lastMessageTime, sessionToken);
         let value = await response.json();
 
         return new Promise((resolve, reject) => {
@@ -329,7 +329,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
 
         let time = await self.getTopEdgeMessageTime() as Date;
         if (time) {
-            let response = await ServiceProvider.getOlderMessagesCount(self.roomId, time.toString(), true);
+            let response = await chatroomService.getOlderMessagesCount(self.roomId, time.toString(), true);
             let result = await response.json();
 
             console.log("getOlderMessageChunk value", result);

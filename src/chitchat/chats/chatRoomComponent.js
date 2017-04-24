@@ -17,7 +17,7 @@ const BackendFactory_1 = require("./BackendFactory");
 const serverImplemented_1 = require("../libs/stalk/serverImplemented");
 const serverEventListener_1 = require("../libs/stalk/serverEventListener");
 const CryptoHelper = require("./utils/CryptoHelper");
-const ServiceProvider = require("./services/ServiceProvider");
+const chatroomService = require("./services/chatroomService");
 const secureServiceFactory_1 = require("./secure/secureServiceFactory");
 const Message_1 = require("../libs/shared/Message");
 const StickerPath_1 = require("../consts/StickerPath");
@@ -217,7 +217,7 @@ class ChatRoomComponent {
     getNewerMessageFromNet(lastMessageTime, sessionToken) {
         return __awaiter(this, void 0, void 0, function* () {
             let self = this;
-            let response = yield ServiceProvider.getChatHistory(self.roomId, lastMessageTime, sessionToken);
+            let response = yield chatroomService.getChatHistory(self.roomId, lastMessageTime, sessionToken);
             let value = yield response.json();
             return new Promise((resolve, reject) => {
                 console.log("getChatHistory: ", value);
@@ -281,7 +281,7 @@ class ChatRoomComponent {
             }
             let time = yield self.getTopEdgeMessageTime();
             if (time) {
-                let response = yield ServiceProvider.getOlderMessagesCount(self.roomId, time.toString(), true);
+                let response = yield chatroomService.getOlderMessagesCount(self.roomId, time.toString(), true);
                 let result = yield response.json();
                 console.log("getOlderMessageChunk value", result);
                 // todo

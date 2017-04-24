@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import { shallowEqual } from "recompose";
 import * as async from "async";
 import { Flex, Box } from "reflexbox";
 import * as Colors from "material-ui/styles/colors";
@@ -9,7 +10,6 @@ const config = () => ChitChatFactory.getInstance().config;
 
 import { TypingBox } from "./TypingBox";
 import { ChatBox } from "./chat/ChatBox";
-import { SimpleToolbar } from "../components/SimpleToolbar";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import UploadingDialog from "./UploadingDialog";
 import GridListSimple from "../components/GridListSimple";
@@ -38,9 +38,6 @@ interface IComponentNameState {
 }
 
 class Chat extends React.Component<IComponentProps, IComponentNameState> {
-    options = "Options";
-    favorite = "Favorite";
-    toolbarMenus = [this.options, this.favorite];
     clientWidth = document.documentElement.clientWidth;
     clientHeight = document.documentElement.clientHeight;
     h_header = null;
@@ -65,14 +62,14 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.onSubmitStickerChat = this.onSubmitStickerChat.bind(this);
         this.roomInitialize = this.roomInitialize.bind(this);
         this.onToggleSticker = this.onToggleSticker.bind(this);
-        this.onBackPressed = this.onBackPressed.bind(this);
-        this.onMenuSelect = this.onMenuSelect.bind(this);
         this.fileReaderChange = this.fileReaderChange.bind(this);
 
-        let { chatroomReducer, userReducer, params } = this.props;
+        let { chatroomReducer, userReducer, match: { params } } = this.props;
+
+        console.log("Chat", this.props);
 
         if (!chatroomReducer.room) {
-            this.props.dispatch(chatroomActions.getPersistendChatroom(params.filter));
+            this.props.dispatch(chatroomActions.getPersistendChatroom(params.room_id));
         }
         else {
             this.roomInitialize(this.props);
@@ -88,8 +85,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
         let warning_bar = document.getElementById("warning_bar");
         let typing_box = document.getElementById("typing_box");
-        this.h_header = document.getElementById("toolbar").clientHeight;
-        this.h_typingArea = typing_box.clientHeight;
         this.h_subHeader = (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
 
@@ -98,7 +93,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 this.props.dispatch(chatroomActions.disableChatRoom());
                 break;
             case StalkBridgeActions.STALK_ON_SOCKET_RECONNECT:
-                this.props.router.replace("/");
+                this.props.history.replace("/");
                 break;
             default:
                 break;
@@ -115,11 +110,26 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             }
 
             case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
-                this.roomInitialize(nextProps);
+                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
+                    this.roomInitialize(nextProps);
+                break;
+            }
+            case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS: {
+                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
+                    this.roomInitialize(nextProps);
+                break;
+            }
+            case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_SUCCESS: {
+                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
+                    this.roomInitialize(nextProps);
                 break;
             }
             case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
-                this.props.router.push(`/`);
+                this.props.history.push(`/`);
+                break;
+            }
+            case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_FAILURE: {
+                this.props.history.push(`/`);
                 break;
             }
 
@@ -176,7 +186,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
                 break;
             }
-            case chatroomActions.ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS: {
+            case chatroomActions.GET_NEWER_MESSAGE_SUCCESS: {
                 chatroomActions.getMessages().then(messages => {
                     this.setState(previousState => ({
                         ...previousState,
@@ -220,7 +230,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     roomInitialize(props: IComponentProps) {
-        let { chatroomReducer, userReducer, params } = props;
+        let { chatroomReducer, userReducer } = props;
         if (!userReducer.user) {
             return this.props.dispatch(chatroomActions.leaveRoomAction());
         }
@@ -362,30 +372,11 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         });
     }
 
-    onBackPressed() {
-        this.props.router.goBack();
-    }
-
-    onMenuSelect(id, value) {
-        let { chatroomReducer } = this.props;
-        console.log(id, value);
-        if (this.toolbarMenus[id] == this.options) {
-            this.props.router.push(`/chat/settings/${chatroomReducer.room._id}`);
-        }
-    }
-
     render(): JSX.Element {
         let { chatroomReducer, stalkReducer } = this.props;
 
         return (
             <div style={{ overflowY: "hidden", backgroundColor: Colors.indigo50 }}>
-                <div style={{ height: this.h_header }} id={"toolbar"}>
-                    <SimpleToolbar
-                        title={(chatroomReducer.room && chatroomReducer.room.name) ? chatroomReducer.room.name : "Empty"}
-                        menus={this.toolbarMenus}
-                        onSelectedMenuItem={this.onMenuSelect}
-                        onBackPressed={this.onBackPressed} />
-                </div>
                 {
                     (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                         <WarningBar /> : null
@@ -401,7 +392,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                                 null
                         }
                         <ChatBox
-                            styles={{ width: this.clientWidth, overflowX: "hidden" }}
+                            styles={{ overflowX: "hidden" }}
                             value={this.state.messages}
                             onSelected={(message: IMessage) => { }} />
                     </Flex>
@@ -432,4 +423,4 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
  * ## Redux boilerplate
  */
 const mapStateToProps = (state) => ({ ...state });
-export const ChatPage = connect(mapStateToProps)(Chat) as React.ComponentClass<any>;
+export const ChatPage = connect(mapStateToProps)(Chat) as React.ComponentClass<{ match, history, onError }>;

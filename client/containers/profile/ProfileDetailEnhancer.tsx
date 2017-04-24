@@ -2,14 +2,13 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { withProps, withState, withHandlers, compose, lifecycle, shallowEqual } from "recompose";
 
-import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
-const config = () => ChitChatFactory.getInstance().config;
-
 import { ProfileDetail } from "./ProfileDetail";
 import * as userRx from "../../redux/user/userRx";
 
 import { ChitChatAccount } from "../../chitchat/chats/models/User";
 import { ITeamProfile } from "../../chitchat/chats/models/TeamProfile";
+import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
+const config = () => ChitChatFactory.getInstance().config;
 
 interface IEnhanceProps {
     user: ChitChatAccount;
@@ -31,7 +30,7 @@ const submit = (props: IEnhanceProps) => {
     let user = { ...props.user } as ChitChatAccount;
     props.dispatch(userRx.updateUserInfo(user));
 };
-const enhance = compose(
+const ProfileDetailEnhancer = compose(
     connect(mapStateToProps),
     withState("user", "updateUser", ({ user }) => user),
     withState("imageFile", "setImageFile", null),
@@ -50,7 +49,7 @@ const enhance = compose(
                 }
             }
             else if (userReducer.state == userRx.UPDATE_USER_INFO_SUCCESS) {
-                if (!shallowEqual(this.props.userReducer, userReducer)) {
+                if (!shallowEqual(this.props.userReducer.state, userReducer.state)) {
                     this.props.alert(userRx.UPDATE_USER_INFO_SUCCESS);
                 }
             }
@@ -101,11 +100,11 @@ const enhance = compose(
     })
 );
 
-export const ProfileDetailEnhanced = enhance(({
-    user, teamProfile,
+export const ProfileDetailEnhanced = ProfileDetailEnhancer(({
+    user, teamProfile, alert,
     onFirstNameChange, onLastNameChange,
     onTelNumberChange, onSubmit,
-    onFileReaderChange, alert }: any) =>
+    onFileReaderChange }: any) =>
     <ProfileDetail
         user={user}
         teamProfile={teamProfile}

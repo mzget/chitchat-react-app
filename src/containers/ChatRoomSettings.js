@@ -9,14 +9,11 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const react_redux_1 = require("react-redux");
-const SimpleToolbar_1 = require("../components/SimpleToolbar");
-const DialogBox_1 = require("../components/DialogBox");
 const MenuListView_1 = require("./admins/MenuListView");
 const EditGroupMember_1 = require("./roomSettings/EditGroupMember");
 const GroupDetailEnhancer_1 = require("./roomSettings/GroupDetailEnhancer");
 const GroupMemberEnhancer_1 = require("./roomSettings/GroupMemberEnhancer");
 const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
-const groupRx = require("../redux/group/groupRx");
 const Room_1 = require("../chitchat/libs/shared/Room");
 const EDIT_GROUP = "EDIT_GROUP";
 const EDIT_GROUP_MEMBERS = "EDIT_GROUP_MEMBERS";
@@ -28,13 +25,9 @@ var BoxState;
     BoxState[BoxState["isEditMember"] = 2] = "isEditMember";
     BoxState[BoxState["viewMembers"] = 3] = "viewMembers";
 })(BoxState || (BoxState = {}));
-;
 class ChatRoomSettings extends React.Component {
     constructor() {
         super(...arguments);
-        this.title = "Room settings";
-        this.alertTitle = "Alert!";
-        this.alertMessage = "";
         this.menus = [EDIT_GROUP, EDIT_GROUP_MEMBERS, GROUP_MEMBERS];
     }
     componentWillMount() {
@@ -42,70 +35,16 @@ class ChatRoomSettings extends React.Component {
             boxState: BoxState.idle,
             alert: false
         };
-        this.onBackPressed = this.onBackPressed.bind(this);
-        this.onAlert = this.onAlert.bind(this);
-        this.closeAlert = this.closeAlert.bind(this);
+        console.log("ChatRoomSettings", this.props);
         this.onMenuSelected = this.onMenuSelected.bind(this);
         this.getViewPanel = this.getViewPanel.bind(this);
     }
     componentDidMount() {
-        let { params } = this.props;
+        let { match: { params } } = this.props;
         this.props.dispatch(chatroomActions.getPersistendChatroom(params.room_id));
     }
-    render() {
-        let { chatroomReducer } = this.props;
-        let { room } = chatroomReducer;
-        return (React.createElement("div", null,
-            React.createElement(SimpleToolbar_1.SimpleToolbar, { title: this.title, onBackPressed: this.onBackPressed }),
-            React.createElement(MenuListView_1.MenuListview, { title: (room) ? room.name : "Settings", menus: this.menus, onSelectItem: this.onMenuSelected }),
-            this.getViewPanel(),
-            React.createElement(DialogBox_1.DialogBox, { title: this.alertTitle, message: this.alertMessage, open: this.state.alert, handleClose: this.closeAlert })));
-    }
-    onBackPressed() {
-        // Jump to main menu.
-        this.props.router.goBack();
-    }
-    closeAlert() {
-        this.alertTitle = "";
-        this.alertMessage = "";
-        this.setState(prevState => (__assign({}, prevState, { alert: false })), () => {
-            this.props.dispatch(groupRx.emptyState());
-            // this.props.dispatch(adminRx.emptyState());
-        });
-    }
-    onAlert(error) {
-        this.alertTitle = "Alert!";
-        this.alertMessage = error;
-        this.setState(previous => (__assign({}, previous, { alert: true })));
-    }
-    onMenuSelected(key) {
-        console.log("onMenuSelected", key);
-        let { chatroomReducer } = this.props;
-        let { room } = chatroomReducer;
-        // @Todo ...
-        // Check room type and user permision for edit group details.
-        if (key == EDIT_GROUP_MEMBERS) {
-            if (room.type == Room_1.RoomType.privateGroup) {
-                this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.isEditMember })));
-            }
-            else {
-                this.onAlert("Request for valid group permission!");
-            }
-        }
-        else if (key == EDIT_GROUP) {
-            if (room.type == Room_1.RoomType.privateGroup) {
-                this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.isEditGroup })));
-            }
-            else {
-                this.onAlert("Request for valid group permission!");
-            }
-        }
-        else if (key == GROUP_MEMBERS) {
-            this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.viewMembers })));
-        }
-    }
     getViewPanel() {
-        let { params, teamReducer, chatroomReducer } = this.props;
+        let { match: { params }, teamReducer, chatroomReducer } = this.props;
         let { room } = chatroomReducer;
         switch (this.state.boxState) {
             case BoxState.isEditMember:
@@ -118,7 +57,39 @@ class ChatRoomSettings extends React.Component {
                 return null;
         }
     }
+    onMenuSelected(key) {
+        console.log("onMenuSelected", key);
+        let { chatroomReducer } = this.props;
+        let { room } = chatroomReducer;
+        // @Todo ...
+        // Check room type and user permision for edit group details.
+        if (key == EDIT_GROUP_MEMBERS) {
+            if (room.type == Room_1.RoomType.privateGroup) {
+                this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.isEditMember })));
+            }
+            else {
+                this.props.onError("Request for valid group permission!");
+            }
+        }
+        else if (key == EDIT_GROUP) {
+            if (room.type == Room_1.RoomType.privateGroup) {
+                this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.isEditGroup })));
+            }
+            else {
+                this.props.onError("Request for valid group permission!");
+            }
+        }
+        else if (key == GROUP_MEMBERS) {
+            this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.viewMembers })));
+        }
+    }
+    render() {
+        let { chatroomReducer } = this.props;
+        let { room } = chatroomReducer;
+        return (React.createElement("div", null,
+            React.createElement(MenuListView_1.MenuListview, { title: (room) ? room.name : "Settings", menus: this.menus, onSelectItem: this.onMenuSelected }),
+            this.getViewPanel()));
+    }
 }
 const mapStateToProps = (state) => (__assign({}, state));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapStateToProps)(ChatRoomSettings);
+exports.ChatRoomSettingsPage = react_redux_1.connect(mapStateToProps)(ChatRoomSettings);

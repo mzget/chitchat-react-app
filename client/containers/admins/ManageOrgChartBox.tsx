@@ -15,7 +15,7 @@ abstract class IComponentNameProps implements IComponentProps {
     onError?: (error: string) => void;
     location;
     params;
-    router;
+    history;
     dispatch;
     routing;
     authReducer;

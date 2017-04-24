@@ -45,7 +45,7 @@ class Admin extends React.Component {
     componentDidMount() {
         const { teamReducer } = this.props;
         if (!teamReducer.team) {
-            this.props.router.replace("/");
+            this.props.history.replace("/");
         }
         this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
     }
@@ -95,7 +95,7 @@ class Admin extends React.Component {
         }
         else {
             // Jump to main menu.
-            this.props.router.goBack();
+            this.props.history.goBack();
         }
     }
     getAdminPanel() {
@@ -112,9 +112,11 @@ class Admin extends React.Component {
     }
     render() {
         return (React.createElement(MuiThemeProvider_1.default, null,
-            React.createElement("div", null,
-                React.createElement(SimpleToolbar_1.SimpleToolbar, { title: "Admin", onBackPressed: this.onBackPressed }),
-                this.getAdminPanel())));
+            React.createElement("div", { style: { position: "relative", } },
+                React.createElement("div", { style: { position: "relative", height: "56px" } },
+                    React.createElement("div", { style: { position: "fixed", width: "100%", zIndex: 1 } },
+                        React.createElement(SimpleToolbar_1.SimpleToolbar, { title: "Admin", onBackPressed: this.onBackPressed }))),
+                React.createElement("div", { style: { position: "relative", overflowX: "hidden", height: "calc(100vh - 56px)" } }, this.getAdminPanel()))));
     }
 }
 const mapstateToProps = (state) => (__assign({}, state));

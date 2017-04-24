@@ -18,6 +18,7 @@ export const rootEpic = combineEpics(
     adminRx.createNewOrgChartEpic,
     adminRx.getOrgChartEpic,
     adminRx.updateUserOrgChartEpic,
+    adminRx.updateUserTeamRole_Epic,
 
     userRx.onAuth_Epic,
     userRx.fetchUserEpic,
@@ -55,7 +56,7 @@ export const rootEpic = combineEpics(
     privateGroupRxActions.createPrivateGroup_Epic,
 
     ///@ChatRoom
-    chatroomRxEpic.getPrivateChatRoomEpic,
+    chatroomRxEpic.getPrivateChatRoom_Epic,
     chatroomRxEpic.getPersistendMessageEpic,
     chatroomRxEpic.createPrivateChatRoomEpic,
     chatroomRxEpic.uploadFileEpic,

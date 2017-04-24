@@ -1,177 +1,80 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { shallowEqual } from "recompose";
 import { Flex, Box } from "reflexbox";
 import * as immutable from "immutable";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 
 import { SimpleToolbar } from "../components/SimpleToolbar";
-import { ProfileEnhancer } from "./profile/ProfileBox";
+import { ProfileWithRouter } from "./profile/ProfileBox";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
 import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
-import ContactBox from "./chatlist/ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
+import { AppBody } from "./AppBody";
+import { RightNav } from "./RightNav";
+import { SubToolbar } from "./SubToolbar";
 
-import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
-import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
-import * as chatlogsActions from "../chitchat/chats/redux/chatlogs/chatlogsActions";
-import * as chatlogRxActions from "../chitchat/chats/redux/chatlogs/chatlogRxActions";
-import * as chatroomRx from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
-import * as userRx from "../redux/user/userRx";
-import * as authRx from "../redux/authen/authRx";
-import * as groupRx from "../redux/group/groupRx";
-import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
+import { MainPageEnhancer } from "./Enhancers/MainPageEnhancer";
+import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
+import { ToolbarEnhanced, listener } from "./MainPageToolbar";
+import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
 
-import { IComponentProps } from "../utils/IComponentProps";
+const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer,
+    history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
 
-interface IComponentNameState {
-    header: string;
-}
+    // console.log(match, history.location);
 
-class Main extends React.Component<IComponentProps, IComponentNameState> {
-
-    menus = ["menu", "log out"];
-    clientWidth = document.documentElement.clientWidth;
-    clientHeight = document.documentElement.clientHeight;
-    headerHeight = 0;
-    subHeaderHeight = null;
-    bodyHeight = null;
-    footerHeight = 0;
-
-    componentWillMount() {
-        this.state = {
-            header: "Home"
-        };
-
-        const { teamReducer, stalkReducer, chatlogReducer, authReducer } = this.props;
-
-        if (!teamReducer.team) {
-            this.props.router.replace("/");
-        }
-        this.headerHeight = 56;
-        this.footerHeight = 32;
-        this.clientHeight = document.documentElement.clientHeight;
-        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.footerHeight));
-
-        this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
-        this.fetch_orgGroups = this.fetch_orgGroups.bind(this);
-        this.fetch_privateGroups = this.fetch_privateGroups.bind(this);
-    }
-
-    componentWillReceiveProps(nextProps: IComponentProps) {
-        let {
-            location: { query: { userId, username, roomId, contactId } },
-            userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer
-        } = nextProps;
-
-        switch (userReducer.state) {
-            case userRx.FETCH_AGENT_SUCCESS:
-                this.joinChatServer(nextProps);
-                break;
-            default:
-                if (!userReducer.user) {
-                    this.props.router.push("/");
-                }
-                break;
-        }
-
-        switch (stalkReducer.state) {
-            case StalkBridgeActions.STALK_INIT_SUCCESS:
-                if (this.props.stalkReducer.state !== StalkBridgeActions.STALK_INIT_SUCCESS) {
-                    if (contactId) {
-                        this.fetch_privateChatRoom(contactId, userReducer.user._id);
-                    }
-                    else if (userReducer.contact) {
-                        this.fetch_privateChatRoom(userReducer.contact._id, userReducer.user._id);
-                    }
-                }
-                break;
-            default:
-                break;
-        }
-
-        switch (chatroomReducer.state) {
-            case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
-                this.props.router.push(`/chat/${chatroomReducer.room._id}`);
-                break;
-            }
-            case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
-                console.warn("GET_PERSISTEND_CHATROOM_FAILURE");
-                break;
-            }
-            default:
-                break;
-        }
-    }
-
-    joinChatServer(nextProps: IComponentProps) {
-        let { stalkReducer, userReducer } = nextProps;
-
-        if (userReducer.user) {
-            if (stalkReducer.state !== StalkBridgeActions.STALK_INIT) {
-                StalkBridgeActions.stalkLogin(userReducer.user);
-            }
-        }
-    }
-
-    fetch_privateChatRoom = (roommateId, owerId) => {
-        this.props.dispatch(chatroomRx.fetchPrivateChatRoom(owerId, roommateId));
-    }
-    fetch_orgGroups = () => {
-        this.props.dispatch(groupRx.getOrgGroup(this.props.teamReducer.team._id));
-    }
-    fetch_privateGroups = () => {
-        this.props.dispatch(privateGroupRxActions.getPrivateGroup(this.props.teamReducer.team._id));
-    }
-
-    onSelectMenuItem(id, value) {
-        console.log(this.menus[id]);
-
-        let { authReducer } = this.props;
-        switch (id) {
-            case 0:
-                this.props.router.push(`/admin/${authReducer.user}`);
-                break;
-            case 1:
-                this.props.dispatch(authRx.logout(this.props.authReducer.token));
-                break;
-            default:
-                break;
-        }
-    }
-
-    public render(): JSX.Element {
-        return (
-            <MuiThemeProvider>
-                <div style={{ overflowY: "hidden" }}>
-                    <div id={"toolbar"} style={{ height: this.headerHeight }}>
-                        <SimpleToolbar
-                            title={this.props.teamReducer.team.name}
-                            menus={this.menus}
-                            onSelectedMenuItem={this.onSelectMenuItem} />
-                    </div>
-                    <div id={"app_body"} style={{ height: this.bodyHeight, overflowY: "auto" }}>
-                        <ProfileEnhancer router={this.props.router} />
-                        <ConnectGroupListEnhancer fetchGroup={() => this.fetch_orgGroups()}
-                            groups={this.props.groupReducer.orgGroups}
-                            subHeader={"OrgGroups"} />
-                        <ConnectGroupListEnhancer
-                            fetchGroup={() => { this.fetch_privateGroups(); }}
-                            groups={this.props.groupReducer.privateGroups}
-                            subHeader={"Groups"} />
-                        <ContactBox {...this.props} />
-                        <ChatLogsBoxEnhancer router={this.props.router} />
-                        <SnackbarToolBox />
-                    </div>
-                    <div id={"app_footer"} style={{ height: this.footerHeight }}>
-                        <StalkCompEnhancer />
-                    </div>
+    return (
+        <MuiThemeProvider>
+            <div>
+                <ToolbarEnhanced history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
+                <div id={"app_body"} style={{ overflowY: "auto" }}>
+                    <Flex flexColumn={false}>
+                        <Flex flexColumn={true}>
+                            <div style={{ overflowY: "auto" }}>
+                                <ProfileWithRouter />
+                                <ConnectGroupListEnhancer
+                                    fetchGroup={fetch_orgGroups}
+                                    groups={groupReducer.orgGroups}
+                                    subHeader={"OrgGroups"} />
+                                <ConnectGroupListEnhancer
+                                    fetchGroup={fetch_privateGroups}
+                                    groups={groupReducer.privateGroups}
+                                    subHeader={"Groups"} />
+                                <ChatLogsBoxEnhancer router={history} />
+                                <SnackbarToolBox />
+                            </div>
+                        </Flex>
+                        <Flex flexColumn={true}>
+                            <SubToolbar match={match} onError={onError} />
+                            <Flex flexColumn={false}>
+                                <AppBody userReducer={userReducer} match={match} onError={onError} />
+                                <RightNav match={match} onError={onError} />
+                            </Flex>
+                        </Flex>
+                    </Flex>
                 </div>
-            </MuiThemeProvider>
-        );
-    }
-}
+                <div id={"app_footer"}>
+                    <StalkCompEnhancer />
+                </div>
+            </div>
+        </MuiThemeProvider >
+    );
+});
 
-const mapStateToProps = (state) => ({ ...state });
-export default connect(mapStateToProps)(Main);
+export let MainPageWithDialogBox = DialogBoxEnhancer(({ title, message, open, handleClose, onError,
+    history, match }: any) =>
+    <div>
+        <MainPageEnhanced onError={onError} history={history} match={match} />
+        <DialogBox
+            title={title}
+            message={message}
+            open={open}
+            handleClose={handleClose} />
+    </div>
+);
+
+MainPageWithDialogBox = withRouter(MainPageWithDialogBox);

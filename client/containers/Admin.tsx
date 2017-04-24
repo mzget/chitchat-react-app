@@ -48,7 +48,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
         const { teamReducer } = this.props;
 
         if (!teamReducer.team) {
-            this.props.router.replace("/");
+            this.props.history.replace("/");
         }
 
         this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
@@ -107,7 +107,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
         }
         else {
             // Jump to main menu.
-            this.props.router.goBack();
+            this.props.history.goBack();
         }
     }
 
@@ -127,11 +127,19 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     public render(): JSX.Element {
         return (
             <MuiThemeProvider>
-                <div>
-                    <SimpleToolbar title={"Admin"} onBackPressed={this.onBackPressed} />
-                    {
-                        this.getAdminPanel()
-                    }
+                <div style={{ position: "relative", }}>
+                    <div style={{ position: "relative", height: "56px" }}>
+                        <div style={{ position: "fixed", width: "100%", zIndex: 1 }} >
+                            <SimpleToolbar title={"Admin"} onBackPressed={this.onBackPressed} />
+                        </div>
+                    </div>
+                    <div style={{ position: "relative", overflowX: "hidden", height: "calc(100vh - 56px)" }} >
+                        {
+                            this.getAdminPanel()
+                        }
+
+                    </div>
+
                 </div>
             </MuiThemeProvider>
         );

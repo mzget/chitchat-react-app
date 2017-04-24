@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { withState, compose, pure, withHandlers, lifecycle, shallowEqual } from "recompose";
+import { withState, compose, pure, withHandlers, lifecycle, shallowEqual, ComponentEnhancer } from "recompose";
 
 const mapStateToProps = (state) => ({
     alertReducer: state.alertReducer
@@ -23,4 +23,4 @@ export const DialogBoxEnhancer = compose(
         }
     }),
     pure
-);
+) as ComponentEnhancer<{ title, message, open, handleClose, onError: (error: string) => void }, any>;

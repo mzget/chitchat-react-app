@@ -8,11 +8,8 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 const React = require("react");
-/**
- * Redux + Immutable
- */
-const immutable = require("immutable");
 const react_redux_1 = require("react-redux");
+const recompose_1 = require("recompose");
 const reflexbox_1 = require("reflexbox");
 const Colors = require("material-ui/styles/colors");
 const AuthRx = require("../redux/authen/authRx");
@@ -20,14 +17,16 @@ const AppActions = require("../redux/app/persistentDataActions");
 const SimpleToolbar_1 = require("../components/SimpleToolbar");
 const AuthenBox_1 = require("./authen/AuthenBox");
 class Home extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super(...arguments);
         this.clientWidth = document.documentElement.clientWidth;
         this.clientHeight = document.documentElement.clientHeight;
         this.headerHeight = 56;
         this.subHeaderHeight = null;
         this.bodyHeight = null;
         this.footerHeight = 24;
+    }
+    componentWillMount() {
         console.log("Home", global.userAgent, this.props);
         this.state = {
             alert: false
@@ -39,15 +38,13 @@ class Home extends React.Component {
         this.props.dispatch(AppActions.getSession());
     }
     componentWillReceiveProps(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, chatroomReducer, chatlogReducer, userReducer, stalkReducer, authReducer, alertReducer } = nextProps;
+        let { userReducer, authReducer, alertReducer } = nextProps;
         let toolbar = document.getElementById("toolbar");
         let warning_bar = document.getElementById("warning_bar");
         let app_body = document.getElementById("app_body");
         let app_footer = document.getElementById("app_footer");
         this.subHeaderHeight = (warning_bar) ? warning_bar.clientHeight : 0;
-        let next = immutable.fromJS(authReducer);
-        let prev = immutable.fromJS(this.props.authReducer);
-        if (next && !next.equals(prev)) {
+        if (!recompose_1.shallowEqual(authReducer, this.props.authReducer)) {
             switch (authReducer.state) {
                 case AuthRx.AUTH_USER_SUCCESS: {
                     AppActions.saveSession();
@@ -68,8 +65,10 @@ class Home extends React.Component {
                     break;
             }
         }
-        if (userReducer.user) {
-            this.props.router.push(`/team/${authReducer.user}`);
+        if (!recompose_1.shallowEqual(userReducer.user, this.props.userReducer.user)) {
+            if (userReducer.user) {
+                this.props.history.replace(`/team/${authReducer.user}`);
+            }
         }
         if (alertReducer.error) {
             this.props.onError(alertReducer.error);

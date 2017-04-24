@@ -29,7 +29,7 @@ class Team extends React.Component {
         this.onSelectTeam = this.onSelectTeam.bind(this);
         this.onToolbarMenuItem = this.onToolbarMenuItem.bind(this);
         this.onCloseDialog = this.onCloseDialog.bind(this);
-        let { location: { query: { userId, username, roomId, contactId } }, params, userReducer } = this.props;
+        let { location, userReducer } = this.props;
         this.state = {
             openDialog: false
         };
@@ -37,7 +37,7 @@ class Team extends React.Component {
             ? userReducer.user.username : "Fail username";
     }
     componentWillReceiveProps(nextProps) {
-        let { location: { query: { userId, username, roomId, contactId } }, userReducer, authReducer, teamReducer } = nextProps;
+        let { location, userReducer, authReducer, teamReducer } = nextProps;
         if (teamReducer.error) {
             this.alertBoxTitle = "Alert!";
             this.alertBoxMessage = teamReducer.error;
@@ -45,12 +45,12 @@ class Team extends React.Component {
         }
         if (!userReducer.user ||
             authReducer.state == authRx.LOG_OUT_SUCCESS) {
-            this.props.router.replace("/");
+            this.props.history.replace("/");
         }
     }
     onSelectTeam(team) {
         this.props.dispatch(teamRx.selectTeam(team));
-        this.props.router.push(`/chatslist/${team.name}`);
+        this.props.history.push(`/chatslist/${team.name}`);
     }
     onToolbarMenuItem(id, value) {
         if (value == "logout") {
@@ -65,7 +65,6 @@ class Team extends React.Component {
         });
     }
     render() {
-        let { location: { query: { userId, username, roomId, contactId } }, userReducer, stalkReducer, teamReducer } = this.props;
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement("div", null,
                 React.createElement(SimpleToolbar_1.SimpleToolbar, { title: this.toolbar, menus: ["logout"], onSelectedMenuItem: this.onToolbarMenuItem }),
@@ -78,5 +77,4 @@ class Team extends React.Component {
  * ## Redux boilerplate
  */
 function mapStateToProps(state) { return __assign({}, state); }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapStateToProps)(Team);
+exports.TeamPage = react_redux_1.connect(mapStateToProps)(Team);

@@ -7,7 +7,7 @@
 import Rx = require("rxjs/Rx");
 import * as R from "ramda";
 
-import * as ServiceProvider from "../../services/ServiceProvider";
+import * as chatroomService from "../../services/chatroomService";
 import ChatRoomComponent from "../../chatRoomComponent";
 import { BackendFactory } from "../../BackendFactory";
 import SecureServiceFactory from "../../secure/secureServiceFactory";
@@ -26,6 +26,7 @@ import { ChitChatFactory } from "../../chitchatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 const getConfig = () => ChitChatFactory.getInstance().config;
 const authReducer = () => ChitChatFactory.getInstance().authStore;
+const appReducer = () => ChitChatFactory.getInstance().appStore;
 
 const secure = SecureServiceFactory.getService();
 
@@ -33,9 +34,6 @@ const secure = SecureServiceFactory.getService();
  * ChatRoomActionsType
  */
 export class ChatRoomActionsType {
-    static GET_NEWER_MESSAGE_FAILURE = "GET_NEWER_MESSAGE_FAILURE";
-    static GET_NEWER_MESSAGE_SUCCESS = "GET_NEWER_MESSAGE_SUCCESS";
-
     static SEND_MESSAGE_REQUEST = "SEND_MESSAGE_REQUEST";
     static SEND_MESSAGE_SUCCESS = "SEND_MESSAGE_SUCCESS";
     static SEND_MESSAGE_FAILURE = "SEND_MESSAGE_FAILURE";
@@ -54,7 +52,7 @@ export function initChatRoom(currentRoom: Room) {
     let room_name = currentRoom.name;
     if (!room_name && currentRoom.type === RoomType.privateChat) {
         currentRoom.members.some((v, id, arr) => {
-            if (v._id !== getStore().getState().userReducer.user._id) {
+            if (v._id !== authReducer().user._id) {
                 currentRoom.name = v.username;
                 return true;
             }
@@ -84,15 +82,17 @@ function onChatRoomDelegate(event, newMsg: IMessage) {
         else {
             console.log("is contact message");
             // @ Check app not run in background.
-            let device = getStore().getState().deviceReducer;
-            console.warn("AppState: ", device.appState); // active, background, inactive
-            if (device.appState === "active") {
-                BackendFactory.getInstance().getChatApi().updateMessageReader(newMsg._id, newMsg.rid);
-            }
-            else if (device.appState !== "active") {
-                // @ When user joined room but appState is inActive.
-                // sharedObjectService.getNotifyManager().notify(newMsg, appBackground, localNotifyService);
-                console.warn("Call local notification here...");
+            let appState = appReducer().appState;
+            console.log("AppState: ", appState); // active, background, inactive
+            if (!!appState) {
+                if (appState === "active") {
+                    BackendFactory.getInstance().getChatApi().updateMessageReader(newMsg._id, newMsg.rid);
+                }
+                else if (appState !== "active") {
+                    // @ When user joined room but appState is inActive.
+                    // sharedObjectService.getNotifyManager().notify(newMsg, appBackground, localNotifyService);
+                    console.warn("Call local notification here...");
+                }
             }
 
             getStore().dispatch(onNewMessage(newMsg));
@@ -118,7 +118,7 @@ export function checkOlderMessages() {
         let room = getStore().getState().chatroomReducer.room;
 
         ChatRoomComponent.getInstance().getTopEdgeMessageTime().then(res => {
-            ServiceProvider.getOlderMessagesCount(room._id, res.toString(), false)
+            chatroomService.getOlderMessagesCount(room._id, res.toString(), false)
                 .then(response => response.json())
                 .then((result: any) => {
                     console.log("getOlderMessagesCount", result);
@@ -138,14 +138,20 @@ export function checkOlderMessages() {
     };
 }
 
+export const GET_NEWER_MESSAGE = "GET_NEWER_MESSAGE";
+export const GET_NEWER_MESSAGE_FAILURE = "GET_NEWER_MESSAGE_FAILURE";
+export const GET_NEWER_MESSAGE_SUCCESS = "GET_NEWER_MESSAGE_SUCCESS";
+const getNewerMessage = () => ({ type: GET_NEWER_MESSAGE });
 function getNewerMessage_failure() {
-    return { type: ChatRoomActionsType.GET_NEWER_MESSAGE_FAILURE };
+    return { type: GET_NEWER_MESSAGE_FAILURE };
 }
 function getNewerMessage_success(messages: any) {
-    return { type: ChatRoomActionsType.GET_NEWER_MESSAGE_SUCCESS, payload: messages };
+    return { type: GET_NEWER_MESSAGE_SUCCESS, payload: messages };
 }
 export function getNewerMessageFromNet() {
     return dispatch => {
+        dispatch(getNewerMessage());
+
         let token = authReducer().chitchat_token;
         ChatRoomComponent.getInstance().getNewerMessageRecord(token, (results) => {
             dispatch(getNewerMessage_success(results));
@@ -261,23 +267,28 @@ const leaveRoom = () => ({ type: LEAVE_ROOM });
 const leaveRoomSuccess = () => ({ type: LEAVE_ROOM_SUCCESS });
 export function leaveRoomAction() {
     return (dispatch) => {
-        let token = getStore().getState().stalkReducer.stalkToken;
-        let room = ChatRoomComponent.getInstance();
-        let room_id = room.getRoomId();
+        let _room = getStore().getState().chatroomReducer.get("room");
+        if (!!_room) {
+            let token = getStore().getState().stalkReducer.stalkToken;
+            let room_id = _room._id;
+            ChatRoomComponent.getInstance().dispose();
 
-        dispatch(leaveRoom());
+            dispatch(leaveRoom());
 
-        BackendFactory.getInstance().getServer().then(server => {
-            server.LeaveChatRoomRequest(token, room_id, (err, res) => {
-                console.log("LeaveChatRoomRequest", err, res);
-                ChatRoomComponent.getInstance().dispose();
-                NotificationManager.regisNotifyNewMessageEvent();
+            BackendFactory.getInstance().getServer().then(server => {
+                server.LeaveChatRoomRequest(token, room_id, (err, res) => {
+                    console.log("LeaveChatRoomRequest", err, res);
+                    NotificationManager.regisNotifyNewMessageEvent();
+                });
+
+                dispatch(updateLastAccessRoom(room_id));
+            }).catch(err => {
+                dispatch(updateLastAccessRoom(room_id));
             });
-
-            dispatch(updateLastAccessRoom(room_id));
-        }).catch(err => {
-            dispatch(updateLastAccessRoom(room_id));
-        });
+        }
+        else {
+            dispatch({ type: "" });
+        }
     };
 }
 
@@ -300,7 +311,7 @@ export function loadEarlyMessageChunk() {
     };
 }
 
-const GET_PERSISTEND_CHATROOM = "GET_PERSISTEND_CHATROOM";
+export const GET_PERSISTEND_CHATROOM = "GET_PERSISTEND_CHATROOM";
 const GET_PERSISTEND_CHATROOM_CANCELLED = "GET_PERSISTEND_CHATROOM_CANCELLED";
 export const GET_PERSISTEND_CHATROOM_SUCCESS = "GET_PERSISTEND_CHATROOM_SUCCESS";
 export const GET_PERSISTEND_CHATROOM_FAILURE = "GET_PERSISTEND_CHATROOM_FAILURE";

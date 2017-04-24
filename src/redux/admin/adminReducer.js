@@ -26,6 +26,9 @@ exports.adminReducer = (state = adminInitState, action) => {
             return state.set("state", adminRx.UPDATE_USER_ORG_CHART_FAILURE)
                 .set("error", JSON.stringify(action.payload.message));
         }
+        case adminRx.UPDATE_USER_TEAM_ROLE_SUCCESS: {
+            return state.set("state", adminRx.UPDATE_USER_TEAM_ROLE_SUCCESS);
+        }
         case adminRx.ADMIN_RX_EMPTY_STATE: {
             return state.set("state", adminRx.ADMIN_RX_EMPTY_STATE)
                 .set("error", null);

@@ -53,6 +53,7 @@ const UPDATE_USER_ORG_CHART = "UPDATE_USER_ORG_CHART";
 export const UPDATE_USER_ORG_CHART_SUCCESS = "UPDATE_USER_ORG_CHART_SUCCESS";
 export const UPDATE_USER_ORG_CHART_FAILURE = "UPDATE_USER_ORG_CHART_FAILURE";
 const UPDATE_USER_ORG_CHART_CANCELLED = "UPDATE_USER_ORG_CHART_CANCELLED";
+
 export const updateUserOrgChart = (user, team_id, orgChart_id) => ({
     type: UPDATE_USER_ORG_CHART,
     payload: { user: user, team_id: team_id, orgChart_id: orgChart_id }
@@ -64,12 +65,28 @@ export const updateUserOrgChartEpic = action$ =>
     action$.ofType(UPDATE_USER_ORG_CHART)
         .mergeMap(action => {
             let token = Store.getState().authReducer.token;
-            return UserService.setOrgChartId(token, action.payload.user, action.payload.team_id, action.payload.orgChart_id)
+            return UserService.setOrgChartId(token, action.payload.user, action.payload.team_id, action.payload.orgChart_id);
         })
         .map((result: Rx.AjaxResponse) => updateUserOrgChartSuccess(result.response.result))
         .takeUntil(action$.ofType(UPDATE_USER_ORG_CHART_CANCELLED))
         .catch((error: Rx.AjaxResponse) => Rx.Observable.of(updateUserOrgChartFailure(error.xhr.response)));
 
+
+const UPDATE_USER_TEAM_ROLE = "UPDATE_USER_TEAM_ROLE";
+export const UPDATE_USER_TEAM_ROLE_SUCCESS = "UPDATE_USER_TEAM_ROLE_SUCCESS";
+const UPDATE_USER_TEAM_ROLE_FAILURE = "UPDATE_USER_TEAM_ROLE_FAILURE";
+const UPDATE_USER_TEAM_ROLE_CANCELLED = "UPDATE_USER_TEAM_ROLE_CANCELLED";
+
+export const updateUserTeamRole = createAction(UPDATE_USER_TEAM_ROLE, (user_id, team_id, profile) => ({ user_id, team_id, profile }));
+const updateUserTeamRole_Success = createAction(UPDATE_USER_TEAM_ROLE_SUCCESS, payload => payload);
+const updateUserTeamRole_Failure = createAction(UPDATE_USER_TEAM_ROLE_FAILURE, payload => payload);
+export const updateUserTeamRole_Cancelled = createAction(UPDATE_USER_TEAM_ROLE_CANCELLED);
+export const updateUserTeamRole_Epic = action$ =>
+    action$.ofType(UPDATE_USER_TEAM_ROLE)
+        .mergeMap(action => UserService.updateTeamProfile(action.payload.user_id, action.payload.team_id, action.payload.profile))
+        .map((result: Rx.AjaxResponse) => updateUserTeamRole_Success(result.response.result))
+        .takeUntil(action$.ofType(UPDATE_USER_TEAM_ROLE_CANCELLED))
+        .catch((error: Rx.AjaxResponse) => Rx.Observable.of(updateUserTeamRole_Failure(error.xhr.response)));
 
 export const ADMIN_RX_EMPTY_STATE = "ADMIN_RX_EMPTY_STATE";
 export const emptyState = () => ({ type: ADMIN_RX_EMPTY_STATE });

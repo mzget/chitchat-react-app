@@ -10,6 +10,11 @@ export type TeamStore = {
     members: Array<ITeamMember>,
 };
 
+export type AppStore = {
+    appState: string;
+};
+
+
 export class ChitChatFactory {
     private static instance: ChitChatFactory;
     public static getInstance(): ChitChatFactory {
@@ -43,5 +48,10 @@ export class ChitChatFactory {
     teamStore: TeamStore;
     public setTeamStore(store: TeamStore) {
         this.teamStore = store;
+    }
+
+    appStore: AppStore = { appState: "active" }; // active, background, inactive
+    public setAppStore(store: AppStore) {
+        this.appStore = store;
     }
 }
