@@ -6,6 +6,7 @@ import { Flex, Box } from "reflexbox";
 import * as immutable from "immutable";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
+import { ProfileEnhancer } from "./profile/ProfileBox";
 
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { ProfileWithRouter } from "./profile/ProfileBox";
@@ -16,6 +17,8 @@ import { StalkCompEnhancer } from "./stalk/StalkComponent";
 import { AppBody } from "./AppBody";
 import { RightNav } from "./RightNav";
 import { SubToolbar } from "./SubToolbar";
+import { ConnectedAppBody } from "./AppBody";
+import { ContactBox } from "./chatlist/ContactBox";
 
 import { MainPageEnhancer } from "./Enhancers/MainPageEnhancer";
 import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
@@ -30,32 +33,38 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
     return (
         <MuiThemeProvider>
             <div>
-                <ToolbarEnhanced history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
-                <div id={"app_body"} style={{ overflowY: "auto" }}>
-                    <Flex flexColumn={false}>
-                        <Flex flexColumn={true}>
-                            <div style={{ overflowY: "auto" }}>
-                                <ProfileWithRouter />
-                                <ConnectGroupListEnhancer
-                                    fetchGroup={fetch_orgGroups}
-                                    groups={groupReducer.orgGroups}
-                                    subHeader={"OrgGroups"} />
-                                <ConnectGroupListEnhancer
-                                    fetchGroup={fetch_privateGroups}
-                                    groups={groupReducer.privateGroups}
-                                    subHeader={"Groups"} />
-                                <ChatLogsBoxEnhancer router={history} />
-                                <SnackbarToolBox />
-                            </div>
+                <div id={"app_body"} >
+                        <Flex>
+                            <Box col={12}>
+                                 <ToolbarEnhanced history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
+
+                            </Box>
+                          
                         </Flex>
-                        <Flex flexColumn={true}>
-                            <SubToolbar match={match} onError={onError} />
-                            <Flex flexColumn={false}>
-                                <AppBody userReducer={userReducer} match={match} onError={onError} />
-                                <RightNav match={match} onError={onError} />
-                            </Flex>
+                        <Flex >
+
+                                <Box col={3} style={{overflowY: "scroll"}}>
+                                        <ProfileWithRouter />
+                                        <ConnectGroupListEnhancer
+                                            fetchGroup={fetch_orgGroups}
+                                            groups={groupReducer.orgGroups}
+                                            subHeader={"OrgGroups"} />
+                                        <ConnectGroupListEnhancer
+                                            fetchGroup={fetch_privateGroups}
+                                            groups={groupReducer.privateGroups}
+                                            subHeader={"Groups"} />
+                                        <ChatLogsBoxEnhancer router={history} />
+                                        <SnackbarToolBox />
+                                </Box>
+                                <Box col={6} >
+                                <SubToolbar match={match} onError={onError} />
+                                    <AppBody userReducer={userReducer} match={match} onError={onError} />                               
+                                </Box>
+                                <Box col={3} >
+                                        <RightNav match={match} onError={onError} />
+                                    {/*<ContactBox {...this.props} />                                */}
+                                </Box>
                         </Flex>
-                    </Flex>
                 </div>
                 <div id={"app_footer"}>
                     <StalkCompEnhancer />
