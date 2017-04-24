@@ -335,6 +335,18 @@ export const getPersistendChatroom = (roomId: string) => (dispatch => {
     }
 });
 
+export const getRoom = (room_id: string) => {
+    let {chatrooms}: { chatrooms: Array<Room> } = getStore().getState().chatroomReducer;
+
+    const rooms = chatrooms.filter((room, index, array) => {
+        if (room._id.toString() == room_id) {
+            return room;
+        }
+    });
+
+    return rooms[0];
+};
+
 export const createChatRoom = (myUser, contactUser) => {
     if (myUser && contactUser) {
         let owner = {} as IMember;

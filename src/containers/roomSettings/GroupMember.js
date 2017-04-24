@@ -7,7 +7,7 @@ const List_1 = require("material-ui/List");
 const Divider_1 = require("material-ui/Divider");
 const Avatar_1 = require("material-ui/Avatar");
 exports.GroupMember = (props) => (React.createElement(MuiThemeProvider_1.default, null,
-    React.createElement(reflexbox_1.Flex, { style: { backgroundColor: Colors.indigo50 }, flexColumn: true, align: "center" },
+    React.createElement(reflexbox_1.Flex, { flexColumn: true, align: "center" },
         React.createElement(List_1.List, null,
             " ",
             (props.members && props.members.length > 0) ?

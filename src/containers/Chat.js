@@ -11,7 +11,6 @@ const React = require("react");
 const react_redux_1 = require("react-redux");
 const recompose_1 = require("recompose");
 const reflexbox_1 = require("reflexbox");
-const Colors = require("material-ui/styles/colors");
 const chitchatFactory_1 = require("../chitchat/chats/chitchatFactory");
 const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const TypingBox_1 = require("./TypingBox");
@@ -293,23 +292,63 @@ class Chat extends React.Component {
     }
     render() {
         let { chatroomReducer, stalkReducer } = this.props;
-        return (React.createElement("div", { style: { overflowY: "hidden", backgroundColor: Colors.indigo50 } },
+        return (
+        /*<div style={{ overflowY: "hidden", backgroundColor: Colors.indigo50 }}>
+            {
+                (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
+                    <WarningBar /> : null
+            }
+            <div style={{ height: this.h_body, overflowY: "auto", backgroundColor: Colors.indigo50 }} id={"app_body"}>
+                <Flex flexColumn={true}>
+                    {
+                        (this.state.earlyMessageReady) ?
+                            <Flex align="center" justify="center">
+                                <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
+                            </Flex>
+                            :
+                            null
+                    }
+                    <ChatBox
+                        styles={{ overflowX: "hidden" }}
+                        value={this.state.messages}
+                        onSelected={(message: IMessage) => { }} />
+                </Flex>
+            </div>
+            {
+                (this.state.openButtomMenu) ?
+                    <GridListSimple
+                        boxHeight={this.h_stickerBox}
+                        srcs={imagesPath}
+                        onSelected={this.onSubmitStickerChat} />
+                    : null
+            }
+            <TypingBox
+                disabled={this.props.chatroomReducer.chatDisabled}
+                onSubmit={this.onSubmitTextChat}
+                onValueChange={this.onTypingTextChange}
+                value={this.state.typingText}
+                fileReaderChange={this.fileReaderChange}
+                onSticker={this.onToggleSticker} />
+            <UploadingDialog />
+            <SnackbarToolBox />
+        </div>*/
+        React.createElement("div", { style: { height: "calc(100vh - (56px + 52px))" } },
             (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                 React.createElement(WarningBar_1.WarningBar, null) : null,
-            React.createElement("div", { style: { height: this.h_body, overflowY: "auto", backgroundColor: Colors.indigo50 }, id: "app_body" },
-                React.createElement(reflexbox_1.Flex, { flexColumn: true },
-                    (this.state.earlyMessageReady) ?
-                        React.createElement(reflexbox_1.Flex, { align: "center", justify: "center" },
-                            React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))
-                        :
-                            null,
-                    React.createElement(ChatBox_1.ChatBox, { styles: { overflowX: "hidden" }, value: this.state.messages, onSelected: (message) => { } }))),
-            (this.state.openButtomMenu) ?
-                React.createElement(GridListSimple_1.default, { boxHeight: this.h_stickerBox, srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
-                : null,
-            React.createElement(TypingBox_1.TypingBox, { disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }),
-            React.createElement(UploadingDialog_1.default, null),
-            React.createElement(SnackbarToolBox_1.SnackbarToolBox, null)));
+            React.createElement("div", { style: { overflowY: "scroll", height: "100%" }, id: "app_body" },
+                (this.state.earlyMessageReady) ?
+                    React.createElement(reflexbox_1.Flex, { align: "center", justify: "center" },
+                        React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))
+                    :
+                        null,
+                React.createElement(ChatBox_1.ChatBox, { styles: { overflowX: "hidden" }, value: this.state.messages, onSelected: (message) => { } }),
+                (this.state.openButtomMenu) ?
+                    React.createElement(GridListSimple_1.default, { boxHeight: this.h_stickerBox, srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
+                    : null),
+            React.createElement("div", null,
+                React.createElement(TypingBox_1.TypingBox, { disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }),
+                React.createElement(UploadingDialog_1.default, null),
+                React.createElement(SnackbarToolBox_1.SnackbarToolBox, null))));
     }
 }
 /**

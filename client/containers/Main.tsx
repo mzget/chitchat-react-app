@@ -17,45 +17,46 @@ import { AppBody } from "./AppBody";
 import { RightNav } from "./RightNav";
 import { SubToolbar } from "./SubToolbar";
 
+import { ContactBox } from "./chatlist/ContactBox";
+
 import { MainPageEnhancer } from "./Enhancers/MainPageEnhancer";
 import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
 import { ToolbarEnhanced, listener } from "./MainPageToolbar";
 import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
 
-const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer,
+const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer, chatroomReducer,
     history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
-
-    // console.log(match, history.location);
-
     return (
         <MuiThemeProvider>
-            <div>
-                <ToolbarEnhanced history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
-                <div id={"app_body"} style={{ overflowY: "auto" }}>
-                    <Flex flexColumn={false}>
-                        <Flex flexColumn={true}>
-                            <div style={{ overflowY: "auto" }}>
-                                <ProfileWithRouter />
-                                <ConnectGroupListEnhancer
-                                    fetchGroup={fetch_orgGroups}
-                                    groups={groupReducer.orgGroups}
-                                    subHeader={"OrgGroups"} />
-                                <ConnectGroupListEnhancer
-                                    fetchGroup={fetch_privateGroups}
-                                    groups={groupReducer.privateGroups}
-                                    subHeader={"Groups"} />
-                                <ChatLogsBoxEnhancer router={history} />
-                                <SnackbarToolBox />
-                            </div>
-                        </Flex>
-                        <Flex flexColumn={true}>
-                            <SubToolbar match={match} onError={onError} />
-                            <Flex flexColumn={false}>
-                                <AppBody userReducer={userReducer} match={match} onError={onError} />
-                                <RightNav match={match} onError={onError} />
+            <div >
+                <ToolbarEnhanced id={"app_bar"} history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
+                <div id={"app_body"} style={{position: "relative", height: "calc(100vh - 56px)"}}>
+                        <Flex style={{height: "100%"}}>
+                                <Box col={3} style={{ overflowY: "scroll"}}>
+                                        <ProfileWithRouter />
+                                        <ConnectGroupListEnhancer
+                                            fetchGroup={fetch_orgGroups}
+                                            groups={groupReducer.orgGroups}
+                                            subHeader={"OrgGroups"} />
+                                        <ConnectGroupListEnhancer
+                                            fetchGroup={fetch_privateGroups}
+                                            groups={groupReducer.privateGroups}
+                                            subHeader={"Groups"} />
+                                        <ChatLogsBoxEnhancer />
+                                        <SnackbarToolBox />
+                                </Box>                                
+                        <Box col={9} >
+                            <SubToolbar history={history} match={match} onError={onError} chatroomReducer={chatroomReducer} />
+                            <Flex>
+                                <Box col={6} >
+                                    <AppBody userReducer={userReducer} chatroomReducer={chatroomReducer} match={match} onError={onError} />
+                                </Box>
+                                <Box col={6} >
+                                    <RightNav match={match} onError={onError} />
+                                </Box>
                             </Flex>
+                        </Box>    
                         </Flex>
-                    </Flex>
                 </div>
                 <div id={"app_footer"}>
                     <StalkCompEnhancer />

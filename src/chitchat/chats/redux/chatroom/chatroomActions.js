@@ -319,6 +319,15 @@ exports.getPersistendChatroom = (roomId) => (dispatch => {
         dispatch(getPersistChatroomFail());
     }
 });
+exports.getRoom = (room_id) => {
+    let { chatrooms } = getStore().getState().chatroomReducer;
+    const rooms = chatrooms.filter((room, index, array) => {
+        if (room._id.toString() == room_id) {
+            return room;
+        }
+    });
+    return rooms[0];
+};
 exports.createChatRoom = (myUser, contactUser) => {
     if (myUser && contactUser) {
         let owner = {};

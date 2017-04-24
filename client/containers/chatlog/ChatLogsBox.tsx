@@ -21,7 +21,6 @@ interface IComponentNameProps {
     params;
     chatlogReducer;
     dispatch;
-    router;
 }
 
 interface IComponentNameState {
@@ -66,7 +65,6 @@ export class ChatLogsBox extends React.Component<IComponentNameProps, IComponent
 }
 
 const mapStateToProps = (state) => ({
-    chatlogReducer: state.chatlogReducer,
-    history: state.history
+    chatlogReducer: state.chatlogReducer
 });
 export const ChatLogsBoxEnhancer = connect(mapStateToProps)(ChatLogsBox);

@@ -47,7 +47,7 @@ class App extends React.Component<any, any> {
                         <Route path="/profile/:filter/:user" component={(this.clientWidth < SMALL_TABLET) ? ProfilePageEnhanced : MainPageWithDialogBox} />
                         <Route path="/chatslist/:filter" component={(this.clientWidth < SMALL_TABLET) ? M_MainPageEnhanced : MainPageWithDialogBox} />
                         <Route path="/chatroom/chat/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ChatPageEnhanced : MainPageWithDialogBox} />
-                        <Route path="/chatroom/settings/:room_id" component={ChatRoomSettingsEnhanced} />
+                        <Route path="/chatroom/settings/:room_id/:edit" component={(this.clientWidth < SMALL_TABLET) ? ChatRoomSettingsEnhanced : MainPageWithDialogBox} />
                         <Route path="/admin/:filter" component={AdminPageEnhanced} />
                     </div>
                 </Router>

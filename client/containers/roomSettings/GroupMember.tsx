@@ -11,7 +11,7 @@ import { ChitChatAccount } from "../../chitchat/chats/models/User";
 
 export const GroupMember = (props: { members: Array<ChitChatAccount> }) => (
     <MuiThemeProvider>
-        <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align="center">
+        <Flex flexColumn align="center">
             <List> {
                 (props.members && props.members.length > 0) ?
                     props.members.map((item, i, arr) => (
