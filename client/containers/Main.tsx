@@ -29,13 +29,6 @@ import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
 const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer,
     history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
     
-//    var body = document.body;
-    // console.log("clientHeight", body.clientHeight);
-    // console.log("scrollheight", body.scrollHeight);
-    // var nav = document.getElementById("app_body");
-    // console.log("nav", nav.clientHeight);
-
-
 
     return (
         <MuiThemeProvider>
