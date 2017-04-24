@@ -4,7 +4,7 @@ import { ContactBox } from "./chatlist/ContactBox";
 import { ChatRoomSettingsPage } from "./ChatRoomSettings";
 
 const getView = (match, onError) => {
-    if (match.path.match("/chatroom/chat")) {
+    if (match.path.match("/chatroom/")) {
         return <ChatRoomSettingsPage match={match} onError={onError} />;
     }
     else {
