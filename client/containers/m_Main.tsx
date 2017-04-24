@@ -12,7 +12,7 @@ import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
 import { ContactBox } from "./chatlist/ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
-import { MainPageEnhancer } from "./MainPageEnhancer";
+import { MainPageEnhancer } from "./Enhancers/MainPageEnhancer";
 import { ToolbarEnhanced, listener } from "./MainPageToolbar";
 
 export const M_MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, history, fetch_orgGroups, fetch_privateGroups }: any) => (

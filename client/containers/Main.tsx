@@ -17,7 +17,7 @@ import { AppBody } from "./AppBody";
 import { RightNav } from "./RightNav";
 import { SubToolbar } from "./SubToolbar";
 
-import { MainPageEnhancer } from "./MainPageEnhancer";
+import { MainPageEnhancer } from "./Enhancers/MainPageEnhancer";
 import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
 import { ToolbarEnhanced, listener } from "./MainPageToolbar";
 import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";

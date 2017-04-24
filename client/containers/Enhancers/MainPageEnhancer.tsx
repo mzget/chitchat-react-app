@@ -2,14 +2,14 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { shallowEqual, compose, withHandlers, withState, lifecycle, ComponentEnhancer } from "recompose";
 
-import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
-import * as groupRx from "../redux/group/groupRx";
-import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
+import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
+import * as groupRx from "../../redux/group/groupRx";
+import * as privateGroupRxActions from "../../redux/group/privateGroupRxActions";
 
-import { GET_PERSISTEND_CHATROOM_SUCCESS } from "../chitchat/chats/redux/chatroom/chatroomActions";
-import { FETCH_PRIVATE_CHATROOM_SUCCESS, CREATE_PRIVATE_CHATROOM_SUCCESS } from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
+import { GET_PERSISTEND_CHATROOM_SUCCESS } from "../../chitchat/chats/redux/chatroom/chatroomActions";
+import { FETCH_PRIVATE_CHATROOM_SUCCESS, CREATE_PRIVATE_CHATROOM_SUCCESS } from "../../chitchat/chats/redux/chatroom/chatroomRxEpic";
 
-import { IComponentProps } from "../utils/IComponentProps";
+import { IComponentProps } from "../../utils/IComponentProps";
 
 const mapStateToProps = (state) => ({ ...state });
 export const MainPageEnhancer = compose(
