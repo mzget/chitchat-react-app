@@ -4,6 +4,7 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import { Flex, Box } from "reflexbox";
 
+import { Room, RoomType } from "../chitchat/libs/shared/Room";
 import * as H from "history";
 
 interface ISubToolbar {
@@ -14,8 +15,9 @@ interface ISubToolbar {
 const getView = (props: ISubToolbar) => {
     let { match, history, chatroomReducer } = props;
     let { room_id } = match.params;
+    let { room }: { room: Room } = chatroomReducer;
 
-    if (match.path.match("/chatroom/")) {
+    if (match.path.match("/chatroom/") && room.type != RoomType.privateChat) {
         return (
             <div style={{ margin: 2, backgroundColor: Colors.indigo50 }}>
                 <Flex flexColumn={false}>
