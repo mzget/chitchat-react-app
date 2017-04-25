@@ -3,7 +3,6 @@ const React = require("react");
 const react_router_dom_1 = require("react-router-dom");
 const reflexbox_1 = require("reflexbox");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
-const ProfileBox_1 = require("./profile/ProfileBox");
 const ConnectGroupListEnhancer_1 = require("./group/ConnectGroupListEnhancer");
 const ChatLogsBox_1 = require("./chatlog/ChatLogsBox");
 const SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
@@ -22,7 +21,6 @@ const MainPageEnhanced = MainPageEnhancer_1.MainPageEnhancer(({ teamReducer, gro
             React.createElement("div", { id: "app_body", style: { position: "relative", height: "calc(100vh - 56px)" } },
                 React.createElement(reflexbox_1.Flex, { style: { height: "100%" } },
                     React.createElement(reflexbox_1.Box, { col: 3, style: { overflowY: "scroll" } },
-                        React.createElement(ProfileBox_1.ProfileWithRouter, null),
                         React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: fetch_orgGroups, groups: groupReducer.orgGroups, subHeader: "OrgGroups" }),
                         React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: fetch_privateGroups, groups: groupReducer.privateGroups, subHeader: "Groups" }),
                         React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, null),

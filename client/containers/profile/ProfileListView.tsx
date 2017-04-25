@@ -36,9 +36,7 @@ export const ProfileListView = (props: IComponentProps) => (
                             </p>
                         }
                     />
-                    <Divider inset={true} />
-                </List>
-                : null
+                </List> : null
         }
     </ MuiThemeProvider >
 );

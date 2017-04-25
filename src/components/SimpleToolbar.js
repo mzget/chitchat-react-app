@@ -30,10 +30,11 @@ exports.SimpleToolbar = (props) => (React.createElement(MuiThemeProvider_1.defau
                 :
                     React.createElement("span", { style: { margin: 8 } }),
             React.createElement(Toolbar_1.ToolbarTitle, { text: props.title, style: { color: Colors.white } })),
-        (props.menus && props.menus.length > 0) ?
-            (React.createElement(Toolbar_1.ToolbarGroup, null,
-                React.createElement(Toolbar_1.ToolbarSeparator, null),
-                React.createElement(IconMenu_1.default, { iconButtonElement: React.createElement(IconButton_1.default, null,
+        React.createElement(Toolbar_1.ToolbarGroup, null,
+            (props.groupItem) ? (React.createElement(Toolbar_1.ToolbarGroup, null, props.groupItem)) : null,
+            React.createElement(Toolbar_1.ToolbarSeparator, null),
+            (props.menus && props.menus.length > 0) ?
+                (React.createElement(IconMenu_1.default, { iconButtonElement: React.createElement(IconButton_1.default, null,
                         React.createElement(expand_more_1.default, null)), anchorOrigin: { horizontal: "right", vertical: "top" }, targetOrigin: { horizontal: "right", vertical: "top" } }, props.menus.map((value, i, arr) => {
                     return React.createElement(MenuItem_1.default, { key: i, primaryText: value, onClick: () => props.onSelectedMenuItem(i, value) });
-                })))) : null)));
+                }))) : null))));

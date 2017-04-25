@@ -27,12 +27,13 @@ const muiTheme = getMuiTheme({
 interface IComponentProps {
     title: string;
     menus?: string[];
+    groupItem?: JSX.Element;
     onSelectedMenuItem?: (id, value) => void;
     onBackPressed?: () => void;
 }
 
 export const SimpleToolbar = (props: IComponentProps) => (
-    <MuiThemeProvider muiTheme={muiTheme} style={{height: "56px"}}>
+    <MuiThemeProvider muiTheme={muiTheme} style={{ height: "56px" }}>
         <Toolbar>
             <ToolbarGroup firstChild={true}>
                 {
@@ -45,11 +46,18 @@ export const SimpleToolbar = (props: IComponentProps) => (
                 }
                 <ToolbarTitle text={props.title} style={{ color: Colors.white }} />
             </ToolbarGroup>
-            {
-                (props.menus && props.menus.length > 0) ?
-                    (
+            <ToolbarGroup>
+                {
+                    (props.groupItem) ? (
                         <ToolbarGroup>
-                            <ToolbarSeparator />
+                            {props.groupItem}
+                        </ToolbarGroup>
+                    ) : null
+                }
+                <ToolbarSeparator />
+                {
+                    (props.menus && props.menus.length > 0) ?
+                        (
                             <IconMenu
                                 iconButtonElement={
                                     <IconButton>
@@ -66,9 +74,9 @@ export const SimpleToolbar = (props: IComponentProps) => (
                                         />;
                                     })}
                             </IconMenu>
-                        </ToolbarGroup>
-                    ) : null
-            }
+                        ) : null
+                }
+            </ToolbarGroup>
         </Toolbar>
     </MuiThemeProvider>
 );

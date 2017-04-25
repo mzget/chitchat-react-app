@@ -8,7 +8,6 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 
 import { SimpleToolbar } from "../components/SimpleToolbar";
-import { ProfileWithRouter } from "./profile/ProfileBox";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
 import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
@@ -33,7 +32,6 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
                 <div id={"app_body"} style={{ position: "relative", height: "calc(100vh - 56px)" }}>
                     <Flex style={{ height: "100%" }}>
                         <Box col={3} style={{ overflowY: "scroll" }}>
-                            <ProfileWithRouter />
                             <ConnectGroupListEnhancer
                                 fetchGroup={fetch_orgGroups}
                                 groups={groupReducer.orgGroups}

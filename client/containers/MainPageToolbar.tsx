@@ -2,6 +2,7 @@ import * as React from "react";
 import * as authRx from "../redux/authen/authRx";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { ToolbarEnhancer } from "./toolsbox/ToolbarEnhancer";
+import { ProfileEnhanced } from "./profile/ProfileBox";
 
 
 const menus = ["menu", "log out"];
@@ -25,5 +26,6 @@ export const ToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onMe
     <SimpleToolbar
         title={(teamReducer.team) ? teamReducer.team.name : ""}
         menus={menus}
-        onSelectedMenuItem={onMenuSelect} />
+        onSelectedMenuItem={onMenuSelect}
+        groupItem={<ProfileEnhanced />} />
 );
