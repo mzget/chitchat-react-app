@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { Flex, Box } from "reflexbox";
-import { withProps, withState, withHandlers, compose, lifecycle } from "recompose";
+import { withProps, withState, withHandlers, compose, lifecycle, ComponentEnhancer } from "recompose";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
@@ -12,6 +12,7 @@ import Avatar from "material-ui/Avatar";
 import Toggle from "material-ui/Toggle";
 
 import * as editGroupRxActions from "../../redux/group/editGroupRxActions";
+import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
 
 import { ChitChatAccount } from "../../chitchat/chats/models/User";
 
@@ -26,13 +27,17 @@ interface IEnhanceProps {
     onToggleItem: (item, checked) => void;
     dispatch;
 }
-const enhance = compose(
-    withState("members", "updateMembers", ({ initMembers }) => initMembers),
-    // lifecycle({
-    //     componentWillMount() {
-    //         this.props.updateMembers(member => this.props.initMembers);
-    //     }
-    // }),
+const EditGroupMemberEnhancer = compose(
+    connect(),
+    withState("members", "updateMembers", []),
+    lifecycle({
+        componentWillMount() {
+            let { params } = this.props.match;
+            let room = chatroomActions.getRoom(params.room_id);
+
+            this.props.updateMembers(members => room.members);
+        }
+    }),
     withHandlers({
         onToggleItem: (props: IEnhanceProps) => (item, checked) => {
             if (checked) {
@@ -53,6 +58,7 @@ const enhance = compose(
         }
     })
 );
+
 const EditGroupMember = (props: { teamMembers: Array<any>, members: Array<any>, onToggleItem, onSubmit }) => (
     <MuiThemeProvider>
         <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align="center">
@@ -96,7 +102,8 @@ const EditGroupMember = (props: { teamMembers: Array<any>, members: Array<any>, 
         </Flex>
     </MuiThemeProvider>
 );
-const EnhanceEditGroupMember = enhance(({
+
+export const EnhanceEditGroupMember = EditGroupMemberEnhancer(({
     teamMembers, initMembers, room_id, members, updateMembers, onToggleItem, onSubmit, onFinished
      }: IEnhanceProps) =>
     <EditGroupMember
@@ -104,6 +111,4 @@ const EnhanceEditGroupMember = enhance(({
         members={members}
         onToggleItem={onToggleItem}
         onSubmit={onSubmit} />
-);
-
-export const ConnectEditGroupMember = connect()(EnhanceEditGroupMember) as any;
+) as React.ComponentClass<{ teamMembers, room_id, match, onFinished }>;

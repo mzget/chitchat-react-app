@@ -44,7 +44,6 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
         this.room = chatroomActions.getRoom(params.room_id);
 
         this.onMenuSelected = this.onMenuSelected.bind(this);
-        this.getViewPanel = this.getViewPanel.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -52,23 +51,6 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
 
         if (!shallowEqual(match, this.props.match)) {
             this.room = chatroomActions.getRoom(match.params.room_id);
-        }
-    }
-
-
-    getViewPanel() {
-        let { match: { params }, teamReducer } = this.props;
-
-
-        switch (this.state.boxState) {
-            case BoxState.isEditMember:
-                return <ConnectEditGroupMember
-                    teamMembers={teamReducer.members}
-                    room_id={params.room_id}
-                    initMembers={this.room.members}
-                    onFinished={() => this.setState(prev => ({ ...prev, boxState: BoxState.idle }))} />;
-            default:
-                return null;
         }
     }
 
@@ -103,6 +85,9 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
         return (
             <MuiThemeProvider >
                 <div>
+                    <Flex flexColumn={false}>
+                        <Subheader>{RoomType[this.room.type].toUpperCase()}</Subheader>
+                    </Flex>
                     <Flex flexColumn={false}>
                         <Subheader>NAME : {this.room.name}</Subheader>
                     </Flex>

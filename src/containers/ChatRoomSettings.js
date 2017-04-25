@@ -13,7 +13,6 @@ const reflexbox_1 = require("reflexbox");
 const recompose_1 = require("recompose");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const Subheader_1 = require("material-ui/Subheader");
-const EditGroupMember_1 = require("./roomSettings/EditGroupMember");
 const GroupMemberEnhancer_1 = require("./roomSettings/GroupMemberEnhancer");
 const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
 const Room_1 = require("../chitchat/libs/shared/Room");
@@ -41,21 +40,11 @@ class ChatRoomSettings extends React.Component {
         let { match: { params } } = this.props;
         this.room = chatroomActions.getRoom(params.room_id);
         this.onMenuSelected = this.onMenuSelected.bind(this);
-        this.getViewPanel = this.getViewPanel.bind(this);
     }
     componentWillReceiveProps(nextProps) {
         let { match } = nextProps;
         if (!recompose_1.shallowEqual(match, this.props.match)) {
             this.room = chatroomActions.getRoom(match.params.room_id);
-        }
-    }
-    getViewPanel() {
-        let { match: { params }, teamReducer } = this.props;
-        switch (this.state.boxState) {
-            case BoxState.isEditMember:
-                return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: teamReducer.members, room_id: params.room_id, initMembers: this.room.members, onFinished: () => this.setState(prev => (__assign({}, prev, { boxState: BoxState.idle }))) });
-            default:
-                return null;
         }
     }
     onMenuSelected(key) {
@@ -86,6 +75,8 @@ class ChatRoomSettings extends React.Component {
     render() {
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement("div", null,
+                React.createElement(reflexbox_1.Flex, { flexColumn: false },
+                    React.createElement(Subheader_1.default, null, Room_1.RoomType[this.room.type].toUpperCase())),
                 React.createElement(reflexbox_1.Flex, { flexColumn: false },
                     React.createElement(Subheader_1.default, null,
                         "NAME : ",

@@ -31,7 +31,7 @@ const MainPageEnhanced = MainPageEnhancer_1.MainPageEnhancer(({ teamReducer, gro
                         React.createElement(SubToolbar_1.SubToolbar, { history: history, match: match, onError: onError, chatroomReducer: chatroomReducer }),
                         React.createElement(reflexbox_1.Flex, null,
                             React.createElement(reflexbox_1.Box, { col: 6 },
-                                React.createElement(AppBody_1.AppBody, { userReducer: userReducer, chatroomReducer: chatroomReducer, match: match, onError: onError })),
+                                React.createElement(AppBody_1.AppBody, { userReducer: userReducer, teamReducer: teamReducer, chatroomReducer: chatroomReducer, match: match, onError: onError })),
                             React.createElement(reflexbox_1.Box, { col: 6 },
                                 React.createElement(RightNav_1.RightNav, { match: match, onError: onError })))))),
             React.createElement("div", { id: "app_footer" },

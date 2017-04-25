@@ -11,13 +11,14 @@ const Divider_1 = require("material-ui/Divider");
 const Avatar_1 = require("material-ui/Avatar");
 const Toggle_1 = require("material-ui/Toggle");
 const editGroupRxActions = require("../../redux/group/editGroupRxActions");
-const enhance = recompose_1.compose(recompose_1.withState("members", "updateMembers", ({ initMembers }) => initMembers), 
-// lifecycle({
-//     componentWillMount() {
-//         this.props.updateMembers(member => this.props.initMembers);
-//     }
-// }),
-recompose_1.withHandlers({
+const chatroomActions = require("../../chitchat/chats/redux/chatroom/chatroomActions");
+const EditGroupMemberEnhancer = recompose_1.compose(react_redux_1.connect(), recompose_1.withState("members", "updateMembers", []), recompose_1.lifecycle({
+    componentWillMount() {
+        let { params } = this.props.match;
+        let room = chatroomActions.getRoom(params.room_id);
+        this.props.updateMembers(members => room.members);
+    }
+}), recompose_1.withHandlers({
     onToggleItem: (props) => (item, checked) => {
         if (checked) {
             props.members.push(item);
@@ -57,5 +58,4 @@ const EditGroupMember = (props) => (React.createElement(MuiThemeProvider_1.defau
                 }) : null),
         React.createElement(Divider_1.default, { inset: true }),
         React.createElement(RaisedButton_1.default, { label: "Submit", primary: true, onClick: props.onSubmit }))));
-const EnhanceEditGroupMember = enhance(({ teamMembers, initMembers, room_id, members, updateMembers, onToggleItem, onSubmit, onFinished }) => React.createElement(EditGroupMember, { teamMembers: teamMembers, members: members, onToggleItem: onToggleItem, onSubmit: onSubmit }));
-exports.ConnectEditGroupMember = react_redux_1.connect()(EnhanceEditGroupMember);
+exports.EnhanceEditGroupMember = EditGroupMemberEnhancer(({ teamMembers, initMembers, room_id, members, updateMembers, onToggleItem, onSubmit, onFinished }) => React.createElement(EditGroupMember, { teamMembers: teamMembers, members: members, onToggleItem: onToggleItem, onSubmit: onSubmit }));

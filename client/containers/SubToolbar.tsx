@@ -13,14 +13,19 @@ interface ISubToolbar {
 
 const getView = (props: ISubToolbar) => {
     let { match, history, chatroomReducer } = props;
+    let { room_id } = match.params;
 
     if (match.path.match("/chatroom/")) {
         return (
             <div style={{ margin: 2, backgroundColor: Colors.indigo50 }}>
                 <Flex flexColumn={false}>
-                    <RaisedButton label="Manage Group" style={{ margin: 2 }} />
+                    <RaisedButton label="Manage Group" style={{ margin: 2 }} onClick={() => {
+                        console.log("room id", room_id);
+                        history.push(`/chatroom/settings/${room_id}/add_member`);
+                    }} />
                     <RaisedButton label="Edit Group Settings" style={{ margin: 2 }} onClick={() => {
-                        history.push(`/chatroom/settings/${chatroomReducer.room._id}/edit`);
+                        console.log("room id", room_id);
+                        history.push(`/chatroom/settings/${room_id}/edit`);
                     }} />
                 </Flex>
             </div>

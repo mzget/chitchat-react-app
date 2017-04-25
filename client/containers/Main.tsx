@@ -30,33 +30,33 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
         <MuiThemeProvider>
             <div >
                 <ToolbarEnhanced id={"app_bar"} history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
-                <div id={"app_body"} style={{position: "relative", height: "calc(100vh - 56px)"}}>
-                        <Flex style={{height: "100%"}}>
-                                <Box col={3} style={{ overflowY: "scroll"}}>
-                                        <ProfileWithRouter />
-                                        <ConnectGroupListEnhancer
-                                            fetchGroup={fetch_orgGroups}
-                                            groups={groupReducer.orgGroups}
-                                            subHeader={"OrgGroups"} />
-                                        <ConnectGroupListEnhancer
-                                            fetchGroup={fetch_privateGroups}
-                                            groups={groupReducer.privateGroups}
-                                            subHeader={"Groups"} />
-                                        <ChatLogsBoxEnhancer />
-                                        <SnackbarToolBox />
-                                </Box>                                
+                <div id={"app_body"} style={{ position: "relative", height: "calc(100vh - 56px)" }}>
+                    <Flex style={{ height: "100%" }}>
+                        <Box col={3} style={{ overflowY: "scroll" }}>
+                            <ProfileWithRouter />
+                            <ConnectGroupListEnhancer
+                                fetchGroup={fetch_orgGroups}
+                                groups={groupReducer.orgGroups}
+                                subHeader={"OrgGroups"} />
+                            <ConnectGroupListEnhancer
+                                fetchGroup={fetch_privateGroups}
+                                groups={groupReducer.privateGroups}
+                                subHeader={"Groups"} />
+                            <ChatLogsBoxEnhancer />
+                            <SnackbarToolBox />
+                        </Box>
                         <Box col={9} >
                             <SubToolbar history={history} match={match} onError={onError} chatroomReducer={chatroomReducer} />
                             <Flex>
                                 <Box col={6} >
-                                    <AppBody userReducer={userReducer} chatroomReducer={chatroomReducer} match={match} onError={onError} />
+                                    <AppBody userReducer={userReducer} teamReducer={teamReducer} chatroomReducer={chatroomReducer} match={match} onError={onError} />
                                 </Box>
                                 <Box col={6} >
                                     <RightNav match={match} onError={onError} />
                                 </Box>
                             </Flex>
-                        </Box>    
-                        </Flex>
+                        </Box>
+                    </Flex>
                 </div>
                 <div id={"app_footer"}>
                     <StalkCompEnhancer />
