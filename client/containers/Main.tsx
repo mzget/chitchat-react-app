@@ -46,10 +46,10 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
                         <Box col={9} >
                             <SubToolbar history={history} match={match} onError={onError} chatroomReducer={chatroomReducer} />
                             <Flex>
-                                <Box col={6} >
+                                <Box col={8} >
                                     <AppBody userReducer={userReducer} match={match} onError={onError} />
                                 </Box>
-                                <Box col={6} >
+                                <Box col={4} >
                                     <RightNav match={match} onError={onError} teamReducer={teamReducer} />
                                 </Box>
                             </Flex>
