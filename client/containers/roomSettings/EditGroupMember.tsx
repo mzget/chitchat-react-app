@@ -14,24 +14,26 @@ import Divider from "material-ui/Divider";
 import Avatar from "material-ui/Avatar";
 import Toggle from "material-ui/Toggle";
 
-import { EditGroupMemberEnhancer, IEnhanceProps } from "./EditGroupMemberEnhancer";
-
 export const EditGroupMember = (props: { members: Array<any>, onToggleItem, onSubmit }) => (
     <MuiThemeProvider>
         <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align="center">
             <Subheader>ADD MEMBERS</Subheader>
-            <div style={{width: "90%"}}>
+            <div style={{ width: "90%" }}>
                 <TextField
                     hintText="Enter name or email address"
                 /><br />
             </div>
-            <List style={{width: "100%"}}> {
+            <List style={{ width: "100%" }}> {
                 (props.members && props.members.length > 0) ?
                     props.members.map((item, i, arr) => {
                         return (<div key={i} >
                             <ListItem
                                 leftAvatar={(!!item.avatar) ?
-                                    <Avatar src={item.avatar} /> : <Avatar>{item.username.charAt(0)}</Avatar>
+                                    <Avatar src={item.avatar} /> :
+                                    (!!item.username) ?
+                                        <Avatar>{item.username.charAt(0)}</Avatar> :
+                                        null
+
                                 }
                                 primaryText={item.username}
                                 secondaryText={
@@ -50,12 +52,3 @@ export const EditGroupMember = (props: { members: Array<any>, onToggleItem, onSu
         </Flex>
     </MuiThemeProvider>
 );
-
-export const EditGroupMemberEnhanced = EditGroupMemberEnhancer(({
-            room_id, members, updateMembers, onToggleItem, onSubmit, onFinished
-     }: IEnhanceProps) =>
-    <EditGroupMember
-        members={members}
-        onToggleItem={onToggleItem}
-        onSubmit={onSubmit} />
-) as React.ComponentClass<{ room_id, members, match, onFinished }>;

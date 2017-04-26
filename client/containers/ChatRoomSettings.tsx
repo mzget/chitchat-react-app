@@ -5,6 +5,7 @@ import { shallowEqual } from "recompose";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
+import Avatar from 'material-ui/Avatar';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Subheader from "material-ui/Subheader";
 
@@ -85,6 +86,14 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
             <MuiThemeProvider >
                 <div style={{ height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden" }}>
                     <Flex flexColumn={false}>
+                        {
+                            (this.room.image) ? <Avatar
+                                src={this.room.image}
+                                size={32} /> :
+                                <Avatar>
+                                    {this.room.name.charAt(0)}
+                                </Avatar>
+                        }
                         <Subheader>NAME : {this.room.name}</Subheader>
                     </Flex>
                     <Flex flexColumn={false}>

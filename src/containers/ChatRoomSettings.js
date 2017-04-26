@@ -11,6 +11,7 @@ const React = require("react");
 const react_redux_1 = require("react-redux");
 const reflexbox_1 = require("reflexbox");
 const recompose_1 = require("recompose");
+const Avatar_1 = require("material-ui/Avatar");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const Subheader_1 = require("material-ui/Subheader");
 const EditGroupMemberEnhanced_1 = require("./roomSettings/EditGroupMemberEnhanced");
@@ -76,6 +77,8 @@ class ChatRoomSettings extends React.Component {
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement("div", { style: { height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden" } },
                 React.createElement(reflexbox_1.Flex, { flexColumn: false },
+                    (this.room.image) ? React.createElement(Avatar_1.default, { src: this.room.image, size: 32 }) :
+                        React.createElement(Avatar_1.default, null, this.room.name.charAt(0)),
                     React.createElement(Subheader_1.default, null,
                         "NAME : ",
                         this.room.name)),
