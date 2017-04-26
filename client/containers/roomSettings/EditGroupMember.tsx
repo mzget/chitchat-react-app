@@ -20,13 +20,15 @@ export const EditGroupMember = (props: { members: Array<any>, onToggleItem, onSu
     <MuiThemeProvider>
         <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align="center">
             <Subheader>ADD MEMBERS</Subheader>
-            <TextField
-                hintText="Enter name or email address"
-            /><br />
-            <List> {
+            <div style={{width: "90%"}}>
+                <TextField
+                    hintText="Enter name or email address"
+                /><br />
+            </div>
+            <List style={{width: "100%"}}> {
                 (props.members && props.members.length > 0) ?
                     props.members.map((item, i, arr) => {
-                        return (<div key={i}>
+                        return (<div key={i} >
                             <ListItem
                                 leftAvatar={(!!item.avatar) ?
                                     <Avatar src={item.avatar} /> : <Avatar>{item.username.charAt(0)}</Avatar>
