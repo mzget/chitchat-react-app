@@ -10,9 +10,9 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Avatar from "material-ui/Avatar";
 import Toggle from "material-ui/Toggle";
 
-import BadgeSimple from "../../components/BadgeSimple";
+import BadgeSimple from "./BadgeSimple";
 
-import { ChitChatAccount } from "../../chitchat/chats/models/User";
+import { ChitChatAccount } from "../chitchat/chats/models/User";
 
 interface IComponentProps {
     items: Array<ChitChatAccount>;

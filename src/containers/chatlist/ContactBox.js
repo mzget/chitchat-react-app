@@ -6,7 +6,7 @@ const Subheader_1 = require("material-ui/Subheader");
 const teamRx = require("../../redux/team/teamRx");
 const chatroomActions = require("../../chitchat/chats/redux/chatroom/chatroomActions");
 const chatroomRx = require("../../chitchat/chats/redux/chatroom/chatroomRxEpic");
-const MemberList_1 = require("./MemberList");
+const MemberList_1 = require("../../components/MemberList");
 class Contacts extends React.Component {
     componentDidMount() {
         this.onselectMember = this.onselectMember.bind(this);

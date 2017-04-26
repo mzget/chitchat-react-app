@@ -9,7 +9,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 const React = require("react");
 const recompose_1 = require("recompose");
-const MemberList_1 = require("../chatlist/MemberList");
+const MemberList_1 = require("../../components/MemberList");
 const ContactProfileView_1 = require("./ContactProfileView");
 const adminRx = require("../../redux/admin/adminRx");
 const teamRx = require("../../redux/team/teamRx");

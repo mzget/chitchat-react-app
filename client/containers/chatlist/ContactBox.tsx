@@ -10,7 +10,7 @@ import * as teamRx from "../../redux/team/teamRx";
 import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
 import * as chatroomRx from "../../chitchat/chats/redux/chatroom/chatroomRxEpic";
 
-import { MemberList } from "./MemberList";
+import { MemberList } from "../../components/MemberList";
 
 interface IComponentNameState { }
 
