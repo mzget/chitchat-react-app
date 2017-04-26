@@ -13,7 +13,7 @@ const reflexbox_1 = require("reflexbox");
 const recompose_1 = require("recompose");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const Subheader_1 = require("material-ui/Subheader");
-const EditGroupMember_1 = require("./roomSettings/EditGroupMember");
+const EditGroupMemberEnhanced_1 = require("./roomSettings/EditGroupMemberEnhanced");
 const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
 const Room_1 = require("../chitchat/libs/shared/Room");
 const EDIT_GROUP = "EDIT_GROUP";
@@ -87,7 +87,7 @@ class ChatRoomSettings extends React.Component {
                     React.createElement(Subheader_1.default, null,
                         "MEMBERS ",
                         this.room.members.length)),
-                React.createElement(EditGroupMember_1.EditGroupMemberEnhanced, { match: this.props.match, members: this.room.members, room_id: this.room._id, onFinished: () => console.log("Edit group") }))));
+                React.createElement(EditGroupMemberEnhanced_1.EditGroupMemberEnhanced, { match: this.props.match, members: this.room.members, room_id: this.room._id, onFinished: () => console.log("Edit group") }))));
     }
 }
 const mapStateToProps = (state) => (__assign({}, state));

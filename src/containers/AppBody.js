@@ -3,7 +3,7 @@ const React = require("react");
 const Chat_1 = require("./Chat");
 const Post_1 = require("./Post");
 const ProfileDetailEnhancer_1 = require("./profile/ProfileDetailEnhancer");
-const EditGroupMember_1 = require("./roomSettings/EditGroupMember");
+const AddMembers_1 = require("./roomSettings/AddMembers");
 const GroupDetailEnhancer_1 = require("./roomSettings/GroupDetailEnhancer");
 const getview = (props) => {
     let { match, history, onError, userReducer } = props;
@@ -18,7 +18,7 @@ const getview = (props) => {
             return React.createElement(GroupDetailEnhancer_1.GroupDetailEnhanced, { onError: onError, onFinished: () => console.log("Finished") });
         }
         else if (match.params.edit == "add_member") {
-            return React.createElement(EditGroupMember_1.EditGroupMemberEnhanced, { match: match, room_id: match.params.room_id, onFinished: () => console.log("Finished") });
+            return React.createElement(AddMembers_1.AddMembers, null);
         }
     }
     else {

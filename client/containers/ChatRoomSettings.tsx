@@ -10,7 +10,7 @@ import Subheader from "material-ui/Subheader";
 
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { MenuListview } from "./admins/MenuListView";
-import { EditGroupMemberEnhanced } from "./roomSettings/EditGroupMember";
+import { EditGroupMemberEnhanced } from "./roomSettings/EditGroupMemberEnhanced";
 
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
 import * as groupRx from "../redux/group/groupRx";
@@ -83,7 +83,7 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
     render() {
         return (
             <MuiThemeProvider >
-                <div style={{height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden"}}>
+                <div style={{ height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden" }}>
                     <Flex flexColumn={false}>
                         <Subheader>NAME : {this.room.name}</Subheader>
                     </Flex>
