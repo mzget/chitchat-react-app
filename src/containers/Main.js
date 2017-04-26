@@ -17,7 +17,7 @@ const DialogBox_1 = require("../components/DialogBox");
 const MainPageEnhanced = MainPageEnhancer_1.MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer, chatroomReducer, history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
     return (React.createElement(MuiThemeProvider_1.default, null,
         React.createElement("div", null,
-            React.createElement(MainPageToolbar_1.ToolbarEnhanced, { id: "app_bar", history: history, teamReducer: teamReducer, authReducer: authReducer, listener: MainPageToolbar_1.listener }),
+            React.createElement(MainPageToolbar_1.WebToolbarEnhanced, { id: "app_bar", history: history, teamReducer: teamReducer, authReducer: authReducer, listener: MainPageToolbar_1.listener }),
             React.createElement("div", { id: "app_body", style: { position: "relative", height: "calc(100vh - 56px)" } },
                 React.createElement(reflexbox_1.Flex, { style: { height: "100%" } },
                     React.createElement(reflexbox_1.Box, { col: 3, style: { overflowY: "scroll" } },
@@ -29,9 +29,9 @@ const MainPageEnhanced = MainPageEnhancer_1.MainPageEnhancer(({ teamReducer, gro
                         React.createElement(SubToolbar_1.SubToolbar, { history: history, match: match, onError: onError, chatroomReducer: chatroomReducer }),
                         React.createElement(reflexbox_1.Flex, null,
                             React.createElement(reflexbox_1.Box, { col: 6 },
-                                React.createElement(AppBody_1.AppBody, { userReducer: userReducer, teamReducer: teamReducer, chatroomReducer: chatroomReducer, match: match, onError: onError })),
+                                React.createElement(AppBody_1.AppBody, { userReducer: userReducer, match: match, onError: onError })),
                             React.createElement(reflexbox_1.Box, { col: 6 },
-                                React.createElement(RightNav_1.RightNav, { match: match, onError: onError })))))),
+                                React.createElement(RightNav_1.RightNav, { match: match, onError: onError, teamReducer: teamReducer })))))),
             React.createElement("div", { id: "app_footer" },
                 React.createElement(StalkComponent_1.StalkCompEnhancer, null)))));
 });

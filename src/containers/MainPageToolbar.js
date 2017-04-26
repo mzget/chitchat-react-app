@@ -20,4 +20,5 @@ function listener(props, id, value) {
     }
 }
 exports.listener = listener;
-exports.ToolbarEnhanced = ToolbarEnhancer_1.ToolbarEnhancer(({ teamReducer, authReducer, onMenuSelect, listener, history }) => React.createElement(SimpleToolbar_1.SimpleToolbar, { title: (teamReducer.team) ? teamReducer.team.name : "", menus: menus, onSelectedMenuItem: onMenuSelect, groupItem: React.createElement(ProfileBox_1.ProfileEnhanced, null) }));
+exports.WebToolbarEnhanced = ToolbarEnhancer_1.ToolbarEnhancer(({ teamReducer, authReducer, onMenuSelect, listener, history }) => React.createElement(SimpleToolbar_1.SimpleToolbar, { title: (teamReducer.team) ? teamReducer.team.name : "", menus: menus, onSelectedMenuItem: onMenuSelect, groupItem: React.createElement(ProfileBox_1.ProfileEnhanced, null) }));
+exports.MobileToolbarEnhanced = ToolbarEnhancer_1.ToolbarEnhancer(({ teamReducer, authReducer, onMenuSelect, listener, history }) => React.createElement(SimpleToolbar_1.SimpleToolbar, { title: (teamReducer.team) ? teamReducer.team.name : "", menus: menus, onSelectedMenuItem: onMenuSelect }));

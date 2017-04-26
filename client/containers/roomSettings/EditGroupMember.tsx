@@ -27,8 +27,12 @@ interface IEnhanceProps {
     onToggleItem: (item, checked) => void;
     dispatch;
 }
+
+
+const mapStateToProps = (state) => ({ teamReducer: state.teamReducer });
 const EditGroupMemberEnhancer = compose(
-    connect(),
+    connect(mapStateToProps),
+    withProps(props => ({ teamMembers: teamReducer }) => teamReducer.teamMembers),
     withState("members", "updateMembers", []),
     lifecycle({
         componentWillMount() {
@@ -62,9 +66,6 @@ const EditGroupMemberEnhancer = compose(
 const EditGroupMember = (props: { teamMembers: Array<any>, members: Array<any>, onToggleItem, onSubmit }) => (
     <MuiThemeProvider>
         <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align="center">
-            {
-                console.log(props)
-            }
             <List> {
                 (props.teamMembers && props.teamMembers.length > 0) ?
                     props.teamMembers.map((item, i, arr) => {
@@ -111,4 +112,4 @@ export const EnhanceEditGroupMember = EditGroupMemberEnhancer(({
         members={members}
         onToggleItem={onToggleItem}
         onSubmit={onSubmit} />
-) as React.ComponentClass<{ teamMembers, room_id, match, onFinished }>;
+) as React.ComponentClass<{ room_id, match, onFinished }>;

@@ -11,10 +11,10 @@ const MainPageEnhancer_1 = require("./Enhancers/MainPageEnhancer");
 const MainPageToolbar_1 = require("./MainPageToolbar");
 exports.M_MainPageEnhanced = MainPageEnhancer_1.MainPageEnhancer(({ teamReducer, groupReducer, authReducer, history, fetch_orgGroups, fetch_privateGroups }) => (React.createElement(MuiThemeProvider_1.default, null,
     React.createElement("div", null,
-        React.createElement(MainPageToolbar_1.ToolbarEnhanced, { history: history, teamReducer: teamReducer, authReducer: authReducer, listener: MainPageToolbar_1.listener }),
+        React.createElement(MainPageToolbar_1.MobileToolbarEnhanced, { history: history, teamReducer: teamReducer, authReducer: authReducer, listener: MainPageToolbar_1.listener }),
         React.createElement("div", { id: "app_body", style: { overflowY: "auto" } },
             React.createElement("div", { style: { overflowY: "auto" } },
-                React.createElement(ProfileBox_1.ProfileWithRouter, null),
+                React.createElement(ProfileBox_1.ProfileEnhanced, null),
                 React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: fetch_orgGroups, groups: groupReducer.orgGroups, subHeader: "OrgGroups" }),
                 React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: fetch_privateGroups, groups: groupReducer.privateGroups, subHeader: "Groups" }),
                 React.createElement(ContactBox_1.ContactBox, null),

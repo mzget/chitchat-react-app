@@ -20,7 +20,7 @@ import { ContactBox } from "./chatlist/ContactBox";
 
 import { MainPageEnhancer } from "./Enhancers/MainPageEnhancer";
 import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
-import { ToolbarEnhanced, listener } from "./MainPageToolbar";
+import { WebToolbarEnhanced, listener } from "./MainPageToolbar";
 import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
 
 const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer, chatroomReducer,
@@ -28,7 +28,7 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
     return (
         <MuiThemeProvider>
             <div >
-                <ToolbarEnhanced id={"app_bar"} history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
+                <WebToolbarEnhanced id={"app_bar"} history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
                 <div id={"app_body"} style={{ position: "relative", height: "calc(100vh - 56px)" }}>
                     <Flex style={{ height: "100%" }}>
                         <Box col={3} style={{ overflowY: "scroll" }}>
@@ -47,10 +47,10 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
                             <SubToolbar history={history} match={match} onError={onError} chatroomReducer={chatroomReducer} />
                             <Flex>
                                 <Box col={6} >
-                                    <AppBody userReducer={userReducer} teamReducer={teamReducer} chatroomReducer={chatroomReducer} match={match} onError={onError} />
+                                    <AppBody userReducer={userReducer} match={match} onError={onError} />
                                 </Box>
                                 <Box col={6} >
-                                    <RightNav match={match} onError={onError} />
+                                    <RightNav match={match} onError={onError} teamReducer={teamReducer} />
                                 </Box>
                             </Flex>
                         </Box>

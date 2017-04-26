@@ -22,10 +22,17 @@ export function listener(props, id, value) {
     }
 }
 
-export const ToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onMenuSelect, listener, history }: any) =>
+export const WebToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onMenuSelect, listener, history }: any) =>
     <SimpleToolbar
         title={(teamReducer.team) ? teamReducer.team.name : ""}
         menus={menus}
         onSelectedMenuItem={onMenuSelect}
         groupItem={<ProfileEnhanced />} />
+);
+
+export const MobileToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onMenuSelect, listener, history }: any) =>
+    <SimpleToolbar
+        title={(teamReducer.team) ? teamReducer.team.name : ""}
+        menus={menus}
+        onSelectedMenuItem={onMenuSelect} />
 );

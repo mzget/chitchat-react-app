@@ -12,7 +12,8 @@ const Avatar_1 = require("material-ui/Avatar");
 const Toggle_1 = require("material-ui/Toggle");
 const editGroupRxActions = require("../../redux/group/editGroupRxActions");
 const chatroomActions = require("../../chitchat/chats/redux/chatroom/chatroomActions");
-const EditGroupMemberEnhancer = recompose_1.compose(react_redux_1.connect(), recompose_1.withState("members", "updateMembers", []), recompose_1.lifecycle({
+const mapStateToProps = (state) => ({ teamReducer: state.teamReducer });
+const EditGroupMemberEnhancer = recompose_1.compose(react_redux_1.connect(mapStateToProps), recompose_1.withProps(props => ({ teamMembers: teamReducer }) => teamReducer.teamMembers), recompose_1.withState("members", "updateMembers", []), recompose_1.lifecycle({
     componentWillMount() {
         let { params } = this.props.match;
         let room = chatroomActions.getRoom(params.room_id);
@@ -38,7 +39,6 @@ const EditGroupMemberEnhancer = recompose_1.compose(react_redux_1.connect(), rec
 }));
 const EditGroupMember = (props) => (React.createElement(MuiThemeProvider_1.default, null,
     React.createElement(reflexbox_1.Flex, { style: { backgroundColor: Colors.indigo50 }, flexColumn: true, align: "center" },
-        console.log(props),
         React.createElement(List_1.List, null,
             " ",
             (props.teamMembers && props.teamMembers.length > 0) ?
