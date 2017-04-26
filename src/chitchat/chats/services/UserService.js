@@ -4,6 +4,7 @@ const { ajax } = Rx.Observable;
 const chitchatFactory_1 = require("../chitchatFactory");
 const chitchatServiceUtils_1 = require("../utils/chitchatServiceUtils");
 const getConfig = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
+const authReducer = () => chitchatFactory_1.ChitChatFactory.getInstance().authStore;
 function getTeamProfile(token, team_id) {
     return Rx.Observable.ajax({
         url: `${getConfig().api.user}/teamProfile?team_id=${team_id}`,
@@ -51,3 +52,11 @@ function fetchUser(username) {
     });
 }
 exports.fetchUser = fetchUser;
+function suggestUser(username, team_id) {
+    return ajax({
+        method: "GET",
+        url: `${getConfig().api.user}/suggest/?username=${username}&team_id=${team_id}`,
+        headers: chitchatServiceUtils_1.chitchat_headers()
+    });
+}
+exports.suggestUser = suggestUser;

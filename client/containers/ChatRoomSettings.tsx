@@ -18,96 +18,55 @@ import * as groupRx from "../redux/group/groupRx";
 
 import { Room, RoomType } from "../chitchat/libs/shared/Room";
 
-const EDIT_GROUP = "EDIT_GROUP";
-const EDIT_GROUP_MEMBERS = "EDIT_GROUP_MEMBERS";
-const GROUP_MEMBERS = "GROUP_MEMBERS";
-enum BoxState {
-    idle = 0, isEditGroup = 1, isEditMember, viewMembers
-}
-interface IComponentState {
-    boxState: BoxState;
-    alert: boolean;
-}
-class ChatRoomSettings extends React.Component<IComponentProps, IComponentState> {
-    menus = [EDIT_GROUP_MEMBERS, GROUP_MEMBERS];
+class ChatRoomSettingsOverView extends React.Component<IComponentProps, any> {
     room: Room;
 
     componentWillMount() {
-        this.state = {
-            boxState: BoxState.idle,
-            alert: false
-        };
-
-        console.log("ChatRoomSettings", this.props);
-
         let { match: { params } } = this.props;
         this.room = chatroomActions.getRoom(params.room_id);
-
-        this.onMenuSelected = this.onMenuSelected.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
-        let { match } = nextProps;
+        let { match, chatroomReducer } = nextProps;
 
+        if (!!chatroomReducer.room) {
+            this.room = chatroomReducer.room;
+        }
         if (!shallowEqual(match, this.props.match)) {
-            this.room = chatroomActions.getRoom(match.params.room_id);
-        }
-    }
-
-    onMenuSelected(key: string) {
-        console.log("onMenuSelected", key);
-
-        let room = this.room;
-        // @Todo ...
-        // Check room type and user permision for edit group details.
-        if (key == EDIT_GROUP_MEMBERS) {
-            if (room.type == RoomType.privateGroup) {
-                this.setState(prevState => ({ ...prevState, boxState: BoxState.isEditMember }));
-            }
-            else {
-                this.props.onError("Request for valid group permission!");
-            }
-        }
-        else if (key == EDIT_GROUP) {
-            if (room.type == RoomType.privateGroup) {
-                this.setState(prevState => ({ ...prevState, boxState: BoxState.isEditGroup }));
-            }
-            else {
-                this.props.onError("Request for valid group permission!");
-            }
-        }
-        else if (key == GROUP_MEMBERS) {
-            this.setState(prevState => ({ ...prevState, boxState: BoxState.viewMembers }));
+            if (!chatroomReducer.room)
+                this.room = chatroomActions.getRoom(match.params.room_id);
         }
     }
 
     render() {
         return (
             <MuiThemeProvider >
-                <div style={{ height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden" }}>
-                    <Flex flexColumn={false} align="center" style={{ margin: 5 }}>
-                        {
-                            (this.room.image) ? <Avatar
-                                src={this.room.image}
-                                size={32} /> :
-                                <Avatar>
-                                    {this.room.name.charAt(0)}
-                                </Avatar>
-                        }
-                        <span style={{ marginLeft: 5 }}>NAME : {this.room.name}</span>
-                    </Flex>
-                    <Flex flexColumn={false}>
-                        <Subheader>DESCRIPTION : {this.room.description}</Subheader>
-                    </Flex>
-                    <Flex flexColumn={false}>
-                        <Subheader>MEMBERS {this.room.members.length}</Subheader>
-                    </Flex>
-                    <EditGroupMemberEnhanced match={this.props.match} members={this.room.members} room_id={this.room._id} onFinished={() => console.log("Edit group")} />
-                </div>
+                {(!!this.room) ? (
+                    <div style={{ height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden" }}>
+                        <Flex flexColumn={false} align="center" style={{ margin: 5 }}>
+                            {
+                                (!!this.room && !!this.room.image) ? <Avatar
+                                    src={this.room.image}
+                                    size={32} /> :
+                                    <Avatar>
+                                        {(!!this.room && !!this.room.name) ? this.room.name.charAt(0) : null}
+                                    </Avatar>
+                            }
+                            <span style={{ marginLeft: 5 }}>GROUP NAME : {(!!this.room && !!this.room.name) ? this.room.name : ""}</span>
+                        </Flex>
+                        <Flex flexColumn={false}>
+                            <Subheader>DESCRIPTION : {this.room.description}</Subheader>
+                        </Flex>
+                        <Flex flexColumn={false}>
+                            <Subheader>MEMBERS {this.room.members.length}</Subheader>
+                        </Flex>
+                        <EditGroupMemberEnhanced match={this.props.match} members={this.room.members} room_id={this.room._id} onFinished={() => console.log("Edit group")} />
+                    </div>
+                ) : null}
             </MuiThemeProvider>
         );
     }
 }
 
-const mapStateToProps = (state) => ({ ...state });
-export const ChatRoomSettingsPage = connect(mapStateToProps)(ChatRoomSettings) as React.ComponentClass<{ match, onError }>;
+const mapStateToProps = (state) => ({ chatroomReducer: state.chatroomReducer });
+export const ChatRoomSettingsPage = connect(mapStateToProps)(ChatRoomSettingsOverView) as React.ComponentClass<{ match, onError }>;

@@ -21,11 +21,9 @@ const renderList = (props) => (props.value.map((log, i) => {
         React.createElement(List_1.ListItem, { leftAvatar: (!!log.room.image) ?
                 React.createElement(Avatar_1.default, { src: log.room.image }) :
                 React.createElement(Avatar_1.default, null, log.roomName.charAt(0)), primaryText: React.createElement("div", null, log.roomName), secondaryText: React.createElement("div", null,
-                React.createElement("span", { style: { color: colors_1.darkBlack } }, log.lastMessage)), children: React.createElement("div", { style: { float: "right", position: "absolute", top: "10%", right: "2%", margin: "auto" } },
+                React.createElement("span", { style: { color: colors_1.darkBlack } }, log.lastMessage)), onClick: () => props.onSelected(log), children: React.createElement("div", { key: log.id, style: { float: "right", position: "absolute", top: "10%", right: "2%", margin: "auto" } },
                 (log.count && log.count != 0) ? React.createElement(BadgeSimple_1.default, { content: log.count }) : null,
-                rightIconMenu(log, props.onRemovedLog)), 
-            // rightIconButton={rightIconMenu(log, props.onRemovedLog)}
-            onClick: () => props.onSelected(log) }),
+                rightIconMenu(log, props.onRemovedLog)) }),
         React.createElement(Divider_1.default, { inset: true })));
 }));
 exports.ListChatLogs = (props) => (React.createElement(MuiThemeProvider_1.default, null,

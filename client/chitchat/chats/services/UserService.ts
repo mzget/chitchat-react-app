@@ -2,8 +2,9 @@
 const { ajax } = Rx.Observable;
 
 import { ChitChatFactory } from "../chitchatFactory";
-import { chitchat_headers } from "../utils/chitchatServiceUtils";
+import { chitchat_headers, withToken } from "../utils/chitchatServiceUtils";
 const getConfig = () => ChitChatFactory.getInstance().config;
+const authReducer = () => ChitChatFactory.getInstance().authStore;
 
 export function getTeamProfile(token: string, team_id: string) {
     return Rx.Observable.ajax({
@@ -48,6 +49,14 @@ export function fetchUser(username: string) {
     return ajax({
         method: "GET",
         url: `${getConfig().api.user}/?username=${username}`,
+        headers: chitchat_headers()
+    });
+}
+
+export function suggestUser(username: string, team_id: string) {
+    return ajax({
+        method: "GET",
+        url: `${getConfig().api.user}/suggest/?username=${username}&team_id=${team_id}`,
         headers: chitchat_headers()
     });
 }

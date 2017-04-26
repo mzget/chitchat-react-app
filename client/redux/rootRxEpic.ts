@@ -21,7 +21,8 @@ export const rootEpic = combineEpics(
     adminRx.updateUserTeamRole_Epic,
 
     userRx.onAuth_Epic,
-    userRx.fetchUserEpic,
+    userRx.fetchUser_Epic,
+    userRx.suggestUser_Epic,
     userRx.fetchContactEpic,
     userRx.fetchAgentEpic,
     userRx.getTeamProfileEpic,

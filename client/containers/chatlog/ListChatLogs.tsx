@@ -62,8 +62,9 @@ const renderList = (props: IChatlogProps) => (
                             <span style={{ color: darkBlack }}>{log.lastMessage}</span>
                         </div>
                     }
+                    onClick={() => props.onSelected(log)}
                     children={
-                        <div style={{ float: "right", position: "absolute", top: "10%", right: "2%", margin: "auto" }}>
+                        <div key={log.id} style={{ float: "right", position: "absolute", top: "10%", right: "2%", margin: "auto" }}>
                             {
                                 (log.count && log.count != 0) ? <BadgeSimple content={log.count} /> : null
                             }
@@ -73,11 +74,7 @@ const renderList = (props: IChatlogProps) => (
 
                         </div>
                     }
-                    // rightIconButton={rightIconMenu(log, props.onRemovedLog)}
-
-                    onClick={() => props.onSelected(log)}
                 />
-
                 <Divider inset={true} />
             </div>);
     })

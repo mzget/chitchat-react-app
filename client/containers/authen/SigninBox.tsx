@@ -16,7 +16,7 @@ interface IComponentNameState {
     password: string;
 };
 
-class SigninBox extends React.Component<IComponentNameProps, IComponentNameState> {
+export class SigninBox extends React.Component<IComponentNameProps, IComponentNameState> {
     componentWillMount() {
         this.state = {
             username: "",
@@ -65,5 +65,3 @@ class SigninBox extends React.Component<IComponentNameProps, IComponentNameState
         );
     }
 }
-
-export default SigninBox;

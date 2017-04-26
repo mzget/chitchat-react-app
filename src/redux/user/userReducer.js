@@ -9,7 +9,8 @@ exports.UserInitState = immutable_1.Record({
     state: null,
     user: null,
     teamProfile: null,
-    userAvatarResult: null
+    userAvatarResult: null,
+    searchUsers: null
 });
 const userInitState = new exports.UserInitState();
 exports.userReducer = (state = userInitState, action) => {
@@ -17,6 +18,8 @@ exports.userReducer = (state = userInitState, action) => {
         case userRx_1.FETCH_USER_SUCCESS:
             return state.set("user", action.payload.result[0])
                 .set("state", userRx_1.FETCH_USER_SUCCESS);
+        case userRx_1.SUGGEST_USER_SUCCESS:
+            return state.set("searchUsers", action.payload);
         case authRx_1.LOG_OUT_SUCCESS: {
             return userInitState;
         }

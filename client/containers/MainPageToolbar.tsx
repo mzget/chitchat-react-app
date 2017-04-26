@@ -22,9 +22,10 @@ export function listener(props, id, value) {
     }
 }
 
-export const WebToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onMenuSelect, listener, history }: any) =>
+export const WebToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onPressTitle, onMenuSelect, listener, history }: any) =>
     <SimpleToolbar
         title={(teamReducer.team) ? teamReducer.team.name : ""}
+        onPressTitle={onPressTitle}
         menus={menus}
         onSelectedMenuItem={onMenuSelect}
         groupItem={<ProfileEnhanced />} />

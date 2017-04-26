@@ -18,7 +18,7 @@ exports.fetchUser = (username) => ({ type: FETCH_USER, payload: username }); // 
 const fetchUserFulfilled = payload => ({ type: exports.FETCH_USER_SUCCESS, payload });
 const cancelFetchUser = () => ({ type: exports.FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: exports.FETCH_USER_FAILURE, payload });
-exports.fetchUserEpic = action$ => action$.ofType(FETCH_USER)
+exports.fetchUser_Epic = action$ => action$.ofType(FETCH_USER)
     .mergeMap(action => UserService.fetchUser(action.payload)
     .map(response => fetchUserFulfilled(response.xhr.response))
     .takeUntil(action$.ofType(exports.FETCH_USER_CANCELLED))
@@ -128,5 +128,18 @@ exports.uploadUserAvatar_Epic = action$ => (action$.ofType(UPLOAD_USER_AVATAR)
     .map(json => exports.uploadUserAvatarSuccess(json.response))
     .takeUntil(action$.ofType(UPLOAD_USER_AVATAR_CANCELLED))
     .catch(error => Rx.Observable.of(exports.uploadUserAvatarFailure(error.xhr.response))));
+exports.SUGGEST_USER = "SUGGEST_USER";
+exports.SUGGEST_USER_FAILURE = "SUGGEST_USER_FAILURE";
+exports.SUGGEST_USER_SUCCESS = "SUGGEST_USER_SUCCESS";
+exports.SUGGEST_USER_CANCELLED = "SUGGEST_USER_CANCELLED";
+exports.suggestUser = redux_actions_1.createAction(exports.SUGGEST_USER, (username, team_id) => ({ username, team_id }));
+exports.suggestUserSuccess = redux_actions_1.createAction(exports.SUGGEST_USER_SUCCESS, result => result.result);
+exports.suggestUserFailure = redux_actions_1.createAction(exports.SUGGEST_USER_FAILURE, error => error);
+exports.suggestUserCancelled = redux_actions_1.createAction(exports.SUGGEST_USER_CANCELLED);
+exports.suggestUser_Epic = action$ => action$.ofType(exports.SUGGEST_USER)
+    .mergeMap(action => UserService.suggestUser(action.payload.username, action.payload.team_id)
+    .map(response => exports.suggestUserSuccess(response.xhr.response))
+    .takeUntil(action$.ofType(exports.SUGGEST_USER_CANCELLED))
+    .catch(error => Rx.Observable.of(exports.suggestUserFailure(error.xhr.response))));
 exports.USERRX_EMPTY_STATE = "USERRX_EMPTY_STATE";
 exports.emptyState = redux_actions_1.createAction(exports.USERRX_EMPTY_STATE);

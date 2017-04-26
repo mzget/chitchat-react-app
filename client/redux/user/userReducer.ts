@@ -7,7 +7,8 @@ import {
     GET_TEAM_PROFILE_SUCCESS, GET_TEAM_PROFILE_FAILURE,
     UPLOAD_USER_AVATAR_SUCCESS,
     USERRX_EMPTY_STATE,
-    UPDATE_USER_INFO_SUCCESS
+    UPDATE_USER_INFO_SUCCESS,
+    SUGGEST_USER_SUCCESS
 } from "./userRx";
 import { LOG_OUT_SUCCESS } from "../authen/authRx";
 
@@ -16,7 +17,8 @@ export const UserInitState = Record({
     state: null,
     user: null,
     teamProfile: null,
-    userAvatarResult: null
+    userAvatarResult: null,
+    searchUsers: null
 });
 const userInitState = new UserInitState();
 export const userReducer = (state = userInitState, action) => {
@@ -24,6 +26,10 @@ export const userReducer = (state = userInitState, action) => {
         case FETCH_USER_SUCCESS:
             return state.set("user", action.payload.result[0])
                 .set("state", FETCH_USER_SUCCESS);
+
+        case SUGGEST_USER_SUCCESS:
+            return state.set("searchUsers", action.payload);
+
         case LOG_OUT_SUCCESS: {
             return userInitState;
         }
