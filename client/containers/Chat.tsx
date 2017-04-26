@@ -416,7 +416,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 <SnackbarToolBox />
             </div>*/
 
-            <div style={{height: "calc(100vh - (56px + 52px))"}}>
+            <div style={{height: "calc(100vh - (56px + 52px + 40px))"}}>
                 {
                     (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                         <WarningBar /> : null

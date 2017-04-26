@@ -72,10 +72,10 @@ export const ProfileDetail = (props: IProfileDetailProps) => (
                                     <Col md={10} mdOffset={1}>
                                         <Panel style={Object.assign(Styles.generalStyles.gridCenter)}>
                                             <Col md={12} >
-                                                <Col xs={12} md={3} style={{ paddingTop: "3%" }}>
+                                                <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
                                                     <label>First Name :</label>
                                                 </Col>
-                                                <Col xs={12} md={9}>
+                                                <Col xs={12} md={8}>
                                                     <TextField
                                                         hintText="first_name"
                                                         errorText="This field is required"
@@ -85,10 +85,10 @@ export const ProfileDetail = (props: IProfileDetailProps) => (
                                                 </Col>
                                             </Col>
                                             <Col md={12}>
-                                                <Col xs={12} md={3} style={{ paddingTop: "3%" }}>
+                                                <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
                                                     <label>Last Name :</label>
                                                 </Col>
-                                                <Col xs={12} md={9}>
+                                                <Col xs={12} md={8}>
                                                     <TextField
                                                         hintText="last_name"
                                                         errorText="This field is required"
@@ -98,10 +98,10 @@ export const ProfileDetail = (props: IProfileDetailProps) => (
                                                 </Col>
                                             </Col>
                                             <Col md={12}>
-                                                <Col xs={12} md={3} style={{ paddingTop: "3%" }}>
+                                                <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
                                                     <label>Tel :</label>
                                                 </Col>
-                                                <Col xs={12} md={9}>
+                                                <Col xs={12} md={8}>
                                                     <TextField
                                                         hintText="tel"
                                                         value={props.user.tel}
@@ -110,10 +110,10 @@ export const ProfileDetail = (props: IProfileDetailProps) => (
                                                 </Col>
                                             </Col>
                                             <Col md={12}>
-                                                <Col xs={12} md={3} style={{ paddingTop: "3%" }}>
+                                                <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
                                                     <label>Email :</label>
                                                 </Col>
-                                                <Col xs={12} md={9}>
+                                                <Col xs={12} md={8}>
                                                     <TextField
                                                         hintText="email"
                                                         value={props.user.email}
@@ -122,10 +122,10 @@ export const ProfileDetail = (props: IProfileDetailProps) => (
                                                 </Col>
                                             </Col>
                                             <Col md={12}>
-                                                <Col xs={12} md={3} style={{ paddingTop: "3%" }}>
+                                                <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
                                                     <label>User Role :</label>
                                                 </Col>
-                                                <Col xs={12} md={9}>
+                                                <Col xs={12} md={8}>
                                                     <TextField
                                                         hintText="user_role"
                                                         value={props.teamProfile.team_role}
@@ -134,10 +134,10 @@ export const ProfileDetail = (props: IProfileDetailProps) => (
                                                 </Col>
                                             </Col>
                                             <Col md={12}>
-                                                <Col xs={12} md={3} style={{ paddingTop: "3%" }}>
+                                                <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
                                                     <label>User Status :</label>
                                                 </Col>
-                                                <Col xs={12} md={9}>
+                                                <Col xs={12} md={8}>
                                                     <TextField
                                                         hintText="user_status"
                                                         value={props.user.status}

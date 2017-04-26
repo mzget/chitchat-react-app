@@ -84,7 +84,7 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
     render() {
         return (
             <MuiThemeProvider >
-                <div>
+                <div style={{height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden"}}>
                     <Flex flexColumn={false}>
                         <Subheader>{RoomType[this.room.type].toUpperCase()}</Subheader>
                     </Flex>

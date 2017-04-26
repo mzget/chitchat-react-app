@@ -29,7 +29,7 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
         <MuiThemeProvider>
             <div >
                 <WebToolbarEnhanced id={"app_bar"} history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
-                <div id={"app_body"} style={{ position: "relative", height: "calc(100vh - 56px)" }}>
+                <div id={"app_body"} style={{ position: "relative", height: "calc(100vh - 56px)", overflowY: "hidden" }}>
                     <Flex style={{ height: "100%" }}>
                         <Box col={3} style={{ overflowY: "scroll" }}>
                             <ConnectGroupListEnhancer
