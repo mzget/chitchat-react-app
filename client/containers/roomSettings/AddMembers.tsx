@@ -6,7 +6,14 @@ import TextField from 'material-ui/TextField';
 import Subheader from 'material-ui/Subheader';
 import IconButton from 'material-ui/IconButton';
 
-export const AddMembers = () => (
+import { MemberList } from "../../components/MemberList";
+
+interface IAddMembers {
+    members: Array<any>;
+    onselectMember: () => void;
+}
+
+export const AddMembers = (props: IAddMembers) => (
     <div>
         <Subheader>Add Members</Subheader>
         <Flex>
@@ -17,5 +24,7 @@ export const AddMembers = () => (
                 <FontIcon className="material-icons" >search</FontIcon>
             </IconButton>
         </Flex>
+        <Subheader>Contacts</Subheader>
+        <MemberList items={props.members} onSelected={props.onselectMember} />
     </div>
 );

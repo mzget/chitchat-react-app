@@ -76,10 +76,10 @@ class ChatRoomSettings extends React.Component {
     render() {
         return (React.createElement(MuiThemeProvider_1.default, null,
             React.createElement("div", { style: { height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden" } },
-                React.createElement(reflexbox_1.Flex, { flexColumn: false },
+                React.createElement(reflexbox_1.Flex, { flexColumn: false, align: "center", style: { margin: 5 } },
                     (this.room.image) ? React.createElement(Avatar_1.default, { src: this.room.image, size: 32 }) :
                         React.createElement(Avatar_1.default, null, this.room.name.charAt(0)),
-                    React.createElement(Subheader_1.default, null,
+                    React.createElement("span", { style: { marginLeft: 5 } },
                         "NAME : ",
                         this.room.name)),
                 React.createElement(reflexbox_1.Flex, { flexColumn: false },

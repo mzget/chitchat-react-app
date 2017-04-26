@@ -3,18 +3,12 @@ const React = require("react");
 const reflexbox_1 = require("reflexbox");
 const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const Colors = require("material-ui/styles/colors");
-const Subheader_1 = require("material-ui/Subheader");
 const RaisedButton_1 = require("material-ui/RaisedButton");
-const TextField_1 = require("material-ui/TextField");
 const List_1 = require("material-ui/List");
 const Divider_1 = require("material-ui/Divider");
 const Avatar_1 = require("material-ui/Avatar");
 exports.EditGroupMember = (props) => (React.createElement(MuiThemeProvider_1.default, null,
-    React.createElement(reflexbox_1.Flex, { style: { backgroundColor: Colors.indigo50 }, flexColumn: true, align: "center" },
-        React.createElement(Subheader_1.default, null, "ADD MEMBERS"),
-        React.createElement("div", { style: { width: "90%" } },
-            React.createElement(TextField_1.default, { hintText: "Enter name or email address" }),
-            React.createElement("br", null)),
+    React.createElement(reflexbox_1.Flex, { flexColumn: true, align: "center" },
         React.createElement(List_1.List, { style: { width: "100%" } },
             " ",
             (props.members && props.members.length > 0) ?

@@ -16,13 +16,7 @@ import Toggle from "material-ui/Toggle";
 
 export const EditGroupMember = (props: { members: Array<any>, onToggleItem, onSubmit }) => (
     <MuiThemeProvider>
-        <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align="center">
-            <Subheader>ADD MEMBERS</Subheader>
-            <div style={{ width: "90%" }}>
-                <TextField
-                    hintText="Enter name or email address"
-                /><br />
-            </div>
+        <Flex flexColumn align="center">
             <List style={{ width: "100%" }}> {
                 (props.members && props.members.length > 0) ?
                     props.members.map((item, i, arr) => {

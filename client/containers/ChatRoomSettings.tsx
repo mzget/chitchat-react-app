@@ -85,7 +85,7 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
         return (
             <MuiThemeProvider >
                 <div style={{ height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden" }}>
-                    <Flex flexColumn={false}>
+                    <Flex flexColumn={false} align="center" style={{ margin: 5 }}>
                         {
                             (this.room.image) ? <Avatar
                                 src={this.room.image}
@@ -94,7 +94,7 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
                                     {this.room.name.charAt(0)}
                                 </Avatar>
                         }
-                        <Subheader>NAME : {this.room.name}</Subheader>
+                        <span style={{ marginLeft: 5 }}>NAME : {this.room.name}</span>
                     </Flex>
                     <Flex flexColumn={false}>
                         <Subheader>DESCRIPTION : {this.room.description}</Subheader>

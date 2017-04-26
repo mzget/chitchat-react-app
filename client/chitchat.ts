@@ -1,4 +1,4 @@
-const api_stalk = "git.animation-genius.com";
+const api_stalk = "localhost";
 const stalkPort = 3010;
 const chitchat_api = "http://git.animation-genius.com:9000"; //"http://localhost:9000"; "http://git.animation-genius.com:9000"
 

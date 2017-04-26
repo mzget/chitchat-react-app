@@ -26,9 +26,9 @@ const getView = (props: ISubToolbar) => {
         return (
             <div style={{ margin: 2, backgroundColor: Colors.indigo50 }}>
                 <Flex flexColumn={false}>
+                    <Subheader style={{ color: Colors.indigo500 }}>{room.name.toUpperCase()}</Subheader>
                     <Flex flexColumn>
-                        <span style={{ color: Colors.grey900 }}>{room.name.toUpperCase()}</span>
-                        <span style={{ color: Colors.grey500 }}>{RoomType[room.type].toUpperCase()}</span>
+                        {/*<span style={{ color: Colors.grey500 }}>{RoomType[room.type].toUpperCase()}</span>*/}
                     </Flex>
                     <Flex flex>
                     </Flex>
