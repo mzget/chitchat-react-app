@@ -4,7 +4,7 @@ import { Flex, Box } from "reflexbox";
 import { List, ListItem } from "material-ui/List";
 import Divider from "material-ui/Divider";
 import Subheader from "material-ui/Subheader";
-import { grey400, darkBlack, lightBlack } from "material-ui/styles/colors";
+import * as Color from "material-ui/styles/colors";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Avatar from "material-ui/Avatar";
@@ -29,10 +29,10 @@ export const ProfileListView = (props: IComponentProps) => (
                             <Avatar src={props.item.avatar} /> : <Avatar>{props.item.username.charAt(0)}</Avatar>
                         }
                         rightIcon={null}
-                        primaryText={props.item.username}
+                        primaryText={<span style={{ color: Color.grey50 }}>{props.item.username}</span>}
                         secondaryText={
                             <p>
-                                <span style={{ color: darkBlack }}>{props.item.email}</span>
+                                <span style={{ color: Color.grey50 }}>{props.item.email}</span>
                             </p>
                         }
                     />

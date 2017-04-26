@@ -3,7 +3,7 @@ import * as React from "react";
 import { ChatPage } from "./Chat";
 import { Post } from "./Post";
 import { ProfileDetailEnhanced } from "./profile/ProfileDetailEnhancer";
-import { EnhanceEditGroupMember } from "./roomSettings/EditGroupMember";
+import { EditGroupMemberEnhanced } from "./roomSettings/EditGroupMember";
 import { GroupDetailEnhanced } from "./roomSettings/GroupDetailEnhancer";
 
 interface IAppBody { match, history, onError, userReducer }
@@ -27,7 +27,7 @@ const getview = (props: IAppBody) => {
                 onFinished={() => console.log("Finished")} />
         }
         else if (match.params.edit == "add_member") {
-            return <EnhanceEditGroupMember
+            return <EditGroupMemberEnhanced
                 match={match}
                 room_id={match.params.room_id}
                 onFinished={() => console.log("Finished")} />

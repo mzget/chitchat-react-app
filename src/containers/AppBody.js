@@ -18,7 +18,7 @@ const getview = (props) => {
             return React.createElement(GroupDetailEnhancer_1.GroupDetailEnhanced, { onError: onError, onFinished: () => console.log("Finished") });
         }
         else if (match.params.edit == "add_member") {
-            return React.createElement(EditGroupMember_1.EnhanceEditGroupMember, { match: match, room_id: match.params.room_id, onFinished: () => console.log("Finished") });
+            return React.createElement(EditGroupMember_1.EditGroupMemberEnhanced, { match: match, room_id: match.params.room_id, onFinished: () => console.log("Finished") });
         }
     }
     else {
