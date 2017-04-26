@@ -18,32 +18,12 @@ import * as groupRx from "../redux/group/groupRx";
 
 import { Room, RoomType } from "../chitchat/libs/shared/Room";
 
-const EDIT_GROUP = "EDIT_GROUP";
-const EDIT_GROUP_MEMBERS = "EDIT_GROUP_MEMBERS";
-const GROUP_MEMBERS = "GROUP_MEMBERS";
-enum BoxState {
-    idle = 0, isEditGroup = 1, isEditMember, viewMembers
-}
-interface IComponentState {
-    boxState: BoxState;
-    alert: boolean;
-}
-class ChatRoomSettings extends React.Component<IComponentProps, IComponentState> {
-    menus = [EDIT_GROUP_MEMBERS, GROUP_MEMBERS];
+class ChatRoomSettingsOverView extends React.Component<IComponentProps, any> {
     room: Room;
 
     componentWillMount() {
-        this.state = {
-            boxState: BoxState.idle,
-            alert: false
-        };
-
-        console.log("ChatRoomSettings", this.props);
-
         let { match: { params } } = this.props;
         this.room = chatroomActions.getRoom(params.room_id);
-
-        this.onMenuSelected = this.onMenuSelected.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -51,33 +31,6 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
 
         if (!shallowEqual(match, this.props.match)) {
             this.room = chatroomActions.getRoom(match.params.room_id);
-        }
-    }
-
-    onMenuSelected(key: string) {
-        console.log("onMenuSelected", key);
-
-        let room = this.room;
-        // @Todo ...
-        // Check room type and user permision for edit group details.
-        if (key == EDIT_GROUP_MEMBERS) {
-            if (room.type == RoomType.privateGroup) {
-                this.setState(prevState => ({ ...prevState, boxState: BoxState.isEditMember }));
-            }
-            else {
-                this.props.onError("Request for valid group permission!");
-            }
-        }
-        else if (key == EDIT_GROUP) {
-            if (room.type == RoomType.privateGroup) {
-                this.setState(prevState => ({ ...prevState, boxState: BoxState.isEditGroup }));
-            }
-            else {
-                this.props.onError("Request for valid group permission!");
-            }
-        }
-        else if (key == GROUP_MEMBERS) {
-            this.setState(prevState => ({ ...prevState, boxState: BoxState.viewMembers }));
         }
     }
 
@@ -94,7 +47,7 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
                                     {this.room.name.charAt(0)}
                                 </Avatar>
                         }
-                        <span style={{ marginLeft: 5 }}>NAME : {this.room.name}</span>
+                        <span style={{ marginLeft: 5 }}>GROUP NAME : {this.room.name}</span>
                     </Flex>
                     <Flex flexColumn={false}>
                         <Subheader>DESCRIPTION : {this.room.description}</Subheader>
@@ -110,4 +63,4 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
 }
 
 const mapStateToProps = (state) => ({ ...state });
-export const ChatRoomSettingsPage = connect(mapStateToProps)(ChatRoomSettings) as React.ComponentClass<{ match, onError }>;
+export const ChatRoomSettingsPage = connect(mapStateToProps)(ChatRoomSettingsOverView) as React.ComponentClass<{ match, onError }>;

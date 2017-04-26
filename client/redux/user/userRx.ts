@@ -26,7 +26,7 @@ export const fetchUser = (username) => ({ type: FETCH_USER, payload: username })
 const fetchUserFulfilled = payload => ({ type: FETCH_USER_SUCCESS, payload });
 const cancelFetchUser = () => ({ type: FETCH_USER_CANCELLED });
 const fetchUserRejected = payload => ({ type: FETCH_USER_FAILURE, payload });
-export const fetchUserEpic = action$ =>
+export const fetchUser_Epic = action$ =>
     action$.ofType(FETCH_USER)
         .mergeMap(action => UserService.fetchUser(action.payload)
             .map(response => fetchUserFulfilled(response.xhr.response))
@@ -162,6 +162,25 @@ export const uploadUserAvatar_Epic = action$ => (
         .takeUntil(action$.ofType(UPLOAD_USER_AVATAR_CANCELLED))
         .catch(error => Rx.Observable.of(uploadUserAvatarFailure(error.xhr.response)))
 );
+
+export const SUGGEST_USER = "SUGGEST_USER";
+export const SUGGEST_USER_FAILURE = "SUGGEST_USER_FAILURE";
+export const SUGGEST_USER_SUCCESS = "SUGGEST_USER_SUCCESS";
+export const SUGGEST_USER_CANCELLED = "SUGGEST_USER_CANCELLED";
+
+export const suggestUser = createAction(SUGGEST_USER, username => username);
+export const suggestUserSuccess = createAction(SUGGEST_USER_SUCCESS, result => result.result);
+export const suggestUserFailure = createAction(SUGGEST_USER_FAILURE, error => error);
+export const suggestUserCancelled = createAction(SUGGEST_USER_CANCELLED);
+export const suggestUser_Epic = action$ =>
+    action$.ofType(SUGGEST_USER)
+        .mergeMap(action => UserService.suggestUser(action.payload)
+            .map(response => suggestUserSuccess(response.xhr.response))
+            .takeUntil(action$.ofType(SUGGEST_USER_CANCELLED))
+            .catch(error => Rx.Observable.of(suggestUserFailure(error.xhr.response)))
+            ._do(x => {
+                console.log("_do", x);
+            }));
 
 export const USERRX_EMPTY_STATE = "USERRX_EMPTY_STATE";
 export const emptyState = createAction(USERRX_EMPTY_STATE);

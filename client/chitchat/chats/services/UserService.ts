@@ -51,3 +51,11 @@ export function fetchUser(username: string) {
         headers: chitchat_headers()
     });
 }
+
+export function suggestUser(username: string) {
+    return ajax({
+        method: "GET",
+        url: `${getConfig().api.user}/suggest/?username=${username}`,
+        headers: chitchat_headers()
+    });
+}
