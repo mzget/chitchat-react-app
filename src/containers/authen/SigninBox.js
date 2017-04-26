@@ -48,5 +48,4 @@ class SigninBox extends React.Component {
             React.createElement(SigninForm_1.SigninForm, { username: this.state.username, onUsername: this.onUsername, password: this.state.password, onPassword: this.onPassword, onSubmit: this.onSubmitForm })));
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = SigninBox;
+exports.SigninBox = SigninBox;

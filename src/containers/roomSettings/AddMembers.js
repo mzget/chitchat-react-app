@@ -10,7 +10,10 @@ const AddMemberEnhancer_1 = require("../Enhancers/AddMemberEnhancer");
 exports.AddMembers = (props) => (React.createElement("div", null,
     React.createElement(Subheader_1.default, null, "Add Members"),
     React.createElement(reflexbox_1.Flex, null,
-        React.createElement(TextField_1.default, { value: props.search, onChange: props.onTextChanged, hintText: "Enter name or email address" }),
+        React.createElement(TextField_1.default, { value: props.search, onChange: props.onTextChanged, onKeyDown: (e) => {
+                if (e.key == "Enter")
+                    props.onSearch();
+            }, hintText: "Enter name or email address" }),
         React.createElement(IconButton_1.default, { tooltip: "Search", onClick: props.onSearch },
             React.createElement(FontIcon_1.default, { className: "material-icons" }, "search"))),
     React.createElement(Subheader_1.default, null, "Contacts"),

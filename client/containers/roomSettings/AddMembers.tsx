@@ -21,7 +21,9 @@ export const AddMembers = (props: IAddMembersProps) => (
     <div>
         <Subheader>Add Members</Subheader>
         <Flex>
-            <TextField value={props.search} onChange={props.onTextChanged}
+            <TextField value={props.search} onChange={props.onTextChanged} onKeyDown={(e) => {
+                if (e.key == "Enter") props.onSearch();
+            }}
                 hintText="Enter name or email address"
             />
             <IconButton tooltip="Search" onClick={props.onSearch}>
