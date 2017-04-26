@@ -10,8 +10,7 @@ import Subheader from "material-ui/Subheader";
 
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { MenuListview } from "./admins/MenuListView";
-import { ConnectEditGroupMember } from "./roomSettings/EditGroupMember";
-import { GroupMemberEnhancer } from "./roomSettings/GroupMemberEnhancer";
+import { EditGroupMemberEnhanced } from "./roomSettings/EditGroupMember";
 
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
 import * as groupRx from "../redux/group/groupRx";
@@ -86,9 +85,6 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
             <MuiThemeProvider >
                 <div>
                     <Flex flexColumn={false}>
-                        <Subheader>{RoomType[this.room.type].toUpperCase()}</Subheader>
-                    </Flex>
-                    <Flex flexColumn={false}>
                         <Subheader>NAME : {this.room.name}</Subheader>
                     </Flex>
                     <Flex flexColumn={false}>
@@ -97,7 +93,7 @@ class ChatRoomSettings extends React.Component<IComponentProps, IComponentState>
                     <Flex flexColumn={false}>
                         <Subheader>MEMBERS {this.room.members.length}</Subheader>
                     </Flex>
-                    <GroupMemberEnhancer members={this.room.members} />
+                    <EditGroupMemberEnhanced match={this.props.match} members={this.room.members} room_id={this.room._id} onFinished={() => console.log("Edit group")} />
                 </div>
             </MuiThemeProvider>
         );
