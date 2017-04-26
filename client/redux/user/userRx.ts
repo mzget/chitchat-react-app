@@ -168,19 +168,17 @@ export const SUGGEST_USER_FAILURE = "SUGGEST_USER_FAILURE";
 export const SUGGEST_USER_SUCCESS = "SUGGEST_USER_SUCCESS";
 export const SUGGEST_USER_CANCELLED = "SUGGEST_USER_CANCELLED";
 
-export const suggestUser = createAction(SUGGEST_USER, username => username);
+export const suggestUser = createAction(SUGGEST_USER, (username, team_id) => ({ username, team_id }));
 export const suggestUserSuccess = createAction(SUGGEST_USER_SUCCESS, result => result.result);
 export const suggestUserFailure = createAction(SUGGEST_USER_FAILURE, error => error);
 export const suggestUserCancelled = createAction(SUGGEST_USER_CANCELLED);
 export const suggestUser_Epic = action$ =>
     action$.ofType(SUGGEST_USER)
-        .mergeMap(action => UserService.suggestUser(action.payload)
+        .mergeMap(action => UserService.suggestUser(action.payload.username, action.payload.team_id)
             .map(response => suggestUserSuccess(response.xhr.response))
             .takeUntil(action$.ofType(SUGGEST_USER_CANCELLED))
             .catch(error => Rx.Observable.of(suggestUserFailure(error.xhr.response)))
-            ._do(x => {
-                console.log("_do", x);
-            }));
+        );
 
 export const USERRX_EMPTY_STATE = "USERRX_EMPTY_STATE";
 export const emptyState = createAction(USERRX_EMPTY_STATE);

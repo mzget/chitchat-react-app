@@ -132,17 +132,14 @@ exports.SUGGEST_USER = "SUGGEST_USER";
 exports.SUGGEST_USER_FAILURE = "SUGGEST_USER_FAILURE";
 exports.SUGGEST_USER_SUCCESS = "SUGGEST_USER_SUCCESS";
 exports.SUGGEST_USER_CANCELLED = "SUGGEST_USER_CANCELLED";
-exports.suggestUser = redux_actions_1.createAction(exports.SUGGEST_USER, username => username);
+exports.suggestUser = redux_actions_1.createAction(exports.SUGGEST_USER, (username, team_id) => ({ username, team_id }));
 exports.suggestUserSuccess = redux_actions_1.createAction(exports.SUGGEST_USER_SUCCESS, result => result.result);
 exports.suggestUserFailure = redux_actions_1.createAction(exports.SUGGEST_USER_FAILURE, error => error);
 exports.suggestUserCancelled = redux_actions_1.createAction(exports.SUGGEST_USER_CANCELLED);
 exports.suggestUser_Epic = action$ => action$.ofType(exports.SUGGEST_USER)
-    .mergeMap(action => UserService.suggestUser(action.payload)
+    .mergeMap(action => UserService.suggestUser(action.payload.username, action.payload.team_id)
     .map(response => exports.suggestUserSuccess(response.xhr.response))
     .takeUntil(action$.ofType(exports.SUGGEST_USER_CANCELLED))
-    .catch(error => Rx.Observable.of(exports.suggestUserFailure(error.xhr.response)))
-    ._do(x => {
-    console.log("_do", x);
-}));
+    .catch(error => Rx.Observable.of(exports.suggestUserFailure(error.xhr.response))));
 exports.USERRX_EMPTY_STATE = "USERRX_EMPTY_STATE";
 exports.emptyState = redux_actions_1.createAction(exports.USERRX_EMPTY_STATE);

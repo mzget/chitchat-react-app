@@ -12,7 +12,7 @@ exports.AddMemberEnhancer = recompose_1.compose(react_redux_1.connect(mapStateTo
     }
 }), recompose_1.withHandlers({
     onSearch: (props) => () => {
-        props.dispatch(userRx_1.suggestUser(props.search));
+        props.dispatch(userRx_1.suggestUser(props.search, null));
     },
     onselectMember: (props) => item => {
         console.log(props, item);

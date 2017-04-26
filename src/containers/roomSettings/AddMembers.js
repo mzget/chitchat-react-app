@@ -16,6 +16,8 @@ exports.AddMembers = (props) => (React.createElement("div", null,
             }, hintText: "Enter name or email address" }),
         React.createElement(IconButton_1.default, { tooltip: "Search", onClick: props.onSearch },
             React.createElement(FontIcon_1.default, { className: "material-icons" }, "search"))),
-    React.createElement(Subheader_1.default, null, "Contacts"),
+    React.createElement(Subheader_1.default, null,
+        "Contacts : ",
+        (props.members) ? props.members.length : ""),
     React.createElement(MemberList_1.MemberList, { items: props.members, onSelected: props.onselectMember })));
 exports.AddMembersEnhanced = AddMemberEnhancer_1.AddMemberEnhancer(({ search, onSearch, onTextChanged, members, onselectMember }) => React.createElement(exports.AddMembers, { search: search, onTextChanged: onTextChanged, onSearch: onSearch, members: members, onselectMember: onselectMember }));

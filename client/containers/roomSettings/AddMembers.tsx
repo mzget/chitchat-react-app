@@ -30,7 +30,7 @@ export const AddMembers = (props: IAddMembersProps) => (
                 <FontIcon className="material-icons" >search</FontIcon>
             </IconButton>
         </Flex>
-        <Subheader>Contacts</Subheader>
+        <Subheader>Contacts : {(props.members) ? props.members.length : ""}</Subheader>
         <MemberList items={props.members} onSelected={props.onselectMember} />
     </div>
 );

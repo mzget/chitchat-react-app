@@ -23,7 +23,7 @@ export const AddMemberEnhancer = compose(
     }),
     withHandlers({
         onSearch: (props: IAddMembersProps) => () => {
-            props.dispatch(suggestUser(props.search));
+            props.dispatch(suggestUser(props.search, null));
         },
         onselectMember: (props: IAddMembersProps) => item => {
             console.log(props, item);
