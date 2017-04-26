@@ -27,40 +27,46 @@ class ChatRoomSettingsOverView extends React.Component<IComponentProps, any> {
     }
 
     componentWillReceiveProps(nextProps) {
-        let { match } = nextProps;
+        let { match, chatroomReducer } = nextProps;
 
+        if (!!chatroomReducer.room) {
+            this.room = chatroomReducer.room;
+        }
         if (!shallowEqual(match, this.props.match)) {
-            this.room = chatroomActions.getRoom(match.params.room_id);
+            if (!chatroomReducer.room)
+                this.room = chatroomActions.getRoom(match.params.room_id);
         }
     }
 
     render() {
         return (
             <MuiThemeProvider >
-                <div style={{ height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden" }}>
-                    <Flex flexColumn={false} align="center" style={{ margin: 5 }}>
-                        {
-                            (this.room.image) ? <Avatar
-                                src={this.room.image}
-                                size={32} /> :
-                                <Avatar>
-                                    {this.room.name.charAt(0)}
-                                </Avatar>
-                        }
-                        <span style={{ marginLeft: 5 }}>GROUP NAME : {this.room.name}</span>
-                    </Flex>
-                    <Flex flexColumn={false}>
-                        <Subheader>DESCRIPTION : {this.room.description}</Subheader>
-                    </Flex>
-                    <Flex flexColumn={false}>
-                        <Subheader>MEMBERS {this.room.members.length}</Subheader>
-                    </Flex>
-                    <EditGroupMemberEnhanced match={this.props.match} members={this.room.members} room_id={this.room._id} onFinished={() => console.log("Edit group")} />
-                </div>
+                {(!!this.room) ? (
+                    <div style={{ height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden" }}>
+                        <Flex flexColumn={false} align="center" style={{ margin: 5 }}>
+                            {
+                                (!!this.room && !!this.room.image) ? <Avatar
+                                    src={this.room.image}
+                                    size={32} /> :
+                                    <Avatar>
+                                        {(!!this.room && !!this.room.name) ? this.room.name.charAt(0) : null}
+                                    </Avatar>
+                            }
+                            <span style={{ marginLeft: 5 }}>GROUP NAME : {(!!this.room && !!this.room.name) ? this.room.name : ""}</span>
+                        </Flex>
+                        <Flex flexColumn={false}>
+                            <Subheader>DESCRIPTION : {this.room.description}</Subheader>
+                        </Flex>
+                        <Flex flexColumn={false}>
+                            <Subheader>MEMBERS {this.room.members.length}</Subheader>
+                        </Flex>
+                        <EditGroupMemberEnhanced match={this.props.match} members={this.room.members} room_id={this.room._id} onFinished={() => console.log("Edit group")} />
+                    </div>
+                ) : null}
             </MuiThemeProvider>
         );
     }
 }
 
-const mapStateToProps = (state) => ({ ...state });
+const mapStateToProps = (state) => ({ chatroomReducer: state.chatroomReducer });
 export const ChatRoomSettingsPage = connect(mapStateToProps)(ChatRoomSettingsOverView) as React.ComponentClass<{ match, onError }>;

@@ -26,6 +26,7 @@ const muiTheme = getMuiTheme({
 
 interface IComponentProps {
     title: string;
+    onPressTitle?: (e) => void;
     menus?: string[];
     groupItem?: JSX.Element;
     onSelectedMenuItem?: (id, value) => void;
@@ -44,7 +45,7 @@ export const SimpleToolbar = (props: IComponentProps) => (
                         :
                         <span style={{ margin: 8 }} />
                 }
-                <ToolbarTitle text={props.title} style={{ color: Colors.white }} />
+                <ToolbarTitle text={props.title} style={{ color: Colors.white }} onClick={props.onPressTitle} />
             </ToolbarGroup>
             <ToolbarGroup>
                 {

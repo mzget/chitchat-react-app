@@ -29,7 +29,7 @@ exports.SimpleToolbar = (props) => (React.createElement(MuiThemeProvider_1.defau
                 React.createElement(IconButton_1.default, { iconClassName: "material-icons", onClick: props.onBackPressed }, "chevron_left")
                 :
                     React.createElement("span", { style: { margin: 8 } }),
-            React.createElement(Toolbar_1.ToolbarTitle, { text: props.title, style: { color: Colors.white } })),
+            React.createElement(Toolbar_1.ToolbarTitle, { text: props.title, style: { color: Colors.white }, onClick: props.onPressTitle })),
         React.createElement(Toolbar_1.ToolbarGroup, null,
             (props.groupItem) ? (React.createElement(Toolbar_1.ToolbarGroup, null, props.groupItem)) : null,
             React.createElement(Toolbar_1.ToolbarSeparator, null),
