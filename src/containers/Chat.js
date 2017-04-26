@@ -332,7 +332,7 @@ class Chat extends React.Component {
             <UploadingDialog />
             <SnackbarToolBox />
         </div>*/
-        React.createElement("div", { style: { height: "calc(100vh - (56px + 52px))" } },
+        React.createElement("div", { style: { height: "calc(100vh - (56px + 52px + 40px))" } },
             (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                 React.createElement(WarningBar_1.WarningBar, null) : null,
             React.createElement("div", { style: { overflowY: "scroll", height: "100%" }, id: "app_body" },

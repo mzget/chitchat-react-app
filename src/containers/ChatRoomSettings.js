@@ -74,7 +74,7 @@ class ChatRoomSettings extends React.Component {
     }
     render() {
         return (React.createElement(MuiThemeProvider_1.default, null,
-            React.createElement("div", null,
+            React.createElement("div", { style: { height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden" } },
                 React.createElement(reflexbox_1.Flex, { flexColumn: false },
                     React.createElement(Subheader_1.default, null,
                         "NAME : ",
