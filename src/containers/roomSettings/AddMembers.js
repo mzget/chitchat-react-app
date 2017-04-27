@@ -20,4 +20,4 @@ exports.AddMembers = (props) => (React.createElement(reflexbox_1.Flex, { align: 
         "Contacts : ",
         (props.members) ? props.members.length : ""),
     React.createElement(MemberList_1.MemberList, { items: props.members, onAdded: props.onAddMember })));
-exports.AddMembersEnhanced = AddMemberEnhancer_1.AddMemberEnhancer(({ search, onSearch, onTextChanged, members, onAddMember }) => React.createElement(exports.AddMembers, { search: search, onTextChanged: onTextChanged, onSearch: onSearch, members: members, onAddMember: onAddMember }));
+exports.AddMembersEnhanced = AddMemberEnhancer_1.AddMemberEnhancer(({ search, onSearch, onTextChanged, members, onAddMember, match }) => React.createElement(exports.AddMembers, { search: search, onTextChanged: onTextChanged, onSearch: onSearch, members: members, onAddMember: onAddMember }));

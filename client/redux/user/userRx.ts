@@ -178,6 +178,11 @@ export const suggestUser_Epic = action$ =>
             .map(response => suggestUserSuccess(response.xhr.response))
             .takeUntil(action$.ofType(SUGGEST_USER_CANCELLED))
             .catch(error => Rx.Observable.of(suggestUserFailure(error.xhr.response)))
+        // .do(x => {
+        //     if (x.type == SUGGEST_USER_SUCCESS) {
+        //         let members = x.payload as Array<ChitChatAccount>;
+        //     }
+        // })
         );
 
 export const USERRX_EMPTY_STATE = "USERRX_EMPTY_STATE";

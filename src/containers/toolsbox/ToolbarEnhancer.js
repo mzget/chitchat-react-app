@@ -13,6 +13,6 @@ exports.ToolbarEnhancer = recompose_1.compose(react_redux_1.connect(mapStateToPr
         props.history.goBack();
     },
     onPressTitle: (props) => (e) => {
-        props.history.replace("/chatslist/${props.teamReducer.team._id}");
+        props.history.replace(`/chatslist/${props.teamReducer.team.name}`);
     }
 }));

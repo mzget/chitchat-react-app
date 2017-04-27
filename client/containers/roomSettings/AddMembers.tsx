@@ -6,7 +6,7 @@ import TextField from 'material-ui/TextField';
 import Subheader from 'material-ui/Subheader';
 import IconButton from 'material-ui/IconButton';
 
-import { MemberList, addMemberView } from "../../components/MemberList";
+import { MemberList } from "../../components/MemberList";
 import { AddMemberEnhancer } from "../Enhancers/AddMemberEnhancer";
 
 export interface IAddMembersProps {
@@ -35,11 +35,11 @@ export const AddMembers = (props: IAddMembersProps) => (
     </Flex>
 );
 
-export const AddMembersEnhanced = AddMemberEnhancer(({ search, onSearch, onTextChanged, members, onAddMember }: IAddMembersProps) =>
+export const AddMembersEnhanced = AddMemberEnhancer(({ search, onSearch, onTextChanged, members, onAddMember, match }: IAddMembersProps) =>
     <AddMembers
         search={search}
         onTextChanged={onTextChanged}
         onSearch={onSearch}
         members={members}
         onAddMember={onAddMember} />
-);
+) as React.ComponentClass<{ match }>;

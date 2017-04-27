@@ -25,7 +25,7 @@ interface IComponentProps {
     onAdded?: (item: ChitChatAccount) => void;
 }
 
-export const addMemberView = (item, onAdded: (item) => void) => (
+const addMemberView = (item, onAdded: (item) => void) => (
     < IconButton tooltip="Add Member" onClick={() => onAdded(item)} style={{ marginTop: 0 }}>
         <FontIcon color={indigoA700} className="material-icons" >add_circle</FontIcon>
     </IconButton >

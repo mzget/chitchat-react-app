@@ -27,7 +27,7 @@ const getview = (props: IAppBody) => {
                 onFinished={() => console.log("Finished")} />
         }
         else if (match.params.edit == "add_member") {
-            return <AddMembersEnhanced />
+            return <AddMembersEnhanced match={match} />
         }
     }
     else {
