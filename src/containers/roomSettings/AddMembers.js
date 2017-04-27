@@ -7,7 +7,7 @@ const Subheader_1 = require("material-ui/Subheader");
 const IconButton_1 = require("material-ui/IconButton");
 const MemberList_1 = require("../../components/MemberList");
 const AddMemberEnhancer_1 = require("../Enhancers/AddMemberEnhancer");
-exports.AddMembers = (props) => (React.createElement("div", null,
+exports.AddMembers = (props) => (React.createElement(reflexbox_1.Flex, { align: 'center', flex: true, flexColumn: true },
     React.createElement(Subheader_1.default, null, "Add Members"),
     React.createElement(reflexbox_1.Flex, null,
         React.createElement(TextField_1.default, { value: props.search, onChange: props.onTextChanged, onKeyDown: (e) => {

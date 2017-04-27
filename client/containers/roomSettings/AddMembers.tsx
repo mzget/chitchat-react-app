@@ -18,7 +18,7 @@ export interface IAddMembersProps {
 }
 
 export const AddMembers = (props: IAddMembersProps) => (
-    <div>
+    <Flex align='center' flex flexColumn>
         <Subheader>Add Members</Subheader>
         <Flex>
             <TextField value={props.search} onChange={props.onTextChanged} onKeyDown={(e) => {
@@ -32,7 +32,7 @@ export const AddMembers = (props: IAddMembersProps) => (
         </Flex>
         <Subheader>Contacts : {(props.members) ? props.members.length : ""}</Subheader>
         <MemberList items={props.members} onAdded={props.onAddMember} />
-    </div>
+    </Flex>
 );
 
 export const AddMembersEnhanced = AddMemberEnhancer(({ search, onSearch, onTextChanged, members, onAddMember }: IAddMembersProps) =>
