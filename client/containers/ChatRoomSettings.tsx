@@ -55,6 +55,9 @@ class ChatRoomSettingsOverView extends React.Component<IComponentProps, any> {
                             <span style={{ marginLeft: 5 }}>GROUP NAME : {(!!this.room && !!this.room.name) ? this.room.name : ""}</span>
                         </Flex>
                         <Flex flexColumn={false}>
+                            <Subheader>TYPE : {RoomType[this.room.type].toUpperCase()}</Subheader>
+                        </Flex>
+                        <Flex flexColumn={false}>
                             <Subheader>DESCRIPTION : {this.room.description}</Subheader>
                         </Flex>
                         <Flex flexColumn={false}>

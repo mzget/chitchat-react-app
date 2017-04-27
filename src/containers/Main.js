@@ -26,7 +26,7 @@ const MainPageEnhanced = MainPageEnhancer_1.MainPageEnhancer(({ teamReducer, gro
                         React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, null),
                         React.createElement(SnackbarToolBox_1.SnackbarToolBox, null)),
                     React.createElement(reflexbox_1.Box, { col: 9 },
-                        React.createElement(SubToolbar_1.SubToolbar, { history: history, match: match, onError: onError, chatroomReducer: chatroomReducer }),
+                        React.createElement(SubToolbar_1.SubToolbar, { history: history, match: match, onError: onError, chatroomReducer: chatroomReducer, userReducer: userReducer }),
                         React.createElement(reflexbox_1.Flex, null,
                             React.createElement(reflexbox_1.Box, { col: 8 },
                                 React.createElement(AppBody_1.AppBody, { userReducer: userReducer, match: match, history: history, onError: onError })),

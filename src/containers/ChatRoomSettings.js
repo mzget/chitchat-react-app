@@ -8,6 +8,7 @@ const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 const Subheader_1 = require("material-ui/Subheader");
 const EditGroupMemberEnhanced_1 = require("./roomSettings/EditGroupMemberEnhanced");
 const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
+const Room_1 = require("../chitchat/libs/shared/Room");
 class ChatRoomSettingsOverView extends React.Component {
     componentWillMount() {
         let { match: { params } } = this.props;
@@ -31,6 +32,10 @@ class ChatRoomSettingsOverView extends React.Component {
                 React.createElement("span", { style: { marginLeft: 5 } },
                     "GROUP NAME : ",
                     (!!this.room && !!this.room.name) ? this.room.name : "")),
+            React.createElement(reflexbox_1.Flex, { flexColumn: false },
+                React.createElement(Subheader_1.default, null,
+                    "TYPE : ",
+                    Room_1.RoomType[this.room.type].toUpperCase())),
             React.createElement(reflexbox_1.Flex, { flexColumn: false },
                 React.createElement(Subheader_1.default, null,
                     "DESCRIPTION : ",

@@ -6,15 +6,29 @@ import { Flex, Box } from "reflexbox";
 import Subheader from 'material-ui/Subheader';
 
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
+import { groups } from "../chitchat/consts/AlertMsg";
 import { Room, RoomType } from "../chitchat/libs/shared/Room";
+import { ITeamProfile } from "../chitchat/chats/models/TeamProfile";
+import { UserRole } from "../chitchat/chats/models/UserRole";
+
 import * as H from "history";
 
 interface ISubToolbar {
-    history, match, onError, chatroomReducer
+    history, match, onError, chatroomReducer, userReducer
+}
+
+const checkAdminPermission = (teamProfile: ITeamProfile) => {
+    let { team_role } = teamProfile;
+
+    if (team_role.toString() == UserRole[UserRole.admin]) {
+        return true;
+    }
+    else
+        return false;
 }
 
 const getView = (props: ISubToolbar) => {
-    let { match, history, chatroomReducer } = props;
+    let { match, history, onError, chatroomReducer, userReducer } = props;
     let { room_id } = match.params;
     let { room }: { room: Room } = chatroomReducer;
 
@@ -33,11 +47,32 @@ const getView = (props: ISubToolbar) => {
                     <Flex flex>
                     </Flex>
                     <FlatButton label="Manage Group" style={{ margin: 2 }} onClick={() => {
-                        history.push(`/chatroom/settings/${room_id}/add_member`);
+                        if (room.type == RoomType.organizationGroup) {
+                            if (checkAdminPermission(userReducer.teamProfile)) {
+                                history.push(`/chatroom/settings/${room_id}/add_member`);
+                            }
+                            else {
+                                onError(groups.request_admin_permission);
+                            }
+                        }
+                        else {
+                            history.push(`/chatroom/settings/${room_id}/add_member`);
+                        }
                     }} />
                     <FlatButton label="Edit Group Settings" style={{ margin: 2 }} onClick={() => {
-                        history.push(`/chatroom/settings/${room_id}/edit`);
-                    }} />
+                        if (room.type == RoomType.organizationGroup) {
+                            if (checkAdminPermission(userReducer.teamProfile)) {
+                                history.push(`/chatroom/settings/${room_id}/edit`);
+                            }
+                            else {
+                                onError(groups.request_admin_permission);
+                            }
+                        }
+                        else {
+                            history.push(`/chatroom/settings/${room_id}/edit`);
+                        }
+                    }
+                    } />
                 </Flex>
             </div>
         );
