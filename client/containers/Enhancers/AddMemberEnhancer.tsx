@@ -45,7 +45,6 @@ export const AddMemberEnhancer = compose(
             props.dispatch(suggestUser(props.search, null));
         },
         onAddMember: (props: IAddMembersProps) => item => {
-            console.log(item);
             props.dispatch(addGroupMember(props.match.params.room_id, item));
         },
         onTextChanged: (props: IAddMembersProps) => (e, value: string) => {

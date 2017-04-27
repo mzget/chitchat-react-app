@@ -35,6 +35,9 @@ exports.groupReducer = (state = new exports.GroupInitState(), action) => {
             return state.set("state", groupRx.CREATE_ORG_GROUP_FAILURE)
                 .set("error", action.payload.message);
         }
+        case privateGroupRxActions.SET_PRIVATE_GROUP: {
+            return state.set("privateGroups", action.payload);
+        }
         case privateGroupRxActions.GET_PRIVATE_GROUP_SUCCESS: {
             return state.set("privateGroups", action.payload.result);
         }

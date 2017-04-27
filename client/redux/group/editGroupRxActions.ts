@@ -3,13 +3,14 @@ import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
+import { Room, RoomType, IMember } from "../../chitchat/libs/shared/Room";
 import { addMember } from "../../chitchat/chats/services/groupService";
 import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 
 import Store from "../configureStore";
+import { SET_PRIVATE_GROUP } from "./privateGroupRxActions";
 
-import { Room, RoomType, IMember } from "../../chitchat/libs/shared/Room";
 
 const EDIT_GROUP_MEMBER = "EDIT_GROUP_MEMBER";
 export const EDIT_GROUP_MEMBER_SUCCESS = "EDIT_GROUP_MEMBER_SUCCESS";
@@ -51,7 +52,7 @@ const ADD_GROUP_MEMBER_FAILURE = "ADD_GROUP_MEMBER_FAILURE";
 const ADD_GROUP_MEMBER_CANCELLED = "ADD_GROUP_MEMBER_CANCELLED";
 
 export const addGroupMember = createAction(ADD_GROUP_MEMBER, (room_id: string, member: IMember) => ({ room_id, member }));
-const addGroupMemberSuccess = createAction(ADD_GROUP_MEMBER_SUCCESS, payload => payload);
+const addGroupMemberSuccess = createAction(ADD_GROUP_MEMBER_SUCCESS, payload => payload.result);
 const addGroupMemberFailure = createAction(ADD_GROUP_MEMBER_FAILURE, error => error);
 const addGroupMemberCancelled = createAction(ADD_GROUP_MEMBER_CANCELLED);
 export const addGroupMember_Epic = action$ => (
@@ -60,14 +61,22 @@ export const addGroupMember_Epic = action$ => (
         .map(response => addGroupMemberSuccess(response.xhr.response))
         .takeUntil(action$.ofType(ADD_GROUP_MEMBER_CANCELLED))
         .catch(error => Rx.Observable.of(addGroupMemberFailure(error.xhr.response)))
-        .do(response => {
-            // if (response.type == GET_ORG_GROUP_SUCCESS) {
-            //     const dataManager = BackendFactory.getInstance().dataManager;
-            //     let rooms = response.payload.result as Array<Room>;
-            //     Rx.Observable.from(rooms)._do(x => {
-            //         dataManager.roomDAL.save(x._id, x);
-            //     }).subscribe();
-            // }
+        .map(response => {
+            if (response.type == ADD_GROUP_MEMBER_SUCCESS) {
+                let group = response.payload as Room;
+                if (group.type == RoomType.privateGroup) {
+                    let { privateGroups }: { privateGroups: Array<Room> } = Store.getState().groupReducer;
+                    let newPrivateGroups = privateGroups.map(v => {
+                        if (v._id == group._id) {
+                            v = group;
+                        }
+
+                        return v;
+                    });
+
+                    return ({ type: SET_PRIVATE_GROUP, payload: newPrivateGroups });
+                }
+            }
         })
 );
 

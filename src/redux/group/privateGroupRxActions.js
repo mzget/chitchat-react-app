@@ -5,6 +5,7 @@ const chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
 const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const configureStore_1 = require("../configureStore");
 const chatroomActions_1 = require("../../chitchat/chats/redux/chatroom/chatroomActions");
+exports.SET_PRIVATE_GROUP = "SET_PRIVATE_GROUP";
 const GET_PRIVATE_GROUP = "GET_PRIVATE_GROUP";
 exports.GET_PRIVATE_GROUP_SUCCESS = "GET_PRIVATE_GROUP_SUCCESS";
 exports.GET_PRIVATE_GROUP_FAILURE = "GET_PRIVATE_GROUP_FAILURE";

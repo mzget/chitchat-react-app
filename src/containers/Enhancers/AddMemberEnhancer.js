@@ -31,7 +31,6 @@ exports.AddMemberEnhancer = recompose_1.compose(react_redux_1.connect(mapStateTo
         props.dispatch(userRx_1.suggestUser(props.search, null));
     },
     onAddMember: (props) => item => {
-        console.log(item);
         props.dispatch(editGroupRxActions_1.addGroupMember(props.match.params.room_id, item));
     },
     onTextChanged: (props) => (e, value) => {
