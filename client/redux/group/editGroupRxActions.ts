@@ -3,6 +3,7 @@ import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
+import { addMember } from "../../chitchat/chats/services/groupService";
 import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 
@@ -42,6 +43,33 @@ export const editGroupMember_Epic = action$ => (
             })
     ));
 
+
+
+const ADD_GROUP_MEMBER = "ADD_GROUP_MEMBER";
+export const ADD_GROUP_MEMBER_SUCCESS = "ADD_GROUP_MEMBER_SUCCESS";
+const ADD_GROUP_MEMBER_FAILURE = "ADD_GROUP_MEMBER_FAILURE";
+const ADD_GROUP_MEMBER_CANCELLED = "ADD_GROUP_MEMBER_CANCELLED";
+
+export const addGroupMember = createAction(ADD_GROUP_MEMBER, (room_id: string, member: IMember) => ({ room_id, member }));
+const addGroupMemberSuccess = createAction(ADD_GROUP_MEMBER_SUCCESS, payload => payload);
+const addGroupMemberFailure = createAction(ADD_GROUP_MEMBER_FAILURE, error => error);
+const addGroupMemberCancelled = createAction(ADD_GROUP_MEMBER_CANCELLED);
+export const addGroupMember_Epic = action$ => (
+    action$.ofType(ADD_GROUP_MEMBER)
+        .mergeMap(action => addMember(action.payload.room_id, action.payload.member))
+        .map(response => addGroupMemberSuccess(response.xhr.response))
+        .takeUntil(action$.ofType(ADD_GROUP_MEMBER_CANCELLED))
+        .catch(error => Rx.Observable.of(addGroupMemberFailure(error.xhr.response)))
+        .do(response => {
+            // if (response.type == GET_ORG_GROUP_SUCCESS) {
+            //     const dataManager = BackendFactory.getInstance().dataManager;
+            //     let rooms = response.payload.result as Array<Room>;
+            //     Rx.Observable.from(rooms)._do(x => {
+            //         dataManager.roomDAL.save(x._id, x);
+            //     }).subscribe();
+            // }
+        })
+);
 
 
 const EDIT_GROUP_DETAIL = "EDIT_GROUP_DETAIL";

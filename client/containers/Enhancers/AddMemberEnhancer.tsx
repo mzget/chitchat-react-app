@@ -8,6 +8,7 @@ import { ChitChatAccount } from "../../chitchat/chats/models/User";
 import { IAddMembersProps } from "../roomSettings/AddMembers";
 
 import { suggestUser } from "../../redux/user/userRx";
+import { addGroupMember } from "../../redux/group/editGroupRxActions";
 import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
 
 const mapStateToProps = (state) => ({ userReducer: state.userReducer });
@@ -45,6 +46,7 @@ export const AddMemberEnhancer = compose(
         },
         onAddMember: (props: IAddMembersProps) => item => {
             console.log(item);
+            props.dispatch(addGroupMember(props.match.params.room_id, item));
         },
         onTextChanged: (props: IAddMembersProps) => (e, value: string) => {
             props.setSearch(search => value);
