@@ -19,5 +19,5 @@ exports.AddMembers = (props) => (React.createElement("div", null,
     React.createElement(Subheader_1.default, null,
         "Contacts : ",
         (props.members) ? props.members.length : ""),
-    React.createElement(MemberList_1.MemberList, { items: props.members, onSelected: props.onselectMember })));
-exports.AddMembersEnhanced = AddMemberEnhancer_1.AddMemberEnhancer(({ search, onSearch, onTextChanged, members, onselectMember }) => React.createElement(exports.AddMembers, { search: search, onTextChanged: onTextChanged, onSearch: onSearch, members: members, onselectMember: onselectMember }));
+    React.createElement(MemberList_1.MemberList, { items: props.members, onAdded: props.onAddMember })));
+exports.AddMembersEnhanced = AddMemberEnhancer_1.AddMemberEnhancer(({ search, onSearch, onTextChanged, members, onAddMember }) => React.createElement(exports.AddMembers, { search: search, onTextChanged: onTextChanged, onSearch: onSearch, members: members, onAddMember: onAddMember }));

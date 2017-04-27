@@ -6,12 +6,12 @@ import TextField from 'material-ui/TextField';
 import Subheader from 'material-ui/Subheader';
 import IconButton from 'material-ui/IconButton';
 
-import { MemberList } from "../../components/MemberList";
+import { MemberList, addMemberView } from "../../components/MemberList";
 import { AddMemberEnhancer } from "../Enhancers/AddMemberEnhancer";
 
 export interface IAddMembersProps {
     members: Array<any>;
-    onselectMember: () => void;
+    onAddMember: (item: any) => void;
     search: string;
     onTextChanged: (e, value: string) => void;
     onSearch: () => void;
@@ -31,15 +31,15 @@ export const AddMembers = (props: IAddMembersProps) => (
             </IconButton>
         </Flex>
         <Subheader>Contacts : {(props.members) ? props.members.length : ""}</Subheader>
-        <MemberList items={props.members} onSelected={props.onselectMember} />
+        <MemberList items={props.members} onAdded={props.onAddMember} />
     </div>
 );
 
-export const AddMembersEnhanced = AddMemberEnhancer(({ search, onSearch, onTextChanged, members, onselectMember }: IAddMembersProps) =>
+export const AddMembersEnhanced = AddMemberEnhancer(({ search, onSearch, onTextChanged, members, onAddMember }: IAddMembersProps) =>
     <AddMembers
         search={search}
         onTextChanged={onTextChanged}
         onSearch={onSearch}
         members={members}
-        onselectMember={onselectMember} />
+        onAddMember={onAddMember} />
 );

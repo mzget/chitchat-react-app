@@ -14,8 +14,8 @@ exports.AddMemberEnhancer = recompose_1.compose(react_redux_1.connect(mapStateTo
     onSearch: (props) => () => {
         props.dispatch(userRx_1.suggestUser(props.search, null));
     },
-    onselectMember: (props) => item => {
-        console.log(props, item);
+    onAddMember: (props) => item => {
+        console.log(item);
     },
     onTextChanged: (props) => (e, value) => {
         props.setSearch(search => value);

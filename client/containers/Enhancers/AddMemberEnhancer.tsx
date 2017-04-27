@@ -25,8 +25,8 @@ export const AddMemberEnhancer = compose(
         onSearch: (props: IAddMembersProps) => () => {
             props.dispatch(suggestUser(props.search, null));
         },
-        onselectMember: (props: IAddMembersProps) => item => {
-            console.log(props, item);
+        onAddMember: (props: IAddMembersProps) => item => {
+            console.log(item);
         },
         onTextChanged: (props: IAddMembersProps) => (e, value: string) => {
             props.setSearch(search => value);

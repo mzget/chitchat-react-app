@@ -4,6 +4,8 @@ import { Flex, Box } from "reflexbox";
 import { List, ListItem } from "material-ui/List";
 import Divider from "material-ui/Divider";
 import Subheader from "material-ui/Subheader";
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 import { grey400, darkBlack, lightBlack } from "material-ui/styles/colors";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -14,13 +16,24 @@ import BadgeSimple from "./BadgeSimple";
 
 import { ChitChatAccount } from "../chitchat/chats/models/User";
 
+const style = {
+    marginRight: 20,
+};
+
 interface IComponentProps {
     items: Array<ChitChatAccount>;
     rightIcon?: any;
     rightToggle?: boolean;
     onToggleItem?: (item: ChitChatAccount, checked: boolean) => void;
     onSelected?: (item: ChitChatAccount) => void;
+    onAdded?: (item: ChitChatAccount) => void;
 }
+
+export const addMemberView = (item, onAdded: (item) => void) => (
+    <FloatingActionButton mini={true} style={style} onClick={() => onAdded(item)}>
+        <ContentAdd />
+    </FloatingActionButton>
+);
 
 const renderList = (props: IComponentProps) => props.items.map((item, i) =>
     <div key={i}>
@@ -29,7 +42,7 @@ const renderList = (props: IComponentProps) => props.items.map((item, i) =>
             leftAvatar={(!!item.avatar) ?
                 <Avatar src={item.avatar} /> : <Avatar>{item.username.charAt(0)}</Avatar>
             }
-            rightIcon={(props.rightIcon) ? props.rightIcon : null}
+            rightIcon={(props.onAdded) ? addMemberView(item, props.onAdded) : null}
             rightToggle={(props.rightToggle) ?
                 <Toggle
                     onToggle={(event: object, isInputChecked: boolean) => {
@@ -50,9 +63,9 @@ const renderList = (props: IComponentProps) => props.items.map((item, i) =>
 );
 
 export const MemberList = (props: IComponentProps) => (
-    < MuiThemeProvider >
+    <MuiThemeProvider>
         <List>
             {(!!props.items) ? renderList(props) : null}
         </List>
-    </ MuiThemeProvider >
+    </MuiThemeProvider>
 );
