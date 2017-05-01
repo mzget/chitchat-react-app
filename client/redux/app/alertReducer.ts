@@ -37,7 +37,7 @@ export const alertReducer = (state = new AlertInitState(), action: ReduxActions.
             return state.set("error", JSON.stringify(action.payload));
         }
         case authRx.TOKEN_AUTH_USER_FAILURE: {
-            return state.set("error", action.payload);
+            return state;
         }
         case authRx.AUTH_REDUCER_CLEAR_ERROR: {
             return state.set("error", null);
