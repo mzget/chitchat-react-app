@@ -21,7 +21,7 @@ export interface IEnhanceProps {
 
 export const EditGroupMemberEnhancer = compose(
     connect(),
-    // withState("members", "updateMembers", []),
+    withState("value", "setValue", "0"),
     lifecycle({
         componentWillReceiveProps(nextProps) {
             // let { params } = nextProps.match;
@@ -33,16 +33,8 @@ export const EditGroupMemberEnhancer = compose(
         }
     }),
     withHandlers({
-        onToggleItem: (props: IEnhanceProps) => (item, checked) => {
-            if (checked) {
-                props.members.push(item);
-                props.updateMembers((members: Array<ChitChatAccount>) => props.members);
-            }
-            else {
-                let index = props.members.indexOf(item);
-                props.members.splice(index);
-                props.updateMembers((members: Array<ChitChatAccount>) => props.members);
-            }
+        removeItem: (props: any) => (item) => {
+            console.log("removeItem", item);
         },
         onSubmit: (props: IEnhanceProps) => event => {
             let payload = { room_id: props.room_id, members: props.members };

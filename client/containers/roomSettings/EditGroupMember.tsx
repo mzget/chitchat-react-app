@@ -5,35 +5,15 @@ import { withRouter } from "react-router-dom";
 import { withProps, withState, withHandlers, compose, lifecycle, ComponentEnhancer } from "recompose";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import * as Colors from "material-ui/styles/colors";
 import Subheader from "material-ui/Subheader";
 import RaisedButton from "material-ui/RaisedButton";
 import TextField from 'material-ui/TextField';
 import { List, ListItem } from "material-ui/List";
 import Divider from "material-ui/Divider";
 import Avatar from "material-ui/Avatar";
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
-const iconButtonElement = (
-    <IconButton
-        touch={true}
-        tooltip="more"
-        tooltipPosition="bottom-left"
-    >
-        <MoreVertIcon color={Colors.grey400} />
-    </IconButton>
-);
 
-const rightIconMenu = (
-    <IconMenu iconButtonElement={iconButtonElement}>
-        <MenuItem>Delete</MenuItem>
-    </IconMenu>
-);
-
-export const EditGroupMember = (props: { members: Array<any>, onToggleItem }) => (
+export const EditGroupMember = (props: { members: Array<any>, rightIconButton: (item: any) => JSX.Element }) => (
     <MuiThemeProvider>
         <Flex flexColumn align="center">
             <List style={{ width: "100%" }}> {
@@ -49,7 +29,7 @@ export const EditGroupMember = (props: { members: Array<any>, onToggleItem }) =>
                                             null
                                     }
                                     primaryText={item.username}
-                                    rightIconButton={rightIconMenu}
+                                    rightIconButton={props.rightIconButton(item)}
                                 />
                                 <Divider inset={true} />
                             </div>);
