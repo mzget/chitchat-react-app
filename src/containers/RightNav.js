@@ -1,10 +1,10 @@
 "use strict";
 const React = require("react");
 const ContactBox_1 = require("./chatlist/ContactBox");
-const ChatRoomSettings_1 = require("./ChatRoomSettings");
+const ChatRoomOverview_1 = require("./ChatRoomOverview");
 const getView = (match, onError) => {
     if (match.path.match("/chatroom/")) {
-        return React.createElement(ChatRoomSettings_1.ChatRoomSettingsPage, { match: match, onError: onError });
+        return React.createElement(ChatRoomOverview_1.ChatRoomOverview, { match: match, onError: onError });
     }
     else {
         return React.createElement(ContactBox_1.ContactBox, null);

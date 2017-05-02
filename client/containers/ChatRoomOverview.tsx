@@ -63,7 +63,11 @@ class ChatRoomSettingsOverView extends React.Component<IComponentProps, any> {
                         <Flex flexColumn={false}>
                             <Subheader>MEMBERS {this.room.members.length}</Subheader>
                         </Flex>
-                        <EditGroupMemberEnhanced match={this.props.match} members={this.room.members} room_id={this.room._id} onFinished={() => console.log("Edit group")} />
+                        <EditGroupMemberEnhanced
+                            match={this.props.match}
+                            members={this.room.members}
+                            room_id={this.room._id}
+                            onFinished={() => console.log("Edit group")} />
                     </div>
                 ) : null}
             </MuiThemeProvider>
@@ -72,4 +76,4 @@ class ChatRoomSettingsOverView extends React.Component<IComponentProps, any> {
 }
 
 const mapStateToProps = (state) => ({ chatroomReducer: state.chatroomReducer });
-export const ChatRoomSettingsPage = connect(mapStateToProps)(ChatRoomSettingsOverView) as React.ComponentClass<{ match, onError }>;
+export const ChatRoomOverview = connect(mapStateToProps)(ChatRoomSettingsOverView) as React.ComponentClass<{ match, onError }>;

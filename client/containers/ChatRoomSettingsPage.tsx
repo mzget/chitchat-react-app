@@ -2,7 +2,7 @@ import * as React from "react";
 import { withRouter } from "react-router-dom";
 
 import { SimpleToolbar } from "../components/SimpleToolbar";
-import { ChatRoomSettingsPage } from "./ChatRoomSettings";
+import { ChatRoomOverview } from "./ChatRoomOverview";
 import { DialogBox } from "../components/DialogBox";
 
 import { ToolbarEnhancer } from "./toolsbox/ToolbarEnhancer";
@@ -13,7 +13,7 @@ const title = "Room settings";
 const ChatRoomSettingsWithToolbar = ToolbarEnhancer(({ onBackPressed, onError, history, match }) =>
     <div>
         <SimpleToolbar title={title} onBackPressed={onBackPressed} />
-        <ChatRoomSettingsPage match={match} onError={onError} />
+        <ChatRoomOverview match={match} onError={onError} />
     </div>
 );
 
