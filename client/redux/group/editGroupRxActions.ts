@@ -4,18 +4,21 @@ import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
 import { Room, RoomType, IMember } from "../../chitchat/libs/shared/Room";
-import { addMember } from "../../chitchat/chats/services/groupService";
+import * as groupService from "../../chitchat/chats/services/groupService";
 import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 
 import Store from "../configureStore";
 import { SET_PRIVATE_GROUP } from "./privateGroupRxActions";
 
-
+/**
+ * Edit group members...
+ */
 const EDIT_GROUP_MEMBER = "EDIT_GROUP_MEMBER";
 export const EDIT_GROUP_MEMBER_SUCCESS = "EDIT_GROUP_MEMBER_SUCCESS";
 const EDIT_GROUP_MEMBER_FAILURE = "EDIT_GROUP_MEMBER_FAILURE";
 const EDIT_GROUP_MEMBER_CANCELLED = "EDIT_GROUP_MEMBER_CANCELLED";
+
 export const editGroupMember = createAction(EDIT_GROUP_MEMBER, (payload: { room_id: string, members: Array<IMember> }) => payload);
 const editGroupMemberSuccess = createAction(EDIT_GROUP_MEMBER_SUCCESS, payload => payload);
 const editGroupMemberFailure = createAction(EDIT_GROUP_MEMBER_FAILURE, err => err);
@@ -45,7 +48,9 @@ export const editGroupMember_Epic = action$ => (
     ));
 
 
-
+/**
+ * Add group member...
+ *  */
 const ADD_GROUP_MEMBER = "ADD_GROUP_MEMBER";
 export const ADD_GROUP_MEMBER_SUCCESS = "ADD_GROUP_MEMBER_SUCCESS";
 const ADD_GROUP_MEMBER_FAILURE = "ADD_GROUP_MEMBER_FAILURE";
@@ -57,7 +62,7 @@ const addGroupMemberFailure = createAction(ADD_GROUP_MEMBER_FAILURE, error => er
 const addGroupMemberCancelled = createAction(ADD_GROUP_MEMBER_CANCELLED);
 export const addGroupMember_Epic = action$ => (
     action$.ofType(ADD_GROUP_MEMBER)
-        .mergeMap(action => addMember(action.payload.room_id, action.payload.member))
+        .mergeMap(action => groupService.addMember(action.payload.room_id, action.payload.member))
         .map(response => addGroupMemberSuccess(response.xhr.response))
         .takeUntil(action$.ofType(ADD_GROUP_MEMBER_CANCELLED))
         .catch(error => Rx.Observable.of(addGroupMemberFailure(error.xhr.response)))
@@ -80,7 +85,46 @@ export const addGroupMember_Epic = action$ => (
         })
 );
 
+/**
+ * Remove group members...
+ */
+const REMOVE_GROUP_MEMBER = "REMOVE_GROUP_MEMBER";
+export const REMOVE_GROUP_MEMBER_SUCCESS = "REMOVE_GROUP_MEMBER_SUCCESS";
+const REMOVE_GROUP_MEMBER_FAILURE = "REMOVE_GROUP_MEMBER_FAILURE";
+const REMOVE_GROUP_MEMBER_CANCELLED = "REMOVE_GROUP_MEMBER_CANCELLED";
 
+export const removeGroupMember = createAction(REMOVE_GROUP_MEMBER, (room_id: string, member: IMember) => ({ room_id, member }));
+const removeGroupMemberSuccess = createAction(REMOVE_GROUP_MEMBER_SUCCESS, payload => payload.result);
+const removeGroupMemberFailure = createAction(REMOVE_GROUP_MEMBER_FAILURE, error => error);
+const removeGroupMemberCancelled = createAction(REMOVE_GROUP_MEMBER_CANCELLED);
+export const removeGroupMember_Epic = action$ => (
+    action$.ofType(REMOVE_GROUP_MEMBER)
+        .mergeMap(action => groupService.removeMember(action.payload.room_id, action.payload.member))
+        .map(response => removeGroupMemberSuccess(response.xhr.response))
+        .takeUntil(action$.ofType(REMOVE_GROUP_MEMBER_CANCELLED))
+        .catch(error => Rx.Observable.of(removeGroupMemberFailure(error.xhr.response)))
+        .map(response => {
+            if (response.type == REMOVE_GROUP_MEMBER_SUCCESS) {
+                let group = response.payload as Room;
+                if (group.type == RoomType.privateGroup) {
+                    let { privateGroups }: { privateGroups: Array<Room> } = Store.getState().groupReducer;
+                    let newPrivateGroups = privateGroups.map(v => {
+                        if (v._id == group._id) {
+                            v = group;
+                        }
+
+                        return v;
+                    });
+
+                    return ({ type: SET_PRIVATE_GROUP, payload: newPrivateGroups });
+                }
+            }
+        })
+);
+
+/**
+ * Group details...
+ */
 const EDIT_GROUP_DETAIL = "EDIT_GROUP_DETAIL";
 export const EDIT_GROUP_DETAIL_SUCCESS = "EDIT_GROUP_DETAIL_SUCCESS";
 export const EDIT_GROUP_DETAIL_FAILURE = "EDIT_GROUP_DETAIL_FAILURE";

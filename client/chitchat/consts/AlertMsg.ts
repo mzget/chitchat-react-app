@@ -4,5 +4,5 @@ export const stalkInitFail = {
 };
 
 export const groups = {
-    request_admin_permission: "Request for admin permission";
+    request_admin_permission: "Request for admin permission"
 }

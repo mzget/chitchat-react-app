@@ -14,3 +14,12 @@ function addMember(room_id, member) {
     });
 }
 exports.addMember = addMember;
+function removeMember(room_id, member) {
+    return ajax({
+        method: "POST",
+        url: `${getConfig().api.group}/removeMember/${room_id}`,
+        body: JSON.stringify({ member: member }),
+        headers: chitchatServiceUtils_1.chitchat_headers()
+    });
+}
+exports.removeMember = removeMember;

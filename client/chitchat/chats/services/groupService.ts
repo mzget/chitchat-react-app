@@ -14,3 +14,12 @@ export function addMember(room_id: string, member: any) {
         headers: chitchat_headers()
     });
 }
+
+export function removeMember(room_id: string, member: any) {
+    return ajax({
+        method: "POST",
+        url: `${getConfig().api.group}/removeMember/${room_id}`,
+        body: JSON.stringify({ member: member }),
+        headers: chitchat_headers()
+    });
+}

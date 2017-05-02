@@ -50,6 +50,7 @@ export const rootEpic = combineEpics(
     editGroupRxActions.editGroupDetail_Epic,
     editGroupRxActions.editGroupMember_Epic,
     editGroupRxActions.addGroupMember_Epic,
+    editGroupRxActions.removeGroupMember_Epic,
 
     /**
      * Private group...
