@@ -12,7 +12,26 @@ import TextField from 'material-ui/TextField';
 import { List, ListItem } from "material-ui/List";
 import Divider from "material-ui/Divider";
 import Avatar from "material-ui/Avatar";
-import Toggle from "material-ui/Toggle";
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+import IconButton from 'material-ui/IconButton';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+
+const iconButtonElement = (
+    <IconButton
+        touch={true}
+        tooltip="more"
+        tooltipPosition="bottom-left"
+    >
+        <MoreVertIcon color={Colors.grey400} />
+    </IconButton>
+);
+
+const rightIconMenu = (
+    <IconMenu iconButtonElement={iconButtonElement}>
+        <MenuItem>Delete</MenuItem>
+    </IconMenu>
+);
 
 export const EditGroupMember = (props: { members: Array<any>, onToggleItem }) => (
     <MuiThemeProvider>
@@ -28,9 +47,9 @@ export const EditGroupMember = (props: { members: Array<any>, onToggleItem }) =>
                                         (!!item.username) ?
                                             <Avatar size={30}>{item.username.charAt(0)}</Avatar> :
                                             null
-
                                     }
                                     primaryText={item.username}
+                                    rightIconButton={rightIconMenu}
                                 />
                                 <Divider inset={true} />
                             </div>);
