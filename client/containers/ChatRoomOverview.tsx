@@ -64,10 +64,8 @@ class ChatRoomSettingsOverView extends React.Component<IComponentProps, any> {
                             <Subheader>MEMBERS {this.room.members.length}</Subheader>
                         </Flex>
                         <EditGroupMemberEnhanced
-                            match={this.props.match}
                             members={this.room.members}
-                            room_id={this.room._id}
-                            onFinished={() => console.log("Edit group")} />
+                            room_id={this.room._id} />
                     </div>
                 ) : null}
             </MuiThemeProvider>

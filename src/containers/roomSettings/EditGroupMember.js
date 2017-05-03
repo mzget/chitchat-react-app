@@ -18,5 +18,4 @@ exports.EditGroupMember = (props) => (React.createElement(MuiThemeProvider_1.def
                                     React.createElement(Avatar_1.default, { size: 30 }, item.username.charAt(0)) :
                                     null, primaryText: item.username, rightIconButton: props.rightIconButton(item) }),
                         React.createElement(Divider_1.default, { inset: true })));
-                }) : null),
-        React.createElement(Divider_1.default, { inset: true }))));
+                }) : null))));

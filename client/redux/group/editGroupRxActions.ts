@@ -93,17 +93,19 @@ export const REMOVE_GROUP_MEMBER_SUCCESS = "REMOVE_GROUP_MEMBER_SUCCESS";
 const REMOVE_GROUP_MEMBER_FAILURE = "REMOVE_GROUP_MEMBER_FAILURE";
 const REMOVE_GROUP_MEMBER_CANCELLED = "REMOVE_GROUP_MEMBER_CANCELLED";
 
-export const removeGroupMember = createAction(REMOVE_GROUP_MEMBER, (room_id: string, member: IMember) => ({ room_id, member }));
+export const removeGroupMember = createAction(REMOVE_GROUP_MEMBER, (room_id: string, member_id: string) => ({ room_id, member_id }));
 const removeGroupMemberSuccess = createAction(REMOVE_GROUP_MEMBER_SUCCESS, payload => payload.result);
 const removeGroupMemberFailure = createAction(REMOVE_GROUP_MEMBER_FAILURE, error => error);
 const removeGroupMemberCancelled = createAction(REMOVE_GROUP_MEMBER_CANCELLED);
-export const removeGroupMember_Epic = action$ => (
+export const removeGroupMember_Epic = action$ =>
     action$.ofType(REMOVE_GROUP_MEMBER)
-        .mergeMap(action => groupService.removeMember(action.payload.room_id, action.payload.member))
+        .mergeMap(action => {
+            return groupService.removeMember(action.payload.room_id, action.payload.member_id);
+        })
         .map(response => removeGroupMemberSuccess(response.xhr.response))
         .takeUntil(action$.ofType(REMOVE_GROUP_MEMBER_CANCELLED))
         .catch(error => Rx.Observable.of(removeGroupMemberFailure(error.xhr.response)))
-        .map(response => {
+        ._do(response => {
             if (response.type == REMOVE_GROUP_MEMBER_SUCCESS) {
                 let group = response.payload as Room;
                 if (group.type == RoomType.privateGroup) {
@@ -116,11 +118,10 @@ export const removeGroupMember_Epic = action$ => (
                         return v;
                     });
 
-                    return ({ type: SET_PRIVATE_GROUP, payload: newPrivateGroups });
+                    Store.dispatch({ type: SET_PRIVATE_GROUP, payload: newPrivateGroups });
                 }
             }
-        })
-);
+        });
 
 /**
  * Group details...

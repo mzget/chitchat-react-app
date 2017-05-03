@@ -36,7 +36,6 @@ export const EditGroupMember = (props: { members: Array<any>, rightIconButton: (
                     }) : null
             }
             </List>
-            <Divider inset={true} />
         </Flex>
     </MuiThemeProvider>
 );

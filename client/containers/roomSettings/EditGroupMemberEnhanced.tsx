@@ -17,14 +17,13 @@ const iconButtonElement = (
     </IconButton>
 );
 
-export const EditGroupMemberEnhanced = EditGroupMemberEnhancer(({ members, value, removeItem }) =>
+export const EditGroupMemberEnhanced = EditGroupMemberEnhancer(({ members, room_id, value, removeItem }) =>
     <EditGroupMember
         members={members}
         rightIconButton={(item) => (
             <IconMenu
                 iconButtonElement={iconButtonElement}
                 onChange={(e, itemValue) => {
-                    console.log("handleChange", itemValue);
                     if (itemValue == "1") {
                         removeItem(item);
                     }
@@ -35,4 +34,4 @@ export const EditGroupMemberEnhanced = EditGroupMemberEnhancer(({ members, value
                 {/*<MenuItem value="2" primaryText="Refresh" />*/}
             </IconMenu>
         )} />
-) as React.ComponentClass<{ members }>;
+) as React.ComponentClass<{ members, room_id }>;

@@ -15,11 +15,11 @@ export function addMember(room_id: string, member: any) {
     });
 }
 
-export function removeMember(room_id: string, member: any) {
+export function removeMember(room_id: string, member_id: string) {
     return ajax({
         method: "POST",
         url: `${getConfig().api.group}/removeMember/${room_id}`,
-        body: JSON.stringify({ member: member }),
+        body: JSON.stringify({ member_id: member_id }),
         headers: chitchat_headers()
     });
 }
