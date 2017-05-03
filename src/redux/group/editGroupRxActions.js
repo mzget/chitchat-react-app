@@ -8,6 +8,7 @@ const chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
 const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const configureStore_1 = require("../configureStore");
 const privateGroupRxActions_1 = require("./privateGroupRxActions");
+const chatroomActions = require("../../chitchat/chats/redux/chatroom/chatroomActions");
 /**
  * Edit group members...
  */
@@ -100,6 +101,7 @@ exports.removeGroupMember_Epic = action$ => action$.ofType(REMOVE_GROUP_MEMBER)
                 return v;
             });
             configureStore_1.default.dispatch({ type: privateGroupRxActions_1.SET_PRIVATE_GROUP, payload: newPrivateGroups });
+            configureStore_1.default.dispatch(chatroomActions.updateChatRoom(newPrivateGroups));
         }
     }
 });

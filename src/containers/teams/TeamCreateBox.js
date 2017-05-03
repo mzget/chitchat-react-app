@@ -34,6 +34,7 @@ class TeamCreateBox extends React.Component {
         }
         else {
             console.warn("Empty team name!");
+            this.props.onError("Empty team name!");
         }
     }
     onToggleView() {
@@ -45,6 +46,7 @@ class TeamCreateBox extends React.Component {
         }
         else {
             console.warn("Empty team name!");
+            this.props.onError("Empty team name!");
         }
     }
     onSelectTeam(team) {
@@ -60,5 +62,4 @@ class TeamCreateBox extends React.Component {
             React.createElement(FindTeamListBox_1.FindTeamListBox, { findingTeams: this.props.teamReducer.findingTeams, onSelectTeam: this.onSelectTeam })));
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = TeamCreateBox;
+exports.TeamCreateBox = TeamCreateBox;

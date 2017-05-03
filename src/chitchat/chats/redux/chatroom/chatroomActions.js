@@ -354,7 +354,8 @@ exports.updateChatRoom = (rooms) => {
         dispatch({ type: exports.UPDATE_CHATROOMS, payload: rooms });
         let chatrooms = getStore().getState().chatroomReducer.get("chatrooms");
         if (chatrooms) {
-            let _newRooms = R.union(chatrooms, rooms);
+            // R.unionWith(R.eqBy(R.prop('a')), l1, l2);
+            let _newRooms = R.unionWith(R.eqBy(R.prop("_id")), chatrooms, rooms);
             dispatch(exports.updatedChatRoomSuccess(_newRooms));
         }
         else {

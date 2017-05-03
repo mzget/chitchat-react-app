@@ -6,6 +6,9 @@ const configureStore_1 = require("../configureStore");
 const chatroomActions_1 = require("../../chitchat/chats/redux/chatroom/chatroomActions");
 const chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
 const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
+/**
+ * Get org groups...
+ */
 const GET_ORG_GROUP = "GET_ORG_GROUP";
 exports.GET_ORG_GROUP_SUCCESS = "GET_ORG_GROUP_SUCCESS";
 const GET_ORG_GROUP_FAILURE = "GET_ORG_GROUP_FAILURE";
@@ -14,7 +17,8 @@ exports.getOrgGroup = (team_id) => ({ type: GET_ORG_GROUP, payload: team_id });
 const getOrgGroupSuccess = (payload) => ({ type: exports.GET_ORG_GROUP_SUCCESS, payload });
 const getOrgGroupFailure = (err) => ({ type: GET_ORG_GROUP_FAILURE, payload: err });
 const getOrgGroupCancelled = () => ({ type: GET_ORG_GROUP_CANCELLED });
-exports.getOrgGroup_Epic = action$ => (action$.ofType(GET_ORG_GROUP).mergeMap(action => ajax.getJSON(`${config().api.group}/org?team_id=${action.payload}`, { "x-access-token": configureStore_1.default.getState().authReducer.token }).map(response => getOrgGroupSuccess(response))
+exports.getOrgGroup_Epic = action$ => (action$.ofType(GET_ORG_GROUP)
+    .mergeMap(action => ajax.getJSON(`${config().api.group}/org?team_id=${action.payload}`, { "x-access-token": configureStore_1.default.getState().authReducer.token }).map(response => getOrgGroupSuccess(response))
     .takeUntil(action$.ofType(GET_ORG_GROUP_CANCELLED))
     .catch(error => Rx.Observable.of(getOrgGroupFailure(error.xhr.response)))
     .do(response => {
@@ -23,6 +27,9 @@ exports.getOrgGroup_Epic = action$ => (action$.ofType(GET_ORG_GROUP).mergeMap(ac
         configureStore_1.default.dispatch(chatroomActions_1.updateChatRoom(rooms));
     }
 })));
+/**
+ * Create org groups...
+ */
 const CREATE_ORG_GROUP = "CREATE_ORG_GROUP";
 exports.CREATE_ORG_GROUP_FAILURE = "CREATE_ORG_GROUP_FAILURE";
 exports.CREATE_ORG_GROUP_SUCCESS = "CREATE_ORG_GROUP_SUCCESS";

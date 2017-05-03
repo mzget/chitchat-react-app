@@ -23,6 +23,9 @@ class ChatRoomSettingsOverView extends React.Component {
             if (!chatroomReducer.room)
                 this.room = chatroomActions.getRoom(match.params.room_id);
         }
+        if (!recompose_1.shallowEqual(chatroomReducer.chatrooms, this.props.chatroomReducer.chatrooms)) {
+            this.room = chatroomActions.getRoom(match.params.room_id);
+        }
     }
     render() {
         return (React.createElement(MuiThemeProvider_1.default, null, (!!this.room) ? (React.createElement("div", { style: { height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden" } },

@@ -6,7 +6,7 @@ const Rx = require("rxjs/Rx");
 const { ajax } = Rx.Observable;
 const configureStore_1 = require("../configureStore");
 const userRx = require("../user/userRx");
-const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
+const getConfig = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
 const FETCH_USER_TEAMS = "FETCH_USER_TEAMS";
 const FETCH_USER_TEAMS_SUCCESS = "FETCH_USER_TEAMS_SUCCESS";
 const FETCH_USER_TEAMS_FAILURE = "FETCH_USER_TEAMS_FAILURE";
@@ -16,7 +16,7 @@ exports.fetchUserTeamsSuccess = (payload) => ({ type: FETCH_USER_TEAMS_SUCCESS, 
 exports.fetchUserTeamsFailure = (error) => ({ type: FETCH_USER_TEAMS_FAILURE, payload: error });
 exports.fetchUserTeamsCancelled = () => ({ type: FETCH_USER_TEAMS_CANCELLED });
 exports.fetchUserTeamsEpic = action$ => action$.ofType(FETCH_USER_TEAMS)
-    .mergeMap(action => ajax.getJSON(`${config().api.user}/teams?user_id=${action.payload}`, { "x-access-token": configureStore_1.default.getState().authReducer.token })
+    .mergeMap(action => ajax.getJSON(`${getConfig().api.user}/teams?user_id=${action.payload}`, { "x-access-token": configureStore_1.default.getState().authReducer.token })
     .map(exports.fetchUserTeamsSuccess)
     .takeUntil(action$.ofType(FETCH_USER_TEAMS_CANCELLED))
     .catch(error => Rx.Observable.of(exports.fetchUserTeamsFailure(error.xhr.response))));
@@ -34,7 +34,7 @@ exports.createNewTeamCancelled = () => ({ type: CREATE_TEAM_CANCELLED });
 exports.createNewTeamEpic = action$ => action$.ofType(CREATE_TEAM)
     .mergeMap(action => ajax({
     method: "POST",
-    url: `${config().api.team}/create`,
+    url: `${getConfig().api.team}/create`,
     body: JSON.stringify({ team_name: action.payload }),
     headers: {
         "Content-Type": "application/json",
@@ -55,7 +55,7 @@ const findTeamCancelled = redux_actions_1.createAction(FIND_TEAM_CANCELLED);
 exports.findTeamEpic = action$ => action$.ofType(FIND_TEAM)
     .mergeMap(action => ajax({
     method: "GET",
-    url: `${config().api.team}?name=${action.payload}`,
+    url: `${getConfig().api.team}?name=${action.payload}`,
     headers: {
         "Content-Type": "application/json",
         "x-access-token": configureStore_1.default.getState().authReducer.token
@@ -74,7 +74,7 @@ const joinTeamCancelled = redux_actions_1.createAction(JOIN_TEAM_CANCELLED);
 exports.joinTeamEpic = action$ => action$.ofType(JOIN_TEAM)
     .mergeMap(action => ajax({
     method: "POST",
-    url: `${config().api.team}/join`,
+    url: `${getConfig().api.team}/join`,
     body: JSON.stringify({ name: action.payload }),
     headers: {
         "Content-Type": "application/json",
@@ -98,7 +98,7 @@ exports.getTeamsInfoFailure = (error) => ({ type: GET_TEAMS_INFO_FAILURE, payloa
 exports.getTeamsInfoCancelled = () => ({ type: GET_TEAMS_INFO_CANCELLED });
 exports.getTeamsInfoEpic = action$ => action$.ofType(GET_TEAMS_INFO).mergeMap(action => ajax({
     method: "POST",
-    url: `${config().api.team}/teamsInfo`,
+    url: `${getConfig().api.team}/teamsInfo`,
     body: JSON.stringify({ team_ids: action.payload }),
     headers: {
         "Content-Type": "application/json", "x-access-token": configureStore_1.default.getState().authReducer.token
@@ -127,7 +127,7 @@ function getTeamMembersEpic(action$) {
     return action$.ofType(GET_TEAM_MEMBERS)
         .mergeMap(action => ajax({
         method: "GET",
-        url: `${config().api.team}/teamMembers/?id=${action.payload}`,
+        url: `${getConfig().api.team}/teamMembers/?id=${action.payload}`,
         headers: {
             "Content-Type": "application/json",
             "x-access-token": configureStore_1.default.getState().authReducer.token

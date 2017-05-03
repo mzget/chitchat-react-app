@@ -10,6 +10,7 @@ const config = () => ChitChatFactory.getInstance().config;
 
 import Store from "../configureStore";
 import { SET_PRIVATE_GROUP } from "./privateGroupRxActions";
+import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
 
 /**
  * Edit group members...
@@ -119,6 +120,7 @@ export const removeGroupMember_Epic = action$ =>
                     });
 
                     Store.dispatch({ type: SET_PRIVATE_GROUP, payload: newPrivateGroups });
+                    Store.dispatch(chatroomActions.updateChatRoom(newPrivateGroups));
                 }
             }
         });

@@ -17,7 +17,7 @@ import Store from "./redux/configureStore";
 import { HomePageWithDialogBox } from "./containers/HomeEnhanced";
 import { ChatPageEnhanced } from "./containers/ChatPageEnhanced";
 import { ChatRoomSettingsEnhanced } from "./containers/ChatRoomSettingsPage";
-import { TeamPage } from "./containers/Team";
+import { TeamPageEnhanced } from "./containers/TeamPageEnhanced";
 import { ProfilePageEnhanced } from "./containers/ProfilePageEnhanced";
 import { MainPageWithDialogBox } from "./containers/Main";
 import { M_MainPageEnhanced } from "./containers/m_Main";
@@ -43,7 +43,7 @@ class App extends React.Component<any, any> {
                 <Router>
                     <div>
                         <Route exact path="/" component={HomePageWithDialogBox} />
-                        <Route path="/team/:filter" component={TeamPage} />
+                        <Route path="/team/:filter" component={TeamPageEnhanced} />
                         <Route path="/profile/:filter/:user" component={(this.clientWidth < SMALL_TABLET) ? ProfilePageEnhanced : MainPageWithDialogBox} />
                         <Route path="/chatslist/:filter" component={(this.clientWidth < SMALL_TABLET) ? M_MainPageEnhanced : MainPageWithDialogBox} />
                         <Route path="/chatroom/chat/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ChatPageEnhanced : MainPageWithDialogBox} />

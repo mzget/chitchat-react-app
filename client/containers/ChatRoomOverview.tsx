@@ -36,6 +36,9 @@ class ChatRoomSettingsOverView extends React.Component<IComponentProps, any> {
             if (!chatroomReducer.room)
                 this.room = chatroomActions.getRoom(match.params.room_id);
         }
+        if (!shallowEqual(chatroomReducer.chatrooms, this.props.chatroomReducer.chatrooms)) {
+            this.room = chatroomActions.getRoom(match.params.room_id);
+        }
     }
 
     render() {

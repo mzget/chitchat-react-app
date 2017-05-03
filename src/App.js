@@ -11,7 +11,7 @@ const configureStore_1 = require("./redux/configureStore");
 const HomeEnhanced_1 = require("./containers/HomeEnhanced");
 const ChatPageEnhanced_1 = require("./containers/ChatPageEnhanced");
 const ChatRoomSettingsPage_1 = require("./containers/ChatRoomSettingsPage");
-const Team_1 = require("./containers/Team");
+const TeamPageEnhanced_1 = require("./containers/TeamPageEnhanced");
 const ProfilePageEnhanced_1 = require("./containers/ProfilePageEnhanced");
 const Main_1 = require("./containers/Main");
 const m_Main_1 = require("./containers/m_Main");
@@ -35,7 +35,7 @@ class App extends React.Component {
             React.createElement(react_router_dom_1.BrowserRouter, null,
                 React.createElement("div", null,
                     React.createElement(react_router_dom_1.Route, { exact: true, path: "/", component: HomeEnhanced_1.HomePageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/team/:filter", component: Team_1.TeamPage }),
+                    React.createElement(react_router_dom_1.Route, { path: "/team/:filter", component: TeamPageEnhanced_1.TeamPageEnhanced }),
                     React.createElement(react_router_dom_1.Route, { path: "/profile/:filter/:user", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ProfilePageEnhanced_1.ProfilePageEnhanced : Main_1.MainPageWithDialogBox }),
                     React.createElement(react_router_dom_1.Route, { path: "/chatslist/:filter", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? m_Main_1.M_MainPageEnhanced : Main_1.MainPageWithDialogBox }),
                     React.createElement(react_router_dom_1.Route, { path: "/chatroom/chat/:room_id", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ChatPageEnhanced_1.ChatPageEnhanced : Main_1.MainPageWithDialogBox }),

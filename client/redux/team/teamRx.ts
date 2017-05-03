@@ -7,7 +7,7 @@ const { ajax } = Rx.Observable;
 import Store from "../configureStore";
 import * as userRx from "../user/userRx";
 import { ITeamMember } from "../../chitchat/chats/models/ITeamMember";
-const config = () => ChitChatFactory.getInstance().config;
+const getConfig = () => ChitChatFactory.getInstance().config;
 
 const FETCH_USER_TEAMS = "FETCH_USER_TEAMS";
 const FETCH_USER_TEAMS_SUCCESS = "FETCH_USER_TEAMS_SUCCESS";
@@ -19,7 +19,7 @@ export const fetchUserTeamsFailure = (error) => ({ type: FETCH_USER_TEAMS_FAILUR
 export const fetchUserTeamsCancelled = () => ({ type: FETCH_USER_TEAMS_CANCELLED });
 export const fetchUserTeamsEpic = action$ =>
     action$.ofType(FETCH_USER_TEAMS)
-        .mergeMap(action => ajax.getJSON(`${config().api.user}/teams?user_id=${action.payload}`,
+        .mergeMap(action => ajax.getJSON(`${getConfig().api.user}/teams?user_id=${action.payload}`,
             { "x-access-token": Store.getState().authReducer.token })
             .map(fetchUserTeamsSuccess)
             .takeUntil(action$.ofType(FETCH_USER_TEAMS_CANCELLED))
@@ -41,7 +41,7 @@ export const createNewTeamEpic = action$ =>
     action$.ofType(CREATE_TEAM)
         .mergeMap(action => ajax({
             method: "POST",
-            url: `${config().api.team}/create`,
+            url: `${getConfig().api.team}/create`,
             body: JSON.stringify({ team_name: action.payload }),
             headers: {
                 "Content-Type": "application/json",
@@ -66,7 +66,7 @@ const findTeamCancelled = createAction(FIND_TEAM_CANCELLED);
 export const findTeamEpic = action$ => action$.ofType(FIND_TEAM)
     .mergeMap(action => ajax({
         method: "GET",
-        url: `${config().api.team}?name=${action.payload}`,
+        url: `${getConfig().api.team}?name=${action.payload}`,
         headers: {
             "Content-Type": "application/json",
             "x-access-token": Store.getState().authReducer.token
@@ -90,7 +90,7 @@ export const joinTeamEpic = action$ =>
     action$.ofType(JOIN_TEAM)
         .mergeMap(action => ajax({
             method: "POST",
-            url: `${config().api.team}/join`,
+            url: `${getConfig().api.team}/join`,
             body: JSON.stringify({ name: action.payload }),
             headers: {
                 "Content-Type": "application/json",
@@ -118,7 +118,7 @@ export const getTeamsInfoCancelled = () => ({ type: GET_TEAMS_INFO_CANCELLED });
 export const getTeamsInfoEpic = action$ =>
     action$.ofType(GET_TEAMS_INFO).mergeMap(action => ajax({
         method: "POST",
-        url: `${config().api.team}/teamsInfo`,
+        url: `${getConfig().api.team}/teamsInfo`,
         body: JSON.stringify({ team_ids: action.payload }),
         headers: {
             "Content-Type": "application/json", "x-access-token": Store.getState().authReducer.token
@@ -149,7 +149,7 @@ export function getTeamMembersEpic(action$) {
     return action$.ofType(GET_TEAM_MEMBERS)
         .mergeMap(action => ajax({
             method: "GET",
-            url: `${config().api.team}/teamMembers/?id=${action.payload}`,
+            url: `${getConfig().api.team}/teamMembers/?id=${action.payload}`,
             headers: {
                 "Content-Type": "application/json",
                 "x-access-token": Store.getState().authReducer.token
