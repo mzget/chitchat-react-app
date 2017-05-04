@@ -90,8 +90,13 @@ class ServerImplemented {
         }
     }
     connectServer(params, callback) {
+        this.pomelo.on("disconnected", (data) => {
+            console.warn("disconnected", data);
+            this._isConnected = false;
+            callback(data);
+        });
         this.pomelo.init(params, function cb(err) {
-            console.log("socket init result: ", err);
+            console.log("socket init... ", err);
             callback(err);
         });
     }
