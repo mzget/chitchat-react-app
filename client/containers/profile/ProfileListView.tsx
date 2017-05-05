@@ -29,10 +29,10 @@ export const ProfileListView = (props: IComponentProps) => (
                             <Avatar src={props.item.avatar} /> : <Avatar>{props.item.username.charAt(0)}</Avatar>
                         }
                         rightIcon={null}
-                        primaryText={<span style={{ color: Color.grey50 }}>{props.item.username}</span>}
+                        primaryText={<span>{props.item.username}</span>}
                         secondaryText={
                             <p>
-                                <span style={{ color: Color.grey50 }}>{props.item.email}</span>
+                                <span>{props.item.email}</span>
                             </p>
                         }
                     />
