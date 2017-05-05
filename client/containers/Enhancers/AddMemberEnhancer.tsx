@@ -11,7 +11,10 @@ import { suggestUser } from "../../redux/user/userRx";
 import { addGroupMember } from "../../redux/group/editGroupRxActions";
 import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
 
-const mapStateToProps = (state) => ({ userReducer: state.userReducer });
+const mapStateToProps = (state) => ({
+    userReducer: state.userReducer,
+    chatroomReducer: state.chatroomReducer
+});
 export const AddMemberEnhancer = compose(
     connect(mapStateToProps),
     withState("search", "setSearch", ""),
@@ -19,23 +22,34 @@ export const AddMemberEnhancer = compose(
     lifecycle({
         componentWillReceiveProps(nextProps) {
             let { searchUsers } = nextProps.userReducer;
-            let { match: { params } } = nextProps;
+            let { match: { params }, chatroomReducer } = nextProps;
+
+            const update = (room) => {
+                let _members = searchUsers.filter(v => {
+                    let _has = room.members.some(member => {
+                        if (member._id == v._id) {
+                            return true;
+                        }
+                    });
+
+                    if (!_has) {
+                        return v;
+                    }
+                });
+                this.props.setMembers(members => _members);
+            }
 
             if (!shallowEqual(searchUsers, this.props.userReducer.searchUsers)) {
                 if (Array.isArray(searchUsers)) {
                     let room = chatroomActions.getRoom(params.room_id);
-                    let _members = searchUsers.filter(v => {
-                        let _has = room.members.some(member => {
-                            if (member._id == v._id) {
-                                return true;
-                            }
-                        });
+                    update(room);
+                }
+            }
 
-                        if (!_has) {
-                            return v;
-                        }
-                    });
-                    this.props.setMembers(members => _members);
+            if (!shallowEqual(chatroomReducer.chatrooms, this.props.chatroomReducer.chatrooms)) {
+                if (Array.isArray(searchUsers)) {
+                    let room = chatroomActions.getRoom(params.room_id);
+                    update(room);
                 }
             }
         }
