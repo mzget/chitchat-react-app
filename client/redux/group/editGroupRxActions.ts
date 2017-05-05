@@ -91,7 +91,7 @@ export const addGroupMember_Epic = action$ => (
  */
 const REMOVE_GROUP_MEMBER = "REMOVE_GROUP_MEMBER";
 export const REMOVE_GROUP_MEMBER_SUCCESS = "REMOVE_GROUP_MEMBER_SUCCESS";
-const REMOVE_GROUP_MEMBER_FAILURE = "REMOVE_GROUP_MEMBER_FAILURE";
+export const REMOVE_GROUP_MEMBER_FAILURE = "REMOVE_GROUP_MEMBER_FAILURE";
 const REMOVE_GROUP_MEMBER_CANCELLED = "REMOVE_GROUP_MEMBER_CANCELLED";
 
 export const removeGroupMember = createAction(REMOVE_GROUP_MEMBER, (room_id: string, member_id: string) => ({ room_id, member_id }));

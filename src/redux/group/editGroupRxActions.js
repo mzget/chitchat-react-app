@@ -76,11 +76,11 @@ exports.addGroupMember_Epic = action$ => (action$.ofType(ADD_GROUP_MEMBER)
  */
 const REMOVE_GROUP_MEMBER = "REMOVE_GROUP_MEMBER";
 exports.REMOVE_GROUP_MEMBER_SUCCESS = "REMOVE_GROUP_MEMBER_SUCCESS";
-const REMOVE_GROUP_MEMBER_FAILURE = "REMOVE_GROUP_MEMBER_FAILURE";
+exports.REMOVE_GROUP_MEMBER_FAILURE = "REMOVE_GROUP_MEMBER_FAILURE";
 const REMOVE_GROUP_MEMBER_CANCELLED = "REMOVE_GROUP_MEMBER_CANCELLED";
 exports.removeGroupMember = redux_actions_1.createAction(REMOVE_GROUP_MEMBER, (room_id, member_id) => ({ room_id, member_id }));
 const removeGroupMemberSuccess = redux_actions_1.createAction(exports.REMOVE_GROUP_MEMBER_SUCCESS, payload => payload.result);
-const removeGroupMemberFailure = redux_actions_1.createAction(REMOVE_GROUP_MEMBER_FAILURE, error => error);
+const removeGroupMemberFailure = redux_actions_1.createAction(exports.REMOVE_GROUP_MEMBER_FAILURE, error => error);
 const removeGroupMemberCancelled = redux_actions_1.createAction(REMOVE_GROUP_MEMBER_CANCELLED);
 exports.removeGroupMember_Epic = action$ => action$.ofType(REMOVE_GROUP_MEMBER)
     .mergeMap(action => {
