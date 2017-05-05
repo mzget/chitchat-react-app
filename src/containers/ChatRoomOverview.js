@@ -50,5 +50,7 @@ class ChatRoomSettingsOverView extends React.Component {
             React.createElement(EditGroupMemberEnhanced_1.EditGroupMemberEnhanced, { members: this.room.members, room_id: this.room._id }))) : null));
     }
 }
-const mapStateToProps = (state) => ({ chatroomReducer: state.chatroomReducer });
+const mapStateToProps = (state) => ({
+    chatroomReducer: state.chatroomReducer
+});
 exports.ChatRoomOverview = react_redux_1.connect(mapStateToProps)(ChatRoomSettingsOverView);

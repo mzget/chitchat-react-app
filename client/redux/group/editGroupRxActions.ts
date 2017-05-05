@@ -81,6 +81,7 @@ export const addGroupMember_Epic = action$ =>
                         });
 
                         Store.dispatch({ type: SET_PRIVATE_GROUP, payload: newPrivateGroups });
+                        Store.dispatch(chatroomActions.updateChatRoom(newPrivateGroups));
                     }
                 }
             }));
@@ -100,7 +101,6 @@ const removeGroupMemberCancelled = createAction(REMOVE_GROUP_MEMBER_CANCELLED);
 export const removeGroupMember_Epic = action$ =>
     action$.ofType(REMOVE_GROUP_MEMBER)
         .mergeMap(action => {
-            console.log(action);
             return groupService.removeMember(action.payload.room_id, action.payload.member_id)
                 .map(response => removeGroupMemberSuccess(response.xhr.response))
                 .takeUntil(action$.ofType(REMOVE_GROUP_MEMBER_CANCELLED))

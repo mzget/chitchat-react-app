@@ -68,6 +68,7 @@ exports.addGroupMember_Epic = action$ => action$.ofType(ADD_GROUP_MEMBER)
                 return v;
             });
             configureStore_1.default.dispatch({ type: privateGroupRxActions_1.SET_PRIVATE_GROUP, payload: newPrivateGroups });
+            configureStore_1.default.dispatch(chatroomActions.updateChatRoom(newPrivateGroups));
         }
     }
 }));
@@ -84,7 +85,6 @@ const removeGroupMemberFailure = redux_actions_1.createAction(exports.REMOVE_GRO
 const removeGroupMemberCancelled = redux_actions_1.createAction(REMOVE_GROUP_MEMBER_CANCELLED);
 exports.removeGroupMember_Epic = action$ => action$.ofType(REMOVE_GROUP_MEMBER)
     .mergeMap(action => {
-    console.log(action);
     return groupService.removeMember(action.payload.room_id, action.payload.member_id)
         .map(response => removeGroupMemberSuccess(response.xhr.response))
         .takeUntil(action$.ofType(REMOVE_GROUP_MEMBER_CANCELLED))

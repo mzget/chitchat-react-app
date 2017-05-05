@@ -346,16 +346,14 @@ exports.createChatRoom = (myUser, contactUser) => {
         return null;
     }
 };
-exports.UPDATE_CHATROOMS = "UPDATE_CHATROOMS";
 exports.UPDATED_CHATROOMS = "UPDATED_CHATROOMS";
 exports.updatedChatRoomSuccess = (chatrooms) => ({ type: exports.UPDATED_CHATROOMS, payload: chatrooms });
 exports.updateChatRoom = (rooms) => {
     return dispatch => {
-        dispatch({ type: exports.UPDATE_CHATROOMS, payload: rooms });
         let chatrooms = getStore().getState().chatroomReducer.get("chatrooms");
         if (chatrooms) {
             // R.unionWith(R.eqBy(R.prop('a')), l1, l2);
-            let _newRooms = R.unionWith(R.eqBy(R.prop("_id")), chatrooms, rooms);
+            let _newRooms = R.unionWith(R.eqBy(R.prop("_id")), rooms, chatrooms);
             dispatch(exports.updatedChatRoomSuccess(_newRooms));
         }
         else {

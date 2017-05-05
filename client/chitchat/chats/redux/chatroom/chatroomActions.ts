@@ -370,17 +370,14 @@ export const createChatRoom = (myUser, contactUser) => {
     }
 };
 
-export const UPDATE_CHATROOMS = "UPDATE_CHATROOMS";
 export const UPDATED_CHATROOMS = "UPDATED_CHATROOMS";
 export const updatedChatRoomSuccess = (chatrooms: Array<Room>) => ({ type: UPDATED_CHATROOMS, payload: chatrooms });
 export const updateChatRoom = (rooms: Array<Room>) => {
     return dispatch => {
-        dispatch({ type: UPDATE_CHATROOMS, payload: rooms });
-
         let chatrooms: Array<Room> = getStore().getState().chatroomReducer.get("chatrooms");
         if (chatrooms) {
             // R.unionWith(R.eqBy(R.prop('a')), l1, l2);
-            let _newRooms = R.unionWith(R.eqBy(R.prop("_id")), chatrooms, rooms) as Array<Room>;
+            let _newRooms = R.unionWith(R.eqBy(R.prop("_id")), rooms, chatrooms) as Array<Room>;
             dispatch(updatedChatRoomSuccess(_newRooms));
         }
         else {

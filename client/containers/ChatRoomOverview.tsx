@@ -76,5 +76,7 @@ class ChatRoomSettingsOverView extends React.Component<IComponentProps, any> {
     }
 }
 
-const mapStateToProps = (state) => ({ chatroomReducer: state.chatroomReducer });
+const mapStateToProps = (state) => ({
+    chatroomReducer: state.chatroomReducer
+});
 export const ChatRoomOverview = connect(mapStateToProps)(ChatRoomSettingsOverView) as React.ComponentClass<{ match, onError }>;
