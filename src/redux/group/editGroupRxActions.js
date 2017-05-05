@@ -51,12 +51,12 @@ exports.addGroupMember = redux_actions_1.createAction(ADD_GROUP_MEMBER, (room_id
 const addGroupMemberSuccess = redux_actions_1.createAction(exports.ADD_GROUP_MEMBER_SUCCESS, payload => payload.result);
 const addGroupMemberFailure = redux_actions_1.createAction(ADD_GROUP_MEMBER_FAILURE, error => error);
 const addGroupMemberCancelled = redux_actions_1.createAction(ADD_GROUP_MEMBER_CANCELLED);
-exports.addGroupMember_Epic = action$ => (action$.ofType(ADD_GROUP_MEMBER)
-    .mergeMap(action => groupService.addMember(action.payload.room_id, action.payload.member))
+exports.addGroupMember_Epic = action$ => action$.ofType(ADD_GROUP_MEMBER)
+    .mergeMap(action => groupService.addMember(action.payload.room_id, action.payload.member)
     .map(response => addGroupMemberSuccess(response.xhr.response))
     .takeUntil(action$.ofType(ADD_GROUP_MEMBER_CANCELLED))
     .catch(error => Rx.Observable.of(addGroupMemberFailure(error.xhr.response)))
-    .map(response => {
+    ._do(response => {
     if (response.type == exports.ADD_GROUP_MEMBER_SUCCESS) {
         let group = response.payload;
         if (group.type == Room_1.RoomType.privateGroup) {
@@ -67,7 +67,7 @@ exports.addGroupMember_Epic = action$ => (action$.ofType(ADD_GROUP_MEMBER)
                 }
                 return v;
             });
-            return ({ type: privateGroupRxActions_1.SET_PRIVATE_GROUP, payload: newPrivateGroups });
+            configureStore_1.default.dispatch({ type: privateGroupRxActions_1.SET_PRIVATE_GROUP, payload: newPrivateGroups });
         }
     }
 }));

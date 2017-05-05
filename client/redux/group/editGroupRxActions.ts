@@ -61,30 +61,29 @@ export const addGroupMember = createAction(ADD_GROUP_MEMBER, (room_id: string, m
 const addGroupMemberSuccess = createAction(ADD_GROUP_MEMBER_SUCCESS, payload => payload.result);
 const addGroupMemberFailure = createAction(ADD_GROUP_MEMBER_FAILURE, error => error);
 const addGroupMemberCancelled = createAction(ADD_GROUP_MEMBER_CANCELLED);
-export const addGroupMember_Epic = action$ => (
+export const addGroupMember_Epic = action$ =>
     action$.ofType(ADD_GROUP_MEMBER)
-        .mergeMap(action => groupService.addMember(action.payload.room_id, action.payload.member))
-        .map(response => addGroupMemberSuccess(response.xhr.response))
-        .takeUntil(action$.ofType(ADD_GROUP_MEMBER_CANCELLED))
-        .catch(error => Rx.Observable.of(addGroupMemberFailure(error.xhr.response)))
-        .map(response => {
-            if (response.type == ADD_GROUP_MEMBER_SUCCESS) {
-                let group = response.payload as Room;
-                if (group.type == RoomType.privateGroup) {
-                    let { privateGroups }: { privateGroups: Array<Room> } = Store.getState().groupReducer;
-                    let newPrivateGroups = privateGroups.map(v => {
-                        if (v._id == group._id) {
-                            v = group;
-                        }
+        .mergeMap(action => groupService.addMember(action.payload.room_id, action.payload.member)
+            .map(response => addGroupMemberSuccess(response.xhr.response))
+            .takeUntil(action$.ofType(ADD_GROUP_MEMBER_CANCELLED))
+            .catch(error => Rx.Observable.of(addGroupMemberFailure(error.xhr.response)))
+            ._do(response => {
+                if (response.type == ADD_GROUP_MEMBER_SUCCESS) {
+                    let group = response.payload as Room;
+                    if (group.type == RoomType.privateGroup) {
+                        let { privateGroups }: { privateGroups: Array<Room> } = Store.getState().groupReducer;
+                        let newPrivateGroups = privateGroups.map(v => {
+                            if (v._id == group._id) {
+                                v = group;
+                            }
 
-                        return v;
-                    });
+                            return v;
+                        });
 
-                    return ({ type: SET_PRIVATE_GROUP, payload: newPrivateGroups });
+                        Store.dispatch({ type: SET_PRIVATE_GROUP, payload: newPrivateGroups });
+                    }
                 }
-            }
-        })
-);
+            }));
 
 /**
  * Remove group members...
