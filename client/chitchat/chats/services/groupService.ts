@@ -20,6 +20,6 @@ export function removeMember(room_id: string, member_id: string) {
         method: "POST",
         url: `${getConfig().api.group}/removeMember/${room_id}`,
         body: JSON.stringify({ member_id: member_id }),
-        headers: chitchat_headers()
+        headers: withToken(chitchat_headers())(authReducer().chitchat_token)
     });
 }
