@@ -90,28 +90,35 @@ class ServerImplemented {
         }
     }
     connectServer(params, callback) {
-        this.pomelo.on("disconnected", (data) => {
-            console.warn("disconnected", data);
-            this._isConnected = false;
-            callback(data);
-        });
+        let self = this;
         this.pomelo.init(params, function cb(err) {
             console.log("socket init... ", err);
+            self.pomelo.setInitCallback(null);
             callback(err);
         });
     }
     listenForPomeloEvents() {
         this.pomelo.removeAllListeners();
-        this.pomelo.on("onopen", (this.onSocketOpen) ? this.onSocketOpen : (data) => console.warn("onopen", data));
-        this.pomelo.on("close", (this.onSocketClose) ? this.onSocketClose : (data) => console.warn("close", data));
-        this.pomelo.on("reconnect", (this.onSocketReconnect) ? this.onSocketReconnect : (data) => console.warn("reconnect", data));
+        this.pomelo.on("onopen", (this.onSocketOpen) ?
+            this.onSocketOpen : (data) => console.log("onopen", data));
+        this.pomelo.on("close", (this.onSocketClose) ?
+            this.onSocketClose : (data) => {
+            console.warn("close", data);
+            this.pomelo.setInitCallback(null);
+        });
+        this.pomelo.on("reconnect", (this.onSocketReconnect) ?
+            this.onSocketReconnect : (data) => console.log("reconnect", data));
         this.pomelo.on("disconnected", (data) => {
             console.warn("disconnected", data);
             this._isConnected = false;
+            this.pomelo.setInitCallback(null);
             if (this.onDisconnected)
                 this.onDisconnected(data);
         });
-        this.pomelo.on("io-error", (data) => console.warn("io-error", data));
+        this.pomelo.on("io-error", (data) => {
+            console.warn("io-error", data);
+            this.pomelo.setInitCallback(null);
+        });
     }
     // region <!-- Authentication...
     /// <summary>
