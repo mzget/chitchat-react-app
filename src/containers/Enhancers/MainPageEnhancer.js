@@ -17,7 +17,7 @@ const chatroomRxEpic_1 = require("../../chitchat/chats/redux/chatroom/chatroomRx
 const mapStateToProps = (state) => (__assign({}, state));
 exports.MainPageEnhancer = recompose_1.compose(react_redux_1.connect(mapStateToProps), recompose_1.lifecycle({
     componentWillReceiveProps(nextProps) {
-        let { location, userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer } = nextProps;
+        let { userReducer, chatroomReducer, teamReducer } = nextProps;
         if (!userReducer.user) {
             this.props.history.push("/");
         }
@@ -31,7 +31,7 @@ exports.MainPageEnhancer = recompose_1.compose(react_redux_1.connect(mapStateToP
         }
         if (chatroomReducer.state == chatroomActions_1.GET_PERSISTEND_CHATROOM_SUCCESS ||
             chatroomReducer.state == chatroomRxEpic_1.FETCH_PRIVATE_CHATROOM_SUCCESS ||
-            chatlogReducer.state == chatroomRxEpic_1.CREATE_PRIVATE_CHATROOM_SUCCESS) {
+            chatroomReducer.state == chatroomRxEpic_1.CREATE_PRIVATE_CHATROOM_SUCCESS) {
             if (!recompose_1.shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
                 this.props.history.push(`/chatroom/chat/${chatroomReducer.room._id}`);
             }
