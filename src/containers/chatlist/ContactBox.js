@@ -1,12 +1,11 @@
-"use strict";
-const React = require("react");
-const recompose_1 = require("recompose");
-const react_redux_1 = require("react-redux");
-const Subheader_1 = require("material-ui/Subheader");
-const teamRx = require("../../redux/team/teamRx");
-const chatroomActions = require("../../chitchat/chats/redux/chatroom/chatroomActions");
-const chatroomRx = require("../../chitchat/chats/redux/chatroom/chatroomRxEpic");
-const MemberList_1 = require("../../components/MemberList");
+import * as React from "react";
+import { shallowEqual } from "recompose";
+import { connect } from "react-redux";
+import Subheader from "material-ui/Subheader";
+import * as teamRx from "../../redux/team/teamRx";
+import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
+import * as chatroomRx from "../../chitchat/chats/redux/chatroom/chatroomRxEpic";
+import { MemberList } from "../../components/MemberList";
 class Contacts extends React.Component {
     componentDidMount() {
         this.onselectMember = this.onselectMember.bind(this);
@@ -14,7 +13,7 @@ class Contacts extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         let { chatroomReducer, teamReducer, userReducer } = nextProps;
-        if (!recompose_1.shallowEqual(chatroomReducer, this.props.chatroomReducer)) {
+        if (!shallowEqual(chatroomReducer, this.props.chatroomReducer)) {
             if (chatroomReducer.state == chatroomRx.FETCH_PRIVATE_CHATROOM_FAILURE) {
                 let contacts = teamReducer.members.filter((v, i) => {
                     return v._id === this._tempContact_id;
@@ -32,8 +31,8 @@ class Contacts extends React.Component {
     }
     render() {
         return (React.createElement("div", null,
-            React.createElement(Subheader_1.default, null, "Chats"),
-            React.createElement(MemberList_1.MemberList, { items: this.props.teamReducer.members, onSelected: this.onselectMember })));
+            React.createElement(Subheader, null, "Chats"),
+            React.createElement(MemberList, { items: this.props.teamReducer.members, onSelected: this.onselectMember })));
     }
 }
 const mapStateToProps = (state) => ({
@@ -41,4 +40,4 @@ const mapStateToProps = (state) => ({
     teamReducer: state.teamReducer,
     userReducer: state.userReducer
 });
-exports.ContactBox = react_redux_1.connect(mapStateToProps)(Contacts);
+export const ContactBox = connect(mapStateToProps)(Contacts);

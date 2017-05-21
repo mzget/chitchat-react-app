@@ -1,10 +1,9 @@
-"use strict";
-const immutable_1 = require("immutable");
-const Rx = require("rxjs/Rx");
+import { Record } from "immutable";
+import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
-const userRx_1 = require("./userRx");
-const authRx_1 = require("../authen/authRx");
-exports.UserInitState = immutable_1.Record({
+import { FETCH_USER_SUCCESS, GET_TEAM_PROFILE_SUCCESS, GET_TEAM_PROFILE_FAILURE, UPLOAD_USER_AVATAR_SUCCESS, USERRX_EMPTY_STATE, UPDATE_USER_INFO_SUCCESS, SUGGEST_USER_SUCCESS } from "./userRx";
+import { LOG_OUT_SUCCESS } from "../authen/authRx";
+export const UserInitState = Record({
     isFetching: false,
     state: null,
     user: null,
@@ -12,21 +11,21 @@ exports.UserInitState = immutable_1.Record({
     userAvatarResult: null,
     searchUsers: null
 });
-const userInitState = new exports.UserInitState();
-exports.userReducer = (state = userInitState, action) => {
+const userInitState = new UserInitState();
+export const userReducer = (state = userInitState, action) => {
     switch (action.type) {
-        case userRx_1.FETCH_USER_SUCCESS:
+        case FETCH_USER_SUCCESS:
             return state.set("user", action.payload.result[0])
-                .set("state", userRx_1.FETCH_USER_SUCCESS);
-        case userRx_1.SUGGEST_USER_SUCCESS:
+                .set("state", FETCH_USER_SUCCESS);
+        case SUGGEST_USER_SUCCESS:
             return state.set("searchUsers", action.payload);
-        case authRx_1.LOG_OUT_SUCCESS: {
+        case LOG_OUT_SUCCESS: {
             return userInitState;
         }
-        case userRx_1.GET_TEAM_PROFILE_FAILURE: {
+        case GET_TEAM_PROFILE_FAILURE: {
             return state;
         }
-        case userRx_1.GET_TEAM_PROFILE_SUCCESS: {
+        case GET_TEAM_PROFILE_SUCCESS: {
             let profiles = action.payload;
             if (Array.isArray(profiles) && profiles.length > 0) {
                 return state.set("teamProfile", profiles[0]);
@@ -35,14 +34,14 @@ exports.userReducer = (state = userInitState, action) => {
                 return state;
             }
         }
-        case userRx_1.UPLOAD_USER_AVATAR_SUCCESS: {
-            return state.set("state", userRx_1.UPLOAD_USER_AVATAR_SUCCESS)
+        case UPLOAD_USER_AVATAR_SUCCESS: {
+            return state.set("state", UPLOAD_USER_AVATAR_SUCCESS)
                 .set("userAvatarResult", action.payload.result);
         }
-        case userRx_1.UPDATE_USER_INFO_SUCCESS: {
-            return state.set("state", userRx_1.UPDATE_USER_INFO_SUCCESS);
+        case UPDATE_USER_INFO_SUCCESS: {
+            return state.set("state", UPDATE_USER_INFO_SUCCESS);
         }
-        case userRx_1.USERRX_EMPTY_STATE: {
+        case USERRX_EMPTY_STATE: {
             return state.set("userAvatarResult", null)
                 .set("state", null);
         }

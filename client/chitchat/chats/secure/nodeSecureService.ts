@@ -1,4 +1,4 @@
-import CryptoJS = require("crypto-js");
+import CryptoJS from "crypto-js";
 
 import { ISecureService } from "./ISecureService";
 

@@ -1,16 +1,15 @@
-"use strict";
-const redux_observable_1 = require("redux-observable");
-const userRx = require("./user/userRx");
-const chatroomRxEpic = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
-const chatlogRxActions = require("../chitchat/chats/redux/chatlogs/chatlogRxActions");
-const authRx = require("./authen/authRx");
-const teamRx = require("./team/teamRx");
-const adminRx = require("./admin/adminRx");
-const groupRx = require("./group/groupRx");
-const privateGroupRxActions = require("./group/privateGroupRxActions");
-const editGroupRxActions = require("./group/editGroupRxActions");
-const chitchatRxActions = require("../actions/chitchatRxActions");
-exports.rootEpic = redux_observable_1.combineEpics(
+import { combineEpics } from "redux-observable";
+import * as userRx from "./user/userRx";
+import * as chatroomRxEpic from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
+import * as chatlogRxActions from "../chitchat/chats/redux/chatlogs/chatlogRxActions";
+import * as authRx from "./authen/authRx";
+import * as teamRx from "./team/teamRx";
+import * as adminRx from "./admin/adminRx";
+import * as groupRx from "./group/groupRx";
+import * as privateGroupRxActions from "./group/privateGroupRxActions";
+import * as editGroupRxActions from "./group/editGroupRxActions";
+import * as chitchatRxActions from "../actions/chitchatRxActions";
+export const rootEpic = combineEpics(
 // @Admin
 adminRx.createNewOrgChartEpic, adminRx.getOrgChartEpic, adminRx.updateUserOrgChartEpic, adminRx.updateUserTeamRole_Epic, userRx.onAuth_Epic, userRx.fetchUser_Epic, userRx.suggestUser_Epic, userRx.fetchContactEpic, userRx.fetchAgentEpic, userRx.getTeamProfileEpic, userRx.uploadUserAvatar_Epic, userRx.updateUserInfo_Epic, 
 ///@ Signup user.

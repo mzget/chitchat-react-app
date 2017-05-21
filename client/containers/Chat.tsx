@@ -13,7 +13,6 @@ import { ChatBox } from "./chat/ChatBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import UploadingDialog from "./UploadingDialog";
 import GridListSimple from "../components/GridListSimple";
-import { WarningBar } from "../components/WarningBar";
 
 import { IComponentProps } from "../utils/IComponentProps";
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
@@ -376,14 +375,10 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         let { chatroomReducer, stalkReducer } = this.props;
 
         return (
-  
 
-            <div style={{height: "calc(100vh - 148px)"}}>
-                {
-                    (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
-                        <WarningBar /> : null
-                }
-                <div style={{overflowY: "scroll", height: "100%"}} id={"app_body"}>
+
+            <div style={{ height: "calc(100vh - 148px)" }}>
+                <div style={{ overflowY: "scroll", height: "100%" }} id={"app_body"}>
                     {
                         (this.state.earlyMessageReady) ?
                             <Flex align="center" justify="center">
@@ -396,7 +391,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                         styles={{ overflowX: "hidden" }}
                         value={this.state.messages}
                         onSelected={(message: IMessage) => { }} />
-                            {
+                    {
                         (this.state.openButtomMenu) ?
                             <GridListSimple
                                 boxHeight={this.h_stickerBox}
@@ -404,7 +399,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                                 onSelected={this.onSubmitStickerChat} />
                             : null
                     }
-                    
+
                 </div>
                 <div>
                     <TypingBox

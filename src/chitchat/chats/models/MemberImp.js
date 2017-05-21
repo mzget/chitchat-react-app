@@ -1,4 +1,2 @@
-"use strict";
-class MemberImp {
+export class MemberImp {
 }
-exports.MemberImp = MemberImp;

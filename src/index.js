@@ -1,21 +1,15 @@
-global.userAgent = "react-js";
+
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-const injectTapEventPlugin = require("react-tap-event-plugin");
-injectTapEventPlugin();
-//injectTapEventPlugin({
-//    shouldRejectClick: function (lastTouchEventTimestamp, clickEventTimestamp) {
-//        return true;
-//    }
-//});
 
 import App from './App';
 import './index.css';
 import 'rxjs';
 
-ReactDOM.render(
-  (<App />),
-  document.getElementById('root')
-);
+global.userAgent = "react-js";
+
+const injectTapEventPlugin = require("react-tap-event-plugin");
+injectTapEventPlugin();
+
+ReactDOM.render((<App />), document.getElementById('root'));

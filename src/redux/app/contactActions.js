@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -7,10 +6,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const configureStore_1 = require("../configureStore");
-function getContactProfile(contactId) {
+import Store from "../configureStore";
+export function getContactProfile(contactId) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { members } = configureStore_1.default.getState().teamReducer;
+        const { members } = Store.getState().teamReducer;
         let _members = members;
         let contacts = _members.filter((v, i, arr) => {
             return v._id === contactId;
@@ -18,4 +17,3 @@ function getContactProfile(contactId) {
         return contacts;
     });
 }
-exports.getContactProfile = getContactProfile;

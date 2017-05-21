@@ -1,4 +1,3 @@
-"use strict";
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -7,17 +6,17 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-const React = require("react");
-const react_redux_1 = require("react-redux");
-const reflexbox_1 = require("reflexbox");
-const Dialog_1 = require("material-ui/Dialog");
-const FlatButton_1 = require("material-ui/FlatButton");
-const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
-const ChatroomRx = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
-const SimpleCardImage_1 = require("../components/SimpleCardImage");
-const SimpleCardVideo_1 = require("../components/SimpleCardVideo");
-const LinearProgressSimple_1 = require("../components/LinearProgressSimple");
-const FileType = require("../chitchat/libs/shared/FileType");
+import * as React from "react";
+import { connect } from "react-redux";
+import { Flex } from "reflexbox";
+import Dialog from "material-ui/Dialog";
+import FlatButton from "material-ui/FlatButton";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import * as ChatroomRx from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
+import SimpleCardImage from "../components/SimpleCardImage";
+import SimpleCardVideo from "../components/SimpleCardVideo";
+import LinearProgressSimple from "../components/LinearProgressSimple";
+import * as FileType from "../chitchat/libs/shared/FileType";
 ;
 class UploadingDialog extends React.Component {
     constructor() {
@@ -69,25 +68,25 @@ class UploadingDialog extends React.Component {
     render() {
         let { chatroomReducer } = this.props;
         const actions = [
-            React.createElement(FlatButton_1.default, { label: this.state.closeLabel, primary: true, onClick: this.cancelFileUpload })
+            React.createElement(FlatButton, { label: this.state.closeLabel, primary: true, onClick: this.cancelFileUpload })
         ];
         const getMediaCard = () => {
             if (chatroomReducer.fileInfo.type.match(FileType.imageType)) {
-                return (React.createElement(SimpleCardImage_1.default, { src: chatroomReducer.uploadingFile }));
+                return (React.createElement(SimpleCardImage, { src: chatroomReducer.uploadingFile }));
             }
             else if (chatroomReducer.fileInfo.type.match(FileType.textType)) {
                 return null;
             }
             else if (chatroomReducer.fileInfo.type.match(FileType.videoType)) {
-                return (React.createElement(SimpleCardVideo_1.default, { src: chatroomReducer.uploadingFile }));
+                return (React.createElement(SimpleCardVideo, { src: chatroomReducer.uploadingFile }));
             }
         };
-        return (React.createElement(MuiThemeProvider_1.default, null,
-            React.createElement(Dialog_1.default, { title: this.state.dialogTitle, actions: actions, modal: true, open: this.state.openState },
+        return (React.createElement(MuiThemeProvider, null,
+            React.createElement(Dialog, { title: this.state.dialogTitle, actions: actions, modal: true, open: this.state.openState },
                 (this.state.openState) ?
                     getMediaCard() : null,
-                React.createElement(reflexbox_1.Flex, { p: 2, align: "center" },
-                    React.createElement(LinearProgressSimple_1.default, null)))));
+                React.createElement(Flex, { p: 2, align: "center" },
+                    React.createElement(LinearProgressSimple, null)))));
     }
 }
 /**
@@ -96,5 +95,4 @@ class UploadingDialog extends React.Component {
 function mapStateToProps(state) {
     return __assign({}, state);
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapStateToProps)(UploadingDialog);
+export default connect(mapStateToProps)(UploadingDialog);

@@ -3,29 +3,28 @@
  *
  * This is pure function action for redux app.
  */
-"use strict";
-const Rx = require("rxjs/Rx");
+import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
-const chatlogsActions_1 = require("../chitchat/chats/redux/chatlogs/chatlogsActions");
-const teamRx_1 = require("../redux/team/teamRx");
-const userRx_1 = require("../redux/user/userRx");
-const chatlogRxActions_1 = require("../chitchat/chats/redux/chatlogs/chatlogRxActions");
-const configureStore_1 = require("../redux/configureStore");
-exports.stalkInitChatlog_Epic = action$ => action$.filter(action => (action.type == chatlogsActions_1.STALK_INIT_CHATLOG || action.type == teamRx_1.TEAM_SELECTED))
+import { STALK_INIT_CHATLOG } from "../chitchat/chats/redux/chatlogs/chatlogsActions";
+import { TEAM_SELECTED, getTeamsInfo } from "../redux/team/teamRx";
+import { FETCH_USER_SUCCESS } from "../redux/user/userRx";
+import { getLastAccessRoom } from "../chitchat/chats/redux/chatlogs/chatlogRxActions";
+import Store from "../redux/configureStore";
+export const stalkInitChatlog_Epic = action$ => action$.filter(action => (action.type == STALK_INIT_CHATLOG || action.type == TEAM_SELECTED))
     .map((x) => {
-    if (!!configureStore_1.default.getState().teamReducer.team) {
-        let team_id = configureStore_1.default.getState().teamReducer.team._id;
-        return chatlogRxActions_1.getLastAccessRoom(team_id);
+    if (!!Store.getState().teamReducer.team) {
+        let team_id = Store.getState().teamReducer.team._id;
+        return getLastAccessRoom(team_id);
     }
     else {
         return { type: "" };
     }
 });
-exports.getTeamsInfo_Epic = (action$) => (action$.filter(action => action.type == userRx_1.FETCH_USER_SUCCESS)
+export const getTeamsInfo_Epic = (action$) => (action$.filter(action => action.type == FETCH_USER_SUCCESS)
     .map(x => {
-    let { userReducer } = configureStore_1.default.getState();
+    let { userReducer } = Store.getState();
     if (!!userReducer.user.teams && userReducer.user.teams.length > 0) {
-        return teamRx_1.getTeamsInfo(userReducer.user.teams);
+        return getTeamsInfo(userReducer.user.teams);
     }
     else {
         return { type: "" };

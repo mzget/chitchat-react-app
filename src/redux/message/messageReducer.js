@@ -3,9 +3,8 @@
  *
  * This is pure function for redux app.
  */
-"use strict";
-const messageActions_1 = require("./messageActions");
-const immutable_1 = require("immutable");
+import { MessageActionsType } from "./messageActions";
+import { Record } from 'immutable';
 /**
  * ## Initial State
  */
@@ -14,7 +13,7 @@ const immutable_1 = require("immutable");
  * This Record contains the state of the form and the
  * fields it contains.
  */
-const Form = immutable_1.Record({
+const Form = Record({
     selectRoom: null,
     disabled: false,
     error: null,
@@ -22,35 +21,34 @@ const Form = immutable_1.Record({
     isFetching: false,
     state: null
 });
-exports.MessageInitState = immutable_1.Record({
+export var MessageInitState = Record({
     form: new Form
 });
-const initialState = new exports.MessageInitState;
-function messageReducer(state = initialState, action) {
-    if (!(state instanceof exports.MessageInitState))
+const initialState = new MessageInitState;
+export function messageReducer(state = initialState, action) {
+    if (!(state instanceof MessageInitState))
         return initialState.mergeDeep(state);
     switch (action.type) {
-        case messageActions_1.MessageActionsType.STOP: {
-            return state.setIn(["form", "state"], messageActions_1.MessageActionsType.STOP);
+        case MessageActionsType.STOP: {
+            return state.setIn(["form", "state"], MessageActionsType.STOP);
         }
-        case messageActions_1.MessageActionsType.GET_ROOMID_REQUEST: {
-            let nextState = state.setIn(["form", "state"], messageActions_1.MessageActionsType.GET_ROOMID_REQUEST)
+        case MessageActionsType.GET_ROOMID_REQUEST: {
+            let nextState = state.setIn(["form", "state"], MessageActionsType.GET_ROOMID_REQUEST)
                 .setIn(["form", "isFetching"], true);
             return nextState;
         }
-        case messageActions_1.MessageActionsType.GET_ROOMID_SUCCESS: {
+        case MessageActionsType.GET_ROOMID_SUCCESS: {
             let roomInfo = action.payload;
-            let nextState = state.setIn(["form", "state"], messageActions_1.MessageActionsType.GET_ROOMID_SUCCESS)
+            let nextState = state.setIn(["form", "state"], MessageActionsType.GET_ROOMID_SUCCESS)
                 .setIn(["form", "isFetching"], false)
                 .setIn(["form", "selectRoom"], roomInfo);
             return nextState;
         }
-        case messageActions_1.MessageActionsType.GET_ROOMID_FAILURE: {
-            let nextState = state.setIn(["form", "state"], messageActions_1.MessageActionsType.GET_ROOMID_FAILURE)
+        case MessageActionsType.GET_ROOMID_FAILURE: {
+            let nextState = state.setIn(["form", "state"], MessageActionsType.GET_ROOMID_FAILURE)
                 .setIn(["form", "isFetching"], false);
             return nextState;
         }
         default: return state;
     }
 }
-exports.messageReducer = messageReducer;

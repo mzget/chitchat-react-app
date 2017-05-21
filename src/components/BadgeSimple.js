@@ -1,10 +1,8 @@
-"use strict";
-const React = require("react");
-const Badge_1 = require("material-ui/Badge");
-const notifications_1 = require("material-ui/svg-icons/social/notifications");
-const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
-const BadgeSimple = (props) => (React.createElement(MuiThemeProvider_1.default, null,
-    React.createElement(Badge_1.default, { badgeContent: props.content, badgeStyle: { backgroundColor: "red" }, secondary: true, style: { paddingLeft: "0", paddingRight: "16px" } },
-        React.createElement(notifications_1.default, null))));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = BadgeSimple;
+import * as React from 'react';
+import Badge from 'material-ui/Badge';
+import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+const BadgeSimple = (props) => (React.createElement(MuiThemeProvider, null,
+    React.createElement(Badge, { badgeContent: props.content, badgeStyle: { backgroundColor: "red" }, secondary: true, style: { paddingLeft: "0", paddingRight: "16px" } },
+        React.createElement(NotificationsIcon, null))));
+export default BadgeSimple;

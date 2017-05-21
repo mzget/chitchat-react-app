@@ -1,9 +1,8 @@
-"use strict";
-const React = require("react");
-const List_1 = require("material-ui/List");
-const Avatar_1 = require("material-ui/Avatar");
-exports.IncomingList = (props) => (React.createElement(List_1.ListItem, { onClick: () => props.onSelected(props.message), leftAvatar: (!!props.message.user.avatar) ?
-        React.createElement(Avatar_1.default, { src: props.message.user.avatar }) : React.createElement(Avatar_1.default, null, props.message.user.username.charAt(0)), primaryText: props.message.body, secondaryText: React.createElement("p", null,
+import * as React from "react";
+import { ListItem } from "material-ui/List";
+import Avatar from "material-ui/Avatar";
+export const IncomingList = (props) => (React.createElement(ListItem, { onClick: () => props.onSelected(props.message), leftAvatar: (!!props.message.user.avatar) ?
+        React.createElement(Avatar, { src: props.message.user.avatar }) : React.createElement(Avatar, null, props.message.user.username.charAt(0)), primaryText: props.message.body, secondaryText: React.createElement("p", null,
         React.createElement("span", null, props.message.createTime)) }));
-exports.OutComingList = (props) => (React.createElement(List_1.ListItem, { onClick: () => props.onSelected(props.message), primaryText: props.message.body, secondaryText: React.createElement("p", null,
+export const OutComingList = (props) => (React.createElement(ListItem, { onClick: () => props.onSelected(props.message), primaryText: props.message.body, secondaryText: React.createElement("p", null,
         React.createElement("span", null, props.message.createTime)), style: { textAlign: "right" } }));

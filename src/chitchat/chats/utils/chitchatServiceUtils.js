@@ -1,12 +1,11 @@
-"use strict";
-const chitchatFactory_1 = require("../chitchatFactory");
-const getConfig = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
-exports.chitchat_headers = () => ({
+import { ChitChatFactory } from "../chitchatFactory";
+const getConfig = () => ChitChatFactory.getInstance().config;
+export const chitchat_headers = () => ({
     "Content-Type": "application/json",
     "cache-control": "no-cache",
     "x-api-key": getConfig().api.apiKey
 });
-exports.withToken = (headers) => (token) => {
+export const withToken = (headers) => (token) => {
     headers["x-access-token"] = token;
     return headers;
 };

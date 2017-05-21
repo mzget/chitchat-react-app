@@ -1,28 +1,27 @@
-"use strict";
-const React = require("react");
-const react_redux_1 = require("react-redux");
-const react_router_dom_1 = require("react-router-dom");
-const chitchat_1 = require("./chitchat");
+import * as React from "react";
+import { Provider } from "react-redux";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import { chitchatFactory } from "./chitchat";
 /**
  * ### configureStore
  *  ```configureStore``` will connect the ```reducers```,
  */
-const configureStore_1 = require("./redux/configureStore");
-const HomeEnhanced_1 = require("./containers/HomeEnhanced");
-const ChatPageEnhanced_1 = require("./containers/ChatPageEnhanced");
-const ChatRoomSettingsPage_1 = require("./containers/ChatRoomSettingsPage");
-const TeamPageEnhanced_1 = require("./containers/TeamPageEnhanced");
-const ProfilePageEnhanced_1 = require("./containers/ProfilePageEnhanced");
-const Main_1 = require("./containers/Main");
-const m_Main_1 = require("./containers/m_Main");
-const AdminPageEnhanced_1 = require("./containers/AdminPageEnhanced");
-const Breakpoints_1 = require("./chitchat/consts/Breakpoints");
-chitchat_1.chitchatFactory.initStore(configureStore_1.default);
-configureStore_1.default.subscribe(() => {
-    chitchat_1.chitchatFactory.setAuthStore(configureStore_1.default.getState().userReducer.user, configureStore_1.default.getState().authReducer.token);
-    chitchat_1.chitchatFactory.setTeamStore({
-        team: configureStore_1.default.getState().teamReducer.team,
-        members: configureStore_1.default.getState().teamReducer.members
+import Store from "./redux/configureStore";
+import { HomePageWithDialogBox } from "./containers/HomeEnhanced";
+import { ChatPageEnhanced } from "./containers/ChatPageEnhanced";
+import { ChatRoomSettingsEnhanced } from "./containers/ChatRoomSettingsPage";
+import { TeamPageEnhanced } from "./containers/TeamPageEnhanced";
+import { ProfilePageEnhanced } from "./containers/ProfilePageEnhanced";
+import { MainPageWithDialogBox } from "./containers/Main";
+import { M_MainPageEnhanced } from "./containers/m_Main";
+import { AdminPageEnhanced } from "./containers/AdminPageEnhanced";
+import { SMALL_TABLET } from "./chitchat/consts/Breakpoints";
+chitchatFactory.initStore(Store);
+Store.subscribe(() => {
+    chitchatFactory.setAuthStore(Store.getState().userReducer.user, Store.getState().authReducer.token);
+    chitchatFactory.setTeamStore({
+        team: Store.getState().teamReducer.team,
+        members: Store.getState().teamReducer.members
     });
 });
 class App extends React.Component {
@@ -31,17 +30,16 @@ class App extends React.Component {
         this.clientWidth = document.documentElement.clientWidth;
     }
     render() {
-        return (React.createElement(react_redux_1.Provider, { store: configureStore_1.default },
-            React.createElement(react_router_dom_1.BrowserRouter, null,
+        return (React.createElement(Provider, { store: Store },
+            React.createElement(Router, null,
                 React.createElement("div", null,
-                    React.createElement(react_router_dom_1.Route, { exact: true, path: "/", component: HomeEnhanced_1.HomePageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/team/:filter", component: TeamPageEnhanced_1.TeamPageEnhanced }),
-                    React.createElement(react_router_dom_1.Route, { path: "/profile/:filter/:user", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ProfilePageEnhanced_1.ProfilePageEnhanced : Main_1.MainPageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/chatslist/:filter", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? m_Main_1.M_MainPageEnhanced : Main_1.MainPageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/chatroom/chat/:room_id", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ChatPageEnhanced_1.ChatPageEnhanced : Main_1.MainPageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/chatroom/settings/:room_id/:edit", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ChatRoomSettingsPage_1.ChatRoomSettingsEnhanced : Main_1.MainPageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/admin/:filter", component: AdminPageEnhanced_1.AdminPageEnhanced })))));
+                    React.createElement(Route, { exact: true, path: "/", component: HomePageWithDialogBox }),
+                    React.createElement(Route, { path: "/team/:filter", component: TeamPageEnhanced }),
+                    React.createElement(Route, { path: "/profile/:filter/:user", component: (this.clientWidth < SMALL_TABLET) ? ProfilePageEnhanced : MainPageWithDialogBox }),
+                    React.createElement(Route, { path: "/chatslist/:filter", component: (this.clientWidth < SMALL_TABLET) ? M_MainPageEnhanced : MainPageWithDialogBox }),
+                    React.createElement(Route, { path: "/chatroom/chat/:room_id", component: (this.clientWidth < SMALL_TABLET) ? ChatPageEnhanced : MainPageWithDialogBox }),
+                    React.createElement(Route, { path: "/chatroom/settings/:room_id/:edit", component: (this.clientWidth < SMALL_TABLET) ? ChatRoomSettingsEnhanced : MainPageWithDialogBox }),
+                    React.createElement(Route, { path: "/admin/:filter", component: AdminPageEnhanced })))));
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = App;
+export default App;

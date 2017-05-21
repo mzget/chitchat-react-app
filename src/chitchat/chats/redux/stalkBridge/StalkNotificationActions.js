@@ -6,37 +6,36 @@
  * The NotificationManager for react.js.
  *
  */
-"use strict";
-const BackendFactory_1 = require("../../BackendFactory");
-const CryptoHelper = require("../../utils/CryptoHelper");
-const Message_1 = require("../../../libs/shared/Message");
-const chitchatFactory_1 = require("../../chitchatFactory");
-const getStore = () => chitchatFactory_1.ChitChatFactory.getInstance().store;
-exports.STALK_NOTICE_NEW_MESSAGE = "STALK_NOTICE_NEW_MESSAGE";
-const stalkNotiNewMessage = (payload) => ({ type: exports.STALK_NOTICE_NEW_MESSAGE, payload });
+import { BackendFactory } from "../../BackendFactory";
+import * as CryptoHelper from "../../utils/CryptoHelper";
+import { MessageType } from "../../../libs/shared/Message";
+import { ChitChatFactory } from "../../chitchatFactory";
+const getStore = () => ChitChatFactory.getInstance().store;
+export const STALK_NOTICE_NEW_MESSAGE = "STALK_NOTICE_NEW_MESSAGE";
+const stalkNotiNewMessage = (payload) => ({ type: STALK_NOTICE_NEW_MESSAGE, payload });
 const init = (onSuccess) => {
     console.log("Initialize NotificationManager.");
 };
-exports.regisNotifyNewMessageEvent = () => {
+export const regisNotifyNewMessageEvent = () => {
     console.log("subscribe global notify message event");
-    BackendFactory_1.BackendFactory.getInstance().dataListener.addOnChatListener(exports.notify);
+    BackendFactory.getInstance().dataListener.addOnChatListener(notify);
 };
-exports.unsubscribeGlobalNotifyMessageEvent = () => {
-    BackendFactory_1.BackendFactory.getInstance().dataListener.removeOnChatListener(exports.notify);
+export const unsubscribeGlobalNotifyMessageEvent = () => {
+    BackendFactory.getInstance().dataListener.removeOnChatListener(notify);
 };
-exports.notify = (messageImp) => {
+export const notify = (messageImp) => {
     let message = "";
-    if (messageImp.type === Message_1.MessageType[Message_1.MessageType.Text]) {
+    if (messageImp.type === MessageType[MessageType.Text]) {
         CryptoHelper.decryptionText(messageImp).then((decoded) => {
             message = decoded.body;
             getStore().dispatch(stalkNotiNewMessage(message));
         });
     }
-    else if (messageImp.type === Message_1.MessageType[Message_1.MessageType.Location]) {
+    else if (messageImp.type === MessageType[MessageType.Location]) {
         message = "Sent you location";
         getStore().dispatch(stalkNotiNewMessage(message));
     }
-    else if (messageImp.type === Message_1.MessageType[Message_1.MessageType.Image]) {
+    else if (messageImp.type === MessageType[MessageType.Image]) {
         message = "Sent you image";
         getStore().dispatch(stalkNotiNewMessage(message));
     }

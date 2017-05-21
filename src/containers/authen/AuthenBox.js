@@ -1,4 +1,3 @@
-"use strict";
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -7,14 +6,14 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-const React = require("react");
-const reflexbox_1 = require("reflexbox");
-const material_ui_1 = require("material-ui");
-const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
-const SigninBox_1 = require("./SigninBox");
-const SignupBox_1 = require("./SignupBox");
-const AuthRx = require("../../redux/authen/authRx");
-class AuthenBox extends React.Component {
+import * as React from "react";
+import { Flex } from "reflexbox";
+import { RaisedButton } from "material-ui";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import { SigninBox } from "./SigninBox";
+import { SignupBox } from "./SignupBox";
+import * as AuthRx from "../../redux/authen/authRx";
+export class AuthenBox extends React.Component {
     componentWillMount() {
         this.state = {
             showSignin: true
@@ -35,18 +34,17 @@ class AuthenBox extends React.Component {
         this.setState({ showSignin: true });
     }
     render() {
-        return (React.createElement(MuiThemeProvider_1.default, null,
-            React.createElement(reflexbox_1.Flex, { flexColumn: true },
+        return (React.createElement(MuiThemeProvider, null,
+            React.createElement(Flex, { flexColumn: true },
                 (this.state.showSignin) ?
-                    React.createElement(SigninBox_1.SigninBox, { dispatch: this.props.dispatch, onError: this.props.onError }) :
-                    React.createElement(SignupBox_1.SignupBox, __assign({}, this.props, { onError: this.props.onError })),
+                    React.createElement(SigninBox, { dispatch: this.props.dispatch, onError: this.props.onError }) :
+                    React.createElement(SignupBox, __assign({}, this.props, { onError: this.props.onError })),
                 (this.state.showSignin) ?
-                    (React.createElement(reflexbox_1.Flex, { justify: "center", align: "center", p: 2 },
+                    (React.createElement(Flex, { justify: "center", align: "center", p: 2 },
                         React.createElement("p", null, "New to chitchat?"),
-                        React.createElement(material_ui_1.RaisedButton, { primary: true, label: "Sign up now", onClick: this.onSignupPressed, style: { margin: 8 } }, " "))) :
-                    (React.createElement(reflexbox_1.Flex, { justify: "center", align: "center", p: 2 },
+                        React.createElement(RaisedButton, { primary: true, label: "Sign up now", onClick: this.onSignupPressed, style: { margin: 8 } }, " "))) :
+                    (React.createElement(Flex, { justify: "center", align: "center", p: 2 },
                         React.createElement("p", null, "Already have account?"),
-                        React.createElement(material_ui_1.RaisedButton, { primary: true, label: "Sign in", onClick: this.onSigninPressed, style: { margin: 8 } }, " "))))));
+                        React.createElement(RaisedButton, { primary: true, label: "Sign in", onClick: this.onSigninPressed, style: { margin: 8 } }, " "))))));
     }
 }
-exports.AuthenBox = AuthenBox;

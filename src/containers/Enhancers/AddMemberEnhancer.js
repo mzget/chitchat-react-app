@@ -1,14 +1,13 @@
-"use strict";
-const react_redux_1 = require("react-redux");
-const recompose_1 = require("recompose");
-const userRx_1 = require("../../redux/user/userRx");
-const editGroupRxActions_1 = require("../../redux/group/editGroupRxActions");
-const chatroomActions = require("../../chitchat/chats/redux/chatroom/chatroomActions");
+import { connect } from "react-redux";
+import { withState, withHandlers, compose, lifecycle, shallowEqual } from "recompose";
+import { suggestUser } from "../../redux/user/userRx";
+import { addGroupMember } from "../../redux/group/editGroupRxActions";
+import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
 const mapStateToProps = (state) => ({
     userReducer: state.userReducer,
     chatroomReducer: state.chatroomReducer
 });
-exports.AddMemberEnhancer = recompose_1.compose(react_redux_1.connect(mapStateToProps), recompose_1.withState("search", "setSearch", ""), recompose_1.withState("members", "setMembers", []), recompose_1.lifecycle({
+export const AddMemberEnhancer = compose(connect(mapStateToProps), withState("search", "setSearch", ""), withState("members", "setMembers", []), lifecycle({
     componentWillReceiveProps(nextProps) {
         let { searchUsers } = nextProps.userReducer;
         let { match: { params }, chatroomReducer } = nextProps;
@@ -25,25 +24,25 @@ exports.AddMemberEnhancer = recompose_1.compose(react_redux_1.connect(mapStateTo
             });
             this.props.setMembers(members => _members);
         };
-        if (!recompose_1.shallowEqual(searchUsers, this.props.userReducer.searchUsers)) {
+        if (!shallowEqual(searchUsers, this.props.userReducer.searchUsers)) {
             if (Array.isArray(searchUsers)) {
                 let room = chatroomActions.getRoom(params.room_id);
                 update(room);
             }
         }
-        if (!recompose_1.shallowEqual(chatroomReducer.chatrooms, this.props.chatroomReducer.chatrooms)) {
+        if (!shallowEqual(chatroomReducer.chatrooms, this.props.chatroomReducer.chatrooms)) {
             if (Array.isArray(searchUsers)) {
                 let room = chatroomActions.getRoom(params.room_id);
                 update(room);
             }
         }
     }
-}), recompose_1.withHandlers({
+}), withHandlers({
     onSearch: (props) => () => {
-        props.dispatch(userRx_1.suggestUser(props.search, null));
+        props.dispatch(suggestUser(props.search, null));
     },
     onAddMember: (props) => item => {
-        props.dispatch(editGroupRxActions_1.addGroupMember(props.match.params.room_id, item));
+        props.dispatch(addGroupMember(props.match.params.room_id, item));
     },
     onTextChanged: (props) => (e, value) => {
         props.setSearch(search => value);

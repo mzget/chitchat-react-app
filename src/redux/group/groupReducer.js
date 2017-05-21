@@ -1,10 +1,9 @@
-"use strict";
-const immutable_1 = require("immutable");
-const groupRx = require("./groupRx");
-const privateGroupRxActions = require("./privateGroupRxActions");
-const editGroupRxActions = require("./editGroupRxActions");
-const Room_1 = require("../../chitchat/libs/shared/Room");
-exports.GroupInitState = immutable_1.Record({
+import { Record } from "immutable";
+import * as groupRx from "./groupRx";
+import * as privateGroupRxActions from "./privateGroupRxActions";
+import * as editGroupRxActions from "./editGroupRxActions";
+import { RoomType } from "../../chitchat/libs/shared/Room";
+export const GroupInitState = Record({
     isFetching: false,
     state: null,
     error: null,
@@ -12,7 +11,7 @@ exports.GroupInitState = immutable_1.Record({
     privateGroups: null,
     groupImageResult: null
 });
-exports.groupReducer = (state = new exports.GroupInitState(), action) => {
+export const groupReducer = (state = new GroupInitState(), action) => {
     switch (action.type) {
         case groupRx.GET_ORG_GROUP_SUCCESS: {
             return state.set("orgGroups", action.payload.result);
@@ -20,7 +19,7 @@ exports.groupReducer = (state = new exports.GroupInitState(), action) => {
         case groupRx.CREATE_ORG_GROUP_SUCCESS: {
             let group = action.payload;
             if (group && group.length > 0) {
-                if (group[0].type == Room_1.RoomType.organizationGroup) {
+                if (group[0].type == RoomType.organizationGroup) {
                     let prev = state.get("orgGroups");
                     let _next = prev.concat(group);
                     return state.set("orgGroups", _next)
@@ -44,7 +43,7 @@ exports.groupReducer = (state = new exports.GroupInitState(), action) => {
         case privateGroupRxActions.CREATE_PRIVATE_GROUP_SUCCESS: {
             let group = action.payload;
             if (group && group.length > 0) {
-                if (group[0].type == Room_1.RoomType.privateGroup) {
+                if (group[0].type == RoomType.privateGroup) {
                     let prev = state.get("privateGroups");
                     let _next = prev.concat(group);
                     return state.set("privateGroups", _next)

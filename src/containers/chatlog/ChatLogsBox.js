@@ -1,11 +1,10 @@
-"use strict";
-const React = require("react");
-const react_redux_1 = require("react-redux");
-const Subheader_1 = require("material-ui/Subheader");
-const chatroomActions = require("../../chitchat/chats/redux/chatroom/chatroomActions");
-const ChatLogRxActions = require("../../chitchat/chats/redux/chatlogs/chatlogRxActions");
-const ListChatLogs_1 = require("./ListChatLogs");
-class ChatLogsBox extends React.Component {
+import * as React from "react";
+import { connect } from "react-redux";
+import Subheader from "material-ui/Subheader";
+import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
+import * as ChatLogRxActions from "../../chitchat/chats/redux/chatlogs/chatlogRxActions";
+import { ListChatLogs } from "./ListChatLogs";
+export class ChatLogsBox extends React.Component {
     componentWillMount() {
         this.state = {
             search: "",
@@ -24,12 +23,11 @@ class ChatLogsBox extends React.Component {
     }
     render() {
         return (React.createElement("div", null,
-            React.createElement(Subheader_1.default, null, "Recent chats"),
-            React.createElement(ListChatLogs_1.ListChatLogs, { value: this.props.chatlogReducer.chatsLog, onSelected: this.enterRoom, onRemovedLog: this.removedLog })));
+            React.createElement(Subheader, null, "Recent chats"),
+            React.createElement(ListChatLogs, { value: this.props.chatlogReducer.chatsLog, onSelected: this.enterRoom, onRemovedLog: this.removedLog })));
     }
 }
-exports.ChatLogsBox = ChatLogsBox;
 const mapStateToProps = (state) => ({
     chatlogReducer: state.chatlogReducer
 });
-exports.ChatLogsBoxEnhancer = react_redux_1.connect(mapStateToProps)(ChatLogsBox);
+export const ChatLogsBoxEnhancer = connect(mapStateToProps)(ChatLogsBox);

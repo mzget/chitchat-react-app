@@ -1,4 +1,3 @@
-"use strict";
 /*
 // epic
 export const fetchOlderMessageCount_Epic = action$ =>

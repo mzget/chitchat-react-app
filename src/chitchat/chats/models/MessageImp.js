@@ -1,4 +1,2 @@
-"use strict";
-class MessageImp {
+export class MessageImp {
 }
-exports.MessageImp = MessageImp;

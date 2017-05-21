@@ -7,7 +7,8 @@
 
 import HttpStatusCode from './utils/httpStatusCode';
 import TokenDecode from './utils/tokenDecode';
-import EventEmitter = require("events");
+import EventEmitter from "events";
+
 const Pomelo = require("../pomelo/reactWSClient");
 
 export abstract class IPomelo extends EventEmitter {

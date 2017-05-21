@@ -1,25 +1,24 @@
-"use strict";
-const immutable_1 = require("immutable");
-const userRx_1 = require("../user/userRx");
-const authRx = require("../authen/authRx");
-const chatlogRxActions_1 = require("../../chitchat/chats/redux/chatlogs/chatlogRxActions");
-const editGroupActions = require("../group/editGroupRxActions");
-exports.CLEAR_ALERT = "CLEAR_ALERT";
-exports.AlertInitState = immutable_1.Record({
+import { Record } from "immutable";
+import { UPLOAD_USER_AVATAR_FAILURE, FETCH_USER_FAILURE, UPDATE_USER_INFO_FAILURE } from "../user/userRx";
+import * as authRx from "../authen/authRx";
+import { UPDATE_LAST_ACCESS_ROOM_FAILURE } from "../../chitchat/chats/redux/chatlogs/chatlogRxActions";
+import * as editGroupActions from "../group/editGroupRxActions";
+export const CLEAR_ALERT = "CLEAR_ALERT";
+export const AlertInitState = Record({
     error: null
 });
-exports.alertReducer = (state = new exports.AlertInitState(), action) => {
+export const alertReducer = (state = new AlertInitState(), action) => {
     switch (action.type) {
         /**
          * User reducer.
          */
-        case userRx_1.UPLOAD_USER_AVATAR_FAILURE: {
+        case UPLOAD_USER_AVATAR_FAILURE: {
             return state.set("error", action.payload.message.toString());
         }
-        case userRx_1.FETCH_USER_FAILURE: {
+        case FETCH_USER_FAILURE: {
             return state.set("error", action.payload.message);
         }
-        case userRx_1.UPDATE_USER_INFO_FAILURE: {
+        case UPDATE_USER_INFO_FAILURE: {
             return state.set("error", action.payload.message);
         }
         /**
@@ -39,13 +38,13 @@ exports.alertReducer = (state = new exports.AlertInitState(), action) => {
         /**
          * Chatlog reducer...
          */
-        case chatlogRxActions_1.UPDATE_LAST_ACCESS_ROOM_FAILURE: {
+        case UPDATE_LAST_ACCESS_ROOM_FAILURE: {
             return state.set("error", action.payload.message);
         }
         case editGroupActions.REMOVE_GROUP_MEMBER_FAILURE: {
             return state.set("error", action.payload.message);
         }
-        case exports.CLEAR_ALERT:
+        case CLEAR_ALERT:
             return state.set("error", null);
         default:
             return state;

@@ -1,4 +1,3 @@
-"use strict";
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -7,9 +6,9 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-const React = require("react");
-const react_redux_1 = require("react-redux");
-const SnackbarSimple_1 = require("../../components/SnackbarSimple");
+import * as React from "react";
+import { connect } from "react-redux";
+import { SnackbarSimple } from "../../components/SnackbarSimple";
 ;
 class SnackbarBox extends React.Component {
     componentWillMount() {
@@ -31,11 +30,11 @@ class SnackbarBox extends React.Component {
     }
     render() {
         return (React.createElement("div", null,
-            React.createElement(SnackbarSimple_1.SnackbarSimple, { open: this.state.openSnackbar, message: this.state.snackbarMessage, handleRequestClose: this.closeSnackbar, hideDuration: 2000 })));
+            React.createElement(SnackbarSimple, { open: this.state.openSnackbar, message: this.state.snackbarMessage, handleRequestClose: this.closeSnackbar, hideDuration: 2000 })));
     }
 }
 /**
  * ## Redux boilerplate
  */
 function mapStateToProps(state) { return __assign({}, state); }
-exports.SnackbarToolBox = react_redux_1.connect(mapStateToProps)(SnackbarBox);
+export const SnackbarToolBox = connect(mapStateToProps)(SnackbarBox);

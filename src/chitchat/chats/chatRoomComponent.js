@@ -3,7 +3,6 @@
  *
  * ChatRoomComponent for handle some business logic of chat room.
  */
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -12,20 +11,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const async = require("async");
-const BackendFactory_1 = require("./BackendFactory");
-const serverImplemented_1 = require("../libs/stalk/serverImplemented");
-const serverEventListener_1 = require("../libs/stalk/serverEventListener");
-const CryptoHelper = require("./utils/CryptoHelper");
-const chatroomService = require("./services/chatroomService");
-const secureServiceFactory_1 = require("./secure/secureServiceFactory");
-const Message_1 = require("../libs/shared/Message");
-const StickerPath_1 = require("../consts/StickerPath");
-const chitchatFactory_1 = require("./chitchatFactory");
-const getConfig = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
-const getStore = () => chitchatFactory_1.ChitChatFactory.getInstance().store;
+import * as async from "async";
+import { BackendFactory } from "./BackendFactory";
+import { ServerImplemented } from "../libs/stalk/serverImplemented";
+import ServerEventListener from "../libs/stalk/serverEventListener";
+import * as CryptoHelper from "./utils/CryptoHelper";
+import * as chatroomService from "./services/chatroomService";
+import SecureServiceFactory from "./secure/secureServiceFactory";
+import { MessageType } from "../libs/shared/Message";
+import { imagesPath } from "../consts/StickerPath";
+import { ChitChatFactory } from "./chitchatFactory";
+const getConfig = () => ChitChatFactory.getInstance().config;
+const getStore = () => ChitChatFactory.getInstance().store;
 let serverImp = null;
-class ChatRoomComponent {
+export default class ChatRoomComponent {
     static getInstance() {
         if (!ChatRoomComponent.instance) {
             ChatRoomComponent.instance = new ChatRoomComponent();
@@ -39,14 +38,14 @@ class ChatRoomComponent {
         this.roomId = rid;
     }
     constructor() {
-        this.secure = secureServiceFactory_1.default.getService();
-        this.chatRoomApi = BackendFactory_1.BackendFactory.getInstance().getChatApi();
-        BackendFactory_1.BackendFactory.getInstance().getServer().then(server => {
+        this.secure = SecureServiceFactory.getService();
+        this.chatRoomApi = BackendFactory.getInstance().getChatApi();
+        BackendFactory.getInstance().getServer().then(server => {
             serverImp = server;
         }).catch(err => {
         });
-        this.dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
-        this.dataListener = BackendFactory_1.BackendFactory.getInstance().dataListener;
+        this.dataManager = BackendFactory.getInstance().dataManager;
+        this.dataListener = BackendFactory.getInstance().dataListener;
         this.dataListener.addOnChatListener(this.onChat.bind(this));
     }
     onChat(message) {
@@ -56,7 +55,7 @@ class ChatRoomComponent {
             chatMessages.push(message);
             self.dataManager.messageDAL.saveData(self.roomId, chatMessages).then(chats => {
                 if (!!this.chatroomDelegate) {
-                    this.chatroomDelegate(serverEventListener_1.default.ON_CHAT, message);
+                    this.chatroomDelegate(ServerEventListener.ON_CHAT, message);
                 }
             });
         };
@@ -65,14 +64,14 @@ class ChatRoomComponent {
                 return chats;
             }).then((chats) => {
                 let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
-                if (message.type === Message_1.MessageType[Message_1.MessageType.Text]) {
+                if (message.type === MessageType[MessageType.Text]) {
                     CryptoHelper.decryptionText(message).then(decoded => {
                         saveMessages(chatMessages);
                     }).catch(err => saveMessages(chatMessages));
                 }
-                else if (message.type === Message_1.MessageType[Message_1.MessageType.Sticker]) {
+                else if (message.type === MessageType[MessageType.Sticker]) {
                     let sticker_id = parseInt(message.body);
-                    message.src = StickerPath_1.imagesPath[sticker_id].img;
+                    message.src = imagesPath[sticker_id].img;
                     saveMessages(chatMessages);
                 }
                 else {
@@ -85,7 +84,7 @@ class ChatRoomComponent {
         else {
             console.info("this msg come from other room.");
             if (!!this.outsideRoomDelegete) {
-                this.outsideRoomDelegete(serverEventListener_1.default.ON_CHAT, message);
+                this.outsideRoomDelegete(ServerEventListener.ON_CHAT, message);
             }
         }
     }
@@ -100,7 +99,7 @@ class ChatRoomComponent {
                 if (value._id === newMsg._id) {
                     value.readers = newMsg.readers;
                     if (!!self.chatroomDelegate)
-                        self.chatroomDelegate(serverEventListener_1.default.ON_MESSAGE_READ, null);
+                        self.chatroomDelegate(ServerEventListener.ON_MESSAGE_READ, null);
                     resolve();
                     return true;
                 }
@@ -114,7 +113,7 @@ class ChatRoomComponent {
         let self = this;
         let myMessagesArr = JSON.parse(JSON.stringify(dataEvent.data));
         self.chatMessages.forEach((originalMsg, id, arr) => {
-            if (BackendFactory_1.BackendFactory.getInstance().dataManager.isMySelf(originalMsg.sender)) {
+            if (BackendFactory.getInstance().dataManager.isMySelf(originalMsg.sender)) {
                 myMessagesArr.some((myMsg, index, array) => {
                     if (originalMsg._id === myMsg._id) {
                         originalMsg.readers = myMsg.readers;
@@ -133,7 +132,7 @@ class ChatRoomComponent {
                 let prom = new Promise((resolve, reject) => {
                     let chats = messages.slice(0);
                     async.forEach(chats, function iterator(chat, result) {
-                        if (chat.type === Message_1.MessageType[Message_1.MessageType.Text]) {
+                        if (chat.type === MessageType[MessageType.Text]) {
                             if (getConfig().appConfig.encryption === true) {
                                 self.secure.decryption(chat.body).then(function (res) {
                                     chat.body = res;
@@ -226,7 +225,7 @@ class ChatRoomComponent {
                     histories = value.result;
                     if (histories.length > 0) {
                         async.forEach(histories, function (chat, cb) {
-                            if (chat.type === Message_1.MessageType[Message_1.MessageType.Text]) {
+                            if (chat.type === MessageType[MessageType.Text]) {
                                 if (getConfig().appConfig.encryption === true) {
                                     self.secure.decryption(chat.body).then(function (res) {
                                         chat.body = res;
@@ -369,7 +368,7 @@ class ChatRoomComponent {
     updateReadMessages() {
         let self = this;
         async.map(self.chatMessages, function itorator(message, resultCb) {
-            if (!BackendFactory_1.BackendFactory.getInstance().dataManager.isMySelf(message.sender)) {
+            if (!BackendFactory.getInstance().dataManager.isMySelf(message.sender)) {
                 self.chatRoomApi.updateMessageReader(message._id, message.rid);
             }
             resultCb(null, null);
@@ -385,7 +384,7 @@ class ChatRoomComponent {
         });
     }
     getMemberProfile(member, callback) {
-        serverImplemented_1.ServerImplemented.getInstance().getMemberProfile(member._id, callback);
+        ServerImplemented.getInstance().getMemberProfile(member._id, callback);
     }
     getMessages() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -398,5 +397,3 @@ class ChatRoomComponent {
         ChatRoomComponent.instance = null;
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = ChatRoomComponent;

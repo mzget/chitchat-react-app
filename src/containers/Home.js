@@ -1,4 +1,3 @@
-"use strict";
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -7,15 +6,15 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-const React = require("react");
-const react_redux_1 = require("react-redux");
-const recompose_1 = require("recompose");
-const reflexbox_1 = require("reflexbox");
-const Colors = require("material-ui/styles/colors");
-const AuthRx = require("../redux/authen/authRx");
-const AppActions = require("../redux/app/persistentDataActions");
-const SimpleToolbar_1 = require("../components/SimpleToolbar");
-const AuthenBox_1 = require("./authen/AuthenBox");
+import * as React from "react";
+import { connect } from "react-redux";
+import { shallowEqual } from "recompose";
+import { Flex, Box } from "reflexbox";
+import * as Colors from "material-ui/styles/colors";
+import * as AuthRx from "../redux/authen/authRx";
+import * as AppActions from "../redux/app/persistentDataActions";
+import { SimpleToolbar } from "../components/SimpleToolbar";
+import { AuthenBox } from "./authen/AuthenBox";
 class Home extends React.Component {
     constructor() {
         super(...arguments);
@@ -44,7 +43,7 @@ class Home extends React.Component {
         let app_body = document.getElementById("app_body");
         let app_footer = document.getElementById("app_footer");
         this.subHeaderHeight = (warning_bar) ? warning_bar.clientHeight : 0;
-        if (!recompose_1.shallowEqual(authReducer, this.props.authReducer)) {
+        if (!shallowEqual(authReducer, this.props.authReducer)) {
             switch (authReducer.state) {
                 case AuthRx.AUTH_USER_SUCCESS: {
                     AppActions.saveSession();
@@ -65,7 +64,7 @@ class Home extends React.Component {
                     break;
             }
         }
-        if (!recompose_1.shallowEqual(userReducer.user, this.props.userReducer.user)) {
+        if (!shallowEqual(userReducer.user, this.props.userReducer.user)) {
             if (userReducer.user) {
                 this.props.history.replace(`/team/${authReducer.user}`);
             }
@@ -77,19 +76,19 @@ class Home extends React.Component {
     render() {
         return (React.createElement("div", { style: { overflow: "hidden" } },
             React.createElement("div", { id: "toolbar", style: { height: this.headerHeight } },
-                React.createElement(SimpleToolbar_1.SimpleToolbar, { title: "ChitChat team communication." })),
+                React.createElement(SimpleToolbar, { title: "ChitChat team communication." })),
             React.createElement("div", { id: "app_body", style: { backgroundColor: Colors.indigo50, height: this.bodyHeight } },
-                React.createElement(reflexbox_1.Flex, { flexColumn: true },
-                    React.createElement(reflexbox_1.Flex, { align: "center" },
-                        React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
-                        React.createElement(AuthenBox_1.AuthenBox, __assign({}, this.props, { onError: this.props.onError })),
-                        React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
-                    React.createElement(reflexbox_1.Box, { flexAuto: true, justify: "flex-end" }))),
+                React.createElement(Flex, { flexColumn: true },
+                    React.createElement(Flex, { align: "center" },
+                        React.createElement(Box, { p: 2, flexAuto: true }),
+                        React.createElement(AuthenBox, __assign({}, this.props, { onError: this.props.onError })),
+                        React.createElement(Box, { p: 2, flexAuto: true })),
+                    React.createElement(Box, { flexAuto: true, justify: "flex-end" }))),
             React.createElement("div", { id: "app_footer", style: {
                     width: this.clientWidth, height: this.footerHeight,
                     fontSize: 16, textAlign: "center", backgroundColor: Colors.indigo50
                 } },
-                React.createElement(reflexbox_1.Flex, { px: 2, align: "center", justify: "center" },
+                React.createElement(Flex, { px: 2, align: "center", justify: "center" },
                     React.createElement("span", null, "Powered by Stalk realtime messaging service.")))));
     }
 }
@@ -97,4 +96,4 @@ class Home extends React.Component {
  * ## Redux boilerplate
  */
 const mapStateToProps = (state) => (__assign({}, state));
-exports.HomeWithState = react_redux_1.connect(mapStateToProps)(Home);
+export const HomeWithState = connect(mapStateToProps)(Home);

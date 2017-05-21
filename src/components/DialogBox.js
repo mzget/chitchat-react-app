@@ -1,13 +1,12 @@
-"use strict";
-const React = require("react");
-const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
-const Dialog_1 = require("material-ui/Dialog");
-const FlatButton_1 = require("material-ui/FlatButton");
+import * as React from "react";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import Dialog from "material-ui/Dialog";
+import FlatButton from "material-ui/FlatButton";
 const actions = (props) => [
-    React.createElement(FlatButton_1.default, { label: "OK", primary: true, onMouseUp: props.handleClose }),
+    React.createElement(FlatButton, { label: "OK", primary: true, onMouseUp: props.handleClose }),
 ];
-exports.DialogBox = (props) => {
-    return (React.createElement(MuiThemeProvider_1.default, null,
+export const DialogBox = (props) => {
+    return (React.createElement(MuiThemeProvider, null,
         React.createElement("div", null,
-            React.createElement(Dialog_1.default, { title: props.title, actions: actions(props), modal: true, open: props.open, onRequestClose: props.handleClose }, props.message))));
+            React.createElement(Dialog, { title: props.title, actions: actions(props), modal: true, open: props.open, onRequestClose: props.handleClose }, props.message))));
 };

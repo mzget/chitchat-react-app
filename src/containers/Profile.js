@@ -1,4 +1,3 @@
-"use strict";
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -7,11 +6,11 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-const React = require("react");
-const react_redux_1 = require("react-redux");
-const Colors = require("material-ui/styles/colors");
-const SimpleToolbar_1 = require("../components/SimpleToolbar");
-const ProfileDetailEnhancer_1 = require("./profile/ProfileDetailEnhancer");
+import * as React from "react";
+import { connect } from "react-redux";
+import * as Colors from "material-ui/styles/colors";
+import { SimpleToolbar } from "../components/SimpleToolbar";
+import { ProfileDetailEnhanced } from "./profile/ProfileDetailEnhancer";
 class Profile extends React.Component {
     constructor() {
         super(...arguments);
@@ -35,10 +34,10 @@ class Profile extends React.Component {
     render() {
         return (React.createElement("div", null,
             React.createElement("div", { id: "toolbar", style: { height: this.headerHeight, overflowY: "hidden" } },
-                React.createElement(SimpleToolbar_1.SimpleToolbar, { title: "Profile", onBackPressed: this.onBackPressed })),
+                React.createElement(SimpleToolbar, { title: "Profile", onBackPressed: this.onBackPressed })),
             React.createElement("div", { id: "app_body", style: { backgroundColor: Colors.indigo50, overflowX: "hidden", margin: 0, padding: 0, height: this.bodyHeight } },
-                React.createElement(ProfileDetailEnhancer_1.ProfileDetailEnhanced, { user: this.props.userReducer.user, teamProfile: this.props.userReducer.teamProfile, alert: this.props.onError }))));
+                React.createElement(ProfileDetailEnhanced, { user: this.props.userReducer.user, teamProfile: this.props.userReducer.teamProfile, alert: this.props.onError }))));
     }
 }
 const mapStateToProps = (state) => (__assign({}, state));
-exports.ProfilePage = react_redux_1.connect(mapStateToProps)(Profile);
+export const ProfilePage = connect(mapStateToProps)(Profile);

@@ -57,9 +57,9 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
                             </Flex>
                         </Box>
                     </Flex>
-                </div>
-                <div id={"app_footer"}>
-                    <StalkCompEnhancer />
+                    <div id={"app_footer"}>
+                        <StalkCompEnhancer />
+                    </div>
                 </div>
             </div>
         </MuiThemeProvider >

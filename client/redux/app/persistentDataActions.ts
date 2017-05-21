@@ -1,13 +1,13 @@
 ﻿import { createAction } from "redux-actions";
 
-import Store from "../configureStore";
+import  store  from "../configureStore";
 
 import { AppSessionToken } from "../../chitchat/chats/dataAccessLayer/AppSessionToken";
 const appSession = new AppSessionToken();
 
 
 export async function saveSession() {
-    await appSession.saveSessionToken(Store.getState().authReducer.token);
+    await appSession.saveSessionToken(store.getState().authReducer.token);
 }
 
 export async function removeSession() {

@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
-import * as immutable from "immutable";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
