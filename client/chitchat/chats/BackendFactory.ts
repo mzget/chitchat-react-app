@@ -3,7 +3,7 @@
  *
  */
 
-import { ServerImplemented, IPomeloParam } from "../libs/stalk/serverImplemented";
+import { ServerImplemented, ServerParam, IDictionary } from "../libs/stalk/serverImplemented";
 import ChatRoomApiProvider from "../libs/stalk/chatRoomApiProvider";
 import ServerEventListener from "../libs/stalk/serverEventListener";
 import DataManager from "./dataManager";
@@ -17,7 +17,10 @@ const getConfig = () => ChitChatFactory.getInstance().config;
 export class BackendFactory {
     private static instance: BackendFactory;
     public static getInstance(): BackendFactory {
-        if (BackendFactory.instance == null || BackendFactory.instance == undefined) {
+        return BackendFactory.instance;
+    }
+    public static createInstance(): BackendFactory {
+        if (!BackendFactory.instance) {
             BackendFactory.instance = new BackendFactory();
         }
 
@@ -154,36 +157,39 @@ export class BackendFactory {
         this.serverEventsListener.addListenner(resolve);
     }
 
-    checkIn(uid: string, token: string, user: any) {
+    async checkIn(uid: string, token: string, user: any) {
         let self = this;
-        return new Promise((resolve: (data: any) => void, rejected) => {
-            self.stalk.gateEnter(uid).then(value => {
-                // <!-- Connecting to connector server.
-                let params: IPomeloParam = { host: value.host, port: value.port, reconnect: false };
-                self.stalk.connect(params, (err) => {
-                    self.stalk._isConnected = true;
-                    if (!!self.stalk.pomelo) {
-                        self.stalk.listenForPomeloEvents();
-                        self.stalk.pomelo.setReconnect(true);
-                    }
 
-                    if (!!err) {
-                        rejected(err);
-                    }
-                    else {
-                        let msg = {};
-                        msg["token"] = token;
-                        msg["user"] = user;
-                        self.stalk.signin(msg).then(value => {
-                            resolve(value);
-                        }).catch(err => {
-                            rejected(err);
-                        });
-                    }
-                });
-            }).catch(err => {
-                console.warn("Cannot connect gate-server.", err);
-                rejected(err);
+        // @ get connector server.
+        let msg = {} as IDictionary;
+        msg["uid"] = uid;
+        msg["x-api-key"] = "";
+        let connector = await self.stalk.gateEnter(msg);
+
+        return new Promise((resolve, reject) => {
+            // @ Connecting to connector server.
+            let params = { host: connector.host, port: connector.port, reconnect: false } as ServerParam;
+
+            self.stalk.connect(params, (err) => {
+                self.stalk._isConnected = true;
+                if (!!self.stalk.pomelo) {
+                    self.stalk.listenForPomeloEvents();
+                    self.stalk.pomelo.setReconnect(true);
+                }
+
+                if (!!err) {
+                    reject(err);
+                }
+                else {
+                    let msg = {} as IDictionary;
+                    msg["user"] = user;
+                    msg["x-api-key"] = "";
+                    self.stalk.checkIn(msg).then(value => {
+                        resolve(value);
+                    }).catch(err => {
+                        reject(err);
+                    });
+                }
             });
         });
     }

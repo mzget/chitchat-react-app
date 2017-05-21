@@ -36,7 +36,7 @@ export function stalkLogin(user: any) {
 
     getStore().dispatch({ type: STALK_INIT });
 
-    const backendFactory = BackendFactory.getInstance();
+    const backendFactory = BackendFactory.createInstance();
 
     let account = {} as StalkAccount;
     account._id = user._id;
@@ -45,9 +45,9 @@ export function stalkLogin(user: any) {
         ChatLogsActions.initChatsLog();
     });
     backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
-
     backendFactory.stalkInit().then(value => {
         console.log("StalkInit Value.", value);
+
         backendFactory.checkIn(user._id, null, user).then(value => {
             let result: { success: boolean, token: any } = JSON.parse(JSON.stringify(value.data));
             if (result.success) {

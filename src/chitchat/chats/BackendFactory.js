@@ -2,6 +2,14 @@
  * Copyright 2016 Ahoo Studio.co.th.
  *
  */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import { ServerImplemented } from "../libs/stalk/serverImplemented";
 import ChatRoomApiProvider from "../libs/stalk/chatRoomApiProvider";
 import ServerEventListener from "../libs/stalk/serverEventListener";
@@ -13,7 +21,10 @@ import { ChitChatFactory } from "./chitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 export class BackendFactory {
     static getInstance() {
-        if (BackendFactory.instance == null || BackendFactory.instance == undefined) {
+        return BackendFactory.instance;
+    }
+    static createInstance() {
+        if (!BackendFactory.instance) {
             BackendFactory.instance = new BackendFactory();
         }
         return BackendFactory.instance;
@@ -124,11 +135,16 @@ export class BackendFactory {
         this.serverEventsListener.addListenner(resolve);
     }
     checkIn(uid, token, user) {
-        let self = this;
-        return new Promise((resolve, rejected) => {
-            self.stalk.gateEnter(uid).then(value => {
-                // <!-- Connecting to connector server.
-                let params = { host: value.host, port: value.port, reconnect: false };
+        return __awaiter(this, void 0, void 0, function* () {
+            let self = this;
+            // @ get connector server.
+            let msg = {};
+            msg["uid"] = uid;
+            msg["x-api-key"] = "";
+            let connector = yield self.stalk.gateEnter(msg);
+            return new Promise((resolve, reject) => {
+                // @ Connecting to connector server.
+                let params = { host: connector.host, port: connector.port, reconnect: false };
                 self.stalk.connect(params, (err) => {
                     self.stalk._isConnected = true;
                     if (!!self.stalk.pomelo) {
@@ -136,22 +152,19 @@ export class BackendFactory {
                         self.stalk.pomelo.setReconnect(true);
                     }
                     if (!!err) {
-                        rejected(err);
+                        reject(err);
                     }
                     else {
                         let msg = {};
-                        msg["token"] = token;
                         msg["user"] = user;
-                        self.stalk.signin(msg).then(value => {
+                        msg["x-api-key"] = "";
+                        self.stalk.checkIn(msg).then(value => {
                             resolve(value);
                         }).catch(err => {
-                            rejected(err);
+                            reject(err);
                         });
                     }
                 });
-            }).catch(err => {
-                console.warn("Cannot connect gate-server.", err);
-                rejected(err);
             });
         });
     }

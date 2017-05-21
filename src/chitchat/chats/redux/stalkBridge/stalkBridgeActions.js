@@ -34,7 +34,7 @@ export function stalkLogin(user) {
     if (getStore().getState().stalkReducer.isInit)
         return;
     getStore().dispatch({ type: STALK_INIT });
-    const backendFactory = BackendFactory.getInstance();
+    const backendFactory = BackendFactory.createInstance();
     let account = {};
     account._id = user._id;
     account.username = user.username;

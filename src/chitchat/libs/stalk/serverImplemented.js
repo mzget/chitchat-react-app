@@ -5,12 +5,13 @@
  * Ahoo Studio.co.th
  */
 import HttpStatusCode from './utils/httpStatusCode';
-import EventEmitter from "events";
+import * as EventEmitter from "events";
 const Pomelo = require("../pomelo/reactWSClient");
 export class IPomelo extends EventEmitter {
 }
 ;
-class AuthenData {
+;
+export class ServerParam {
 }
 export class ServerImplemented {
     constructor(host, port) {
@@ -191,9 +192,8 @@ export class ServerImplemented {
             }
         });
     }
-    gateEnter(uid) {
+    gateEnter(msg) {
         let self = this;
-        let msg = { uid: uid };
         let result = new Promise((resolve, rejected) => {
             if (!!self.pomelo && this._isConnected === false) {
                 // <!-- Quering connector server.
@@ -217,7 +217,7 @@ export class ServerImplemented {
         });
         return result;
     }
-    signin(msg) {
+    checkIn(msg) {
         let self = this;
         return new Promise((resolve, rejected) => {
             // <!-- Authentication.
