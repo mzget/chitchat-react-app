@@ -1,6 +1,5 @@
-"use strict";
 const validate = require("validate.js");
-function validateEmailPass(_email, _password, callback) {
+export function validateEmailPass(_email, _password, callback) {
     const constraints = {
         email: {
             email: true,
@@ -16,8 +15,7 @@ function validateEmailPass(_email, _password, callback) {
     };
     callback(validate({ email: _email, password: _password }, constraints));
 }
-exports.validateEmailPass = validateEmailPass;
-function validateEmail(_email, callback) {
+export function validateEmail(_email, callback) {
     const _constraints = {
         email: {
             email: true,
@@ -26,4 +24,3 @@ function validateEmail(_email, callback) {
     };
     callback(validate({ email: _email }, _constraints));
 }
-exports.validateEmail = validateEmail;

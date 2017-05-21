@@ -1,8 +1,4 @@
 ﻿import * as React from "react";
-/**
- * Redux + Immutable
- */
-import * as immutable from "immutable";
 import { connect } from "react-redux";
 import { shallowEqual } from "recompose";
 import { Flex, Box } from "reflexbox";

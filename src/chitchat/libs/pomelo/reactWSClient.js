@@ -29,6 +29,7 @@ export default class WebSocketClient {
    };
 }
 */
+// @ts-check
 (function () {
     let JS_WS_CLIENT_TYPE = "js-websocket";
     let JS_WS_CLIENT_VERSION = "0.0.1";
@@ -96,7 +97,10 @@ export default class WebSocketClient {
         },
         "user": {}
     };
-    let initCallback = null;
+    let initCallback;
+    pomelo.setInitCallback = (cb) => {
+        initCallback = cb;
+    };
     pomelo.init = function (params, cb) {
         initCallback = cb;
         connectParams = params;
@@ -221,12 +225,17 @@ export default class WebSocketClient {
         }
         // Set protoversion
         handshakeBuffer.sys.protoVersion = protoVersion;
-        socket = new WebSocket(url);
-        socket.binaryType = "arraybuffer";
-        socket.onopen = onopen;
-        socket.onmessage = onmessage;
-        socket.onerror = onerror;
-        socket.onclose = onclose;
+        try {
+            socket = new WebSocket(url);
+            socket.binaryType = "arraybuffer";
+            socket.onopen = onopen;
+            socket.onmessage = onmessage;
+            socket.onerror = onerror;
+            socket.onclose = onclose;
+        }
+        catch (ex) {
+            console.error("Init socket fail: ", ex);
+        }
     };
     let onopen = function (event) {
         console.log("onSocketOpen:", event.type);
@@ -246,9 +255,11 @@ export default class WebSocketClient {
         }
     };
     let onerror = function (event) {
-        console.warn("socket error: ", event.message);
+        console.warn("socket error: ", event);
         pomelo.emit("io-error", event);
-        initCallback(event);
+        if (initCallback) {
+            initCallback(event);
+        }
     };
     let onclose = function (event) {
         pomelo.emit("close", event);
@@ -261,7 +272,7 @@ export default class WebSocketClient {
             }, reconnectionDelay);
         }
         else {
-            console.log("reconnection !", reconnect);
+            console.log("onclose : reconnection status", reconnect);
             pomelo.emit("disconnected", event);
         }
     };
@@ -334,7 +345,8 @@ export default class WebSocketClient {
         handshakeInit(data);
         let obj = Package.encode(Package.TYPE_HANDSHAKE_ACK);
         send(obj);
-        initCallback(null);
+        if (initCallback)
+            initCallback(null);
     };
     let onData = function (data) {
         let msg = data;

@@ -3,7 +3,7 @@ import { Flex, Box } from "reflexbox";
 import { RaisedButton, TextField } from "material-ui";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
-import SigninBox from "./SigninBox";
+import { SigninBox } from "./SigninBox";
 import { SignupBox } from "./SignupBox";
 import * as AuthRx from "../../redux/authen/authRx";
 

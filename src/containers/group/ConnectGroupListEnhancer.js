@@ -1,7 +1,6 @@
-"use strict";
-const React = require("react");
-const react_redux_1 = require("react-redux");
-const GroupListView_1 = require("./GroupListView");
-const GroupListEnhancer_1 = require("./GroupListEnhancer");
-const bobo = GroupListEnhancer_1.GroupListEnhancer(({ groups, fetchGroup, onselectGroup, subHeader }) => React.createElement(GroupListView_1.GroupListView, { groups: groups, onselectGroup: onselectGroup, subHeader: subHeader }));
-exports.ConnectGroupListEnhancer = react_redux_1.connect()(bobo);
+import * as React from "react";
+import { connect } from "react-redux";
+import { GroupListView } from "./GroupListView";
+import { GroupListEnhancer } from "./GroupListEnhancer";
+const bobo = GroupListEnhancer(({ groups, fetchGroup, onselectGroup, subHeader }) => React.createElement(GroupListView, { groups: groups, onselectGroup: onselectGroup, subHeader: subHeader }));
+export const ConnectGroupListEnhancer = connect()(bobo);

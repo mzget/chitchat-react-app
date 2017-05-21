@@ -1,9 +1,8 @@
-"use strict";
-const api_stalk = "git.animation-genius.com";
+import { ChitChatFactory } from "./chitchat/chats/chitchatFactory";
+export const chitchatFactory = ChitChatFactory.createInstance();
+const api_stalk = "203.150.95.146";
 const stalkPort = 3010;
-const chitchat_api = "http://git.animation-genius.com:9000"; //"http://localhost:9000"; "http://git.animation-genius.com:9000"
-const chitchatFactory_1 = require("./chitchat/chats/chitchatFactory");
-exports.chitchatFactory = chitchatFactory_1.ChitChatFactory.createInstance();
+const chitchat_api = "http://203.150.95.146:9000"; //"http://localhost:9000"; "http://git.animation-genius.com:9000"
 const config = {
     Stalk: {
         chat: `${api_stalk}`,
@@ -28,4 +27,4 @@ const config = {
         encryption: false
     }
 };
-exports.chitchatFactory.initConfig(config);
+chitchatFactory.initConfig(config);

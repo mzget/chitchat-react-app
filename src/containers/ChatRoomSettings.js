@@ -1,95 +1,51 @@
 "use strict";
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 const React = require("react");
 const react_redux_1 = require("react-redux");
-const MenuListView_1 = require("./admins/MenuListView");
-const EditGroupMember_1 = require("./roomSettings/EditGroupMember");
-const GroupDetailEnhancer_1 = require("./roomSettings/GroupDetailEnhancer");
-const GroupMemberEnhancer_1 = require("./roomSettings/GroupMemberEnhancer");
+const reflexbox_1 = require("reflexbox");
+const recompose_1 = require("recompose");
+const Avatar_1 = require("material-ui/Avatar");
+const MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
+const Subheader_1 = require("material-ui/Subheader");
+const EditGroupMemberEnhanced_1 = require("./roomSettings/EditGroupMemberEnhanced");
 const chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
 const Room_1 = require("../chitchat/libs/shared/Room");
-const EDIT_GROUP = "EDIT_GROUP";
-const EDIT_GROUP_MEMBERS = "EDIT_GROUP_MEMBERS";
-const GROUP_MEMBERS = "GROUP_MEMBERS";
-var BoxState;
-(function (BoxState) {
-    BoxState[BoxState["idle"] = 0] = "idle";
-    BoxState[BoxState["isEditGroup"] = 1] = "isEditGroup";
-    BoxState[BoxState["isEditMember"] = 2] = "isEditMember";
-    BoxState[BoxState["viewMembers"] = 3] = "viewMembers";
-})(BoxState || (BoxState = {}));
-class ChatRoomSettings extends React.Component {
-    constructor() {
-        super(...arguments);
-        this.menus = [EDIT_GROUP, EDIT_GROUP_MEMBERS, GROUP_MEMBERS];
-    }
+class ChatRoomSettingsOverView extends React.Component {
     componentWillMount() {
-        this.state = {
-            boxState: BoxState.idle,
-            alert: false
-        };
-        console.log("ChatRoomSettings", this.props);
-        this.onMenuSelected = this.onMenuSelected.bind(this);
-        this.getViewPanel = this.getViewPanel.bind(this);
-    }
-    componentDidMount() {
         let { match: { params } } = this.props;
-        this.props.dispatch(chatroomActions.getPersistendChatroom(params.room_id));
+        this.room = chatroomActions.getRoom(params.room_id);
     }
-    getViewPanel() {
-        let { match: { params }, teamReducer, chatroomReducer } = this.props;
-        let { room } = chatroomReducer;
-        switch (this.state.boxState) {
-            case BoxState.isEditMember:
-                return React.createElement(EditGroupMember_1.ConnectEditGroupMember, { teamMembers: teamReducer.members, room_id: params.room_id, initMembers: room.members, onFinished: () => this.setState(prev => (__assign({}, prev, { boxState: BoxState.idle }))) });
-            case BoxState.isEditGroup:
-                return React.createElement(GroupDetailEnhancer_1.ConnectGroupDetail, { group: room, image: room.image, group_name: room.name, group_description: room.description, onError: (message) => this.onAlert(message), onFinished: () => this.setState(prev => (__assign({}, prev, { boxState: BoxState.idle }))) });
-            case BoxState.viewMembers:
-                return React.createElement(GroupMemberEnhancer_1.GroupMemberEnhancer, { members: room.members });
-            default:
-                return null;
+    componentWillReceiveProps(nextProps) {
+        let { match, chatroomReducer } = nextProps;
+        if (!!chatroomReducer.room) {
+            this.room = chatroomReducer.room;
         }
-    }
-    onMenuSelected(key) {
-        console.log("onMenuSelected", key);
-        let { chatroomReducer } = this.props;
-        let { room } = chatroomReducer;
-        // @Todo ...
-        // Check room type and user permision for edit group details.
-        if (key == EDIT_GROUP_MEMBERS) {
-            if (room.type == Room_1.RoomType.privateGroup) {
-                this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.isEditMember })));
-            }
-            else {
-                this.props.onError("Request for valid group permission!");
-            }
-        }
-        else if (key == EDIT_GROUP) {
-            if (room.type == Room_1.RoomType.privateGroup) {
-                this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.isEditGroup })));
-            }
-            else {
-                this.props.onError("Request for valid group permission!");
-            }
-        }
-        else if (key == GROUP_MEMBERS) {
-            this.setState(prevState => (__assign({}, prevState, { boxState: BoxState.viewMembers })));
+        if (!recompose_1.shallowEqual(match, this.props.match)) {
+            if (!chatroomReducer.room)
+                this.room = chatroomActions.getRoom(match.params.room_id);
         }
     }
     render() {
-        let { chatroomReducer } = this.props;
-        let { room } = chatroomReducer;
-        return (React.createElement("div", null,
-            React.createElement(MenuListView_1.MenuListview, { title: (room) ? room.name : "Settings", menus: this.menus, onSelectItem: this.onMenuSelected }),
-            this.getViewPanel()));
+        return (React.createElement(MuiThemeProvider_1.default, null, (!!this.room) ? (React.createElement("div", { style: { height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden" } },
+            React.createElement(reflexbox_1.Flex, { flexColumn: false, align: "center", style: { margin: 5 } },
+                (!!this.room && !!this.room.image) ? React.createElement(Avatar_1.default, { src: this.room.image, size: 32 }) :
+                    React.createElement(Avatar_1.default, null, (!!this.room && !!this.room.name) ? this.room.name.charAt(0) : null),
+                React.createElement("span", { style: { marginLeft: 5 } },
+                    "GROUP NAME : ",
+                    (!!this.room && !!this.room.name) ? this.room.name : "")),
+            React.createElement(reflexbox_1.Flex, { flexColumn: false },
+                React.createElement(Subheader_1.default, null,
+                    "TYPE : ",
+                    Room_1.RoomType[this.room.type].toUpperCase())),
+            React.createElement(reflexbox_1.Flex, { flexColumn: false },
+                React.createElement(Subheader_1.default, null,
+                    "DESCRIPTION : ",
+                    this.room.description)),
+            React.createElement(reflexbox_1.Flex, { flexColumn: false },
+                React.createElement(Subheader_1.default, null,
+                    "MEMBERS ",
+                    this.room.members.length)),
+            React.createElement(EditGroupMemberEnhanced_1.EditGroupMemberEnhanced, { match: this.props.match, members: this.room.members, room_id: this.room._id, onFinished: () => console.log("Edit group") }))) : null));
     }
 }
-const mapStateToProps = (state) => (__assign({}, state));
-exports.ChatRoomSettingsPage = react_redux_1.connect(mapStateToProps)(ChatRoomSettings);
+const mapStateToProps = (state) => ({ chatroomReducer: state.chatroomReducer });
+exports.ChatRoomOverview = react_redux_1.connect(mapStateToProps)(ChatRoomSettingsOverView);

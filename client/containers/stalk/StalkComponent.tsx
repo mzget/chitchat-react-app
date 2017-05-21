@@ -14,7 +14,6 @@ import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomAc
 import * as chatroomRx from "../../chitchat/chats/redux/chatroom/chatroomRxEpic";
 
 abstract class IStalktProps implements IComponentProps {
-    footerHeight;
     userReducer;
     stalkReducer;
     dispatch;

@@ -1,4 +1,2 @@
-"use strict";
-class IUserReducer {
+export class IUserReducer {
 }
-exports.IUserReducer = IUserReducer;

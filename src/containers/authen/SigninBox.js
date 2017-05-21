@@ -1,4 +1,3 @@
-"use strict";
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -7,13 +6,13 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-const React = require("react");
-const SigninForm_1 = require("../../components/SigninForm");
-const CryptoHelper = require("../../chitchat/chats/utils/CryptoHelper");
-const AuthRx = require("../../redux/authen/authRx");
+import * as React from "react";
+import { SigninForm } from "../../components/SigninForm";
+import * as CryptoHelper from "../../chitchat/chats/utils/CryptoHelper";
+import * as AuthRx from "../../redux/authen/authRx";
 ;
 ;
-class SigninBox extends React.Component {
+export class SigninBox extends React.Component {
     componentWillMount() {
         this.state = {
             username: "",
@@ -45,8 +44,6 @@ class SigninBox extends React.Component {
     }
     render() {
         return (React.createElement("div", null,
-            React.createElement(SigninForm_1.SigninForm, { username: this.state.username, onUsername: this.onUsername, password: this.state.password, onPassword: this.onPassword, onSubmit: this.onSubmitForm })));
+            React.createElement(SigninForm, { username: this.state.username, onUsername: this.onUsername, password: this.state.password, onPassword: this.onPassword, onSubmit: this.onSubmitForm })));
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = SigninBox;

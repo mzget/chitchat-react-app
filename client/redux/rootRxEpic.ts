@@ -21,7 +21,8 @@ export const rootEpic = combineEpics(
     adminRx.updateUserTeamRole_Epic,
 
     userRx.onAuth_Epic,
-    userRx.fetchUserEpic,
+    userRx.fetchUser_Epic,
+    userRx.suggestUser_Epic,
     userRx.fetchContactEpic,
     userRx.fetchAgentEpic,
     userRx.getTeamProfileEpic,
@@ -48,6 +49,8 @@ export const rootEpic = combineEpics(
     groupRx.uploadGroupImage_Epic,
     editGroupRxActions.editGroupDetail_Epic,
     editGroupRxActions.editGroupMember_Epic,
+    editGroupRxActions.addGroupMember_Epic,
+    editGroupRxActions.removeGroupMember_Epic,
 
     /**
      * Private group...

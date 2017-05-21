@@ -7,7 +7,8 @@
 
 import HttpStatusCode from './utils/httpStatusCode';
 import TokenDecode from './utils/tokenDecode';
-import EventEmitter = require("events");
+import EventEmitter from "events";
+
 const Pomelo = require("../pomelo/reactWSClient");
 
 export abstract class IPomelo extends EventEmitter {
@@ -16,6 +17,7 @@ export abstract class IPomelo extends EventEmitter {
     request;
     disconnect;
     setReconnect;
+    setInitCallback: (error: string) => void;
 };
 export interface IPomeloParam {
     host: string;
@@ -121,7 +123,7 @@ export class ServerImplemented {
         let self = this;
         this._isConnected = false;
         this.pomelo = Pomelo;
-        
+
         if (!!self.pomelo) {
             // <!-- Connecting gate server.
             let params = { host: self.host, port: self.port, reconnect: false } as IPomeloParam;
@@ -135,26 +137,37 @@ export class ServerImplemented {
     }
 
     private connectServer(params: IPomeloParam, callback: (err) => void) {
+        let self = this;
         this.pomelo.init(params, function cb(err) {
-            console.log("socket init result: ", err);
-
+            console.log("socket init... ", err);
+            self.pomelo.setInitCallback(null);
             callback(err);
         });
     }
 
     public listenForPomeloEvents() {
         this.pomelo.removeAllListeners();
-        this.pomelo.on("onopen", (this.onSocketOpen) ? this.onSocketOpen : (data) => console.warn("onopen", data));
-        this.pomelo.on("close", (this.onSocketClose) ? this.onSocketClose : (data) => console.warn("close", data));
-        this.pomelo.on("reconnect", (this.onSocketReconnect) ? this.onSocketReconnect : (data) => console.warn("reconnect", data));
+
+        this.pomelo.on("onopen", (this.onSocketOpen) ?
+            this.onSocketOpen : (data) => console.log("onopen", data));
+        this.pomelo.on("close", (this.onSocketClose) ?
+            this.onSocketClose : (data) => {
+                console.warn("close", data);
+                this.pomelo.setInitCallback(null);
+            });
+        this.pomelo.on("reconnect", (this.onSocketReconnect) ?
+            this.onSocketReconnect : (data) => console.log("reconnect", data));
         this.pomelo.on("disconnected", (data) => {
             console.warn("disconnected", data);
             this._isConnected = false;
-
+            this.pomelo.setInitCallback(null);
             if (this.onDisconnected)
                 this.onDisconnected(data);
         });
-        this.pomelo.on("io-error", (data) => console.warn("io-error", data));
+        this.pomelo.on("io-error", (data) => {
+            console.warn("io-error", data);
+            this.pomelo.setInitCallback(null);
+        });
     }
 
     // region <!-- Authentication...

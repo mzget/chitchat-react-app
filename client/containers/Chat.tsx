@@ -13,7 +13,6 @@ import { ChatBox } from "./chat/ChatBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import UploadingDialog from "./UploadingDialog";
 import GridListSimple from "../components/GridListSimple";
-import { WarningBar } from "../components/WarningBar";
 
 import { IComponentProps } from "../utils/IComponentProps";
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
@@ -376,44 +375,43 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         let { chatroomReducer, stalkReducer } = this.props;
 
         return (
-            <div style={{ overflowY: "hidden", backgroundColor: Colors.indigo50 }}>
-                {
-                    (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
-                        <WarningBar /> : null
-                }
-                <div style={{ height: this.h_body, overflowY: "auto", backgroundColor: Colors.indigo50 }} id={"app_body"}>
-                    <Flex flexColumn={true}>
-                        {
-                            (this.state.earlyMessageReady) ?
-                                <Flex align="center" justify="center">
-                                    <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
-                                </Flex>
-                                :
-                                null
-                        }
-                        <ChatBox
-                            styles={{ overflowX: "hidden" }}
-                            value={this.state.messages}
-                            onSelected={(message: IMessage) => { }} />
-                    </Flex>
+
+
+            <div style={{ height: "calc(100vh - 148px)" }}>
+                <div style={{ overflowY: "scroll", height: "100%" }} id={"app_body"}>
+                    {
+                        (this.state.earlyMessageReady) ?
+                            <Flex align="center" justify="center">
+                                <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
+                            </Flex>
+                            :
+                            null
+                    }
+                    <ChatBox
+                        styles={{ overflowX: "hidden" }}
+                        value={this.state.messages}
+                        onSelected={(message: IMessage) => { }} />
+                    {
+                        (this.state.openButtomMenu) ?
+                            <GridListSimple
+                                boxHeight={this.h_stickerBox}
+                                srcs={imagesPath}
+                                onSelected={this.onSubmitStickerChat} />
+                            : null
+                    }
+
                 </div>
-                {
-                    (this.state.openButtomMenu) ?
-                        <GridListSimple
-                            boxHeight={this.h_stickerBox}
-                            srcs={imagesPath}
-                            onSelected={this.onSubmitStickerChat} />
-                        : null
-                }
-                <TypingBox
-                    disabled={this.props.chatroomReducer.chatDisabled}
-                    onSubmit={this.onSubmitTextChat}
-                    onValueChange={this.onTypingTextChange}
-                    value={this.state.typingText}
-                    fileReaderChange={this.fileReaderChange}
-                    onSticker={this.onToggleSticker} />
-                <UploadingDialog />
-                <SnackbarToolBox />
+                <div>
+                    <TypingBox
+                        disabled={this.props.chatroomReducer.chatDisabled}
+                        onSubmit={this.onSubmitTextChat}
+                        onValueChange={this.onTypingTextChange}
+                        value={this.state.typingText}
+                        fileReaderChange={this.fileReaderChange}
+                        onSticker={this.onToggleSticker} />
+                    <UploadingDialog />
+                    <SnackbarToolBox />
+                </div>
             </div>
         );
     }

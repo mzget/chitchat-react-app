@@ -16,7 +16,7 @@ export const MainPageEnhancer = compose(
     connect(mapStateToProps),
     lifecycle({
         componentWillReceiveProps(nextProps: IComponentProps) {
-            let { location, userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer } = nextProps;
+            let { userReducer, chatroomReducer, teamReducer } = nextProps;
 
             if (!userReducer.user) {
                 this.props.history.push("/");
@@ -33,7 +33,7 @@ export const MainPageEnhancer = compose(
 
             if (chatroomReducer.state == GET_PERSISTEND_CHATROOM_SUCCESS ||
                 chatroomReducer.state == FETCH_PRIVATE_CHATROOM_SUCCESS ||
-                chatlogReducer.state == CREATE_PRIVATE_CHATROOM_SUCCESS) {
+                chatroomReducer.state == CREATE_PRIVATE_CHATROOM_SUCCESS) {
                 if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
                     this.props.history.push(`/chatroom/chat/${chatroomReducer.room._id}`);
                 }

@@ -1,4 +1,3 @@
-"use strict";
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -7,19 +6,19 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-const React = require("react");
-const react_redux_1 = require("react-redux");
-const Immutable = require("immutable");
-const CreateGroupView_1 = require("./CreateGroupView");
-const SelectOrgChartView_1 = require("./SelectOrgChartView");
-const chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
-const config = () => chitchatFactory_1.ChitChatFactory.getInstance().config;
-const Room_1 = require("../../chitchat/libs/shared/Room");
-const groupRx = require("../../redux/group/groupRx");
-const privateGroupRx = require("../../redux/group/privateGroupRxActions");
-exports.createOrgGroup = "create-org-group";
-exports.createPjbGroup = "create-projectbase-group";
-exports.createPvGroup = "create-group";
+import * as React from "react";
+import { connect } from "react-redux";
+import * as Immutable from "immutable";
+import { CreateGroupView } from "./CreateGroupView";
+import { SelectOrgChartView } from "./SelectOrgChartView";
+import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
+const config = () => ChitChatFactory.getInstance().config;
+import { RoomType, MemberRole } from "../../chitchat/libs/shared/Room";
+import * as groupRx from "../../redux/group/groupRx";
+import * as privateGroupRx from "../../redux/group/privateGroupRxActions";
+export const createOrgGroup = "create-org-group";
+export const createPjbGroup = "create-projectbase-group";
+export const createPvGroup = "create-group";
 class CreateGroupBox extends React.Component {
     constructor() {
         super(...arguments);
@@ -71,18 +70,18 @@ class CreateGroupBox extends React.Component {
         this.group.description = this.state.groupDescription;
         this.group.team_id = teamReducer.team._id;
         switch (this.props.groupType) {
-            case exports.createOrgGroup:
-                this.group.type = Room_1.RoomType.organizationGroup;
+            case createOrgGroup:
+                this.group.type = RoomType.organizationGroup;
                 this.group.org_chart_id = (orgCharts.length > 0) ? orgCharts[this.state.dropdownValue]._id : null;
                 this.props.dispatch(groupRx.createOrgGroup(this.group));
                 break;
-            case exports.createPvGroup:
+            case createPvGroup:
                 let member = {
                     _id: user._id,
-                    room_role: Room_1.MemberRole.owner,
+                    room_role: MemberRole.owner,
                     username: user.username
                 };
-                this.group.type = Room_1.RoomType.privateGroup;
+                this.group.type = RoomType.privateGroup;
                 this.group.members = new Array(member);
                 this.props.dispatch(privateGroupRx.createPrivateGroup(this.group));
                 break;
@@ -120,14 +119,14 @@ class CreateGroupBox extends React.Component {
             dropdownChange: (event, id, value) => this.setState(previous => (__assign({}, previous, { dropdownValue: value })))
         };
         switch (this.props.groupType) {
-            case exports.createOrgGroup:
-                return CreateGroupView_1.CreateGroupView(prop)(SelectOrgChartView_1.SelectOrgChartView(chart));
-            case exports.createPjbGroup:
-                return CreateGroupView_1.CreateGroupView(prop)(SelectOrgChartView_1.SelectOrgChartView(chart));
-            case exports.createPvGroup:
+            case createOrgGroup:
+                return CreateGroupView(prop)(SelectOrgChartView(chart));
+            case createPjbGroup:
+                return CreateGroupView(prop)(SelectOrgChartView(chart));
+            case createPvGroup:
                 prop.disabledImage = false;
                 prop.onFileReaderChange = this.fileReaderChange;
-                return CreateGroupView_1.CreateGroupView(prop)(null);
+                return CreateGroupView(prop)(null);
             default:
                 break;
         }
@@ -139,5 +138,4 @@ class CreateGroupBox extends React.Component {
     }
 }
 const mapStateToProps = (state) => (__assign({}, state));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = react_redux_1.connect(mapStateToProps)(CreateGroupBox);
+export default connect(mapStateToProps)(CreateGroupBox);

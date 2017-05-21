@@ -1,5 +1,3 @@
-"use strict";
-class RoomAccessData {
+export class RoomAccessData {
 }
-exports.RoomAccessData = RoomAccessData;
 ;

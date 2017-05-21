@@ -4,7 +4,7 @@
  * This is pure function for redux app.
  */
 
-import { ChatRoomActionsType, UPDATE_CHATROOMS, GET_NEWER_MESSAGE_SUCCESS, GET_NEWER_MESSAGE_FAILURE } from "./chatroomActions";
+import { ChatRoomActionsType, GET_NEWER_MESSAGE_SUCCESS, GET_NEWER_MESSAGE_FAILURE } from "./chatroomActions";
 import * as chatroomRxActions from "./chatroomRxEpic";
 import * as chatroomActions from "./chatroomActions";
 import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";

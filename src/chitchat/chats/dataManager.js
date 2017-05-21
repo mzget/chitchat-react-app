@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -7,10 +6,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const async = require("async");
-const Room_1 = require("../libs/shared/Room");
-const messageDALFactory_1 = require("./dataAccessLayer/messageDALFactory");
-class DataManager {
+import * as async from "async";
+import { RoomType, MemberRole } from "../libs/shared/Room";
+import { MessageDALFactory } from "./dataAccessLayer/messageDALFactory";
+export default class DataManager {
     constructor() {
         this.orgGroups = {};
         this.projectBaseGroups = {};
@@ -20,7 +19,7 @@ class DataManager {
         this.isOrgMembersReady = false;
         this.getContactInfoFailEvents = new Array();
         console.log(global.userAgent);
-        this.messageDAL = messageDALFactory_1.MessageDALFactory.getObject();
+        this.messageDAL = MessageDALFactory.getObject();
     }
     addContactInfoFailEvents(func) {
         this.getContactInfoFailEvents.push(func);
@@ -87,7 +86,7 @@ class DataManager {
         // <!-- Beware please checking myself before update group members.
         // <!-- May be your id is removed from group.
         let hasMe = this.checkMySelfInNewMembersReceived(data);
-        if (data.type === Room_1.RoomType.organizationGroup) {
+        if (data.type === RoomType.organizationGroup) {
             if (!!this.orgGroups[data._id]) {
                 // <!-- This statement call when current you still a member.
                 if (hasMe) {
@@ -101,7 +100,7 @@ class DataManager {
                 this.orgGroups[data._id] = data;
             }
         }
-        else if (data.type === Room_1.RoomType.projectBaseGroup) {
+        else if (data.type === RoomType.projectBaseGroup) {
             if (!!this.projectBaseGroups[data._id]) {
                 if (hasMe) {
                     this.projectBaseGroups[data._id].visibility = true;
@@ -115,7 +114,7 @@ class DataManager {
                 this.projectBaseGroups[data._id] = data;
             }
         }
-        else if (data.type === Room_1.RoomType.privateGroup) {
+        else if (data.type === RoomType.privateGroup) {
             if (!!this.privateGroups[data._id]) {
                 if (hasMe) {
                     this.privateGroups[data._id].visibility = true;
@@ -138,12 +137,12 @@ class DataManager {
         let groupMember = null;
         groupMember.id = editMember.id;
         let role = editMember.role;
-        groupMember.role = Room_1.MemberRole[role];
+        groupMember.role = MemberRole[role];
         groupMember.jobPosition = editMember.jobPosition;
         this.getGroup(roomId).members.forEach((value, index, arr) => {
             if (value.id === groupMember.id) {
                 this.getGroup(roomId).members[index].role = groupMember.role;
-                this.getGroup(roomId).members[index].textRole = Room_1.MemberRole[groupMember.role];
+                this.getGroup(roomId).members[index].textRole = MemberRole[groupMember.role];
                 this.getGroup(roomId).members[index].jobPosition = groupMember.jobPosition;
             }
         });
@@ -268,5 +267,3 @@ class DataManager {
             return false;
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = DataManager;

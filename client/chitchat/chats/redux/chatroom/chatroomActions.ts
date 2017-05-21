@@ -335,6 +335,18 @@ export const getPersistendChatroom = (roomId: string) => (dispatch => {
     }
 });
 
+export const getRoom = (room_id: string) => {
+    let { chatrooms }: { chatrooms: Array<Room> } = getStore().getState().chatroomReducer;
+
+    const rooms = chatrooms.filter((room, index, array) => {
+        if (room._id.toString() == room_id) {
+            return room;
+        }
+    });
+
+    return rooms[0];
+};
+
 export const createChatRoom = (myUser, contactUser) => {
     if (myUser && contactUser) {
         let owner = {} as IMember;
@@ -358,16 +370,14 @@ export const createChatRoom = (myUser, contactUser) => {
     }
 };
 
-export const UPDATE_CHATROOMS = "UPDATE_CHATROOMS";
 export const UPDATED_CHATROOMS = "UPDATED_CHATROOMS";
 export const updatedChatRoomSuccess = (chatrooms: Array<Room>) => ({ type: UPDATED_CHATROOMS, payload: chatrooms });
 export const updateChatRoom = (rooms: Array<Room>) => {
     return dispatch => {
-        dispatch({ type: UPDATE_CHATROOMS, payload: rooms });
-
         let chatrooms: Array<Room> = getStore().getState().chatroomReducer.get("chatrooms");
         if (chatrooms) {
-            let _newRooms = R.union(chatrooms, rooms);
+            // R.unionWith(R.eqBy(R.prop('a')), l1, l2);
+            let _newRooms = R.unionWith(R.eqBy(R.prop("_id")), rooms, chatrooms) as Array<Room>;
             dispatch(updatedChatRoomSuccess(_newRooms));
         }
         else {

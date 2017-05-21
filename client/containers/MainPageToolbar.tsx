@@ -2,6 +2,7 @@ import * as React from "react";
 import * as authRx from "../redux/authen/authRx";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { ToolbarEnhancer } from "./toolsbox/ToolbarEnhancer";
+import { ProfileEnhanced } from "./profile/ProfileBox";
 
 
 const menus = ["menu", "log out"];
@@ -21,7 +22,16 @@ export function listener(props, id, value) {
     }
 }
 
-export const ToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onMenuSelect, listener, history }: any) =>
+export const WebToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onPressTitle, onMenuSelect, listener, history }: any) =>
+    <SimpleToolbar
+        title={(teamReducer.team) ? teamReducer.team.name : ""}
+        onPressTitle={onPressTitle}
+        menus={menus}
+        onSelectedMenuItem={onMenuSelect}
+        groupItem={<ProfileEnhanced />} />
+);
+
+export const MobileToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onMenuSelect, listener, history }: any) =>
     <SimpleToolbar
         title={(teamReducer.team) ? teamReducer.team.name : ""}
         menus={menus}

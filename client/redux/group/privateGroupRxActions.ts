@@ -10,6 +10,8 @@ import { Room, RoomType } from "../../chitchat/libs/shared/Room";
 
 import { updateChatRoom } from "../../chitchat/chats/redux/chatroom/chatroomActions";
 
+export const SET_PRIVATE_GROUP = "SET_PRIVATE_GROUP";
+
 const GET_PRIVATE_GROUP = "GET_PRIVATE_GROUP";
 export const GET_PRIVATE_GROUP_SUCCESS = "GET_PRIVATE_GROUP_SUCCESS";
 export const GET_PRIVATE_GROUP_FAILURE = "GET_PRIVATE_GROUP_FAILURE";

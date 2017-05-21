@@ -3,4 +3,3 @@
  *
  *  IRoomDAL.ts
  */
-"use strict";

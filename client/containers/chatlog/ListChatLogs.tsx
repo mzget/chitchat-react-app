@@ -10,16 +10,18 @@ import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
 import IconMenu from "material-ui/IconMenu";
 import MenuItem from "material-ui/MenuItem";
-
+import ActionInfo from 'material-ui/svg-icons/action/info';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Avatar from "material-ui/Avatar";
 
 import ChatLog from "../../chitchat/chats/models/chatLog";
 import BadgeSimple from "../../components/BadgeSimple";
+// import { ChatlogItem } from "../../components/ChatlogItem";
 
 interface IChatlogProps { value: Array<ChatLog>; onSelected: Function; onRemovedLog: (log: ChatLog) => void; }
 
 const iconButtonElement = (
+
     <IconButton
         touch={true}
         tooltip="more"
@@ -36,8 +38,9 @@ const rightIconMenu = (log: ChatLog, onRemovedLog: (log: ChatLog) => void) => (
             onRemovedLog(log);
         }}
     >
-        <MenuItem value="1">Delete</MenuItem>
+        <MenuItem value="1" style={{ paddingLeft: "0", paddingRight: "0" }}>Delete</MenuItem>
     </IconMenu>
+
 );
 
 const renderList = (props: IChatlogProps) => (
@@ -49,23 +52,28 @@ const renderList = (props: IChatlogProps) => (
                         <Avatar src={log.room.image} /> :
                         <Avatar>{log.roomName.charAt(0)}</Avatar>
                     }
-                    rightIconButton={rightIconMenu(log, props.onRemovedLog)}
-                    rightIcon={
+                    primaryText={
                         <div>
-                            <div style={{ marginRight: "40px", marginTop: 0 }}>
-                                {
-                                    (log.count && log.count != 0) ? <BadgeSimple content={log.count} /> : null
-                                }
-                            </div>
+                            {log.roomName}
                         </div>
                     }
-                    primaryText={log.roomName}
                     secondaryText={
-                        <p>
+                        <div>
                             <span style={{ color: darkBlack }}>{log.lastMessage}</span>
-                        </p>
+                        </div>
                     }
                     onClick={() => props.onSelected(log)}
+                    children={
+                        <div key={log.id} style={{ float: "right", position: "absolute", top: "10%", right: "2%", margin: "auto" }}>
+                            {
+                                (log.count && log.count != 0) ? <BadgeSimple content={log.count} /> : null
+                            }
+                            {
+                                rightIconMenu(log, props.onRemovedLog)
+                            }
+
+                        </div>
+                    }
                 />
                 <Divider inset={true} />
             </div>);

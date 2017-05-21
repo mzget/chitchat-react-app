@@ -8,30 +8,29 @@
  * A Redux boilerplate setup
  *
  */
-"use strict";
 /**
  * ## Imports
  *
  * redux functions
  */
-const redux_1 = require("redux");
-const redux_thunk_1 = require("redux-thunk");
-const redux_observable_1 = require("redux-observable");
-const rootReducer = require("./rootReducer");
-const rootRxEpic = require("./rootRxEpic");
-const epicMiddleware = redux_observable_1.createEpicMiddleware(rootRxEpic.rootEpic);
-let middlewares = [redux_thunk_1.default, epicMiddleware];
+import { createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
+import { createEpicMiddleware } from "redux-observable";
+import * as rootReducer from "./rootReducer";
+import * as rootRxEpic from "./rootRxEpic";
+const epicMiddleware = createEpicMiddleware(rootRxEpic.rootEpic);
+let middlewares = [thunk, epicMiddleware];
 let createStoreWithMiddleware = null;
 if (process.env.NODE_ENV === `development`) {
     // const { logger } = require(`redux-logger`);
     // middlewares.push(logger);
     const reduxDevtools = require("redux-devtools-extension");
     const { composeWithDevTools } = reduxDevtools;
-    createStoreWithMiddleware = composeWithDevTools(redux_1.applyMiddleware(...middlewares))(redux_1.createStore);
+    createStoreWithMiddleware = composeWithDevTools(applyMiddleware(...middlewares))(createStore);
 }
 else {
     console.log = function () { };
-    createStoreWithMiddleware = redux_1.applyMiddleware(...middlewares)(redux_1.createStore);
+    createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 }
 function configureStore() {
     let initialState = rootReducer.getInitialState();
@@ -39,5 +38,4 @@ function configureStore() {
 }
 // !!! Note >>> Do not edit these 2 line below. I make it for call global store. @ Mzget.
 const store = configureStore();
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = store;
+export default store;

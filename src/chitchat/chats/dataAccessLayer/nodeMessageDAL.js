@@ -1,6 +1,5 @@
-"use strict";
 const store = require("react-native-simple-store");
-class NodeMessageDAL {
+export class NodeMessageDAL {
     getData(rid) {
         return store.get(rid);
     }
@@ -12,4 +11,3 @@ class NodeMessageDAL {
     clearData(next) {
     }
 }
-exports.NodeMessageDAL = NodeMessageDAL;

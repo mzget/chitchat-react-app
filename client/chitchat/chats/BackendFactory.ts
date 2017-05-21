@@ -77,6 +77,7 @@ export class BackendFactory {
         let self = this;
         let promise = new Promise((resolve, reject) => {
             self.stalk.disConnect(function done() {
+                console.log("disconnected first...");
                 self.stalk.init((err, res) => {
                     if (!!err) {
                         reject(err);

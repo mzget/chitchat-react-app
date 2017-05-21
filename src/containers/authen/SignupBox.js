@@ -1,4 +1,3 @@
-"use strict";
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -7,12 +6,12 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-const React = require("react");
-const SignupForm_1 = require("../../components/SignupForm");
-const CryptoHelper = require("../../chitchat/chats/utils/CryptoHelper");
-const ValidateUtils = require("../../utils/ValidationUtils");
-const AuthRx = require("../../redux/authen/authRx");
-class SignupBox extends React.Component {
+import * as React from "react";
+import { SignupForm } from "../../components/SignupForm";
+import * as CryptoHelper from "../../chitchat/chats/utils/CryptoHelper";
+import * as ValidateUtils from "../../utils/ValidationUtils";
+import * as AuthRx from "../../redux/authen/authRx";
+export class SignupBox extends React.Component {
     componentWillMount() {
         this.state = {
             email: "",
@@ -52,7 +51,7 @@ class SignupBox extends React.Component {
     }
     render() {
         return (React.createElement("span", null,
-            React.createElement(SignupForm_1.SignupForm, { email: this.state.email, onEmailChange: (e, text) => {
+            React.createElement(SignupForm, { email: this.state.email, onEmailChange: (e, text) => {
                     this.setState(previous => (__assign({}, previous, { email: text })));
                 }, password: this.state.password, onPasswordChange: (e, text) => {
                     this.setState(previous => (__assign({}, previous, { password: text })));
@@ -65,4 +64,3 @@ class SignupBox extends React.Component {
                 }, onSubmit: this.onSubmitForm })));
     }
 }
-exports.SignupBox = SignupBox;

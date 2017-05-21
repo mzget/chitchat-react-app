@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -7,9 +6,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const chitchatFactory_1 = require("../../chitchatFactory");
-const getTeam = () => chitchatFactory_1.ChitChatFactory.getInstance().teamStore;
-function getContactProfile(userId) {
+import { ChitChatFactory } from "../../chitchatFactory";
+const getTeam = () => ChitChatFactory.getInstance().teamStore;
+export function getContactProfile(userId) {
     return __awaiter(this, void 0, void 0, function* () {
         let members = getTeam().members;
         return new Promise((resolve, rejected) => {
@@ -29,4 +28,3 @@ function getContactProfile(userId) {
         });
     });
 }
-exports.getContactProfile = getContactProfile;

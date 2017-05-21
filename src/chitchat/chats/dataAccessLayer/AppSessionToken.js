@@ -1,6 +1,5 @@
-"use strict";
-const localForage = require("localforage");
-class AppSessionToken {
+import * as localForage from "localforage";
+export class AppSessionToken {
     constructor() {
         this.store = localForage.createInstance({
             name: "sessionToken"
@@ -16,4 +15,3 @@ class AppSessionToken {
         this.store.removeItem("sessionToken");
     }
 }
-exports.AppSessionToken = AppSessionToken;

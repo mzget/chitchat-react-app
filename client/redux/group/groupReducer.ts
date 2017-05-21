@@ -40,6 +40,9 @@ export const groupReducer = (state = new GroupInitState(), action) => {
                 .set("error", action.payload.message);
         }
 
+        case privateGroupRxActions.SET_PRIVATE_GROUP: {
+            return state.set("privateGroups", action.payload);
+        }
         case privateGroupRxActions.GET_PRIVATE_GROUP_SUCCESS: {
             return state.set("privateGroups", action.payload.result);
         }

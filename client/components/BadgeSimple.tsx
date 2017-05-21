@@ -10,6 +10,7 @@ const BadgeSimple = (props: { content: any }) => (
             badgeContent={props.content}
             badgeStyle={{ backgroundColor: "red" }}
             secondary={true}
+            style={{paddingLeft: "0", paddingRight:"16px"}}
             >
             <NotificationsIcon />
         </Badge>

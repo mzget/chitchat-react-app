@@ -15,7 +15,7 @@ interface IComponentNameState {
     is_FindTeam: boolean;
 }
 
-class TeamCreateBox extends React.Component<IComponentProps, IComponentNameState> {
+export class TeamCreateBox extends React.Component<IComponentProps, IComponentNameState> {
     componentWillMount() {
         this.state = {
             team_name: "",
@@ -40,6 +40,8 @@ class TeamCreateBox extends React.Component<IComponentProps, IComponentNameState
         }
         else {
             console.warn("Empty team name!");
+            this.props.onError("Empty team name!");
+
         }
     }
 
@@ -53,6 +55,7 @@ class TeamCreateBox extends React.Component<IComponentProps, IComponentNameState
         }
         else {
             console.warn("Empty team name!");
+            this.props.onError("Empty team name!");
         }
     }
 
@@ -84,5 +87,3 @@ class TeamCreateBox extends React.Component<IComponentProps, IComponentNameState
             </div>);
     }
 }
-
-export default TeamCreateBox;

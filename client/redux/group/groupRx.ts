@@ -13,6 +13,9 @@ import { updateChatRoom } from "../../chitchat/chats/redux/chatroom/chatroomActi
 import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 
+/**
+ * Get org groups...
+ */
 const GET_ORG_GROUP = "GET_ORG_GROUP";
 export const GET_ORG_GROUP_SUCCESS = "GET_ORG_GROUP_SUCCESS";
 const GET_ORG_GROUP_FAILURE = "GET_ORG_GROUP_FAILURE";
@@ -22,8 +25,8 @@ const getOrgGroupSuccess = (payload) => ({ type: GET_ORG_GROUP_SUCCESS, payload 
 const getOrgGroupFailure = (err) => ({ type: GET_ORG_GROUP_FAILURE, payload: err });
 const getOrgGroupCancelled = () => ({ type: GET_ORG_GROUP_CANCELLED });
 export const getOrgGroup_Epic = action$ => (
-    action$.ofType(GET_ORG_GROUP).mergeMap(action =>
-        ajax.getJSON(
+    action$.ofType(GET_ORG_GROUP)
+        .mergeMap(action => ajax.getJSON(
             `${config().api.group}/org?team_id=${action.payload}`,
             { "x-access-token": Store.getState().authReducer.token }
         ).map(response => getOrgGroupSuccess(response))
@@ -35,9 +38,12 @@ export const getOrgGroup_Epic = action$ => (
                     Store.dispatch(updateChatRoom(rooms));
                 }
             })
-    ));
+        ));
 
 
+/**
+ * Create org groups...
+ */
 const CREATE_ORG_GROUP = "CREATE_ORG_GROUP";
 export const CREATE_ORG_GROUP_FAILURE = "CREATE_ORG_GROUP_FAILURE";
 export const CREATE_ORG_GROUP_SUCCESS = "CREATE_ORG_GROUP_SUCCESS";

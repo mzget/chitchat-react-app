@@ -4,17 +4,15 @@
  *
  * Ahoo Studio.co.th
  */
-"use strict";
-const httpStatusCode_1 = require("./utils/httpStatusCode");
-const EventEmitter = require("events");
+import HttpStatusCode from './utils/httpStatusCode';
+import EventEmitter from "events";
 const Pomelo = require("../pomelo/reactWSClient");
-class IPomelo extends EventEmitter {
+export class IPomelo extends EventEmitter {
 }
-exports.IPomelo = IPomelo;
 ;
 class AuthenData {
 }
-class ServerImplemented {
+export class ServerImplemented {
     constructor(host, port) {
         this._isConnected = false;
         this._isLogedin = false;
@@ -90,23 +88,35 @@ class ServerImplemented {
         }
     }
     connectServer(params, callback) {
+        let self = this;
         this.pomelo.init(params, function cb(err) {
-            console.log("socket init result: ", err);
+            console.log("socket init... ", err);
+            self.pomelo.setInitCallback(null);
             callback(err);
         });
     }
     listenForPomeloEvents() {
         this.pomelo.removeAllListeners();
-        this.pomelo.on("onopen", (this.onSocketOpen) ? this.onSocketOpen : (data) => console.warn("onopen", data));
-        this.pomelo.on("close", (this.onSocketClose) ? this.onSocketClose : (data) => console.warn("close", data));
-        this.pomelo.on("reconnect", (this.onSocketReconnect) ? this.onSocketReconnect : (data) => console.warn("reconnect", data));
+        this.pomelo.on("onopen", (this.onSocketOpen) ?
+            this.onSocketOpen : (data) => console.log("onopen", data));
+        this.pomelo.on("close", (this.onSocketClose) ?
+            this.onSocketClose : (data) => {
+            console.warn("close", data);
+            this.pomelo.setInitCallback(null);
+        });
+        this.pomelo.on("reconnect", (this.onSocketReconnect) ?
+            this.onSocketReconnect : (data) => console.log("reconnect", data));
         this.pomelo.on("disconnected", (data) => {
             console.warn("disconnected", data);
             this._isConnected = false;
+            this.pomelo.setInitCallback(null);
             if (this.onDisconnected)
                 this.onDisconnected(data);
         });
-        this.pomelo.on("io-error", (data) => console.warn("io-error", data));
+        this.pomelo.on("io-error", (data) => {
+            console.warn("io-error", data);
+            this.pomelo.setInitCallback(null);
+        });
     }
     // region <!-- Authentication...
     /// <summary>
@@ -119,7 +129,7 @@ class ServerImplemented {
             // <!-- Quering connector server.
             self.pomelo.request("gate.gateHandler.queryEntry", msg, function (result) {
                 console.log("QueryConnectorServ", JSON.stringify(result));
-                if (result.code === httpStatusCode_1.default.success) {
+                if (result.code === HttpStatusCode.success) {
                     self.disConnect();
                     let connectorPort = result.port;
                     // <!-- Connecting to connector server.
@@ -164,12 +174,12 @@ class ServerImplemented {
         // <!-- Authentication.
         self.pomelo.request("connector.entryHandler.login", msg, function (res) {
             console.log("login response: ", JSON.stringify(res));
-            if (res.code === httpStatusCode_1.default.fail) {
+            if (res.code === HttpStatusCode.fail) {
                 if (callback != null) {
                     callback(res.message, null);
                 }
             }
-            else if (res.code === httpStatusCode_1.default.success) {
+            else if (res.code === HttpStatusCode.success) {
                 if (callback != null) {
                     callback(null, res);
                 }
@@ -189,7 +199,7 @@ class ServerImplemented {
                 // <!-- Quering connector server.
                 self.pomelo.request("gate.gateHandler.queryEntry", msg, function (result) {
                     console.log("gateEnter", result);
-                    if (result.code === httpStatusCode_1.default.success) {
+                    if (result.code === HttpStatusCode.success) {
                         self.disConnect();
                         let data = { host: self.host, port: result.port };
                         resolve(data);
@@ -212,10 +222,10 @@ class ServerImplemented {
         return new Promise((resolve, rejected) => {
             // <!-- Authentication.
             self.pomelo.request("connector.entryHandler.login", msg, function (res) {
-                if (res.code === httpStatusCode_1.default.fail) {
+                if (res.code === HttpStatusCode.fail) {
                     rejected(res.message);
                 }
-                else if (res.code === httpStatusCode_1.default.success) {
+                else if (res.code === HttpStatusCode.success) {
                     resolve(res);
                 }
                 else {
@@ -233,7 +243,7 @@ class ServerImplemented {
         });
     }
     OnTokenAuthenticate(tokenRes, onSuccessCheckToken) {
-        if (tokenRes.code === httpStatusCode_1.default.success) {
+        if (tokenRes.code === HttpStatusCode.success) {
             var data = tokenRes.data;
             var decode = data.decoded; //["decoded"];
             var decodedModel = JSON.parse(JSON.stringify(decode));
@@ -601,4 +611,3 @@ class ServerImplemented {
         });
     }
 }
-exports.ServerImplemented = ServerImplemented;

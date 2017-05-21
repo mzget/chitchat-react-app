@@ -1,4 +1,3 @@
-"use strict";
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -7,17 +6,17 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-const react_redux_1 = require("react-redux");
-const recompose_1 = require("recompose");
-const chatroomActions = require("../../chitchat/chats/redux/chatroom/chatroomActions");
-const groupRx = require("../../redux/group/groupRx");
-const privateGroupRxActions = require("../../redux/group/privateGroupRxActions");
-const chatroomActions_1 = require("../../chitchat/chats/redux/chatroom/chatroomActions");
-const chatroomRxEpic_1 = require("../../chitchat/chats/redux/chatroom/chatroomRxEpic");
+import { connect } from "react-redux";
+import { shallowEqual, compose, withHandlers, lifecycle } from "recompose";
+import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
+import * as groupRx from "../../redux/group/groupRx";
+import * as privateGroupRxActions from "../../redux/group/privateGroupRxActions";
+import { GET_PERSISTEND_CHATROOM_SUCCESS } from "../../chitchat/chats/redux/chatroom/chatroomActions";
+import { FETCH_PRIVATE_CHATROOM_SUCCESS, CREATE_PRIVATE_CHATROOM_SUCCESS } from "../../chitchat/chats/redux/chatroom/chatroomRxEpic";
 const mapStateToProps = (state) => (__assign({}, state));
-exports.MainPageEnhancer = recompose_1.compose(react_redux_1.connect(mapStateToProps), recompose_1.lifecycle({
+export const MainPageEnhancer = compose(connect(mapStateToProps), lifecycle({
     componentWillReceiveProps(nextProps) {
-        let { location, userReducer, stalkReducer, chatroomReducer, teamReducer, chatlogReducer } = nextProps;
+        let { userReducer, chatroomReducer, teamReducer } = nextProps;
         if (!userReducer.user) {
             this.props.history.push("/");
         }
@@ -29,15 +28,15 @@ exports.MainPageEnhancer = recompose_1.compose(react_redux_1.connect(mapStateToP
             default:
                 break;
         }
-        if (chatroomReducer.state == chatroomActions_1.GET_PERSISTEND_CHATROOM_SUCCESS ||
-            chatroomReducer.state == chatroomRxEpic_1.FETCH_PRIVATE_CHATROOM_SUCCESS ||
-            chatlogReducer.state == chatroomRxEpic_1.CREATE_PRIVATE_CHATROOM_SUCCESS) {
-            if (!recompose_1.shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
+        if (chatroomReducer.state == GET_PERSISTEND_CHATROOM_SUCCESS ||
+            chatroomReducer.state == FETCH_PRIVATE_CHATROOM_SUCCESS ||
+            chatroomReducer.state == CREATE_PRIVATE_CHATROOM_SUCCESS) {
+            if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
                 this.props.history.push(`/chatroom/chat/${chatroomReducer.room._id}`);
             }
         }
     }
-}), recompose_1.withHandlers({
+}), withHandlers({
     fetch_orgGroups: (props) => () => {
         if (!props.teamReducer.team)
             return props.history.replace(`/`);

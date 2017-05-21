@@ -1,4 +1,3 @@
-"use strict";
 const chitchat_api = (host) => ({
     apiKey: "chitchat1234",
     host: `${host}`,
@@ -47,4 +46,4 @@ const getConfig = () => {
         return composeMyconfig(baseConfig)(api_master)(api_stalk_master, stalkPort, api_master);
     }
 };
-exports.config = getConfig();
+export const config = getConfig();

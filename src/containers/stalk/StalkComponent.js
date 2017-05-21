@@ -1,9 +1,8 @@
-"use strict";
-const React = require("react");
-const react_redux_1 = require("react-redux");
-const WarningBar_1 = require("../../components/WarningBar");
-const LinearProgressDialog_1 = require("../../components/LinearProgressDialog");
-const StalkBridgeActions = require("../../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
+import * as React from "react";
+import { connect } from "react-redux";
+import { WarningBar } from "../../components/WarningBar";
+import { LinearProgressDialog } from "../../components/LinearProgressDialog";
+import * as StalkBridgeActions from "../../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 class IStalktProps {
 }
 class StalkComponent extends React.Component {
@@ -11,13 +10,13 @@ class StalkComponent extends React.Component {
         return (React.createElement("div", null,
             (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE ||
                 this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
-                React.createElement(WarningBar_1.WarningBar, null) : null,
+                React.createElement(WarningBar, null) : null,
             (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT) ?
-                React.createElement(LinearProgressDialog_1.LinearProgressDialog, { title: "Joining... stalk service", open: true, handleClose: () => { } }) : null));
+                React.createElement(LinearProgressDialog, { title: "Joining... stalk service", open: true, handleClose: () => { } }) : null));
     }
 }
 const mapStateToProps = (state) => ({
     stalkReducer: state.stalkReducer,
     userReducer: state.userReducer
 });
-exports.StalkCompEnhancer = react_redux_1.connect(mapStateToProps)(StalkComponent);
+export const StalkCompEnhancer = connect(mapStateToProps)(StalkComponent);
