@@ -74,7 +74,7 @@ export class BackendFactory {
         return this.serverEventsListener;
     }
 
-    stalkInit(): Promise<any> {
+    stalkInit() {
         console.log("stalkInit...");
 
         let self = this;
@@ -163,7 +163,7 @@ export class BackendFactory {
         // @ get connector server.
         let msg = {} as IDictionary;
         msg["uid"] = uid;
-        msg["x-api-key"] = "";
+        msg["x-api-key"] = getConfig().Stalk.apiKey;
         let connector = await self.stalk.gateEnter(msg);
 
         return new Promise((resolve, reject) => {
@@ -183,7 +183,7 @@ export class BackendFactory {
                 else {
                     let msg = {} as IDictionary;
                     msg["user"] = user;
-                    msg["x-api-key"] = "";
+                    msg["x-api-key"] = getConfig().Stalk.apiKey;
                     self.stalk.checkIn(msg).then(value => {
                         resolve(value);
                     }).catch(err => {

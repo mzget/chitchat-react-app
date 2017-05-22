@@ -140,7 +140,7 @@ export class BackendFactory {
             // @ get connector server.
             let msg = {};
             msg["uid"] = uid;
-            msg["x-api-key"] = "";
+            msg["x-api-key"] = getConfig().Stalk.apiKey;
             let connector = yield self.stalk.gateEnter(msg);
             return new Promise((resolve, reject) => {
                 // @ Connecting to connector server.
@@ -157,7 +157,7 @@ export class BackendFactory {
                     else {
                         let msg = {};
                         msg["user"] = user;
-                        msg["x-api-key"] = "";
+                        msg["x-api-key"] = getConfig().Stalk.apiKey;
                         self.stalk.checkIn(msg).then(value => {
                             resolve(value);
                         }).catch(err => {
