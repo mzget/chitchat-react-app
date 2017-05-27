@@ -63,7 +63,6 @@ class Chat extends React.Component {
         this.onToggleSticker = this.onToggleSticker.bind(this);
         this.fileReaderChange = this.fileReaderChange.bind(this);
         let { chatroomReducer, userReducer, match: { params } } = this.props;
-        console.log("Chat", this.props);
         if (!chatroomReducer.room) {
             this.props.dispatch(chatroomActions.getPersistendChatroom(params.room_id));
         }

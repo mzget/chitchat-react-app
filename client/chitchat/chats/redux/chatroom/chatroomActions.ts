@@ -13,8 +13,8 @@ import { BackendFactory } from "../../BackendFactory";
 import SecureServiceFactory from "../../secure/secureServiceFactory";
 
 import * as NotificationManager from "../stalkBridge/StalkNotificationActions";
-import ServerEventListener from "../../../libs/stalk/serverEventListener";
-import HTTPStatus from "../../../libs/stalk/utils/httpStatusCode";
+import { events, statusCode } from "stalk-js";
+const ServerEventListener = events;
 
 import { updateLastAccessRoom } from "../chatlogs/chatlogRxActions";
 
@@ -211,7 +211,7 @@ function sendMessageResponse(err, res) {
         else {
             console.log("server response!", res);
 
-            if (res.code == HTTPStatus.success && res.data.hasOwnProperty("resultMsg")) {
+            if (res.code == statusCode.success && res.data.hasOwnProperty("resultMsg")) {
                 let _msg = { ...res.data.resultMsg } as IMessage;
                 if (_msg.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption) {
                     secure.decryption(_msg.body).then(res => {
@@ -248,7 +248,7 @@ export function joinRoom(roomId: string, token: string, username: string) {
             server.JoinChatRoomRequest(token, username, roomId, (err, res) => {
                 console.log("JoinChatRoomRequest value", res);
 
-                if (err || res.code !== HTTPStatus.success) {
+                if (err || res.code !== statusCode.success) {
                     dispatch(joinRoom_failure());
                 }
                 else {

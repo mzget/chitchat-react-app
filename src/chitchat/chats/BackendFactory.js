@@ -10,13 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { ServerImplemented } from "../libs/stalk/serverImplemented";
-import ChatRoomApiProvider from "../libs/stalk/chatRoomApiProvider";
-import ServerEventListener from "../libs/stalk/serverEventListener";
+import Stalk, { ChatRoom, Events } from "stalk-js";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
 import PushDataListener from "./pushDataListener";
 import { ChatsLogComponent } from "./chatslogComponent";
+const ChatRoomApiProvider = ChatRoom;
+const ServerEventListener = Events;
+const _Stalk = Stalk.Stalk;
 import { ChitChatFactory } from "./chitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 export class BackendFactory {
@@ -31,7 +32,7 @@ export class BackendFactory {
     }
     constructor() {
         console.log("BackendFactory:");
-        this.stalk = ServerImplemented.createInstance(getConfig().Stalk.chat, getConfig().Stalk.port);
+        this.stalk = _Stalk.createInstance(getConfig().Stalk.chat, getConfig().Stalk.port);
         this.pushDataListener = new PushDataListener();
         this.dataManager = new DataManager();
         this.dataListener = new DataListener(this.dataManager);
@@ -61,7 +62,6 @@ export class BackendFactory {
         return this.serverEventsListener;
     }
     stalkInit() {
-        console.log("stalkInit...");
         let self = this;
         let promise = new Promise((resolve, reject) => {
             self.stalk.disConnect(function done() {
@@ -81,7 +81,7 @@ export class BackendFactory {
     login(username, hexPassword, deviceToken) {
         let email = username;
         let promise = new Promise(function executor(resolve, reject) {
-            ServerImplemented.getInstance().logIn(email, hexPassword, deviceToken, (err, res) => {
+            Stalk.getInstance().logIn(email, hexPassword, deviceToken, (err, res) => {
                 if (!!err) {
                     reject(err);
                 }
@@ -96,7 +96,7 @@ export class BackendFactory {
         let token = tokenBearer;
         let promise = new Promise((resolved, rejected) => {
             console.warn(token);
-            ServerImplemented.getInstance().TokenAuthen(token, (err, res) => {
+            Stalk.getInstance().TokenAuthen(token, (err, res) => {
                 if (!!err) {
                     rejected(err);
                 }
@@ -110,7 +110,7 @@ export class BackendFactory {
     logout() {
         let self = this;
         let promise = new Promise(function exe(resolve, reject) {
-            if (ServerImplemented.getInstance) {
+            if (Stalk.getInstance) {
                 if (!!self.stalk.pomelo)
                     self.stalk.pomelo.setReconnect(false);
                 self.stalk.logout();

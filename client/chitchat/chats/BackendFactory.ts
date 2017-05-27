@@ -3,13 +3,14 @@
  *
  */
 
-import { ServerImplemented, ServerParam, IDictionary } from "../libs/stalk/serverImplemented";
-import ChatRoomApiProvider from "../libs/stalk/chatRoomApiProvider";
-import ServerEventListener from "../libs/stalk/serverEventListener";
+import Stalk, { ServerParam, Dict, ChatRoom, Events, ServerImplemented } from "stalk-js";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
 import PushDataListener from "./pushDataListener";
 import { ChatsLogComponent } from "./chatslogComponent";
+const ChatRoomApiProvider = ChatRoom;
+const ServerEventListener = Events;
+const _Stalk = Stalk.Stalk;
 
 import { ChitChatFactory } from "./chitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
@@ -38,7 +39,7 @@ export class BackendFactory {
     constructor() {
         console.log("BackendFactory:");
 
-        this.stalk = ServerImplemented.createInstance(getConfig().Stalk.chat, getConfig().Stalk.port);
+        this.stalk = _Stalk.createInstance(getConfig().Stalk.chat, getConfig().Stalk.port);
         this.pushDataListener = new PushDataListener();
         this.dataManager = new DataManager();
         this.dataListener = new DataListener(this.dataManager);
@@ -50,7 +51,7 @@ export class BackendFactory {
         return this.chatLogComp;
     }
 
-    getServer(): Promise<ServerImplemented> {
+    getServer(): Promise<Stalk> {
         return new Promise((resolve, rejected) => {
             if (this.stalk._isConnected)
                 resolve(this.stalk);
@@ -75,8 +76,6 @@ export class BackendFactory {
     }
 
     stalkInit() {
-        console.log("stalkInit...");
-
         let self = this;
         let promise = new Promise((resolve, reject) => {
             self.stalk.disConnect(function done() {
@@ -98,7 +97,7 @@ export class BackendFactory {
     login(username: string, hexPassword: string, deviceToken: string): Promise<any> {
         let email = username;
         let promise = new Promise(function executor(resolve, reject) {
-            ServerImplemented.getInstance().logIn(email, hexPassword, deviceToken, (err, res) => {
+            Stalk.getInstance().logIn(email, hexPassword, deviceToken, (err, res) => {
                 if (!!err) {
                     reject(err);
                 }
@@ -114,7 +113,7 @@ export class BackendFactory {
         let token = tokenBearer;
         let promise = new Promise((resolved, rejected) => {
             console.warn(token);
-            ServerImplemented.getInstance().TokenAuthen(token, (err, res) => {
+            Stalk.getInstance().TokenAuthen(token, (err, res) => {
                 if (!!err) {
                     rejected(err);
                 }
@@ -130,7 +129,7 @@ export class BackendFactory {
     logout() {
         let self = this;
         let promise = new Promise(function exe(resolve, reject) {
-            if (ServerImplemented.getInstance) {
+            if (Stalk.getInstance) {
                 if (!!self.stalk.pomelo)
                     self.stalk.pomelo.setReconnect(false);
                 self.stalk.logout();
@@ -161,7 +160,7 @@ export class BackendFactory {
         let self = this;
 
         // @ get connector server.
-        let msg = {} as IDictionary;
+        let msg = {} as Dict;
         msg["uid"] = uid;
         msg["x-api-key"] = getConfig().Stalk.apiKey;
         let connector = await self.stalk.gateEnter(msg);
@@ -181,7 +180,7 @@ export class BackendFactory {
                     reject(err);
                 }
                 else {
-                    let msg = {} as IDictionary;
+                    let msg = {} as Dict;
                     msg["user"] = user;
                     msg["x-api-key"] = getConfig().Stalk.apiKey;
                     self.stalk.checkIn(msg).then(value => {

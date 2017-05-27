@@ -25,8 +25,8 @@ import ChatRoomComponent from "../../chatRoomComponent";
 import { BackendFactory } from "../../BackendFactory";
 import SecureServiceFactory from "../../secure/secureServiceFactory";
 import * as NotificationManager from "../stalkBridge/StalkNotificationActions";
-import ServerEventListener from "../../../libs/stalk/serverEventListener";
-import HTTPStatus from "../../../libs/stalk/utils/httpStatusCode";
+import { events, statusCode } from "stalk-js";
+const ServerEventListener = events;
 import { updateLastAccessRoom } from "../chatlogs/chatlogRxActions";
 import { RoomType } from "../../..//shared/Room";
 import { MessageType } from "../../../shared/Message";
@@ -198,7 +198,7 @@ function sendMessageResponse(err, res) {
         }
         else {
             console.log("server response!", res);
-            if (res.code == HTTPStatus.success && res.data.hasOwnProperty("resultMsg")) {
+            if (res.code == statusCode.success && res.data.hasOwnProperty("resultMsg")) {
                 let _msg = __assign({}, res.data.resultMsg);
                 if (_msg.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption) {
                     secure.decryption(_msg.body).then(res => {
@@ -232,7 +232,7 @@ export function joinRoom(roomId, token, username) {
         BackendFactory.getInstance().getServer().then(server => {
             server.JoinChatRoomRequest(token, username, roomId, (err, res) => {
                 console.log("JoinChatRoomRequest value", res);
-                if (err || res.code !== HTTPStatus.success) {
+                if (err || res.code !== statusCode.success) {
                     dispatch(joinRoom_failure());
                 }
                 else {
