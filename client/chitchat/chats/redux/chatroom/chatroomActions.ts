@@ -6,6 +6,8 @@
 
 import * as Rx from "rxjs/Rx";
 import * as R from "ramda";
+import { Events, Utils } from "stalk-js";
+const ServerEventListener = Events;
 
 import * as chatroomService from "../../services/chatroomService";
 import ChatRoomComponent from "../../chatRoomComponent";
@@ -13,8 +15,6 @@ import { BackendFactory } from "../../BackendFactory";
 import SecureServiceFactory from "../../secure/secureServiceFactory";
 
 import * as NotificationManager from "../stalkBridge/StalkNotificationActions";
-import { events, statusCode } from "stalk-js";
-const ServerEventListener = events;
 
 import { updateLastAccessRoom } from "../chatlogs/chatlogRxActions";
 
@@ -211,7 +211,7 @@ function sendMessageResponse(err, res) {
         else {
             console.log("server response!", res);
 
-            if (res.code == statusCode.success && res.data.hasOwnProperty("resultMsg")) {
+            if (res.code == Utils.statusCode.success && res.data.hasOwnProperty("resultMsg")) {
                 let _msg = { ...res.data.resultMsg } as IMessage;
                 if (_msg.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption) {
                     secure.decryption(_msg.body).then(res => {
@@ -248,7 +248,7 @@ export function joinRoom(roomId: string, token: string, username: string) {
             server.JoinChatRoomRequest(token, username, roomId, (err, res) => {
                 console.log("JoinChatRoomRequest value", res);
 
-                if (err || res.code !== statusCode.success) {
+                if (err || res.code !== Utils.statusCode.success) {
                     dispatch(joinRoom_failure());
                 }
                 else {
