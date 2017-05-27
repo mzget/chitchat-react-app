@@ -3,13 +3,13 @@
  *
  */
 
-import { Stalk, ServerParam, Dict, ChatRoom, Events, ServerImplemented } from "stalk-js";
+import * as Stalk from "stalk-js";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
-import PushDataListener from "./pushDataListener";
+import { PushDataListener } from "./pushDataListener";
 import { ChatsLogComponent } from "./chatslogComponent";
-const ChatRoomApiProvider = ChatRoom;
-const ServerEventListener = Events;
+const ChatRoomApiProvider = Stalk.ChatRoomApiProvider;
+import { ServerEventListener } from "./ServerEventListener";
 
 import { ChitChatFactory } from "./chitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
@@ -27,8 +27,8 @@ export class BackendFactory {
         return BackendFactory.instance;
     }
 
-    stalk: ServerImplemented;
-    chatRoomApiProvider: ChatRoomApiProvider;
+    stalk: Stalk.ServerImplemented;
+    chatRoomApiProvider: Stalk.ChatRoomApiProvider;
     serverEventsListener: ServerEventListener;
     pushDataListener: PushDataListener;
     dataManager: DataManager;
@@ -38,7 +38,7 @@ export class BackendFactory {
     constructor() {
         console.log("BackendFactory:");
 
-        this.stalk = Stalk.createInstance(getConfig().Stalk.chat, getConfig().Stalk.port);
+        this.stalk = Stalk.ServerImplemented.createInstance(getConfig().Stalk.chat, getConfig().Stalk.port);
         this.pushDataListener = new PushDataListener();
         this.dataManager = new DataManager();
         this.dataListener = new DataListener(this.dataManager);
@@ -166,7 +166,7 @@ export class BackendFactory {
 
         return new Promise((resolve, reject) => {
             // @ Connecting to connector server.
-            let params = { host: connector.host, port: connector.port, reconnect: false } as ServerParam;
+            let params = { host: connector.host, port: connector.port, reconnect: false } as Stalk.ServerParam;
 
             self.stalk.connect(params, (err) => {
                 self.stalk._isConnected = true;

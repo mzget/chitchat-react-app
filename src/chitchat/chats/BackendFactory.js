@@ -10,13 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { Stalk, ChatRoom, Events } from "stalk-js";
+import * as Stalk from "stalk-js";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
-import PushDataListener from "./pushDataListener";
+import { PushDataListener } from "./pushDataListener";
 import { ChatsLogComponent } from "./chatslogComponent";
-const ChatRoomApiProvider = ChatRoom;
-const ServerEventListener = Events;
+const ChatRoomApiProvider = Stalk.ChatRoomApiProvider;
+import { ServerEventListener } from "./ServerEventListener";
 import { ChitChatFactory } from "./chitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 export class BackendFactory {
@@ -31,7 +31,7 @@ export class BackendFactory {
     }
     constructor() {
         console.log("BackendFactory:");
-        this.stalk = Stalk.createInstance(getConfig().Stalk.chat, getConfig().Stalk.port);
+        this.stalk = Stalk.ServerImplemented.createInstance(getConfig().Stalk.chat, getConfig().Stalk.port);
         this.pushDataListener = new PushDataListener();
         this.dataManager = new DataManager();
         this.dataListener = new DataListener(this.dataManager);

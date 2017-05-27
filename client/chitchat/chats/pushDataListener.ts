@@ -1,6 +1,6 @@
-import { absSpartan } from "../libs/stalk/spartanEvents";
+import { StalkEvents } from "stalk-js";
 
-export default class PushDataListener implements absSpartan.IPushServerListener {
+export class PushDataListener implements StalkEvents.IPushServerListener {
     private onPushEvents: Array<(dataEvent) => void> = new Array();
     public addPushEvents(fx: (dataEvent) => void) {
         this.onPushEvents.push(fx);

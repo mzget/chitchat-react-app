@@ -9,8 +9,7 @@ import * as async from "async";
 import { BackendFactory } from "./BackendFactory";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
-import { Stalk, Events, ChatRoom } from "stalk-js";
-import { absSpartan } from "../libs/stalk/spartanEvents";
+import { ServerImplemented, ChatRoomApiProvider, StalkEvents } from "stalk-js";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import * as chatroomService from "./services/chatroomService";
 
@@ -27,12 +26,11 @@ import { ChitChatFactory } from "./chitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 const getStore = () => ChitChatFactory.getInstance().store;
 
-const ServerEventListener = Events;
-const ChatRoomApiProvider = ChatRoom;
+import { ServerEventListener } from "./ServerEventListener";
 
-let serverImp: Stalk = null;
+let serverImp: ServerImplemented = null;
 
-export default class ChatRoomComponent implements absSpartan.IChatServerListener {
+export default class ChatRoomComponent implements StalkEvents.IChatServerEvents {
     private static instance: ChatRoomComponent;
     public static getInstance(): ChatRoomComponent {
         if (!ChatRoomComponent.instance) {
@@ -445,7 +443,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
     }
 
     public getMemberProfile(member: IMember, callback: (err, res) => void) {
-        Stalk.getInstance().getMemberProfile(member._id, callback);
+        ServerImplemented.getInstance().getMemberProfile(member._id, callback);
     }
 
     public async getMessages() {

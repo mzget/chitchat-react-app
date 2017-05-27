@@ -1,6 +1,5 @@
 import * as async from "async";
-
-import { absSpartan } from "../libs/stalk/spartanEvents";
+import { StalkEvents } from "stalk-js";
 import { RoomType, MemberRole, Room } from "../shared/Room";
 import { StalkAccount, RoomAccessData } from "../shared/Stalk";
 
@@ -18,7 +17,7 @@ interface IMemberMep {
     [key: string]: ContactInfo;
 }
 
-export default class DataManager implements absSpartan.IFrontendServerListener {
+export default class DataManager implements StalkEvents.IFrontendServerListener {
     private myProfile: StalkAccount;
     public orgGroups: IRoomMap = {};
     public projectBaseGroups: IRoomMap = {};
