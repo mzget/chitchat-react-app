@@ -6,7 +6,7 @@
 
 import * as Rx from "rxjs/Rx";
 import * as R from "ramda";
-import { Events, Utils } from "stalk-js";
+import { Utils, Stalk, Events } from "stalk-js";
 const ServerEventListener = Events;
 
 import * as chatroomService from "../../services/chatroomService";

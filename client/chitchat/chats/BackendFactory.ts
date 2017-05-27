@@ -3,14 +3,13 @@
  *
  */
 
-import Stalk, { ServerParam, Dict, ChatRoom, Events, ServerImplemented } from "stalk-js";
+import { Stalk, ServerParam, Dict, ChatRoom, Events, ServerImplemented } from "stalk-js";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
 import PushDataListener from "./pushDataListener";
 import { ChatsLogComponent } from "./chatslogComponent";
 const ChatRoomApiProvider = ChatRoom;
 const ServerEventListener = Events;
-const _Stalk = Stalk.Stalk;
 
 import { ChitChatFactory } from "./chitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
@@ -39,7 +38,7 @@ export class BackendFactory {
     constructor() {
         console.log("BackendFactory:");
 
-        this.stalk = _Stalk.createInstance(getConfig().Stalk.chat, getConfig().Stalk.port);
+        this.stalk = Stalk.createInstance(getConfig().Stalk.chat, getConfig().Stalk.port);
         this.pushDataListener = new PushDataListener();
         this.dataManager = new DataManager();
         this.dataListener = new DataListener(this.dataManager);

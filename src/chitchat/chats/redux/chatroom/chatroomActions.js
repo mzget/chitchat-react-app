@@ -20,7 +20,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as R from "ramda";
-import { Events, Utils } from "stalk-js";
+import { Utils, Events } from "stalk-js";
 const ServerEventListener = Events;
 import * as chatroomService from "../../services/chatroomService";
 import ChatRoomComponent from "../../chatRoomComponent";

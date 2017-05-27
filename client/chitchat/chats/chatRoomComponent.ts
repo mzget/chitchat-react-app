@@ -9,8 +9,7 @@ import * as async from "async";
 import { BackendFactory } from "./BackendFactory";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
-import { Stalk, events } from "stalk-js";
-import ChatRoomApiProvider from "../libs/stalk/chatRoomApiProvider";
+import { Stalk, Events, ChatRoom } from "stalk-js";
 import { absSpartan } from "../libs/stalk/spartanEvents";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import * as chatroomService from "./services/chatroomService";
@@ -28,7 +27,8 @@ import { ChitChatFactory } from "./chitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 const getStore = () => ChitChatFactory.getInstance().store;
 
-const ServerEventListener = events;
+const ServerEventListener = Events;
+const ChatRoomApiProvider = ChatRoom;
 
 let serverImp: Stalk = null;
 
