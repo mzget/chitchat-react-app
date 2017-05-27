@@ -161,13 +161,6 @@ export default class DataManager {
      */
     onUserLogin(dataEvent) {
         console.log("user logedIn", JSON.stringify(dataEvent));
-        let jsonObject = JSON.parse(JSON.stringify(dataEvent));
-        let _id = jsonObject._id;
-        let self = this;
-        if (!this.contactsMember)
-            this.contactsMember = {};
-        if (!this.contactsMember[_id]) {
-        }
     }
     updateContactImage(contactId, url) {
         if (!!this.contactsMember[contactId]) {

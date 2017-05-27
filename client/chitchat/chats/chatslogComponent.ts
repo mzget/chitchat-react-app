@@ -4,6 +4,7 @@
  * ChatRoomComponent for handle some business logic of chat room.
  */
 import * as async from "async";
+import { ServerImplemented, IDictionary } from "stalk-js";
 import { ChitChatFactory } from "./chitchatFactory";
 const authReducer = () => ChitChatFactory.getInstance().authStore;
 
@@ -12,7 +13,6 @@ import ChatLog from "./models/chatLog";
 import DataListener from "./dataListener";
 import { BackendFactory } from "./BackendFactory";
 import * as CryptoHelper from "./utils/CryptoHelper";
-import { ServerImplemented, IDictionary } from "../libs/stalk/serverImplemented";
 import { IMessage, MessageType, IMessageMeta } from "../shared/Message";
 import { Room, RoomStatus, RoomType } from "../shared/Room";
 import { RoomAccessData, StalkAccount } from "../shared/Stalk";
