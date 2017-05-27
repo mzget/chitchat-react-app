@@ -1,3 +1,8 @@
+/**
+ * Copyright 2016 Ahoo Studio.co.th.
+ *
+ * This is pure function action for redux app.
+ */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -6,11 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-/**
- * Copyright 2016 Ahoo Studio.co.th.
- *
- * This is pure function action for redux app.
- */
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 import { BackendFactory } from "../../BackendFactory";

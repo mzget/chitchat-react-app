@@ -10,7 +10,7 @@ import * as ChatLogsActions from "../chatlogs/chatlogsActions";
 import * as StalkPushActions from "./stalkPushActions";
 
 import { IDictionary } from "../../../libs/stalk/serverImplemented";
-import { StalkAccount, RoomAccessData } from "../../../libs/shared/Stalk";
+import { StalkAccount, RoomAccessData } from "../../../shared/Stalk";
 
 import { ChitChatFactory } from "../../chitchatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;

@@ -7,7 +7,7 @@ import Subheader from 'material-ui/Subheader';
 
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
 import { groups } from "../chitchat/consts/AlertMsg";
-import { Room, RoomType } from "../chitchat/libs/shared/Room";
+import { Room, RoomType } from "../chitchat/shared/Room";
 import { ITeamProfile } from "../chitchat/chats/models/TeamProfile";
 import { UserRole } from "../chitchat/chats/models/UserRole";
 

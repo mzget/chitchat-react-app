@@ -16,7 +16,7 @@ import * as ChatroomRx from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
 import SimpleCardImage from "../components/SimpleCardImage";
 import SimpleCardVideo from "../components/SimpleCardVideo";
 import LinearProgressSimple from "../components/LinearProgressSimple";
-import * as FileType from "../chitchat/libs/shared/FileType";
+import * as FileType from "../chitchat/shared/FileType";
 ;
 class UploadingDialog extends React.Component {
     constructor() {

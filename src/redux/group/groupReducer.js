@@ -2,7 +2,7 @@ import { Record } from "immutable";
 import * as groupRx from "./groupRx";
 import * as privateGroupRxActions from "./privateGroupRxActions";
 import * as editGroupRxActions from "./editGroupRxActions";
-import { RoomType } from "../../chitchat/libs/shared/Room";
+import { RoomType } from "../../chitchat/shared/Room";
 export const GroupInitState = Record({
     isFetching: false,
     state: null,

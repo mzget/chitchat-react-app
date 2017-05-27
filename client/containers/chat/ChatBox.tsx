@@ -5,9 +5,9 @@ import Avatar from "material-ui/Avatar";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
-import { MessageType } from "../../chitchat/libs/shared/Message";
 import { MessageImp } from "../../chitchat/chats/models/MessageImp";
-import * as FileType from "../../chitchat/libs/shared/FileType";
+import * as FileType from "../../chitchat/shared/FileType";
+import { MessageType } from "../../chitchat/shared/Message";
 
 import { CardTextWithAvatar } from "../../components/CardTextWithAvatar";
 import { CardImageWithAvatar, CardStickerWithAvatar } from "../../components/CardImageWithAvatar";

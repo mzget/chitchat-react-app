@@ -2,7 +2,7 @@ import * as React from "react";
 import { List, ListItem } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import { MessageType } from "../../chitchat/libs/shared/Message";
+import { MessageType } from "../../chitchat/shared/Message";
 import { CardTextWithAvatar } from "../../components/CardTextWithAvatar";
 import { CardImageWithAvatar, CardStickerWithAvatar } from "../../components/CardImageWithAvatar";
 import { CardFileWithAvatar } from "../../components/CardFileWithAvatar";

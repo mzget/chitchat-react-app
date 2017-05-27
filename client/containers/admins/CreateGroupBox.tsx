@@ -9,7 +9,7 @@ import { SelectOrgChartView } from "./SelectOrgChartView";
 import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 
-import { Room, RoomType, RoomStatus, IMember, MemberRole } from "../../chitchat/libs/shared/Room";
+import { Room, RoomType, RoomStatus, IMember, MemberRole } from "../../chitchat/shared/Room";
 import { IOrgChart } from "../../chitchat/chats/models/OrgChart";
 
 import * as groupRx from "../../redux/group/groupRx";

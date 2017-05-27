@@ -1,4 +1,4 @@
-import { IMessage, IMessageMeta } from "../../libs/shared/Message";
+import { IMessage, IMessageMeta } from "../../shared/Message";
 
 export class MessageImp implements IMessage {
     _id: string;

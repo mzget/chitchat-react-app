@@ -1,7 +1,7 @@
 ﻿import { absSpartan } from "../libs/stalk/spartanEvents";
-import { StalkAccount, RoomAccessData } from "../libs/shared/Stalk";
-import { IMessage } from "../libs/shared/Message";
-import { Room } from "../libs/shared/Room";
+import { StalkAccount, RoomAccessData } from "../shared/Stalk";
+import { IMessage } from "../shared/Message";
+import { Room } from "../shared/Room";
 
 import DataManager from "./dataManager";
 

@@ -18,7 +18,7 @@ import ServerEventListener from "../libs/stalk/serverEventListener";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import * as chatroomService from "./services/chatroomService";
 import SecureServiceFactory from "./secure/secureServiceFactory";
-import { MessageType } from "../libs/shared/Message";
+import { MessageType } from "../shared/Message";
 import { imagesPath } from "../consts/StickerPath";
 import { ChitChatFactory } from "./chitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;

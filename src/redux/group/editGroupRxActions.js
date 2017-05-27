@@ -1,7 +1,7 @@
 import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
-import { RoomType } from "../../chitchat/libs/shared/Room";
+import { RoomType } from "../../chitchat/shared/Room";
 import * as groupService from "../../chitchat/chats/services/groupService";
 import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
 const config = () => ChitChatFactory.getInstance().config;

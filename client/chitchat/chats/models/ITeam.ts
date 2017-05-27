@@ -1,4 +1,4 @@
-﻿import { Room } from "../../libs/shared/Room";
+﻿import { Room } from "../../shared/Room";
 
 export interface ITeam {
     _id: string;

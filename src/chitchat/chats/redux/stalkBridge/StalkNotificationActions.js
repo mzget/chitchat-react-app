@@ -8,7 +8,7 @@
  */
 import { BackendFactory } from "../../BackendFactory";
 import * as CryptoHelper from "../../utils/CryptoHelper";
-import { MessageType } from "../../../libs/shared/Message";
+import { MessageType } from "../../../shared/Message";
 import { ChitChatFactory } from "../../chitchatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 export const STALK_NOTICE_NEW_MESSAGE = "STALK_NOTICE_NEW_MESSAGE";

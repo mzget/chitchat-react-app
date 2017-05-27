@@ -19,9 +19,9 @@ import * as chatroomService from "./services/chatroomService";
 import { ISecureService } from "./secure/ISecureService";
 import SecureServiceFactory from "./secure/secureServiceFactory";
 
-import { MessageType, IMessage } from "../libs/shared/Message";
-import { Room, IMember } from "../libs/shared/Room";
-import { RoomAccessData } from "../libs/shared/Stalk";
+import { MessageType, IMessage } from "../shared/Message";
+import { Room, IMember } from "../shared/Room";
+import { RoomAccessData } from "../shared/Stalk";
 import { MessageImp } from "./models/MessageImp";
 
 import { imagesPath } from "../consts/StickerPath";

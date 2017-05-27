@@ -6,7 +6,7 @@ import { withProps, withState, withHandlers, compose, lifecycle, shallowEqual } 
 import { GroupDetail } from "./GroupDetail";
 import * as editGroupRxActions from "../../redux/group/editGroupRxActions";
 import * as groupRx from "../../redux/group/groupRx";
-import { Room } from "../../chitchat/libs/shared/Room";
+import { Room } from "../../chitchat/shared/Room";
 import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
 import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
 

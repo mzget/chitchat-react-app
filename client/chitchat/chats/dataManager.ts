@@ -2,8 +2,8 @@ import * as async from "async";
 
 import { absSpartan } from "../libs/stalk/spartanEvents";
 import { ServerImplemented } from "../libs/stalk/serverImplemented";
-import { RoomType, MemberRole, Room } from "../libs/shared/Room";
-import { StalkAccount, RoomAccessData } from "../libs/shared/Stalk";
+import { RoomType, MemberRole, Room } from "../shared/Room";
+import { StalkAccount, RoomAccessData } from "../shared/Stalk";
 
 import { ContactInfo } from "./models/Contact";
 

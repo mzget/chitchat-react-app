@@ -4,7 +4,7 @@
  * This is pure function action for redux app.
  */
 
-import Rx = require("rxjs/Rx");
+import * as Rx from "rxjs/Rx";
 import * as R from "ramda";
 
 import * as chatroomService from "../../services/chatroomService";
@@ -18,8 +18,8 @@ import HTTPStatus from "../../../libs/stalk/utils/httpStatusCode";
 
 import { updateLastAccessRoom } from "../chatlogs/chatlogRxActions";
 
-import { Room, RoomType, IMember } from "../../../libs/shared/Room";
-import { MessageType, IMessage } from "../../../libs/shared/Message";
+import { Room, RoomType, IMember } from "../../..//shared/Room";
+import { MessageType, IMessage } from "../../../shared/Message";
 import { MemberImp } from "../../models/MemberImp";
 
 import { ChitChatFactory } from "../../chitchatFactory";

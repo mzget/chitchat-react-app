@@ -5,7 +5,7 @@ import { Flex } from "reflexbox";
 import Subheader from 'material-ui/Subheader';
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
 import { groups } from "../chitchat/consts/AlertMsg";
-import { RoomType } from "../chitchat/libs/shared/Room";
+import { RoomType } from "../chitchat/shared/Room";
 import { UserRole } from "../chitchat/chats/models/UserRole";
 const checkAdminPermission = (teamProfile) => {
     let { team_role } = teamProfile;

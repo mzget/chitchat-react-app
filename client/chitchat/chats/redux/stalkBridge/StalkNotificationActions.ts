@@ -10,7 +10,7 @@
 import { BackendFactory } from "../../BackendFactory";
 import { MessageImp } from "../../models/MessageImp";
 import * as CryptoHelper from "../../utils/CryptoHelper";
-import { MessageType } from "../../../libs/shared/Message";
+import { MessageType } from "../../../shared/Message";
 
 import { ChitChatFactory } from "../../chitchatFactory";
 

@@ -13,7 +13,7 @@ import { CreateGroupView } from "./CreateGroupView";
 import { SelectOrgChartView } from "./SelectOrgChartView";
 import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
 const config = () => ChitChatFactory.getInstance().config;
-import { RoomType, MemberRole } from "../../chitchat/libs/shared/Room";
+import { RoomType, MemberRole } from "../../chitchat/shared/Room";
 import * as groupRx from "../../redux/group/groupRx";
 import * as privateGroupRx from "../../redux/group/privateGroupRxActions";
 export const createOrgGroup = "create-org-group";

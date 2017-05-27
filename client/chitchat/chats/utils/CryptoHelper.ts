@@ -1,6 +1,6 @@
 import SecureServiceFactory from "../secure/secureServiceFactory";
 import { MessageImp } from "../models/MessageImp";
-import { MessageType } from "../../libs/shared/Message";
+import { MessageType } from "../../shared/Message";
 
 import { ChitChatFactory } from "../chitchatFactory";
 

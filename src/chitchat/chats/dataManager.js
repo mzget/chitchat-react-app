@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as async from "async";
-import { RoomType, MemberRole } from "../libs/shared/Room";
+import { RoomType, MemberRole } from "../shared/Room";
 import { MessageDALFactory } from "./dataAccessLayer/messageDALFactory";
 export default class DataManager {
     constructor() {

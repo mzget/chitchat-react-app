@@ -17,8 +17,8 @@ const authReducer = () => ChitChatFactory.getInstance().authStore;
 import ChatLog from "./models/chatLog";
 import { BackendFactory } from "./BackendFactory";
 import * as CryptoHelper from "./utils/CryptoHelper";
-import { MessageType } from "../libs/shared/Message";
-import { RoomType } from "../libs/shared/Room";
+import { MessageType } from "../shared/Message";
+import { RoomType } from "../shared/Room";
 import * as chatroomService from "./services/chatroomService";
 import * as chatlogActionsHelper from "./redux/chatlogs/chatlogActionsHelper";
 export class Unread {
