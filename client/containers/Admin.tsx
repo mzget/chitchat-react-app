@@ -16,7 +16,7 @@ import { DialogBox } from "../components/DialogBox";
 import * as adminRx from "../redux/admin/adminRx";
 import * as groupRx from "../redux/group/groupRx";
 import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
-import { Room, RoomType, RoomStatus } from "../chitchat/libs/shared/Room";
+import { Room, RoomType, RoomStatus } from "../chitchat/shared/Room";
 import { UserRole } from "../chitchat/chats/models/UserRole";
 
 enum BoxState {

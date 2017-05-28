@@ -1,4 +1,5 @@
 export interface IStalkApi {
+    apiKey: string;
     chat: string;
     port: number;
     api: {

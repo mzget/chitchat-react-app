@@ -1,9 +1,7 @@
 import * as async from "async";
-
-import { absSpartan } from "../libs/stalk/spartanEvents";
-import { ServerImplemented } from "../libs/stalk/serverImplemented";
-import { RoomType, MemberRole, Room } from "../libs/shared/Room";
-import { StalkAccount, RoomAccessData } from "../libs/shared/Stalk";
+import { StalkEvents } from "stalk-js";
+import { RoomType, MemberRole, Room } from "../shared/Room";
+import { StalkAccount, RoomAccessData } from "../shared/Stalk";
 
 import { ContactInfo } from "./models/Contact";
 
@@ -19,7 +17,7 @@ interface IMemberMep {
     [key: string]: ContactInfo;
 }
 
-export default class DataManager implements absSpartan.IFrontendServerListener {
+export default class DataManager implements StalkEvents.IFrontendServerListener {
     private myProfile: StalkAccount;
     public orgGroups: IRoomMap = {};
     public projectBaseGroups: IRoomMap = {};
@@ -46,7 +44,7 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
     public messageDAL: IMessageDAL;
 
     constructor() {
-        console.log(global.userAgent);
+        console.log("userAgent", global.userAgent);
 
         this.messageDAL = MessageDALFactory.getObject();
     }
@@ -194,36 +192,8 @@ export default class DataManager implements absSpartan.IFrontendServerListener {
      */
     public onUserLogin(dataEvent) {
         console.log("user logedIn", JSON.stringify(dataEvent));
-        let jsonObject = JSON.parse(JSON.stringify(dataEvent));
-        let _id: string = jsonObject._id;
-        let self = this;
-
-        if (!this.contactsMember) this.contactsMember = {};
-        if (!this.contactsMember[_id]) {
-            // @ Need to get new contact info.
-            /*
-            ServerImplemented.getInstance().getMemberProfile(_id, (err, res) => {
-                console.log("getMemberProfile : ", err, JSON.stringify(res));
-
-                let data = JSON.parse(JSON.stringify(res.data));
-                let contact: ContactInfo = new ContactInfo();
-                contact._id = data._id;
-                contact.displayname = data.displayname;
-                contact.image = data.image;
-                contact.status = data.status;
-
-                console.warn(contact);
-                self.contactsMember[contact._id] = contact;
-
-                if (self.onContactsDataReady != null) {
-                    self.onContactsDataReady();
-                }
-
-                console.log("We need to save contacts list to persistence data layer.");
-            });
-            */
-        }
     }
+
     public updateContactImage(contactId: string, url: string) {
         if (!!this.contactsMember[contactId]) {
             this.contactsMember[contactId].image = url;

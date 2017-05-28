@@ -19,11 +19,11 @@ import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBr
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
 import * as chatroomRxEpic from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
 
-import { MessageType, IMessage } from "../chitchat/libs/shared/Message";
+import { MessageType, IMessage } from "../chitchat/shared/Message";
 import { MessageImp } from "../chitchat/chats/models/MessageImp";
 
 import { imagesPath } from "../chitchat/consts/StickerPath";
-import * as FileType from "../chitchat/libs/shared/FileType";
+import * as FileType from "../chitchat/shared/FileType";
 
 import { decorateMessage } from "../actions/chatroom/chatroomMessageUtils";
 
@@ -64,8 +64,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.fileReaderChange = this.fileReaderChange.bind(this);
 
         let { chatroomReducer, userReducer, match: { params } } = this.props;
-
-        console.log("Chat", this.props);
 
         if (!chatroomReducer.room) {
             this.props.dispatch(chatroomActions.getPersistendChatroom(params.room_id));

@@ -1,4 +1,4 @@
-import { IMember } from "../../libs/shared/Room";
+import { IMember } from "../../shared/Room";
 
 export class MemberImp implements IMember {
     _id: string;

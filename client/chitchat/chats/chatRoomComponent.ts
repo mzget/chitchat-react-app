@@ -9,19 +9,16 @@ import * as async from "async";
 import { BackendFactory } from "./BackendFactory";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
-import { ServerImplemented } from "../libs/stalk/serverImplemented";
-import ChatRoomApiProvider from "../libs/stalk/chatRoomApiProvider";
-import ServerEventListener from "../libs/stalk/serverEventListener";
-import { absSpartan } from "../libs/stalk/spartanEvents";
+import { Stalk, ChatroomApi, StalkEvents } from "stalk-js";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import * as chatroomService from "./services/chatroomService";
 
 import { ISecureService } from "./secure/ISecureService";
 import SecureServiceFactory from "./secure/secureServiceFactory";
 
-import { MessageType, IMessage } from "../libs/shared/Message";
-import { Room, IMember } from "../libs/shared/Room";
-import { RoomAccessData } from "../libs/shared/Stalk";
+import { MessageType, IMessage } from "../shared/Message";
+import { Room, IMember } from "../shared/Room";
+import { RoomAccessData } from "../shared/Stalk";
 import { MessageImp } from "./models/MessageImp";
 
 import { imagesPath } from "../consts/StickerPath";
@@ -29,9 +26,13 @@ import { ChitChatFactory } from "./chitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 const getStore = () => ChitChatFactory.getInstance().store;
 
+import { ServerEventListener } from "./ServerEventListener";
+
+type ServerImplemented = Stalk.Server;
+type ChatRoomApiProvider = ChatroomApi;
 let serverImp: ServerImplemented = null;
 
-export default class ChatRoomComponent implements absSpartan.IChatServerListener {
+export default class ChatRoomComponent implements StalkEvents.IChatServerEvents {
     private static instance: ChatRoomComponent;
     public static getInstance(): ChatRoomComponent {
         if (!ChatRoomComponent.instance) {
@@ -444,7 +445,7 @@ export default class ChatRoomComponent implements absSpartan.IChatServerListener
     }
 
     public getMemberProfile(member: IMember, callback: (err, res) => void) {
-        ServerImplemented.getInstance().getMemberProfile(member._id, callback);
+        Stalk.Server.getInstance().getMemberProfile(member._id, callback);
     }
 
     public async getMessages() {

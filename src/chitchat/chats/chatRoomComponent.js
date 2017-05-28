@@ -13,16 +13,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as async from "async";
 import { BackendFactory } from "./BackendFactory";
-import { ServerImplemented } from "../libs/stalk/serverImplemented";
-import ServerEventListener from "../libs/stalk/serverEventListener";
+import { Stalk } from "stalk-js";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import * as chatroomService from "./services/chatroomService";
 import SecureServiceFactory from "./secure/secureServiceFactory";
-import { MessageType } from "../libs/shared/Message";
+import { MessageType } from "../shared/Message";
 import { imagesPath } from "../consts/StickerPath";
 import { ChitChatFactory } from "./chitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 const getStore = () => ChitChatFactory.getInstance().store;
+import { ServerEventListener } from "./ServerEventListener";
 let serverImp = null;
 export default class ChatRoomComponent {
     static getInstance() {
@@ -384,7 +384,7 @@ export default class ChatRoomComponent {
         });
     }
     getMemberProfile(member, callback) {
-        ServerImplemented.getInstance().getMemberProfile(member._id, callback);
+        Stalk.Server.getInstance().getMemberProfile(member._id, callback);
     }
     getMessages() {
         return __awaiter(this, void 0, void 0, function* () {

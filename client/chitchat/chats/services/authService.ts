@@ -1,5 +1,4 @@
 import "isomorphic-fetch";
-
 import { ChitChatFactory } from "../chitchatFactory";
 import { withToken, chitchat_headers } from "../utils/chitchatServiceUtils";
 

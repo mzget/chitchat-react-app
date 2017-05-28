@@ -3,29 +3,34 @@
  *
  */
 
-import { ServerImplemented, IPomeloParam } from "../libs/stalk/serverImplemented";
-import ChatRoomApiProvider from "../libs/stalk/chatRoomApiProvider";
-import ServerEventListener from "../libs/stalk/serverEventListener";
+// import * as Stalk from "stalk-js";
+import { Stalk, ChatRoomApi, Utils, StalkEvents } from "stalk-js";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
-import PushDataListener from "./pushDataListener";
+import { PushDataListener } from "./pushDataListener";
 import { ChatsLogComponent } from "./chatslogComponent";
+import { ServerEventListener } from "./ServerEventListener";
 
 import { ChitChatFactory } from "./chitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
+const ChatRoomApiProvider = ChatRoomApi.ChatRoomApiProvider;
+const ServerImplemented = Stalk.ServerImplemented;
 
 export class BackendFactory {
     private static instance: BackendFactory;
     public static getInstance(): BackendFactory {
-        if (BackendFactory.instance == null || BackendFactory.instance == undefined) {
+        return BackendFactory.instance;
+    }
+    public static createInstance(): BackendFactory {
+        if (!BackendFactory.instance) {
             BackendFactory.instance = new BackendFactory();
         }
 
         return BackendFactory.instance;
     }
 
-    stalk: ServerImplemented;
-    chatRoomApiProvider: ChatRoomApiProvider;
+    stalk: Stalk.ServerImplemented;
+    chatRoomApiProvider: ChatRoomApi.ChatRoomApiProvider;
     serverEventsListener: ServerEventListener;
     pushDataListener: PushDataListener;
     dataManager: DataManager;
@@ -33,7 +38,7 @@ export class BackendFactory {
     chatLogComp: ChatsLogComponent;
 
     constructor() {
-        console.log("BackendFactory:");
+        console.log("BackendFactory:", Stalk, StalkEvents, ChatRoomApi, Utils);
 
         this.stalk = ServerImplemented.createInstance(getConfig().Stalk.chat, getConfig().Stalk.port);
         this.pushDataListener = new PushDataListener();
@@ -47,7 +52,7 @@ export class BackendFactory {
         return this.chatLogComp;
     }
 
-    getServer(): Promise<ServerImplemented> {
+    getServer(): Promise<Stalk.Server> {
         return new Promise((resolve, rejected) => {
             if (this.stalk._isConnected)
                 resolve(this.stalk);
@@ -71,9 +76,7 @@ export class BackendFactory {
         return this.serverEventsListener;
     }
 
-    stalkInit(): Promise<any> {
-        console.log("stalkInit...");
-
+    stalkInit() {
         let self = this;
         let promise = new Promise((resolve, reject) => {
             self.stalk.disConnect(function done() {
@@ -95,7 +98,7 @@ export class BackendFactory {
     login(username: string, hexPassword: string, deviceToken: string): Promise<any> {
         let email = username;
         let promise = new Promise(function executor(resolve, reject) {
-            ServerImplemented.getInstance().logIn(email, hexPassword, deviceToken, (err, res) => {
+            Stalk.getInstance().logIn(email, hexPassword, deviceToken, (err, res) => {
                 if (!!err) {
                     reject(err);
                 }
@@ -111,7 +114,7 @@ export class BackendFactory {
         let token = tokenBearer;
         let promise = new Promise((resolved, rejected) => {
             console.warn(token);
-            ServerImplemented.getInstance().TokenAuthen(token, (err, res) => {
+            Stalk.getInstance().TokenAuthen(token, (err, res) => {
                 if (!!err) {
                     rejected(err);
                 }
@@ -127,7 +130,7 @@ export class BackendFactory {
     logout() {
         let self = this;
         let promise = new Promise(function exe(resolve, reject) {
-            if (ServerImplemented.getInstance) {
+            if (Stalk.getInstance) {
                 if (!!self.stalk.pomelo)
                     self.stalk.pomelo.setReconnect(false);
                 self.stalk.logout();
@@ -154,36 +157,39 @@ export class BackendFactory {
         this.serverEventsListener.addListenner(resolve);
     }
 
-    checkIn(uid: string, token: string, user: any) {
+    async checkIn(uid: string, token: string, user: any) {
         let self = this;
-        return new Promise((resolve: (data: any) => void, rejected) => {
-            self.stalk.gateEnter(uid).then(value => {
-                // <!-- Connecting to connector server.
-                let params: IPomeloParam = { host: value.host, port: value.port, reconnect: false };
-                self.stalk.connect(params, (err) => {
-                    self.stalk._isConnected = true;
-                    if (!!self.stalk.pomelo) {
-                        self.stalk.listenForPomeloEvents();
-                        self.stalk.pomelo.setReconnect(true);
-                    }
 
-                    if (!!err) {
-                        rejected(err);
-                    }
-                    else {
-                        let msg = {};
-                        msg["token"] = token;
-                        msg["user"] = user;
-                        self.stalk.signin(msg).then(value => {
-                            resolve(value);
-                        }).catch(err => {
-                            rejected(err);
-                        });
-                    }
-                });
-            }).catch(err => {
-                console.warn("Cannot connect gate-server.", err);
-                rejected(err);
+        // @ get connector server.
+        let msg = {} as Utils.dataDict;
+        msg["uid"] = uid;
+        msg["x-api-key"] = getConfig().Stalk.apiKey;
+        let connector = await self.stalk.gateEnter(msg);
+
+        return new Promise((resolve, reject) => {
+            // @ Connecting to connector server.
+            let params = { host: connector.host, port: connector.port, reconnect: false } as Stalk.ServerParam;
+
+            self.stalk.connect(params, (err) => {
+                self.stalk._isConnected = true;
+                if (!!self.stalk.pomelo) {
+                    self.stalk.listenForPomeloEvents();
+                    self.stalk.pomelo.setReconnect(true);
+                }
+
+                if (!!err) {
+                    reject(err);
+                }
+                else {
+                    let msg = {} as Utils.dataDict;
+                    msg["user"] = user;
+                    msg["x-api-key"] = getConfig().Stalk.apiKey;
+                    self.stalk.checkIn(msg).then(value => {
+                        resolve(value);
+                    }).catch(err => {
+                        reject(err);
+                    });
+                }
             });
         });
     }

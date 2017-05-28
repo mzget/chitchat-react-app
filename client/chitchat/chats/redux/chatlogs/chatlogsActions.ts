@@ -3,13 +3,14 @@
  *
  * This is pure function action for redux app.
  */
+
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
 import { BackendFactory } from "../../BackendFactory";
 import { ChatsLogComponent, IUnread, Unread } from "../../chatslogComponent";
-import { RoomAccessData, StalkAccount } from "../../../libs/shared/stalk";
-import { Room } from "../../../libs/shared/Room";
+import { RoomAccessData, StalkAccount } from "../../../shared/stalk";
+import { Room } from "../../../shared/Room";
 import ChatLog from "../../models/chatLog";
 import * as ServiceProvider from "../../services/ServiceProvider";
 import * as chatroomActions from "../chatroom/chatroomActions";

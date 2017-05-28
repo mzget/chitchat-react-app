@@ -4,7 +4,7 @@ import * as groupRx from "./groupRx";
 import * as privateGroupRxActions from "./privateGroupRxActions";
 import * as editGroupRxActions from "./editGroupRxActions";
 
-import { Room, RoomType } from "../../chitchat/libs/shared/Room";
+import { Room, RoomType } from "../../chitchat/shared/Room";
 
 
 export const GroupInitState = Record({

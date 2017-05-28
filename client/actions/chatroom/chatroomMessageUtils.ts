@@ -1,5 +1,5 @@
 
-import { MessageType, IMessage } from "../../chitchat/libs/shared/Message";
+import { MessageType, IMessage } from "../../chitchat/shared/Message";
 import { MessageImp } from "../../chitchat/chats/models/MessageImp";
 
 import { imagesPath } from "../../chitchat/consts/StickerPath";
