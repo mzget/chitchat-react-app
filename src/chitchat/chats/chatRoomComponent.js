@@ -13,7 +13,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as async from "async";
 import { BackendFactory } from "./BackendFactory";
-import { ServerImplemented } from "stalk-js";
+import { Stalk } from "stalk-js";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import * as chatroomService from "./services/chatroomService";
 import SecureServiceFactory from "./secure/secureServiceFactory";
@@ -384,7 +384,7 @@ export default class ChatRoomComponent {
         });
     }
     getMemberProfile(member, callback) {
-        ServerImplemented.getInstance().getMemberProfile(member._id, callback);
+        Stalk.Server.getInstance().getMemberProfile(member._id, callback);
     }
     getMessages() {
         return __awaiter(this, void 0, void 0, function* () {

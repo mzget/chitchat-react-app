@@ -3,16 +3,18 @@
  *
  */
 
-import * as Stalk from "stalk-js";
+// import * as Stalk from "stalk-js";
+import { Stalk, ChatRoomApi, Utils, StalkEvents } from "stalk-js";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
 import { PushDataListener } from "./pushDataListener";
 import { ChatsLogComponent } from "./chatslogComponent";
-const ChatRoomApiProvider = Stalk.ChatRoomApiProvider;
 import { ServerEventListener } from "./ServerEventListener";
 
 import { ChitChatFactory } from "./chitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
+const ChatRoomApiProvider = ChatRoomApi.ChatRoomApiProvider;
+const ServerImplemented = Stalk.ServerImplemented;
 
 export class BackendFactory {
     private static instance: BackendFactory;
@@ -28,7 +30,7 @@ export class BackendFactory {
     }
 
     stalk: Stalk.ServerImplemented;
-    chatRoomApiProvider: Stalk.ChatRoomApiProvider;
+    chatRoomApiProvider: ChatRoomApi.ChatRoomApiProvider;
     serverEventsListener: ServerEventListener;
     pushDataListener: PushDataListener;
     dataManager: DataManager;
@@ -36,9 +38,9 @@ export class BackendFactory {
     chatLogComp: ChatsLogComponent;
 
     constructor() {
-        console.log("BackendFactory:");
+        console.log("BackendFactory:", Stalk, StalkEvents, ChatRoomApi, Utils);
 
-        this.stalk = Stalk.ServerImplemented.createInstance(getConfig().Stalk.chat, getConfig().Stalk.port);
+        this.stalk = ServerImplemented.createInstance(getConfig().Stalk.chat, getConfig().Stalk.port);
         this.pushDataListener = new PushDataListener();
         this.dataManager = new DataManager();
         this.dataListener = new DataListener(this.dataManager);
@@ -50,7 +52,7 @@ export class BackendFactory {
         return this.chatLogComp;
     }
 
-    getServer(): Promise<Stalk> {
+    getServer(): Promise<Stalk.Server> {
         return new Promise((resolve, rejected) => {
             if (this.stalk._isConnected)
                 resolve(this.stalk);
@@ -159,7 +161,7 @@ export class BackendFactory {
         let self = this;
 
         // @ get connector server.
-        let msg = {} as Dict;
+        let msg = {} as Utils.dataDict;
         msg["uid"] = uid;
         msg["x-api-key"] = getConfig().Stalk.apiKey;
         let connector = await self.stalk.gateEnter(msg);
@@ -179,7 +181,7 @@ export class BackendFactory {
                     reject(err);
                 }
                 else {
-                    let msg = {} as Dict;
+                    let msg = {} as Utils.dataDict;
                     msg["user"] = user;
                     msg["x-api-key"] = getConfig().Stalk.apiKey;
                     self.stalk.checkIn(msg).then(value => {

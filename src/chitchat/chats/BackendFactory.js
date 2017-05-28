@@ -10,15 +10,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import * as Stalk from "stalk-js";
+// import * as Stalk from "stalk-js";
+import { Stalk, ChatRoomApi, Utils, StalkEvents } from "stalk-js";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
 import { PushDataListener } from "./pushDataListener";
 import { ChatsLogComponent } from "./chatslogComponent";
-const ChatRoomApiProvider = Stalk.ChatRoomApiProvider;
 import { ServerEventListener } from "./ServerEventListener";
 import { ChitChatFactory } from "./chitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
+const ChatRoomApiProvider = ChatRoomApi.ChatRoomApiProvider;
+const ServerImplemented = Stalk.ServerImplemented;
 export class BackendFactory {
     static getInstance() {
         return BackendFactory.instance;
@@ -30,8 +32,8 @@ export class BackendFactory {
         return BackendFactory.instance;
     }
     constructor() {
-        console.log("BackendFactory:");
-        this.stalk = Stalk.ServerImplemented.createInstance(getConfig().Stalk.chat, getConfig().Stalk.port);
+        console.log("BackendFactory:", Stalk, StalkEvents, ChatRoomApi, Utils);
+        this.stalk = ServerImplemented.createInstance(getConfig().Stalk.chat, getConfig().Stalk.port);
         this.pushDataListener = new PushDataListener();
         this.dataManager = new DataManager();
         this.dataListener = new DataListener(this.dataManager);

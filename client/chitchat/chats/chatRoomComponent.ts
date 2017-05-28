@@ -9,7 +9,7 @@ import * as async from "async";
 import { BackendFactory } from "./BackendFactory";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
-import { ServerImplemented, ChatRoomApiProvider, StalkEvents } from "stalk-js";
+import { Stalk, ChatroomApi, StalkEvents } from "stalk-js";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import * as chatroomService from "./services/chatroomService";
 
@@ -28,6 +28,8 @@ const getStore = () => ChitChatFactory.getInstance().store;
 
 import { ServerEventListener } from "./ServerEventListener";
 
+type ServerImplemented = Stalk.Server;
+type ChatRoomApiProvider = ChatroomApi;
 let serverImp: ServerImplemented = null;
 
 export default class ChatRoomComponent implements StalkEvents.IChatServerEvents {
@@ -443,7 +445,7 @@ export default class ChatRoomComponent implements StalkEvents.IChatServerEvents 
     }
 
     public getMemberProfile(member: IMember, callback: (err, res) => void) {
-        ServerImplemented.getInstance().getMemberProfile(member._id, callback);
+        Stalk.Server.getInstance().getMemberProfile(member._id, callback);
     }
 
     public async getMessages() {

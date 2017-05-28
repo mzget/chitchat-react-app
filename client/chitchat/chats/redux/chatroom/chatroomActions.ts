@@ -6,7 +6,7 @@
 
 import * as Rx from "rxjs/Rx";
 import * as R from "ramda";
-import { HttpStatusCode } from "stalk-js";
+import { Utils } from "stalk-js";
 import { ServerEventListener } from "../../ServerEventListener";
 
 import * as chatroomService from "../../services/chatroomService";
@@ -211,7 +211,7 @@ function sendMessageResponse(err, res) {
         else {
             console.log("server response!", res);
 
-            if (res.code == HttpStatusCode.success && res.data.hasOwnProperty("resultMsg")) {
+            if (res.code == Utils.statusCode.success && res.data.hasOwnProperty("resultMsg")) {
                 let _msg = { ...res.data.resultMsg } as IMessage;
                 if (_msg.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption) {
                     secure.decryption(_msg.body).then(res => {
@@ -248,7 +248,7 @@ export function joinRoom(roomId: string, token: string, username: string) {
             server.JoinChatRoomRequest(token, username, roomId, (err, res) => {
                 console.log("JoinChatRoomRequest value", res);
 
-                if (err || res.code !== HttpStatusCode.success) {
+                if (err || res.code !== Utils.statusCode.success) {
                     dispatch(joinRoom_failure());
                 }
                 else {

@@ -20,7 +20,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as R from "ramda";
-import { HttpStatusCode } from "stalk-js";
+import { Utils } from "stalk-js";
 import { ServerEventListener } from "../../ServerEventListener";
 import * as chatroomService from "../../services/chatroomService";
 import ChatRoomComponent from "../../chatRoomComponent";
@@ -198,7 +198,7 @@ function sendMessageResponse(err, res) {
         }
         else {
             console.log("server response!", res);
-            if (res.code == HttpStatusCode.success && res.data.hasOwnProperty("resultMsg")) {
+            if (res.code == Utils.statusCode.success && res.data.hasOwnProperty("resultMsg")) {
                 let _msg = __assign({}, res.data.resultMsg);
                 if (_msg.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption) {
                     secure.decryption(_msg.body).then(res => {
@@ -232,7 +232,7 @@ export function joinRoom(roomId, token, username) {
         BackendFactory.getInstance().getServer().then(server => {
             server.JoinChatRoomRequest(token, username, roomId, (err, res) => {
                 console.log("JoinChatRoomRequest value", res);
-                if (err || res.code !== HttpStatusCode.success) {
+                if (err || res.code !== Utils.statusCode.success) {
                     dispatch(joinRoom_failure());
                 }
                 else {
