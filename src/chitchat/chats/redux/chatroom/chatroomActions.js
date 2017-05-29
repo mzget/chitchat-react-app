@@ -51,7 +51,7 @@ var R = require("ramda");
 var stalk_js_1 = require("stalk-js");
 var ServerEventListener_1 = require("../../ServerEventListener");
 var chatroomService = require("../../services/chatroomService");
-var chatRoomComponent_1 = require("../../chatRoomComponent");
+var ChatRoomComponent_1 = require("../../ChatRoomComponent");
 var BackendFactory_1 = require("../../BackendFactory");
 var secureServiceFactory_1 = require("../../secure/secureServiceFactory");
 var NotificationManager = require("../stalkBridge/StalkNotificationActions");
@@ -93,7 +93,7 @@ function initChatRoom(currentRoom) {
             }
         });
     }
-    var chatroomComp = chatRoomComponent_1.ChatRoomComponent.getInstance();
+    var chatroomComp = ChatRoomComponent_1.ChatRoomComponent.getInstance();
     chatroomComp.setRoomId(currentRoom._id);
     NotificationManager.unsubscribeGlobalNotifyMessageEvent();
     chatroomComp.chatroomDelegate = onChatRoomDelegate;
@@ -143,7 +143,7 @@ var onEarlyMessageReady = function (data) { return ({ type: ChatRoomActionsType.
 function checkOlderMessages() {
     return function (dispatch) {
         var room = getStore().getState().chatroomReducer.room;
-        chatRoomComponent_1.ChatRoomComponent.getInstance().getTopEdgeMessageTime().then(function (res) {
+        ChatRoomComponent_1.ChatRoomComponent.getInstance().getTopEdgeMessageTime().then(function (res) {
             chatroomService.getOlderMessagesCount(room._id, res.toString(), false)
                 .then(function (response) { return response.json(); })
                 .then(function (result) {
@@ -178,7 +178,7 @@ function getNewerMessageFromNet() {
     return function (dispatch) {
         dispatch(getNewerMessage());
         var token = authReducer().chitchat_token;
-        chatRoomComponent_1.ChatRoomComponent.getInstance().getNewerMessageRecord(token, function (results) {
+        ChatRoomComponent_1.ChatRoomComponent.getInstance().getNewerMessageRecord(token, function (results) {
             dispatch(getNewerMessage_success(results));
             // @Todo next joinroom function is ready to call.
         })["catch"](function (err) {
@@ -195,7 +195,7 @@ function getMessages() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    chatroomComp = chatRoomComponent_1.ChatRoomComponent.getInstance();
+                    chatroomComp = ChatRoomComponent_1.ChatRoomComponent.getInstance();
                     return [4 /*yield*/, chatroomComp.getMessages()];
                 case 1:
                     messages = _a.sent();
@@ -300,7 +300,7 @@ function leaveRoomAction() {
         if (!!_room) {
             var token_1 = getStore().getState().stalkReducer.stalkToken;
             var room_id_1 = _room._id;
-            chatRoomComponent_1.ChatRoomComponent.getInstance().dispose();
+            ChatRoomComponent_1.ChatRoomComponent.getInstance().dispose();
             dispatch(leaveRoom());
             var backendFactory = BackendFactory_1.BackendFactory.getInstance();
             if (backendFactory) {
@@ -329,7 +329,7 @@ exports.LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
 var loadEarlyMessage_success = function (payload) { return ({ type: exports.LOAD_EARLY_MESSAGE_SUCCESS, payload: payload }); };
 function loadEarlyMessageChunk() {
     return function (dispatch) {
-        chatRoomComponent_1.ChatRoomComponent.getInstance().getOlderMessageChunk().then(function (res) {
+        ChatRoomComponent_1.ChatRoomComponent.getInstance().getOlderMessageChunk().then(function (res) {
             dispatch(loadEarlyMessage_success(res));
             // @check older message again.
             dispatch(checkOlderMessages());

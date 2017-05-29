@@ -10,7 +10,7 @@ import { Utils } from "stalk-js";
 import { ServerEventListener } from "../../ServerEventListener";
 
 import * as chatroomService from "../../services/chatroomService";
-import { ChatRoomComponent } from "../../chatRoomComponent";
+import { ChatRoomComponent } from "../../ChatRoomComponent";
 import { BackendFactory } from "../../BackendFactory";
 import SecureServiceFactory from "../../secure/secureServiceFactory";
 

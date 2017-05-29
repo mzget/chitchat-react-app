@@ -42,7 +42,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var Rx = require("rxjs/Rx");
 var ajax = Rx.Observable.ajax;
 var BackendFactory_1 = require("../../BackendFactory");
-var chatslogComponent_1 = require("../../chatslogComponent");
+var ChatslogComponent_1 = require("../../ChatslogComponent");
 var chatroomActions = require("../chatroom/chatroomActions");
 var ChitchatFactory_1 = require("../../ChitchatFactory");
 var getStore = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().store; };
@@ -56,7 +56,7 @@ var listenerImp = function (newMsg) {
     var chatsLogComp = BackendFactory_1.BackendFactory.getInstance().chatLogComp;
     if (!dataManager.isMySelf(newMsg.sender)) {
         chatsLogComp.increaseChatsLogCount(1);
-        var unread = new chatslogComponent_1.Unread();
+        var unread = new ChatslogComponent_1.Unread();
         unread.message = newMsg;
         unread.rid = newMsg.rid;
         var count = (!!chatsLogComp.getUnreadItem(newMsg.rid)) ? chatsLogComp.getUnreadItem(newMsg.rid).count : 0;
