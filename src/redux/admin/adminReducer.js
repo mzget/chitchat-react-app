@@ -1,20 +1,22 @@
-import { Record } from "immutable";
-import * as adminRx from "./adminRx";
-export const AdminInitState = Record({
+"use strict";
+var immutable_1 = require("immutable");
+var adminRx = require("./adminRx");
+exports.AdminInitState = immutable_1.Record({
     isFetching: false,
     state: null,
     error: null,
     orgCharts: new Array()
 });
-const adminInitState = new AdminInitState();
-export const adminReducer = (state = adminInitState, action) => {
+var adminInitState = new exports.AdminInitState();
+exports.adminReducer = function (state, action) {
+    if (state === void 0) { state = adminInitState; }
     switch (action.type) {
         case adminRx.GET_ORG_CHART_SUCCESS: {
             return state.set("orgCharts", action.payload.result);
         }
         case adminRx.CREATE_NEW_ORG_CHART_SUCCESS: {
-            let _temp = state.get("orgCharts");
-            let _orgCharts = _temp.concat(action.payload);
+            var _temp = state.get("orgCharts");
+            var _orgCharts = _temp.concat(action.payload);
             return state.set("orgCharts", _orgCharts)
                 .set("state", adminRx.CREATE_NEW_ORG_CHART_SUCCESS);
         }

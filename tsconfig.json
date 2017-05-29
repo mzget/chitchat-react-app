@@ -1,7 +1,7 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "target": "es2015",
+    "module": "commonjs",
     "jsx": "react",
     "rootDirs": [
       "client/**/*"
@@ -11,6 +11,10 @@
       "node_modules/@types",
       "node_modules/@reactivex/rxjs",
       "node_modules/stalk-js"
+    ],
+    "lib": [
+      "es2015.promise",
+      "es2015"
     ]
   },
   "exclude": [

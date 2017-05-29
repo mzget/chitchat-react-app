@@ -6,36 +6,37 @@
  * The NotificationManager for react.js.
  *
  */
-import { BackendFactory } from "../../BackendFactory";
-import * as CryptoHelper from "../../utils/CryptoHelper";
-import { MessageType } from "../../../shared/Message";
-import { ChitChatFactory } from "../../chitchatFactory";
-const getStore = () => ChitChatFactory.getInstance().store;
-export const STALK_NOTICE_NEW_MESSAGE = "STALK_NOTICE_NEW_MESSAGE";
-const stalkNotiNewMessage = (payload) => ({ type: STALK_NOTICE_NEW_MESSAGE, payload });
-const init = (onSuccess) => {
+"use strict";
+var BackendFactory_1 = require("../../BackendFactory");
+var CryptoHelper = require("../../utils/CryptoHelper");
+var Message_1 = require("../../../shared/Message");
+var chitchatFactory_1 = require("../../chitchatFactory");
+var getStore = function () { return chitchatFactory_1.ChitChatFactory.getInstance().store; };
+exports.STALK_NOTICE_NEW_MESSAGE = "STALK_NOTICE_NEW_MESSAGE";
+var stalkNotiNewMessage = function (payload) { return ({ type: exports.STALK_NOTICE_NEW_MESSAGE, payload: payload }); };
+var init = function (onSuccess) {
     console.log("Initialize NotificationManager.");
 };
-export const regisNotifyNewMessageEvent = () => {
+exports.regisNotifyNewMessageEvent = function () {
     console.log("subscribe global notify message event");
-    BackendFactory.getInstance().dataListener.addOnChatListener(notify);
+    BackendFactory_1.BackendFactory.getInstance().dataListener.addOnChatListener(exports.notify);
 };
-export const unsubscribeGlobalNotifyMessageEvent = () => {
-    BackendFactory.getInstance().dataListener.removeOnChatListener(notify);
+exports.unsubscribeGlobalNotifyMessageEvent = function () {
+    BackendFactory_1.BackendFactory.getInstance().dataListener.removeOnChatListener(exports.notify);
 };
-export const notify = (messageImp) => {
-    let message = "";
-    if (messageImp.type === MessageType[MessageType.Text]) {
-        CryptoHelper.decryptionText(messageImp).then((decoded) => {
+exports.notify = function (messageImp) {
+    var message = "";
+    if (messageImp.type === Message_1.MessageType[Message_1.MessageType.Text]) {
+        CryptoHelper.decryptionText(messageImp).then(function (decoded) {
             message = decoded.body;
             getStore().dispatch(stalkNotiNewMessage(message));
         });
     }
-    else if (messageImp.type === MessageType[MessageType.Location]) {
+    else if (messageImp.type === Message_1.MessageType[Message_1.MessageType.Location]) {
         message = "Sent you location";
         getStore().dispatch(stalkNotiNewMessage(message));
     }
-    else if (messageImp.type === MessageType[MessageType.Image]) {
+    else if (messageImp.type === Message_1.MessageType[Message_1.MessageType.Image]) {
         message = "Sent you image";
         getStore().dispatch(stalkNotiNewMessage(message));
     }

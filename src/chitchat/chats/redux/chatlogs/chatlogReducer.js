@@ -3,9 +3,10 @@
  *
  * This is pure function for redux app.
  */
-import * as ChatlogsActions from "../chatlogs/chatlogsActions";
-import * as ChatlogRxActions from "../chatlogs/chatlogRxActions";
-import { Record } from "immutable";
+"use strict";
+var ChatlogsActions = require("../chatlogs/chatlogsActions");
+var ChatlogRxActions = require("../chatlogs/chatlogRxActions");
+var immutable_1 = require("immutable");
 /**
  * ## Initial State
  */
@@ -14,28 +15,29 @@ import { Record } from "immutable";
  * This Record contains the state of the form and the
  * fields it contains.
  */
-export const ChatLogInitState = Record({
+exports.ChatLogInitState = immutable_1.Record({
     isFetching: false,
     state: null,
     chatsLog: null,
     roomAccess: null,
     error: null
 });
-const initialState = new ChatLogInitState();
-export function chatlogReducer(state = initialState, action) {
-    if (!(state instanceof ChatLogInitState))
+var initialState = new exports.ChatLogInitState();
+function chatlogReducer(state, action) {
+    if (state === void 0) { state = initialState; }
+    if (!(state instanceof exports.ChatLogInitState))
         return initialState.mergeDeep(state);
     switch (action.type) {
         case ChatlogsActions.STALK_GET_CHATSLOG_COMPLETE: {
             return state.set("chatsLog", action.payload).set("state", ChatlogsActions.STALK_GET_CHATSLOG_COMPLETE);
         }
         case ChatlogsActions.STALK_CHATLOG_CONTACT_COMPLETE: {
-            let nextState = state.set("state", ChatlogsActions.STALK_CHATLOG_CONTACT_COMPLETE)
+            var nextState = state.set("state", ChatlogsActions.STALK_CHATLOG_CONTACT_COMPLETE)
                 .set("chatsLog", action.payload);
             return nextState;
         }
         case ChatlogsActions.STALK_CHATLOG_MAP_CHANGED: {
-            let nextState = state.set("chatsLog", action.payload)
+            var nextState = state.set("chatsLog", action.payload)
                 .set("state", ChatlogsActions.STALK_CHATLOG_MAP_CHANGED);
             return nextState;
         }
@@ -43,7 +45,7 @@ export function chatlogReducer(state = initialState, action) {
             return state.set("isFetching", true);
         }
         case ChatlogRxActions.GET_LAST_ACCESS_ROOM_SUCCESS: {
-            let data = action.payload;
+            var data = action.payload;
             if (Array.isArray(data) && data.length > 0) {
                 return state.set("roomAccess", data[0].roomAccess).set("isFetching", false);
             }
@@ -66,7 +68,7 @@ export function chatlogReducer(state = initialState, action) {
                 .set("state", ChatlogRxActions.STALK_REMOVE_ROOM_ACCESS);
         }
         case ChatlogRxActions.STALK_REMOVE_ROOM_ACCESS_SUCCESS: {
-            let data = action.payload;
+            var data = action.payload;
             if (Array.isArray(data) && data.length > 0) {
                 return state.set("roomAccess", data[0].roomAccess)
                     .set("isFetching", false)
@@ -84,3 +86,4 @@ export function chatlogReducer(state = initialState, action) {
             return state;
     }
 }
+exports.chatlogReducer = chatlogReducer;

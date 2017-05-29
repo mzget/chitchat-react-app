@@ -1,6 +1,6 @@
 ﻿import { createAction } from "redux-actions";
 
-import  store  from "../configureStore";
+import store from "../configureStore";
 
 import { AppSessionToken } from "../../chitchat/chats/dataAccessLayer/AppSessionToken";
 const appSession = new AppSessionToken();

@@ -1,4 +1,6 @@
-import * as React from 'react';
-import LinearProgress from 'material-ui/LinearProgress';
-const LinearProgressSimple = () => (React.createElement(LinearProgress, { mode: "indeterminate" }));
-export default LinearProgressSimple;
+"use strict";
+var React = require("react");
+var LinearProgress_1 = require("material-ui/LinearProgress");
+var LinearProgressSimple = function () { return (React.createElement(LinearProgress_1["default"], { mode: "indeterminate" })); };
+exports.__esModule = true;
+exports["default"] = LinearProgressSimple;

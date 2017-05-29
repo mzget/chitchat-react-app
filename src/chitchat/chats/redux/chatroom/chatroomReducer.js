@@ -3,14 +3,15 @@
  *
  * This is pure function for redux app.
  */
-import { ChatRoomActionsType, GET_NEWER_MESSAGE_SUCCESS } from "./chatroomActions";
-import * as chatroomRxActions from "./chatroomRxEpic";
-import * as chatroomActions from "./chatroomActions";
-import * as immutable from "immutable";
+"use strict";
+var chatroomActions_1 = require("./chatroomActions");
+var chatroomRxActions = require("./chatroomRxEpic");
+var chatroomActions = require("./chatroomActions");
+var immutable = require("immutable");
 /**
  * ## Initial State
  */
-export const ChatRoomInitState = immutable.Record({
+exports.ChatRoomInitState = immutable.Record({
     isFetching: false,
     state: null,
     room: null,
@@ -24,8 +25,9 @@ export const ChatRoomInitState = immutable.Record({
     chatDisabled: false,
     chatrooms: null
 });
-const initialState = new ChatRoomInitState();
-export const chatroomReducer = (state = initialState, action) => {
+var initialState = new exports.ChatRoomInitState();
+exports.chatroomReducer = function (state, action) {
+    if (state === void 0) { state = initialState; }
     switch (action.type) {
         case chatroomActions.JOIN_ROOM_FAILURE: {
             return state.set("state", chatroomActions.JOIN_ROOM_FAILURE)
@@ -56,28 +58,28 @@ export const chatroomReducer = (state = initialState, action) => {
             return state.set("state", chatroomRxActions.CHATROOM_UPLOAD_FILE_SUCCESS)
                 .set("responseFile", action.payload);
         }
-        case ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
-            let payload = action.payload;
-            let nextState = state.set("state", ChatRoomActionsType.SEND_MESSAGE_SUCCESS)
+        case chatroomActions_1.ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
+            var payload = action.payload;
+            var nextState = state.set("state", chatroomActions_1.ChatRoomActionsType.SEND_MESSAGE_SUCCESS)
                 .set("isFetching", false)
                 .set("responseMessage", payload);
             return nextState;
         }
-        case ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
-            let payload = action.payload;
-            let nextState = state.set("state", ChatRoomActionsType.SEND_MESSAGE_FAILURE)
+        case chatroomActions_1.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
+            var payload = action.payload;
+            var nextState = state.set("state", chatroomActions_1.ChatRoomActionsType.SEND_MESSAGE_FAILURE)
                 .set("isFetching", false)
                 .set("error", payload);
             return nextState;
         }
-        case ChatRoomActionsType.ON_NEW_MESSAGE: {
-            let payload = action.payload;
-            return state.set("state", ChatRoomActionsType.ON_NEW_MESSAGE)
+        case chatroomActions_1.ChatRoomActionsType.ON_NEW_MESSAGE: {
+            var payload = action.payload;
+            return state.set("state", chatroomActions_1.ChatRoomActionsType.ON_NEW_MESSAGE)
                 .set("newMessage", payload);
         }
-        case ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
-            let payload = action.payload;
-            return state.set("state", ChatRoomActionsType.ON_EARLY_MESSAGE_READY)
+        case chatroomActions_1.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
+            var payload = action.payload;
+            return state.set("state", chatroomActions_1.ChatRoomActionsType.ON_EARLY_MESSAGE_READY)
                 .set("earlyMessageReady", payload);
         }
         case chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS: {
@@ -86,8 +88,8 @@ export const chatroomReducer = (state = initialState, action) => {
         case chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS: {
             return state.set("state", chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS);
         }
-        case GET_NEWER_MESSAGE_SUCCESS: {
-            return state.set("state", GET_NEWER_MESSAGE_SUCCESS);
+        case chatroomActions_1.GET_NEWER_MESSAGE_SUCCESS: {
+            return state.set("state", chatroomActions_1.GET_NEWER_MESSAGE_SUCCESS);
         }
         /**Create chat room */
         case chatroomRxActions.CREATE_PRIVATE_CHATROOM:

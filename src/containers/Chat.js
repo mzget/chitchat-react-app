@@ -1,3 +1,9 @@
+"use strict";
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -6,48 +12,50 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-import * as React from "react";
-import { connect } from "react-redux";
-import { shallowEqual } from "recompose";
-import { Flex } from "reflexbox";
-import { ChitChatFactory } from "../chitchat/chats/chitchatFactory";
-const config = () => ChitChatFactory.getInstance().config;
-import { TypingBox } from "./TypingBox";
-import { ChatBox } from "./chat/ChatBox";
-import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
-import UploadingDialog from "./UploadingDialog";
-import GridListSimple from "../components/GridListSimple";
-import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
-import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
-import * as chatroomRxEpic from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
-import { imagesPath } from "../chitchat/consts/StickerPath";
-import * as FileType from "../chitchat/shared/FileType";
-import { decorateMessage } from "../actions/chatroom/chatroomMessageUtils";
-class Chat extends React.Component {
-    constructor() {
-        super(...arguments);
-        this.clientWidth = document.documentElement.clientWidth;
-        this.clientHeight = document.documentElement.clientHeight;
-        this.h_header = null;
-        this.h_subHeader = 34;
-        this.h_body = null;
-        this.h_typingArea = null;
-        this.bottom = this.clientHeight * 0.1;
-        this.h_stickerBox = this.clientHeight * 0.3;
-        this.fileReaderChange = (e, results) => {
-            results.forEach(result => {
-                const [progressEvent, file] = result;
+var React = require("react");
+var react_redux_1 = require("react-redux");
+var recompose_1 = require("recompose");
+var reflexbox_1 = require("reflexbox");
+var chitchatFactory_1 = require("../chitchat/chats/chitchatFactory");
+var config = function () { return chitchatFactory_1.ChitChatFactory.getInstance().config; };
+var TypingBox_1 = require("./TypingBox");
+var ChatBox_1 = require("./chat/ChatBox");
+var SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
+var UploadingDialog_1 = require("./UploadingDialog");
+var GridListSimple_1 = require("../components/GridListSimple");
+var StalkBridgeActions = require("../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
+var chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
+var chatroomRxEpic = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
+var StickerPath_1 = require("../chitchat/consts/StickerPath");
+var FileType = require("../chitchat/shared/FileType");
+var chatroomMessageUtils_1 = require("../actions/chatroom/chatroomMessageUtils");
+var Chat = (function (_super) {
+    __extends(Chat, _super);
+    function Chat() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.clientWidth = document.documentElement.clientWidth;
+        _this.clientHeight = document.documentElement.clientHeight;
+        _this.h_header = null;
+        _this.h_subHeader = 34;
+        _this.h_body = null;
+        _this.h_typingArea = null;
+        _this.bottom = _this.clientHeight * 0.1;
+        _this.h_stickerBox = _this.clientHeight * 0.3;
+        _this.fileReaderChange = function (e, results) {
+            results.forEach(function (result) {
+                var progressEvent = result[0], file = result[1];
                 console.log(file.name, file.type);
                 if (file.type && file.type.length > 0) {
-                    this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
+                    _this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
                 }
                 else {
-                    this.props.onError("Fail to upload file");
+                    _this.props.onError("Fail to upload file");
                 }
             });
         };
+        return _this;
     }
-    componentWillMount() {
+    Chat.prototype.componentWillMount = function () {
         this.state = {
             messages: new Array(),
             typingText: "",
@@ -62,21 +70,22 @@ class Chat extends React.Component {
         this.roomInitialize = this.roomInitialize.bind(this);
         this.onToggleSticker = this.onToggleSticker.bind(this);
         this.fileReaderChange = this.fileReaderChange.bind(this);
-        let { chatroomReducer, userReducer, match: { params } } = this.props;
+        var _a = this.props, chatroomReducer = _a.chatroomReducer, userReducer = _a.userReducer, params = _a.match.params;
         if (!chatroomReducer.room) {
             this.props.dispatch(chatroomActions.getPersistendChatroom(params.room_id));
         }
         else {
             this.roomInitialize(this.props);
         }
-    }
-    componentWillUnmount() {
+    };
+    Chat.prototype.componentWillUnmount = function () {
         this.props.dispatch(chatroomActions.leaveRoomAction());
-    }
-    componentWillReceiveProps(nextProps) {
-        let { chatroomReducer, stalkReducer } = nextProps;
-        let warning_bar = document.getElementById("warning_bar");
-        let typing_box = document.getElementById("typing_box");
+    };
+    Chat.prototype.componentWillReceiveProps = function (nextProps) {
+        var _this = this;
+        var chatroomReducer = nextProps.chatroomReducer, stalkReducer = nextProps.stalkReducer;
+        var warning_bar = document.getElementById("warning_bar");
+        var typing_box = document.getElementById("typing_box");
         this.h_subHeader = (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
         switch (stalkReducer.state) {
@@ -99,30 +108,30 @@ class Chat extends React.Component {
                 break;
             }
             case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
-                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
+                if (!recompose_1.shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
                     this.roomInitialize(nextProps);
                 break;
             }
             case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS: {
-                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
+                if (!recompose_1.shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
                     this.roomInitialize(nextProps);
                 break;
             }
             case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_SUCCESS: {
-                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
+                if (!recompose_1.shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
                     this.roomInitialize(nextProps);
                 break;
             }
             case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
-                this.props.history.push(`/`);
+                this.props.history.push("/");
                 break;
             }
             case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_FAILURE: {
-                this.props.history.push(`/`);
+                this.props.history.push("/");
                 break;
             }
             case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
-                let { responseFile, fileInfo } = chatroomReducer;
+                var responseFile = chatroomReducer.responseFile, fileInfo = chatroomReducer.fileInfo;
                 if (responseFile.mimetype.match(FileType.imageType)) {
                     this.onSubmitImageChat(fileInfo, responseFile.path);
                 }
@@ -145,9 +154,9 @@ class Chat extends React.Component {
                 break;
             }
             case chatroomActions.ChatRoomActionsType.ON_NEW_MESSAGE: {
-                chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => (__assign({}, previousState, { messages: messages })), () => {
-                        let chatBox = document.getElementById("app_body");
+                chatroomActions.getMessages().then(function (messages) {
+                    _this.setState(function (previousState) { return (__assign({}, previousState, { messages: messages })); }, function () {
+                        var chatBox = document.getElementById("app_body");
                         chatBox.scrollTop = chatBox.scrollHeight;
                     });
                 });
@@ -155,39 +164,39 @@ class Chat extends React.Component {
                 break;
             }
             case chatroomRxEpic.GET_PERSISTEND_MESSAGE_SUCCESS: {
-                chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => (__assign({}, previousState, { messages: messages })));
+                chatroomActions.getMessages().then(function (messages) {
+                    _this.setState(function (previousState) { return (__assign({}, previousState, { messages: messages })); });
                 });
                 this.props.dispatch(chatroomActions.checkOlderMessages());
                 this.props.dispatch(chatroomActions.getNewerMessageFromNet());
                 break;
             }
             case chatroomActions.GET_NEWER_MESSAGE_SUCCESS: {
-                chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => (__assign({}, previousState, { messages: messages })));
+                chatroomActions.getMessages().then(function (messages) {
+                    _this.setState(function (previousState) { return (__assign({}, previousState, { messages: messages })); });
                 });
                 break;
             }
             case chatroomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
-                this.setState((previousState) => (__assign({}, previousState, { earlyMessageReady: chatroomReducer.earlyMessageReady })));
+                this.setState(function (previousState) { return (__assign({}, previousState, { earlyMessageReady: chatroomReducer.earlyMessageReady })); });
                 break;
             }
             case chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS: {
-                chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => (__assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false, messages: messages })));
+                chatroomActions.getMessages().then(function (messages) {
+                    _this.setState(function (previousState) { return (__assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false, messages: messages })); });
                 });
                 break;
             }
             default:
                 break;
         }
-    }
-    onLoadEarlierMessages() {
-        this.setState(previousState => (__assign({}, previousState, { isLoadingEarlierMessages: true })));
+    };
+    Chat.prototype.onLoadEarlierMessages = function () {
+        this.setState(function (previousState) { return (__assign({}, previousState, { isLoadingEarlierMessages: true })); });
         this.props.dispatch(chatroomActions.loadEarlyMessageChunk());
-    }
-    roomInitialize(props) {
-        let { chatroomReducer, userReducer } = props;
+    };
+    Chat.prototype.roomInitialize = function (props) {
+        var chatroomReducer = props.chatroomReducer, userReducer = props.userReducer;
         if (!userReducer.user) {
             return this.props.dispatch(chatroomActions.leaveRoomAction());
         }
@@ -197,13 +206,13 @@ class Chat extends React.Component {
         // - Request join room.
         chatroomActions.initChatRoom(chatroomReducer.room);
         this.props.dispatch(chatroomActions.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
-    }
-    setMessageStatus(uniqueId, status) {
-        let messages = [];
-        let _messages = this.state.messages.slice();
-        for (let i = 0; i < _messages.length; i++) {
+    };
+    Chat.prototype.setMessageStatus = function (uniqueId, status) {
+        var messages = [];
+        var _messages = this.state.messages.slice();
+        for (var i = 0; i < _messages.length; i++) {
             if (_messages[i].uuid == uniqueId) {
-                let clone = Object.assign({}, _messages[i]);
+                var clone = Object.assign({}, _messages[i]);
                 clone.status = status;
                 messages.push(clone);
             }
@@ -212,10 +221,10 @@ class Chat extends React.Component {
             }
         }
         this.setState(__assign({}, this.state, { messages: messages }));
-    }
-    setMessageTemp(server_msg) {
-        let _messages = this.state.messages.slice();
-        _messages.forEach((message) => {
+    };
+    Chat.prototype.setMessageTemp = function (server_msg) {
+        var _messages = this.state.messages.slice();
+        _messages.forEach(function (message) {
             if (message.uuid == server_msg.uuid) {
                 message.body = server_msg.body;
                 message.createTime = server_msg.createTime;
@@ -224,90 +233,92 @@ class Chat extends React.Component {
             }
         });
         this.setState(__assign({}, this.state, { messages: _messages }));
-    }
-    onTypingTextChange(event) {
+    };
+    Chat.prototype.onTypingTextChange = function (event) {
         this.setState(__assign({}, this.state, { typingText: event.target.value }));
-    }
-    onSubmitTextChat() {
+    };
+    Chat.prototype.onSubmitTextChat = function () {
         if (this.state.typingText.length <= 0)
             return;
-        let msg = {
+        var msg = {
             text: this.state.typingText
         };
         this.prepareSend(msg);
-    }
-    onSubmitImageChat(file, responseUrl) {
-        let msg = {
+    };
+    Chat.prototype.onSubmitImageChat = function (file, responseUrl) {
+        var msg = {
             image: file.name,
-            src: `${config().api.host}/${responseUrl}`
+            src: config().api.host + "/" + responseUrl
         };
         this.prepareSend(msg);
-    }
-    onSubmitVideoChat(file, responseUrl) {
-        let msg = {
+    };
+    Chat.prototype.onSubmitVideoChat = function (file, responseUrl) {
+        var msg = {
             video: file.name,
-            src: `${config().api.host}/${responseUrl}`
+            src: config().api.host + "/" + responseUrl
         };
         this.prepareSend(msg);
-    }
-    onSubmitFile(file, responseFile) {
-        let { path, mimetype, size } = responseFile;
-        let msg = {
+    };
+    Chat.prototype.onSubmitFile = function (file, responseFile) {
+        var path = responseFile.path, mimetype = responseFile.mimetype, size = responseFile.size;
+        var msg = {
             file: file.name,
             mimetype: mimetype,
             size: size,
-            src: `${config().api.host}/${path}`
+            src: config().api.host + "/" + path
         };
         this.prepareSend(msg);
-    }
-    onSubmitStickerChat(id) {
-        let msg = {
+    };
+    Chat.prototype.onSubmitStickerChat = function (id) {
+        var msg = {
             sticker: id
         };
         this.onToggleSticker();
         this.prepareSend(msg);
-    }
-    prepareSend(msg) {
-        let message = decorateMessage(msg);
+    };
+    Chat.prototype.prepareSend = function (msg) {
+        var message = chatroomMessageUtils_1.decorateMessage(msg);
         this.send(message);
-        let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
+        var _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
         _messages.push(message);
-        this.setState(previousState => (__assign({}, previousState, { typingText: "", messages: _messages })), () => {
-            let chatBox = document.getElementById("app_body");
+        this.setState(function (previousState) { return (__assign({}, previousState, { typingText: "", messages: _messages })); }, function () {
+            var chatBox = document.getElementById("app_body");
             chatBox.scrollTop = chatBox.scrollHeight;
         });
-    }
-    send(message) {
+    };
+    Chat.prototype.send = function (message) {
         this.props.dispatch(chatroomActions.sendMessage(message));
-    }
-    onToggleSticker() {
+    };
+    Chat.prototype.onToggleSticker = function () {
         this.h_body = (this.state.openButtomMenu) ? this.h_body + this.h_stickerBox : this.h_body - this.h_stickerBox;
-        this.setState(previousState => (__assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu })), () => {
-            let chatBox = document.getElementById("app_body");
+        this.setState(function (previousState) { return (__assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu })); }, function () {
+            var chatBox = document.getElementById("app_body");
             chatBox.scrollTop = chatBox.scrollHeight;
         });
-    }
-    render() {
-        let { chatroomReducer, stalkReducer } = this.props;
+    };
+    Chat.prototype.render = function () {
+        var _this = this;
+        var _a = this.props, chatroomReducer = _a.chatroomReducer, stalkReducer = _a.stalkReducer;
         return (React.createElement("div", { style: { height: "calc(100vh - 148px)" } },
             React.createElement("div", { style: { overflowY: "scroll", height: "100%" }, id: "app_body" },
                 (this.state.earlyMessageReady) ?
-                    React.createElement(Flex, { align: "center", justify: "center" },
-                        React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!"))
+                    React.createElement(reflexbox_1.Flex, { align: "center", justify: "center" },
+                        React.createElement("p", { onClick: function () { return _this.onLoadEarlierMessages(); } }, "Load Earlier Messages!"))
                     :
                         null,
-                React.createElement(ChatBox, { styles: { overflowX: "hidden" }, value: this.state.messages, onSelected: (message) => { } }),
+                React.createElement(ChatBox_1.ChatBox, { styles: { overflowX: "hidden" }, value: this.state.messages, onSelected: function (message) { } }),
                 (this.state.openButtomMenu) ?
-                    React.createElement(GridListSimple, { boxHeight: this.h_stickerBox, srcs: imagesPath, onSelected: this.onSubmitStickerChat })
+                    React.createElement(GridListSimple_1["default"], { boxHeight: this.h_stickerBox, srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
                     : null),
             React.createElement("div", null,
-                React.createElement(TypingBox, { disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }),
-                React.createElement(UploadingDialog, null),
-                React.createElement(SnackbarToolBox, null))));
-    }
-}
+                React.createElement(TypingBox_1.TypingBox, { disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }),
+                React.createElement(UploadingDialog_1["default"], null),
+                React.createElement(SnackbarToolBox_1.SnackbarToolBox, null))));
+    };
+    return Chat;
+}(React.Component));
 /**
  * ## Redux boilerplate
  */
-const mapStateToProps = (state) => (__assign({}, state));
-export const ChatPage = connect(mapStateToProps)(Chat);
+var mapStateToProps = function (state) { return (__assign({}, state)); };
+exports.ChatPage = react_redux_1.connect(mapStateToProps)(Chat);

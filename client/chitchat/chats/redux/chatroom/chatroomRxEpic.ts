@@ -3,7 +3,7 @@
  *
  * This is pure function action for redux app.
  */
-import Rx from "rxjs/Rx";
+import * as Rx from "rxjs/Rx";
 const { ajax, fromPromise } = Rx.Observable;
 
 import ChatRoomComponent from "../../chatRoomComponent";

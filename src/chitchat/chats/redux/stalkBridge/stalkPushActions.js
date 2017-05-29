@@ -3,11 +3,13 @@
  *
  * This is pure function action for redux app.
  */
-import { BackendFactory } from "../../BackendFactory";
-export function stalkPushInit() {
-    const pushDataListener = BackendFactory.getInstance().pushDataListener;
+"use strict";
+var BackendFactory_1 = require("../../BackendFactory");
+function stalkPushInit() {
+    var pushDataListener = BackendFactory_1.BackendFactory.getInstance().pushDataListener;
     pushDataListener.addPushEvents(onPush_handler);
 }
+exports.stalkPushInit = stalkPushInit;
 function onPush_handler(dataEvent) {
-    console.log(`Event : ${dataEvent}`);
+    console.log("Event : " + dataEvent);
 }

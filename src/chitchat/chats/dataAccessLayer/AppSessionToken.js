@@ -1,17 +1,20 @@
-import * as localForage from "localforage";
-export class AppSessionToken {
-    constructor() {
+"use strict";
+var localForage = require("localforage");
+var AppSessionToken = (function () {
+    function AppSessionToken() {
         this.store = localForage.createInstance({
             name: "sessionToken"
         });
     }
-    getSessionToken() {
+    AppSessionToken.prototype.getSessionToken = function () {
         return this.store.getItem("sessionToken");
-    }
-    saveSessionToken(token) {
+    };
+    AppSessionToken.prototype.saveSessionToken = function (token) {
         return this.store.setItem("sessionToken", token);
-    }
-    deleteSessionToken() {
+    };
+    AppSessionToken.prototype.deleteSessionToken = function () {
         this.store.removeItem("sessionToken");
-    }
-}
+    };
+    return AppSessionToken;
+}());
+exports.AppSessionToken = AppSessionToken;

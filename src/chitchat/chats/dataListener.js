@@ -1,148 +1,153 @@
-export default class DataListener {
-    constructor(dataManager) {
+"use strict";
+var DataListener = (function () {
+    function DataListener(dataManager) {
+        var _this = this;
         this.onChatEventListeners = new Array();
         this.onLeaveRoomListeners = new Array();
         this.onRoomAccessEventListeners = new Array();
-        this.addOnRoomAccessListener = (listener) => {
-            this.onRoomAccessEventListeners.push(listener);
+        this.addOnRoomAccessListener = function (listener) {
+            _this.onRoomAccessEventListeners.push(listener);
         };
-        this.removeOnRoomAccessListener = (listener) => {
-            let id = this.onRoomAccessEventListeners.indexOf(listener);
-            this.onRoomAccessEventListeners.splice(id, 1);
+        this.removeOnRoomAccessListener = function (listener) {
+            var id = _this.onRoomAccessEventListeners.indexOf(listener);
+            _this.onRoomAccessEventListeners.splice(id, 1);
         };
         this.onUpdateRoomAccessEventListeners = new Array();
-        this.addOnUpdateRoomAccessListener = (listener) => {
-            this.onUpdateRoomAccessEventListeners.push(listener);
+        this.addOnUpdateRoomAccessListener = function (listener) {
+            _this.onUpdateRoomAccessEventListeners.push(listener);
         };
-        this.removeOnUpdateRoomAccessListener = (listener) => {
-            let id = this.onUpdateRoomAccessEventListeners.indexOf(listener);
-            this.onUpdateRoomAccessEventListeners.splice(id, 1);
+        this.removeOnUpdateRoomAccessListener = function (listener) {
+            var id = _this.onUpdateRoomAccessEventListeners.indexOf(listener);
+            _this.onUpdateRoomAccessEventListeners.splice(id, 1);
         };
         this.onAddRoomAccessEventListeners = new Array();
-        this.addOnAddRoomAccessListener = (listener) => {
-            this.onAddRoomAccessEventListeners.push(listener);
+        this.addOnAddRoomAccessListener = function (listener) {
+            _this.onAddRoomAccessEventListeners.push(listener);
         };
-        this.removeOnAddRoomAccessListener = (listener) => {
-            let id = this.onAddRoomAccessEventListeners.indexOf(listener);
-            this.onAddRoomAccessEventListeners.splice(id, 1);
+        this.removeOnAddRoomAccessListener = function (listener) {
+            var id = _this.onAddRoomAccessEventListeners.indexOf(listener);
+            _this.onAddRoomAccessEventListeners.splice(id, 1);
         };
         this.dataManager = dataManager;
     }
-    addOnChatListener(listener) {
+    DataListener.prototype.addOnChatListener = function (listener) {
         this.onChatEventListeners.push(listener);
-    }
-    removeOnChatListener(listener) {
-        let id = this.onChatEventListeners.indexOf(listener);
+    };
+    DataListener.prototype.removeOnChatListener = function (listener) {
+        var id = this.onChatEventListeners.indexOf(listener);
         this.onChatEventListeners.splice(id, 1);
-    }
-    addOnLeaveRoomListener(listener) {
+    };
+    DataListener.prototype.addOnLeaveRoomListener = function (listener) {
         this.onLeaveRoomListeners.push(listener);
-    }
-    removeOnLeaveRoomListener(listener) {
-        let id = this.onLeaveRoomListeners.indexOf(listener);
+    };
+    DataListener.prototype.removeOnLeaveRoomListener = function (listener) {
+        var id = this.onLeaveRoomListeners.indexOf(listener);
         this.onLeaveRoomListeners.splice(id, 1);
-    }
-    onAccessRoom(dataEvent) {
+    };
+    DataListener.prototype.onAccessRoom = function (dataEvent) {
         if (Array.isArray(dataEvent) && dataEvent.length > 0) {
-            let data = dataEvent[0];
-            this.dataManager.setRoomAccessForUser(data);
-            this.onRoomAccessEventListeners.map(listener => {
-                listener(data);
+            var data_1 = dataEvent[0];
+            this.dataManager.setRoomAccessForUser(data_1);
+            this.onRoomAccessEventListeners.map(function (listener) {
+                listener(data_1);
             });
         }
-    }
-    onUpdatedLastAccessTime(dataEvent) {
+    };
+    DataListener.prototype.onUpdatedLastAccessTime = function (dataEvent) {
         this.dataManager.updateRoomAccessForUser(dataEvent);
-        this.onUpdateRoomAccessEventListeners.map(item => item(dataEvent));
-    }
-    onAddRoomAccess(dataEvent) {
-        let datas = JSON.parse(JSON.stringify(dataEvent));
+        this.onUpdateRoomAccessEventListeners.map(function (item) { return item(dataEvent); });
+    };
+    DataListener.prototype.onAddRoomAccess = function (dataEvent) {
+        var datas = JSON.parse(JSON.stringify(dataEvent));
         if (!!datas[0].roomAccess && datas[0].roomAccess.length !== 0) {
             this.dataManager.setRoomAccessForUser(dataEvent);
         }
-        this.onAddRoomAccessEventListeners.map(value => value(dataEvent));
-    }
-    onCreateGroupSuccess(dataEvent) {
-        let group = JSON.parse(JSON.stringify(dataEvent));
+        this.onAddRoomAccessEventListeners.map(function (value) { return value(dataEvent); });
+    };
+    DataListener.prototype.onCreateGroupSuccess = function (dataEvent) {
+        var group = JSON.parse(JSON.stringify(dataEvent));
         this.dataManager.addGroup(group);
-    }
-    onEditedGroupMember(dataEvent) {
-        let jsonObj = JSON.parse(JSON.stringify(dataEvent));
+    };
+    DataListener.prototype.onEditedGroupMember = function (dataEvent) {
+        var jsonObj = JSON.parse(JSON.stringify(dataEvent));
         this.dataManager.updateGroupMembers(jsonObj);
         if (!!this.roomAccessListenerImps) {
-            this.roomAccessListenerImps.map(value => {
+            this.roomAccessListenerImps.map(function (value) {
                 value.onEditedGroupMember(dataEvent);
             });
         }
-    }
-    onEditedGroupName(dataEvent) {
-        let jsonObj = JSON.parse(JSON.stringify(dataEvent));
+    };
+    DataListener.prototype.onEditedGroupName = function (dataEvent) {
+        var jsonObj = JSON.parse(JSON.stringify(dataEvent));
         this.dataManager.updateGroupName(jsonObj);
-    }
-    onEditedGroupImage(dataEvent) {
-        let obj = JSON.parse(JSON.stringify(dataEvent));
+    };
+    DataListener.prototype.onEditedGroupImage = function (dataEvent) {
+        var obj = JSON.parse(JSON.stringify(dataEvent));
         this.dataManager.updateGroupImage(obj);
-    }
-    onNewGroupCreated(dataEvent) {
-        let jsonObj = JSON.parse(JSON.stringify(dataEvent));
+    };
+    DataListener.prototype.onNewGroupCreated = function (dataEvent) {
+        var jsonObj = JSON.parse(JSON.stringify(dataEvent));
         this.dataManager.addGroup(jsonObj);
-    }
-    onUpdateMemberInfoInProjectBase(dataEvent) {
-        let jsonObj = JSON.parse(JSON.stringify(dataEvent));
+    };
+    DataListener.prototype.onUpdateMemberInfoInProjectBase = function (dataEvent) {
+        var jsonObj = JSON.parse(JSON.stringify(dataEvent));
         this.dataManager.updateGroupMemberDetail(jsonObj);
         if (!!this.roomAccessListenerImps) {
-            this.roomAccessListenerImps.map(value => {
+            this.roomAccessListenerImps.map(function (value) {
                 value.onUpdateMemberInfoInProjectBase(dataEvent);
             });
         }
-    }
+    };
     //#region User.
-    onUserLogin(dataEvent) {
+    DataListener.prototype.onUserLogin = function (dataEvent) {
         this.dataManager.onUserLogin(dataEvent);
-    }
-    onUserUpdateImageProfile(dataEvent) {
-        let jsonObj = JSON.parse(JSON.stringify(dataEvent));
-        let _id = jsonObj._id;
-        let path = jsonObj.path;
+    };
+    DataListener.prototype.onUserUpdateImageProfile = function (dataEvent) {
+        var jsonObj = JSON.parse(JSON.stringify(dataEvent));
+        var _id = jsonObj._id;
+        var path = jsonObj.path;
         this.dataManager.updateContactImage(_id, path);
-    }
-    onUserUpdateProfile(dataEvent) {
-        let jsonobj = JSON.parse(JSON.stringify(dataEvent));
-        let params = jsonobj.params;
-        let _id = jsonobj._id;
+    };
+    DataListener.prototype.onUserUpdateProfile = function (dataEvent) {
+        var jsonobj = JSON.parse(JSON.stringify(dataEvent));
+        var params = jsonobj.params;
+        var _id = jsonobj._id;
         this.dataManager.updateContactProfile(_id, params);
-    }
+    };
     //#endregion
     /*******************************************************************************/
     // <!-- chat room data listener.
-    onChat(data) {
-        let chatMessageImp = JSON.parse(JSON.stringify(data));
-        this.onChatEventListeners.map((value, id, arr) => {
+    DataListener.prototype.onChat = function (data) {
+        var chatMessageImp = JSON.parse(JSON.stringify(data));
+        this.onChatEventListeners.map(function (value, id, arr) {
             value(chatMessageImp);
         });
-    }
+    };
     ;
-    onLeaveRoom(data) {
-        this.onLeaveRoomListeners.map(value => value(data));
-    }
+    DataListener.prototype.onLeaveRoom = function (data) {
+        this.onLeaveRoomListeners.map(function (value) { return value(data); });
+    };
     ;
-    onRoomJoin(data) {
-    }
+    DataListener.prototype.onRoomJoin = function (data) {
+    };
     ;
-    onMessageRead(dataEvent) {
+    DataListener.prototype.onMessageRead = function (dataEvent) {
         if (!!this.chatListenerImps && this.chatListenerImps.length !== 0) {
-            this.chatListenerImps.forEach(value => {
+            this.chatListenerImps.forEach(function (value) {
                 value.onMessageRead(dataEvent);
             });
         }
-    }
+    };
     ;
-    onGetMessagesReaders(dataEvent) {
+    DataListener.prototype.onGetMessagesReaders = function (dataEvent) {
         if (!!this.chatListenerImps && this.chatListenerImps.length !== 0) {
-            this.chatListenerImps.forEach(value => {
+            this.chatListenerImps.forEach(function (value) {
                 value.onGetMessagesReaders(dataEvent);
             });
         }
-    }
+    };
     ;
-}
+    return DataListener;
+}());
+exports.__esModule = true;
+exports["default"] = DataListener;

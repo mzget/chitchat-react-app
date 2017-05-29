@@ -3,30 +3,33 @@
  *
  * This is pure function action for redux app.
  */
-import * as Rx from "rxjs/Rx";
-const { ajax } = Rx.Observable;
-import { STALK_INIT_CHATLOG } from "../chitchat/chats/redux/chatlogs/chatlogsActions";
-import { TEAM_SELECTED, getTeamsInfo } from "../redux/team/teamRx";
-import { FETCH_USER_SUCCESS } from "../redux/user/userRx";
-import { getLastAccessRoom } from "../chitchat/chats/redux/chatlogs/chatlogRxActions";
-import Store from "../redux/configureStore";
-export const stalkInitChatlog_Epic = action$ => action$.filter(action => (action.type == STALK_INIT_CHATLOG || action.type == TEAM_SELECTED))
-    .map((x) => {
-    if (!!Store.getState().teamReducer.team) {
-        let team_id = Store.getState().teamReducer.team._id;
-        return getLastAccessRoom(team_id);
-    }
-    else {
-        return { type: "" };
-    }
-});
-export const getTeamsInfo_Epic = (action$) => (action$.filter(action => action.type == FETCH_USER_SUCCESS)
-    .map(x => {
-    let { userReducer } = Store.getState();
+"use strict";
+var Rx = require("rxjs/Rx");
+var ajax = Rx.Observable.ajax;
+var chatlogsActions_1 = require("../chitchat/chats/redux/chatlogs/chatlogsActions");
+var teamRx_1 = require("../redux/team/teamRx");
+var userRx_1 = require("../redux/user/userRx");
+var chatlogRxActions_1 = require("../chitchat/chats/redux/chatlogs/chatlogRxActions");
+var configureStore_1 = require("../redux/configureStore");
+exports.stalkInitChatlog_Epic = function (action$) {
+    return action$.filter(function (action) { return (action.type == chatlogsActions_1.STALK_INIT_CHATLOG || action.type == teamRx_1.TEAM_SELECTED); })
+        .map(function (x) {
+        if (!!configureStore_1["default"].getState().teamReducer.team) {
+            var team_id = configureStore_1["default"].getState().teamReducer.team._id;
+            return chatlogRxActions_1.getLastAccessRoom(team_id);
+        }
+        else {
+            return { type: "" };
+        }
+    });
+};
+exports.getTeamsInfo_Epic = function (action$) { return (action$.filter(function (action) { return action.type == userRx_1.FETCH_USER_SUCCESS; })
+    .map(function (x) {
+    var userReducer = configureStore_1["default"].getState().userReducer;
     if (!!userReducer.user.teams && userReducer.user.teams.length > 0) {
-        return getTeamsInfo(userReducer.user.teams);
+        return teamRx_1.getTeamsInfo(userReducer.user.teams);
     }
     else {
         return { type: "" };
     }
-}));
+})); };

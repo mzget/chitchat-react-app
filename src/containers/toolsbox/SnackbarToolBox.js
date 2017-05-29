@@ -1,3 +1,9 @@
+"use strict";
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -6,35 +12,40 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-import * as React from "react";
-import { connect } from "react-redux";
-import { SnackbarSimple } from "../../components/SnackbarSimple";
+var React = require("react");
+var react_redux_1 = require("react-redux");
+var SnackbarSimple_1 = require("../../components/SnackbarSimple");
 ;
-class SnackbarBox extends React.Component {
-    componentWillMount() {
+var SnackbarBox = (function (_super) {
+    __extends(SnackbarBox, _super);
+    function SnackbarBox() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    SnackbarBox.prototype.componentWillMount = function () {
         this.state = {
             openSnackbar: false,
             snackbarMessage: "",
             snackbarClose: null
         };
         this.closeSnackbar = this.closeSnackbar.bind(this);
-    }
-    componentWillReceiveProps(nextProps) {
-        let { stalkReducer } = nextProps;
+    };
+    SnackbarBox.prototype.componentWillReceiveProps = function (nextProps) {
+        var stalkReducer = nextProps.stalkReducer;
         if (stalkReducer.notiMessage != this.props.stalkReducer.notiMessage) {
-            this.setState(previousState => (__assign({}, previousState, { openSnackbar: true, snackbarMessage: stalkReducer.notiMessage })));
+            this.setState(function (previousState) { return (__assign({}, previousState, { openSnackbar: true, snackbarMessage: stalkReducer.notiMessage })); });
         }
-    }
-    closeSnackbar(reason) {
-        this.setState(previousState => (__assign({}, previousState, { openSnackbar: false })));
-    }
-    render() {
+    };
+    SnackbarBox.prototype.closeSnackbar = function (reason) {
+        this.setState(function (previousState) { return (__assign({}, previousState, { openSnackbar: false })); });
+    };
+    SnackbarBox.prototype.render = function () {
         return (React.createElement("div", null,
-            React.createElement(SnackbarSimple, { open: this.state.openSnackbar, message: this.state.snackbarMessage, handleRequestClose: this.closeSnackbar, hideDuration: 2000 })));
-    }
-}
+            React.createElement(SnackbarSimple_1.SnackbarSimple, { open: this.state.openSnackbar, message: this.state.snackbarMessage, handleRequestClose: this.closeSnackbar, hideDuration: 2000 })));
+    };
+    return SnackbarBox;
+}(React.Component));
 /**
  * ## Redux boilerplate
  */
 function mapStateToProps(state) { return __assign({}, state); }
-export const SnackbarToolBox = connect(mapStateToProps)(SnackbarBox);
+exports.SnackbarToolBox = react_redux_1.connect(mapStateToProps)(SnackbarBox);

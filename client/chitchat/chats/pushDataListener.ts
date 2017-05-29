@@ -1,6 +1,6 @@
-import { Events } from "stalk-js";
+import { StalkEvents } from "stalk-js";
 
-export class PushDataListener implements Events.IPushServerListener {
+export class PushDataListener implements StalkEvents.IPushServerListener {
     private onPushEvents: Array<(dataEvent) => void> = new Array();
     public addPushEvents(fx: (dataEvent) => void) {
         this.onPushEvents.push(fx);

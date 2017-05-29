@@ -1,10 +1,11 @@
-import * as React from "react";
-import Subheader from "material-ui/Subheader";
-import RaisedButton from "material-ui/RaisedButton";
-const style = {
-    margin: 4,
+"use strict";
+var React = require("react");
+var Subheader_1 = require("material-ui/Subheader");
+var RaisedButton_1 = require("material-ui/RaisedButton");
+var style = {
+    margin: 4
 };
-import { TeamListView } from "./TeamListView";
-export const FindTeamListBox = (props) => (React.createElement("div", null,
-    React.createElement(Subheader, null, "Find Team Results"),
-    React.createElement(TeamListView, { items: props.findingTeams, onSelectItem: props.onSelectTeam, actionChild: React.createElement(RaisedButton, { label: "Join", primary: true, style: style }) })));
+var TeamListView_1 = require("./TeamListView");
+exports.FindTeamListBox = function (props) { return (React.createElement("div", null,
+    React.createElement(Subheader_1["default"], null, "Find Team Results"),
+    React.createElement(TeamListView_1.TeamListView, { items: props.findingTeams, onSelectItem: props.onSelectTeam, actionChild: React.createElement(RaisedButton_1["default"], { label: "Join", primary: true, style: style }) }))); };

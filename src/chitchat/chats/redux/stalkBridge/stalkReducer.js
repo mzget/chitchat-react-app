@@ -3,9 +3,10 @@
  *
  * This is pure function for redux app.
  */
-import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
-import * as StalkNotificationActions from "./StalkNotificationActions";
-import { Record } from "immutable";
+"use strict";
+var StalkBridgeActions = require("../stalkBridge/stalkBridgeActions");
+var StalkNotificationActions = require("./StalkNotificationActions");
+var immutable_1 = require("immutable");
 /**
  * ## Initial State
  */
@@ -14,7 +15,7 @@ import { Record } from "immutable";
  * This Record contains the state of the form and the
  * fields it contains.
  */
-export const StalkInitState = Record({
+exports.StalkInitState = immutable_1.Record({
     isInit: false,
     isFetching: false,
     state: null,
@@ -22,9 +23,10 @@ export const StalkInitState = Record({
     stalkToken: "",
     user: null
 });
-const initialState = new StalkInitState();
-export function stalkReducer(state = initialState, action) {
-    if (!(state instanceof StalkInitState))
+var initialState = new exports.StalkInitState();
+function stalkReducer(state, action) {
+    if (state === void 0) { state = initialState; }
+    if (!(state instanceof exports.StalkInitState))
         return initialState.mergeDeep(state);
     switch (action.type) {
         case StalkBridgeActions.STALK_INIT: {
@@ -57,3 +59,4 @@ export function stalkReducer(state = initialState, action) {
             return state;
     }
 }
+exports.stalkReducer = stalkReducer;
