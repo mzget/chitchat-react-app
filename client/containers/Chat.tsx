@@ -5,7 +5,7 @@ import * as async from "async";
 import { Flex, Box } from "reflexbox";
 import * as Colors from "material-ui/styles/colors";
 
-import { ChitChatFactory } from "../chitchat/chats/chitchatFactory";
+import { ChitChatFactory } from "../chitchat/chats/ChitchatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 
 import { TypingBox } from "./TypingBox";
