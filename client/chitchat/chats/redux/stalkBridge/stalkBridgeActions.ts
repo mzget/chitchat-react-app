@@ -44,28 +44,31 @@ export function stalkLogin(user: any) {
         ChatLogsActions.initChatsLog();
     });
     backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
-    backendFactory.stalkInit().then(value => {
-        console.log("StalkInit Value.", value);
+    backendFactory.stalkInit().then(socket => {
+        backendFactory.handshake(user._id).then((connector) => {
+            backendFactory.checkIn(user).then((value) => {
+                let result: { success: boolean, token: any } = JSON.parse(JSON.stringify(value.data));
+                if (result.success) {
+                    console.log("Joined chat-server success", result);
+                    backendFactory.getServerListener();
+                    backendFactory.startChatServerListener();
+                    stalkManageConnection();
 
-        backendFactory.checkIn(user._id, null, user).then(value => {
-            let result: { success: boolean, token: any } = JSON.parse(JSON.stringify(value.data));
-            if (result.success) {
-                console.log("Joined chat-server success", result);
-                backendFactory.getServerListener();
-                backendFactory.startChatServerListener();
-                stalkManageConnection();
+                    StalkNotificationAction.regisNotifyNewMessageEvent();
+                    StalkPushActions.stalkPushInit();
 
-                StalkNotificationAction.regisNotifyNewMessageEvent();
-                StalkPushActions.stalkPushInit();
-
-                getStore().dispatch({ type: STALK_INIT_SUCCESS, payload: { token: result.token, user: account } });
-            }
-            else {
-                console.warn("Joined chat-server fail: ", result);
+                    getStore().dispatch({ type: STALK_INIT_SUCCESS, payload: { token: result.token, user: account } });
+                }
+                else {
+                    console.warn("Joined chat-server fail: ", result);
+                    getStore().dispatch({ type: STALK_INIT_FAILURE });
+                }
+            }).catch(err => {
+                console.warn("Cannot checkIn", err);
                 getStore().dispatch({ type: STALK_INIT_FAILURE });
-            }
+            });
         }).catch(err => {
-            console.warn("Cannot checkIn", err);
+            console.warn("Hanshake fail: ", err);
             getStore().dispatch({ type: STALK_INIT_FAILURE });
         });
     }).catch(err => {
