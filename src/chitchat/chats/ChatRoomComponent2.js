@@ -13,7 +13,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t;
+    var _ = { label: 0, sent: function () { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t;
     return { next: verb(0), "throw": verb(1), "return": verb(2) };
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
@@ -215,38 +215,42 @@ var ChatRoomComponent = (function () {
                                 cb(result);
                             });
                         };
-                        saveMergedMessage = function (histories) { return __awaiter(_this, void 0, void 0, function () {
-                            var _results, results;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        _results = new Array();
-                                        if (messages && messages.length > 0) {
-                                            _results = messages.concat(histories);
-                                        }
-                                        else {
-                                            _results = histories.slice();
-                                        }
-                                        return [4 /*yield*/, self.dataManager.messageDAL.saveData(self.roomId, _results)];
-                                    case 1:
-                                        results = _a.sent();
-                                        callback(_results);
-                                        return [2 /*return*/];
-                                }
+                        saveMergedMessage = function (histories) {
+                            return __awaiter(_this, void 0, void 0, function () {
+                                var _results, results;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            _results = new Array();
+                                            if (messages && messages.length > 0) {
+                                                _results = messages.concat(histories);
+                                            }
+                                            else {
+                                                _results = histories.slice();
+                                            }
+                                            return [4 /*yield*/, self.dataManager.messageDAL.saveData(self.roomId, _results)];
+                                        case 1:
+                                            results = _a.sent();
+                                            callback(_results);
+                                            return [2 /*return*/];
+                                    }
+                                });
                             });
-                        }); };
-                        getNewerMessage = function () { return __awaiter(_this, void 0, void 0, function () {
-                            var histories;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0: return [4 /*yield*/, self.getNewerMessageFromNet(lastMessageTime, sessionToken)];
-                                    case 1:
-                                        histories = _a.sent();
-                                        saveMergedMessage(histories);
-                                        return [2 /*return*/];
-                                }
+                        };
+                        getNewerMessage = function () {
+                            return __awaiter(_this, void 0, void 0, function () {
+                                var histories;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0: return [4 /*yield*/, self.getNewerMessageFromNet(lastMessageTime, sessionToken)];
+                                        case 1:
+                                            histories = _a.sent();
+                                            saveMergedMessage(histories);
+                                            return [2 /*return*/];
+                                    }
+                                });
                             });
-                        }); };
+                        };
                         return [4 /*yield*/, self.dataManager.messageDAL.getData(this.roomId)];
                     case 1:
                         messages = _a.sent();
@@ -285,48 +289,48 @@ var ChatRoomComponent = (function () {
                     case 2:
                         value = _a.sent();
                         return [2 /*return*/, new Promise(function (resolve, reject) {
-                                console.log("getChatHistory: ", value);
-                                if (value.success) {
-                                    var histories_1 = new Array();
-                                    histories_1 = value.result;
-                                    if (histories_1.length > 0) {
-                                        async.forEach(histories_1, function (chat, cb) {
-                                            if (chat.type === Message_1.MessageType[Message_1.MessageType.Text]) {
-                                                if (getConfig().appConfig.encryption === true) {
-                                                    self.secure.decryption(chat.body).then(function (res) {
-                                                        chat.body = res;
-                                                        cb(null);
-                                                    })["catch"](function (err) {
-                                                        cb(null);
-                                                    });
-                                                }
-                                                else {
+                            console.log("getChatHistory: ", value);
+                            if (value.success) {
+                                var histories_1 = new Array();
+                                histories_1 = value.result;
+                                if (histories_1.length > 0) {
+                                    async.forEach(histories_1, function (chat, cb) {
+                                        if (chat.type === Message_1.MessageType[Message_1.MessageType.Text]) {
+                                            if (getConfig().appConfig.encryption === true) {
+                                                self.secure.decryption(chat.body).then(function (res) {
+                                                    chat.body = res;
                                                     cb(null);
-                                                }
+                                                })["catch"](function (err) {
+                                                    cb(null);
+                                                });
                                             }
                                             else {
                                                 cb(null);
                                             }
-                                        }, function done(err) {
-                                            if (!!err) {
-                                                console.error("get newer message error", err);
-                                                reject(err);
-                                            }
-                                            else {
-                                                resolve(histories_1);
-                                            }
-                                        });
-                                    }
-                                    else {
-                                        console.log("Have no newer message.");
-                                        resolve(histories_1);
-                                    }
+                                        }
+                                        else {
+                                            cb(null);
+                                        }
+                                    }, function done(err) {
+                                        if (!!err) {
+                                            console.error("get newer message error", err);
+                                            reject(err);
+                                        }
+                                        else {
+                                            resolve(histories_1);
+                                        }
+                                    });
                                 }
                                 else {
-                                    console.warn("WTF god only know.", value.message);
-                                    reject(value.message);
+                                    console.log("Have no newer message.");
+                                    resolve(histories_1);
                                 }
-                            })];
+                            }
+                            else {
+                                console.warn("WTF god only know.", value.message);
+                                reject(value.message);
+                            }
+                        })];
                 }
             });
         });
@@ -385,24 +389,24 @@ var ChatRoomComponent = (function () {
                         mergedMessageArray_1 = earlyMessages.concat(persistMessages);
                         resultsArray_1 = new Array();
                         return [4 /*yield*/, new Promise(function (resolve, rejected) {
-                                async.map(mergedMessageArray_1, function iterator(item, cb) {
-                                    var hasMessage = resultsArray_1.some(function itor(value, id, arr) {
-                                        if (!!value && value._id === item._id) {
-                                            return true;
-                                        }
-                                    });
-                                    if (hasMessage === false) {
-                                        resultsArray_1.push(item);
-                                        cb(null, null);
+                            async.map(mergedMessageArray_1, function iterator(item, cb) {
+                                var hasMessage = resultsArray_1.some(function itor(value, id, arr) {
+                                    if (!!value && value._id === item._id) {
+                                        return true;
                                     }
-                                    else {
-                                        cb(null, null);
-                                    }
-                                }, function done(err, results) {
-                                    var merged = resultsArray_1.sort(self.compareMessage);
-                                    resolve(merged);
                                 });
-                            })];
+                                if (hasMessage === false) {
+                                    resultsArray_1.push(item);
+                                    cb(null, null);
+                                }
+                                else {
+                                    cb(null, null);
+                                }
+                            }, function done(err, results) {
+                                var merged = resultsArray_1.sort(self.compareMessage);
+                                resolve(merged);
+                            });
+                        })];
                     case 5:
                         results = _a.sent();
                         return [4 /*yield*/, saveRoomMessages(results)];
@@ -447,12 +451,12 @@ var ChatRoomComponent = (function () {
             return __generator(this, function (_a) {
                 self = this;
                 return [2 /*return*/, new Promise(function (resolve, reject) {
-                        waitRoomMessage().then(function (topEdgeMessageTime) {
-                            resolve(topEdgeMessageTime);
-                        })["catch"](function (err) {
-                            reject(err);
-                        });
-                    })];
+                    waitRoomMessage().then(function (topEdgeMessageTime) {
+                        resolve(topEdgeMessageTime);
+                    })["catch"](function (err) {
+                        reject(err);
+                    });
+                })];
             });
         });
     };
