@@ -8,7 +8,7 @@ import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
 import { BackendFactory } from "../../BackendFactory";
-import { ChatsLogComponent, IUnread, Unread } from "../../chatslogComponent";
+import { ChatsLogComponent, IUnread, Unread } from "../../ChatslogComponent";
 import { RoomAccessData, StalkAccount } from "../../../shared/stalk";
 import { Room } from "../../../shared/Room";
 import ChatLog from "../../models/chatLog";

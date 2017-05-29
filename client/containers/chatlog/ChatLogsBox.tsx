@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import Subheader from "material-ui/Subheader";
 
-import { ChatsLogComponent, ChatLogMap, IUnread, Unread } from "../../chitchat/chats/chatslogComponent";
+import { ChatsLogComponent, ChatLogMap, IUnread, Unread } from "../../chitchat/chats/ChatslogComponent";
 import ChatLog from "../../chitchat/chats/models/chatLog";
 
 import Store from "../../redux/configureStore";
