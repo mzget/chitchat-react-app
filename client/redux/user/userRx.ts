@@ -4,7 +4,7 @@ import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
-import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
+import { ChitChatFactory } from "../../chitchat/chats/ChitchatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 import * as UserService from "../../chitchat/chats/services/UserService";
 import { ChitChatAccount } from "../../chitchat/chats/models/User";

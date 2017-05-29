@@ -1,8 +1,8 @@
 "use strict";
 var Rx = require("rxjs");
 var ajax = Rx.Observable.ajax, AjaxResponse = Rx.AjaxResponse;
-var chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
-var config = function () { return chitchatFactory_1.ChitChatFactory.getInstance().config; };
+var ChitchatFactory_1 = require("../../chitchat/chats/ChitchatFactory");
+var config = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
 var configureStore_1 = require("../configureStore");
 var chatroomActions_1 = require("../../chitchat/chats/redux/chatroom/chatroomActions");
 exports.SET_PRIVATE_GROUP = "SET_PRIVATE_GROUP";

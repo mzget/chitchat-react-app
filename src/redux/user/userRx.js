@@ -2,8 +2,8 @@
 var redux_actions_1 = require("redux-actions");
 var Rx = require("rxjs/Rx");
 var ajax = Rx.Observable.ajax;
-var chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
-var config = function () { return chitchatFactory_1.ChitChatFactory.getInstance().config; };
+var ChitchatFactory_1 = require("../../chitchat/chats/ChitchatFactory");
+var config = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
 var UserService = require("../../chitchat/chats/services/UserService");
 var StalkBridgeActions = require("../../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
 var authRx_1 = require("../authen/authRx");

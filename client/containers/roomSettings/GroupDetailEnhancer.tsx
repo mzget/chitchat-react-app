@@ -7,7 +7,7 @@ import { GroupDetail } from "./GroupDetail";
 import * as editGroupRxActions from "../../redux/group/editGroupRxActions";
 import * as groupRx from "../../redux/group/groupRx";
 import { Room } from "../../chitchat/shared/Room";
-import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
+import { ChitChatFactory } from "../../chitchat/chats/ChitchatFactory";
 import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
 
 const config = () => ChitChatFactory.getInstance().config;

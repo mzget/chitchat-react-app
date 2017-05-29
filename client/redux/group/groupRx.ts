@@ -10,7 +10,7 @@ import { Room, RoomType } from "../../chitchat/shared/Room";
 
 import { updateChatRoom } from "../../chitchat/chats/redux/chatroom/chatroomActions";
 
-import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
+import { ChitChatFactory } from "../../chitchat/chats/ChitchatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 
 /**

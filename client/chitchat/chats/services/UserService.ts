@@ -1,7 +1,7 @@
 ﻿import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
-import { ChitChatFactory } from "../chitchatFactory";
+import { ChitChatFactory } from "../ChitchatFactory";
 import { chitchat_headers, withToken } from "../utils/chitchatServiceUtils";
 const getConfig = () => ChitChatFactory.getInstance().config;
 const authReducer = () => ChitChatFactory.getInstance().authStore;

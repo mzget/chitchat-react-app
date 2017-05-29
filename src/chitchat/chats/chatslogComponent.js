@@ -40,8 +40,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
  * ChatRoomComponent for handle some business logic of chat room.
  */
 var async = require("async");
-var chitchatFactory_1 = require("./chitchatFactory");
-var authReducer = function () { return chitchatFactory_1.ChitChatFactory.getInstance().authStore; };
+var ChitchatFactory_1 = require("./ChitchatFactory");
+var authReducer = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().authStore; };
 var chatLog_1 = require("./models/chatLog");
 var BackendFactory_1 = require("./BackendFactory");
 var CryptoHelper = require("./utils/CryptoHelper");

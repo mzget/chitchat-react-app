@@ -1,12 +1,12 @@
 "use strict";
-var chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
+var ChitchatFactory_1 = require("../../chitchat/chats/ChitchatFactory");
 var immutable_1 = require("immutable");
 var redux_actions_1 = require("redux-actions");
 var Rx = require("rxjs/Rx");
 var ajax = Rx.Observable.ajax;
 var configureStore_1 = require("../configureStore");
 var userRx = require("../user/userRx");
-var getConfig = function () { return chitchatFactory_1.ChitChatFactory.getInstance().config; };
+var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
 var FETCH_USER_TEAMS = "FETCH_USER_TEAMS";
 var FETCH_USER_TEAMS_SUCCESS = "FETCH_USER_TEAMS_SUCCESS";
 var FETCH_USER_TEAMS_FAILURE = "FETCH_USER_TEAMS_FAILURE";

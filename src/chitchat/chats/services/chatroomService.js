@@ -1,8 +1,8 @@
 "use strict";
-var chitchatFactory_1 = require("../chitchatFactory");
+var ChitchatFactory_1 = require("../ChitchatFactory");
 var chitchatServiceUtils_1 = require("../utils/chitchatServiceUtils");
-var getConfig = function () { return chitchatFactory_1.ChitChatFactory.getInstance().config; };
-var authReducer = function () { return chitchatFactory_1.ChitChatFactory.getInstance().authStore; };
+var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
+var authReducer = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().authStore; };
 exports.getRoomInfo = function (room_id) {
     return fetch(getConfig().api.chatroom + "/roomInfo?room_id=" + room_id, {
         method: "GET",

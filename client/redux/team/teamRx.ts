@@ -1,4 +1,4 @@
-﻿import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
+﻿import { ChitChatFactory } from "../../chitchat/chats/ChitchatFactory";
 import { Record } from "immutable";
 import { createAction, Reducer } from "redux-actions";
 import * as Rx from "rxjs/Rx";

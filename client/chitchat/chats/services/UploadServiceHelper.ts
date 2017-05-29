@@ -1,5 +1,5 @@
 import { queue } from "async";
-import { ChitChatFactory } from "../chitchatFactory";
+import { ChitChatFactory } from "../ChitchatFactory";
 
 const config = ChitChatFactory.getInstance().config;
 

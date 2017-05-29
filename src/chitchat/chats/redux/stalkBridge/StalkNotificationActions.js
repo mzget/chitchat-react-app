@@ -10,8 +10,8 @@
 var BackendFactory_1 = require("../../BackendFactory");
 var CryptoHelper = require("../../utils/CryptoHelper");
 var Message_1 = require("../../../shared/Message");
-var chitchatFactory_1 = require("../../chitchatFactory");
-var getStore = function () { return chitchatFactory_1.ChitChatFactory.getInstance().store; };
+var ChitchatFactory_1 = require("../../ChitchatFactory");
+var getStore = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().store; };
 exports.STALK_NOTICE_NEW_MESSAGE = "STALK_NOTICE_NEW_MESSAGE";
 var stalkNotiNewMessage = function (payload) { return ({ type: exports.STALK_NOTICE_NEW_MESSAGE, payload: payload }); };
 var init = function (onSuccess) {
