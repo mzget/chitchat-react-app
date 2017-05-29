@@ -3,7 +3,6 @@
  *
  */
 
-// import * as Stalk from "stalk-js";
 import { Stalk, ChatRoomApi, Utils, StalkEvents, StalkFactory } from "stalk-js";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
@@ -51,13 +50,11 @@ export class BackendFactory {
         return this.chatLogComp;
     }
 
-    getServer(): Promise<Stalk.Server> {
-        return new Promise((resolve, rejected) => {
-            if (this.stalk._isConnected)
-                resolve(this.stalk);
-            else
-                rejected();
-        });
+    async getServer() {
+        if (this.stalk._isConnected)
+            return await this.stalk;
+        else
+            throw new Error("Stalk connection not yet ready.");
     }
 
     getChatApi() {
@@ -106,6 +103,10 @@ export class BackendFactory {
         return result;
     }
 
+    private async checkOut() {
+        await StalkFactory.checkOut(this.stalk);
+    }
+
     login(username: string, hexPassword: string, deviceToken: string): Promise<any> {
         let email = username;
         let promise = new Promise(function executor(resolve, reject) {
@@ -141,12 +142,7 @@ export class BackendFactory {
     logout() {
         let self = this;
         let promise = new Promise(function exe(resolve, reject) {
-            if (Stalk.getInstance) {
-                if (!!self.stalk.pomelo)
-                    self.stalk.pomelo.setReconnect(false);
-                self.stalk.logout();
-                self.stalk.dispose();
-            }
+            self.checkOut();
 
             if (!!self.pushDataListener) self.pushDataListener = null;
             if (!!self.dataManager) self.dataManager = null;

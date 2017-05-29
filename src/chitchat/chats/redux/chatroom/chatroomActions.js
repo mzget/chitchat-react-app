@@ -256,15 +256,18 @@ export function leaveRoomAction() {
             let room_id = _room._id;
             ChatRoomComponent.getInstance().dispose();
             dispatch(leaveRoom());
-            BackendFactory.getInstance().getServer().then(server => {
-                server.LeaveChatRoomRequest(token, room_id, (err, res) => {
-                    console.log("LeaveChatRoomRequest", err, res);
-                    NotificationManager.regisNotifyNewMessageEvent();
+            let backendFactory = BackendFactory.getInstance();
+            if (backendFactory) {
+                backendFactory.getServer().then(server => {
+                    server.LeaveChatRoomRequest(token, room_id, (err, res) => {
+                        console.log("LeaveChatRoomRequest", err, res);
+                        NotificationManager.regisNotifyNewMessageEvent();
+                    });
+                    dispatch(updateLastAccessRoom(room_id));
+                }).catch(err => {
+                    dispatch(updateLastAccessRoom(room_id));
                 });
-                dispatch(updateLastAccessRoom(room_id));
-            }).catch(err => {
-                dispatch(updateLastAccessRoom(room_id));
-            });
+            }
         }
         else {
             dispatch({ type: "" });

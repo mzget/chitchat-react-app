@@ -66,21 +66,22 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
 
     constructor() {
         this._isReady = false;
-        this.dataListener = BackendFactory.getInstance().dataListener;
+        let backendFactory = BackendFactory.getInstance();
+        this.dataListener = backendFactory.dataListener;
 
         this.dataListener.addOnRoomAccessListener(this.onAccessRoom.bind(this));
         this.dataListener.addOnChatListener(this.onChat.bind(this));
         this.dataListener.addOnAddRoomAccessListener(this.onAddRoomAccess.bind(this));
         this.dataListener.addOnUpdateRoomAccessListener(this.onUpdatedLastAccessTime.bind(this));
 
-        BackendFactory.getInstance().getServer().then(server => {
-            this.serverImp = server;
-        }).catch(err => {
-            if (err)
-                console.warn("Stalk server fail", err);
-        });
-
-        console.log("ChatsLogComponent : constructor");
+        if (backendFactory) {
+            backendFactory.getServer().then(server => {
+                this.serverImp = server;
+            }).catch(err => {
+                if (err)
+                    console.warn("Stalk server fail", err);
+            });
+        }
     }
 
     private chatListeners = new Array<(param) => void>();

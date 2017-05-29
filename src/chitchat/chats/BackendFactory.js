@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-// import * as Stalk from "stalk-js";
 import { Stalk, ChatRoomApi, StalkFactory } from "stalk-js";
 import DataManager from "./dataManager";
 import DataListener from "./dataListener";
@@ -42,11 +41,11 @@ export class BackendFactory {
         return this.chatLogComp;
     }
     getServer() {
-        return new Promise((resolve, rejected) => {
+        return __awaiter(this, void 0, void 0, function* () {
             if (this.stalk._isConnected)
-                resolve(this.stalk);
+                return yield this.stalk;
             else
-                rejected();
+                throw new Error("Stalk connection not yet ready.");
         });
     }
     getChatApi() {
@@ -94,6 +93,11 @@ export class BackendFactory {
             return result;
         });
     }
+    checkOut() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield StalkFactory.checkOut(this.stalk);
+        });
+    }
     login(username, hexPassword, deviceToken) {
         let email = username;
         let promise = new Promise(function executor(resolve, reject) {
@@ -126,12 +130,7 @@ export class BackendFactory {
     logout() {
         let self = this;
         let promise = new Promise(function exe(resolve, reject) {
-            if (Stalk.getInstance) {
-                if (!!self.stalk.pomelo)
-                    self.stalk.pomelo.setReconnect(false);
-                self.stalk.logout();
-                self.stalk.dispose();
-            }
+            self.checkOut();
             if (!!self.pushDataListener)
                 self.pushDataListener = null;
             if (!!self.dataManager)

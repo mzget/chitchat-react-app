@@ -45,9 +45,9 @@ export function stalkLogin(user) {
     backendFactory.stalkInit().then(socket => {
         backendFactory.handshake(user._id).then((connector) => {
             backendFactory.checkIn(user).then((value) => {
+                console.log("Joined stalk-service success", value);
                 let result = JSON.parse(JSON.stringify(value.data));
                 if (result.success) {
-                    console.log("Joined chat-server success", result);
                     backendFactory.getServerListener();
                     backendFactory.startChatServerListener();
                     stalkManageConnection();
@@ -97,9 +97,6 @@ function stalkManageConnection() {
 export function stalkLogout() {
     return __awaiter(this, void 0, void 0, function* () {
         const backendFactory = BackendFactory.getInstance();
-        let server = yield backendFactory.getServer();
-        if (server) {
-            server.logout();
-        }
+        return yield backendFactory.logout();
     });
 }
