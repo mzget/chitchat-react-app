@@ -1,0 +1,24 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "module": "commonjs",
+    "jsx": "react",
+    "alwaysStrict": true,
+    "rootDirs": [
+      "client"
+    ],
+    "outDir": "src",
+    "typeRoots": [
+      "node_modules/@types",
+      "node_modules/@reactivex/rxjs",
+      "node_modules/stalk-js"
+    ],
+    "lib": [
+      "es2015.promise",
+      "es2015"
+    ]
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
