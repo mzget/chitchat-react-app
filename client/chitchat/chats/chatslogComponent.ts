@@ -5,7 +5,7 @@
  */
 import * as async from "async";
 import { ServerImplemented } from "stalk-js";
-import { ChitChatFactory } from "./chitchatFactory";
+import { ChitChatFactory } from "./ChitchatFactory";
 const authReducer = () => ChitChatFactory.getInstance().authStore;
 
 import { IRoomAccessListenerImp } from "./abstracts/IRoomAccessListenerImp";
