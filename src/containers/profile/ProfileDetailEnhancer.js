@@ -12,8 +12,8 @@ var react_redux_1 = require("react-redux");
 var recompose_1 = require("recompose");
 var ProfileDetail_1 = require("./ProfileDetail");
 var userRx = require("../../redux/user/userRx");
-var chitchatFactory_1 = require("../../chitchat/chats/chitchatFactory");
-var config = function () { return chitchatFactory_1.ChitChatFactory.getInstance().config; };
+var ChitchatFactory_1 = require("../../chitchat/chats/ChitchatFactory");
+var config = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
 var mapStateToProps = function (state) { return ({
     userReducer: state.userReducer,
     alertReducer: state.alertReducer

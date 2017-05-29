@@ -43,8 +43,8 @@ var BackendFactory_1 = require("../../BackendFactory");
 var StalkNotificationAction = require("./StalkNotificationActions");
 var ChatLogsActions = require("../chatlogs/chatlogsActions");
 var StalkPushActions = require("./stalkPushActions");
-var chitchatFactory_1 = require("../../chitchatFactory");
-var getStore = function () { return chitchatFactory_1.ChitChatFactory.getInstance().store; };
+var ChitchatFactory_1 = require("../../ChitchatFactory");
+var getStore = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().store; };
 exports.getSessionToken = function () {
     var backendFactory = BackendFactory_1.BackendFactory.getInstance();
     return getStore().getState().stalkReducer.stalkToken;

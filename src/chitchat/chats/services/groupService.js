@@ -1,10 +1,10 @@
 "use strict";
 var Rx = require("rxjs");
 var ajax = Rx.Observable.ajax;
-var chitchatFactory_1 = require("../chitchatFactory");
+var ChitchatFactory_1 = require("../ChitchatFactory");
 var chitchatServiceUtils_1 = require("../utils/chitchatServiceUtils");
-var getConfig = function () { return chitchatFactory_1.ChitChatFactory.getInstance().config; };
-var authReducer = function () { return chitchatFactory_1.ChitChatFactory.getInstance().authStore; };
+var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
+var authReducer = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().authStore; };
 function addMember(room_id, member) {
     return ajax({
         method: "POST",

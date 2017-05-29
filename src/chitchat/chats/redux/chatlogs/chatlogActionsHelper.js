@@ -34,8 +34,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var chitchatFactory_1 = require("../../chitchatFactory");
-var getTeam = function () { return chitchatFactory_1.ChitChatFactory.getInstance().teamStore; };
+var ChitchatFactory_1 = require("../../ChitchatFactory");
+var getTeam = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().teamStore; };
 function getContactProfile(userId) {
     return __awaiter(this, void 0, void 0, function () {
         var members;

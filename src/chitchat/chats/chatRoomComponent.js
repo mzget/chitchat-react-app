@@ -47,9 +47,9 @@ var chatroomService = require("./services/chatroomService");
 var secureServiceFactory_1 = require("./secure/secureServiceFactory");
 var Message_1 = require("../shared/Message");
 var StickerPath_1 = require("../consts/StickerPath");
-var chitchatFactory_1 = require("./chitchatFactory");
-var getConfig = function () { return chitchatFactory_1.ChitChatFactory.getInstance().config; };
-var getStore = function () { return chitchatFactory_1.ChitChatFactory.getInstance().store; };
+var ChitchatFactory_1 = require("./ChitchatFactory");
+var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
+var getStore = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().store; };
 var ServerEventListener_1 = require("./ServerEventListener");
 var ChatRoomComponent = (function () {
     function ChatRoomComponent() {

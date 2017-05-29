@@ -10,7 +10,7 @@ import { Utils } from "stalk-js";
 import { ServerEventListener } from "../../ServerEventListener";
 
 import * as chatroomService from "../../services/chatroomService";
-import ChatRoomComponent from "../../chatRoomComponent";
+import { ChatRoomComponent } from "../../chatRoomComponent";
 import { BackendFactory } from "../../BackendFactory";
 import SecureServiceFactory from "../../secure/secureServiceFactory";
 
@@ -22,7 +22,7 @@ import { Room, RoomType, IMember } from "../../..//shared/Room";
 import { MessageType, IMessage } from "../../../shared/Message";
 import { MemberImp } from "../../models/MemberImp";
 
-import { ChitChatFactory } from "../../chitchatFactory";
+import { ChitChatFactory } from "../../ChitchatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 const getConfig = () => ChitChatFactory.getInstance().config;
 const authReducer = () => ChitChatFactory.getInstance().authStore;

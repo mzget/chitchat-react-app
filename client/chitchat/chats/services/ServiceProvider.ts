@@ -1,6 +1,6 @@
 import * as Rx from "rxjs/Rx";
 
-import { ChitChatFactory } from "../chitchatFactory";
+import { ChitChatFactory } from "../ChitchatFactory";
 import { withToken, chitchat_headers } from "../utils/chitchatServiceUtils";
 const getConfig = () => ChitChatFactory.getInstance().config;
 const authReducer = () => ChitChatFactory.getInstance().authStore;

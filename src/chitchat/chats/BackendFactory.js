@@ -39,20 +39,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var stalk_js_1 = require("stalk-js");
-var dataManager_1 = require("./dataManager");
-var dataListener_1 = require("./dataListener");
-var pushDataListener_1 = require("./pushDataListener");
-var chatslogComponent_1 = require("./chatslogComponent");
+var DataManager_1 = require("./DataManager");
+var DataListener_1 = require("./DataListener");
+var PushDataListener_1 = require("./PushDataListener");
+var ChatslogComponent_1 = require("./ChatslogComponent");
 var ServerEventListener_1 = require("./ServerEventListener");
-var chitchatFactory_1 = require("./chitchatFactory");
-var getConfig = function () { return chitchatFactory_1.ChitChatFactory.getInstance().config; };
+var ChitchatFactory_1 = require("./ChitchatFactory");
+var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
 var ChatRoomApiProvider = stalk_js_1.ChatRoomApi.ChatRoomApiProvider;
 var BackendFactory = (function () {
     function BackendFactory() {
         console.log("BackendFactory:");
-        this.pushDataListener = new pushDataListener_1.PushDataListener();
-        this.dataManager = new dataManager_1.DataManager();
-        this.dataListener = new dataListener_1.DataListener(this.dataManager);
+        this.pushDataListener = new PushDataListener_1.PushDataListener();
+        this.dataManager = new DataManager_1.DataManager();
+        this.dataListener = new DataListener_1.DataListener(this.dataManager);
     }
     BackendFactory.getInstance = function () {
         return BackendFactory.instance;
@@ -170,7 +170,7 @@ var BackendFactory = (function () {
         return promise;
     };
     BackendFactory.prototype.createChatlogs = function () {
-        this.chatLogComp = new chatslogComponent_1.ChatsLogComponent();
+        this.chatLogComp = new ChatslogComponent_1.ChatsLogComponent();
         return this.chatLogComp;
     };
     BackendFactory.prototype.getChatApi = function () {

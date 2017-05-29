@@ -37,8 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 var secureServiceFactory_1 = require("../secure/secureServiceFactory");
 var Message_1 = require("../../shared/Message");
-var chitchatFactory_1 = require("../chitchatFactory");
-var getConfig = function () { return chitchatFactory_1.ChitChatFactory.getInstance().config; };
+var ChitchatFactory_1 = require("../ChitchatFactory");
+var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
 exports.decryptionText = function (message) { return __awaiter(_this, void 0, void 0, function () {
     var secure, result;
     return __generator(this, function (_a) {

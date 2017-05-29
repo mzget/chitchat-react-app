@@ -4,13 +4,13 @@
  */
 
 import { Stalk, ChatRoomApi, Utils, StalkEvents, StalkFactory, ServerImplemented } from "stalk-js";
-import { DataManager } from "./dataManager";
-import { DataListener } from "./dataListener";
-import { PushDataListener } from "./pushDataListener";
-import { ChatsLogComponent } from "./chatslogComponent";
+import { DataManager } from "./DataManager";
+import { DataListener } from "./DataListener";
+import { PushDataListener } from "./PushDataListener";
+import { ChatsLogComponent } from "./ChatslogComponent";
 import { ServerEventListener } from "./ServerEventListener";
 
-import { ChitChatFactory } from "./chitchatFactory";
+import { ChitChatFactory } from "./ChitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 const { ChatRoomApiProvider } = ChatRoomApi;
 

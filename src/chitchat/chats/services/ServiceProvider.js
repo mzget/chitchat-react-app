@@ -1,9 +1,9 @@
 "use strict";
 var Rx = require("rxjs/Rx");
-var chitchatFactory_1 = require("../chitchatFactory");
+var ChitchatFactory_1 = require("../ChitchatFactory");
 var chitchatServiceUtils_1 = require("../utils/chitchatServiceUtils");
-var getConfig = function () { return chitchatFactory_1.ChitChatFactory.getInstance().config; };
-var authReducer = function () { return chitchatFactory_1.ChitChatFactory.getInstance().authStore; };
+var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
+var authReducer = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().authStore; };
 function getLastAccessRoomInfo(team_id) {
     return fetch(getConfig().Stalk.api.user + "/lastAccessRoom/?team_id=" + team_id, {
         method: "GET",

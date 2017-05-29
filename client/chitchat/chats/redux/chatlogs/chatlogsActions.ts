@@ -15,7 +15,7 @@ import ChatLog from "../../models/chatLog";
 import * as ServiceProvider from "../../services/ServiceProvider";
 import * as chatroomActions from "../chatroom/chatroomActions";
 
-import { ChitChatFactory } from "../../chitchatFactory";
+import { ChitChatFactory } from "../../ChitchatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 const authReducer = () => ChitChatFactory.getInstance().authStore;
 

@@ -1,8 +1,8 @@
 "use strict";
 require("isomorphic-fetch");
-var chitchatFactory_1 = require("../chitchatFactory");
+var ChitchatFactory_1 = require("../ChitchatFactory");
 var chitchatServiceUtils_1 = require("../utils/chitchatServiceUtils");
-var getConfig = function () { return chitchatFactory_1.ChitChatFactory.getInstance().config; };
+var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
 function auth(user) {
     return fetch("" + getConfig().api.auth, {
         method: "POST",

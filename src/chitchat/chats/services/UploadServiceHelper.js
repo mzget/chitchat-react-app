@@ -1,7 +1,7 @@
 "use strict";
 var async_1 = require("async");
-var chitchatFactory_1 = require("../chitchatFactory");
-var config = chitchatFactory_1.ChitChatFactory.getInstance().config;
+var ChitchatFactory_1 = require("../ChitchatFactory");
+var config = ChitchatFactory_1.ChitChatFactory.getInstance().config;
 function manageUploadQueue(files, target_api, onFinished, speedCallBack, onSpeedCallBack) {
     if (speedCallBack === void 0) { speedCallBack = false; }
     var results = [];

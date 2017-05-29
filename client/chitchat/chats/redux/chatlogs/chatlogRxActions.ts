@@ -9,10 +9,10 @@ const { ajax } = Rx.Observable;
 
 import { BackendFactory } from "../../BackendFactory";
 import { StalkAccount, RoomAccessData } from "../../../shared/Stalk";
-import ChatRoomComponent from "../../chatRoomComponent";
+import { ChatRoomComponent } from "../../chatRoomComponent";
 import * as ServiceProvider from "../../services/ServiceProvider";
 
-import { ChitChatFactory } from "../../chitchatFactory";
+import { ChitChatFactory } from "../../ChitchatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 const authReducer = () => ChitChatFactory.getInstance().authStore;
 
