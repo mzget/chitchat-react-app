@@ -6,8 +6,8 @@
 import * as Rx from "rxjs/Rx";
 const { ajax, fromPromise } = Rx.Observable;
 
-import ChatRoomComponent from "../../chatRoomComponent";
-import { ChitChatFactory } from "../../chitchatFactory";
+import { ChatRoomComponent } from "../../ChatRoomComponent";
+import { ChitChatFactory } from "../../ChitchatFactory";
 import * as chatroomService from "../../services/chatroomService";
 
 const getConfig = () => ChitChatFactory.getInstance().config;

@@ -47,13 +47,12 @@ var ServerEventListener_1 = require("./ServerEventListener");
 var chitchatFactory_1 = require("./chitchatFactory");
 var getConfig = function () { return chitchatFactory_1.ChitChatFactory.getInstance().config; };
 var ChatRoomApiProvider = stalk_js_1.ChatRoomApi.ChatRoomApiProvider;
-var ServerImplemented = stalk_js_1.Stalk.ServerImplemented;
 var BackendFactory = (function () {
     function BackendFactory() {
         console.log("BackendFactory:");
         this.pushDataListener = new pushDataListener_1.PushDataListener();
-        this.dataManager = new dataManager_1["default"]();
-        this.dataListener = new dataListener_1["default"](this.dataManager);
+        this.dataManager = new dataManager_1.DataManager();
+        this.dataListener = new dataListener_1.DataListener(this.dataManager);
     }
     BackendFactory.getInstance = function () {
         return BackendFactory.instance;
@@ -64,10 +63,6 @@ var BackendFactory = (function () {
         }
         return BackendFactory.instance;
     };
-    BackendFactory.prototype.createChatlogs = function () {
-        this.chatLogComp = new chatslogComponent_1.ChatsLogComponent();
-        return this.chatLogComp;
-    };
     BackendFactory.prototype.getServer = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -76,22 +71,12 @@ var BackendFactory = (function () {
                         if (!this.stalk._isConnected) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.stalk];
                     case 1: return [2 /*return*/, _a.sent()];
-                    case 2: throw new Error("Stalk connection not yet ready.");
+                    case 2:
+                        console.log("Stalk connection not yet ready.");
+                        return [2 /*return*/, null];
                 }
             });
         });
-    };
-    BackendFactory.prototype.getChatApi = function () {
-        if (!this.chatRoomApiProvider) {
-            this.chatRoomApiProvider = new ChatRoomApiProvider(this.stalk.getClient());
-        }
-        return this.chatRoomApiProvider;
-    };
-    BackendFactory.prototype.getServerListener = function () {
-        if (!this.serverEventsListener) {
-            this.serverEventsListener = new ServerEventListener_1.ServerEventListener(this.stalk.getClient());
-        }
-        return this.serverEventsListener;
     };
     BackendFactory.prototype.stalkInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -164,35 +149,11 @@ var BackendFactory = (function () {
             });
         });
     };
-    BackendFactory.prototype.login = function (username, hexPassword, deviceToken) {
-        var email = username;
-        var promise = new Promise(function executor(resolve, reject) {
-            stalk_js_1.Stalk.getInstance().logIn(email, hexPassword, deviceToken, function (err, res) {
-                if (!!err) {
-                    reject(err);
-                }
-                else {
-                    resolve(res);
-                }
-            });
-        });
-        return promise;
-    };
-    BackendFactory.prototype.loginByToken = function (tokenBearer) {
-        var token = tokenBearer;
-        var promise = new Promise(function (resolved, rejected) {
-            console.warn(token);
-            stalk_js_1.Stalk.getInstance().TokenAuthen(token, function (err, res) {
-                if (!!err) {
-                    rejected(err);
-                }
-                else {
-                    resolved(res);
-                }
-            });
-        });
-        return promise;
-    };
+    /**
+     * @returns
+     *
+     * @memberof BackendFactory
+     */
     BackendFactory.prototype.logout = function () {
         var self = this;
         var promise = new Promise(function exe(resolve, reject) {
@@ -208,12 +169,26 @@ var BackendFactory = (function () {
         });
         return promise;
     };
-    BackendFactory.prototype.startChatServerListener = function (resolve) {
-        this.serverEventsListener.addFrontendListener(this.dataManager);
+    BackendFactory.prototype.createChatlogs = function () {
+        this.chatLogComp = new chatslogComponent_1.ChatsLogComponent();
+        return this.chatLogComp;
+    };
+    BackendFactory.prototype.getChatApi = function () {
+        if (!this.chatRoomApiProvider) {
+            this.chatRoomApiProvider = new ChatRoomApiProvider(this.stalk.getSocket());
+        }
+        return this.chatRoomApiProvider;
+    };
+    BackendFactory.prototype.getServerListener = function () {
+        if (!this.serverEventsListener) {
+            this.serverEventsListener = new ServerEventListener_1.ServerEventListener(this.stalk.getSocket());
+        }
+        return this.serverEventsListener;
+    };
+    BackendFactory.prototype.subscriptions = function () {
         this.serverEventsListener.addServerListener(this.dataListener);
         this.serverEventsListener.addChatListener(this.dataListener);
         this.serverEventsListener.addPushListener(this.pushDataListener);
-        this.serverEventsListener.addListenner(resolve);
     };
     return BackendFactory;
 }());

@@ -17,7 +17,7 @@ interface IMemberMep {
     [key: string]: ContactInfo;
 }
 
-export default class DataManager implements StalkEvents.IFrontendServerListener {
+export class DataManager {
     private myProfile: StalkAccount;
     public orgGroups: IRoomMap = {};
     public projectBaseGroups: IRoomMap = {};
@@ -191,7 +191,6 @@ export default class DataManager implements StalkEvents.IFrontendServerListener 
      * Contacts ....
      */
     public onUserLogin(dataEvent) {
-        console.log("user logedIn", JSON.stringify(dataEvent));
     }
 
     public updateContactImage(contactId: string, url: string) {

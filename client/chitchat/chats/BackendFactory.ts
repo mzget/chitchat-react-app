@@ -3,9 +3,9 @@
  *
  */
 
-import { Stalk, ChatRoomApi, Utils, StalkEvents, StalkFactory } from "stalk-js";
-import DataManager from "./dataManager";
-import DataListener from "./dataListener";
+import { Stalk, ChatRoomApi, Utils, StalkEvents, StalkFactory, ServerImplemented } from "stalk-js";
+import { DataManager } from "./dataManager";
+import { DataListener } from "./dataListener";
 import { PushDataListener } from "./pushDataListener";
 import { ChatsLogComponent } from "./chatslogComponent";
 import { ServerEventListener } from "./ServerEventListener";
@@ -13,7 +13,6 @@ import { ServerEventListener } from "./ServerEventListener";
 import { ChitChatFactory } from "./chitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 const { ChatRoomApiProvider } = ChatRoomApi;
-const { ServerImplemented } = Stalk;
 
 export class BackendFactory {
     private static instance: BackendFactory;
@@ -28,7 +27,7 @@ export class BackendFactory {
         return BackendFactory.instance;
     }
 
-    stalk: Stalk.ServerImplemented;
+    stalk: ServerImplemented;
     chatRoomApiProvider: ChatRoomApi.ChatRoomApiProvider;
     serverEventsListener: ServerEventListener;
     pushDataListener: PushDataListener;
@@ -44,32 +43,13 @@ export class BackendFactory {
         this.dataListener = new DataListener(this.dataManager);
     }
 
-    createChatlogs() {
-        this.chatLogComp = new ChatsLogComponent();
-
-        return this.chatLogComp;
-    }
-
     async getServer() {
         if (this.stalk._isConnected)
             return await this.stalk;
-        else
-            throw new Error("Stalk connection not yet ready.");
-    }
-
-    getChatApi() {
-        if (!this.chatRoomApiProvider) {
-            this.chatRoomApiProvider = new ChatRoomApiProvider(this.stalk.getClient());
+        else {
+            console.log("Stalk connection not yet ready.");
+            return null;
         }
-        return this.chatRoomApiProvider;
-    }
-
-    getServerListener() {
-        if (!this.serverEventsListener) {
-            this.serverEventsListener = new ServerEventListener(this.stalk.getClient());
-        }
-
-        return this.serverEventsListener;
     }
 
     async stalkInit() {
@@ -81,7 +61,7 @@ export class BackendFactory {
     async handshake(uid: string) {
         try {
             // @ get connector server.
-            let msg = {} as Utils.dataDict;
+            let msg = {} as Stalk.IDictionary;
             msg["uid"] = uid;
             msg["x-api-key"] = getConfig().Stalk.apiKey;
             let connector = await StalkFactory.geteEnter(this.stalk, msg);
@@ -96,7 +76,7 @@ export class BackendFactory {
     }
 
     async checkIn(user: any) {
-        let msg = {} as Utils.dataDict;
+        let msg = {} as Stalk.IDictionary;
         msg["user"] = user;
         msg["x-api-key"] = getConfig().Stalk.apiKey;
         let result = await StalkFactory.checkIn(this.stalk, msg);
@@ -107,38 +87,11 @@ export class BackendFactory {
         await StalkFactory.checkOut(this.stalk);
     }
 
-    login(username: string, hexPassword: string, deviceToken: string): Promise<any> {
-        let email = username;
-        let promise = new Promise(function executor(resolve, reject) {
-            Stalk.getInstance().logIn(email, hexPassword, deviceToken, (err, res) => {
-                if (!!err) {
-                    reject(err);
-                }
-                else {
-                    resolve(res);
-                }
-            });
-        });
-        return promise;
-    }
-
-    loginByToken(tokenBearer: string): Promise<any> {
-        let token = tokenBearer;
-        let promise = new Promise((resolved, rejected) => {
-            console.warn(token);
-            Stalk.getInstance().TokenAuthen(token, (err, res) => {
-                if (!!err) {
-                    rejected(err);
-                }
-                else {
-                    resolved(res);
-                }
-            });
-        });
-
-        return promise;
-    }
-
+    /**
+     * @returns 
+     * 
+     * @memberof BackendFactory
+     */
     logout() {
         let self = this;
         let promise = new Promise(function exe(resolve, reject) {
@@ -155,12 +108,30 @@ export class BackendFactory {
         return promise;
     }
 
-    startChatServerListener(resolve?) {
-        this.serverEventsListener.addFrontendListener(this.dataManager);
+    createChatlogs() {
+        this.chatLogComp = new ChatsLogComponent();
+
+        return this.chatLogComp;
+    }
+
+    getChatApi() {
+        if (!this.chatRoomApiProvider) {
+            this.chatRoomApiProvider = new ChatRoomApiProvider(this.stalk.getSocket());
+        }
+        return this.chatRoomApiProvider;
+    }
+
+    getServerListener() {
+        if (!this.serverEventsListener) {
+            this.serverEventsListener = new ServerEventListener(this.stalk.getSocket());
+        }
+
+        return this.serverEventsListener;
+    }
+
+    subscriptions() {
         this.serverEventsListener.addServerListener(this.dataListener);
         this.serverEventsListener.addChatListener(this.dataListener);
         this.serverEventsListener.addPushListener(this.pushDataListener);
-
-        this.serverEventsListener.addListenner(resolve);
     }
 }

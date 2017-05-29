@@ -7,9 +7,9 @@
 import * as async from "async";
 
 import { BackendFactory } from "./BackendFactory";
-import DataManager from "./dataManager";
-import DataListener from "./dataListener";
-import { Stalk, ChatroomApi, StalkEvents } from "stalk-js";
+import { DataManager } from "./dataManager";
+import { DataListener } from "./dataListener";
+import { Stalk, ChatEvents, ServerImplemented, ChatRoomApiProvider } from "stalk-js";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import * as chatroomService from "./services/chatroomService";
 
@@ -28,11 +28,7 @@ const getStore = () => ChitChatFactory.getInstance().store;
 
 import { ServerEventListener } from "./ServerEventListener";
 
-type ServerImplemented = Stalk.Server;
-type ChatRoomApiProvider = ChatroomApi;
-let serverImp: ServerImplemented = null;
-
-export default class ChatRoomComponent implements StalkEvents.IChatServerEvents {
+export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
     private static instance: ChatRoomComponent;
     public static getInstance(): ChatRoomComponent {
         if (!ChatRoomComponent.instance) {
@@ -59,11 +55,7 @@ export default class ChatRoomComponent implements StalkEvents.IChatServerEvents 
     constructor() {
         this.secure = SecureServiceFactory.getService();
         this.chatRoomApi = BackendFactory.getInstance().getChatApi();
-        BackendFactory.getInstance().getServer().then(server => {
-            serverImp = server;
-        }).catch(err => {
 
-        });
         this.dataManager = BackendFactory.getInstance().dataManager;
         this.dataListener = BackendFactory.getInstance().dataListener;
 
@@ -79,7 +71,7 @@ export default class ChatRoomComponent implements StalkEvents.IChatServerEvents 
 
             self.dataManager.messageDAL.saveData(self.roomId, chatMessages).then(chats => {
                 if (!!this.chatroomDelegate) {
-                    this.chatroomDelegate(ServerEventListener.ON_CHAT, message);
+                    this.chatroomDelegate(ChatEvents.ON_CHAT, message);
                 }
             });
         };
@@ -112,7 +104,7 @@ export default class ChatRoomComponent implements StalkEvents.IChatServerEvents 
             console.info("this msg come from other room.");
 
             if (!!this.outsideRoomDelegete) {
-                this.outsideRoomDelegete(ServerEventListener.ON_CHAT, message);
+                this.outsideRoomDelegete(ChatEvents.ON_CHAT, message);
             }
         }
     }
@@ -445,7 +437,11 @@ export default class ChatRoomComponent implements StalkEvents.IChatServerEvents 
     }
 
     public getMemberProfile(member: IMember, callback: (err, res) => void) {
-        Stalk.Server.getInstance().getMemberProfile(member._id, callback);
+        BackendFactory.getInstance().getServer().then(server => {
+            if (server)
+                server.gtMemberProfile(member._id, callback);
+        });
+
     }
 
     public async getMessages() {

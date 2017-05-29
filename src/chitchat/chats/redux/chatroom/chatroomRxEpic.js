@@ -6,12 +6,12 @@
  */
 var Rx = require("rxjs/Rx");
 var _a = Rx.Observable, ajax = _a.ajax, fromPromise = _a.fromPromise;
-var chatRoomComponent_1 = require("../../chatRoomComponent");
-var chitchatFactory_1 = require("../../chitchatFactory");
+var ChatRoomComponent_1 = require("../../ChatRoomComponent");
+var ChitchatFactory_1 = require("../../ChitchatFactory");
 var chatroomService = require("../../services/chatroomService");
-var getConfig = function () { return chitchatFactory_1.ChitChatFactory.getInstance().config; };
-var getStore = function () { return chitchatFactory_1.ChitChatFactory.getInstance().store; };
-var authReducer = function () { return chitchatFactory_1.ChitChatFactory.getInstance().authStore; };
+var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
+var getStore = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().store; };
+var authReducer = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().authStore; };
 exports.FETCH_PRIVATE_CHATROOM = "FETCH_PRIVATE_CHATROOM";
 exports.FETCH_PRIVATE_CHATROOM_FAILURE = "FETCH_PRIVATE_CHATROOM_FAILURE";
 exports.FETCH_PRIVATE_CHATROOM_SUCCESS = "FETCH_PRIVATE_CHATROOM_SUCCESS";
@@ -70,7 +70,7 @@ var getPersistendMessage_success = function (payload) { return ({ type: exports.
 var getPersistendMessage_failure = function (error) { return ({ type: GET_PERSISTEND_MESSAGE_FAILURE, payload: error }); };
 exports.getPersistendMessageEpic = function (action$) {
     return action$.ofType(GET_PERSISTEND_MESSAGE)
-        .mergeMap(function (action) { return chatRoomComponent_1["default"].getInstance().getPersistentMessage(action.payload); })
+        .mergeMap(function (action) { return ChatRoomComponent_1.ChatRoomComponent.getInstance().getPersistentMessage(action.payload); })
         .map(function (json) { return getPersistendMessage_success(json); })
         .takeUntil(action$.ofType(GET_PERSISTEND_MESSAGE_CANCELLED))["catch"](function (error) { return Rx.Observable.of(getPersistendMessage_failure(error)); });
     // Next call 2 method below. -->

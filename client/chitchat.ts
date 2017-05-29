@@ -1,4 +1,4 @@
-import { ChitChatFactory } from "./chitchat/chats/chitchatFactory";
+import { ChitChatFactory } from "./chitchat/chats/ChitchatFactory";
 import { IConfig } from "./chitchat/chats/iConfig";
 export const chitchatFactory = ChitChatFactory.createInstance();
 

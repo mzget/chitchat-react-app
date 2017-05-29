@@ -4,13 +4,13 @@
  * ChatRoomComponent for handle some business logic of chat room.
  */
 import * as async from "async";
-import { ServerImplemented, IDictionary } from "stalk-js";
+import { ServerImplemented } from "stalk-js";
 import { ChitChatFactory } from "./chitchatFactory";
 const authReducer = () => ChitChatFactory.getInstance().authStore;
 
 import { IRoomAccessListenerImp } from "./abstracts/IRoomAccessListenerImp";
 import ChatLog from "./models/chatLog";
-import DataListener from "./dataListener";
+import { DataListener } from "./dataListener";
 import { BackendFactory } from "./BackendFactory";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import { IMessage, MessageType, IMessageMeta } from "../shared/Message";
@@ -30,8 +30,7 @@ export interface IUnread { message: IMessage; rid: string; count: number; }
 export class Unread { message: IMessage; rid: string; count: number; }
 
 export class ChatsLogComponent implements IRoomAccessListenerImp {
-    serverImp: ServerImplemented = null;
-    dataListener: DataListener = null;
+    dataListener: DataListener;
 
     private chatlog_count: number = 0;
     public _isReady: boolean;
@@ -73,15 +72,6 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         this.dataListener.addOnChatListener(this.onChat.bind(this));
         this.dataListener.addOnAddRoomAccessListener(this.onAddRoomAccess.bind(this));
         this.dataListener.addOnUpdateRoomAccessListener(this.onUpdatedLastAccessTime.bind(this));
-
-        if (backendFactory) {
-            backendFactory.getServer().then(server => {
-                this.serverImp = server;
-            }).catch(err => {
-                if (err)
-                    console.warn("Stalk server fail", err);
-            });
-        }
     }
 
     private chatListeners = new Array<(param) => void>();
@@ -143,7 +133,7 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         }
     }
 
-    public getUnreadMessages(user_id: string, roomAccess: RoomAccessData[], callback: (err, logsData: Array<IUnread>) => void) {
+    public getUnreadMessages(user_id: string, roomAccess: RoomAccessData[], callback: (err: Error | null, logsData: Array<IUnread>) => void) {
         let self = this;
         let unreadLogs = new Array<IUnread>();
 
@@ -334,7 +324,7 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         });
     }
 
-    private async organizeChatLogMap(unread: IUnread, roomInfo: Room, done) {
+    private async organizeChatLogMap(unread: IUnread, roomInfo: Room, done: () => void) {
         let self = this;
         let log = new ChatLog(roomInfo);
         log.setNotiCount(unread.count);

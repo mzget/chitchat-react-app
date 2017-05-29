@@ -1,3 +1,4 @@
+"use strict";
 var SecureService = (function () {
     function SecureService() {
         this.key = "CHITCHAT!@#$%^&*()_+|===";

@@ -77,7 +77,7 @@ function stalkLogin(user) {
                 var result = JSON.parse(JSON.stringify(value.data));
                 if (result.success) {
                     backendFactory.getServerListener();
-                    backendFactory.startChatServerListener();
+                    backendFactory.subscriptions();
                     stalkManageConnection();
                     StalkNotificationAction.regisNotifyNewMessageEvent();
                     StalkPushActions.stalkPushInit();

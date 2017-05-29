@@ -51,15 +51,10 @@ var chitchatFactory_1 = require("./chitchatFactory");
 var getConfig = function () { return chitchatFactory_1.ChitChatFactory.getInstance().config; };
 var getStore = function () { return chitchatFactory_1.ChitChatFactory.getInstance().store; };
 var ServerEventListener_1 = require("./ServerEventListener");
-var serverImp = null;
 var ChatRoomComponent = (function () {
     function ChatRoomComponent() {
         this.secure = secureServiceFactory_1["default"].getService();
         this.chatRoomApi = BackendFactory_1.BackendFactory.getInstance().getChatApi();
-        BackendFactory_1.BackendFactory.getInstance().getServer().then(function (server) {
-            serverImp = server;
-        })["catch"](function (err) {
-        });
         this.dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
         this.dataListener = BackendFactory_1.BackendFactory.getInstance().dataListener;
         this.dataListener.addOnChatListener(this.onChat.bind(this));
@@ -84,7 +79,7 @@ var ChatRoomComponent = (function () {
             chatMessages.push(message);
             self.dataManager.messageDAL.saveData(self.roomId, chatMessages).then(function (chats) {
                 if (!!_this.chatroomDelegate) {
-                    _this.chatroomDelegate(ServerEventListener_1.ServerEventListener.ON_CHAT, message);
+                    _this.chatroomDelegate(stalk_js_1.ChatEvents.ON_CHAT, message);
                 }
             });
         };
@@ -113,7 +108,7 @@ var ChatRoomComponent = (function () {
         else {
             console.info("this msg come from other room.");
             if (!!this.outsideRoomDelegete) {
-                this.outsideRoomDelegete(ServerEventListener_1.ServerEventListener.ON_CHAT, message);
+                this.outsideRoomDelegete(stalk_js_1.ChatEvents.ON_CHAT, message);
             }
         }
     };
@@ -499,7 +494,10 @@ var ChatRoomComponent = (function () {
         });
     };
     ChatRoomComponent.prototype.getMemberProfile = function (member, callback) {
-        stalk_js_1.Stalk.Server.getInstance().getMemberProfile(member._id, callback);
+        BackendFactory_1.BackendFactory.getInstance().getServer().then(function (server) {
+            if (server)
+                server.gtMemberProfile(member._id, callback);
+        });
     };
     ChatRoomComponent.prototype.getMessages = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -520,5 +518,4 @@ var ChatRoomComponent = (function () {
     };
     return ChatRoomComponent;
 }());
-exports.__esModule = true;
-exports["default"] = ChatRoomComponent;
+exports.ChatRoomComponent = ChatRoomComponent;

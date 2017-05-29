@@ -3,8 +3,9 @@
   "compilerOptions": {
     "module": "commonjs",
     "jsx": "react",
+    "alwaysStrict": true,
     "rootDirs": [
-      "client/**/*"
+      "client"
     ],
     "outDir": "src",
     "typeRoots": [

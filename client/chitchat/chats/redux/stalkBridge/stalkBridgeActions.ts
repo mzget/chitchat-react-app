@@ -51,7 +51,7 @@ export function stalkLogin(user: any) {
                 let result: { success: boolean, token: any } = JSON.parse(JSON.stringify(value.data));
                 if (result.success) {
                     backendFactory.getServerListener();
-                    backendFactory.startChatServerListener();
+                    backendFactory.subscriptions();
                     stalkManageConnection();
 
                     StalkNotificationAction.regisNotifyNewMessageEvent();

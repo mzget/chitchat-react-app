@@ -7,7 +7,7 @@ import {
     Switch
 } from "react-router-dom";
 
-import { chitchatFactory } from "./chitchat";
+import { chitchatFactory } from "./Chitchat";
 /**
  * ### configureStore
  *  ```configureStore``` will connect the ```reducers```,

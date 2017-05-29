@@ -1,6 +1,6 @@
 "use strict";
-var chitchatFactory_1 = require("./chitchat/chats/chitchatFactory");
-exports.chitchatFactory = chitchatFactory_1.ChitChatFactory.createInstance();
+var ChitchatFactory_1 = require("./chitchat/chats/ChitchatFactory");
+exports.chitchatFactory = ChitchatFactory_1.ChitChatFactory.createInstance();
 var api_stalk = "203.150.95.146";
 var stalkPort = 3050;
 var stalkKey = "chitchat1234";

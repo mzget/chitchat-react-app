@@ -1,11 +1,12 @@
-﻿import { absSpartan } from "../libs/stalk/spartanEvents";
+﻿import { ChatEvents } from "stalk-js";
 import { StalkAccount, RoomAccessData } from "../shared/Stalk";
 import { IMessage } from "../shared/Message";
 import { Room } from "../shared/Room";
 
-import DataManager from "./dataManager";
+import { DataManager } from "./dataManager";
+import { ServerListener } from "./ServerEventListener";
 
-export default class DataListener implements absSpartan.IServerListener, absSpartan.IChatServerListener {
+export class DataListener implements ServerListener, ChatEvents.IChatServerEvents {
     private dataManager: DataManager;
 
     private onChatEventListeners = new Array<(message: IMessage) => void>();
@@ -128,7 +129,11 @@ export default class DataListener implements absSpartan.IServerListener, absSpar
     //#region User.
 
     onUserLogin(dataEvent) {
+        console.log("user loged In", JSON.stringify(dataEvent));
         this.dataManager.onUserLogin(dataEvent);
+    }
+    onUserLogout(dataEvent) {
+        console.log("user loged Out", JSON.stringify(dataEvent));
     }
 
     onUserUpdateImageProfile(dataEvent) {

@@ -57,9 +57,6 @@ var Unread = (function () {
 exports.Unread = Unread;
 var ChatsLogComponent = (function () {
     function ChatsLogComponent() {
-        var _this = this;
-        this.serverImp = null;
-        this.dataListener = null;
         this.chatlog_count = 0;
         this.chatslog = new Map();
         this.unreadMessageMap = new Map();
@@ -71,14 +68,6 @@ var ChatsLogComponent = (function () {
         this.dataListener.addOnChatListener(this.onChat.bind(this));
         this.dataListener.addOnAddRoomAccessListener(this.onAddRoomAccess.bind(this));
         this.dataListener.addOnUpdateRoomAccessListener(this.onUpdatedLastAccessTime.bind(this));
-        if (backendFactory) {
-            backendFactory.getServer().then(function (server) {
-                _this.serverImp = server;
-            })["catch"](function (err) {
-                if (err)
-                    console.warn("Stalk server fail", err);
-            });
-        }
     }
     ChatsLogComponent.prototype.getChatsLog = function () {
         return Array.from(this.chatslog.values());

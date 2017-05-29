@@ -4,15 +4,16 @@
  * Support by@ nattapon.r@live.com
  */
 
-import { StalkEvents } from "stalk-js";
+import { StalkEvents, ChatEvents, PushEvents, IPomelo } from "stalk-js";
+export abstract class ServerListener implements StalkEvents.IServerListener, StalkEvents.BaseEvents {
+    onUserLogin;
+    onUserLogout;
+    onAccessRoom;
+    onAddRoomAccess;
+    onUpdatedLastAccessTime;
+}
 
 export class ServerEventListener {
-    public static ON_ADD: string = "onAdd";
-    public static ON_LEAVE: string = "onLeave";
-    public static ON_CHAT: string = "onChat";
-    public static ON_MESSAGE_READ: string = "onMessageRead";
-    public static ON_GET_MESSAGES_READERS: string = "onGetMessagesReaders";
-
     public static ON_VIDEO_CALL: string = "onVideoCall";
     public static ON_VOICE_CALL: string = "onVoiceCall";
     public static ON_HANGUP_CALL: string = "onHangupCall";
@@ -21,234 +22,146 @@ export class ServerEventListener {
     public static ON_ACCESS_ROOMS: string = "onAccessRooms";
     public static ON_ADD_ROOM_ACCESS: string = "onAddRoomAccess";
     public static ON_UPDATED_LASTACCESSTIME: string = "onUpdatedLastAccessTime";
-    // <!-- Group -->
-    public static ON_CREATE_GROUP_SUCCESS: string = "onCreateGroupSuccess";
-    public static ON_EDITED_GROUP_MEMBER: string = "onEditGroupMembers";
-    public static ON_EDITED_GROUP_NAME: string = "onEditGroupName";
-    public static ON_EDITED_GROUP_IMAGE: string = "onEditGroupImage";
-    public static ON_NEW_GROUP_CREATED: string = "onNewGroupCreated";
-    public static ON_UPDATE_MEMBER_INFO_IN_PROJECTBASE: string = "onUpdateMemberInfoInProjectBase";
-    // <!-- User -->
-    public static ON_USER_LOGIN: string = "onUserLogin";
-    public static ON_USER_UPDATE_IMAGE_PROFILE: string = "onUserUpdateImgProfile";
-    public static ON_USER_UPDATE_PROFILE: string = "onUserUpdateProfile";
-    // <!-- Frontend server --->
-    public static ON_GET_ME: string = "onGetMe";
-    public static ON_GET_COMPANY_INFO: string = "onGetCompanyInfo";
-    public static ON_GET_COMPANY_MEMBERS: string = "onGetCompanyMembers";
-    public static ON_GET_PRIVATE_GROUPS: string = "onGetPrivateGroups";
-    public static ON_GET_ORGANIZE_GROUPS: string = "onGetOrganizeGroups";
-    public static ON_GET_PROJECT_BASE_GROUPS: string = "onGetProjectBaseGroups";
 
-    private chatServerListener: StalkEvents.IChatServerListener;
-    private frontendListener: StalkEvents.IFrontendServerListener;
-    private rtcCallListener: StalkEvents.IRTCListener;
-    private serverListener: StalkEvents.IServerListener;
-    private pushServerListener: StalkEvents.IPushServerListener;
-    public addFrontendListener(obj: StalkEvents.IFrontendServerListener): void {
-        this.frontendListener = obj;
+    socket: IPomelo;
+
+    constructor(socket: IPomelo) {
+        this.socket = socket;
     }
-    public addServerListener(obj: StalkEvents.IServerListener): void {
+
+    /**
+     * 
+     * 
+     * @private
+     * @type {StalkEvents.IServerListener}
+     * @memberof ServerEventListener
+     */
+    private serverListener: ServerListener;
+    public addServerListener(obj: ServerListener): void {
         this.serverListener = obj;
-    }
-    public addChatListener(obj: StalkEvents.IChatServerListener): void {
-        this.chatServerListener = obj;
-    }
-    public addRTCListener(obj: StalkEvents.IRTCListener): void {
-        this.rtcCallListener = obj;
-    }
-    public addPushListener(obj: StalkEvents.IPushServerListener) {
-        this.pushServerListener = obj;
-    }
 
-    pomelo: any;
-
-    constructor(socket) {
-        this.pomelo = socket;
-    }
-
-    public addListenner(resolve?: Function) {
-        this.callFrontendServer();
-        this.callChatServer();
-        this.callRTCEvents();
-        this.callServerEvents();
-        this.callPushEvents();
-
-        if (!!resolve)
-            resolve();
-    }
-
-    private callFrontendServer() {
-        let self = this;
-
-        self.pomelo.on(ServerEventListener.ON_GET_ME, function (data) {
-            console.log(ServerEventListener.ON_GET_ME, JSON.stringify(data));
-
-            self.frontendListener.onGetMe(data);
-        });
-        self.pomelo.on(ServerEventListener.ON_GET_COMPANY_INFO, function (data) {
-            console.log(ServerEventListener.ON_GET_COMPANY_INFO, JSON.stringify(data));
-
-            self.frontendListener.onGetCompanyInfo(data);
-        });
-
-        // wait message from the server.
-        self.pomelo.on(ServerEventListener.ON_GET_ORGANIZE_GROUPS, function (data) {
-            console.log(ServerEventListener.ON_GET_ORGANIZE_GROUPS, JSON.stringify(data));
-
-            self.frontendListener.onGetOrganizeGroupsComplete(data);
-        });
-        self.pomelo.on(ServerEventListener.ON_GET_COMPANY_MEMBERS, data => {
-            console.log(ServerEventListener.ON_GET_COMPANY_MEMBERS, JSON.stringify(data));
-
-            self.frontendListener.onGetCompanyMemberComplete(data);
-        });
-        self.pomelo.on(ServerEventListener.ON_GET_PRIVATE_GROUPS, data => {
-            console.log(ServerEventListener.ON_GET_PRIVATE_GROUPS, JSON.stringify(data));
-
-            self.frontendListener.onGetPrivateGroupsComplete(data);
-        });
-        self.pomelo.on(ServerEventListener.ON_GET_PROJECT_BASE_GROUPS, data => {
-            console.log(ServerEventListener.ON_GET_PROJECT_BASE_GROUPS, JSON.stringify(data));
-
-            self.frontendListener.onGetProjectBaseGroupsComplete(data);
-        });
-    }
-
-    private callChatServer() {
-        let self = this;
-
-        self.pomelo.on(ServerEventListener.ON_CHAT, function (data) {
-            console.log(ServerEventListener.ON_CHAT, JSON.stringify(data));
-
-            self.chatServerListener.onChat(data);
-        });
-
-        self.pomelo.on(ServerEventListener.ON_ADD, (data) => {
-            console.log(ServerEventListener.ON_ADD, data);
-
-            self.chatServerListener.onRoomJoin(data);
-        });
-
-        self.pomelo.on(ServerEventListener.ON_LEAVE, (data) => {
-            console.log(ServerEventListener.ON_LEAVE, data);
-
-            self.chatServerListener.onLeaveRoom(data);
-        });
-
-        self.pomelo.on(ServerEventListener.ON_MESSAGE_READ, (data) => {
-            console.log(ServerEventListener.ON_MESSAGE_READ);
-
-            self.chatServerListener.onMessageRead(data);
-        });
-
-        self.pomelo.on(ServerEventListener.ON_GET_MESSAGES_READERS, (data) => {
-            console.log(ServerEventListener.ON_GET_MESSAGES_READERS);
-
-            self.chatServerListener.onGetMessagesReaders(data);
-        });
-    }
-
-    private callRTCEvents() {
-        let self = this;
-
-        self.pomelo.on(ServerEventListener.ON_VIDEO_CALL, (data) => {
-            console.log(ServerEventListener.ON_VIDEO_CALL, JSON.stringify(data));
-
-            self.rtcCallListener.onVideoCall(data);
-        });
-        self.pomelo.on(ServerEventListener.ON_VOICE_CALL, (data) => {
-            console.log(ServerEventListener.ON_VOICE_CALL, JSON.stringify(data));
-
-            self.rtcCallListener.onVoiceCall(data);
-        });
-        self.pomelo.on(ServerEventListener.ON_HANGUP_CALL, (data) => {
-            console.log(ServerEventListener.ON_HANGUP_CALL, JSON.stringify(data));
-
-            self.rtcCallListener.onHangupCall(data);
-        });
-        self.pomelo.on(ServerEventListener.ON_THE_LINE_IS_BUSY, (data) => {
-            console.log(ServerEventListener.ON_THE_LINE_IS_BUSY, JSON.stringify(data));
-
-            self.rtcCallListener.onTheLineIsBusy(data);
-        });
-    }
-
-    private callServerEvents() {
         let self = this;
 
         // <!-- AccessRoom Info -->
-        self.pomelo.on(ServerEventListener.ON_ACCESS_ROOMS, (data) => {
+        self.socket.on(ServerEventListener.ON_ACCESS_ROOMS, (data) => {
             console.log(ServerEventListener.ON_ACCESS_ROOMS, data);
 
             self.serverListener.onAccessRoom(data);
         });
-        self.pomelo.on(ServerEventListener.ON_ADD_ROOM_ACCESS, (data) => {
+        self.socket.on(ServerEventListener.ON_ADD_ROOM_ACCESS, (data) => {
             console.log(ServerEventListener.ON_ADD_ROOM_ACCESS, data);
 
             self.serverListener.onAddRoomAccess(data);
         });
-        self.pomelo.on(ServerEventListener.ON_UPDATED_LASTACCESSTIME, (data) => {
+        self.socket.on(ServerEventListener.ON_UPDATED_LASTACCESSTIME, (data) => {
             console.log(ServerEventListener.ON_UPDATED_LASTACCESSTIME, data);
 
             self.serverListener.onUpdatedLastAccessTime(data);
         });
 
         // <!-- User -->
-        self.pomelo.on(ServerEventListener.ON_USER_LOGIN, data => {
-            console.log(ServerEventListener.ON_USER_LOGIN);
+        self.socket.on(StalkEvents.ON_USER_LOGIN, data => {
+            console.log(StalkEvents.ON_USER_LOGIN);
 
             self.serverListener.onUserLogin(data);
         });
-        self.pomelo.on(ServerEventListener.ON_USER_UPDATE_PROFILE, (data) => {
-            console.log(ServerEventListener.ON_USER_UPDATE_PROFILE);
+        self.socket.on(StalkEvents.ON_USER_LOGOUT, data => {
+            console.log(StalkEvents.ON_USER_LOGOUT);
 
-            self.serverListener.onUserUpdateProfile(data);
-        });
-        self.pomelo.on(ServerEventListener.ON_USER_UPDATE_IMAGE_PROFILE, (data) => {
-            console.log(ServerEventListener.ON_USER_UPDATE_IMAGE_PROFILE);
-
-            self.serverListener.onUserUpdateImageProfile(data);
-        });
-
-        // <!-- Group -->
-        self.pomelo.on(ServerEventListener.ON_CREATE_GROUP_SUCCESS, (data) => {
-            console.log(ServerEventListener.ON_CREATE_GROUP_SUCCESS);
-
-            self.serverListener.onCreateGroupSuccess(data);
-        });
-        self.pomelo.on(ServerEventListener.ON_EDITED_GROUP_MEMBER, (data) => {
-            console.log(ServerEventListener.ON_EDITED_GROUP_MEMBER);
-
-            self.serverListener.onEditedGroupMember(data);
-        });
-        self.pomelo.on(ServerEventListener.ON_EDITED_GROUP_NAME, (data) => {
-            console.log(ServerEventListener.ON_EDITED_GROUP_NAME);
-
-            self.serverListener.onEditedGroupName(data);
-        });
-        self.pomelo.on(ServerEventListener.ON_EDITED_GROUP_IMAGE, (data) => {
-            console.log(ServerEventListener.ON_EDITED_GROUP_IMAGE);
-
-            self.serverListener.onEditedGroupImage(data);
-        });
-        self.pomelo.on(ServerEventListener.ON_NEW_GROUP_CREATED, (data) => {
-            console.log(ServerEventListener.ON_NEW_GROUP_CREATED);
-
-            self.serverListener.onNewGroupCreated(data);
-        });
-        self.pomelo.on(ServerEventListener.ON_UPDATE_MEMBER_INFO_IN_PROJECTBASE, (data) => {
-            console.log(ServerEventListener.ON_UPDATE_MEMBER_INFO_IN_PROJECTBASE);
-
-            self.serverListener.onUpdateMemberInfoInProjectBase(data);
+            self.serverListener.onUserLogout(data);
         });
     }
 
-    private callPushEvents() {
+    /**
+     * 
+     * 
+     * @private
+     * @type {ChatEvents.IChatServerEvents}
+     * @memberof ServerEventListener
+     */
+    private chatServerListener: ChatEvents.IChatServerEvents;
+    public addChatListener(obj: ChatEvents.IChatServerEvents): void {
+        this.chatServerListener = obj;
+
         let self = this;
 
-        self.pomelo.on(StalkEvents.ON_PUSH, function (data) {
-            console.log(StalkEvents.ON_PUSH, JSON.stringify(data));
+        self.socket.on(ChatEvents.ON_CHAT, function (data) {
+            console.log(ChatEvents.ON_CHAT, JSON.stringify(data));
+
+            self.chatServerListener.onChat(data);
+        });
+        self.socket.on(ChatEvents.ON_ADD, (data) => {
+            console.log(ChatEvents.ON_ADD, data);
+
+            self.chatServerListener.onRoomJoin(data);
+        });
+        self.socket.on(ChatEvents.ON_LEAVE, (data) => {
+            console.log(ChatEvents.ON_LEAVE, data);
+
+            self.chatServerListener.onLeaveRoom(data);
+        });
+
+        self.socket.on(ChatEvents.ON_MESSAGE_READ, (data) => {
+            console.log(ChatEvents.ON_MESSAGE_READ);
+
+            self.chatServerListener.onMessageRead(data);
+        });
+
+        self.socket.on(ChatEvents.ON_GET_MESSAGES_READERS, (data) => {
+            console.log(ChatEvents.ON_GET_MESSAGES_READERS);
+
+            self.chatServerListener.onGetMessagesReaders(data);
+        });
+    }
+
+    /**
+     * 
+     * 
+     * @private
+     * @type {StalkEvents.IRTCListener}
+     * @memberof ServerEventListener
+     */
+    private rtcCallListener: StalkEvents.IRTCListener;
+    public addRTCListener(obj: StalkEvents.IRTCListener): void {
+        this.rtcCallListener = obj;
+
+        let self = this;
+
+        self.socket.on(ServerEventListener.ON_VIDEO_CALL, (data) => {
+            console.log(ServerEventListener.ON_VIDEO_CALL, JSON.stringify(data));
+
+            self.rtcCallListener.onVideoCall(data);
+        });
+        self.socket.on(ServerEventListener.ON_VOICE_CALL, (data) => {
+            console.log(ServerEventListener.ON_VOICE_CALL, JSON.stringify(data));
+
+            self.rtcCallListener.onVoiceCall(data);
+        });
+        self.socket.on(ServerEventListener.ON_HANGUP_CALL, (data) => {
+            console.log(ServerEventListener.ON_HANGUP_CALL, JSON.stringify(data));
+
+            self.rtcCallListener.onHangupCall(data);
+        });
+        self.socket.on(ServerEventListener.ON_THE_LINE_IS_BUSY, (data) => {
+            console.log(ServerEventListener.ON_THE_LINE_IS_BUSY, JSON.stringify(data));
+
+            self.rtcCallListener.onTheLineIsBusy(data);
+        });
+    }
+
+    /**
+     * @private
+     * @type {StalkEvents.IPushServerListener}
+     * @memberof ServerEventListener
+     */
+    private pushServerListener: PushEvents.IPushServerListener;
+    public addPushListener(obj: PushEvents.IPushServerListener) {
+        this.pushServerListener = obj;
+
+        let self = this;
+
+        self.socket.on(PushEvents.ON_PUSH, function (data) {
+            console.log(PushEvents.ON_PUSH, JSON.stringify(data));
 
             self.pushServerListener.onPush(data);
         });

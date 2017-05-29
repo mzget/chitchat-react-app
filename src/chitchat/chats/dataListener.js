@@ -100,7 +100,11 @@ var DataListener = (function () {
     };
     //#region User.
     DataListener.prototype.onUserLogin = function (dataEvent) {
+        console.log("user loged In", JSON.stringify(dataEvent));
         this.dataManager.onUserLogin(dataEvent);
+    };
+    DataListener.prototype.onUserLogout = function (dataEvent) {
+        console.log("user loged Out", JSON.stringify(dataEvent));
     };
     DataListener.prototype.onUserUpdateImageProfile = function (dataEvent) {
         var jsonObj = JSON.parse(JSON.stringify(dataEvent));
@@ -149,5 +153,4 @@ var DataListener = (function () {
     ;
     return DataListener;
 }());
-exports.__esModule = true;
-exports["default"] = DataListener;
+exports.DataListener = DataListener;

@@ -195,7 +195,6 @@ var DataManager = (function () {
      * Contacts ....
      */
     DataManager.prototype.onUserLogin = function (dataEvent) {
-        console.log("user logedIn", JSON.stringify(dataEvent));
     };
     DataManager.prototype.updateContactImage = function (contactId, url) {
         if (!!this.contactsMember[contactId]) {
@@ -299,5 +298,4 @@ var DataManager = (function () {
     };
     return DataManager;
 }());
-exports.__esModule = true;
-exports["default"] = DataManager;
+exports.DataManager = DataManager;

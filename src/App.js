@@ -7,7 +7,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var React = require("react");
 var react_redux_1 = require("react-redux");
 var react_router_dom_1 = require("react-router-dom");
-var chitchat_1 = require("./chitchat");
+var Chitchat_1 = require("./Chitchat");
 /**
  * ### configureStore
  *  ```configureStore``` will connect the ```reducers```,
@@ -22,10 +22,10 @@ var Main_1 = require("./containers/Main");
 var m_Main_1 = require("./containers/m_Main");
 var AdminPageEnhanced_1 = require("./containers/AdminPageEnhanced");
 var Breakpoints_1 = require("./chitchat/consts/Breakpoints");
-chitchat_1.chitchatFactory.initStore(configureStore_1["default"]);
+Chitchat_1.chitchatFactory.initStore(configureStore_1["default"]);
 configureStore_1["default"].subscribe(function () {
-    chitchat_1.chitchatFactory.setAuthStore(configureStore_1["default"].getState().userReducer.user, configureStore_1["default"].getState().authReducer.token);
-    chitchat_1.chitchatFactory.setTeamStore({
+    Chitchat_1.chitchatFactory.setAuthStore(configureStore_1["default"].getState().userReducer.user, configureStore_1["default"].getState().authReducer.token);
+    Chitchat_1.chitchatFactory.setTeamStore({
         team: configureStore_1["default"].getState().teamReducer.team,
         members: configureStore_1["default"].getState().teamReducer.members
     });
