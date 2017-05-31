@@ -3,7 +3,7 @@
  *
  */
 
-import { Stalk, ChatRoomApi, Utils, StalkEvents, StalkFactory, ServerImplemented } from "stalk-js";
+import { Stalk, IDictionary, API, Utils, StalkEvents, StalkFactory, ServerImplemented } from "stalk-js";
 import { DataManager } from "./DataManager";
 import { DataListener } from "./DataListener";
 import { PushDataListener } from "./PushDataListener";
@@ -12,7 +12,6 @@ import { ServerEventListener } from "./ServerEventListener";
 
 import { ChitChatFactory } from "./ChitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
-const { ChatRoomApiProvider } = ChatRoomApi;
 
 export class BackendFactory {
     private static instance: BackendFactory;
@@ -28,7 +27,6 @@ export class BackendFactory {
     }
 
     stalk: ServerImplemented;
-    chatRoomApiProvider: ChatRoomApi.ChatRoomApiProvider;
     serverEventsListener: ServerEventListener;
     pushDataListener: PushDataListener;
     dataManager: DataManager;
@@ -43,9 +41,9 @@ export class BackendFactory {
         this.dataListener = new DataListener(this.dataManager);
     }
 
-    async getServer() {
+    getServer() {
         if (this.stalk._isConnected)
-            return await this.stalk;
+            return this.stalk;
         else {
             console.log("Stalk connection not yet ready.");
             return null;
@@ -61,7 +59,7 @@ export class BackendFactory {
     async handshake(uid: string) {
         try {
             // @ get connector server.
-            let msg = {} as Stalk.IDictionary;
+            let msg = {} as IDictionary;
             msg["uid"] = uid;
             msg["x-api-key"] = getConfig().Stalk.apiKey;
             let connector = await StalkFactory.geteEnter(this.stalk, msg);
@@ -76,7 +74,7 @@ export class BackendFactory {
     }
 
     async checkIn(user: any) {
-        let msg = {} as Stalk.IDictionary;
+        let msg = {} as IDictionary;
         msg["user"] = user;
         msg["x-api-key"] = getConfig().Stalk.apiKey;
         let result = await StalkFactory.checkIn(this.stalk, msg);
@@ -112,13 +110,6 @@ export class BackendFactory {
         this.chatLogComp = new ChatsLogComponent();
 
         return this.chatLogComp;
-    }
-
-    getChatApi() {
-        if (!this.chatRoomApiProvider) {
-            this.chatRoomApiProvider = new ChatRoomApiProvider(this.stalk.getSocket());
-        }
-        return this.chatRoomApiProvider;
     }
 
     getServerListener() {

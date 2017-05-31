@@ -112,23 +112,18 @@ function stalkManageConnection() {
     return __awaiter(this, void 0, void 0, function () {
         var backendFactory, server;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    backendFactory = BackendFactory_1.BackendFactory.getInstance();
-                    return [4 /*yield*/, backendFactory.getServer()];
-                case 1:
-                    server = _a.sent();
-                    server.onSocketReconnect = function (data) {
-                        getStore().dispatch(onStalkSocketReconnect(data.type));
-                    };
-                    server.onSocketClose = function (data) {
-                        getStore().dispatch(onStalkSocketClose(data.type));
-                    };
-                    server.onDisconnected = function (data) {
-                        getStore().dispatch(onStalkSocketDisconnected(data.type));
-                    };
-                    return [2 /*return*/];
-            }
+            backendFactory = BackendFactory_1.BackendFactory.getInstance();
+            server = backendFactory.getServer();
+            server.onSocketReconnect = function (data) {
+                getStore().dispatch(onStalkSocketReconnect(data.type));
+            };
+            server.onSocketClose = function (data) {
+                getStore().dispatch(onStalkSocketClose(data.type));
+            };
+            server.onDisconnected = function (data) {
+                getStore().dispatch(onStalkSocketDisconnected(data.type));
+            };
+            return [2 /*return*/];
         });
     });
 }

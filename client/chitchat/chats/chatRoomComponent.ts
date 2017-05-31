@@ -9,7 +9,7 @@ import * as async from "async";
 import { BackendFactory } from "./BackendFactory";
 import { DataManager } from "./DataManager";
 import { DataListener } from "./DataListener";
-import { Stalk, ChatEvents, ServerImplemented, ChatRoomApiProvider } from "stalk-js";
+import { Stalk, ChatEvents, ServerImplemented, ChatRoomAPI } from "stalk-js";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import * as chatroomService from "./services/chatroomService";
 
@@ -40,7 +40,6 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
 
     public chatroomDelegate: (eventName: string, data: any) => void;
     public outsideRoomDelegete: (eventName: string, data: any) => void;
-    private chatRoomApi: ChatRoomApiProvider;
     private roomId: string;
     public getRoomId(): string {
         return this.roomId;
@@ -54,7 +53,6 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
 
     constructor() {
         this.secure = SecureServiceFactory.getService();
-        this.chatRoomApi = BackendFactory.getInstance().getChatApi();
 
         this.dataManager = BackendFactory.getInstance().dataManager;
         this.dataListener = BackendFactory.getInstance().dataListener;
@@ -125,7 +123,7 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
                     value.readers = newMsg.readers;
 
                     if (!!self.chatroomDelegate)
-                        self.chatroomDelegate(ServerEventListener.ON_MESSAGE_READ, null);
+                        self.chatroomDelegate(ChatEvents.ON_MESSAGE_READ, null);
 
                     resolve();
                     return true;
@@ -417,10 +415,11 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
 
     public updateReadMessages() {
         let self = this;
-
+        let backendFactory = BackendFactory.getInstance();
         async.map(self.chatMessages, function itorator(message, resultCb) {
-            if (!BackendFactory.getInstance().dataManager.isMySelf(message.sender)) {
-                self.chatRoomApi.updateMessageReader(message._id, message.rid);
+            if (!backendFactory.dataManager.isMySelf(message.sender)) {
+                let chatroomApi = backendFactory.getServer().getChatRoomAPI();
+                chatroomApi.updateMessageReader(message._id, message.rid);
             }
 
             resultCb(null, null);
@@ -433,15 +432,16 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         let self = this;
 
         let res = await self.getTopEdgeMessageTime();
-        self.chatRoomApi.getMessagesReaders(res.toString());
+        let backendFactory = BackendFactory.getInstance();
+        let chatroomApi = backendFactory.getServer().getChatRoomAPI();
+        chatroomApi.getMessagesReaders(res.toString());
     }
 
     public getMemberProfile(member: IMember, callback: (err, res) => void) {
-        BackendFactory.getInstance().getServer().then(server => {
-            if (server)
-                server.gtMemberProfile(member._id, callback);
-        });
+        let server = BackendFactory.getInstance().getServer();
 
+        if (server)
+            server.getMemberProfile(member._id, callback);
     }
 
     public async getMessages() {

@@ -6,7 +6,7 @@
 
 import * as Rx from "rxjs/Rx";
 import * as R from "ramda";
-import { Utils } from "stalk-js";
+import { Utils, ChatEvents } from "stalk-js";
 import { ServerEventListener } from "../../ServerEventListener";
 
 import * as chatroomService from "../../services/chatroomService";
@@ -69,8 +69,8 @@ export function initChatRoom(currentRoom: Room) {
 }
 
 function onChatRoomDelegate(event, newMsg: IMessage) {
-    if (event === ServerEventListener.ON_CHAT) {
-        console.log("onChatRoomDelegate: ", ServerEventListener.ON_CHAT, newMsg);
+    if (event === ChatEvents.ON_CHAT) {
+        console.log("onChatRoomDelegate: ", ChatEvents.ON_CHAT, newMsg);
         /**
          * Todo **
          * - if message_id is mine. Replace message_id to local messages list.
@@ -86,7 +86,9 @@ function onChatRoomDelegate(event, newMsg: IMessage) {
             console.log("AppState: ", appState); // active, background, inactive
             if (!!appState) {
                 if (appState === "active") {
-                    BackendFactory.getInstance().getChatApi().updateMessageReader(newMsg._id, newMsg.rid);
+                    let backendFactory = BackendFactory.getInstance();
+                    let chatApi = backendFactory.getServer().getChatRoomAPI();
+                    chatApi.updateMessageReader(newMsg._id, newMsg.rid);
                 }
                 else if (appState !== "active") {
                     // @ When user joined room but appState is inActive.
@@ -98,13 +100,13 @@ function onChatRoomDelegate(event, newMsg: IMessage) {
             getStore().dispatch(onNewMessage(newMsg));
         }
     }
-    else if (event === ServerEventListener.ON_MESSAGE_READ) {
-        console.log("serviceListener: ", ServerEventListener.ON_MESSAGE_READ, newMsg);
+    else if (event === ChatEvents.ON_MESSAGE_READ) {
+        console.log("serviceListener: ", ChatEvents.ON_MESSAGE_READ, newMsg);
         //                service.set(chatRoomComponent.chatMessages);
     }
 }
 function onOutSideRoomDelegate(event, data) {
-    if (event === ServerEventListener.ON_CHAT) {
+    if (event === ChatEvents.ON_CHAT) {
         console.log("Call notification here...", data); // active, background, inactive
         NotificationManager.notify(data);
     }
@@ -178,7 +180,9 @@ export function sendMessage(message: IMessage) {
         dispatch(send_message_request());
 
         if (message.type === MessageType[MessageType.Location]) {
-            BackendFactory.getInstance().getChatApi().chat("*", message, (err, res) => {
+            let backendFactory = BackendFactory.getInstance();
+            let chatApi = backendFactory.getServer().getChatRoomAPI();
+            chatApi.chat("*", message, (err, res) => {
                 dispatch(sendMessageResponse(err, res));
             });
             return;
@@ -187,7 +191,9 @@ export function sendMessage(message: IMessage) {
         if (message.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption === true) {
             secure.encryption(message.body).then(result => {
                 message.body = result;
-                BackendFactory.getInstance().getChatApi().chat("*", message, (err, res) => {
+                let backendFactory = BackendFactory.getInstance();
+                let chatApi = backendFactory.getServer().getChatRoomAPI();
+                chatApi.chat("*", message, (err, res) => {
                     dispatch(sendMessageResponse(err, res));
                 });
             }).catch(err => {
@@ -196,7 +202,9 @@ export function sendMessage(message: IMessage) {
             });
         }
         else {
-            BackendFactory.getInstance().getChatApi().chat("*", message, (err, res) => {
+            let backendFactory = BackendFactory.getInstance();
+            let chatApi = backendFactory.getServer().getChatRoomAPI();
+            chatApi.chat("*", message, (err, res) => {
                 dispatch(sendMessageResponse(err, res));
             });
         }
@@ -239,25 +247,27 @@ export const JOIN_ROOM_SUCCESS = "JOIN_ROOM_SUCCESS";
 export const JOIN_ROOM_FAILURE = "JOIN_ROOM_FAILURE";
 const joinRoom_request = () => ({ type: JOIN_ROOM_REQUEST });
 const joinRoom_success = (data?: any) => ({ type: JOIN_ROOM_SUCCESS, payload: data });
-const joinRoom_failure = () => ({ type: JOIN_ROOM_FAILURE });
+const joinRoom_failure = (error) => ({ type: JOIN_ROOM_FAILURE, payload: error });
 export function joinRoom(roomId: string, token: string, username: string) {
     return (dispatch) => {
         dispatch(joinRoom_request());
 
-        BackendFactory.getInstance().getServer().then(server => {
-            server.JoinChatRoomRequest(token, username, roomId, (err, res) => {
+        try {
+            let backendFactory = BackendFactory.getInstance();
+            let server = backendFactory.getServer();
+            server.getLobby().joinRoom(token, username, roomId, (err, res) => {
                 console.log("JoinChatRoomRequest value", res);
 
                 if (err || res.code !== Utils.statusCode.success) {
-                    dispatch(joinRoom_failure());
+                    dispatch(joinRoom_failure(err));
                 }
                 else {
                     dispatch(joinRoom_success());
                 }
             });
-        }).catch(err => {
-            dispatch(joinRoom_failure());
-        });
+        } catch (ex) {
+            dispatch(joinRoom_failure(ex.message));
+        }
     };
 }
 
@@ -275,18 +285,17 @@ export function leaveRoomAction() {
 
             dispatch(leaveRoom());
 
-            let backendFactory = BackendFactory.getInstance();
-            if (backendFactory) {
-                backendFactory.getServer().then(server => {
-                    server.LeaveChatRoomRequest(token, room_id, (err, res) => {
-                        console.log("LeaveChatRoomRequest", err, res);
-                        NotificationManager.regisNotifyNewMessageEvent();
-                    });
+            try {
+                let backendFactory = BackendFactory.getInstance();
+                let server = backendFactory.getServer();
 
-                    dispatch(updateLastAccessRoom(room_id));
-                }).catch(err => {
-                    dispatch(updateLastAccessRoom(room_id));
+                server.getLobby().leaveRoom(token, room_id, (err, res) => {
+                    console.log("LeaveChatRoomRequest", err, res);
+                    NotificationManager.regisNotifyNewMessageEvent();
                 });
+                dispatch(updateLastAccessRoom(room_id));
+            } catch (ex) {
+                dispatch(updateLastAccessRoom(room_id));
             }
         }
         else {

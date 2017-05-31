@@ -87,7 +87,7 @@ const onStalkSocketDisconnected = (data) => ({ type: STALK_ON_SOCKET_DISCONNECTE
 async function stalkManageConnection() {
     const backendFactory = BackendFactory.getInstance();
 
-    let server = await backendFactory.getServer();
+    let server = backendFactory.getServer();
     server.onSocketReconnect = (data) => {
         getStore().dispatch(onStalkSocketReconnect(data.type));
     };

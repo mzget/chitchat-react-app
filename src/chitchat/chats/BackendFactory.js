@@ -46,7 +46,6 @@ var ChatslogComponent_1 = require("./ChatslogComponent");
 var ServerEventListener_1 = require("./ServerEventListener");
 var ChitchatFactory_1 = require("./ChitchatFactory");
 var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
-var ChatRoomApiProvider = stalk_js_1.ChatRoomApi.ChatRoomApiProvider;
 var BackendFactory = (function () {
     function BackendFactory() {
         console.log("BackendFactory:");
@@ -64,19 +63,12 @@ var BackendFactory = (function () {
         return BackendFactory.instance;
     };
     BackendFactory.prototype.getServer = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!this.stalk._isConnected) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.stalk];
-                    case 1: return [2 /*return*/, _a.sent()];
-                    case 2:
-                        console.log("Stalk connection not yet ready.");
-                        return [2 /*return*/, null];
-                }
-            });
-        });
+        if (this.stalk._isConnected)
+            return this.stalk;
+        else {
+            console.log("Stalk connection not yet ready.");
+            return null;
+        }
     };
     BackendFactory.prototype.stalkInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -172,12 +164,6 @@ var BackendFactory = (function () {
     BackendFactory.prototype.createChatlogs = function () {
         this.chatLogComp = new ChatslogComponent_1.ChatsLogComponent();
         return this.chatLogComp;
-    };
-    BackendFactory.prototype.getChatApi = function () {
-        if (!this.chatRoomApiProvider) {
-            this.chatRoomApiProvider = new ChatRoomApiProvider(this.stalk.getSocket());
-        }
-        return this.chatRoomApiProvider;
     };
     BackendFactory.prototype.getServerListener = function () {
         if (!this.serverEventsListener) {

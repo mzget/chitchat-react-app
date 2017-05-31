@@ -5,7 +5,7 @@
  */
 "use strict";
 var BackendFactory_1 = require("../../chitchat/chats/BackendFactory");
-var httpStatusCode_1 = require("../../chitchat/libs/stalk/utils/httpStatusCode");
+var stalk_js_1 = require("stalk-js");
 var MessageActionsType = (function () {
     function MessageActionsType() {
     }
@@ -35,12 +35,13 @@ function getRoomId_failure() {
 function getDirectMessageRoomId(token, myId, contactId) {
     return function (dispatch) {
         dispatch(getRoomId_request());
-        BackendFactory_1.BackendFactory.getInstance().getServer().getPrivateChatRoomId(token, myId, contactId, function (err, res) {
+        var server = BackendFactory_1.BackendFactory.getInstance().getServer();
+        server.getPrivateChatRoomId(token, myId, contactId, function (err, res) {
             if (err) {
                 dispatch(getRoomId_failure());
             }
             else {
-                if (res.code == httpStatusCode_1["default"].success) {
+                if (res.code == stalk_js_1.Utils.statusCode.success) {
                     var roomInfo = res.data;
                     dispatch(getRoomId_success(roomInfo));
                 }
@@ -65,12 +66,13 @@ function leaveRoom_failure() {
 function leaveRoom(token, currentRid, username) {
     return function (dispatch) {
         dispatch(leaveRoom_request());
-        BackendFactory_1.BackendFactory.getInstance().getServer().LeaveChatRoomRequest(token, currentRid, username, function (err, res) {
+        var server = BackendFactory_1.BackendFactory.getInstance().getServer();
+        server.getLobby().leaveRoom(token, currentRid, function (err, res) {
             if (err) {
                 dispatch(leaveRoom_failure());
             }
             else {
-                if (res.code === httpStatusCode_1["default"].success) {
+                if (res.code === stalk_js_1.Utils.statusCode.success) {
                     dispatch(leaveRoom_success());
                 }
                 else {

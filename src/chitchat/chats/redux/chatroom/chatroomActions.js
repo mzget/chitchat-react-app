@@ -49,7 +49,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var R = require("ramda");
 var stalk_js_1 = require("stalk-js");
-var ServerEventListener_1 = require("../../ServerEventListener");
 var chatroomService = require("../../services/chatroomService");
 var ChatRoomComponent_1 = require("../../ChatRoomComponent");
 var BackendFactory_1 = require("../../BackendFactory");
@@ -101,8 +100,8 @@ function initChatRoom(currentRoom) {
 }
 exports.initChatRoom = initChatRoom;
 function onChatRoomDelegate(event, newMsg) {
-    if (event === ServerEventListener_1.ServerEventListener.ON_CHAT) {
-        console.log("onChatRoomDelegate: ", ServerEventListener_1.ServerEventListener.ON_CHAT, newMsg);
+    if (event === stalk_js_1.ChatEvents.ON_CHAT) {
+        console.log("onChatRoomDelegate: ", stalk_js_1.ChatEvents.ON_CHAT, newMsg);
         /**
          * Todo **
          * - if message_id is mine. Replace message_id to local messages list.
@@ -128,12 +127,12 @@ function onChatRoomDelegate(event, newMsg) {
             getStore().dispatch(onNewMessage(newMsg));
         }
     }
-    else if (event === ServerEventListener_1.ServerEventListener.ON_MESSAGE_READ) {
-        console.log("serviceListener: ", ServerEventListener_1.ServerEventListener.ON_MESSAGE_READ, newMsg);
+    else if (event === stalk_js_1.ChatEvents.ON_MESSAGE_READ) {
+        console.log("serviceListener: ", stalk_js_1.ChatEvents.ON_MESSAGE_READ, newMsg);
     }
 }
 function onOutSideRoomDelegate(event, data) {
-    if (event === ServerEventListener_1.ServerEventListener.ON_CHAT) {
+    if (event === stalk_js_1.ChatEvents.ON_CHAT) {
         console.log("Call notification here...", data); // active, background, inactive
         NotificationManager.notify(data);
     }
@@ -270,23 +269,26 @@ exports.JOIN_ROOM_SUCCESS = "JOIN_ROOM_SUCCESS";
 exports.JOIN_ROOM_FAILURE = "JOIN_ROOM_FAILURE";
 var joinRoom_request = function () { return ({ type: JOIN_ROOM_REQUEST }); };
 var joinRoom_success = function (data) { return ({ type: exports.JOIN_ROOM_SUCCESS, payload: data }); };
-var joinRoom_failure = function () { return ({ type: exports.JOIN_ROOM_FAILURE }); };
+var joinRoom_failure = function (error) { return ({ type: exports.JOIN_ROOM_FAILURE, payload: error }); };
 function joinRoom(roomId, token, username) {
     return function (dispatch) {
         dispatch(joinRoom_request());
-        BackendFactory_1.BackendFactory.getInstance().getServer().then(function (server) {
-            server.JoinChatRoomRequest(token, username, roomId, function (err, res) {
+        try {
+            var backendFactory = BackendFactory_1.BackendFactory.getInstance();
+            var server = backendFactory.getServer();
+            server.getLobby().joinRoom(token, username, roomId, function (err, res) {
                 console.log("JoinChatRoomRequest value", res);
                 if (err || res.code !== stalk_js_1.Utils.statusCode.success) {
-                    dispatch(joinRoom_failure());
+                    dispatch(joinRoom_failure(err));
                 }
                 else {
                     dispatch(joinRoom_success());
                 }
             });
-        })["catch"](function (err) {
-            dispatch(joinRoom_failure());
-        });
+        }
+        catch (ex) {
+            dispatch(joinRoom_failure(ex.message));
+        }
     };
 }
 exports.joinRoom = joinRoom;
@@ -298,21 +300,21 @@ function leaveRoomAction() {
     return function (dispatch) {
         var _room = getStore().getState().chatroomReducer.get("room");
         if (!!_room) {
-            var token_1 = getStore().getState().stalkReducer.stalkToken;
-            var room_id_1 = _room._id;
+            var token = getStore().getState().stalkReducer.stalkToken;
+            var room_id = _room._id;
             ChatRoomComponent_1.ChatRoomComponent.getInstance().dispose();
             dispatch(leaveRoom());
-            var backendFactory = BackendFactory_1.BackendFactory.getInstance();
-            if (backendFactory) {
-                backendFactory.getServer().then(function (server) {
-                    server.LeaveChatRoomRequest(token_1, room_id_1, function (err, res) {
-                        console.log("LeaveChatRoomRequest", err, res);
-                        NotificationManager.regisNotifyNewMessageEvent();
-                    });
-                    dispatch(chatlogRxActions_1.updateLastAccessRoom(room_id_1));
-                })["catch"](function (err) {
-                    dispatch(chatlogRxActions_1.updateLastAccessRoom(room_id_1));
+            try {
+                var backendFactory = BackendFactory_1.BackendFactory.getInstance();
+                var server = backendFactory.getServer();
+                server.getLobby().leaveRoom(token, room_id, function (err, res) {
+                    console.log("LeaveChatRoomRequest", err, res);
+                    NotificationManager.regisNotifyNewMessageEvent();
                 });
+                dispatch(chatlogRxActions_1.updateLastAccessRoom(room_id));
+            }
+            catch (ex) {
+                dispatch(chatlogRxActions_1.updateLastAccessRoom(room_id));
             }
         }
         else {
