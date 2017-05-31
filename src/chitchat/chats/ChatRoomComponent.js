@@ -53,7 +53,6 @@ var getStore = function () { return ChitchatFactory_1.ChitChatFactory.getInstanc
 var ChatRoomComponent = (function () {
     function ChatRoomComponent() {
         this.secure = secureServiceFactory_1["default"].getService();
-        this.chatRoomApi = BackendFactory_1.BackendFactory.getInstance().getChatApi();
         this.dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
         this.dataListener = BackendFactory_1.BackendFactory.getInstance().dataListener;
         this.dataListener.addOnChatListener(this.onChat.bind(this));
@@ -467,9 +466,11 @@ var ChatRoomComponent = (function () {
     };
     ChatRoomComponent.prototype.updateReadMessages = function () {
         var self = this;
+        var backendFactory = BackendFactory_1.BackendFactory.getInstance();
         async.map(self.chatMessages, function itorator(message, resultCb) {
-            if (!BackendFactory_1.BackendFactory.getInstance().dataManager.isMySelf(message.sender)) {
-                self.chatRoomApi.updateMessageReader(message._id, message.rid);
+            if (!backendFactory.dataManager.isMySelf(message.sender)) {
+                var chatroomApi = backendFactory.getServer().getChatRoomAPI();
+                chatroomApi.updateMessageReader(message._id, message.rid);
             }
             resultCb(null, null);
         }, function done(err) {
@@ -478,7 +479,7 @@ var ChatRoomComponent = (function () {
     };
     ChatRoomComponent.prototype.updateWhoReadMyMessages = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var self, res;
+            var self, res, backendFactory, chatroomApi;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -486,7 +487,9 @@ var ChatRoomComponent = (function () {
                         return [4 /*yield*/, self.getTopEdgeMessageTime()];
                     case 1:
                         res = _a.sent();
-                        self.chatRoomApi.getMessagesReaders(res.toString());
+                        backendFactory = BackendFactory_1.BackendFactory.getInstance();
+                        chatroomApi = backendFactory.getServer().getChatRoomAPI();
+                        chatroomApi.getMessagesReaders(res.toString());
                         return [2 /*return*/];
                 }
             });

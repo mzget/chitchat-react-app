@@ -116,7 +116,9 @@ function onChatRoomDelegate(event, newMsg) {
             console.log("AppState: ", appState); // active, background, inactive
             if (!!appState) {
                 if (appState === "active") {
-                    BackendFactory_1.BackendFactory.getInstance().getChatApi().updateMessageReader(newMsg._id, newMsg.rid);
+                    var backendFactory = BackendFactory_1.BackendFactory.getInstance();
+                    var chatApi = backendFactory.getServer().getChatRoomAPI();
+                    chatApi.updateMessageReader(newMsg._id, newMsg.rid);
                 }
                 else if (appState !== "active") {
                     // @ When user joined room but appState is inActive.
@@ -211,7 +213,9 @@ function sendMessage(message) {
     return function (dispatch) {
         dispatch(send_message_request());
         if (message.type === Message_1.MessageType[Message_1.MessageType.Location]) {
-            BackendFactory_1.BackendFactory.getInstance().getChatApi().chat("*", message, function (err, res) {
+            var backendFactory = BackendFactory_1.BackendFactory.getInstance();
+            var chatApi = backendFactory.getServer().getChatRoomAPI();
+            chatApi.chat("*", message, function (err, res) {
                 dispatch(sendMessageResponse(err, res));
             });
             return;
@@ -219,7 +223,9 @@ function sendMessage(message) {
         if (message.type === Message_1.MessageType[Message_1.MessageType.Text] && getConfig().appConfig.encryption === true) {
             secure.encryption(message.body).then(function (result) {
                 message.body = result;
-                BackendFactory_1.BackendFactory.getInstance().getChatApi().chat("*", message, function (err, res) {
+                var backendFactory = BackendFactory_1.BackendFactory.getInstance();
+                var chatApi = backendFactory.getServer().getChatRoomAPI();
+                chatApi.chat("*", message, function (err, res) {
                     dispatch(sendMessageResponse(err, res));
                 });
             })["catch"](function (err) {
@@ -228,7 +234,9 @@ function sendMessage(message) {
             });
         }
         else {
-            BackendFactory_1.BackendFactory.getInstance().getChatApi().chat("*", message, function (err, res) {
+            var backendFactory = BackendFactory_1.BackendFactory.getInstance();
+            var chatApi = backendFactory.getServer().getChatRoomAPI();
+            chatApi.chat("*", message, function (err, res) {
                 dispatch(sendMessageResponse(err, res));
             });
         }
