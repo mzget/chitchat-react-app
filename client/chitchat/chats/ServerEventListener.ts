@@ -102,7 +102,7 @@ export class ServerEventListener {
         });
 
         self.socket.on(ChatEvents.ON_MESSAGE_READ, (data) => {
-            console.log(ChatEvents.ON_MESSAGE_READ);
+            console.log(ChatEvents.ON_MESSAGE_READ, data);
 
             self.chatServerListener.onMessageRead(data);
         });

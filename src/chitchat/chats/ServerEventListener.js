@@ -57,7 +57,7 @@ var ServerEventListener = (function () {
             self.chatServerListener.onLeaveRoom(data);
         });
         self.socket.on(stalk_js_1.ChatEvents.ON_MESSAGE_READ, function (data) {
-            console.log(stalk_js_1.ChatEvents.ON_MESSAGE_READ);
+            console.log(stalk_js_1.ChatEvents.ON_MESSAGE_READ, data);
             self.chatServerListener.onMessageRead(data);
         });
         self.socket.on(stalk_js_1.ChatEvents.ON_GET_MESSAGES_READERS, function (data) {
