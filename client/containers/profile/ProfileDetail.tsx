@@ -6,6 +6,7 @@ import * as Colors from "material-ui/styles/colors";
 
 import { RaisedButton, TextField } from "material-ui";
 import Avatar from "material-ui/Avatar";
+import Subheader from 'material-ui/Subheader';
 
 import * as FileReaderInput from "react-file-reader-input";
 
@@ -36,24 +37,27 @@ interface IProfileDetailProps {
     onSubmit: () => void;
 }
 
+const getDetailHeight = () => {
+    return document.documentElement.clientHeight - (56 + 48);
+}
+
 export const ProfileDetail = (props: IProfileDetailProps) => (
     <MuiThemeProvider>
-        <Row >
-            <Col md={10} mdOffset={1}>
+        <Row>
+            <Col md={10} mdOffset={1} style={{ backgroundColor: Colors.indigo50 }}>
                 <Row>
                     <Col md={12}>
-                        <Card>
-                            <CardTitle title="Edit you profile" subtitle="Edit you profile" />
-                        </Card>
+                        <Subheader>Edit you profile</Subheader>
                     </Col>
                 </Row>
 
                 <Row>
-                    <Col md={12}>
-                        <div style={Object.assign(PageBox, { backgroundColor: "white" }, Styles.generalStyles.marginTop1Percent)}>
+                    <Col md={12} id="ProfileDetail" style={{ height: getDetailHeight(), overflow: "auto" }}>
+                        <div style={[Object.assign(PageBox, { backgroundColor: "white" }, Styles.generalStyles.marginTop1Percent)]}>
                             <Row>
                                 <Col md={12} style={{ height: "150px" }}>
-                                    <Col md={6} mdOffset={3} style={Object.assign(Styles.generalStyles.heightFull, Styles.generalStyles.flexCenter)}>
+                                    <Col md={6} mdOffset={3}
+                                        style={Object.assign(Styles.generalStyles.heightFull, Styles.generalStyles.flexCenter)}>
                                         <FileReaderInput
                                             as="url"
                                             id="file-input"
@@ -69,84 +73,81 @@ export const ProfileDetail = (props: IProfileDetailProps) => (
                             </Row>
                             <Row>
                                 <div style={{ marginLeft: "2%", marginRight: "2%" }}>
-                                    <Col md={10} mdOffset={1}>
-                                        <Panel style={Object.assign(Styles.generalStyles.gridCenter)}>
-                                            <Col md={12} >
-                                                <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
-                                                    <label>First Name :</label>
-                                                </Col>
-                                                <Col xs={12} md={8}>
-                                                    <TextField
-                                                        hintText="first_name"
-                                                        errorText="This field is required"
-                                                        value={props.user.firstname}
-                                                        onChange={props.onFirstNameChange} />
-                                                    <span style={styles.span} />
-                                                </Col>
+                                    <Col md={12} >
+                                        <Col md={12} >
+                                            <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
+                                                <label>First Name :</label>
                                             </Col>
-                                            <Col md={12}>
-                                                <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
-                                                    <label>Last Name :</label>
-                                                </Col>
-                                                <Col xs={12} md={8}>
-                                                    <TextField
-                                                        hintText="last_name"
-                                                        errorText="This field is required"
-                                                        value={props.user.lastname}
-                                                        onChange={props.onLastNameChange} />
-                                                    <span style={styles.span} />
-                                                </Col>
+                                            <Col xs={12} md={8}>
+                                                <TextField
+                                                    hintText="first_name"
+                                                    errorText="This field is required"
+                                                    value={props.user.firstname}
+                                                    onChange={props.onFirstNameChange} />
+                                                <span style={styles.span} />
                                             </Col>
-                                            <Col md={12}>
-                                                <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
-                                                    <label>Tel :</label>
-                                                </Col>
-                                                <Col xs={12} md={8}>
-                                                    <TextField
-                                                        hintText="tel"
-                                                        value={props.user.tel}
-                                                        onChange={props.onTelNumberChange} />
-                                                    <span style={styles.span} />
-                                                </Col>
+                                        </Col>
+                                        <Col md={12}>
+                                            <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
+                                                <label>Last Name :</label>
                                             </Col>
-                                            <Col md={12}>
-                                                <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
-                                                    <label>Email :</label>
-                                                </Col>
-                                                <Col xs={12} md={8}>
-                                                    <TextField
-                                                        hintText="email"
-                                                        value={props.user.email}
-                                                        disabled={true} />
-                                                    <span style={styles.span} />
-                                                </Col>
+                                            <Col xs={12} md={8}>
+                                                <TextField
+                                                    hintText="last_name"
+                                                    errorText="This field is required"
+                                                    value={props.user.lastname}
+                                                    onChange={props.onLastNameChange} />
+                                                <span style={styles.span} />
                                             </Col>
-                                            <Col md={12}>
-                                                <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
-                                                    <label>User Role :</label>
-                                                </Col>
-                                                <Col xs={12} md={8}>
-                                                    <TextField
-                                                        hintText="user_role"
-                                                        value={props.teamProfile.team_role}
-                                                        disabled={true} />
-                                                    <span style={styles.span} />
-                                                </Col>
+                                        </Col>
+                                        <Col md={12}>
+                                            <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
+                                                <label>Tel :</label>
                                             </Col>
-                                            <Col md={12}>
-                                                <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
-                                                    <label>User Status :</label>
-                                                </Col>
-                                                <Col xs={12} md={8}>
-                                                    <TextField
-                                                        hintText="user_status"
-                                                        value={props.user.status}
-                                                        disabled={true} />
-                                                    <span style={styles.span} />
-                                                </Col>
+                                            <Col xs={12} md={8}>
+                                                <TextField
+                                                    hintText="tel"
+                                                    value={props.user.tel}
+                                                    onChange={props.onTelNumberChange} />
+                                                <span style={styles.span} />
                                             </Col>
-
-                                        </Panel>
+                                        </Col>
+                                        <Col md={12}>
+                                            <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
+                                                <label>Email :</label>
+                                            </Col>
+                                            <Col xs={12} md={8}>
+                                                <TextField
+                                                    hintText="email"
+                                                    value={props.user.email}
+                                                    disabled={true} />
+                                                <span style={styles.span} />
+                                            </Col>
+                                        </Col>
+                                        <Col md={12}>
+                                            <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
+                                                <label>User Role :</label>
+                                            </Col>
+                                            <Col xs={12} md={8}>
+                                                <TextField
+                                                    hintText="user_role"
+                                                    value={props.teamProfile.team_role}
+                                                    disabled={true} />
+                                                <span style={styles.span} />
+                                            </Col>
+                                        </Col>
+                                        <Col md={12}>
+                                            <Col xs={12} md={4} style={{ paddingTop: "3%" }}>
+                                                <label>User Status :</label>
+                                            </Col>
+                                            <Col xs={12} md={8}>
+                                                <TextField
+                                                    hintText="user_status"
+                                                    value={props.user.status}
+                                                    disabled={true} />
+                                                <span style={styles.span} />
+                                            </Col>
+                                        </Col>
                                     </Col>
                                 </div>
                             </Row>
@@ -159,13 +160,8 @@ export const ProfileDetail = (props: IProfileDetailProps) => (
                             </Row>
 
                         </div>
-
                     </Col>
                 </Row>
-
-
-
-
             </Col>
         </Row>
     </MuiThemeProvider >
