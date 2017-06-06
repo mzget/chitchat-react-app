@@ -5,7 +5,7 @@ export const chitchatFactory = ChitChatFactory.createInstance();
 const api_stalk = "203.150.95.146";
 const stalkPort = 3050;
 const stalkKey = "chitchat1234";
-const chitchat_api = "http://203.150.95.146:9000"; //"http://localhost:9000"; "http://git.animation-genius.com:9000"
+const chitchat_api = "https://chitchats.ga"; //"http://localhost:9000"; "http://git.animation-genius.com:9000"
 
 const config = {
     Stalk: {
