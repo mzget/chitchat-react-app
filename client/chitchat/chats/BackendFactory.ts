@@ -42,8 +42,9 @@ export class BackendFactory {
     }
 
     getServer() {
-        if (this.stalk._isConnected)
+        if (this.stalk._isConnected) {
             return this.stalk;
+        }
         else {
             console.log("Stalk connection not yet ready.");
             return null;

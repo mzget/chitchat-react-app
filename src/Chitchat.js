@@ -1,7 +1,7 @@
 "use strict";
 var ChitchatFactory_1 = require("./chitchat/chats/ChitchatFactory");
 exports.chitchatFactory = ChitchatFactory_1.ChitChatFactory.createInstance();
-var api_stalk = "203.150.95.146";
+var api_stalk = "wss://203.150.95.146";
 var stalkPort = 3050;
 var stalkKey = "chitchat1234";
 var chitchat_api = "https://chitchats.ga"; //"http://localhost:9000"; "http://git.animation-genius.com:9000"
