@@ -2,7 +2,7 @@ import { ChitChatFactory } from "./chitchat/chats/ChitchatFactory";
 import { IConfig } from "./chitchat/chats/iConfig";
 export const chitchatFactory = ChitChatFactory.createInstance();
 
-const api_stalk = "wss://203.150.95.146";
+const api_stalk = "wss://chitchats.ga";
 const stalkPort = 3050;
 const stalkKey = "chitchat1234";
 const chitchat_api = "https://chitchats.ga"; //"http://localhost:9000"; "http://git.animation-genius.com:9000"
