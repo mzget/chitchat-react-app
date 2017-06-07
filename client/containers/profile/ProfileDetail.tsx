@@ -156,9 +156,7 @@ export const ProfileDetail = (props: IProfileDetailProps) => (
                                 <Col xs={12} md={10} mdOffset={1} style={Styles.generalStyles.flexEnd}>
                                     <RaisedButton primary={true} label="submit" onClick={props.onSubmit} style={{ margin: "2%" }}></RaisedButton>
                                 </Col>
-
                             </Row>
-
                         </div>
                     </Col>
                 </Row>

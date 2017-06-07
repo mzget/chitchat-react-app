@@ -38,16 +38,19 @@ var App = (function (_super) {
         return _this;
     }
     App.prototype.render = function () {
-        return (React.createElement(react_redux_1.Provider, { store: configureStore_1["default"] },
-            React.createElement(react_router_dom_1.BrowserRouter, null,
-                React.createElement("div", null,
-                    React.createElement(react_router_dom_1.Route, { exact: true, path: "/", component: HomeEnhanced_1.HomePageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/team/:filter", component: TeamPageEnhanced_1.TeamPageEnhanced }),
-                    React.createElement(react_router_dom_1.Route, { path: "/profile/:filter/:user", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ProfilePageEnhanced_1.ProfilePageEnhanced : Main_1.MainPageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/chatslist/:filter", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? m_Main_1.M_MainPageEnhanced : Main_1.MainPageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/chatroom/chat/:room_id", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ChatPageEnhanced_1.ChatPageEnhanced : Main_1.MainPageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/chatroom/settings/:room_id/:edit", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ChatRoomSettingsPage_1.ChatRoomSettingsEnhanced : Main_1.MainPageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/admin/:filter", component: AdminPageEnhanced_1.AdminPageEnhanced })))));
+        return (<react_redux_1.Provider store={configureStore_1["default"]}>
+                <react_router_dom_1.BrowserRouter>
+                    <div>
+                        <react_router_dom_1.Route exact path="/" component={HomeEnhanced_1.HomePageWithDialogBox}/>
+                        <react_router_dom_1.Route path="/team/:filter" component={TeamPageEnhanced_1.TeamPageEnhanced}/>
+                        <react_router_dom_1.Route path="/profile/:filter/:user" component={(this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ProfilePageEnhanced_1.ProfilePageEnhanced : Main_1.MainPageWithDialogBox}/>
+                        <react_router_dom_1.Route path="/chatslist/:filter" component={(this.clientWidth < Breakpoints_1.SMALL_TABLET) ? m_Main_1.M_MainPageEnhanced : Main_1.MainPageWithDialogBox}/>
+                        <react_router_dom_1.Route path="/chatroom/chat/:room_id" component={(this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ChatPageEnhanced_1.ChatPageEnhanced : Main_1.MainPageWithDialogBox}/>
+                        <react_router_dom_1.Route path="/chatroom/settings/:room_id/:edit" component={(this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ChatRoomSettingsPage_1.ChatRoomSettingsEnhanced : Main_1.MainPageWithDialogBox}/>
+                        <react_router_dom_1.Route path="/admin/:filter" component={AdminPageEnhanced_1.AdminPageEnhanced}/>
+                    </div>
+                </react_router_dom_1.BrowserRouter>
+            </react_redux_1.Provider>);
     };
     return App;
 }(React.Component));
