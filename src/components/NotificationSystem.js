@@ -21,7 +21,7 @@ var ReapopComponent = (function (_super) {
             this.props.dispatch(reapop_2.addNotification({
                 title: stalkReducer.notiMessage.title,
                 message: stalkReducer.notiMessage.body,
-                status: 'success',
+                image: stalkReducer.notiMessage.image,
                 dismissible: true,
                 dismissAfter: 3000
             }));

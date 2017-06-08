@@ -16,7 +16,7 @@ import { ChitChatFactory } from "../../ChitchatFactory";
 
 const getStore = () => ChitChatFactory.getInstance().store;
 
-type NotiMessage = { title: string; body: string; }
+type NotiMessage = { title: string; body: string; image: string; }
 
 export const STALK_NOTICE_NEW_MESSAGE = "STALK_NOTICE_NEW_MESSAGE";
 const stalkNotiNewMessage = (payload: NotiMessage) => ({ type: STALK_NOTICE_NEW_MESSAGE, payload });
@@ -36,7 +36,10 @@ export const unsubscribeGlobalNotifyMessageEvent = () => {
 };
 
 export const notify = (messageImp: MessageImp) => {
-    let message = { title: messageImp.user.username } as NotiMessage;
+    let message = {
+        title: messageImp.user.username,
+        image: messageImp.user.avatar
+    } as NotiMessage;
 
     if (messageImp.type === MessageType[MessageType.Text]) {
         CryptoHelper.decryptionText(messageImp).then((decoded) => {

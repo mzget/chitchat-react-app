@@ -25,7 +25,10 @@ exports.unsubscribeGlobalNotifyMessageEvent = function () {
     BackendFactory_1.BackendFactory.getInstance().dataListener.removeOnChatListener(exports.notify);
 };
 exports.notify = function (messageImp) {
-    var message = { title: messageImp.user.username };
+    var message = {
+        title: messageImp.user.username,
+        image: messageImp.user.avatar
+    };
     if (messageImp.type === Message_1.MessageType[Message_1.MessageType.Text]) {
         CryptoHelper.decryptionText(messageImp).then(function (decoded) {
             message.body = decoded.body;

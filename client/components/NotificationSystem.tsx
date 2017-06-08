@@ -14,7 +14,7 @@ class ReapopComponent extends React.Component<any, any> {
             this.props.dispatch(addNotification({
                 title: stalkReducer.notiMessage.title,
                 message: stalkReducer.notiMessage.body,
-                status: 'success',
+                image: stalkReducer.notiMessage.image,
                 dismissible: true,
                 dismissAfter: 3000
             }));
