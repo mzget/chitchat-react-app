@@ -2,7 +2,7 @@
   "compileOnSave": true,
   "compilerOptions": {
     "module": "commonjs",
-    "jsx": "preserve",
+    "jsx": "react",
     "rootDirs": [
       "client"
     ],

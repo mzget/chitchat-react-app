@@ -373,8 +373,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         let { chatroomReducer, stalkReducer } = this.props;
 
         return (
-
-
             <div style={{ height: "calc(100vh - 148px)" }}>
                 <div style={{ overflowY: "scroll", height: "100%" }} id={"app_body"}>
                     {

@@ -60,6 +60,11 @@ const renderList = (props: MyProps) => {
             console.warn(message);
             return null;
         }
+        if (message.type == MessageType[MessageType.Text]) {
+            if (message.body.match(/http\:\/\/www\.mydomain\.com\/version\.php/i)) {
+                console.info("Is URL");
+            }
+        }
 
         switch (message.type) {
             case MessageType[MessageType.Text]: {
