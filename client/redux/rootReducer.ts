@@ -10,6 +10,7 @@
  */
 
 import { combineReducers } from "redux";
+import { reducer as notificationsReducer } from 'reapop';
 
 import { LOG_OUT_SUCCESS } from "./authen/authRx";
 import { STALK_ON_SOCKET_RECONNECT } from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
@@ -44,7 +45,8 @@ const appReducer = combineReducers({
     chatlogReducer,
     userReducer,
     adminReducer,
-    alertReducer
+    alertReducer,
+    notifications: notificationsReducer()
 });
 
 /*

@@ -10,6 +10,7 @@
  */
 "use strict";
 var redux_1 = require("redux");
+var reapop_1 = require("reapop");
 var authRx_1 = require("./authen/authRx");
 var stalkBridgeActions_1 = require("../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
 /**
@@ -41,7 +42,8 @@ var appReducer = redux_1.combineReducers({
     chatlogReducer: chatlogReducer_1.chatlogReducer,
     userReducer: userReducer_1.userReducer,
     adminReducer: adminReducer_1.adminReducer,
-    alertReducer: alertReducer_1.alertReducer
+    alertReducer: alertReducer_1.alertReducer,
+    notifications: reapop_1.reducer()
 });
 /*
  *

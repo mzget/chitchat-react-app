@@ -35,7 +35,7 @@ var ForgotAccount = (function (_super) {
                             React.createElement(TextField_1["default"], { hintText: "Email address", style: { paddingLeft: 15 }, value: "", onChange: function () { }, onKeyDown: function () { } }),
                             React.createElement(Card_1.CardActions, null,
                                 React.createElement(FlatButton_1["default"], { label: "Search", primary: true }),
-                                React.createElement(FlatButton_1["default"], { label: "Cancel" })))),
+                                React.createElement(FlatButton_1["default"], { label: "Cancel", onClick: this.onBack.bind(this) })))),
                     React.createElement(flexbox_react_1["default"], { element: "footer", justifyContent: "center", maxHeight: "10vh", style: { backgroundColor: Colors.indigo50 } },
                         React.createElement("span", null,
                             React.createElement("b", null, "Powered by Stalk realtime communication API.")))))));

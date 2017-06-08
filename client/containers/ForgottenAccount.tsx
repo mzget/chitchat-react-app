@@ -30,11 +30,11 @@ export class ForgotAccount extends React.Component<IComponentProps, any> {
                                 <Divider inset={false} />
                                 <CardText>
                                     Please enter your email address to search for your account.
-                            </CardText>
+                                </CardText>
                                 <TextField hintText="Email address" style={{ paddingLeft: 15 }} value={""} onChange={() => { }} onKeyDown={() => { }} />
                                 <CardActions>
                                     <FlatButton label="Search" primary={true} />
-                                    <FlatButton label="Cancel" />
+                                    <FlatButton label="Cancel" onClick={this.onBack.bind(this)} />
                                 </CardActions>
                             </Card>
                         </Flexbox>

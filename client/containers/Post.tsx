@@ -25,7 +25,7 @@ export class Post extends React.Component<any, any> {
                     fontSize: 16, textAlign: "center", backgroundColor: Colors.indigo50
                 }}>
                     <Flex px={2} align="center" justify="center">
-                        <span>Powered by Stalk realtime messaging service.</span>
+                        <span>Powered by Stalk realtime communication API.</span>
                     </Flex>
                 </div>
             </div>

@@ -30,7 +30,7 @@ var Post = (function (_super) {
                     fontSize: 16, textAlign: "center", backgroundColor: Colors.indigo50
                 } },
                 React.createElement(reflexbox_1.Flex, { px: 2, align: "center", justify: "center" },
-                    React.createElement("span", null, "Powered by Stalk realtime messaging service.")))));
+                    React.createElement("span", null, "Powered by Stalk realtime communication API.")))));
     };
     return Post;
 }(React.Component));
