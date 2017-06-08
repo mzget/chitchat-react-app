@@ -12,20 +12,10 @@ var recompose_1 = require("recompose");
 var chatroomActions = require("../../chitchat/chats/redux/chatroom/chatroomActions");
 var groupRx = require("../../redux/group/groupRx");
 var privateGroupRxActions = require("../../redux/group/privateGroupRxActions");
-var reapop_1 = require("reapop");
 var chatroomActions_1 = require("../../chitchat/chats/redux/chatroom/chatroomActions");
 var chatroomRxEpic_1 = require("../../chitchat/chats/redux/chatroom/chatroomRxEpic");
 var mapStateToProps = function (state) { return (__assign({}, state)); };
 exports.MainPageEnhancer = recompose_1.compose(react_redux_1.connect(mapStateToProps), recompose_1.lifecycle({
-    componentWillMount: function () {
-        this.props.dispatch(reapop_1.addNotification({
-            title: 'Welcome',
-            message: 'you clicked on the button',
-            status: 'success',
-            dismissible: true,
-            dismissAfter: 3000
-        }));
-    },
     componentWillReceiveProps: function (nextProps) {
         var userReducer = nextProps.userReducer, chatroomReducer = nextProps.chatroomReducer, teamReducer = nextProps.teamReducer;
         if (!userReducer.user) {

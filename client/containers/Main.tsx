@@ -10,7 +10,6 @@ import * as Colors from "material-ui/styles/colors";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
 import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
-import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
 import { AppBody } from "./AppBody";
 import { RightNav } from "./RightNav";
@@ -22,7 +21,6 @@ import { MainPageEnhancer } from "./Enhancers/MainPageEnhancer";
 import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
 import { WebToolbarEnhanced, listener } from "./MainPageToolbar";
 import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
-import { ReapopComponent } from "../components/NotificationSystem";
 
 const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer, chatroomReducer,
     history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
@@ -42,7 +40,6 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
                                 groups={groupReducer.privateGroups}
                                 subHeader={"Groups"} />
                             <ChatLogsBoxEnhancer />
-                            <SnackbarToolBox />
                         </Box>
                         <Box col={9} >
                             <SubToolbar history={history} match={match} onError={onError}
@@ -70,7 +67,6 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
 export let MainPageWithDialogBox = DialogBoxEnhancer(({ title, message, open, handleClose, onError,
     history, match }: any) =>
     <div>
-        <ReapopComponent />
         <MainPageEnhanced onError={onError} history={history} match={match} />
         <DialogBox
             title={title}

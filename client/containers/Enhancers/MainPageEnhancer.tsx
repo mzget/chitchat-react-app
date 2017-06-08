@@ -5,7 +5,6 @@ import { shallowEqual, compose, withHandlers, withState, lifecycle, ComponentEnh
 import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
 import * as groupRx from "../../redux/group/groupRx";
 import * as privateGroupRxActions from "../../redux/group/privateGroupRxActions";
-import { addNotification } from 'reapop';
 
 import { GET_PERSISTEND_CHATROOM_SUCCESS } from "../../chitchat/chats/redux/chatroom/chatroomActions";
 import { FETCH_PRIVATE_CHATROOM_SUCCESS, CREATE_PRIVATE_CHATROOM_SUCCESS } from "../../chitchat/chats/redux/chatroom/chatroomRxEpic";
@@ -17,15 +16,6 @@ const mapStateToProps = (state) => ({ ...state });
 export const MainPageEnhancer = compose(
     connect(mapStateToProps),
     lifecycle<IComponentProps, any>({
-        componentWillMount() {
-            this.props.dispatch(addNotification({
-                title: 'Welcome',
-                message: 'you clicked on the button',
-                status: 'success',
-                dismissible: true,
-                dismissAfter: 3000
-            }));
-        },
         componentWillReceiveProps(nextProps: IComponentProps) {
             let { userReducer, chatroomReducer, teamReducer } = nextProps;
 

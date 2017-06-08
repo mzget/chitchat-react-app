@@ -1,9 +1,25 @@
 import * as React from 'react';
+import { connect } from "react-redux";
 import NotificationsSystem from 'reapop';
 // 1. import theme
 import * as theme from 'reapop-theme-wybo';
-// 
-export class ReapopComponent extends React.Component<any, any> {
+
+import { addNotification } from 'reapop';
+
+class ReapopComponent extends React.Component<any, any> {
+    componentWillReceiveProps(nextProps) {
+        let { stalkReducer } = nextProps;
+
+        if (stalkReducer.notiMessage != this.props.stalkReducer.notiMessage) {
+            this.props.dispatch(addNotification({
+                title: stalkReducer.notiMessage.title,
+                message: stalkReducer.notiMessage.body,
+                status: 'success',
+                dismissible: true,
+                dismissAfter: 3000
+            }));
+        }
+    }
     render() {
         // 2. set `theme` prop
         return (
@@ -13,3 +29,12 @@ export class ReapopComponent extends React.Component<any, any> {
         );
     }
 }
+
+/**
+ * ## Redux boilerplate
+ */
+const mapStateToProps = (state) => ({
+    notifications: state.notifications,
+    stalkReducer: state.stalkReducer
+});
+export const ReapopNotiBoxWithState = connect(mapStateToProps)(ReapopComponent);

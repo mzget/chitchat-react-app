@@ -32,7 +32,7 @@ var SnackbarBox = (function (_super) {
     SnackbarBox.prototype.componentWillReceiveProps = function (nextProps) {
         var stalkReducer = nextProps.stalkReducer;
         if (stalkReducer.notiMessage != this.props.stalkReducer.notiMessage) {
-            this.setState(function (previousState) { return (__assign({}, previousState, { openSnackbar: true, snackbarMessage: stalkReducer.notiMessage })); });
+            this.setState(function (previousState) { return (__assign({}, previousState, { openSnackbar: true, snackbarMessage: stalkReducer.notiMessage.body })); });
         }
     };
     SnackbarBox.prototype.closeSnackbar = function (reason) {

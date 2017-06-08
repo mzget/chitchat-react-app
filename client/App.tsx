@@ -14,6 +14,8 @@ import { chitchatFactory } from "./Chitchat";
  */
 import Store from "./redux/configureStore";
 
+import { ReapopNotiBoxWithState } from "./components/NotificationSystem";
+
 import { HomePageWithDialogBox } from "./containers/HomeEnhanced";
 import { ForgotAccount } from "./containers/ForgottenAccount";
 import { ChatPageEnhanced } from "./containers/ChatPageEnhanced";
@@ -43,6 +45,8 @@ class App extends React.Component<any, any> {
             <Provider store={Store}>
                 <Router>
                     <div>
+                        <ReapopNotiBoxWithState />
+
                         <Route exact path="/" component={HomePageWithDialogBox} />
                         <Route path="/forgotaccount" component={ForgotAccount} />
                         <Route path="/team/:filter" component={TeamPageEnhanced} />

@@ -7,32 +7,27 @@ var __extends = (this && this.__extends) || function (d, b) {
 var React = require("react");
 var react_redux_1 = require("react-redux");
 var reapop_1 = require("reapop");
-// 1. import theme
-var theme = require("reapop-theme-wybo");
-var reapop_2 = require("reapop");
-var ReapopComponent = (function (_super) {
-    __extends(ReapopComponent, _super);
-    function ReapopComponent() {
+var ReapopNotiBox = (function (_super) {
+    __extends(ReapopNotiBox, _super);
+    function ReapopNotiBox() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    ReapopComponent.prototype.componentWillReceiveProps = function (nextProps) {
+    ReapopNotiBox.prototype.componentWillReceiveProps = function (nextProps) {
         var stalkReducer = nextProps.stalkReducer;
         if (stalkReducer.notiMessage != this.props.stalkReducer.notiMessage) {
-            this.props.dispatch(reapop_2.addNotification({
-                title: stalkReducer.notiMessage.title,
-                message: stalkReducer.notiMessage.body,
+            this.props.dispatch(reapop_1.addNotification({
+                title: 'Alert',
+                message: stalkReducer.notiMessage,
                 status: 'success',
                 dismissible: true,
                 dismissAfter: 3000
             }));
         }
     };
-    ReapopComponent.prototype.render = function () {
-        // 2. set `theme` prop
-        return (React.createElement("div", null,
-            React.createElement(reapop_1["default"], { theme: theme })));
+    ReapopNotiBox.prototype.render = function () {
+        return null;
     };
-    return ReapopComponent;
+    return ReapopNotiBox;
 }(React.Component));
 /**
  * ## Redux boilerplate
@@ -41,4 +36,4 @@ var mapStateToProps = function (state) { return ({
     notifications: state.notifications,
     stalkReducer: state.stalkReducer
 }); };
-exports.ReapopNotiBoxWithState = react_redux_1.connect(mapStateToProps)(ReapopComponent);
+exports.ReapopNotiBoxWithState = react_redux_1.connect(mapStateToProps)(ReapopNotiBox);

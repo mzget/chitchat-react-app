@@ -21,7 +21,7 @@ export const StalkInitState = Record({
     isInit: false,
     isFetching: false,
     state: null,
-    notiMessage: "",
+    notiMessage: null,
     stalkToken: "",
     user: null
 });

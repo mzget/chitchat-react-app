@@ -25,19 +25,19 @@ exports.unsubscribeGlobalNotifyMessageEvent = function () {
     BackendFactory_1.BackendFactory.getInstance().dataListener.removeOnChatListener(exports.notify);
 };
 exports.notify = function (messageImp) {
-    var message = "";
+    var message = { title: messageImp.user.username };
     if (messageImp.type === Message_1.MessageType[Message_1.MessageType.Text]) {
         CryptoHelper.decryptionText(messageImp).then(function (decoded) {
-            message = decoded.body;
+            message.body = decoded.body;
             getStore().dispatch(stalkNotiNewMessage(message));
         });
     }
     else if (messageImp.type === Message_1.MessageType[Message_1.MessageType.Location]) {
-        message = "Sent you location";
+        message.body = "Sent you location";
         getStore().dispatch(stalkNotiNewMessage(message));
     }
     else if (messageImp.type === Message_1.MessageType[Message_1.MessageType.Image]) {
-        message = "Sent you image";
+        message.body = "Sent you image";
         getStore().dispatch(stalkNotiNewMessage(message));
     }
 };

@@ -13,6 +13,7 @@ var Chitchat_1 = require("./Chitchat");
  *  ```configureStore``` will connect the ```reducers```,
  */
 var configureStore_1 = require("./redux/configureStore");
+var NotificationSystem_1 = require("./components/NotificationSystem");
 var HomeEnhanced_1 = require("./containers/HomeEnhanced");
 var ForgottenAccount_1 = require("./containers/ForgottenAccount");
 var ChatPageEnhanced_1 = require("./containers/ChatPageEnhanced");
@@ -42,6 +43,7 @@ var App = (function (_super) {
         return (React.createElement(react_redux_1.Provider, { store: configureStore_1["default"] },
             React.createElement(react_router_dom_1.BrowserRouter, null,
                 React.createElement("div", null,
+                    React.createElement(NotificationSystem_1.ReapopNotiBoxWithState, null),
                     React.createElement(react_router_dom_1.Route, { exact: true, path: "/", component: HomeEnhanced_1.HomePageWithDialogBox }),
                     React.createElement(react_router_dom_1.Route, { path: "/forgotaccount", component: ForgottenAccount_1.ForgotAccount }),
                     React.createElement(react_router_dom_1.Route, { path: "/team/:filter", component: TeamPageEnhanced_1.TeamPageEnhanced }),
