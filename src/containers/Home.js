@@ -33,6 +33,10 @@ var Home = (function (_super) {
         _this.footerHeight = 24;
         return _this;
     }
+    Home.prototype.onForgotAccount = function () {
+        console.log(this.props);
+        this.props.history.push("/forgotaccount");
+    };
     Home.prototype.componentWillMount = function () {
         console.log("Home", global.userAgent, this.props);
         this.state = {
@@ -43,6 +47,7 @@ var Home = (function (_super) {
         this.clientHeight = document.documentElement.clientHeight;
         this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight + this.footerHeight));
         this.props.dispatch(AppActions.getSession());
+        this.onForgotAccount = this.onForgotAccount.bind(this);
     };
     Home.prototype.componentWillReceiveProps = function (nextProps) {
         var _a = nextProps, userReducer = _a.userReducer, authReducer = _a.authReducer, alertReducer = _a.alertReducer;
@@ -91,13 +96,18 @@ var Home = (function (_super) {
                         React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
                         React.createElement(AuthenBox_1.AuthenBox, __assign({}, this.props, { onError: this.props.onError })),
                         React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
+                    React.createElement(reflexbox_1.Flex, { align: "center" },
+                        React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
+                        React.createElement("button", { onClick: this.onForgotAccount },
+                            React.createElement("b", null, "Forgotten account.")),
+                        React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
                     React.createElement(reflexbox_1.Box, { flexAuto: true, justify: "flex-end" }))),
             React.createElement("div", { id: "app_footer", style: {
                     width: this.clientWidth, height: this.footerHeight,
                     fontSize: 16, textAlign: "center", backgroundColor: Colors.indigo50
                 } },
                 React.createElement(reflexbox_1.Flex, { px: 2, align: "center", justify: "center" },
-                    React.createElement("span", null, "Powered by Stalk realtime messaging service.")))));
+                    React.createElement("span", null, "Powered by Stalk realtime communication API.")))));
     };
     return Home;
 }(React.Component));

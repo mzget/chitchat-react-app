@@ -14,6 +14,7 @@ var Chitchat_1 = require("./Chitchat");
  */
 var configureStore_1 = require("./redux/configureStore");
 var HomeEnhanced_1 = require("./containers/HomeEnhanced");
+var ForgottenAccount_1 = require("./containers/ForgottenAccount");
 var ChatPageEnhanced_1 = require("./containers/ChatPageEnhanced");
 var ChatRoomSettingsPage_1 = require("./containers/ChatRoomSettingsPage");
 var TeamPageEnhanced_1 = require("./containers/TeamPageEnhanced");
@@ -42,6 +43,7 @@ var App = (function (_super) {
             React.createElement(react_router_dom_1.BrowserRouter, null,
                 React.createElement("div", null,
                     React.createElement(react_router_dom_1.Route, { exact: true, path: "/", component: HomeEnhanced_1.HomePageWithDialogBox }),
+                    React.createElement(react_router_dom_1.Route, { path: "/forgotaccount", component: ForgottenAccount_1.ForgotAccount }),
                     React.createElement(react_router_dom_1.Route, { path: "/team/:filter", component: TeamPageEnhanced_1.TeamPageEnhanced }),
                     React.createElement(react_router_dom_1.Route, { path: "/profile/:filter/:user", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? ProfilePageEnhanced_1.ProfilePageEnhanced : Main_1.MainPageWithDialogBox }),
                     React.createElement(react_router_dom_1.Route, { path: "/chatslist/:filter", component: (this.clientWidth < Breakpoints_1.SMALL_TABLET) ? m_Main_1.M_MainPageEnhanced : Main_1.MainPageWithDialogBox }),

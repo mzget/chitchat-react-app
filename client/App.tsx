@@ -15,6 +15,7 @@ import { chitchatFactory } from "./Chitchat";
 import Store from "./redux/configureStore";
 
 import { HomePageWithDialogBox } from "./containers/HomeEnhanced";
+import { ForgotAccount } from "./containers/ForgottenAccount";
 import { ChatPageEnhanced } from "./containers/ChatPageEnhanced";
 import { ChatRoomSettingsEnhanced } from "./containers/ChatRoomSettingsPage";
 import { TeamPageEnhanced } from "./containers/TeamPageEnhanced";
@@ -43,6 +44,7 @@ class App extends React.Component<any, any> {
                 <Router>
                     <div>
                         <Route exact path="/" component={HomePageWithDialogBox} />
+                        <Route path="/forgotaccount" component={ForgotAccount} />
                         <Route path="/team/:filter" component={TeamPageEnhanced} />
                         <Route path="/profile/:filter/:user" component={(this.clientWidth < SMALL_TABLET) ? ProfilePageEnhanced : MainPageWithDialogBox} />
                         <Route path="/chatslist/:filter" component={(this.clientWidth < SMALL_TABLET) ? M_MainPageEnhanced : MainPageWithDialogBox} />
