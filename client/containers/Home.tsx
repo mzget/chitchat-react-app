@@ -16,8 +16,6 @@ import * as AppActions from "../redux/app/persistentDataActions";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { AuthenBox } from "./authen/AuthenBox";
 
-import { addNotification } from 'reapop';
-
 interface IComponentNameState {
     alert: boolean;
 }
@@ -33,7 +31,6 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
     alertMessage: string;
 
     onForgotAccount() {
-        console.log(this.props);
         this.props.history.push("/forgotaccount");
     }
 
@@ -51,14 +48,6 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
         this.props.dispatch(AppActions.getSession());
 
         this.onForgotAccount = this.onForgotAccount.bind(this);
-
-        this.props.dispatch(addNotification({
-            title: 'Welcome',
-            message: 'you clicked on the button',
-            status: 'success',
-            dismissible: true,
-            dismissAfter: 3000
-        }));
     }
 
     componentWillReceiveProps(nextProps) {

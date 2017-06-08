@@ -14,6 +14,7 @@ var MainPageEnhancer_1 = require("./Enhancers/MainPageEnhancer");
 var DialogBoxEnhancer_1 = require("./toolsbox/DialogBoxEnhancer");
 var MainPageToolbar_1 = require("./MainPageToolbar");
 var DialogBox_1 = require("../components/DialogBox");
+var NotificationSystem_1 = require("../components/NotificationSystem");
 var MainPageEnhanced = MainPageEnhancer_1.MainPageEnhancer(function (_a) {
     var teamReducer = _a.teamReducer, groupReducer = _a.groupReducer, authReducer = _a.authReducer, userReducer = _a.userReducer, chatroomReducer = _a.chatroomReducer, history = _a.history, match = _a.match, onError = _a.onError, fetch_orgGroups = _a.fetch_orgGroups, fetch_privateGroups = _a.fetch_privateGroups;
     return (React.createElement(MuiThemeProvider_1["default"], null,
@@ -39,6 +40,7 @@ var MainPageEnhanced = MainPageEnhancer_1.MainPageEnhancer(function (_a) {
 exports.MainPageWithDialogBox = DialogBoxEnhancer_1.DialogBoxEnhancer(function (_a) {
     var title = _a.title, message = _a.message, open = _a.open, handleClose = _a.handleClose, onError = _a.onError, history = _a.history, match = _a.match;
     return React.createElement("div", null,
+        React.createElement(NotificationSystem_1.ReapopComponent, null),
         React.createElement(MainPageEnhanced, { onError: onError, history: history, match: match }),
         React.createElement(DialogBox_1.DialogBox, { title: title, message: message, open: open, handleClose: handleClose }));
 });

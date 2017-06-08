@@ -21,7 +21,6 @@ var AuthRx = require("../redux/authen/authRx");
 var AppActions = require("../redux/app/persistentDataActions");
 var SimpleToolbar_1 = require("../components/SimpleToolbar");
 var AuthenBox_1 = require("./authen/AuthenBox");
-var reapop_1 = require("reapop");
 var Home = (function (_super) {
     __extends(Home, _super);
     function Home() {
@@ -35,7 +34,6 @@ var Home = (function (_super) {
         return _this;
     }
     Home.prototype.onForgotAccount = function () {
-        console.log(this.props);
         this.props.history.push("/forgotaccount");
     };
     Home.prototype.componentWillMount = function () {
@@ -49,13 +47,6 @@ var Home = (function (_super) {
         this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight + this.footerHeight));
         this.props.dispatch(AppActions.getSession());
         this.onForgotAccount = this.onForgotAccount.bind(this);
-        this.props.dispatch(reapop_1.addNotification({
-            title: 'Welcome',
-            message: 'you clicked on the button',
-            status: 'success',
-            dismissible: true,
-            dismissAfter: 3000
-        }));
     };
     Home.prototype.componentWillReceiveProps = function (nextProps) {
         var _a = nextProps, userReducer = _a.userReducer, authReducer = _a.authReducer, alertReducer = _a.alertReducer;

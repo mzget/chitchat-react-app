@@ -22,6 +22,7 @@ import { MainPageEnhancer } from "./Enhancers/MainPageEnhancer";
 import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
 import { WebToolbarEnhanced, listener } from "./MainPageToolbar";
 import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
+import { ReapopComponent } from "../components/NotificationSystem";
 
 const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer, chatroomReducer,
     history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
@@ -69,6 +70,7 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
 export let MainPageWithDialogBox = DialogBoxEnhancer(({ title, message, open, handleClose, onError,
     history, match }: any) =>
     <div>
+        <ReapopComponent />
         <MainPageEnhanced onError={onError} history={history} match={match} />
         <DialogBox
             title={title}
