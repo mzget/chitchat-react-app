@@ -13,13 +13,7 @@ import * as StalkBridgeActions from "../../chitchat/chats/redux/stalkBridge/stal
 import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
 import * as chatroomRx from "../../chitchat/chats/redux/chatroom/chatroomRxEpic";
 
-abstract class IStalktProps implements IComponentProps {
-    userReducer;
-    stalkReducer;
-    dispatch;
-}
-
-class StalkComponent extends React.Component<IStalktProps, any> {
+class StalkComponent extends React.Component<any, any> {
     render() {
         return (
             <div>

@@ -14,12 +14,14 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 var React = require("react");
 var react_redux_1 = require("react-redux");
+var flexbox_react_1 = require("flexbox-react");
 var MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 var teamRx = require("../redux/team/teamRx");
 var authRx = require("../redux/authen/authRx");
 var TeamListBox_1 = require("./teams/TeamListBox");
 var TeamCreateBox_1 = require("./teams/TeamCreateBox");
 var SimpleToolbar_1 = require("../components/SimpleToolbar");
+var StalkComponent_1 = require("./stalk/StalkComponent");
 /**
  * Containers of chatlist, chatlogs, etc...
  */
@@ -57,9 +59,12 @@ var Team = (function (_super) {
     Team.prototype.render = function () {
         return (React.createElement(MuiThemeProvider_1["default"], null,
             React.createElement("div", null,
-                React.createElement(SimpleToolbar_1.SimpleToolbar, { title: this.toolbar, menus: ["logout"], onSelectedMenuItem: this.onToolbarMenuItem }),
-                React.createElement(TeamListBox_1.TeamListBox, { teams: this.props.teamReducer.teams, onSelectTeam: this.onSelectTeam }),
-                React.createElement(TeamCreateBox_1.TeamCreateBox, __assign({}, this.props)))));
+                React.createElement(flexbox_react_1["default"], { flexDirection: "column", minHeight: "90vh" },
+                    React.createElement(SimpleToolbar_1.SimpleToolbar, { title: this.toolbar, menus: ["logout"], onSelectedMenuItem: this.onToolbarMenuItem }),
+                    React.createElement(TeamListBox_1.TeamListBox, { teams: this.props.teamReducer.teams, onSelectTeam: this.onSelectTeam }),
+                    React.createElement(TeamCreateBox_1.TeamCreateBox, __assign({}, this.props))),
+                React.createElement(flexbox_react_1["default"], { flexDirection: "column", minHeight: "10vh" },
+                    React.createElement(StalkComponent_1.StalkCompEnhancer, null)))));
     };
     return Team;
 }(React.Component));

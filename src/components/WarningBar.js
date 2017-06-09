@@ -1,9 +1,9 @@
 "use strict";
 var React = require("react");
-var reflexbox_1 = require("reflexbox");
+var flexbox_react_1 = require("flexbox-react");
 var Colors = require("material-ui/styles/colors");
 exports.WarningBar = function () { return (React.createElement("div", { id: "warning_bar" },
-    React.createElement(reflexbox_1.Flex, { style: { backgroundColor: Colors.red500 }, align: "center", justify: "center", flexColumn: true },
-        React.createElement(reflexbox_1.Flex, { flexColumn: true },
+    React.createElement(flexbox_react_1["default"], { style: { backgroundColor: Colors.red500 }, alignItems: "center", justifyContent: "center" },
+        React.createElement(flexbox_react_1["default"], { flexDirection: "column" },
             React.createElement("span", { style: { color: Colors.white, fontSize: 14 } }, "Unable to connect whit chat service."),
             React.createElement("span", { style: { color: Colors.white, fontSize: 14 } }, "Check your Internet connection."))))); };

@@ -9,11 +9,6 @@ var react_redux_1 = require("react-redux");
 var WarningBar_1 = require("../../components/WarningBar");
 var LinearProgressDialog_1 = require("../../components/LinearProgressDialog");
 var StalkBridgeActions = require("../../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
-var IStalktProps = (function () {
-    function IStalktProps() {
-    }
-    return IStalktProps;
-}());
 var StalkComponent = (function (_super) {
     __extends(StalkComponent, _super);
     function StalkComponent() {

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import Flexbox from 'flexbox-react';
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
@@ -14,6 +15,7 @@ import { DialogBox } from "../components/DialogBox";
 import { TeamListBox } from "./teams/TeamListBox";
 import { TeamCreateBox } from "./teams/TeamCreateBox";
 import { SimpleToolbar } from "../components/SimpleToolbar";
+import { StalkCompEnhancer } from "./stalk/StalkComponent";
 
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 import { ITeam } from "../chitchat/chats/models/ITeam";
@@ -64,10 +66,15 @@ class Team extends React.Component<IComponentProps, any> {
         return (
             <MuiThemeProvider>
                 <div>
+                <Flexbox flexDirection="column" minHeight="90vh">
                     <SimpleToolbar title={this.toolbar} menus={["logout"]} onSelectedMenuItem={this.onToolbarMenuItem} />
                     <TeamListBox teams={this.props.teamReducer.teams} onSelectTeam={this.onSelectTeam} />
                     <TeamCreateBox {...this.props} />
-                </div>
+                </Flexbox>
+                       <Flexbox flexDirection="column" minHeight="10vh">
+                    <StalkCompEnhancer />
+                           </Flexbox>
+                           </div>
             </MuiThemeProvider>
         );
     }
