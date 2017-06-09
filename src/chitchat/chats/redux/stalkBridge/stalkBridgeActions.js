@@ -123,6 +123,7 @@ function stalkManageConnection() {
             server.onDisconnected = function (data) {
                 getStore().dispatch(onStalkSocketDisconnected(data.type));
             };
+            server.listenSocketEvents();
             return [2 /*return*/];
         });
     });

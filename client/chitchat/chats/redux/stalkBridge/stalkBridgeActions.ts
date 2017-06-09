@@ -88,6 +88,7 @@ async function stalkManageConnection() {
     const backendFactory = BackendFactory.getInstance();
 
     let server = backendFactory.getServer();
+
     server.onSocketReconnect = (data) => {
         getStore().dispatch(onStalkSocketReconnect(data.type));
     };
@@ -97,6 +98,8 @@ async function stalkManageConnection() {
     server.onDisconnected = (data) => {
         getStore().dispatch(onStalkSocketDisconnected(data.type));
     };
+
+    server.listenSocketEvents();
 }
 
 export async function stalkLogout() {

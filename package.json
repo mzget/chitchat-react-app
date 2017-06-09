@@ -62,7 +62,7 @@
     "redux-thunk": "^2.2.0",
     "reflexbox": "^2.2.3",
     "rxjs": "^5.4.0",
-    "stalk-js": "0.0.3-f1",
+    "stalk-js": "0.0.3-f2",
     "valid-url": "^1.0.9",
     "validate.js": "^0.11.1"
   },
