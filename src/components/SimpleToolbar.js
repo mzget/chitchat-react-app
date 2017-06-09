@@ -22,7 +22,7 @@ var muiTheme = getMuiTheme_1["default"]({
         backgroundColor: Colors.indigo500
     }
 });
-exports.SimpleToolbar = function (props) { return (React.createElement(MuiThemeProvider_1["default"], { muiTheme: muiTheme, style: { height: "56px" } },
+exports.SimpleToolbar = function (props) { return (React.createElement(MuiThemeProvider_1["default"], { muiTheme: muiTheme },
     React.createElement(Toolbar_1.Toolbar, null,
         React.createElement(Toolbar_1.ToolbarGroup, { firstChild: true },
             (props.onBackPressed) ?

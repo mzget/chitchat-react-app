@@ -15,7 +15,7 @@ var StalkComponent = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     StalkComponent.prototype.render = function () {
-        return (React.createElement("div", null,
+        return (React.createElement("div", { style: { width: "100%" } },
             (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE ||
                 this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?
                 React.createElement(WarningBar_1.WarningBar, null) : null,

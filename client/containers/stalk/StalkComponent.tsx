@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Flex, Box } from "reflexbox";
+import Flexbox from 'flexbox-react';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 
@@ -16,7 +16,7 @@ import * as chatroomRx from "../../chitchat/chats/redux/chatroom/chatroomRxEpic"
 class StalkComponent extends React.Component<any, any> {
     render() {
         return (
-            <div>
+            <div style={{width:"100%"}}>
                 {
                     (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE ||
                         this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?

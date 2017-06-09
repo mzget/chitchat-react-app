@@ -58,12 +58,14 @@ var Team = (function (_super) {
     };
     Team.prototype.render = function () {
         return (React.createElement(MuiThemeProvider_1["default"], null,
-            React.createElement("div", null,
-                React.createElement(flexbox_react_1["default"], { flexDirection: "column", minHeight: "90vh" },
-                    React.createElement(SimpleToolbar_1.SimpleToolbar, { title: this.toolbar, menus: ["logout"], onSelectedMenuItem: this.onToolbarMenuItem }),
+            React.createElement(flexbox_react_1["default"], { flexDirection: "column", minHeight: "100vh" },
+                React.createElement(flexbox_react_1["default"], { element: "header" },
+                    React.createElement("div", { style: { width: "100%" } },
+                        React.createElement(SimpleToolbar_1.SimpleToolbar, { title: this.toolbar, menus: ["logout"], onSelectedMenuItem: this.onToolbarMenuItem }))),
+                React.createElement(flexbox_react_1["default"], { flexDirection: "column", flexGrow: 1 },
                     React.createElement(TeamListBox_1.TeamListBox, { teams: this.props.teamReducer.teams, onSelectTeam: this.onSelectTeam }),
                     React.createElement(TeamCreateBox_1.TeamCreateBox, __assign({}, this.props))),
-                React.createElement(flexbox_react_1["default"], { flexDirection: "column", minHeight: "10vh" },
+                React.createElement(flexbox_react_1["default"], { element: "footer" },
                     React.createElement(StalkComponent_1.StalkCompEnhancer, null)))));
     };
     return Team;
