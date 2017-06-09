@@ -11,9 +11,9 @@ var CardVideoWithAvatar_1 = require("../../components/CardVideoWithAvatar");
 var FontAwesome = require("react-fontawesome");
 ;
 exports.getFontIcon = function (message) {
-    var exts = message.body.split(".");
-    var ext = exts[exts.length - 1].toLowerCase();
     if (message.type == Message_1.MessageType[Message_1.MessageType.File]) {
+        var exts = message.body.split(".");
+        var ext = exts[exts.length - 1].toLowerCase();
         if (ext == "pdf")
             return React.createElement(FontAwesome, { style: { padding: 5, marginLeft: 5 }, name: "file-pdf-o", size: "3x" });
         else if (ext == "txt" || ext == "json")
@@ -38,11 +38,7 @@ var renderList = function (props) {
             console.warn(message);
             return null;
         }
-        if (message.type == Message_1.MessageType[Message_1.MessageType.Text]) {
-            if (message.body.match(/http\:\/\/www\.mydomain\.com\/version\.php/i)) {
-                console.info("Is URL");
-            }
-        }
+        console.warn(message.type, message.body);
         switch (message.type) {
             case Message_1.MessageType[Message_1.MessageType.Text]: {
                 return (React.createElement(List_1.ListItem, { key: i, containerElement: React.createElement(CardTextWithAvatar_1.CardTextWithAvatar, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : "", avatar: (message.user.avatar) ?

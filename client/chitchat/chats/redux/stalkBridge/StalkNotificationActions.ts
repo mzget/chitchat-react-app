@@ -47,12 +47,8 @@ export const notify = (messageImp: MessageImp) => {
             getStore().dispatch(stalkNotiNewMessage(message));
         });
     }
-    else if (messageImp.type === MessageType[MessageType.Location]) {
-        message.body = "Sent you location";
-        getStore().dispatch(stalkNotiNewMessage(message));
-    }
-    else if (messageImp.type === MessageType[MessageType.Image]) {
-        message.body = "Sent you image";
+    else {
+        message.body = `Sent you ${messageImp.type.toLowerCase()}`;
         getStore().dispatch(stalkNotiNewMessage(message));
     }
 };

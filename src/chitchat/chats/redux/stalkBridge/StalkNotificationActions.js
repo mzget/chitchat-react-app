@@ -35,12 +35,8 @@ exports.notify = function (messageImp) {
             getStore().dispatch(stalkNotiNewMessage(message));
         });
     }
-    else if (messageImp.type === Message_1.MessageType[Message_1.MessageType.Location]) {
-        message.body = "Sent you location";
-        getStore().dispatch(stalkNotiNewMessage(message));
-    }
-    else if (messageImp.type === Message_1.MessageType[Message_1.MessageType.Image]) {
-        message.body = "Sent you image";
+    else {
+        message.body = "Sent you " + messageImp.type.toLowerCase();
         getStore().dispatch(stalkNotiNewMessage(message));
     }
 };

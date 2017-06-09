@@ -24,10 +24,10 @@ interface MyProps {
 };
 
 export const getFontIcon = (message: MessageImp) => {
-    let exts = message.body.split(".");
-    let ext = exts[exts.length - 1].toLowerCase();
-
     if (message.type == MessageType[MessageType.File]) {
+        let exts = message.body.split(".");
+        let ext = exts[exts.length - 1].toLowerCase();
+
         if (ext == "pdf")
             return <FontAwesome style={{ padding: 5, marginLeft: 5 }} name="file-pdf-o" size="3x" />;
         else if (ext == "txt" || ext == "json")
@@ -60,12 +60,8 @@ const renderList = (props: MyProps) => {
             console.warn(message);
             return null;
         }
-        if (message.type == MessageType[MessageType.Text]) {
-            if (message.body.match(/http\:\/\/www\.mydomain\.com\/version\.php/i)) {
-                console.info("Is URL");
-            }
-        }
 
+        console.warn(message.type, message.body);
         switch (message.type) {
             case MessageType[MessageType.Text]: {
                 return (
