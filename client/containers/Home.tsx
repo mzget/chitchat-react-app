@@ -109,7 +109,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
                         </Flex>
                         <Flex align="center">
                             <Box p={2} flexAuto></Box>
-                            <button onClick={this.onForgotAccount}><b>Forgotten account.</b></button>
+                            <a onClick={this.onForgotAccount}>Forgotten account</a>
                             <Box p={2} flexAuto></Box>
                         </Flex>
                         <Box flexAuto justify="flex-end"></Box>

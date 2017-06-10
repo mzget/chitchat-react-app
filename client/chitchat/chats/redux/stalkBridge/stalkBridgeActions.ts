@@ -50,14 +50,18 @@ export function stalkLogin(user: any) {
                 console.log("Joined stalk-service success", value);
                 let result: { success: boolean, token: any } = JSON.parse(JSON.stringify(value.data));
                 if (result.success) {
-                    backendFactory.getServerListener();
-                    backendFactory.subscriptions();
-                    stalkManageConnection();
+                    stalkManageConnection().then(function (server) {
+                        server.listenSocketEvents();
+                        backendFactory.getServerListener();
+                        backendFactory.subscriptions();
+                        StalkNotificationAction.regisNotifyNewMessageEvent();
+                        StalkPushActions.stalkPushInit();
 
-                    StalkNotificationAction.regisNotifyNewMessageEvent();
-                    StalkPushActions.stalkPushInit();
-
-                    getStore().dispatch({ type: STALK_INIT_SUCCESS, payload: { token: result.token, user: account } });
+                        getStore().dispatch({ type: STALK_INIT_SUCCESS, payload: { token: result.token, user: account } });
+                    }).catch(err => {
+                        console.warn("Stalk subscription fail: ", err);
+                        getStore().dispatch({ type: STALK_INIT_FAILURE, payload: err });
+                    });
                 }
                 else {
                     console.warn("Joined chat-server fail: ", result);
@@ -99,7 +103,7 @@ async function stalkManageConnection() {
         getStore().dispatch(onStalkSocketDisconnected(data.type));
     };
 
-    server.listenSocketEvents();
+    return await server;
 }
 
 export async function stalkLogout() {

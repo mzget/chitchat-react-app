@@ -76,12 +76,17 @@ function stalkLogin(user) {
                 console.log("Joined stalk-service success", value);
                 var result = JSON.parse(JSON.stringify(value.data));
                 if (result.success) {
-                    backendFactory.getServerListener();
-                    backendFactory.subscriptions();
-                    stalkManageConnection();
-                    StalkNotificationAction.regisNotifyNewMessageEvent();
-                    StalkPushActions.stalkPushInit();
-                    getStore().dispatch({ type: exports.STALK_INIT_SUCCESS, payload: { token: result.token, user: account } });
+                    stalkManageConnection().then(function (server) {
+                        server.listenSocketEvents();
+                        backendFactory.getServerListener();
+                        backendFactory.subscriptions();
+                        StalkNotificationAction.regisNotifyNewMessageEvent();
+                        StalkPushActions.stalkPushInit();
+                        getStore().dispatch({ type: exports.STALK_INIT_SUCCESS, payload: { token: result.token, user: account } });
+                    })["catch"](function (err) {
+                        console.warn("Stalk subscription fail: ", err);
+                        getStore().dispatch({ type: exports.STALK_INIT_FAILURE, payload: err });
+                    });
                 }
                 else {
                     console.warn("Joined chat-server fail: ", result);
@@ -112,19 +117,22 @@ function stalkManageConnection() {
     return __awaiter(this, void 0, void 0, function () {
         var backendFactory, server;
         return __generator(this, function (_a) {
-            backendFactory = BackendFactory_1.BackendFactory.getInstance();
-            server = backendFactory.getServer();
-            server.onSocketReconnect = function (data) {
-                getStore().dispatch(onStalkSocketReconnect(data.type));
-            };
-            server.onSocketClose = function (data) {
-                getStore().dispatch(onStalkSocketClose(data.type));
-            };
-            server.onDisconnected = function (data) {
-                getStore().dispatch(onStalkSocketDisconnected(data.type));
-            };
-            server.listenSocketEvents();
-            return [2 /*return*/];
+            switch (_a.label) {
+                case 0:
+                    backendFactory = BackendFactory_1.BackendFactory.getInstance();
+                    server = backendFactory.getServer();
+                    server.onSocketReconnect = function (data) {
+                        getStore().dispatch(onStalkSocketReconnect(data.type));
+                    };
+                    server.onSocketClose = function (data) {
+                        getStore().dispatch(onStalkSocketClose(data.type));
+                    };
+                    server.onDisconnected = function (data) {
+                        getStore().dispatch(onStalkSocketDisconnected(data.type));
+                    };
+                    return [4 /*yield*/, server];
+                case 1: return [2 /*return*/, _a.sent()];
+            }
         });
     });
 }

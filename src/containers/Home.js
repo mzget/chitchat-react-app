@@ -97,8 +97,7 @@ var Home = (function (_super) {
                         React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
                     React.createElement(reflexbox_1.Flex, { align: "center" },
                         React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
-                        React.createElement("button", { onClick: this.onForgotAccount },
-                            React.createElement("b", null, "Forgotten account.")),
+                        React.createElement("a", { onClick: this.onForgotAccount }, "Forgotten account"),
                         React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true })),
                     React.createElement(reflexbox_1.Box, { flexAuto: true, justify: "flex-end" }))),
             React.createElement("div", { id: "app_footer", style: {
