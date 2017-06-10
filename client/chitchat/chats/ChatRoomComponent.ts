@@ -95,11 +95,11 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
                     saveMessages(chatMessages);
                 }
             }).catch(err => {
-                console.error("Cannot get persistend message of room", err);
+                console.warn("Cannot get persistend message of room", err);
             });
         }
         else {
-            console.info("this msg come from other room.");
+            console.log("this msg come from other room.");
 
             if (!!this.outsideRoomDelegete) {
                 this.outsideRoomDelegete(ChatEvents.ON_CHAT, message);

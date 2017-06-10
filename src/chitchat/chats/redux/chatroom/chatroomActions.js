@@ -50,6 +50,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var R = require("ramda");
 var stalk_js_1 = require("stalk-js");
 var chatroomService = require("../../services/chatroomService");
+var MessageService = require("../../services/MessageService");
 var ChatRoomComponent_1 = require("../../ChatRoomComponent");
 var BackendFactory_1 = require("../../BackendFactory");
 var secureServiceFactory_1 = require("../../secure/secureServiceFactory");
@@ -102,12 +103,13 @@ exports.initChatRoom = initChatRoom;
 function onChatRoomDelegate(event, newMsg) {
     if (event === stalk_js_1.ChatEvents.ON_CHAT) {
         console.log("onChatRoomDelegate: ", stalk_js_1.ChatEvents.ON_CHAT, newMsg);
+        var backendFactory = BackendFactory_1.BackendFactory.getInstance();
         /**
          * Todo **
          * - if message_id is mine. Replace message_id to local messages list.
          * - if not my message. Update who read this message. And tell anyone.
          */
-        if (BackendFactory_1.BackendFactory.getInstance().dataManager.isMySelf(newMsg.sender)) {
+        if (backendFactory.dataManager.isMySelf(newMsg.sender)) {
         }
         else {
             console.log("is contact message");
@@ -116,9 +118,11 @@ function onChatRoomDelegate(event, newMsg) {
             console.log("AppState: ", appState); // active, background, inactive
             if (!!appState) {
                 if (appState === "active") {
-                    var backendFactory = BackendFactory_1.BackendFactory.getInstance();
-                    var chatApi = backendFactory.getServer().getChatRoomAPI();
-                    chatApi.updateMessageReader(newMsg._id, newMsg.rid);
+                    MessageService.updateMessageReader(newMsg._id, newMsg.rid).then(function (response) { return response.json(); }).then(function (value) {
+                        console.log("updateMessageReader: ", value);
+                    })["catch"](function (err) {
+                        console.warn("updateMessageReader: ", err);
+                    });
                 }
                 else if (appState !== "active") {
                     // @ When user joined room but appState is inActive.

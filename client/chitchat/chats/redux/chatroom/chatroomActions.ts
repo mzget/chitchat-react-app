@@ -10,6 +10,7 @@ import { Utils, ChatEvents } from "stalk-js";
 import { ServerEventListener } from "../../ServerEventListener";
 
 import * as chatroomService from "../../services/chatroomService";
+import * as MessageService from "../../services/MessageService";
 import { ChatRoomComponent } from "../../ChatRoomComponent";
 import { BackendFactory } from "../../BackendFactory";
 import SecureServiceFactory from "../../secure/secureServiceFactory";
@@ -71,12 +72,14 @@ export function initChatRoom(currentRoom: Room) {
 function onChatRoomDelegate(event, newMsg: IMessage) {
     if (event === ChatEvents.ON_CHAT) {
         console.log("onChatRoomDelegate: ", ChatEvents.ON_CHAT, newMsg);
+
+        let backendFactory = BackendFactory.getInstance();
         /**
          * Todo **
          * - if message_id is mine. Replace message_id to local messages list.
          * - if not my message. Update who read this message. And tell anyone.
          */
-        if (BackendFactory.getInstance().dataManager.isMySelf(newMsg.sender)) {
+        if (backendFactory.dataManager.isMySelf(newMsg.sender)) {
             // dispatch(replaceMyMessage(newMsg));
         }
         else {
@@ -86,9 +89,11 @@ function onChatRoomDelegate(event, newMsg: IMessage) {
             console.log("AppState: ", appState); // active, background, inactive
             if (!!appState) {
                 if (appState === "active") {
-                    let backendFactory = BackendFactory.getInstance();
-                    let chatApi = backendFactory.getServer().getChatRoomAPI();
-                    chatApi.updateMessageReader(newMsg._id, newMsg.rid);
+                    MessageService.updateMessageReader(newMsg._id, newMsg.rid).then(response => response.json()).then(value => {
+                        console.log("updateMessageReader: ", value);
+                    }).catch(err => {
+                        console.warn("updateMessageReader: ", err);
+                    });
                 }
                 else if (appState !== "active") {
                     // @ When user joined room but appState is inActive.

@@ -2,9 +2,6 @@ export interface IStalkApi {
     apiKey: string;
     chat: string;
     port: number;
-    api: {
-        user: string;
-    };
 }
 
 export interface IConfig {
@@ -25,5 +22,7 @@ export interface IChitChatApi {
     group: string;
     orgChart: string;
     chatroom: string;
+    message: string;
+    stalk_user: string;
     fileUpload: string;
 }
