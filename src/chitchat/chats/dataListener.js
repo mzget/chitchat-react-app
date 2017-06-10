@@ -122,7 +122,7 @@ var DataListener = (function () {
     /*******************************************************************************/
     // <!-- chat room data listener.
     DataListener.prototype.onChat = function (data) {
-        var chatMessageImp = data;
+        var chatMessageImp = JSON.parse(JSON.stringify(data));
         this.onChatEventListeners.map(function (value, id, arr) {
             value(chatMessageImp);
         });
