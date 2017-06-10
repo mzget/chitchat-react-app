@@ -157,7 +157,7 @@ export class DataListener implements ServerListener, ChatEvents.IChatServerEvent
     /*******************************************************************************/
     // <!-- chat room data listener.
     onChat(data) {
-        let chatMessageImp: IMessage = JSON.parse(JSON.stringify(data));
+        let chatMessageImp = data as IMessage;
         this.onChatEventListeners.map((value, id, arr) => {
             value(chatMessageImp);
         });
