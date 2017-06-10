@@ -10,6 +10,7 @@ import { Utils, ChatEvents } from "stalk-js";
 import { ServerEventListener } from "../../ServerEventListener";
 
 import * as chatroomService from "../../services/chatroomService";
+import * as MessageService from "../../services/MessageService";
 import { ChatRoomComponent } from "../../ChatRoomComponent";
 import { BackendFactory } from "../../BackendFactory";
 import SecureServiceFactory from "../../secure/secureServiceFactory";
@@ -88,8 +89,11 @@ function onChatRoomDelegate(event, newMsg: IMessage) {
             console.log("AppState: ", appState); // active, background, inactive
             if (!!appState) {
                 if (appState === "active") {
-                    let chatApi = backendFactory.getServer().getChatRoomAPI();
-                    chatApi.updateMessageReader(newMsg._id, newMsg.rid);
+                    MessageService.updateMessageReader(newMsg._id, newMsg.rid).then(response => response.json()).then(value => {
+                        console.log("updateMessageReader: ", value);
+                    }).catch(err => {
+                        console.warn("updateMessageReader: ", err);
+                    });
                 }
                 else if (appState !== "active") {
                     // @ When user joined room but appState is inActive.

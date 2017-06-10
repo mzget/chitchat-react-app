@@ -50,6 +50,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var R = require("ramda");
 var stalk_js_1 = require("stalk-js");
 var chatroomService = require("../../services/chatroomService");
+var MessageService = require("../../services/MessageService");
 var ChatRoomComponent_1 = require("../../ChatRoomComponent");
 var BackendFactory_1 = require("../../BackendFactory");
 var secureServiceFactory_1 = require("../../secure/secureServiceFactory");
@@ -117,8 +118,11 @@ function onChatRoomDelegate(event, newMsg) {
             console.log("AppState: ", appState); // active, background, inactive
             if (!!appState) {
                 if (appState === "active") {
-                    var chatApi = backendFactory.getServer().getChatRoomAPI();
-                    chatApi.updateMessageReader(newMsg._id, newMsg.rid);
+                    MessageService.updateMessageReader(newMsg._id, newMsg.rid).then(function (response) { return response.json(); }).then(function (value) {
+                        console.log("updateMessageReader: ", value);
+                    })["catch"](function (err) {
+                        console.warn("updateMessageReader: ", err);
+                    });
                 }
                 else if (appState !== "active") {
                     // @ When user joined room but appState is inActive.
