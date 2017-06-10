@@ -3,7 +3,7 @@ import { StalkAccount, RoomAccessData } from "../shared/Stalk";
 import { IMessage } from "../shared/Message";
 import { Room } from "../shared/Room";
 
-import { DataManager } from "./dataManager";
+import { DataManager } from "./DataManager";
 import { ServerListener } from "./ServerEventListener";
 
 export class DataListener implements ServerListener, ChatEvents.IChatServerEvents {
