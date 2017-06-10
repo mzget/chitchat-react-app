@@ -10,7 +10,7 @@ const authReducer = () => ChitChatFactory.getInstance().authStore;
 
 import { IRoomAccessListenerImp } from "./abstracts/IRoomAccessListenerImp";
 import ChatLog from "./models/chatLog";
-import { DataListener } from "./dataListener";
+import { DataListener } from "./DataListener";
 import { BackendFactory } from "./BackendFactory";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import { IMessage, MessageType, IMessageMeta } from "../shared/Message";
