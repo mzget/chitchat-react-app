@@ -4,15 +4,12 @@ exports.chitchatFactory = ChitchatFactory_1.ChitChatFactory.createInstance();
 var api_stalk = "wss://chitchats.ga";
 var stalkPort = 3050;
 var stalkKey = "chitchat1234";
-var chitchat_api = "https://chitchats.ga"; //"http://localhost:9000"; "http://git.animation-genius.com:9000"
+var chitchat_api = "http://localhost:9000"; //"http://localhost:9000"; "https://chitchats.ga"
 var config = {
     Stalk: {
         apiKey: stalkKey,
         chat: "" + api_stalk,
-        port: stalkPort,
-        api: {
-            user: chitchat_api + "/api/stalk/user"
-        }
+        port: stalkPort
     },
     api: {
         apiKey: "chitchat1234",
@@ -24,6 +21,8 @@ var config = {
         group: chitchat_api + "/api/group",
         orgChart: chitchat_api + "/api/orgChart",
         chatroom: chitchat_api + "/api/chatroom",
+        message: chitchat_api + "/api/stalk/message",
+        stalk_user: chitchat_api + "/api/stalk/user",
         fileUpload: chitchat_api + "/chats/upload"
     },
     appConfig: {

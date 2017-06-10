@@ -100,11 +100,11 @@ var ChatRoomComponent = (function () {
                     saveMessages(chatMessages);
                 }
             })["catch"](function (err) {
-                console.error("Cannot get persistend message of room", err);
+                console.warn("Cannot get persistend message of room", err);
             });
         }
         else {
-            console.info("this msg come from other room.");
+            console.log("this msg come from other room.");
             if (!!this.outsideRoomDelegete) {
                 this.outsideRoomDelegete(stalk_js_1.ChatEvents.ON_CHAT, message);
             }

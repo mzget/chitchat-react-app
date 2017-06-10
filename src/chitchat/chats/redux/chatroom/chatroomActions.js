@@ -102,12 +102,13 @@ exports.initChatRoom = initChatRoom;
 function onChatRoomDelegate(event, newMsg) {
     if (event === stalk_js_1.ChatEvents.ON_CHAT) {
         console.log("onChatRoomDelegate: ", stalk_js_1.ChatEvents.ON_CHAT, newMsg);
+        var backendFactory = BackendFactory_1.BackendFactory.getInstance();
         /**
          * Todo **
          * - if message_id is mine. Replace message_id to local messages list.
          * - if not my message. Update who read this message. And tell anyone.
          */
-        if (BackendFactory_1.BackendFactory.getInstance().dataManager.isMySelf(newMsg.sender)) {
+        if (backendFactory.dataManager.isMySelf(newMsg.sender)) {
         }
         else {
             console.log("is contact message");
@@ -116,7 +117,6 @@ function onChatRoomDelegate(event, newMsg) {
             console.log("AppState: ", appState); // active, background, inactive
             if (!!appState) {
                 if (appState === "active") {
-                    var backendFactory = BackendFactory_1.BackendFactory.getInstance();
                     var chatApi = backendFactory.getServer().getChatRoomAPI();
                     chatApi.updateMessageReader(newMsg._id, newMsg.rid);
                 }

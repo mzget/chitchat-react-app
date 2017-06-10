@@ -1,21 +1,18 @@
 import { ChitChatFactory } from "./chitchat/chats/ChitchatFactory";
-import { IConfig } from "./chitchat/chats/iConfig";
+import { IConfig, IChitChatApi, IStalkApi } from "./chitchat/chats/iConfig";
 export const chitchatFactory = ChitChatFactory.createInstance();
 
 const api_stalk = "wss://chitchats.ga";
 const stalkPort = 3050;
 const stalkKey = "chitchat1234";
-const chitchat_api = "https://chitchats.ga"; //"http://localhost:9000"; "http://git.animation-genius.com:9000"
+const chitchat_api = "http://localhost:9000"; //"http://localhost:9000"; "https://chitchats.ga"
 
 const config = {
     Stalk: {
         apiKey: stalkKey,
         chat: `${api_stalk}`,
-        port: stalkPort,
-        api: {
-            user: `${chitchat_api}/api/stalk/user`
-        }
-    },
+        port: stalkPort
+    } as IStalkApi,
     api: {
         apiKey: "chitchat1234",
         host: `${chitchat_api}`,
@@ -26,8 +23,10 @@ const config = {
         group: `${chitchat_api}/api/group`,
         orgChart: `${chitchat_api}/api/orgChart`,
         chatroom: `${chitchat_api}/api/chatroom`,
+        message: `${chitchat_api}/api/stalk/message`,
+        stalk_user: `${chitchat_api}/api/stalk/user`,
         fileUpload: `${chitchat_api}/chats/upload`
-    },
+    } as IChitChatApi,
     appConfig: {
         encryption: false
     }

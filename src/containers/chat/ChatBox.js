@@ -38,7 +38,6 @@ var renderList = function (props) {
             console.warn(message);
             return null;
         }
-        console.warn(message.type, message.body);
         switch (message.type) {
             case Message_1.MessageType[Message_1.MessageType.Text]: {
                 return (React.createElement(List_1.ListItem, { key: i, containerElement: React.createElement(CardTextWithAvatar_1.CardTextWithAvatar, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : "", avatar: (message.user.avatar) ?

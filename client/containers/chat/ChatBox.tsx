@@ -61,7 +61,6 @@ const renderList = (props: MyProps) => {
             return null;
         }
 
-        console.warn(message.type, message.body);
         switch (message.type) {
             case MessageType[MessageType.Text]: {
                 return (
