@@ -1,7 +1,7 @@
 "use strict";
 var React = require("react");
 var react_router_dom_1 = require("react-router-dom");
-var reflexbox_1 = require("reflexbox");
+var flexbox_react_1 = require("flexbox-react");
 var MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 var ConnectGroupListEnhancer_1 = require("./group/ConnectGroupListEnhancer");
 var ChatLogsBox_1 = require("./chatlog/ChatLogsBox");
@@ -16,23 +16,26 @@ var DialogBox_1 = require("../components/DialogBox");
 var MainPageEnhanced = MainPageEnhancer_1.MainPageEnhancer(function (_a) {
     var teamReducer = _a.teamReducer, groupReducer = _a.groupReducer, authReducer = _a.authReducer, userReducer = _a.userReducer, chatroomReducer = _a.chatroomReducer, history = _a.history, match = _a.match, onError = _a.onError, fetch_orgGroups = _a.fetch_orgGroups, fetch_privateGroups = _a.fetch_privateGroups;
     return (React.createElement(MuiThemeProvider_1["default"], null,
-        React.createElement("div", null,
-            React.createElement(MainPageToolbar_1.WebToolbarEnhanced, { id: "app_bar", history: history, teamReducer: teamReducer, authReducer: authReducer, listener: MainPageToolbar_1.listener }),
-            React.createElement("div", { id: "app_body", style: { position: "relative", height: "calc(100vh - 56px)", overflowY: "hidden" } },
-                React.createElement(reflexbox_1.Flex, { style: { height: "100%" } },
-                    React.createElement(reflexbox_1.Box, { col: 3, style: { overflowY: "scroll" } },
-                        React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: fetch_orgGroups, groups: groupReducer.orgGroups, subHeader: "OrgGroups" }),
-                        React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: fetch_privateGroups, groups: groupReducer.privateGroups, subHeader: "Groups" }),
-                        React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, null)),
-                    React.createElement(reflexbox_1.Box, { col: 9 },
-                        React.createElement(SubToolbar_1.SubToolbar, { history: history, match: match, onError: onError, chatroomReducer: chatroomReducer, userReducer: userReducer }),
-                        React.createElement(reflexbox_1.Flex, null,
-                            React.createElement(reflexbox_1.Box, { col: 8 },
-                                React.createElement(AppBody_1.AppBody, { userReducer: userReducer, match: match, history: history, onError: onError })),
-                            React.createElement(reflexbox_1.Box, { col: 4 },
-                                React.createElement(RightNav_1.RightNav, { match: match, onError: onError, teamReducer: teamReducer }))))),
-                React.createElement("div", { id: "app_footer" },
-                    React.createElement(StalkComponent_1.StalkCompEnhancer, null))))));
+        React.createElement(flexbox_react_1["default"], { flexDirection: "column", minHeight: "100vh" },
+            React.createElement(flexbox_react_1["default"], { element: "header", maxHeight: "56px" },
+                React.createElement("div", { style: { width: "100%" } },
+                    React.createElement(MainPageToolbar_1.WebToolbarEnhanced, { id: "app_bar", history: history, teamReducer: teamReducer, authReducer: authReducer, listener: MainPageToolbar_1.listener }))),
+            React.createElement(flexbox_react_1["default"], { element: "footer", maxHeight: "40px" },
+                React.createElement(StalkComponent_1.StalkCompEnhancer, null)),
+            React.createElement(flexbox_react_1["default"], { flexDirection: "row", flexGrow: 1, height: "calc(100vh - 56px - 40px)" },
+                React.createElement(flexbox_react_1["default"], { flexDirection: "column", flexGrow: 0.3, style: { overflowY: "scroll" } },
+                    React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: fetch_orgGroups, groups: groupReducer.orgGroups, subHeader: "OrgGroups" }),
+                    React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: fetch_privateGroups, groups: groupReducer.privateGroups, subHeader: "Groups" }),
+                    React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, null)),
+                React.createElement(flexbox_react_1["default"], { flexDirection: "column", flexGrow: 0.7, style: { overflowY: "scroll" } },
+                    React.createElement(SubToolbar_1.SubToolbar, { history: history, match: match, onError: onError, chatroomReducer: chatroomReducer, userReducer: userReducer }),
+                    React.createElement(flexbox_react_1["default"], null,
+                        React.createElement(flexbox_react_1["default"], { flexGrow: 0.5 },
+                            React.createElement("div", { style: { width: "100%", height: "100%" } },
+                                React.createElement(AppBody_1.AppBody, { userReducer: userReducer, match: match, history: history, onError: onError }))),
+                        React.createElement(flexbox_react_1["default"], { flexGrow: 0.5 },
+                            React.createElement("div", { style: { width: "100%", height: "100%" } },
+                                React.createElement(RightNav_1.RightNav, { match: match, onError: onError, teamReducer: teamReducer })))))))));
 });
 exports.MainPageWithDialogBox = DialogBoxEnhancer_1.DialogBoxEnhancer(function (_a) {
     var title = _a.title, message = _a.message, open = _a.open, handleClose = _a.handleClose, onError = _a.onError, history = _a.history, match = _a.match;

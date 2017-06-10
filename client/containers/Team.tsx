@@ -67,8 +67,8 @@ class Team extends React.Component<IComponentProps, any> {
             <MuiThemeProvider>
                 <Flexbox flexDirection="column" minHeight="100vh">
                     <Flexbox element="header" >
-                        <div style={{ width:"100%"}}>
-                        <SimpleToolbar title={this.toolbar} menus={["logout"]} onSelectedMenuItem={this.onToolbarMenuItem} />
+                        <div style={{ width: "100%" }}>
+                            <SimpleToolbar title={this.toolbar} menus={["logout"]} onSelectedMenuItem={this.onToolbarMenuItem} />
                         </div>
                     </Flexbox>
                     <Flexbox flexDirection="column" flexGrow={1}>
