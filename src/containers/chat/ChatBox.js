@@ -57,7 +57,7 @@ var renderList = function (props) {
             case Message_1.MessageType[Message_1.MessageType.Video]:
                 {
                     return (React.createElement(List_1.ListItem, { key: i, style: { margin: "5px" }, containerElement: React.createElement(CardVideoWithAvatar_1.CardVideoWithAvatar, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : "", avatar: (message.user.avatar) ?
-                                React.createElement(Avatar_1["default"], { src: message.user.avatar }) : React.createElement(Avatar_1["default"], null, message.user.username.charAt(0)), src: message.src }) }));
+                                React.createElement(Avatar_1["default"], { src: message.user.avatar }) : React.createElement(Avatar_1["default"], null, message.user.username.charAt(0)), src: message.src, readers: (!!message.readers && message.readers.length > 0) ? "Read " + message.readers.length : null, onClickReader: function () { return onClickReader(message); } }) }));
                 }
             case Message_1.MessageType[Message_1.MessageType.File]:
                 {
@@ -65,7 +65,7 @@ var renderList = function (props) {
                                 React.createElement(Avatar_1["default"], { src: message.user.avatar }) :
                                 React.createElement(Avatar_1["default"], null, message.user.username.charAt(0)), cardText: message.body, fileIcon: exports.getFontIcon(message), openAction: function () {
                                 window.open(message.src, "_blank");
-                            } }) }));
+                            }, readers: (!!message.readers && message.readers.length > 0) ? "Read " + message.readers.length : null, onClickReader: function () { return onClickReader(message); } }) }));
                 }
             default:
                 break;

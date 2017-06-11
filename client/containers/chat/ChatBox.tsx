@@ -122,7 +122,9 @@ const renderList = (props: MyProps) => {
                                 avatar={(message.user.avatar) ?
                                     <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                                 }
-                                src={message.src} />
+                                src={message.src}
+                                readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null}
+                                onClickReader={() => onClickReader(message)} />
                         }>
                         </ListItem>);
                 }
@@ -143,7 +145,9 @@ const renderList = (props: MyProps) => {
                                 }
                                 openAction={() => {
                                     window.open(message.src, "_blank");
-                                }} />
+                                }}
+                                readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null}
+                                onClickReader={() => onClickReader(message)} />
                         }>
                         </ListItem>
                     );
