@@ -383,10 +383,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                             :
                             null
                     }
-                    <ChatBox
-                        styles={{ overflowX: "hidden" }}
-                        value={this.state.messages}
-                        onSelected={(message: IMessage) => { }} />
+                    <ChatBox styles={{ overflowX: "hidden" }} value={this.state.messages} onSelected={(message: IMessage) => { }} />
                     {
                         (this.state.openButtomMenu) ?
                             <GridListSimple

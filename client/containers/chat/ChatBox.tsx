@@ -23,6 +23,15 @@ interface MyProps {
     styles?: any;
 };
 
+
+export const ChatBox = (props: MyProps) => (
+    <MuiThemeProvider>
+        <List style={props.styles} id={"chatbox"}>
+            {(!!props.value) ? renderList(props) : null}
+        </List>
+    </MuiThemeProvider>
+);
+
 export const getFontIcon = (message: MessageImp) => {
     if (message.type == MessageType[MessageType.File]) {
         let exts = message.body.split(".");
@@ -45,14 +54,9 @@ export const getFontIcon = (message: MessageImp) => {
     }
 };
 
-export const ChatBox = (props: MyProps) => (
-    <MuiThemeProvider>
-        <List style={props.styles} id={"chatbox"}>
-            {(!!props.value) ? renderList(props) : null}
-        </List>
-    </MuiThemeProvider>
-);
-
+const onClickReader = (message: MessageImp) => {
+    console.log(message);
+}
 const renderList = (props: MyProps) => {
     return props.value.map((message, i, arr) => {
 
@@ -71,7 +75,9 @@ const renderList = (props: MyProps) => {
                             avatar={(message.user.avatar) ?
                                 <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                             }
-                            cardText={message.body} />
+                            cardText={message.body}
+                            readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null}
+                            onClickReader={() => onClickReader(message)} />
                     } >
                     </ListItem >
                 );
@@ -85,7 +91,9 @@ const renderList = (props: MyProps) => {
                             avatar={(message.user.avatar) ?
                                 <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                             }
-                            imageSrc={message.src} />
+                            imageSrc={message.src}
+                            readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null}
+                            onClickReader={() => onClickReader(message)} />
                     }>
                     </ListItem>);
             }
@@ -98,7 +106,9 @@ const renderList = (props: MyProps) => {
                             avatar={(message.user.avatar) ?
                                 <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                             }
-                            imageSrc={message.src} />
+                            imageSrc={message.src}
+                            readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null}
+                            onClickReader={() => onClickReader(message)} />
                     }>
                     </ListItem>);
             }

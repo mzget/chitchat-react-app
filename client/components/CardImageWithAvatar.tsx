@@ -1,17 +1,21 @@
 import * as React from "react";
-import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from "material-ui/Card";
-import FlatButton from "material-ui/FlatButton";
-import { grey400, darkBlack, lightBlack } from "material-ui/styles/colors";
 
-interface MyProps {
+import FlatButton from "material-ui/FlatButton";
+import Divider from 'material-ui/Divider';
+import { grey400, darkBlack, lightBlack } from "material-ui/styles/colors";
+import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from "material-ui/Card";
+
+interface ICompProps {
     title: string;
     subtitle: string;
     avatar: any;
     cardText?: string;
     imageSrc: string;
+    readers: string;
+    onClickReader: () => void;
 }
 
-export const CardImageWithAvatar = (props: MyProps) => (
+export const CardImageWithAvatar = (props: ICompProps) => (
     <div style={{ padding: 2, color: grey400 }}>
         <Card>
             <CardHeader
@@ -25,11 +29,19 @@ export const CardImageWithAvatar = (props: MyProps) => (
             <CardMedia>
                 <img src={props.imageSrc} style={{ padding: 5 }} alt={`Image preview: ${props.cardText}`} />
             </CardMedia>
+            {
+                (!!props.readers && props.readers.length) ? (
+                    <div>
+                        <Divider inset={false} />
+                        <a style={{ padding: 5 }} onClick={props.onClickReader}>{props.readers}</a>
+                    </div>
+                ) : null
+            }
         </Card>
     </div>
 );
 
-export const CardStickerWithAvatar = (props: MyProps) => (
+export const CardStickerWithAvatar = (props: ICompProps) => (
     <div style={{ padding: 2, color: grey400 }}>
         <Card>
             <CardHeader
@@ -40,6 +52,14 @@ export const CardStickerWithAvatar = (props: MyProps) => (
             <CardMedia>
                 <img src={props.imageSrc} alt={`Image preview:`} style={{ padding: 4, width: "50%", minWidth: "128px", maxWidth: "160px" }} />
             </CardMedia>
+            {
+                (!!props.readers && props.readers.length) ? (
+                    <div>
+                        <Divider inset={false} />
+                        <a style={{ padding: 5 }} onClick={props.onClickReader}>{props.readers}</a>
+                    </div>
+                ) : null
+            }
         </Card>
     </div>
 );

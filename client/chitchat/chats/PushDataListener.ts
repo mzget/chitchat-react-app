@@ -1,16 +1,26 @@
 import { PushEvents } from "stalk-js";
 
+
+export type Push = {
+    event: string;
+    message: any;
+    timestamp: Date;
+    members: Array<string>;
+};
+export type IListener = (data: Push) => void;
+
 export class PushDataListener implements PushEvents.IPushServerListener {
-    private onPushEvents: Array<(dataEvent) => void> = new Array();
-    public addPushEvents(fx: (dataEvent) => void) {
+
+    private onPushEvents: Array<IListener> = new Array();
+    public addPushEvents(fx: IListener) {
         this.onPushEvents.push(fx);
     }
-    public removePushEvents(fx: (dataEvent) => void) {
+    public removePushEvents(fx: IListener) {
         let id = this.onPushEvents.indexOf(fx);
         this.onPushEvents.splice(id, 1);
     }
 
-    onPush(dataEvent) {
+    onPush(dataEvent: Push) {
         this.onPushEvents.forEach(fx => fx(dataEvent));
     }
 }
