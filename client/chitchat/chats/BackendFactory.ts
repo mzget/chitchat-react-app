@@ -96,9 +96,9 @@ export class BackendFactory {
         let promise = new Promise(function exe(resolve, reject) {
             self.checkOut();
 
-            if (!!self.pushDataListener) self.pushDataListener = null;
-            if (!!self.dataManager) self.dataManager = null;
-            if (!!self.dataListener) self.dataListener = null;
+            if (!!self.pushDataListener) { self.pushDataListener = null; }
+            if (!!self.dataManager) { self.dataManager = null; }
+            if (!!self.dataListener) { self.dataListener = null; }
 
             BackendFactory.instance = null;
             resolve();

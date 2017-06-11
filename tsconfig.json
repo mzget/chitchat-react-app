@@ -1,7 +1,6 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "module": "commonjs",
     "jsx": "react",
     "rootDirs": [
       "client"
@@ -13,7 +12,6 @@
       "node_modules/stalk-js"
     ],
     "lib": [
-      "es2015.promise",
       "es2015"
     ]
   },

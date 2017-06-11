@@ -6,11 +6,20 @@
 
 import { BackendFactory } from "../../BackendFactory";
 
+type Push = {
+    event: string;
+    message: string;
+    timestamp: Date;
+    members: Array<string>;
+};
+
 export function stalkPushInit() {
     const pushDataListener = BackendFactory.getInstance().pushDataListener;
     pushDataListener.addPushEvents(onPush_handler);
 }
 
 function onPush_handler(dataEvent) {
-    console.log(`Event : ${dataEvent}`);
+    let push = dataEvent as Push;
+
+    console.log(`onPush_handler :`, push);
 }

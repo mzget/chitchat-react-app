@@ -110,6 +110,8 @@ function onChatRoomDelegate(event, newMsg) {
          * - if not my message. Update who read this message. And tell anyone.
          */
         if (backendFactory.dataManager.isMySelf(newMsg.sender)) {
+            // dispatch(replaceMyMessage(newMsg));
+            console.log("is my message");
         }
         else {
             console.log("is contact message");

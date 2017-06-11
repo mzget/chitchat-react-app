@@ -11,5 +11,6 @@ function stalkPushInit() {
 }
 exports.stalkPushInit = stalkPushInit;
 function onPush_handler(dataEvent) {
-    console.log("Event : " + dataEvent);
+    var push = dataEvent;
+    console.log("onPush_handler :", push);
 }

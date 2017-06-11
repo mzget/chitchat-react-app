@@ -81,6 +81,7 @@ function onChatRoomDelegate(event, newMsg: IMessage) {
          */
         if (backendFactory.dataManager.isMySelf(newMsg.sender)) {
             // dispatch(replaceMyMessage(newMsg));
+            console.log("is my message");
         }
         else {
             console.log("is contact message");

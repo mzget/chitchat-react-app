@@ -151,12 +151,15 @@ var BackendFactory = (function () {
         var self = this;
         var promise = new Promise(function exe(resolve, reject) {
             self.checkOut();
-            if (!!self.pushDataListener)
+            if (!!self.pushDataListener) {
                 self.pushDataListener = null;
-            if (!!self.dataManager)
+            }
+            if (!!self.dataManager) {
                 self.dataManager = null;
-            if (!!self.dataListener)
+            }
+            if (!!self.dataListener) {
                 self.dataListener = null;
+            }
             BackendFactory.instance = null;
             resolve();
         });

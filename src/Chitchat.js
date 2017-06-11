@@ -4,7 +4,7 @@ exports.chitchatFactory = ChitchatFactory_1.ChitChatFactory.createInstance();
 var api_stalk = "wss://chitchats.ga";
 var stalkPort = 3050;
 var stalkKey = "chitchat1234";
-var chitchat_api = "http://localhost:9000"; //"http://localhost:9000"; "https://chitchats.ga"
+var chitchat_api = "https://chitchats.ga"; //"http://localhost:9000"; "https://chitchats.ga"
 var config = {
     Stalk: {
         apiKey: stalkKey,
