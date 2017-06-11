@@ -58,6 +58,9 @@ var ChatRoomComponent = (function () {
         this.dataListener.addOnChatListener(this.onChat.bind(this));
     }
     ChatRoomComponent.getInstance = function () {
+        return ChatRoomComponent.instance;
+    };
+    ChatRoomComponent.createInstance = function () {
         if (!ChatRoomComponent.instance) {
             ChatRoomComponent.instance = new ChatRoomComponent();
         }
@@ -112,22 +115,26 @@ var ChatRoomComponent = (function () {
     };
     ChatRoomComponent.prototype.onRoomJoin = function (data) { };
     ChatRoomComponent.prototype.onLeaveRoom = function (data) { };
-    ChatRoomComponent.prototype.onMessageRead = function (dataEvent) {
-        console.log("onMessageRead", JSON.stringify(dataEvent));
+    ChatRoomComponent.prototype.onMessageRead = function (message) {
+        var _this = this;
         var self = this;
-        var newMsg = JSON.parse(JSON.stringify(dataEvent));
-        var promise = new Promise(function (resolve, reject) {
-            self.chatMessages.some(function callback(value) {
+        var newMsg = message;
+        this.dataManager.messageDAL.getData(this.roomId)
+            .then(function (chats) { return chats; })
+            .then(function (chats) {
+            var chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
+            chatMessages.some(function (value) {
                 if (value._id === newMsg._id) {
                     value.readers = newMsg.readers;
-                    if (!!self.chatroomDelegate)
+                    if (!!self.chatroomDelegate) {
                         self.chatroomDelegate(stalk_js_1.ChatEvents.ON_MESSAGE_READ, null);
-                    resolve();
+                    }
                     return true;
                 }
             });
-        }).then(function (value) {
-            self.dataManager.messageDAL.saveData(self.roomId, self.chatMessages);
+            _this.dataManager.messageDAL.saveData(_this.roomId, chatMessages);
+        })["catch"](function (err) {
+            console.warn("Cannot get persistend message of room", err);
         });
     };
     ChatRoomComponent.prototype.onGetMessagesReaders = function (dataEvent) {
@@ -497,8 +504,9 @@ var ChatRoomComponent = (function () {
     };
     ChatRoomComponent.prototype.getMemberProfile = function (member, callback) {
         var server = BackendFactory_1.BackendFactory.getInstance().getServer();
-        if (server)
+        if (server) {
             server.getMemberProfile(member._id, callback);
+        }
     };
     ChatRoomComponent.prototype.getMessages = function () {
         return __awaiter(this, void 0, void 0, function () {

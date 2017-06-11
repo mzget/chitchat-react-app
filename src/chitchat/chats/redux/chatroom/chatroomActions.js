@@ -82,8 +82,9 @@ exports.ChatRoomActionsType = ChatRoomActionsType;
 exports.CHATROOM_REDUCER_EMPTY_STATE = "CHATROOM_REDUCER_EMPTY_STATE";
 exports.emptyState = function () { return ({ type: exports.CHATROOM_REDUCER_EMPTY_STATE }); };
 function initChatRoom(currentRoom) {
-    if (!currentRoom)
+    if (!currentRoom) {
         throw new Error("Empty roomInfo");
+    }
     var room_name = currentRoom.name;
     if (!room_name && currentRoom.type === Room_1.RoomType.privateChat) {
         currentRoom.members.some(function (v, id, arr) {
@@ -93,7 +94,7 @@ function initChatRoom(currentRoom) {
             }
         });
     }
-    var chatroomComp = ChatRoomComponent_1.ChatRoomComponent.getInstance();
+    var chatroomComp = ChatRoomComponent_1.ChatRoomComponent.createInstance();
     chatroomComp.setRoomId(currentRoom._id);
     NotificationManager.unsubscribeGlobalNotifyMessageEvent();
     chatroomComp.chatroomDelegate = onChatRoomDelegate;

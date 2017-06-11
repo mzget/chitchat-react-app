@@ -135,14 +135,6 @@ var DataListener = (function () {
     DataListener.prototype.onRoomJoin = function (data) {
     };
     ;
-    DataListener.prototype.onMessageRead = function (dataEvent) {
-        if (!!this.chatListenerImps && this.chatListenerImps.length !== 0) {
-            this.chatListenerImps.forEach(function (value) {
-                value.onMessageRead(dataEvent);
-            });
-        }
-    };
-    ;
     DataListener.prototype.onGetMessagesReaders = function (dataEvent) {
         if (!!this.chatListenerImps && this.chatListenerImps.length !== 0) {
             this.chatListenerImps.forEach(function (value) {
