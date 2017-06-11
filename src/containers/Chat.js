@@ -289,18 +289,17 @@ var Chat = (function (_super) {
     Chat.prototype.render = function () {
         var _this = this;
         var _a = this.props, chatroomReducer = _a.chatroomReducer, stalkReducer = _a.stalkReducer;
-        // "calc(100vh - 148px)"
-        return (React.createElement(flexbox_react_1["default"], { flexDirection: "column", flexGrow: 1, justifyContent: "space-between", id: "app_body" },
-            React.createElement(flexbox_react_1["default"], { justifyContent: "center", alignItems: "center", style: { overflowY: "hidden" } }, (this.state.earlyMessageReady) ?
-                React.createElement("p", { onClick: function () { return _this.onLoadEarlierMessages(); } }, "Load Earlier Messages!")
-                :
-                    null),
-            React.createElement(flexbox_react_1["default"], { flexGrow: 0.9, justifyContent: "center" },
+        return (React.createElement(flexbox_react_1["default"], { flexDirection: "column", height: "calc(100vh - 56px - 56px)", id: "app_body" },
+            React.createElement(flexbox_react_1["default"], { flexGrow: 1, flexDirection: "column", justifyContent: "flex-start", alignItems: "center" },
+                (this.state.earlyMessageReady) ?
+                    React.createElement("p", { onClick: function () { return _this.onLoadEarlierMessages(); } }, "Load Earlier Messages!")
+                    :
+                        null,
                 React.createElement(ChatBox_1.ChatBox, { styles: { overflowX: "hidden" }, value: this.state.messages, onSelected: function (message) { } }),
                 (this.state.openButtomMenu) ?
                     React.createElement(GridListSimple_1.GridListSimple, { srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
                     : null),
-            React.createElement(flexbox_react_1["default"], { element: "footer", justifyContent: "center", alignContent: "space-between", flexGrow: 0.1 },
+            React.createElement(flexbox_react_1["default"], { element: "footer", justifyContent: "center", alignContent: "space-between" },
                 React.createElement(TypingBox_1.TypingBox, { disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }),
                 React.createElement(UploadingDialog_1["default"], null),
                 React.createElement(SnackbarToolBox_1.SnackbarToolBox, null))));
