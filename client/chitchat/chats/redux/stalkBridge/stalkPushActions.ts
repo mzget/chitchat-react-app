@@ -5,13 +5,8 @@
  */
 
 import { BackendFactory } from "../../BackendFactory";
-
-type Push = {
-    event: string;
-    message: string;
-    timestamp: Date;
-    members: Array<string>;
-};
+import { Push } from "../../PushDataListener";
+import { ChatRoomComponent } from "../../ChatRoomComponent";
 
 export function stalkPushInit() {
     const pushDataListener = BackendFactory.getInstance().pushDataListener;
@@ -22,4 +17,8 @@ function onPush_handler(dataEvent) {
     let push = dataEvent as Push;
 
     console.log(`onPush_handler :`, push);
+
+    if (push.event == "onMessageRead") {
+        ChatRoomComponent.getInstance().onMessageRead(push.message);
+    }
 }

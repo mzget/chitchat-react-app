@@ -30,7 +30,11 @@ import { ServerEventListener } from "./ServerEventListener";
 
 export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
     private static instance: ChatRoomComponent;
-    public static getInstance(): ChatRoomComponent {
+    public static getInstance() {
+        return ChatRoomComponent.instance;
+    }
+
+    public static createInstance() {
         if (!ChatRoomComponent.instance) {
             ChatRoomComponent.instance = new ChatRoomComponent();
         }
@@ -111,27 +115,31 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
 
     onLeaveRoom(data) { }
 
-    onMessageRead(dataEvent) {
-        console.log("onMessageRead", JSON.stringify(dataEvent));
-
+    onMessageRead(message: IMessage) {
         let self = this;
-        let newMsg: IMessage = JSON.parse(JSON.stringify(dataEvent));
+        let newMsg = message as IMessage;
 
-        let promise = new Promise(function (resolve, reject) {
-            self.chatMessages.some(function callback(value) {
-                if (value._id === newMsg._id) {
-                    value.readers = newMsg.readers;
+        this.dataManager.messageDAL.getData(this.roomId)
+            .then((chats: Array<any>) => chats)
+            .then((chats: IMessage[]) => {
+                let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array<IMessage>();
 
-                    if (!!self.chatroomDelegate)
-                        self.chatroomDelegate(ChatEvents.ON_MESSAGE_READ, null);
+                chatMessages.some(value => {
+                    if (value._id === newMsg._id) {
+                        value.readers = newMsg.readers;
 
-                    resolve();
-                    return true;
-                }
+                        if (!!self.chatroomDelegate) {
+                            self.chatroomDelegate(ChatEvents.ON_MESSAGE_READ, null);
+                        }
+
+                        return true;
+                    }
+                });
+
+                this.dataManager.messageDAL.saveData(this.roomId, chatMessages);
+            }).catch(err => {
+                console.warn("Cannot get persistend message of room", err);
             });
-        }).then((value) => {
-            self.dataManager.messageDAL.saveData(self.roomId, self.chatMessages);
-        });
     }
 
     onGetMessagesReaders(dataEvent) {
@@ -440,8 +448,9 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
     public getMemberProfile(member: IMember, callback: (err, res) => void) {
         let server = BackendFactory.getInstance().getServer();
 
-        if (server)
+        if (server) {
             server.getMemberProfile(member._id, callback);
+        }
     }
 
     public async getMessages() {

@@ -171,14 +171,6 @@ export class DataListener implements ServerListener, ChatEvents.IChatServerEvent
 
     };
 
-    onMessageRead(dataEvent) {
-        if (!!this.chatListenerImps && this.chatListenerImps.length !== 0) {
-            this.chatListenerImps.forEach(value => {
-                value.onMessageRead(dataEvent);
-            });
-        }
-    };
-
     onGetMessagesReaders(dataEvent) {
         if (!!this.chatListenerImps && this.chatListenerImps.length !== 0) {
             this.chatListenerImps.forEach(value => {

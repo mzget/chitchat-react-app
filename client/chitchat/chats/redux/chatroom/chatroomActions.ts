@@ -48,7 +48,7 @@ export const CHATROOM_REDUCER_EMPTY_STATE = "CHATROOM_REDUCER_EMPTY_STATE";
 export const emptyState = () => ({ type: CHATROOM_REDUCER_EMPTY_STATE });
 
 export function initChatRoom(currentRoom: Room) {
-    if (!currentRoom) throw new Error("Empty roomInfo");
+    if (!currentRoom) { throw new Error("Empty roomInfo"); }
 
     let room_name = currentRoom.name;
     if (!room_name && currentRoom.type === RoomType.privateChat) {
@@ -60,7 +60,7 @@ export function initChatRoom(currentRoom: Room) {
         });
     }
 
-    let chatroomComp = ChatRoomComponent.getInstance();
+    let chatroomComp = ChatRoomComponent.createInstance();
     chatroomComp.setRoomId(currentRoom._id);
 
     NotificationManager.unsubscribeGlobalNotifyMessageEvent();
