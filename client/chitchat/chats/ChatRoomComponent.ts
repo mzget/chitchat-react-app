@@ -17,9 +17,9 @@ import { ISecureService } from "./secure/ISecureService";
 import SecureServiceFactory from "./secure/secureServiceFactory";
 
 import { MessageType, IMessage } from "../shared/Message";
+import { MessageImp } from "./models/MessageImp";
 import { Room, IMember } from "../shared/Room";
 import { RoomAccessData } from "../shared/Stalk";
-import { MessageImp } from "./models/MessageImp";
 
 import { imagesPath } from "../consts/StickerPath";
 import { ChitChatFactory } from "./ChitchatFactory";
@@ -27,6 +27,9 @@ const getConfig = () => ChitChatFactory.getInstance().config;
 const getStore = () => ChitChatFactory.getInstance().store;
 
 import { ServerEventListener } from "./ServerEventListener";
+
+export const ON_CHAT = "ON_CAHT";
+export const ON_MESSAGE_CHANGE = "ON_MESSAGE_CHANGE";
 
 export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
     private static instance: ChatRoomComponent;
@@ -42,7 +45,7 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         return ChatRoomComponent.instance;
     }
 
-    public chatroomDelegate: (eventName: string, data: any) => void;
+    public chatroomDelegate: (eventName: string, data: MessageImp | Array<MessageImp>) => void;
     public outsideRoomDelegete: (eventName: string, data: any) => void;
     private roomId: string;
     public getRoomId(): string {
@@ -68,14 +71,16 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         console.log("ChatRoomComponent.onChat");
         let self = this;
 
-        const saveMessages = (chatMessages: Array<IMessage>) => {
+        const saveMessages = (chatMessages: Array<MessageImp>) => {
             chatMessages.push(message);
 
-            self.dataManager.messageDAL.saveData(self.roomId, chatMessages).then(chats => {
-                if (!!this.chatroomDelegate) {
-                    this.chatroomDelegate(ChatEvents.ON_CHAT, message);
-                }
-            });
+            self.dataManager.messageDAL.saveData(self.roomId, chatMessages)
+                .then(chats => {
+                    if (!!this.chatroomDelegate) {
+                        this.chatroomDelegate(ON_CHAT, message);
+                        this.chatroomDelegate(ON_MESSAGE_CHANGE, chatMessages);
+                    }
+                });
         };
 
         if (this.roomId === message.rid) {
@@ -121,15 +126,15 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
 
         this.dataManager.messageDAL.getData(this.roomId)
             .then((chats: Array<any>) => chats)
-            .then((chats: IMessage[]) => {
-                let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array<IMessage>();
+            .then((chats: MessageImp[]) => {
+                let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array<MessageImp>();
 
                 chatMessages.some(value => {
                     if (value._id === newMsg._id) {
                         value.readers = newMsg.readers;
 
                         if (!!self.chatroomDelegate) {
-                            self.chatroomDelegate(ChatEvents.ON_MESSAGE_READ, null);
+                            self.chatroomDelegate(ON_MESSAGE_CHANGE, chatMessages);
                         }
 
                         return true;

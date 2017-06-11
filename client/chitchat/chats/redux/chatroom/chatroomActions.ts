@@ -6,12 +6,14 @@
 
 import * as Rx from "rxjs/Rx";
 import * as R from "ramda";
-import { Utils, ChatEvents } from "stalk-js";
+import { Store } from "redux";
+import { createAction } from "redux-actions";
+import { Utils } from "stalk-js";
 import { ServerEventListener } from "../../ServerEventListener";
 
 import * as chatroomService from "../../services/chatroomService";
 import * as MessageService from "../../services/MessageService";
-import { ChatRoomComponent } from "../../ChatRoomComponent";
+import { ChatRoomComponent, ON_CHAT, ON_MESSAGE_CHANGE } from "../../ChatRoomComponent";
 import { BackendFactory } from "../../BackendFactory";
 import SecureServiceFactory from "../../secure/secureServiceFactory";
 
@@ -21,10 +23,11 @@ import { updateLastAccessRoom } from "../chatlogs/chatlogRxActions";
 
 import { Room, RoomType, IMember } from "../../..//shared/Room";
 import { MessageType, IMessage } from "../../../shared/Message";
+import { MessageImp } from "../../models/MessageImp";
 import { MemberImp } from "../../models/MemberImp";
 
 import { ChitChatFactory } from "../../ChitchatFactory";
-const getStore = () => ChitChatFactory.getInstance().store;
+const getStore = () => ChitChatFactory.getInstance().store as Store<any>;
 const getConfig = () => ChitChatFactory.getInstance().config;
 const authReducer = () => ChitChatFactory.getInstance().authStore;
 const appReducer = () => ChitChatFactory.getInstance().appStore;
@@ -40,7 +43,6 @@ export class ChatRoomActionsType {
     static SEND_MESSAGE_FAILURE = "SEND_MESSAGE_FAILURE";
 
     static REPLACE_MESSAGE = "REPLACE_MESSAGE";
-    static ON_NEW_MESSAGE = "ON_NEW_MESSAGE";
     static ON_EARLY_MESSAGE_READY = "ON_EARLY_MESSAGE_READY";
 }
 
@@ -69,17 +71,18 @@ export function initChatRoom(currentRoom: Room) {
     chatroomComp.outsideRoomDelegete = onOutSideRoomDelegate;
 }
 
-function onChatRoomDelegate(event, newMsg: IMessage) {
-    if (event === ChatEvents.ON_CHAT) {
-        console.log("onChatRoomDelegate: ", ChatEvents.ON_CHAT, newMsg);
+function onChatRoomDelegate(event, data: MessageImp | Array<MessageImp>) {
+    if (event === ON_CHAT) {
+        console.log("onChatRoomDelegate: ", ON_CHAT, data);
 
+        let messageImp = data as MessageImp;
         let backendFactory = BackendFactory.getInstance();
         /**
          * Todo **
          * - if message_id is mine. Replace message_id to local messages list.
          * - if not my message. Update who read this message. And tell anyone.
          */
-        if (backendFactory.dataManager.isMySelf(newMsg.sender)) {
+        if (backendFactory.dataManager.isMySelf(messageImp.sender)) {
             // dispatch(replaceMyMessage(newMsg));
             console.log("is my message");
         }
@@ -90,7 +93,7 @@ function onChatRoomDelegate(event, newMsg: IMessage) {
             console.log("AppState: ", appState); // active, background, inactive
             if (!!appState) {
                 if (appState === "active") {
-                    MessageService.updateMessageReader(newMsg._id, newMsg.rid).then(response => response.json()).then(value => {
+                    MessageService.updateMessageReader(messageImp._id, messageImp.rid).then(response => response.json()).then(value => {
                         console.log("updateMessageReader: ", value);
                     }).catch(err => {
                         console.warn("updateMessageReader: ", err);
@@ -102,23 +105,21 @@ function onChatRoomDelegate(event, newMsg: IMessage) {
                     console.warn("Call local notification here...");
                 }
             }
-
-            getStore().dispatch(onNewMessage(newMsg));
         }
     }
-    else if (event === ChatEvents.ON_MESSAGE_READ) {
-        console.log("serviceListener: ", ChatEvents.ON_MESSAGE_READ, newMsg);
-        //                service.set(chatRoomComponent.chatMessages);
+    else if (event === ON_MESSAGE_CHANGE) {
+        getStore().dispatch(onMessageChangedAction(data as Array<MessageImp>));
     }
 }
 function onOutSideRoomDelegate(event, data) {
-    if (event === ChatEvents.ON_CHAT) {
+    if (event === ON_CHAT) {
         console.log("Call notification here...", data); // active, background, inactive
         NotificationManager.notify(data);
     }
 }
 
-const onNewMessage = (message: IMessage) => ({ type: ChatRoomActionsType.ON_NEW_MESSAGE, payload: message });
+export const ON_MESSAGE_CHANGED = "ON_MESSAGE_CHANGED";
+const onMessageChangedAction = createAction(ON_MESSAGE_CHANGED, (messages: Array<MessageImp>) => messages);
 
 const onEarlyMessageReady = (data: boolean) => ({ type: ChatRoomActionsType.ON_EARLY_MESSAGE_READY, payload: data });
 export function checkOlderMessages() {

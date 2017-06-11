@@ -33,14 +33,10 @@ var Chat = (function (_super) {
     __extends(Chat, _super);
     function Chat() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.clientWidth = document.documentElement.clientWidth;
-        _this.clientHeight = document.documentElement.clientHeight;
         _this.h_header = null;
         _this.h_subHeader = 34;
         _this.h_body = null;
         _this.h_typingArea = null;
-        _this.bottom = _this.clientHeight * 0.1;
-        _this.h_stickerBox = _this.clientHeight * 0.3;
         _this.fileReaderChange = function (e, results) {
             results.forEach(function (result) {
                 var progressEvent = result[0], file = result[1];
@@ -84,8 +80,6 @@ var Chat = (function (_super) {
     Chat.prototype.componentWillReceiveProps = function (nextProps) {
         var _this = this;
         var chatroomReducer = nextProps.chatroomReducer, stalkReducer = nextProps.stalkReducer;
-        var warning_bar = document.getElementById("warning_bar");
-        var typing_box = document.getElementById("typing_box");
         this.h_subHeader = (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
         switch (stalkReducer.state) {
@@ -153,16 +147,6 @@ var Chat = (function (_super) {
                 this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
-            case chatroomActions.ChatRoomActionsType.ON_NEW_MESSAGE: {
-                chatroomActions.getMessages().then(function (messages) {
-                    _this.setState(function (previousState) { return (__assign({}, previousState, { messages: messages })); }, function () {
-                        var chatBox = document.getElementById("app_body");
-                        chatBox.scrollTop = chatBox.scrollHeight;
-                    });
-                });
-                this.props.dispatch(chatroomActions.emptyState());
-                break;
-            }
             case chatroomRxEpic.GET_PERSISTEND_MESSAGE_SUCCESS: {
                 chatroomActions.getMessages().then(function (messages) {
                     _this.setState(function (previousState) { return (__assign({}, previousState, { messages: messages })); });
@@ -189,6 +173,12 @@ var Chat = (function (_super) {
             }
             default:
                 break;
+        }
+        if (!recompose_1.shallowEqual(chatroomReducer.messages, this.props.chatroomReducer.messages)) {
+            this.setState(function (previousState) { return (__assign({}, previousState, { messages: chatroomReducer.messages })); }, function () {
+                var chatBox = document.getElementById("app_body");
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
         }
     };
     Chat.prototype.onLoadEarlierMessages = function () {

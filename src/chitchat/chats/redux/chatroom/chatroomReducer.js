@@ -17,7 +17,7 @@ exports.ChatRoomInitState = immutable.Record({
     room: null,
     responseMessage: null,
     responseFile: null,
-    newMessage: null,
+    messages: null,
     earlyMessageReady: false,
     uploadingFile: null,
     fileInfo: null,
@@ -72,10 +72,9 @@ exports.chatroomReducer = function (state, action) {
                 .set("error", payload);
             return nextState;
         }
-        case chatroomActions_1.ChatRoomActionsType.ON_NEW_MESSAGE: {
+        case chatroomActions_1.ON_MESSAGE_CHANGED: {
             var payload = action.payload;
-            return state.set("state", chatroomActions_1.ChatRoomActionsType.ON_NEW_MESSAGE)
-                .set("newMessage", payload);
+            return state.set("messages", payload);
         }
         case chatroomActions_1.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
             var payload = action.payload;

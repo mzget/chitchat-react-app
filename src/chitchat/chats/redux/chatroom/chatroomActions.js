@@ -48,6 +48,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var R = require("ramda");
+var redux_actions_1 = require("redux-actions");
 var stalk_js_1 = require("stalk-js");
 var chatroomService = require("../../services/chatroomService");
 var MessageService = require("../../services/MessageService");
@@ -76,7 +77,6 @@ ChatRoomActionsType.SEND_MESSAGE_REQUEST = "SEND_MESSAGE_REQUEST";
 ChatRoomActionsType.SEND_MESSAGE_SUCCESS = "SEND_MESSAGE_SUCCESS";
 ChatRoomActionsType.SEND_MESSAGE_FAILURE = "SEND_MESSAGE_FAILURE";
 ChatRoomActionsType.REPLACE_MESSAGE = "REPLACE_MESSAGE";
-ChatRoomActionsType.ON_NEW_MESSAGE = "ON_NEW_MESSAGE";
 ChatRoomActionsType.ON_EARLY_MESSAGE_READY = "ON_EARLY_MESSAGE_READY";
 exports.ChatRoomActionsType = ChatRoomActionsType;
 exports.CHATROOM_REDUCER_EMPTY_STATE = "CHATROOM_REDUCER_EMPTY_STATE";
@@ -101,16 +101,17 @@ function initChatRoom(currentRoom) {
     chatroomComp.outsideRoomDelegete = onOutSideRoomDelegate;
 }
 exports.initChatRoom = initChatRoom;
-function onChatRoomDelegate(event, newMsg) {
-    if (event === stalk_js_1.ChatEvents.ON_CHAT) {
-        console.log("onChatRoomDelegate: ", stalk_js_1.ChatEvents.ON_CHAT, newMsg);
+function onChatRoomDelegate(event, data) {
+    if (event === ChatRoomComponent_1.ON_CHAT) {
+        console.log("onChatRoomDelegate: ", ChatRoomComponent_1.ON_CHAT, data);
+        var messageImp = data;
         var backendFactory = BackendFactory_1.BackendFactory.getInstance();
         /**
          * Todo **
          * - if message_id is mine. Replace message_id to local messages list.
          * - if not my message. Update who read this message. And tell anyone.
          */
-        if (backendFactory.dataManager.isMySelf(newMsg.sender)) {
+        if (backendFactory.dataManager.isMySelf(messageImp.sender)) {
             // dispatch(replaceMyMessage(newMsg));
             console.log("is my message");
         }
@@ -121,7 +122,7 @@ function onChatRoomDelegate(event, newMsg) {
             console.log("AppState: ", appState); // active, background, inactive
             if (!!appState) {
                 if (appState === "active") {
-                    MessageService.updateMessageReader(newMsg._id, newMsg.rid).then(function (response) { return response.json(); }).then(function (value) {
+                    MessageService.updateMessageReader(messageImp._id, messageImp.rid).then(function (response) { return response.json(); }).then(function (value) {
                         console.log("updateMessageReader: ", value);
                     })["catch"](function (err) {
                         console.warn("updateMessageReader: ", err);
@@ -133,20 +134,20 @@ function onChatRoomDelegate(event, newMsg) {
                     console.warn("Call local notification here...");
                 }
             }
-            getStore().dispatch(onNewMessage(newMsg));
         }
     }
-    else if (event === stalk_js_1.ChatEvents.ON_MESSAGE_READ) {
-        console.log("serviceListener: ", stalk_js_1.ChatEvents.ON_MESSAGE_READ, newMsg);
+    else if (event === ChatRoomComponent_1.ON_MESSAGE_CHANGE) {
+        getStore().dispatch(onMessageChangedAction(data));
     }
 }
 function onOutSideRoomDelegate(event, data) {
-    if (event === stalk_js_1.ChatEvents.ON_CHAT) {
+    if (event === ChatRoomComponent_1.ON_CHAT) {
         console.log("Call notification here...", data); // active, background, inactive
         NotificationManager.notify(data);
     }
 }
-var onNewMessage = function (message) { return ({ type: ChatRoomActionsType.ON_NEW_MESSAGE, payload: message }); };
+exports.ON_MESSAGE_CHANGED = "ON_MESSAGE_CHANGED";
+var onMessageChangedAction = redux_actions_1.createAction(exports.ON_MESSAGE_CHANGED, function (messages) { return messages; });
 var onEarlyMessageReady = function (data) { return ({ type: ChatRoomActionsType.ON_EARLY_MESSAGE_READY, payload: data }); };
 function checkOlderMessages() {
     return function (dispatch) {

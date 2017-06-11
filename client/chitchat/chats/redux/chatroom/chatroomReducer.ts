@@ -4,7 +4,7 @@
  * This is pure function for redux app.
  */
 
-import { ChatRoomActionsType, GET_NEWER_MESSAGE_SUCCESS, GET_NEWER_MESSAGE_FAILURE } from "./chatroomActions";
+import { ChatRoomActionsType, GET_NEWER_MESSAGE_SUCCESS, GET_NEWER_MESSAGE_FAILURE, ON_MESSAGE_CHANGED } from "./chatroomActions";
 import * as chatroomRxActions from "./chatroomRxEpic";
 import * as chatroomActions from "./chatroomActions";
 import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
@@ -21,7 +21,7 @@ export const ChatRoomInitState = immutable.Record({
     room: null,
     responseMessage: null,
     responseFile: null,
-    newMessage: null,
+    messages: null,
     earlyMessageReady: false,
     uploadingFile: null,
     fileInfo: null,
@@ -82,10 +82,9 @@ export const chatroomReducer = (state = initialState, action) => {
             return nextState;
         }
 
-        case ChatRoomActionsType.ON_NEW_MESSAGE: {
+        case ON_MESSAGE_CHANGED: {
             let payload = action.payload;
-            return state.set("state", ChatRoomActionsType.ON_NEW_MESSAGE)
-                .set("newMessage", payload);
+            return state.set("messages", payload);
         }
 
         case ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {

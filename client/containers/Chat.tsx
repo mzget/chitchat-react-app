@@ -37,14 +37,10 @@ interface IComponentNameState {
 }
 
 class Chat extends React.Component<IComponentProps, IComponentNameState> {
-    clientWidth = document.documentElement.clientWidth;
-    clientHeight = document.documentElement.clientHeight;
     h_header = null;
     h_subHeader = 34;
     h_body = null;
     h_typingArea = null;
-    bottom = this.clientHeight * 0.1;
-    h_stickerBox = this.clientHeight * 0.3;
 
     componentWillMount() {
         this.state = {
@@ -80,8 +76,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     componentWillReceiveProps(nextProps: IComponentProps) {
         let { chatroomReducer, stalkReducer } = nextProps;
 
-        let warning_bar = document.getElementById("warning_bar");
-        let typing_box = document.getElementById("typing_box");
         this.h_subHeader = (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
 
@@ -156,20 +150,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
-            case chatroomActions.ChatRoomActionsType.ON_NEW_MESSAGE: {
-                chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => ({
-                        ...previousState,
-                        messages: messages
-                    }), () => {
-                        let chatBox = document.getElementById("app_body");
-                        chatBox.scrollTop = chatBox.scrollHeight;
-                    });
-                });
-
-                this.props.dispatch(chatroomActions.emptyState());
-                break;
-            }
             case chatroomRxEpic.GET_PERSISTEND_MESSAGE_SUCCESS: {
                 chatroomActions.getMessages().then(messages => {
                     this.setState(previousState => ({
@@ -214,6 +194,16 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             }
             default:
                 break;
+        }
+
+        if (!shallowEqual(chatroomReducer.messages, this.props.chatroomReducer.messages)) {
+            this.setState(previousState => ({
+                ...previousState,
+                messages: chatroomReducer.messages
+            }), () => {
+                let chatBox = document.getElementById("app_body");
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
         }
     }
 

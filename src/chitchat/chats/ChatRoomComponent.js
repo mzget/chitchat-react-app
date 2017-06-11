@@ -50,6 +50,8 @@ var StickerPath_1 = require("../consts/StickerPath");
 var ChitchatFactory_1 = require("./ChitchatFactory");
 var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
 var getStore = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().store; };
+exports.ON_CHAT = "ON_CAHT";
+exports.ON_MESSAGE_CHANGE = "ON_MESSAGE_CHANGE";
 var ChatRoomComponent = (function () {
     function ChatRoomComponent() {
         this.secure = secureServiceFactory_1["default"].getService();
@@ -78,9 +80,11 @@ var ChatRoomComponent = (function () {
         var self = this;
         var saveMessages = function (chatMessages) {
             chatMessages.push(message);
-            self.dataManager.messageDAL.saveData(self.roomId, chatMessages).then(function (chats) {
+            self.dataManager.messageDAL.saveData(self.roomId, chatMessages)
+                .then(function (chats) {
                 if (!!_this.chatroomDelegate) {
-                    _this.chatroomDelegate(stalk_js_1.ChatEvents.ON_CHAT, message);
+                    _this.chatroomDelegate(exports.ON_CHAT, message);
+                    _this.chatroomDelegate(exports.ON_MESSAGE_CHANGE, chatMessages);
                 }
             });
         };
@@ -127,7 +131,7 @@ var ChatRoomComponent = (function () {
                 if (value._id === newMsg._id) {
                     value.readers = newMsg.readers;
                     if (!!self.chatroomDelegate) {
-                        self.chatroomDelegate(stalk_js_1.ChatEvents.ON_MESSAGE_READ, null);
+                        self.chatroomDelegate(exports.ON_MESSAGE_CHANGE, chatMessages);
                     }
                     return true;
                 }
