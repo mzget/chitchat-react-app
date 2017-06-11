@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { shallowEqual } from "recompose";
 import * as async from "async";
-import { Flex, Box } from "reflexbox";
+import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
 
 import { ChitChatFactory } from "../chitchat/chats/ChitchatFactory";
@@ -12,7 +12,7 @@ import { TypingBox } from "./TypingBox";
 import { ChatBox } from "./chat/ChatBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import UploadingDialog from "./UploadingDialog";
-import GridListSimple from "../components/GridListSimple";
+import { GridListSimple } from "../components/GridListSimple";
 
 import { IComponentProps } from "../utils/IComponentProps";
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
@@ -361,30 +361,30 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
     render(): JSX.Element {
         let { chatroomReducer, stalkReducer } = this.props;
-
+        // "calc(100vh - 148px)"
         return (
-            <div style={{ height: "calc(100vh - 148px)" }}>
-                <div style={{ overflowY: "scroll", height: "100%" }} id={"app_body"}>
+            <Flexbox flexDirection="column" flexGrow={1} justifyContent="space-between" id={"app_body"}>
+                <Flexbox justifyContent="center" alignItems="center" style={{ overflowY: "hidden" }}>
                     {
                         (this.state.earlyMessageReady) ?
-                            <Flex align="center" justify="center">
-                                <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
-                            </Flex>
+                            <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
                             :
                             null
                     }
-                    <ChatBox styles={{ overflowX: "hidden" }} value={this.state.messages} onSelected={(message: IMessage) => { }} />
+                </Flexbox>
+                <Flexbox flexGrow={0.9} justifyContent="center">
+                    <ChatBox styles={{ overflowX: "hidden" }}
+                        value={this.state.messages}
+                        onSelected={(message: IMessage) => { }} />
                     {
                         (this.state.openButtomMenu) ?
                             <GridListSimple
-                                boxHeight={this.h_stickerBox}
                                 srcs={imagesPath}
                                 onSelected={this.onSubmitStickerChat} />
                             : null
                     }
-
-                </div>
-                <div>
+                </Flexbox>
+                <Flexbox element="footer" justifyContent="center" alignContent="space-between" flexGrow={0.1} >
                     <TypingBox
                         disabled={this.props.chatroomReducer.chatDisabled}
                         onSubmit={this.onSubmitTextChat}
@@ -394,8 +394,8 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                         onSticker={this.onToggleSticker} />
                     <UploadingDialog />
                     <SnackbarToolBox />
-                </div>
-            </div>
+                </Flexbox>
+            </Flexbox>
         );
     }
 }

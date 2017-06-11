@@ -15,7 +15,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 var React = require("react");
 var react_redux_1 = require("react-redux");
 var recompose_1 = require("recompose");
-var reflexbox_1 = require("reflexbox");
+var flexbox_react_1 = require("flexbox-react");
 var ChitchatFactory_1 = require("../chitchat/chats/ChitchatFactory");
 var config = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
 var TypingBox_1 = require("./TypingBox");
@@ -289,18 +289,18 @@ var Chat = (function (_super) {
     Chat.prototype.render = function () {
         var _this = this;
         var _a = this.props, chatroomReducer = _a.chatroomReducer, stalkReducer = _a.stalkReducer;
-        return (React.createElement("div", { style: { height: "calc(100vh - 148px)" } },
-            React.createElement("div", { style: { overflowY: "scroll", height: "100%" }, id: "app_body" },
-                (this.state.earlyMessageReady) ?
-                    React.createElement(reflexbox_1.Flex, { align: "center", justify: "center" },
-                        React.createElement("p", { onClick: function () { return _this.onLoadEarlierMessages(); } }, "Load Earlier Messages!"))
-                    :
-                        null,
+        // "calc(100vh - 148px)"
+        return (React.createElement(flexbox_react_1["default"], { flexDirection: "column", flexGrow: 1, justifyContent: "space-between", id: "app_body" },
+            React.createElement(flexbox_react_1["default"], { justifyContent: "center", alignItems: "center", style: { overflowY: "hidden" } }, (this.state.earlyMessageReady) ?
+                React.createElement("p", { onClick: function () { return _this.onLoadEarlierMessages(); } }, "Load Earlier Messages!")
+                :
+                    null),
+            React.createElement(flexbox_react_1["default"], { flexGrow: 0.9, justifyContent: "center" },
                 React.createElement(ChatBox_1.ChatBox, { styles: { overflowX: "hidden" }, value: this.state.messages, onSelected: function (message) { } }),
                 (this.state.openButtomMenu) ?
-                    React.createElement(GridListSimple_1["default"], { boxHeight: this.h_stickerBox, srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
+                    React.createElement(GridListSimple_1.GridListSimple, { srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
                     : null),
-            React.createElement("div", null,
+            React.createElement(flexbox_react_1["default"], { element: "footer", justifyContent: "center", alignContent: "space-between", flexGrow: 0.1 },
                 React.createElement(TypingBox_1.TypingBox, { disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }),
                 React.createElement(UploadingDialog_1["default"], null),
                 React.createElement(SnackbarToolBox_1.SnackbarToolBox, null))));
