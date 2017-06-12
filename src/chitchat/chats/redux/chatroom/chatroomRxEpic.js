@@ -5,11 +5,13 @@
  * This is pure function action for redux app.
  */
 var Rx = require("rxjs/Rx");
+var redux_actions_1 = require("redux-actions");
 var _a = Rx.Observable, ajax = _a.ajax, fromPromise = _a.fromPromise;
 var ChatRoomComponent_1 = require("../../ChatRoomComponent");
 var ChitchatFactory_1 = require("../../ChitchatFactory");
-var chatroomService = require("../../services/chatroomService");
 var chatroomActions_1 = require("./chatroomActions");
+var chatroomService = require("../../services/chatroomService");
+var MessageService_1 = require("../../services/MessageService");
 var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
 var getStore = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().store; };
 var authReducer = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().authStore; };
@@ -78,6 +80,26 @@ exports.getPersistendMessageEpic = function (action$) {
         getStore().dispatch(chatroomActions_1.checkOlderMessages());
         getStore().dispatch(chatroomActions_1.getNewerMessageFromNet());
     });
+};
+exports.UPDATE_MESSAGES_READ = "UPDATE_MESSAGES_READ";
+exports.UPDATE_MESSAGES_READ_SUCCESS = "UPDATE_MESSAGES_READ_SUCCESS";
+exports.UPDATE_MESSAGES_READ_FAILUER = "UPDATE_MESSAGES_READ_FAILURE";
+exports.updateMessagesRead = redux_actions_1.createAction(exports.UPDATE_MESSAGES_READ, function (messages, room_id) { return ({ messages: messages, room_id: room_id }); });
+exports.updateMessagesRead_Success = redux_actions_1.createAction(exports.UPDATE_MESSAGES_READ_SUCCESS, function (payload) { return payload; });
+exports.updateMessagesRead_Failure = redux_actions_1.createAction(exports.UPDATE_MESSAGES_READ_FAILUER, function (payload) { return payload; });
+exports.updateMessagesRead_Epic = function (action$) {
+    return action$.ofType(exports.UPDATE_MESSAGES_READ)
+        .mergeMap(function (action) {
+        var messages = action.payload.messages;
+        var updates = messages.map(function (value) {
+            if (value.sender != authReducer().user._id) {
+                return value._id;
+            }
+        });
+        return MessageService_1.updateMessagesReader(updates, action.payload.room_id);
+    })
+        .mergeMap(function (response) { return response.json(); })
+        .map(function (json) { return exports.updateMessagesRead_Success(json); })["catch"](function (error) { return Rx.Observable.of(exports.updateMessagesRead_Failure(error)); });
 };
 exports.CHATROOM_UPLOAD_FILE = "CHATROOM_UPLOAD_FILE";
 exports.CHATROOM_UPLOAD_FILE_SUCCESS = "CHATROOM_UPLOAD_FILE_SUCCESS";

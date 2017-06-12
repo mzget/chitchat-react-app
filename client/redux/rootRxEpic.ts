@@ -63,6 +63,7 @@ export const rootEpic = combineEpics(
     chatroomRxEpic.getPersistendMessageEpic,
     chatroomRxEpic.createPrivateChatRoomEpic,
     chatroomRxEpic.uploadFileEpic,
+    chatroomRxEpic.updateMessagesRead_Epic,
     /// @message rx.
     // messageRxEpic.fetchOlderMessageCount_Epic,
 

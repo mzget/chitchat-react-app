@@ -5,12 +5,16 @@
  */
 import * as Rx from "rxjs/Rx";
 import { Store } from "redux";
+import { createAction } from "redux-actions";
 const { ajax, fromPromise } = Rx.Observable;
 
 import { ChatRoomComponent } from "../../ChatRoomComponent";
 import { ChitChatFactory } from "../../ChitchatFactory";
-import * as chatroomService from "../../services/chatroomService";
 import { checkOlderMessages, getNewerMessageFromNet } from "./chatroomActions";
+import { MessageImp } from "../../models/MessageImp";
+
+import * as chatroomService from "../../services/chatroomService";
+import { updateMessagesReader } from "../../services/MessageService";
 
 const getConfig = () => ChitChatFactory.getInstance().config;
 const getStore = () => ChitChatFactory.getInstance().store as Store<any>;
@@ -89,6 +93,30 @@ export const getPersistendMessageEpic = action$ => {
             getStore().dispatch(getNewerMessageFromNet());
         });
 };
+
+export const UPDATE_MESSAGES_READ = "UPDATE_MESSAGES_READ";
+export const UPDATE_MESSAGES_READ_SUCCESS = "UPDATE_MESSAGES_READ_SUCCESS";
+export const UPDATE_MESSAGES_READ_FAILUER = "UPDATE_MESSAGES_READ_FAILURE";
+
+export const updateMessagesRead = createAction(UPDATE_MESSAGES_READ, (messages: Array<MessageImp>, room_id: string) => ({ messages, room_id }));
+export const updateMessagesRead_Success = createAction(UPDATE_MESSAGES_READ_SUCCESS, payload => payload);
+export const updateMessagesRead_Failure = createAction(UPDATE_MESSAGES_READ_FAILUER, payload => payload);
+export const updateMessagesRead_Epic = (action$) => {
+    return action$.ofType(UPDATE_MESSAGES_READ)
+        .mergeMap((action) => {
+            let messages = action.payload.messages as Array<MessageImp>;
+            let updates = messages.map((value) => {
+                if (value.sender != authReducer().user._id) {
+                    return value._id;
+                }
+            });
+
+            return updateMessagesReader(updates, action.payload.room_id);
+        })
+        .mergeMap(response => response.json())
+        .map((json) => updateMessagesRead_Success(json))
+        .catch(error => Rx.Observable.of(updateMessagesRead_Failure(error)));
+}
 
 export const CHATROOM_UPLOAD_FILE = "CHATROOM_UPLOAD_FILE";
 export const CHATROOM_UPLOAD_FILE_SUCCESS = "CHATROOM_UPLOAD_FILE_SUCCESS";

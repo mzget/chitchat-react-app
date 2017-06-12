@@ -24,7 +24,7 @@ groupRx.getOrgGroup_Epic, groupRx.createOrgGroup_Epic, groupRx.uploadGroupImage_
  */
 privateGroupRxActions.getPrivateGroup_Epic, privateGroupRxActions.createPrivateGroup_Epic, 
 ///@ChatRoom
-chatroomRxEpic.getPrivateChatRoom_Epic, chatroomRxEpic.getPersistendMessageEpic, chatroomRxEpic.createPrivateChatRoomEpic, chatroomRxEpic.uploadFileEpic, 
+chatroomRxEpic.getPrivateChatRoom_Epic, chatroomRxEpic.getPersistendMessageEpic, chatroomRxEpic.createPrivateChatRoomEpic, chatroomRxEpic.uploadFileEpic, chatroomRxEpic.updateMessagesRead_Epic, 
 /// @message rx.
 // messageRxEpic.fetchOlderMessageCount_Epic,
 ///@chatlogs

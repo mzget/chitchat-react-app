@@ -14,3 +14,11 @@ function updateMessageReader(message_id, room_id) {
     });
 }
 exports.updateMessageReader = updateMessageReader;
+function updateMessagesReader(messages_id, room_id) {
+    return fetch(getConfig().api.message + "/updateMessagesReader", {
+        method: "POST",
+        headers: chitchatServiceUtils_1.withToken(chitchatServiceUtils_1.chitchat_headers())(authReducer().chitchat_token),
+        body: JSON.stringify({ room_id: room_id, messages: messages_id })
+    });
+}
+exports.updateMessagesReader = updateMessagesReader;

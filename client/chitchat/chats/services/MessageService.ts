@@ -15,3 +15,10 @@ export function updateMessageReader(message_id: string, room_id: string) {
         body: JSON.stringify({ room_id: room_id, message_id: message_id })
     });
 }
+export function updateMessagesReader(messages_id: Array<string>, room_id: string) {
+    return fetch(`${getConfig().api.message}/updateMessagesReader`, {
+        method: "POST",
+        headers: withToken(chitchat_headers())(authReducer().chitchat_token),
+        body: JSON.stringify({ room_id: room_id, messages: messages_id })
+    });
+}
