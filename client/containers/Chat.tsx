@@ -362,7 +362,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     render(): JSX.Element {
         let { chatroomReducer, stalkReducer } = this.props;
         return (
-            <Flexbox flexDirection="column" height="calc(100vh - 56px - 56px)" id={"app_body"}>
+            <Flexbox flexDirection="column" height="calc(100vh - 56px - 54px)" id={"app_body"}>
                 <Flexbox flexGrow={1} flexDirection="column" justifyContent="flex-start" alignItems="center">
                     {
                         (this.state.earlyMessageReady) ?

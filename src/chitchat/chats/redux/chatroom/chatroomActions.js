@@ -111,7 +111,7 @@ function onChatRoomDelegate(event, data) {
          * - if message_id is mine. Replace message_id to local messages list.
          * - if not my message. Update who read this message. And tell anyone.
          */
-        if (backendFactory.dataManager.isMySelf(messageImp.sender)) {
+        if (authReducer().user._id == messageImp.sender) {
             // dispatch(replaceMyMessage(newMsg));
             console.log("is my message");
         }

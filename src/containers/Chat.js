@@ -289,7 +289,7 @@ var Chat = (function (_super) {
     Chat.prototype.render = function () {
         var _this = this;
         var _a = this.props, chatroomReducer = _a.chatroomReducer, stalkReducer = _a.stalkReducer;
-        return (React.createElement(flexbox_react_1["default"], { flexDirection: "column", height: "calc(100vh - 56px - 56px)", id: "app_body" },
+        return (React.createElement(flexbox_react_1["default"], { flexDirection: "column", height: "calc(100vh - 56px - 54px)", id: "app_body" },
             React.createElement(flexbox_react_1["default"], { flexGrow: 1, flexDirection: "column", justifyContent: "flex-start", alignItems: "center" },
                 (this.state.earlyMessageReady) ?
                     React.createElement("p", { onClick: function () { return _this.onLoadEarlierMessages(); } }, "Load Earlier Messages!")
