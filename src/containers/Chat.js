@@ -82,6 +82,12 @@ var Chat = (function (_super) {
         var chatroomReducer = nextProps.chatroomReducer, stalkReducer = nextProps.stalkReducer;
         this.h_subHeader = (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
+        if (!recompose_1.shallowEqual(chatroomReducer.messages, this.props.chatroomReducer.messages)) {
+            this.setState(function (previousState) { return (__assign({}, previousState, { messages: chatroomReducer.messages })); }, function () {
+                var chatBox = document.getElementById("app_body");
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+        }
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_CONNECTION_PROBLEM:
                 this.props.dispatch(chatroomActions.disableChatRoom());
@@ -92,6 +98,8 @@ var Chat = (function (_super) {
             default:
                 break;
         }
+        if (recompose_1.shallowEqual(chatroomReducer.state, this.props.chatroomReducer.state))
+            return;
         switch (chatroomReducer.state) {
             case chatroomActions.JOIN_ROOM_FAILURE: {
                 this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
@@ -147,20 +155,6 @@ var Chat = (function (_super) {
                 this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
-            case chatroomRxEpic.GET_PERSISTEND_MESSAGE_SUCCESS: {
-                chatroomActions.getMessages().then(function (messages) {
-                    _this.setState(function (previousState) { return (__assign({}, previousState, { messages: messages })); });
-                });
-                this.props.dispatch(chatroomActions.checkOlderMessages());
-                this.props.dispatch(chatroomActions.getNewerMessageFromNet());
-                break;
-            }
-            case chatroomActions.GET_NEWER_MESSAGE_SUCCESS: {
-                chatroomActions.getMessages().then(function (messages) {
-                    _this.setState(function (previousState) { return (__assign({}, previousState, { messages: messages })); });
-                });
-                break;
-            }
             case chatroomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
                 this.setState(function (previousState) { return (__assign({}, previousState, { earlyMessageReady: chatroomReducer.earlyMessageReady })); });
                 break;
@@ -173,12 +167,6 @@ var Chat = (function (_super) {
             }
             default:
                 break;
-        }
-        if (!recompose_1.shallowEqual(chatroomReducer.messages, this.props.chatroomReducer.messages)) {
-            this.setState(function (previousState) { return (__assign({}, previousState, { messages: chatroomReducer.messages })); }, function () {
-                var chatBox = document.getElementById("app_body");
-                chatBox.scrollTop = chatBox.scrollHeight;
-            });
         }
     };
     Chat.prototype.onLoadEarlierMessages = function () {

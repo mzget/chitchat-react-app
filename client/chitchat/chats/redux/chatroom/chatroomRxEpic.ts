@@ -4,14 +4,16 @@
  * This is pure function action for redux app.
  */
 import * as Rx from "rxjs/Rx";
+import { Store } from "redux";
 const { ajax, fromPromise } = Rx.Observable;
 
 import { ChatRoomComponent } from "../../ChatRoomComponent";
 import { ChitChatFactory } from "../../ChitchatFactory";
 import * as chatroomService from "../../services/chatroomService";
+import { checkOlderMessages, getNewerMessageFromNet } from "./chatroomActions";
 
 const getConfig = () => ChitChatFactory.getInstance().config;
-const getStore = () => ChitChatFactory.getInstance().store;
+const getStore = () => ChitChatFactory.getInstance().store as Store<any>;
 const authReducer = () => ChitChatFactory.getInstance().authStore;
 
 export const FETCH_PRIVATE_CHATROOM = "FETCH_PRIVATE_CHATROOM";
@@ -81,11 +83,11 @@ export const getPersistendMessageEpic = action$ => {
         .mergeMap(action => ChatRoomComponent.getInstance().getPersistentMessage(action.payload))
         .map(json => getPersistendMessage_success(json))
         .takeUntil(action$.ofType(GET_PERSISTEND_MESSAGE_CANCELLED))
-        .catch(error => Rx.Observable.of(getPersistendMessage_failure(error)));
-
-    // Next call 2 method below. -->
-    // getNewerMessageFromNet();
-    // checkOlderMessages();
+        .catch(error => Rx.Observable.of(getPersistendMessage_failure(error)))
+        ._do(x => {
+            getStore().dispatch(checkOlderMessages());
+            getStore().dispatch(getNewerMessageFromNet());
+        });
 };
 
 export const CHATROOM_UPLOAD_FILE = "CHATROOM_UPLOAD_FILE";

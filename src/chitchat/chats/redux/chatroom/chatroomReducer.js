@@ -85,7 +85,8 @@ exports.chatroomReducer = function (state, action) {
             return state.set("state", chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS);
         }
         case chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS: {
-            return state.set("state", chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS);
+            var payload = action.payload;
+            return state.set("messages", payload);
         }
         case chatroomActions_1.GET_NEWER_MESSAGE_SUCCESS: {
             return state.set("state", chatroomActions_1.GET_NEWER_MESSAGE_SUCCESS);

@@ -97,7 +97,8 @@ export const chatroomReducer = (state = initialState, action) => {
         }
 
         case chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS: {
-            return state.set("state", chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS);
+            let payload = action.payload;
+            return state.set("messages", payload);
         }
         case GET_NEWER_MESSAGE_SUCCESS: {
             return state.set("state", GET_NEWER_MESSAGE_SUCCESS);

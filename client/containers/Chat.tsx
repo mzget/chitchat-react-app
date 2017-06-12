@@ -79,6 +79,16 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.h_subHeader = (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
 
+        if (!shallowEqual(chatroomReducer.messages, this.props.chatroomReducer.messages)) {
+            this.setState(previousState => ({
+                ...previousState,
+                messages: chatroomReducer.messages
+            }), () => {
+                let chatBox = document.getElementById("app_body");
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+        }
+
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_CONNECTION_PROBLEM:
                 this.props.dispatch(chatroomActions.disableChatRoom());
@@ -90,6 +100,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 break;
         }
 
+        if (shallowEqual(chatroomReducer.state, this.props.chatroomReducer.state)) return;
         switch (chatroomReducer.state) {
             case chatroomActions.JOIN_ROOM_FAILURE: {
                 this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
@@ -150,28 +161,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
-            case chatroomRxEpic.GET_PERSISTEND_MESSAGE_SUCCESS: {
-                chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => ({
-                        ...previousState,
-                        messages: messages
-                    }));
-                });
-
-                this.props.dispatch(chatroomActions.checkOlderMessages());
-                this.props.dispatch(chatroomActions.getNewerMessageFromNet());
-
-                break;
-            }
-            case chatroomActions.GET_NEWER_MESSAGE_SUCCESS: {
-                chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => ({
-                        ...previousState,
-                        messages: messages
-                    }));
-                });
-                break;
-            }
             case chatroomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
                 this.setState((previousState) => ({
                     ...previousState,
@@ -194,16 +183,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             }
             default:
                 break;
-        }
-
-        if (!shallowEqual(chatroomReducer.messages, this.props.chatroomReducer.messages)) {
-            this.setState(previousState => ({
-                ...previousState,
-                messages: chatroomReducer.messages
-            }), () => {
-                let chatBox = document.getElementById("app_body");
-                chatBox.scrollTop = chatBox.scrollHeight;
-            });
         }
     }
 

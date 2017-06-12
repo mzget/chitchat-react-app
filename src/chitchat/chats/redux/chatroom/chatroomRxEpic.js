@@ -9,6 +9,7 @@ var _a = Rx.Observable, ajax = _a.ajax, fromPromise = _a.fromPromise;
 var ChatRoomComponent_1 = require("../../ChatRoomComponent");
 var ChitchatFactory_1 = require("../../ChitchatFactory");
 var chatroomService = require("../../services/chatroomService");
+var chatroomActions_1 = require("./chatroomActions");
 var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
 var getStore = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().store; };
 var authReducer = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().authStore; };
@@ -72,10 +73,11 @@ exports.getPersistendMessageEpic = function (action$) {
     return action$.ofType(GET_PERSISTEND_MESSAGE)
         .mergeMap(function (action) { return ChatRoomComponent_1.ChatRoomComponent.getInstance().getPersistentMessage(action.payload); })
         .map(function (json) { return getPersistendMessage_success(json); })
-        .takeUntil(action$.ofType(GET_PERSISTEND_MESSAGE_CANCELLED))["catch"](function (error) { return Rx.Observable.of(getPersistendMessage_failure(error)); });
-    // Next call 2 method below. -->
-    // getNewerMessageFromNet();
-    // checkOlderMessages();
+        .takeUntil(action$.ofType(GET_PERSISTEND_MESSAGE_CANCELLED))["catch"](function (error) { return Rx.Observable.of(getPersistendMessage_failure(error)); })
+        ._do(function (x) {
+        getStore().dispatch(chatroomActions_1.checkOlderMessages());
+        getStore().dispatch(chatroomActions_1.getNewerMessageFromNet());
+    });
 };
 exports.CHATROOM_UPLOAD_FILE = "CHATROOM_UPLOAD_FILE";
 exports.CHATROOM_UPLOAD_FILE_SUCCESS = "CHATROOM_UPLOAD_FILE_SUCCESS";
