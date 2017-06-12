@@ -101,12 +101,6 @@ export class ServerEventListener {
             self.chatServerListener.onLeaveRoom(data);
         });
 
-        self.socket.on(ChatEvents.ON_MESSAGE_READ, (data) => {
-            console.log(ChatEvents.ON_MESSAGE_READ, data);
-
-            self.chatServerListener.onMessageRead(data);
-        });
-
         self.socket.on(ChatEvents.ON_GET_MESSAGES_READERS, (data) => {
             console.log(ChatEvents.ON_GET_MESSAGES_READERS);
 

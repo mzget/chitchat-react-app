@@ -119,10 +119,9 @@ var ChatRoomComponent = (function () {
     };
     ChatRoomComponent.prototype.onRoomJoin = function (data) { };
     ChatRoomComponent.prototype.onLeaveRoom = function (data) { };
-    ChatRoomComponent.prototype.onMessageRead = function (message) {
+    ChatRoomComponent.prototype.onMessagesRead = function (messages) {
         var _this = this;
         var self = this;
-        var newMsg = message;
         this.dataManager.messageDAL.getData(this.roomId)
             .then(function (chats) { return chats; })
             .then(function (chats) {

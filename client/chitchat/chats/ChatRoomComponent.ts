@@ -120,9 +120,8 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
 
     onLeaveRoom(data) { }
 
-    onMessageRead(message: IMessage) {
+    onMessagesRead(messages: Array<IMessage>) {
         let self = this;
-        let newMsg = message as IMessage;
 
         this.dataManager.messageDAL.getData(this.roomId)
             .then((chats: Array<any>) => chats)
