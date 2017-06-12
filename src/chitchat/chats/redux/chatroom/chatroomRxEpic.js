@@ -99,7 +99,14 @@ exports.updateMessagesRead_Epic = function (action$) {
         return MessageService_1.updateMessagesReader(updates, action.payload.room_id);
     })
         .mergeMap(function (response) { return response.json(); })
-        .map(function (json) { return exports.updateMessagesRead_Success(json); })["catch"](function (error) { return Rx.Observable.of(exports.updateMessagesRead_Failure(error)); });
+        .map(function (json) {
+        if (json.success) {
+            return exports.updateMessagesRead_Success(json);
+        }
+        else {
+            return exports.updateMessagesRead_Failure(json.message);
+        }
+    })["catch"](function (error) { return Rx.Observable.of(exports.updateMessagesRead_Failure(error)); });
 };
 exports.CHATROOM_UPLOAD_FILE = "CHATROOM_UPLOAD_FILE";
 exports.CHATROOM_UPLOAD_FILE_SUCCESS = "CHATROOM_UPLOAD_FILE_SUCCESS";

@@ -114,7 +114,12 @@ export const updateMessagesRead_Epic = (action$) => {
             return updateMessagesReader(updates, action.payload.room_id);
         })
         .mergeMap(response => response.json())
-        .map((json) => updateMessagesRead_Success(json))
+        .map((json) => {
+            if (json.success) {
+                return updateMessagesRead_Success(json);
+            }
+            else { return updateMessagesRead_Failure(json.message); }
+        })
         .catch(error => Rx.Observable.of(updateMessagesRead_Failure(error)));
 }
 
