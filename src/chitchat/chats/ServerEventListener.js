@@ -85,7 +85,6 @@ var ServerEventListener = (function () {
         this.pushServerListener = obj;
         var self = this;
         self.socket.on(stalk_js_1.PushEvents.ON_PUSH, function (data) {
-            console.log(stalk_js_1.PushEvents.ON_PUSH, JSON.stringify(data));
             self.pushServerListener.onPush(data);
         });
     };

@@ -40,6 +40,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var async = require("async");
+var Rx = require("rxjs");
 var BackendFactory_1 = require("./BackendFactory");
 var stalk_js_1 = require("stalk-js");
 var CryptoHelper = require("./utils/CryptoHelper");
@@ -54,10 +55,20 @@ exports.ON_CHAT = "ON_CAHT";
 exports.ON_MESSAGE_CHANGE = "ON_MESSAGE_CHANGE";
 var ChatRoomComponent = (function () {
     function ChatRoomComponent() {
+        var _this = this;
+        this.updateMessageQueue = new Array();
         this.secure = secureServiceFactory_1["default"].getService();
         this.dataManager = BackendFactory_1.BackendFactory.getInstance().dataManager;
         this.dataListener = BackendFactory_1.BackendFactory.getInstance().dataListener;
         this.dataListener.addOnChatListener(this.onChat.bind(this));
+        var source = Rx.Observable.timer(1000, 1000);
+        var subscribe = source.subscribe(function (val) {
+            if (_this.updateMessageQueue.length > 0) {
+                var queues = _this.updateMessageQueue.slice();
+                _this.updateMessageQueue = new Array();
+                _this.messageReadTick(queues, _this.roomId);
+            }
+        });
     }
     ChatRoomComponent.getInstance = function () {
         return ChatRoomComponent.instance;
@@ -119,27 +130,38 @@ var ChatRoomComponent = (function () {
     };
     ChatRoomComponent.prototype.onRoomJoin = function (data) { };
     ChatRoomComponent.prototype.onLeaveRoom = function (data) { };
-    ChatRoomComponent.prototype.onMessageRead = function (message) {
-        var _this = this;
-        var self = this;
-        var newMsg = message;
-        this.dataManager.messageDAL.getData(this.roomId)
-            .then(function (chats) { return chats; })
-            .then(function (chats) {
-            var chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
-            chatMessages.some(function (value) {
-                if (value._id === newMsg._id) {
-                    value.readers = newMsg.readers;
-                    if (!!self.chatroomDelegate) {
-                        self.chatroomDelegate(exports.ON_MESSAGE_CHANGE, chatMessages);
-                    }
-                    return true;
+    ChatRoomComponent.prototype.messageReadTick = function (messageQueue, room_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var chatMessages, chats, results;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        chatMessages = Object.create(null);
+                        return [4 /*yield*/, this.dataManager.messageDAL.getData(room_id)];
+                    case 1:
+                        chats = _a.sent();
+                        chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
+                        messageQueue.forEach(function (message) {
+                            chatMessages.some(function (value) {
+                                if (value._id === message._id) {
+                                    value.readers = message.readers;
+                                    return true;
+                                }
+                            });
+                        });
+                        return [4 /*yield*/, this.dataManager.messageDAL.saveData(room_id, chatMessages)];
+                    case 2:
+                        results = _a.sent();
+                        if (!!this.chatroomDelegate) {
+                            this.chatroomDelegate(exports.ON_MESSAGE_CHANGE, results);
+                        }
+                        return [2 /*return*/];
                 }
             });
-            _this.dataManager.messageDAL.saveData(_this.roomId, chatMessages);
-        })["catch"](function (err) {
-            console.warn("Cannot get persistend message of room", err);
         });
+    };
+    ChatRoomComponent.prototype.onMessageRead = function (message) {
+        this.updateMessageQueue.push(message);
     };
     ChatRoomComponent.prototype.onGetMessagesReaders = function (dataEvent) {
         console.log("onGetMessagesReaders", dataEvent);

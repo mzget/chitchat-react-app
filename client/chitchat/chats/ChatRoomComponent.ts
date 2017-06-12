@@ -5,6 +5,7 @@
  */
 
 import * as async from "async";
+import * as Rx from "rxjs";
 
 import { BackendFactory } from "./BackendFactory";
 import { DataManager } from "./DataManager";
@@ -58,6 +59,8 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
     private dataManager: DataManager;
     private dataListener: DataListener;
 
+    private updateMessageQueue = new Array<MessageImp>();
+
     constructor() {
         this.secure = SecureServiceFactory.getService();
 
@@ -65,6 +68,15 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         this.dataListener = BackendFactory.getInstance().dataListener;
 
         this.dataListener.addOnChatListener(this.onChat.bind(this));
+
+        const source = Rx.Observable.timer(1000, 1000);
+        const subscribe = source.subscribe(val => {
+            if (this.updateMessageQueue.length > 0) {
+                let queues = this.updateMessageQueue.slice();
+                this.updateMessageQueue = new Array();
+                this.messageReadTick(queues, this.roomId);
+            }
+        });
     }
 
     onChat(message: MessageImp) {
@@ -120,31 +132,29 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
 
     onLeaveRoom(data) { }
 
-    onMessageRead(message: IMessage) {
-        let self = this;
-        let newMsg = message as IMessage;
+    private async messageReadTick(messageQueue: Array<MessageImp>, room_id: string) {
+        let chatMessages = Object.create(null) as Array<any>;
+        let chats = await this.dataManager.messageDAL.getData(room_id);
+        chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array<MessageImp>();
 
-        this.dataManager.messageDAL.getData(this.roomId)
-            .then((chats: Array<any>) => chats)
-            .then((chats: MessageImp[]) => {
-                let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array<MessageImp>();
+        messageQueue.forEach(message => {
+            chatMessages.some(value => {
+                if (value._id === message._id) {
+                    value.readers = message.readers;
 
-                chatMessages.some(value => {
-                    if (value._id === newMsg._id) {
-                        value.readers = newMsg.readers;
-
-                        if (!!self.chatroomDelegate) {
-                            self.chatroomDelegate(ON_MESSAGE_CHANGE, chatMessages);
-                        }
-
-                        return true;
-                    }
-                });
-
-                this.dataManager.messageDAL.saveData(this.roomId, chatMessages);
-            }).catch(err => {
-                console.warn("Cannot get persistend message of room", err);
+                    return true;
+                }
             });
+        });
+
+        let results = await this.dataManager.messageDAL.saveData(room_id, chatMessages);
+        if (!!this.chatroomDelegate) {
+            this.chatroomDelegate(ON_MESSAGE_CHANGE, results);
+        }
+    }
+
+    onMessageRead(message: IMessage) {
+        this.updateMessageQueue.push(message as MessageImp);
     }
 
     onGetMessagesReaders(dataEvent) {

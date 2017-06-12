@@ -18,7 +18,11 @@ function onPush_handler(dataEvent) {
 
     console.log(`onPush_handler :`, push);
 
+    let chatRoomComponent = ChatRoomComponent.getInstance();
+
     if (push.event == "onMessageRead") {
-        ChatRoomComponent.getInstance().onMessageRead(push.message);
+        if (!!chatRoomComponent) {
+            ChatRoomComponent.getInstance().onMessageRead(push.message);
+        }
     }
 }

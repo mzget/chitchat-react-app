@@ -14,7 +14,10 @@ exports.stalkPushInit = stalkPushInit;
 function onPush_handler(dataEvent) {
     var push = dataEvent;
     console.log("onPush_handler :", push);
+    var chatRoomComponent = ChatRoomComponent_1.ChatRoomComponent.getInstance();
     if (push.event == "onMessageRead") {
-        ChatRoomComponent_1.ChatRoomComponent.getInstance().onMessageRead(push.message);
+        if (!!chatRoomComponent) {
+            ChatRoomComponent_1.ChatRoomComponent.getInstance().onMessageRead(push.message);
+        }
     }
 }

@@ -155,8 +155,6 @@ export class ServerEventListener {
         let self = this;
 
         self.socket.on(PushEvents.ON_PUSH, function (data) {
-            console.log(PushEvents.ON_PUSH, JSON.stringify(data));
-
             self.pushServerListener.onPush(data);
         });
     }
