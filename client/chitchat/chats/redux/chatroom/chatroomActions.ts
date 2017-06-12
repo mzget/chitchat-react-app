@@ -20,6 +20,7 @@ import SecureServiceFactory from "../../secure/secureServiceFactory";
 import * as NotificationManager from "../stalkBridge/StalkNotificationActions";
 
 import { updateLastAccessRoom } from "../chatlogs/chatlogRxActions";
+import { updateMessagesRead } from "./chatroomRxEpic";
 
 import { Room, RoomType, IMember } from "../../..//shared/Room";
 import { MessageType, IMessage } from "../../../shared/Message";
@@ -162,9 +163,11 @@ export function getNewerMessageFromNet() {
         dispatch(getNewerMessage());
 
         let token = authReducer().chitchat_token;
-        ChatRoomComponent.getInstance().getNewerMessageRecord(token, (results) => {
+        ChatRoomComponent.getInstance().getNewerMessageRecord(token, (results, room_id: string) => {
             dispatch(getNewerMessage_success(results));
-            // @Todo next joinroom function is ready to call.
+
+            //# update messages read.
+            dispatch(updateMessagesRead(results as Array<MessageImp>, room_id));
         }).catch(err => {
             if (err) console.warn("getNewerMessageRecord fail", err);
             dispatch(getNewerMessage_failure());

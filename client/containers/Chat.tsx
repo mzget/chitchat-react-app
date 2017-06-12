@@ -86,8 +86,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             }), () => {
                 let chatBox = document.getElementById("app_body");
                 chatBox.scrollTop = chatBox.scrollHeight;
-
-               this.props.dispatch(chatroomRxEpic.updateMessagesRead(this.state.messages, chatroomReducer.room._id));
             });
         }
 

@@ -239,7 +239,7 @@ var ChatRoomComponent = (function () {
                                         return [4 /*yield*/, self.dataManager.messageDAL.saveData(self.roomId, _results)];
                                     case 1:
                                         results = _a.sent();
-                                        callback(_results);
+                                        callback(_results, this.roomId);
                                         return [2 /*return*/];
                                 }
                             });

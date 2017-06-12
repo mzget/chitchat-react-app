@@ -10,7 +10,7 @@ const { ajax, fromPromise } = Rx.Observable;
 
 import { ChatRoomComponent } from "../../ChatRoomComponent";
 import { ChitChatFactory } from "../../ChitchatFactory";
-import { checkOlderMessages, getNewerMessageFromNet } from "./chatroomActions";
+import { checkOlderMessages, getNewerMessageFromNet, GET_NEWER_MESSAGE_SUCCESS } from "./chatroomActions";
 import { MessageImp } from "../../models/MessageImp";
 
 import * as chatroomService from "../../services/chatroomService";

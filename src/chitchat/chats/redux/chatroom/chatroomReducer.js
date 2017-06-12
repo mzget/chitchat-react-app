@@ -89,7 +89,8 @@ exports.chatroomReducer = function (state, action) {
             return state.set("messages", payload);
         }
         case chatroomActions_1.GET_NEWER_MESSAGE_SUCCESS: {
-            return state.set("state", chatroomActions_1.GET_NEWER_MESSAGE_SUCCESS);
+            var payload = action.payload;
+            return state.set("messages", payload);
         }
         /**Create chat room */
         case chatroomRxActions.CREATE_PRIVATE_CHATROOM:

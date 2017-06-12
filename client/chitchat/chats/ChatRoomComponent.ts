@@ -211,7 +211,7 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         }
     }
 
-    public async getNewerMessageRecord(sessionToken: string, callback: (results: Array<IMessage>) => void) {
+    public async getNewerMessageRecord(sessionToken: string, callback: (results: Array<IMessage>, room_id: string) => void) {
         let self = this;
         let lastMessageTime = new Date();
 
@@ -239,7 +239,7 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
             // Save persistent chats log here.
             let results = await self.dataManager.messageDAL.saveData(self.roomId, _results) as Array<IMessage>;
 
-            callback(_results);
+            callback(_results, this.roomId);
         };
 
         const getNewerMessage = async () => {

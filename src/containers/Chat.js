@@ -86,7 +86,6 @@ var Chat = (function (_super) {
             this.setState(function (previousState) { return (__assign({}, previousState, { messages: chatroomReducer.messages })); }, function () {
                 var chatBox = document.getElementById("app_body");
                 chatBox.scrollTop = chatBox.scrollHeight;
-                _this.props.dispatch(chatroomRxEpic.updateMessagesRead(_this.state.messages, chatroomReducer.room._id));
             });
         }
         switch (stalkReducer.state) {

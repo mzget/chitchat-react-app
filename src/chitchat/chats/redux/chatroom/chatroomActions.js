@@ -57,6 +57,7 @@ var BackendFactory_1 = require("../../BackendFactory");
 var secureServiceFactory_1 = require("../../secure/secureServiceFactory");
 var NotificationManager = require("../stalkBridge/StalkNotificationActions");
 var chatlogRxActions_1 = require("../chatlogs/chatlogRxActions");
+var chatroomRxEpic_1 = require("./chatroomRxEpic");
 var Room_1 = require("../../..//shared/Room");
 var Message_1 = require("../../../shared/Message");
 var ChitchatFactory_1 = require("../../ChitchatFactory");
@@ -187,9 +188,10 @@ function getNewerMessageFromNet() {
     return function (dispatch) {
         dispatch(getNewerMessage());
         var token = authReducer().chitchat_token;
-        ChatRoomComponent_1.ChatRoomComponent.getInstance().getNewerMessageRecord(token, function (results) {
+        ChatRoomComponent_1.ChatRoomComponent.getInstance().getNewerMessageRecord(token, function (results, room_id) {
             dispatch(getNewerMessage_success(results));
-            // @Todo next joinroom function is ready to call.
+            //# update messages read.
+            dispatch(chatroomRxEpic_1.updateMessagesRead(results, room_id));
         })["catch"](function (err) {
             if (err)
                 console.warn("getNewerMessageRecord fail", err);
