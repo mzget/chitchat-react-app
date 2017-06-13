@@ -32,13 +32,13 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
                         <WebToolbarEnhanced history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
                     </div>
                 </Flexbox>
-                <Flexbox flexDirection="row" justifyContent="center">
+                <Flexbox flexDirection="row" justifyContent="center" style={{ backgroundColor: Colors.blueGrey50 }}>
                     <Flexbox flexDirection="column" justifyContent="center">
                         <Flexbox maxHeight="40px">
                             <StalkCompEnhancer />
                         </Flexbox>
-                        <Flexbox flexDirection="row" flexGrow={1} height="calc(100vh - 56px - 40px)">
-                            <Flexbox flexDirection="column" flexGrow={0.3} style={{ overflowY: "scroll" }}>
+                        <Flexbox flexDirection="row" flexGrow={1} height="calc(100vh - 56px)">
+                            <Flexbox flexDirection="column" flexGrow={0.3} style={{ overflowY: "scroll", backgroundColor: Colors.darkWhite }}>
                                 <ConnectGroupListEnhancer
                                     fetchGroup={fetch_orgGroups}
                                     groups={groupReducer.orgGroups}
@@ -49,18 +49,18 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
                                     subHeader={"Groups"} />
                                 <ChatLogsBoxEnhancer />
                             </Flexbox>
-                            <Flexbox flexDirection="column" flexGrow={0.7}>
+                            <Flexbox flexDirection="column" flexGrow={0.7} >
                                 <SubToolbar history={history} match={match} onError={onError}
                                     chatroomReducer={chatroomReducer}
                                     userReducer={userReducer} />
-                                <Flexbox style={{ overflowY: "scroll" }}>
-                                    <Flexbox flexGrow={0.5}>
-                                        <div style={{ width: "100%", height: "100%" }}>
+                                <Flexbox style={{ overflowY: "scroll" }} height="calc(100vh - 56px)" >
+                                    <Flexbox width="400px" >
+                                        <div style={{ width: "100%", backgroundColor: Colors.darkWhite }}>
                                             <AppBody userReducer={userReducer} match={match} history={history} onError={onError} />
                                         </div>
                                     </Flexbox>
-                                    <Flexbox flexGrow={0.5}>
-                                        <div style={{ width: "100%", height: "100%" }}>
+                                    <Flexbox width="288px" >
+                                        <div style={{ width: "100%", backgroundColor: Colors.darkWhite }}>
                                             <RightNav match={match} onError={onError} teamReducer={teamReducer} />
                                         </div>
                                     </Flexbox>

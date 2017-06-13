@@ -339,7 +339,8 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         return (
             <Flexbox flexDirection="row" justifyContent="center" id={"app_body"}>
                 <Flexbox flexDirection="column">
-                    <Flexbox flexDirection="column" flexGrow={1} justifyContent="flex-start" height="calc(100vh - 56px - 52px - 52px - 200px)">
+                    <Flexbox flexDirection="column" flexGrow={1} justifyContent="flex-start" alignItems="center"
+                        height="calc(100vh - 56px - 52px - 52px)" minWidth="400px">
                         {
                             (this.state.earlyMessageReady) ?
                                 <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>

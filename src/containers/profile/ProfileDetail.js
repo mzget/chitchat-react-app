@@ -33,7 +33,7 @@ var getDetailHeight = function () {
     return document.documentElement.clientHeight - (56 + 48);
 };
 exports.ProfileDetail = function (props) { return (React.createElement(MuiThemeProvider_1["default"], null,
-    React.createElement(flexbox_react_1["default"], { style: { backgroundColor: Colors.indigo50 }, flexDirection: "column", minHeight: "calc(100vh - 56px)", id: "ProfileDetail" },
+    React.createElement(flexbox_react_1["default"], { style: { backgroundColor: Colors.blueGrey50 }, flexDirection: "column", minHeight: "calc(100vh - 56px)", id: "ProfileDetail" },
         React.createElement(flexbox_react_1["default"], { flexDirection: "column", alignItems: "center", flexGrow: 1 },
             React.createElement(Subheader_1["default"], null, "Edit you profile"),
             React.createElement(FileReaderInput, { as: "url", id: "file-input", onChange: (props.onFileReaderChange) ? props.onFileReaderChange : function () { } },

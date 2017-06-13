@@ -55,7 +55,7 @@ const getDetailHeight = () => {
 
 export const ProfileDetail = (props: IProfileDetailProps) => (
     <MuiThemeProvider>
-        <Flexbox style={{ backgroundColor: Colors.indigo50 }} flexDirection="column" minHeight="calc(100vh - 56px)" id="ProfileDetail">
+        <Flexbox style={{ backgroundColor: Colors.blueGrey50 }} flexDirection="column" minHeight="calc(100vh - 56px)" id="ProfileDetail">
             <Flexbox flexDirection="column" alignItems="center" flexGrow={1}>
                 <Subheader>Edit you profile</Subheader>
                 <FileReaderInput
