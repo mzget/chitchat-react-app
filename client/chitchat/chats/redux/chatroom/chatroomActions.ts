@@ -148,16 +148,31 @@ export function checkOlderMessages() {
     };
 }
 
+export const LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
+const loadEarlyMessage_success = (payload) => ({ type: LOAD_EARLY_MESSAGE_SUCCESS, payload });
+export function loadEarlyMessageChunk(room_id: string) {
+    return dispatch => {
+        ChatRoomComponent.getInstance().getOlderMessageChunk(room_id).then(docs => {
+            dispatch(loadEarlyMessage_success(docs));
+            // @check older message again.
+            dispatch(checkOlderMessages());
+
+            //# update messages read.
+            if (docs.length > 0) {
+                dispatch(updateMessagesRead(docs as Array<MessageImp>, room_id));
+            }
+        }).catch(err => {
+            console.warn("loadEarlyMessageChunk fail", err);
+        });
+    };
+}
+
 export const GET_NEWER_MESSAGE = "GET_NEWER_MESSAGE";
 export const GET_NEWER_MESSAGE_FAILURE = "GET_NEWER_MESSAGE_FAILURE";
 export const GET_NEWER_MESSAGE_SUCCESS = "GET_NEWER_MESSAGE_SUCCESS";
-const getNewerMessage = () => ({ type: GET_NEWER_MESSAGE });
-function getNewerMessage_failure() {
-    return { type: GET_NEWER_MESSAGE_FAILURE };
-}
-function getNewerMessage_success(messages: any) {
-    return { type: GET_NEWER_MESSAGE_SUCCESS, payload: messages };
-}
+const getNewerMessage = createAction(GET_NEWER_MESSAGE);
+const getNewerMessage_failure = createAction(GET_NEWER_MESSAGE_FAILURE);
+const getNewerMessage_success = createAction(GET_NEWER_MESSAGE_SUCCESS, messages => messages);
 export function getNewerMessageFromNet() {
     return dispatch => {
         dispatch(getNewerMessage());
@@ -167,7 +182,9 @@ export function getNewerMessageFromNet() {
             dispatch(getNewerMessage_success(results));
 
             //# update messages read.
-            dispatch(updateMessagesRead(results as Array<MessageImp>, room_id));
+            if (results.length > 0) {
+                dispatch(updateMessagesRead(results as Array<MessageImp>, room_id));
+            }
         }).catch(err => {
             if (err) console.warn("getNewerMessageRecord fail", err);
             dispatch(getNewerMessage_failure());
@@ -318,20 +335,6 @@ export const DISABLE_CHATROOM = "DISABLE_CHATROOM";
 export const ENABLE_CHATROOM = "ENABLE_CHATROOM";
 export const disableChatRoom = () => ({ type: DISABLE_CHATROOM });
 export const enableChatRoom = () => ({ type: ENABLE_CHATROOM });
-
-export const LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
-const loadEarlyMessage_success = (payload) => ({ type: LOAD_EARLY_MESSAGE_SUCCESS, payload });
-export function loadEarlyMessageChunk() {
-    return dispatch => {
-        ChatRoomComponent.getInstance().getOlderMessageChunk().then(res => {
-            dispatch(loadEarlyMessage_success(res));
-            // @check older message again.
-            dispatch(checkOlderMessages());
-        }).catch(err => {
-            console.warn("loadEarlyMessageChunk fail", err);
-        });
-    };
-}
 
 export const GET_PERSISTEND_CHATROOM = "GET_PERSISTEND_CHATROOM";
 const GET_PERSISTEND_CHATROOM_CANCELLED = "GET_PERSISTEND_CHATROOM_CANCELLED";

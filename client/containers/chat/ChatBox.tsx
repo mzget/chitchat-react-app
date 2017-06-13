@@ -1,8 +1,9 @@
 import * as React from "react";
+import { Store } from "redux";
+const FontAwesome = require("react-fontawesome");
 
 import { List, ListItem } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
-
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 import { MessageImp } from "../../chitchat/chats/models/MessageImp";
@@ -14,7 +15,7 @@ import { CardImageWithAvatar, CardStickerWithAvatar } from "../../components/Car
 import { CardFileWithAvatar } from "../../components/CardFileWithAvatar";
 import { CardVideoWithAvatar } from "../../components/CardVideoWithAvatar";
 
-const FontAwesome = require("react-fontawesome");
+import configureStore from "../../redux/configureStore";
 
 interface MyProps {
     value: Array<MessageImp>;
@@ -58,11 +59,16 @@ const onClickReader = (message: MessageImp) => {
     console.log(message);
 }
 const renderList = (props: MyProps) => {
+    let _store = configureStore as Store<any>;
+
     return props.value.map((message, i, arr) => {
 
         if (!message.user || !message.user.username) {
             console.warn(message);
             return null;
+        }
+        if (_store.getState().userReducer.user._id != message.sender) {
+            delete message.readers;
         }
 
         switch (message.type) {

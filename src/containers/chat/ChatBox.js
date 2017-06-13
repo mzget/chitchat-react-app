@@ -1,5 +1,6 @@
 "use strict";
 var React = require("react");
+var FontAwesome = require("react-fontawesome");
 var List_1 = require("material-ui/List");
 var Avatar_1 = require("material-ui/Avatar");
 var MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
@@ -8,7 +9,7 @@ var CardTextWithAvatar_1 = require("../../components/CardTextWithAvatar");
 var CardImageWithAvatar_1 = require("../../components/CardImageWithAvatar");
 var CardFileWithAvatar_1 = require("../../components/CardFileWithAvatar");
 var CardVideoWithAvatar_1 = require("../../components/CardVideoWithAvatar");
-var FontAwesome = require("react-fontawesome");
+var configureStore_1 = require("../../redux/configureStore");
 ;
 exports.ChatBox = function (props) { return (React.createElement(MuiThemeProvider_1["default"], null,
     React.createElement(List_1.List, { style: props.styles, id: "chatbox" }, (!!props.value) ? renderList(props) : null))); };
@@ -36,10 +37,14 @@ var onClickReader = function (message) {
     console.log(message);
 };
 var renderList = function (props) {
+    var _store = configureStore_1["default"];
     return props.value.map(function (message, i, arr) {
         if (!message.user || !message.user.username) {
             console.warn(message);
             return null;
+        }
+        if (_store.getState().userReducer.user._id != message.sender) {
+            delete message.readers;
         }
         switch (message.type) {
             case Message_1.MessageType[Message_1.MessageType.Text]: {

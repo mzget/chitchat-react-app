@@ -78,7 +78,6 @@ var Chat = (function (_super) {
         this.props.dispatch(chatroomActions.leaveRoomAction());
     };
     Chat.prototype.componentWillReceiveProps = function (nextProps) {
-        var _this = this;
         var chatroomReducer = nextProps.chatroomReducer, stalkReducer = nextProps.stalkReducer;
         this.h_subHeader = (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
@@ -160,9 +159,7 @@ var Chat = (function (_super) {
                 break;
             }
             case chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS: {
-                chatroomActions.getMessages().then(function (messages) {
-                    _this.setState(function (previousState) { return (__assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false, messages: messages })); });
-                });
+                this.setState(function (previousState) { return (__assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false })); });
                 break;
             }
             default:
@@ -171,7 +168,7 @@ var Chat = (function (_super) {
     };
     Chat.prototype.onLoadEarlierMessages = function () {
         this.setState(function (previousState) { return (__assign({}, previousState, { isLoadingEarlierMessages: true })); });
-        this.props.dispatch(chatroomActions.loadEarlyMessageChunk());
+        this.props.dispatch(chatroomActions.loadEarlyMessageChunk(this.props.chatroomReducer.room._id));
     };
     Chat.prototype.roomInitialize = function (props) {
         var chatroomReducer = props.chatroomReducer, userReducer = props.userReducer;

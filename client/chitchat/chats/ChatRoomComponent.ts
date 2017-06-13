@@ -326,24 +326,24 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         });
     }
 
-    public async getOlderMessageChunk() {
+    public async getOlderMessageChunk(room_id: string) {
         let self = this;
 
         async function waitForRoomMessages() {
-            let messages = await self.dataManager.messageDAL.getData(self.roomId) as IMessage[];
+            let messages = await self.dataManager.messageDAL.getData(room_id) as IMessage[];
 
             return messages;
         }
 
         async function saveRoomMessages(merged: Array<IMessage>) {
-            let value = await self.dataManager.messageDAL.saveData(self.roomId, merged);
+            let value = await self.dataManager.messageDAL.saveData(room_id, merged);
 
-            return value;
+            return value as Array<IMessage>;
         }
 
         let time = await self.getTopEdgeMessageTime() as Date;
         if (time) {
-            let response = await chatroomService.getOlderMessagesCount(self.roomId, time.toString(), true);
+            let response = await chatroomService.getOlderMessagesCount(room_id, time.toString(), true);
             let result = await response.json();
 
             console.log("getOlderMessageChunk value", result);

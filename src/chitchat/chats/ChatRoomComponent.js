@@ -362,14 +362,14 @@ var ChatRoomComponent = (function () {
             });
         });
     };
-    ChatRoomComponent.prototype.getOlderMessageChunk = function () {
+    ChatRoomComponent.prototype.getOlderMessageChunk = function (room_id) {
         return __awaiter(this, void 0, void 0, function () {
             function waitForRoomMessages() {
                 return __awaiter(this, void 0, void 0, function () {
                     var messages;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
-                            case 0: return [4 /*yield*/, self.dataManager.messageDAL.getData(self.roomId)];
+                            case 0: return [4 /*yield*/, self.dataManager.messageDAL.getData(room_id)];
                             case 1:
                                 messages = _a.sent();
                                 return [2 /*return*/, messages];
@@ -382,7 +382,7 @@ var ChatRoomComponent = (function () {
                     var value;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
-                            case 0: return [4 /*yield*/, self.dataManager.messageDAL.saveData(self.roomId, merged)];
+                            case 0: return [4 /*yield*/, self.dataManager.messageDAL.saveData(room_id, merged)];
                             case 1:
                                 value = _a.sent();
                                 return [2 /*return*/, value];
@@ -399,7 +399,7 @@ var ChatRoomComponent = (function () {
                     case 1:
                         time = _a.sent();
                         if (!time) return [3 /*break*/, 12];
-                        return [4 /*yield*/, chatroomService.getOlderMessagesCount(self.roomId, time.toString(), true)];
+                        return [4 /*yield*/, chatroomService.getOlderMessagesCount(room_id, time.toString(), true)];
                     case 2:
                         response = _a.sent();
                         return [4 /*yield*/, response.json()];

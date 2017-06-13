@@ -174,16 +174,30 @@ function checkOlderMessages() {
     };
 }
 exports.checkOlderMessages = checkOlderMessages;
+exports.LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
+var loadEarlyMessage_success = function (payload) { return ({ type: exports.LOAD_EARLY_MESSAGE_SUCCESS, payload: payload }); };
+function loadEarlyMessageChunk(room_id) {
+    return function (dispatch) {
+        ChatRoomComponent_1.ChatRoomComponent.getInstance().getOlderMessageChunk(room_id).then(function (docs) {
+            dispatch(loadEarlyMessage_success(docs));
+            // @check older message again.
+            dispatch(checkOlderMessages());
+            //# update messages read.
+            if (docs.length > 0) {
+                dispatch(chatroomRxEpic_1.updateMessagesRead(docs, room_id));
+            }
+        })["catch"](function (err) {
+            console.warn("loadEarlyMessageChunk fail", err);
+        });
+    };
+}
+exports.loadEarlyMessageChunk = loadEarlyMessageChunk;
 exports.GET_NEWER_MESSAGE = "GET_NEWER_MESSAGE";
 exports.GET_NEWER_MESSAGE_FAILURE = "GET_NEWER_MESSAGE_FAILURE";
 exports.GET_NEWER_MESSAGE_SUCCESS = "GET_NEWER_MESSAGE_SUCCESS";
-var getNewerMessage = function () { return ({ type: exports.GET_NEWER_MESSAGE }); };
-function getNewerMessage_failure() {
-    return { type: exports.GET_NEWER_MESSAGE_FAILURE };
-}
-function getNewerMessage_success(messages) {
-    return { type: exports.GET_NEWER_MESSAGE_SUCCESS, payload: messages };
-}
+var getNewerMessage = redux_actions_1.createAction(exports.GET_NEWER_MESSAGE);
+var getNewerMessage_failure = redux_actions_1.createAction(exports.GET_NEWER_MESSAGE_FAILURE);
+var getNewerMessage_success = redux_actions_1.createAction(exports.GET_NEWER_MESSAGE_SUCCESS, function (messages) { return messages; });
 function getNewerMessageFromNet() {
     return function (dispatch) {
         dispatch(getNewerMessage());
@@ -191,7 +205,9 @@ function getNewerMessageFromNet() {
         ChatRoomComponent_1.ChatRoomComponent.getInstance().getNewerMessageRecord(token, function (results, room_id) {
             dispatch(getNewerMessage_success(results));
             //# update messages read.
-            dispatch(chatroomRxEpic_1.updateMessagesRead(results, room_id));
+            if (results.length > 0) {
+                dispatch(chatroomRxEpic_1.updateMessagesRead(results, room_id));
+            }
         })["catch"](function (err) {
             if (err)
                 console.warn("getNewerMessageRecord fail", err);
@@ -345,20 +361,6 @@ exports.DISABLE_CHATROOM = "DISABLE_CHATROOM";
 exports.ENABLE_CHATROOM = "ENABLE_CHATROOM";
 exports.disableChatRoom = function () { return ({ type: exports.DISABLE_CHATROOM }); };
 exports.enableChatRoom = function () { return ({ type: exports.ENABLE_CHATROOM }); };
-exports.LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
-var loadEarlyMessage_success = function (payload) { return ({ type: exports.LOAD_EARLY_MESSAGE_SUCCESS, payload: payload }); };
-function loadEarlyMessageChunk() {
-    return function (dispatch) {
-        ChatRoomComponent_1.ChatRoomComponent.getInstance().getOlderMessageChunk().then(function (res) {
-            dispatch(loadEarlyMessage_success(res));
-            // @check older message again.
-            dispatch(checkOlderMessages());
-        })["catch"](function (err) {
-            console.warn("loadEarlyMessageChunk fail", err);
-        });
-    };
-}
-exports.loadEarlyMessageChunk = loadEarlyMessageChunk;
 exports.GET_PERSISTEND_CHATROOM = "GET_PERSISTEND_CHATROOM";
 var GET_PERSISTEND_CHATROOM_CANCELLED = "GET_PERSISTEND_CHATROOM_CANCELLED";
 exports.GET_PERSISTEND_CHATROOM_SUCCESS = "GET_PERSISTEND_CHATROOM_SUCCESS";

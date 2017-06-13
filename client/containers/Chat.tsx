@@ -170,15 +170,11 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 break;
             }
             case chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS: {
-                chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => ({
-                        ...previousState,
-                        isLoadingEarlierMessages: false,
-                        earlyMessageReady: false,
-                        messages: messages
-                    }));
-                });
-
+                this.setState(previousState => ({
+                    ...previousState,
+                    isLoadingEarlierMessages: false,
+                    earlyMessageReady: false
+                }));
                 break;
             }
             default:
@@ -192,7 +188,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             isLoadingEarlierMessages: true,
         }));
 
-        this.props.dispatch(chatroomActions.loadEarlyMessageChunk());
+        this.props.dispatch(chatroomActions.loadEarlyMessageChunk(this.props.chatroomReducer.room._id));
     }
 
     roomInitialize(props: IComponentProps) {

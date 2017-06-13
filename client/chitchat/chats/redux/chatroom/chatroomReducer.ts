@@ -93,7 +93,9 @@ export const chatroomReducer = (state = initialState, action) => {
                 .set("earlyMessageReady", payload);
         }
         case chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS: {
-            return state.set("state", chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS);
+            let payload = action.payload;
+            return state.set("messages", payload)
+                .set("state", chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS);
         }
 
         case chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS: {
