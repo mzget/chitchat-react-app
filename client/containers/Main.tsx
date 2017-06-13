@@ -38,7 +38,7 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
                             <StalkCompEnhancer />
                         </Flexbox>
                         <Flexbox flexDirection="row" flexGrow={1} height="calc(100vh - 56px)">
-                            <Flexbox flexDirection="column" flexGrow={0.3} style={{ overflowY: "scroll", backgroundColor: Colors.darkWhite }}>
+                            <Flexbox flexDirection="column" flexGrow={0.3} style={{ overflowY: "auto", backgroundColor: Colors.darkWhite }}>
                                 <ConnectGroupListEnhancer
                                     fetchGroup={fetch_orgGroups}
                                     groups={groupReducer.orgGroups}
@@ -53,7 +53,7 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
                                 <SubToolbar history={history} match={match} onError={onError}
                                     chatroomReducer={chatroomReducer}
                                     userReducer={userReducer} />
-                                <Flexbox style={{ overflowY: "scroll" }} height="calc(100vh - 56px)" >
+                                <Flexbox height="calc(100vh - 56px)" >
                                     <Flexbox width="400px" >
                                         <div style={{ width: "100%", backgroundColor: Colors.darkWhite }}>
                                             <AppBody userReducer={userReducer} match={match} history={history} onError={onError} />
