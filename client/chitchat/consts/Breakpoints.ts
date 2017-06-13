@@ -6,8 +6,10 @@
  * https://material.io/guidelines/layout/responsive-ui.html#
  */
 
-export const MEDIUM_HANDSET = 600;
-export const SMALL_TABLET = 960;
-export const LARGE_TABLET = 1280;
+export const XSMALL_WINDOW = 600;
+export const SMALL_WINDOW = 840;
+export const MEDIUM_WINDOW = 960;
+export const LARGE_WINDOW = 1280;
+export const XLARGE_WINDOW = 1920;
 export const LARGE = 1440;
-export const X_LARGE = 1920;
+export const X_LARGE = 1600;

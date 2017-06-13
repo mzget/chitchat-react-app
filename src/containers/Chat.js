@@ -276,15 +276,15 @@ var Chat = (function (_super) {
         var _a = this.props, chatroomReducer = _a.chatroomReducer, stalkReducer = _a.stalkReducer;
         return (React.createElement(flexbox_react_1["default"], { flexDirection: "row", justifyContent: "center", id: "app_body" },
             React.createElement(flexbox_react_1["default"], { flexDirection: "column" },
-                React.createElement(flexbox_react_1["default"], { flexDirection: "column", flexGrow: 1, justifyContent: "flex-start", alignItems: "center", height: "calc(100vh - 56px - 52px - 52px)" },
+                React.createElement(flexbox_react_1["default"], { flexDirection: "column", flexGrow: 1, justifyContent: "flex-start", height: "calc(100vh - 56px - 52px - 52px - 200px)" },
                     (this.state.earlyMessageReady) ?
                         React.createElement("p", { onClick: function () { return _this.onLoadEarlierMessages(); } }, "Load Earlier Messages!")
                         :
                             null,
-                    React.createElement(ChatBox_1.ChatBox, { styles: { overflowX: "hidden" }, value: this.state.messages, onSelected: function (message) { } }),
-                    (this.state.openButtomMenu) ?
-                        React.createElement(GridListSimple_1.GridListSimple, { srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
-                        : null),
+                    React.createElement(ChatBox_1.ChatBox, { value: this.state.messages, onSelected: function (message) { } })),
+                React.createElement(flexbox_react_1["default"], null, (this.state.openButtomMenu) ?
+                    React.createElement(GridListSimple_1.GridListSimple, { srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
+                    : null),
                 React.createElement(flexbox_react_1["default"], { element: "footer", justifyContent: "center", alignContent: "stretch" },
                     React.createElement(TypingBox_1.TypingBox, { disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker }),
                     React.createElement(UploadingDialog_1["default"], null),

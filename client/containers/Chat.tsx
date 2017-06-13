@@ -339,16 +339,17 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         return (
             <Flexbox flexDirection="row" justifyContent="center" id={"app_body"}>
                 <Flexbox flexDirection="column">
-                    <Flexbox flexDirection="column" flexGrow={1} justifyContent="flex-start" alignItems="center" height="calc(100vh - 56px - 52px - 52px)">
+                    <Flexbox flexDirection="column" flexGrow={1} justifyContent="flex-start" height="calc(100vh - 56px - 52px - 52px - 200px)">
                         {
                             (this.state.earlyMessageReady) ?
                                 <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
                                 :
                                 null
                         }
-                        <ChatBox styles={{ overflowX: "hidden" }}
-                            value={this.state.messages}
+                        <ChatBox value={this.state.messages}
                             onSelected={(message: IMessage) => { }} />
+                    </Flexbox>
+                    <Flexbox>
                         {
                             (this.state.openButtomMenu) ?
                                 <GridListSimple

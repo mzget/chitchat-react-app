@@ -37,7 +37,8 @@ var Admin = (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.manageOrgChart = "Manage ORG Chart";
         _this.teamMember = "team-member";
-        _this.menus = [_this.manageOrgChart, CreateGroupBox_1.createOrgGroup, CreateGroupBox_1.createPjbGroup, CreateGroupBox_1.createPvGroup, _this.teamMember];
+        _this.developerIssue = "Developer Issue";
+        _this.menus = [_this.manageOrgChart, CreateGroupBox_1.createOrgGroup, CreateGroupBox_1.createPjbGroup, CreateGroupBox_1.createPvGroup, _this.teamMember, _this.developerIssue];
         return _this;
     }
     Admin.prototype.componentWillMount = function () {
@@ -94,6 +95,9 @@ var Admin = (function (_super) {
             else {
                 this.props.onError("Request for admin permision");
             }
+        }
+        else if (key == this.developerIssue) {
+            window.open("https://github.com/mzget/chitchat-ionic-app/wiki", '_blank');
         }
     };
     Admin.prototype.onBackPressed = function () {

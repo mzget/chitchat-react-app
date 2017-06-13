@@ -19,7 +19,8 @@ var Contacts = (function (_super) {
     }
     Contacts.prototype.componentDidMount = function () {
         this.onselectMember = this.onselectMember.bind(this);
-        this.props.dispatch(teamRx.getTeamMembers(this.props.teamReducer.team._id));
+        if (!!this.props.teamReducer.team)
+            this.props.dispatch(teamRx.getTeamMembers(this.props.teamReducer.team._id));
     };
     Contacts.prototype.componentWillReceiveProps = function (nextProps) {
         var _this = this;
