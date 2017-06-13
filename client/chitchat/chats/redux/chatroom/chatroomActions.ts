@@ -346,6 +346,10 @@ export const getPersistendChatroom = (roomId: string) => (dispatch => {
     dispatch({ type: GET_PERSISTEND_CHATROOM, payload: roomId });
 
     const { chatrooms }: { chatrooms: Array<Room> } = getStore().getState().chatroomReducer;
+    if (!chatrooms) {
+        return dispatch(getPersistChatroomFail());
+    }
+
     const rooms = chatrooms.filter((room, index, array) => {
         if (room._id.toString() == roomId) {
             return room;
@@ -362,6 +366,8 @@ export const getPersistendChatroom = (roomId: string) => (dispatch => {
 
 export const getRoom = (room_id: string) => {
     let { chatrooms }: { chatrooms: Array<Room> } = getStore().getState().chatroomReducer;
+
+    if (!chatrooms) { return null; }
 
     const rooms = chatrooms.filter((room, index, array) => {
         if (room._id.toString() == room_id) {

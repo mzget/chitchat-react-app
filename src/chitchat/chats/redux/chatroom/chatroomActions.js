@@ -370,6 +370,9 @@ var getPersistChatroomSuccess = function (roomInfo) { return ({ type: exports.GE
 exports.getPersistendChatroom = function (roomId) { return (function (dispatch) {
     dispatch({ type: exports.GET_PERSISTEND_CHATROOM, payload: roomId });
     var chatrooms = getStore().getState().chatroomReducer.chatrooms;
+    if (!chatrooms) {
+        return dispatch(getPersistChatroomFail());
+    }
     var rooms = chatrooms.filter(function (room, index, array) {
         if (room._id.toString() == roomId) {
             return room;
@@ -384,6 +387,9 @@ exports.getPersistendChatroom = function (roomId) { return (function (dispatch) 
 }); };
 exports.getRoom = function (room_id) {
     var chatrooms = getStore().getState().chatroomReducer.chatrooms;
+    if (!chatrooms) {
+        return null;
+    }
     var rooms = chatrooms.filter(function (room, index, array) {
         if (room._id.toString() == room_id) {
             return room;

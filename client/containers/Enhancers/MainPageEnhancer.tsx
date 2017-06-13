@@ -48,6 +48,8 @@ export const MainPageEnhancer = compose(
             props.dispatch(groupRx.getOrgGroup(props.teamReducer.team._id));
         },
         fetch_privateGroups: (props: any) => () => {
+            if (!props.teamReducer.team)
+                return props.history.replace(`/`);
             props.dispatch(privateGroupRxActions.getPrivateGroup(props.teamReducer.team._id));
         }
     })

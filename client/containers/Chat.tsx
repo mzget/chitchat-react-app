@@ -337,37 +337,39 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     render(): JSX.Element {
         let { chatroomReducer, stalkReducer } = this.props;
         return (
-            <Flexbox flexDirection="column" height="calc(100vh - 56px - 54px)" id={"app_body"}>
-                <Flexbox flexGrow={1} flexDirection="column" justifyContent="flex-start" alignItems="center">
-                    {
-                        (this.state.earlyMessageReady) ?
-                            <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
-                            :
-                            null
-                    }
-                    <ChatBox styles={{ overflowX: "hidden" }}
-                        value={this.state.messages}
-                        onSelected={(message: IMessage) => { }} />
-                    {
-                        (this.state.openButtomMenu) ?
-                            <GridListSimple
-                                srcs={imagesPath}
-                                onSelected={this.onSubmitStickerChat} />
-                            : null
-                    }
-                </Flexbox>
-                <Flexbox element="footer" justifyContent="center" alignContent="space-between" >
-                    <TypingBox
-                        disabled={this.props.chatroomReducer.chatDisabled}
-                        onSubmit={this.onSubmitTextChat}
-                        onValueChange={this.onTypingTextChange}
-                        value={this.state.typingText}
-                        fileReaderChange={this.fileReaderChange}
-                        onSticker={this.onToggleSticker} />
-                    <UploadingDialog />
-                    <SnackbarToolBox />
-                </Flexbox>
-            </Flexbox >
+            <Flexbox flexDirection="row" justifyContent="center" id={"app_body"}>
+                <Flexbox flexDirection="column">
+                    <Flexbox flexDirection="column" flexGrow={1} justifyContent="flex-start" alignItems="center" height="calc(100vh - 56px - 52px - 52px)">
+                        {
+                            (this.state.earlyMessageReady) ?
+                                <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
+                                :
+                                null
+                        }
+                        <ChatBox styles={{ overflowX: "hidden" }}
+                            value={this.state.messages}
+                            onSelected={(message: IMessage) => { }} />
+                        {
+                            (this.state.openButtomMenu) ?
+                                <GridListSimple
+                                    srcs={imagesPath}
+                                    onSelected={this.onSubmitStickerChat} />
+                                : null
+                        }
+                    </Flexbox>
+                    <Flexbox element="footer" justifyContent="center" alignContent="stretch" >
+                        <TypingBox
+                            disabled={this.props.chatroomReducer.chatDisabled}
+                            onSubmit={this.onSubmitTextChat}
+                            onValueChange={this.onTypingTextChange}
+                            value={this.state.typingText}
+                            fileReaderChange={this.fileReaderChange}
+                            onSticker={this.onToggleSticker} />
+                        <UploadingDialog />
+                        <SnackbarToolBox />
+                    </Flexbox>
+                </Flexbox >
+            </Flexbox>
         );
     }
 }

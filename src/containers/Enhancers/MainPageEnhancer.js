@@ -44,6 +44,8 @@ exports.MainPageEnhancer = recompose_1.compose(react_redux_1.connect(mapStateToP
         props.dispatch(groupRx.getOrgGroup(props.teamReducer.team._id));
     }; },
     fetch_privateGroups: function (props) { return function () {
+        if (!props.teamReducer.team)
+            return props.history.replace("/");
         props.dispatch(privateGroupRxActions.getPrivateGroup(props.teamReducer.team._id));
     }; }
 }));
