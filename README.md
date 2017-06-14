@@ -3,7 +3,7 @@ ChitChat react-app code sample. The implementation of react, redux, rxjs ...
 
 Realtime powered by stalk chat service.
 
-Demo #  http://git.animation-genius.com:9000/
+Demo #  https://chitchats.ga/
 
 Demo # http://mzget.github.io/chitchat-react-app/
 
