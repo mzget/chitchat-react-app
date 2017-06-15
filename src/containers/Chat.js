@@ -281,7 +281,7 @@ var Chat = (function (_super) {
                         React.createElement("p", { onClick: function () { return _this.onLoadEarlierMessages(); } }, "Load Earlier Messages!")
                         :
                             null,
-                    React.createElement(ChatBox_1.ChatBox, { value: this.state.messages, onSelected: function (message) { } })),
+                    React.createElement(ChatBox_1.ChatBox, { value: this.state.messages, onSelected: function (message) { }, styles: { overflowY: "auto" } })),
                 React.createElement(flexbox_react_1["default"], null, (this.state.openButtomMenu) ?
                     React.createElement(GridListSimple_1.GridListSimple, { srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
                     : null),

@@ -348,7 +348,8 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                                 null
                         }
                         <ChatBox value={this.state.messages}
-                            onSelected={(message: IMessage) => { }} />
+                            onSelected={(message: IMessage) => { }}
+                            styles={{ overflowY: "auto" }} />
                     </Flexbox>
                     <Flexbox>
                         {
