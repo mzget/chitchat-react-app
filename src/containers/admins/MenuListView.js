@@ -1,19 +1,22 @@
-import * as React from "react";
-import { List, ListItem } from "material-ui/List";
-import ActionGrade from "material-ui/svg-icons/action/grade";
-import Divider from "material-ui/Divider";
-import ActionInfo from "material-ui/svg-icons/action/info";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import Subheader from "material-ui/Subheader";
-const getItem = (props) => {
-    return props.menus.map((item, i, arr) => React.createElement(ListItem, { key: i, primaryText: item, leftIcon: React.createElement(ActionGrade, null), rightIcon: React.createElement(ActionInfo, null), onClick: () => props.onSelectItem(item) }));
+"use strict";
+var React = require("react");
+var List_1 = require("material-ui/List");
+var grade_1 = require("material-ui/svg-icons/action/grade");
+var Divider_1 = require("material-ui/Divider");
+var info_1 = require("material-ui/svg-icons/action/info");
+var MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
+var Subheader_1 = require("material-ui/Subheader");
+var getItem = function (props) {
+    return props.menus.map(function (item, i, arr) {
+        return React.createElement(List_1.ListItem, { key: i, primaryText: item, leftIcon: React.createElement(grade_1["default"], null), rightIcon: React.createElement(info_1["default"], null), onClick: function () { return props.onSelectItem(item); } });
+    });
 };
-export const MenuListview = (props) => (React.createElement(MuiThemeProvider, null,
+exports.MenuListview = function (props) { return (React.createElement(MuiThemeProvider_1["default"], null,
     React.createElement("div", null,
-        (props.title) ? React.createElement(Subheader, null, props.title) : null,
-        React.createElement(List, null,
+        (props.title) ? React.createElement(Subheader_1["default"], null, props.title) : null,
+        React.createElement(List_1.List, null,
             " ",
             (props.menus && props.menus.length > 0) ?
                 getItem(props) : null),
-        React.createElement(Divider, null),
-        React.createElement(Divider, null))));
+        React.createElement(Divider_1["default"], null),
+        React.createElement(Divider_1["default"], null)))); };

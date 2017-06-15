@@ -1,8 +1,9 @@
 import * as React from "react";
+import { Store } from "redux";
+const FontAwesome = require("react-fontawesome");
 
 import { List, ListItem } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
-
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 import { MessageImp } from "../../chitchat/chats/models/MessageImp";
@@ -14,7 +15,7 @@ import { CardImageWithAvatar, CardStickerWithAvatar } from "../../components/Car
 import { CardFileWithAvatar } from "../../components/CardFileWithAvatar";
 import { CardVideoWithAvatar } from "../../components/CardVideoWithAvatar";
 
-const FontAwesome = require("react-fontawesome");
+import configureStore from "../../redux/configureStore";
 
 interface MyProps {
     value: Array<MessageImp>;
@@ -23,11 +24,20 @@ interface MyProps {
     styles?: any;
 };
 
-export const getFontIcon = (message: MessageImp) => {
-    let exts = message.body.split(".");
-    let ext = exts[exts.length - 1].toLowerCase();
 
+export const ChatBox = (props: MyProps) => (
+    <MuiThemeProvider>
+        <List style={props.styles} id={"chatbox"}>
+            {(!!props.value) ? renderList(props) : null}
+        </List>
+    </MuiThemeProvider>
+);
+
+export const getFontIcon = (message: MessageImp) => {
     if (message.type == MessageType[MessageType.File]) {
+        let exts = message.body.split(".");
+        let ext = exts[exts.length - 1].toLowerCase();
+
         if (ext == "pdf")
             return <FontAwesome style={{ padding: 5, marginLeft: 5 }} name="file-pdf-o" size="3x" />;
         else if (ext == "txt" || ext == "json")
@@ -45,20 +55,20 @@ export const getFontIcon = (message: MessageImp) => {
     }
 };
 
-export const ChatBox = (props: MyProps) => (
-    <MuiThemeProvider>
-        <List style={props.styles} id={"chatbox"}>
-            {(!!props.value) ? renderList(props) : null}
-        </List>
-    </MuiThemeProvider>
-);
-
+const onClickReader = (message: MessageImp) => {
+    console.log(message);
+}
 const renderList = (props: MyProps) => {
+    let _store = configureStore as Store<any>;
+
     return props.value.map((message, i, arr) => {
 
         if (!message.user || !message.user.username) {
             console.warn(message);
             return null;
+        }
+        if (_store.getState().userReducer.user._id != message.sender) {
+            delete message.readers;
         }
 
         switch (message.type) {
@@ -71,7 +81,9 @@ const renderList = (props: MyProps) => {
                             avatar={(message.user.avatar) ?
                                 <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                             }
-                            cardText={message.body} />
+                            cardText={message.body}
+                            readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null}
+                            onClickReader={() => onClickReader(message)} />
                     } >
                     </ListItem >
                 );
@@ -85,7 +97,9 @@ const renderList = (props: MyProps) => {
                             avatar={(message.user.avatar) ?
                                 <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                             }
-                            imageSrc={message.src} />
+                            imageSrc={message.src}
+                            readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null}
+                            onClickReader={() => onClickReader(message)} />
                     }>
                     </ListItem>);
             }
@@ -98,7 +112,9 @@ const renderList = (props: MyProps) => {
                             avatar={(message.user.avatar) ?
                                 <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                             }
-                            imageSrc={message.src} />
+                            imageSrc={message.src}
+                            readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null}
+                            onClickReader={() => onClickReader(message)} />
                     }>
                     </ListItem>);
             }
@@ -112,7 +128,9 @@ const renderList = (props: MyProps) => {
                                 avatar={(message.user.avatar) ?
                                     <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                                 }
-                                src={message.src} />
+                                src={message.src}
+                                readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null}
+                                onClickReader={() => onClickReader(message)} />
                         }>
                         </ListItem>);
                 }
@@ -133,7 +151,9 @@ const renderList = (props: MyProps) => {
                                 }
                                 openAction={() => {
                                     window.open(message.src, "_blank");
-                                }} />
+                                }}
+                                readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null}
+                                onClickReader={() => onClickReader(message)} />
                         }>
                         </ListItem>
                     );

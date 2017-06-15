@@ -21,7 +21,8 @@ class Contacts extends React.Component<IComponentProps, IComponentNameState> {
     componentDidMount() {
         this.onselectMember = this.onselectMember.bind(this);
 
-        this.props.dispatch(teamRx.getTeamMembers(this.props.teamReducer.team._id));
+        if (!!this.props.teamReducer.team)
+            this.props.dispatch(teamRx.getTeamMembers(this.props.teamReducer.team._id));
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {

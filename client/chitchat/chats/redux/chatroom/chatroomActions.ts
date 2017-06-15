@@ -6,24 +6,29 @@
 
 import * as Rx from "rxjs/Rx";
 import * as R from "ramda";
+import { Store } from "redux";
+import { createAction } from "redux-actions";
 import { Utils } from "stalk-js";
 import { ServerEventListener } from "../../ServerEventListener";
 
 import * as chatroomService from "../../services/chatroomService";
-import ChatRoomComponent from "../../chatRoomComponent";
+import * as MessageService from "../../services/MessageService";
+import { ChatRoomComponent, ON_CHAT, ON_MESSAGE_CHANGE } from "../../ChatRoomComponent";
 import { BackendFactory } from "../../BackendFactory";
 import SecureServiceFactory from "../../secure/secureServiceFactory";
 
 import * as NotificationManager from "../stalkBridge/StalkNotificationActions";
 
 import { updateLastAccessRoom } from "../chatlogs/chatlogRxActions";
+import { updateMessagesRead } from "./chatroomRxEpic";
 
 import { Room, RoomType, IMember } from "../../..//shared/Room";
 import { MessageType, IMessage } from "../../../shared/Message";
+import { MessageImp } from "../../models/MessageImp";
 import { MemberImp } from "../../models/MemberImp";
 
-import { ChitChatFactory } from "../../chitchatFactory";
-const getStore = () => ChitChatFactory.getInstance().store;
+import { ChitChatFactory } from "../../ChitchatFactory";
+const getStore = () => ChitChatFactory.getInstance().store as Store<any>;
 const getConfig = () => ChitChatFactory.getInstance().config;
 const authReducer = () => ChitChatFactory.getInstance().authStore;
 const appReducer = () => ChitChatFactory.getInstance().appStore;
@@ -39,7 +44,6 @@ export class ChatRoomActionsType {
     static SEND_MESSAGE_FAILURE = "SEND_MESSAGE_FAILURE";
 
     static REPLACE_MESSAGE = "REPLACE_MESSAGE";
-    static ON_NEW_MESSAGE = "ON_NEW_MESSAGE";
     static ON_EARLY_MESSAGE_READY = "ON_EARLY_MESSAGE_READY";
 }
 
@@ -47,7 +51,7 @@ export const CHATROOM_REDUCER_EMPTY_STATE = "CHATROOM_REDUCER_EMPTY_STATE";
 export const emptyState = () => ({ type: CHATROOM_REDUCER_EMPTY_STATE });
 
 export function initChatRoom(currentRoom: Room) {
-    if (!currentRoom) throw new Error("Empty roomInfo");
+    if (!currentRoom) { throw new Error("Empty roomInfo"); }
 
     let room_name = currentRoom.name;
     if (!room_name && currentRoom.type === RoomType.privateChat) {
@@ -59,7 +63,7 @@ export function initChatRoom(currentRoom: Room) {
         });
     }
 
-    let chatroomComp = ChatRoomComponent.getInstance();
+    let chatroomComp = ChatRoomComponent.createInstance();
     chatroomComp.setRoomId(currentRoom._id);
 
     NotificationManager.unsubscribeGlobalNotifyMessageEvent();
@@ -68,16 +72,20 @@ export function initChatRoom(currentRoom: Room) {
     chatroomComp.outsideRoomDelegete = onOutSideRoomDelegate;
 }
 
-function onChatRoomDelegate(event, newMsg: IMessage) {
-    if (event === ServerEventListener.ON_CHAT) {
-        console.log("onChatRoomDelegate: ", ServerEventListener.ON_CHAT, newMsg);
+function onChatRoomDelegate(event, data: MessageImp | Array<MessageImp>) {
+    if (event === ON_CHAT) {
+        console.log("onChatRoomDelegate: ", ON_CHAT, data);
+
+        let messageImp = data as MessageImp;
+        let backendFactory = BackendFactory.getInstance();
         /**
          * Todo **
          * - if message_id is mine. Replace message_id to local messages list.
          * - if not my message. Update who read this message. And tell anyone.
          */
-        if (BackendFactory.getInstance().dataManager.isMySelf(newMsg.sender)) {
+        if (authReducer().user._id == messageImp.sender) {
             // dispatch(replaceMyMessage(newMsg));
+            console.log("is my message");
         }
         else {
             console.log("is contact message");
@@ -86,7 +94,11 @@ function onChatRoomDelegate(event, newMsg: IMessage) {
             console.log("AppState: ", appState); // active, background, inactive
             if (!!appState) {
                 if (appState === "active") {
-                    BackendFactory.getInstance().getChatApi().updateMessageReader(newMsg._id, newMsg.rid);
+                    MessageService.updateMessageReader(messageImp._id, messageImp.rid).then(response => response.json()).then(value => {
+                        console.log("updateMessageReader: ", value);
+                    }).catch(err => {
+                        console.warn("updateMessageReader: ", err);
+                    });
                 }
                 else if (appState !== "active") {
                     // @ When user joined room but appState is inActive.
@@ -94,23 +106,21 @@ function onChatRoomDelegate(event, newMsg: IMessage) {
                     console.warn("Call local notification here...");
                 }
             }
-
-            getStore().dispatch(onNewMessage(newMsg));
         }
     }
-    else if (event === ServerEventListener.ON_MESSAGE_READ) {
-        console.log("serviceListener: ", ServerEventListener.ON_MESSAGE_READ, newMsg);
-        //                service.set(chatRoomComponent.chatMessages);
+    else if (event === ON_MESSAGE_CHANGE) {
+        getStore().dispatch(onMessageChangedAction(data as Array<MessageImp>));
     }
 }
 function onOutSideRoomDelegate(event, data) {
-    if (event === ServerEventListener.ON_CHAT) {
+    if (event === ON_CHAT) {
         console.log("Call notification here...", data); // active, background, inactive
         NotificationManager.notify(data);
     }
 }
 
-const onNewMessage = (message: IMessage) => ({ type: ChatRoomActionsType.ON_NEW_MESSAGE, payload: message });
+export const ON_MESSAGE_CHANGED = "ON_MESSAGE_CHANGED";
+const onMessageChangedAction = createAction(ON_MESSAGE_CHANGED, (messages: Array<MessageImp>) => messages);
 
 const onEarlyMessageReady = (data: boolean) => ({ type: ChatRoomActionsType.ON_EARLY_MESSAGE_READY, payload: data });
 export function checkOlderMessages() {
@@ -138,24 +148,43 @@ export function checkOlderMessages() {
     };
 }
 
+export const LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
+const loadEarlyMessage_success = (payload) => ({ type: LOAD_EARLY_MESSAGE_SUCCESS, payload });
+export function loadEarlyMessageChunk(room_id: string) {
+    return dispatch => {
+        ChatRoomComponent.getInstance().getOlderMessageChunk(room_id).then(docs => {
+            dispatch(loadEarlyMessage_success(docs));
+            // @check older message again.
+            dispatch(checkOlderMessages());
+
+            //# update messages read.
+            if (docs.length > 0) {
+                dispatch(updateMessagesRead(docs as Array<MessageImp>, room_id));
+            }
+        }).catch(err => {
+            console.warn("loadEarlyMessageChunk fail", err);
+        });
+    };
+}
+
 export const GET_NEWER_MESSAGE = "GET_NEWER_MESSAGE";
 export const GET_NEWER_MESSAGE_FAILURE = "GET_NEWER_MESSAGE_FAILURE";
 export const GET_NEWER_MESSAGE_SUCCESS = "GET_NEWER_MESSAGE_SUCCESS";
-const getNewerMessage = () => ({ type: GET_NEWER_MESSAGE });
-function getNewerMessage_failure() {
-    return { type: GET_NEWER_MESSAGE_FAILURE };
-}
-function getNewerMessage_success(messages: any) {
-    return { type: GET_NEWER_MESSAGE_SUCCESS, payload: messages };
-}
+const getNewerMessage = createAction(GET_NEWER_MESSAGE);
+const getNewerMessage_failure = createAction(GET_NEWER_MESSAGE_FAILURE);
+const getNewerMessage_success = createAction(GET_NEWER_MESSAGE_SUCCESS, messages => messages);
 export function getNewerMessageFromNet() {
     return dispatch => {
         dispatch(getNewerMessage());
 
         let token = authReducer().chitchat_token;
-        ChatRoomComponent.getInstance().getNewerMessageRecord(token, (results) => {
+        ChatRoomComponent.getInstance().getNewerMessageRecord(token, (results, room_id: string) => {
             dispatch(getNewerMessage_success(results));
-            // @Todo next joinroom function is ready to call.
+
+            //# update messages read.
+            if (results.length > 0) {
+                dispatch(updateMessagesRead(results as Array<MessageImp>, room_id));
+            }
         }).catch(err => {
             if (err) console.warn("getNewerMessageRecord fail", err);
             dispatch(getNewerMessage_failure());
@@ -178,7 +207,9 @@ export function sendMessage(message: IMessage) {
         dispatch(send_message_request());
 
         if (message.type === MessageType[MessageType.Location]) {
-            BackendFactory.getInstance().getChatApi().chat("*", message, (err, res) => {
+            let backendFactory = BackendFactory.getInstance();
+            let chatApi = backendFactory.getServer().getChatRoomAPI();
+            chatApi.chat("*", message, (err, res) => {
                 dispatch(sendMessageResponse(err, res));
             });
             return;
@@ -187,7 +218,9 @@ export function sendMessage(message: IMessage) {
         if (message.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption === true) {
             secure.encryption(message.body).then(result => {
                 message.body = result;
-                BackendFactory.getInstance().getChatApi().chat("*", message, (err, res) => {
+                let backendFactory = BackendFactory.getInstance();
+                let chatApi = backendFactory.getServer().getChatRoomAPI();
+                chatApi.chat("*", message, (err, res) => {
                     dispatch(sendMessageResponse(err, res));
                 });
             }).catch(err => {
@@ -196,7 +229,9 @@ export function sendMessage(message: IMessage) {
             });
         }
         else {
-            BackendFactory.getInstance().getChatApi().chat("*", message, (err, res) => {
+            let backendFactory = BackendFactory.getInstance();
+            let chatApi = backendFactory.getServer().getChatRoomAPI();
+            chatApi.chat("*", message, (err, res) => {
                 dispatch(sendMessageResponse(err, res));
             });
         }
@@ -239,25 +274,27 @@ export const JOIN_ROOM_SUCCESS = "JOIN_ROOM_SUCCESS";
 export const JOIN_ROOM_FAILURE = "JOIN_ROOM_FAILURE";
 const joinRoom_request = () => ({ type: JOIN_ROOM_REQUEST });
 const joinRoom_success = (data?: any) => ({ type: JOIN_ROOM_SUCCESS, payload: data });
-const joinRoom_failure = () => ({ type: JOIN_ROOM_FAILURE });
+const joinRoom_failure = (error) => ({ type: JOIN_ROOM_FAILURE, payload: error });
 export function joinRoom(roomId: string, token: string, username: string) {
     return (dispatch) => {
         dispatch(joinRoom_request());
 
-        BackendFactory.getInstance().getServer().then(server => {
-            server.JoinChatRoomRequest(token, username, roomId, (err, res) => {
+        try {
+            let backendFactory = BackendFactory.getInstance();
+            let server = backendFactory.getServer();
+            server.getLobby().joinRoom(token, username, roomId, (err, res) => {
                 console.log("JoinChatRoomRequest value", res);
 
                 if (err || res.code !== Utils.statusCode.success) {
-                    dispatch(joinRoom_failure());
+                    dispatch(joinRoom_failure(err));
                 }
                 else {
                     dispatch(joinRoom_success());
                 }
             });
-        }).catch(err => {
-            dispatch(joinRoom_failure());
-        });
+        } catch (ex) {
+            dispatch(joinRoom_failure(ex.message));
+        }
     };
 }
 
@@ -275,16 +312,18 @@ export function leaveRoomAction() {
 
             dispatch(leaveRoom());
 
-            BackendFactory.getInstance().getServer().then(server => {
-                server.LeaveChatRoomRequest(token, room_id, (err, res) => {
+            try {
+                let backendFactory = BackendFactory.getInstance();
+                let server = backendFactory.getServer();
+
+                server.getLobby().leaveRoom(token, room_id, (err, res) => {
                     console.log("LeaveChatRoomRequest", err, res);
                     NotificationManager.regisNotifyNewMessageEvent();
                 });
-
                 dispatch(updateLastAccessRoom(room_id));
-            }).catch(err => {
+            } catch (ex) {
                 dispatch(updateLastAccessRoom(room_id));
-            });
+            }
         }
         else {
             dispatch({ type: "" });
@@ -297,20 +336,6 @@ export const ENABLE_CHATROOM = "ENABLE_CHATROOM";
 export const disableChatRoom = () => ({ type: DISABLE_CHATROOM });
 export const enableChatRoom = () => ({ type: ENABLE_CHATROOM });
 
-export const LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
-const loadEarlyMessage_success = (payload) => ({ type: LOAD_EARLY_MESSAGE_SUCCESS, payload });
-export function loadEarlyMessageChunk() {
-    return dispatch => {
-        ChatRoomComponent.getInstance().getOlderMessageChunk().then(res => {
-            dispatch(loadEarlyMessage_success(res));
-            // @check older message again.
-            dispatch(checkOlderMessages());
-        }).catch(err => {
-            console.warn("loadEarlyMessageChunk fail", err);
-        });
-    };
-}
-
 export const GET_PERSISTEND_CHATROOM = "GET_PERSISTEND_CHATROOM";
 const GET_PERSISTEND_CHATROOM_CANCELLED = "GET_PERSISTEND_CHATROOM_CANCELLED";
 export const GET_PERSISTEND_CHATROOM_SUCCESS = "GET_PERSISTEND_CHATROOM_SUCCESS";
@@ -321,6 +346,10 @@ export const getPersistendChatroom = (roomId: string) => (dispatch => {
     dispatch({ type: GET_PERSISTEND_CHATROOM, payload: roomId });
 
     const { chatrooms }: { chatrooms: Array<Room> } = getStore().getState().chatroomReducer;
+    if (!chatrooms) {
+        return dispatch(getPersistChatroomFail());
+    }
+
     const rooms = chatrooms.filter((room, index, array) => {
         if (room._id.toString() == roomId) {
             return room;
@@ -337,6 +366,8 @@ export const getPersistendChatroom = (roomId: string) => (dispatch => {
 
 export const getRoom = (room_id: string) => {
     let { chatrooms }: { chatrooms: Array<Room> } = getStore().getState().chatroomReducer;
+
+    if (!chatrooms) { return null; }
 
     const rooms = chatrooms.filter((room, index, array) => {
         if (room._id.toString() == room_id) {

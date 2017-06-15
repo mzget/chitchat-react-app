@@ -2,7 +2,7 @@ import SecureServiceFactory from "../secure/secureServiceFactory";
 import { MessageImp } from "../models/MessageImp";
 import { MessageType } from "../../shared/Message";
 
-import { ChitChatFactory } from "../chitchatFactory";
+import { ChitChatFactory } from "../ChitchatFactory";
 
 const getConfig = () => ChitChatFactory.getInstance().config;
 

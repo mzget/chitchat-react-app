@@ -2,7 +2,7 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { shallowEqual } from "recompose";
-import { Flex, Box } from "reflexbox";
+import Flexbox from 'flexbox-react';
 import * as immutable from "immutable";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
@@ -10,7 +10,6 @@ import * as Colors from "material-ui/styles/colors";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
 import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
-import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
 import { AppBody } from "./AppBody";
 import { RightNav } from "./RightNav";
@@ -27,41 +26,50 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
     history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
     return (
         <MuiThemeProvider>
-            <div >
-                <WebToolbarEnhanced id={"app_bar"} history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
-                <div id={"app_body"} style={{ position: "relative", height: "calc(100vh - 56px)", overflowY: "hidden" }}>
-                    <Flex style={{ height: "100%" }}>
-                        <Box col={3} style={{ overflowY: "scroll" }}>
-                            <ConnectGroupListEnhancer
-                                fetchGroup={fetch_orgGroups}
-                                groups={groupReducer.orgGroups}
-                                subHeader={"OrgGroups"} />
-                            <ConnectGroupListEnhancer
-                                fetchGroup={fetch_privateGroups}
-                                groups={groupReducer.privateGroups}
-                                subHeader={"Groups"} />
-                            <ChatLogsBoxEnhancer />
-                            <SnackbarToolBox />
-                        </Box>
-                        <Box col={9} >
-                            <SubToolbar history={history} match={match} onError={onError}
-                                chatroomReducer={chatroomReducer}
-                                userReducer={userReducer} />
-                            <Flex>
-                                <Box col={8} >
-                                    <AppBody userReducer={userReducer} match={match} history={history} onError={onError} />
-                                </Box>
-                                <Box col={4} >
-                                    <RightNav match={match} onError={onError} teamReducer={teamReducer} />
-                                </Box>
-                            </Flex>
-                        </Box>
-                    </Flex>
-                    <div id={"app_footer"}>
-                        <StalkCompEnhancer />
+            <Flexbox flexDirection="column" minHeight="100vh">
+                <Flexbox element="header" maxHeight="56px">
+                    <div id={"app_bar"} style={{ width: "100%" }}>
+                        <WebToolbarEnhanced history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
                     </div>
-                </div>
-            </div>
+                </Flexbox>
+                <Flexbox flexDirection="row" justifyContent="center" style={{ backgroundColor: Colors.blueGrey50 }}>
+                    <Flexbox flexDirection="column" justifyContent="center">
+                        <Flexbox maxHeight="40px">
+                            <StalkCompEnhancer />
+                        </Flexbox>
+                        <Flexbox flexDirection="row" flexGrow={1} height="calc(100vh - 56px)">
+                            <Flexbox flexDirection="column" flexGrow={0.3} style={{ overflowY: "auto", backgroundColor: Colors.darkWhite }}>
+                                <ConnectGroupListEnhancer
+                                    fetchGroup={fetch_orgGroups}
+                                    groups={groupReducer.orgGroups}
+                                    subHeader={"OrgGroups"} />
+                                <ConnectGroupListEnhancer
+                                    fetchGroup={fetch_privateGroups}
+                                    groups={groupReducer.privateGroups}
+                                    subHeader={"Groups"} />
+                                <ChatLogsBoxEnhancer />
+                            </Flexbox>
+                            <Flexbox flexDirection="column" flexGrow={0.7} >
+                                <SubToolbar history={history} match={match} onError={onError}
+                                    chatroomReducer={chatroomReducer}
+                                    userReducer={userReducer} />
+                                <Flexbox height="calc(100vh - 56px)" >
+                                    <Flexbox width="400px" >
+                                        <div style={{ width: "100%", backgroundColor: Colors.darkWhite }}>
+                                            <AppBody userReducer={userReducer} match={match} history={history} onError={onError} />
+                                        </div>
+                                    </Flexbox>
+                                    <Flexbox width="288px" >
+                                        <div style={{ width: "100%", backgroundColor: Colors.darkWhite }}>
+                                            <RightNav match={match} onError={onError} teamReducer={teamReducer} />
+                                        </div>
+                                    </Flexbox>
+                                </Flexbox>
+                            </Flexbox>
+                        </Flexbox>
+                    </Flexbox>
+                </Flexbox>
+            </Flexbox>
         </MuiThemeProvider >
     );
 });

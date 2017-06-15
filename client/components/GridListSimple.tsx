@@ -1,22 +1,19 @@
 import * as React from "react";
-import { GridList, GridTile } from "material-ui/GridList";
+import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import * as Colors from "material-ui/styles/colors";
+import { GridList, GridTile } from "material-ui/GridList";
 import IconButton from "material-ui/IconButton";
 import Subheader from "material-ui/Subheader";
-import StarBorder from "material-ui/svg-icons/toggle/star-border";
 
-const styles = (props) => ({
+const styles = {
     root: {
         display: "flex",
         flexWrap: "wrap",
         justifyContent: "space-around",
-        backgroundColor: "white",
-        height: props.boxHeight
-    },
-    gridList: {
-        overflowX: "hidden"
-    },
-});
+        backgroundColor: "white"
+    }
+};
 
 interface IGridListProps {
     srcs: Array<{
@@ -24,27 +21,25 @@ interface IGridListProps {
     }>;
     onSelected: (id: number) => void;
     subheader?: string;
-    boxHeight: number;
+    boxHeight?: number;
 }
 
 /**
  * A simple example of a scrollable `GridList` containing a [Subheader](/#/components/subheader).
  */
-const GridListSimple = (props: IGridListProps) => (
+export const GridListSimple = (props: IGridListProps) => (
     <MuiThemeProvider>
-        <div style={styles(props).root} id={"sticker_box"}>
-            <GridList cols={4} cellHeight="auto" style={styles(props).gridList} >
+        <Flexbox style={{ backgroundColor: Colors.indigo50 }} id={"sticker_box"}>
+            <GridList cols={4} cellHeight={100} style={{ height: 208, width: "400px", overflowY: "scroll" }}>
                 <Subheader>{props.subheader}</Subheader>
                 {
                     props.srcs.map((tile, i, arr) => (
                         <GridTile key={i}>
-                            <img src={tile.img} onClick={() => props.onSelected(i)} style={{ width: "50%", maxWidth: "128px" }} />
+                            <img src={tile.img} onClick={() => props.onSelected(i)} style={{ width: "50%", maxWidth: "100px" }} />
                         </GridTile>
                     ))
                 }
             </GridList>
-        </div>
+        </Flexbox>
     </MuiThemeProvider >
 );
-
-export default GridListSimple;

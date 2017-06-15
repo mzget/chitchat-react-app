@@ -1,21 +1,21 @@
+"use strict";
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
  * RoomDALFactory.
  *
  */
-/**
- * Copyright 2016 Ahoo Studio.co.th.
- *
- * RoomDALFactory.
- *
- */ export class RoomDALFactory {
-    static getObject() {
+var RoomDALFactory = (function () {
+    function RoomDALFactory() {
+    }
+    RoomDALFactory.getObject = function () {
         if (!!global.userAgent) {
-            const { RoomDAL } = require("./RoomDAL");
+            var RoomDAL = require("./RoomDAL").RoomDAL;
             return new RoomDAL();
         }
         else {
         }
-    }
-}
+    };
+    return RoomDALFactory;
+}());
+exports.RoomDALFactory = RoomDALFactory;

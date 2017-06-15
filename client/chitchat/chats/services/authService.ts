@@ -1,5 +1,5 @@
 import "isomorphic-fetch";
-import { ChitChatFactory } from "../chitchatFactory";
+import { ChitChatFactory } from "../ChitchatFactory";
 import { withToken, chitchat_headers } from "../utils/chitchatServiceUtils";
 
 const getConfig = () => ChitChatFactory.getInstance().config;

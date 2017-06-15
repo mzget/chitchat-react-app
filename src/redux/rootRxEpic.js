@@ -1,15 +1,16 @@
-import { combineEpics } from "redux-observable";
-import * as userRx from "./user/userRx";
-import * as chatroomRxEpic from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
-import * as chatlogRxActions from "../chitchat/chats/redux/chatlogs/chatlogRxActions";
-import * as authRx from "./authen/authRx";
-import * as teamRx from "./team/teamRx";
-import * as adminRx from "./admin/adminRx";
-import * as groupRx from "./group/groupRx";
-import * as privateGroupRxActions from "./group/privateGroupRxActions";
-import * as editGroupRxActions from "./group/editGroupRxActions";
-import * as chitchatRxActions from "../actions/chitchatRxActions";
-export const rootEpic = combineEpics(
+"use strict";
+var redux_observable_1 = require("redux-observable");
+var userRx = require("./user/userRx");
+var chatroomRxEpic = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
+var chatlogRxActions = require("../chitchat/chats/redux/chatlogs/chatlogRxActions");
+var authRx = require("./authen/authRx");
+var teamRx = require("./team/teamRx");
+var adminRx = require("./admin/adminRx");
+var groupRx = require("./group/groupRx");
+var privateGroupRxActions = require("./group/privateGroupRxActions");
+var editGroupRxActions = require("./group/editGroupRxActions");
+var chitchatRxActions = require("../actions/chitchatRxActions");
+exports.rootEpic = redux_observable_1.combineEpics(
 // @Admin
 adminRx.createNewOrgChartEpic, adminRx.getOrgChartEpic, adminRx.updateUserOrgChartEpic, adminRx.updateUserTeamRole_Epic, userRx.onAuth_Epic, userRx.fetchUser_Epic, userRx.suggestUser_Epic, userRx.fetchContactEpic, userRx.fetchAgentEpic, userRx.getTeamProfileEpic, userRx.uploadUserAvatar_Epic, userRx.updateUserInfo_Epic, 
 ///@ Signup user.
@@ -23,7 +24,7 @@ groupRx.getOrgGroup_Epic, groupRx.createOrgGroup_Epic, groupRx.uploadGroupImage_
  */
 privateGroupRxActions.getPrivateGroup_Epic, privateGroupRxActions.createPrivateGroup_Epic, 
 ///@ChatRoom
-chatroomRxEpic.getPrivateChatRoom_Epic, chatroomRxEpic.getPersistendMessageEpic, chatroomRxEpic.createPrivateChatRoomEpic, chatroomRxEpic.uploadFileEpic, 
+chatroomRxEpic.getPrivateChatRoom_Epic, chatroomRxEpic.getPersistendMessageEpic, chatroomRxEpic.createPrivateChatRoomEpic, chatroomRxEpic.uploadFileEpic, chatroomRxEpic.updateMessagesRead_Epic, 
 /// @message rx.
 // messageRxEpic.fetchOlderMessageCount_Epic,
 ///@chatlogs

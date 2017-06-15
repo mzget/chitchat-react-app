@@ -7,7 +7,7 @@ import * as userRx from "../../redux/user/userRx";
 
 import { ChitChatAccount } from "../../chitchat/chats/models/User";
 import { ITeamProfile } from "../../chitchat/chats/models/TeamProfile";
-import { ChitChatFactory } from "../../chitchat/chats/chitchatFactory";
+import { ChitChatFactory } from "../../chitchat/chats/ChitchatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 
 interface IEnhanceProps {

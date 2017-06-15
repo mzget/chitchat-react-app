@@ -31,7 +31,8 @@ interface IComponentNameState {
 class Admin extends React.Component<IComponentProps, IComponentNameState> {
     manageOrgChart: string = "Manage ORG Chart";
     teamMember: string = "team-member";
-    menus = [this.manageOrgChart, createOrgGroup, createPjbGroup, createPvGroup, this.teamMember];
+    developerIssue: string = "Developer Issue";
+    menus = [this.manageOrgChart, createOrgGroup, createPjbGroup, createPvGroup, this.teamMember, this.developerIssue];
 
     componentWillMount() {
         this.state = {
@@ -98,6 +99,9 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             else {
                 this.props.onError("Request for admin permision");
             }
+        }
+        else if (key == this.developerIssue) {
+            window.open("https://github.com/mzget/chitchat-ionic-app/wiki", '_blank');
         }
     }
 

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import Flexbox from 'flexbox-react';
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
@@ -14,6 +15,7 @@ import { DialogBox } from "../components/DialogBox";
 import { TeamListBox } from "./teams/TeamListBox";
 import { TeamCreateBox } from "./teams/TeamCreateBox";
 import { SimpleToolbar } from "../components/SimpleToolbar";
+import { StalkCompEnhancer } from "./stalk/StalkComponent";
 
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 import { ITeam } from "../chitchat/chats/models/ITeam";
@@ -63,11 +65,20 @@ class Team extends React.Component<IComponentProps, any> {
     public render(): JSX.Element {
         return (
             <MuiThemeProvider>
-                <div>
-                    <SimpleToolbar title={this.toolbar} menus={["logout"]} onSelectedMenuItem={this.onToolbarMenuItem} />
-                    <TeamListBox teams={this.props.teamReducer.teams} onSelectTeam={this.onSelectTeam} />
-                    <TeamCreateBox {...this.props} />
-                </div>
+                <Flexbox flexDirection="column" minHeight="100vh">
+                    <Flexbox element="header" >
+                        <div style={{ width: "100%" }}>
+                            <SimpleToolbar title={this.toolbar} menus={["logout"]} onSelectedMenuItem={this.onToolbarMenuItem} />
+                        </div>
+                    </Flexbox>
+                    <Flexbox flexDirection="column" flexGrow={1}>
+                        <TeamListBox teams={this.props.teamReducer.teams} onSelectTeam={this.onSelectTeam} />
+                        <TeamCreateBox {...this.props} />
+                    </Flexbox>
+                    <Flexbox element="footer">
+                        <StalkCompEnhancer />
+                    </Flexbox>
+                </Flexbox>
             </MuiThemeProvider>
         );
     }

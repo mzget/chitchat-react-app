@@ -33,7 +33,7 @@ class SnackbarBox extends React.Component<IComponentProps, IComponentNameState> 
             this.setState(previousState => ({
                 ...previousState,
                 openSnackbar: true,
-                snackbarMessage: stalkReducer.notiMessage,
+                snackbarMessage: stalkReducer.notiMessage.body,
             }));
         }
     }

@@ -3,18 +3,15 @@
  *
  */
 
-// import * as Stalk from "stalk-js";
-import { Stalk, ChatRoomApi, Utils, StalkEvents } from "stalk-js";
-import DataManager from "./dataManager";
-import DataListener from "./dataListener";
-import { PushDataListener } from "./pushDataListener";
-import { ChatsLogComponent } from "./chatslogComponent";
+import { Stalk, IDictionary, API, Utils, StalkEvents, StalkFactory, ServerImplemented } from "stalk-js";
+import { DataManager } from "./DataManager";
+import { DataListener } from "./DataListener";
+import { PushDataListener } from "./PushDataListener";
+import { ChatsLogComponent } from "./ChatslogComponent";
 import { ServerEventListener } from "./ServerEventListener";
 
-import { ChitChatFactory } from "./chitchatFactory";
+import { ChitChatFactory } from "./ChitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
-const ChatRoomApiProvider = ChatRoomApi.ChatRoomApiProvider;
-const ServerImplemented = Stalk.ServerImplemented;
 
 export class BackendFactory {
     private static instance: BackendFactory;
@@ -29,8 +26,7 @@ export class BackendFactory {
         return BackendFactory.instance;
     }
 
-    stalk: Stalk.ServerImplemented;
-    chatRoomApiProvider: ChatRoomApi.ChatRoomApiProvider;
+    stalk: ServerImplemented;
     serverEventsListener: ServerEventListener;
     pushDataListener: PushDataListener;
     dataManager: DataManager;
@@ -38,108 +34,71 @@ export class BackendFactory {
     chatLogComp: ChatsLogComponent;
 
     constructor() {
-        console.log("BackendFactory:", Stalk, StalkEvents, ChatRoomApi, Utils);
+        console.log("BackendFactory:");
 
-        this.stalk = ServerImplemented.createInstance(getConfig().Stalk.chat, getConfig().Stalk.port);
         this.pushDataListener = new PushDataListener();
         this.dataManager = new DataManager();
         this.dataListener = new DataListener(this.dataManager);
     }
 
-    createChatlogs() {
-        this.chatLogComp = new ChatsLogComponent();
-
-        return this.chatLogComp;
-    }
-
-    getServer(): Promise<Stalk.Server> {
-        return new Promise((resolve, rejected) => {
-            if (this.stalk._isConnected)
-                resolve(this.stalk);
-            else
-                rejected();
-        });
-    }
-
-    getChatApi() {
-        if (!this.chatRoomApiProvider) {
-            this.chatRoomApiProvider = new ChatRoomApiProvider(this.stalk.getClient());
+    getServer() {
+        if (this.stalk._isConnected) {
+            return this.stalk;
         }
-        return this.chatRoomApiProvider;
-    }
-
-    getServerListener() {
-        if (!this.serverEventsListener) {
-            this.serverEventsListener = new ServerEventListener(this.stalk.getClient());
+        else {
+            console.log("Stalk connection not yet ready.");
+            return null;
         }
-
-        return this.serverEventsListener;
     }
 
-    stalkInit() {
-        let self = this;
-        let promise = new Promise((resolve, reject) => {
-            self.stalk.disConnect(function done() {
-                console.log("disconnected first...");
-                self.stalk.init((err, res) => {
-                    if (!!err) {
-                        reject(err);
-                    }
-                    else {
-                        resolve(res);
-                    }
-                });
-            });
-        });
-
-        return promise;
+    async stalkInit() {
+        this.stalk = StalkFactory.create(getConfig().Stalk.chat, getConfig().Stalk.port);
+        let socket = await StalkFactory.init(this.stalk);
+        return socket;
     }
 
-    login(username: string, hexPassword: string, deviceToken: string): Promise<any> {
-        let email = username;
-        let promise = new Promise(function executor(resolve, reject) {
-            Stalk.getInstance().logIn(email, hexPassword, deviceToken, (err, res) => {
-                if (!!err) {
-                    reject(err);
-                }
-                else {
-                    resolve(res);
-                }
-            });
-        });
-        return promise;
+    async handshake(uid: string) {
+        try {
+            // @ get connector server.
+            let msg = {} as IDictionary;
+            msg["uid"] = uid;
+            msg["x-api-key"] = getConfig().Stalk.apiKey;
+            let connector = await StalkFactory.geteEnter(this.stalk, msg);
+
+            let params = { host: connector.host, port: connector.port, reconnect: false } as Stalk.ServerParam;
+            await StalkFactory.handshake(this.stalk, params);
+
+            return await connector;
+        } catch (ex) {
+            throw new Error("handshake fail: " + ex.message);
+        }
     }
 
-    loginByToken(tokenBearer: string): Promise<any> {
-        let token = tokenBearer;
-        let promise = new Promise((resolved, rejected) => {
-            console.warn(token);
-            Stalk.getInstance().TokenAuthen(token, (err, res) => {
-                if (!!err) {
-                    rejected(err);
-                }
-                else {
-                    resolved(res);
-                }
-            });
-        });
-
-        return promise;
+    async checkIn(user: any) {
+        let msg = {} as IDictionary;
+        msg["user"] = user;
+        msg["x-api-key"] = getConfig().Stalk.apiKey;
+        let result = await StalkFactory.checkIn(this.stalk, msg);
+        return result;
     }
 
+    private async checkOut() {
+        await StalkFactory.checkOut(this.stalk);
+    }
+
+    /**
+     * @returns 
+     * 
+     * @memberof BackendFactory
+     */
     logout() {
         let self = this;
         let promise = new Promise(function exe(resolve, reject) {
-            if (Stalk.getInstance) {
-                if (!!self.stalk.pomelo)
-                    self.stalk.pomelo.setReconnect(false);
-                self.stalk.logout();
-                self.stalk.dispose();
-            }
+            self.checkOut();
 
-            if (!!self.pushDataListener) self.pushDataListener = null;
-            if (!!self.dataManager) self.dataManager = null;
-            if (!!self.dataListener) self.dataListener = null;
+            if (!!self.pushDataListener) { self.pushDataListener = null; }
+            if (!!self.dataManager) { self.dataManager = null; }
+            if (!!self.dataListener) { self.dataListener = null; }
 
             BackendFactory.instance = null;
             resolve();
@@ -148,49 +107,23 @@ export class BackendFactory {
         return promise;
     }
 
-    startChatServerListener(resolve?) {
-        this.serverEventsListener.addFrontendListener(this.dataManager);
+    createChatlogs() {
+        this.chatLogComp = new ChatsLogComponent();
+
+        return this.chatLogComp;
+    }
+
+    getServerListener() {
+        if (!this.serverEventsListener) {
+            this.serverEventsListener = new ServerEventListener(this.stalk.getSocket());
+        }
+
+        return this.serverEventsListener;
+    }
+
+    subscriptions() {
         this.serverEventsListener.addServerListener(this.dataListener);
         this.serverEventsListener.addChatListener(this.dataListener);
         this.serverEventsListener.addPushListener(this.pushDataListener);
-
-        this.serverEventsListener.addListenner(resolve);
-    }
-
-    async checkIn(uid: string, token: string, user: any) {
-        let self = this;
-
-        // @ get connector server.
-        let msg = {} as Utils.dataDict;
-        msg["uid"] = uid;
-        msg["x-api-key"] = getConfig().Stalk.apiKey;
-        let connector = await self.stalk.gateEnter(msg);
-
-        return new Promise((resolve, reject) => {
-            // @ Connecting to connector server.
-            let params = { host: connector.host, port: connector.port, reconnect: false } as Stalk.ServerParam;
-
-            self.stalk.connect(params, (err) => {
-                self.stalk._isConnected = true;
-                if (!!self.stalk.pomelo) {
-                    self.stalk.listenForPomeloEvents();
-                    self.stalk.pomelo.setReconnect(true);
-                }
-
-                if (!!err) {
-                    reject(err);
-                }
-                else {
-                    let msg = {} as Utils.dataDict;
-                    msg["user"] = user;
-                    msg["x-api-key"] = getConfig().Stalk.apiKey;
-                    self.stalk.checkIn(msg).then(value => {
-                        resolve(value);
-                    }).catch(err => {
-                        reject(err);
-                    });
-                }
-            });
-        });
     }
 }

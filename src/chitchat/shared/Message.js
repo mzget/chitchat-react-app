@@ -1,4 +1,5 @@
-export var MessageType;
+"use strict";
+var MessageType;
 (function (MessageType) {
     MessageType[MessageType["Text"] = 0] = "Text";
     MessageType[MessageType["Image"] = 1] = "Image";
@@ -7,5 +8,5 @@ export var MessageType;
     MessageType[MessageType["Location"] = 4] = "Location";
     MessageType[MessageType["Sticker"] = 5] = "Sticker";
     MessageType[MessageType["File"] = 6] = "File";
-})(MessageType || (MessageType = {}));
+})(MessageType = exports.MessageType || (exports.MessageType = {}));
 ;

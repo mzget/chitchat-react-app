@@ -1,4 +1,5 @@
-export const imagesPath = [
+"use strict";
+exports.imagesPath = [
     { img: require("../../images/stickers/sticker0.png"), title: "", author: "", tag: "" },
     { img: require("../../images/stickers/sticker1.png"), title: "", author: "", tag: "" },
     { img: require("../../images/stickers/sticker2.png"), title: "", author: "", tag: "" },

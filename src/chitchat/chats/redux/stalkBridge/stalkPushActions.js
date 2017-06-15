@@ -3,11 +3,21 @@
  *
  * This is pure function action for redux app.
  */
-import { BackendFactory } from "../../BackendFactory";
-export function stalkPushInit() {
-    const pushDataListener = BackendFactory.getInstance().pushDataListener;
+"use strict";
+var BackendFactory_1 = require("../../BackendFactory");
+var ChatRoomComponent_1 = require("../../ChatRoomComponent");
+function stalkPushInit() {
+    var pushDataListener = BackendFactory_1.BackendFactory.getInstance().pushDataListener;
     pushDataListener.addPushEvents(onPush_handler);
 }
+exports.stalkPushInit = stalkPushInit;
 function onPush_handler(dataEvent) {
-    console.log(`Event : ${dataEvent}`);
+    var push = dataEvent;
+    console.log("onPush_handler :", push);
+    var chatRoomComponent = ChatRoomComponent_1.ChatRoomComponent.getInstance();
+    if (push.event == "onMessageRead") {
+        if (!!chatRoomComponent) {
+            ChatRoomComponent_1.ChatRoomComponent.getInstance().onMessageRead(push.message);
+        }
+    }
 }

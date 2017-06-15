@@ -1,4 +1,4 @@
-import CryptoJS from "crypto-js";
+import * as CryptoJS from "crypto-js";
 
 import { ISecureService } from "./ISecureService";
 
@@ -19,7 +19,7 @@ export default class NodeSecureService implements ISecureService {
     encryption(content): Promise<string> {
         let self = this;
 
-        return new Promise((resolve, reject) => {
+        return new Promise<string>((resolve, reject) => {
             let ciphertext = CryptoJS.AES.encrypt(content, self.key);
             if (!!ciphertext) {
                 resolve(ciphertext.toString());

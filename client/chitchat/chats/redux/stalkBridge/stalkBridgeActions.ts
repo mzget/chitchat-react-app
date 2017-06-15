@@ -11,7 +11,7 @@ import * as StalkPushActions from "./stalkPushActions";
 
 import { StalkAccount, RoomAccessData } from "../../../shared/Stalk";
 
-import { ChitChatFactory } from "../../chitchatFactory";
+import { ChitChatFactory } from "../../ChitchatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 
 export const getSessionToken = () => {
@@ -44,28 +44,35 @@ export function stalkLogin(user: any) {
         ChatLogsActions.initChatsLog();
     });
     backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
-    backendFactory.stalkInit().then(value => {
-        console.log("StalkInit Value.", value);
+    backendFactory.stalkInit().then(socket => {
+        backendFactory.handshake(user._id).then((connector) => {
+            backendFactory.checkIn(user).then((value) => {
+                console.log("Joined stalk-service success", value);
+                let result: { success: boolean, token: any } = JSON.parse(JSON.stringify(value.data));
+                if (result.success) {
+                    stalkManageConnection().then(function (server) {
+                        server.listenSocketEvents();
+                        backendFactory.getServerListener();
+                        backendFactory.subscriptions();
+                        StalkNotificationAction.regisNotifyNewMessageEvent();
+                        StalkPushActions.stalkPushInit();
 
-        backendFactory.checkIn(user._id, null, user).then(value => {
-            let result: { success: boolean, token: any } = JSON.parse(JSON.stringify(value.data));
-            if (result.success) {
-                console.log("Joined chat-server success", result);
-                backendFactory.getServerListener();
-                backendFactory.startChatServerListener();
-                stalkManageConnection();
-
-                StalkNotificationAction.regisNotifyNewMessageEvent();
-                StalkPushActions.stalkPushInit();
-
-                getStore().dispatch({ type: STALK_INIT_SUCCESS, payload: { token: result.token, user: account } });
-            }
-            else {
-                console.warn("Joined chat-server fail: ", result);
+                        getStore().dispatch({ type: STALK_INIT_SUCCESS, payload: { token: result.token, user: account } });
+                    }).catch(err => {
+                        console.warn("Stalk subscription fail: ", err);
+                        getStore().dispatch({ type: STALK_INIT_FAILURE, payload: err });
+                    });
+                }
+                else {
+                    console.warn("Joined chat-server fail: ", result);
+                    getStore().dispatch({ type: STALK_INIT_FAILURE });
+                }
+            }).catch(err => {
+                console.warn("Cannot checkIn", err);
                 getStore().dispatch({ type: STALK_INIT_FAILURE });
-            }
+            });
         }).catch(err => {
-            console.warn("Cannot checkIn", err);
+            console.warn("Hanshake fail: ", err);
             getStore().dispatch({ type: STALK_INIT_FAILURE });
         });
     }).catch(err => {
@@ -84,7 +91,8 @@ const onStalkSocketDisconnected = (data) => ({ type: STALK_ON_SOCKET_DISCONNECTE
 async function stalkManageConnection() {
     const backendFactory = BackendFactory.getInstance();
 
-    let server = await backendFactory.getServer();
+    let server = backendFactory.getServer();
+
     server.onSocketReconnect = (data) => {
         getStore().dispatch(onStalkSocketReconnect(data.type));
     };
@@ -94,13 +102,12 @@ async function stalkManageConnection() {
     server.onDisconnected = (data) => {
         getStore().dispatch(onStalkSocketDisconnected(data.type));
     };
+
+    return await server;
 }
 
 export async function stalkLogout() {
     const backendFactory = BackendFactory.getInstance();
 
-    let server = await backendFactory.getServer();
-    if (server) {
-        server.logout();
-    }
+    return await backendFactory.logout();
 }

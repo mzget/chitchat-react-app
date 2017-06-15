@@ -2,17 +2,17 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { shallowEqual } from "recompose";
 import * as async from "async";
-import { Flex, Box } from "reflexbox";
+import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
 
-import { ChitChatFactory } from "../chitchat/chats/chitchatFactory";
+import { ChitChatFactory } from "../chitchat/chats/ChitchatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 
 import { TypingBox } from "./TypingBox";
 import { ChatBox } from "./chat/ChatBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import UploadingDialog from "./UploadingDialog";
-import GridListSimple from "../components/GridListSimple";
+import { GridListSimple } from "../components/GridListSimple";
 
 import { IComponentProps } from "../utils/IComponentProps";
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
@@ -37,14 +37,13 @@ interface IComponentNameState {
 }
 
 class Chat extends React.Component<IComponentProps, IComponentNameState> {
-    clientWidth = document.documentElement.clientWidth;
-    clientHeight = document.documentElement.clientHeight;
     h_header = null;
     h_subHeader = 34;
     h_body = null;
     h_typingArea = null;
-    bottom = this.clientHeight * 0.1;
-    h_stickerBox = this.clientHeight * 0.3;
+    clientHeight = document.documentElement.clientHeight;
+    chatHeight = null;
+    stickerBox = 204;
 
     componentWillMount() {
         this.state = {
@@ -55,6 +54,8 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             openButtomMenu: false,
             onAlert: false
         };
+
+        this.chatHeight = this.clientHeight - (56 + 52 + 52);
 
         this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
         this.onTypingTextChange = this.onTypingTextChange.bind(this);
@@ -80,10 +81,18 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     componentWillReceiveProps(nextProps: IComponentProps) {
         let { chatroomReducer, stalkReducer } = nextProps;
 
-        let warning_bar = document.getElementById("warning_bar");
-        let typing_box = document.getElementById("typing_box");
         this.h_subHeader = (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
+
+        if (!shallowEqual(chatroomReducer.messages, this.props.chatroomReducer.messages)) {
+            this.setState(previousState => ({
+                ...previousState,
+                messages: chatroomReducer.messages
+            }), () => {
+                let chatBox = document.getElementById("app_body");
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+        }
 
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_CONNECTION_PROBLEM:
@@ -96,6 +105,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 break;
         }
 
+        if (shallowEqual(chatroomReducer.state, this.props.chatroomReducer.state)) return;
         switch (chatroomReducer.state) {
             case chatroomActions.JOIN_ROOM_FAILURE: {
                 this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
@@ -156,42 +166,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
-            case chatroomActions.ChatRoomActionsType.ON_NEW_MESSAGE: {
-                chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => ({
-                        ...previousState,
-                        messages: messages
-                    }), () => {
-                        let chatBox = document.getElementById("app_body");
-                        chatBox.scrollTop = chatBox.scrollHeight;
-                    });
-                });
-
-                this.props.dispatch(chatroomActions.emptyState());
-                break;
-            }
-            case chatroomRxEpic.GET_PERSISTEND_MESSAGE_SUCCESS: {
-                chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => ({
-                        ...previousState,
-                        messages: messages
-                    }));
-                });
-
-                this.props.dispatch(chatroomActions.checkOlderMessages());
-                this.props.dispatch(chatroomActions.getNewerMessageFromNet());
-
-                break;
-            }
-            case chatroomActions.GET_NEWER_MESSAGE_SUCCESS: {
-                chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => ({
-                        ...previousState,
-                        messages: messages
-                    }));
-                });
-                break;
-            }
             case chatroomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
                 this.setState((previousState) => ({
                     ...previousState,
@@ -201,15 +175,11 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 break;
             }
             case chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS: {
-                chatroomActions.getMessages().then(messages => {
-                    this.setState(previousState => ({
-                        ...previousState,
-                        isLoadingEarlierMessages: false,
-                        earlyMessageReady: false,
-                        messages: messages
-                    }));
-                });
-
+                this.setState(previousState => ({
+                    ...previousState,
+                    isLoadingEarlierMessages: false,
+                    earlyMessageReady: false
+                }));
                 break;
             }
             default:
@@ -223,7 +193,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             isLoadingEarlierMessages: true,
         }));
 
-        this.props.dispatch(chatroomActions.loadEarlyMessageChunk());
+        this.props.dispatch(chatroomActions.loadEarlyMessageChunk(this.props.chatroomReducer.room._id));
     }
 
     roomInitialize(props: IComponentProps) {
@@ -359,7 +329,8 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     onToggleSticker() {
-        this.h_body = (this.state.openButtomMenu) ? this.h_body + this.h_stickerBox : this.h_body - this.h_stickerBox;
+        this.chatHeight = (this.state.openButtomMenu) ? this.chatHeight + this.stickerBox : this.chatHeight - this.stickerBox;
+
         this.setState(previousState => ({
             ...previousState,
             openButtomMenu: !previousState.openButtomMenu
@@ -369,48 +340,52 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         });
     }
 
+    // {/*height="calc(100vh - 56px - 52px - 52px)"*/}
+
     render(): JSX.Element {
         let { chatroomReducer, stalkReducer } = this.props;
 
         return (
-
-
-            <div style={{ height: "calc(100vh - 148px)" }}>
-                <div style={{ overflowY: "scroll", height: "100%" }} id={"app_body"}>
-                    {
-                        (this.state.earlyMessageReady) ?
-                            <Flex align="center" justify="center">
-                                <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
-                            </Flex>
-                            :
-                            null
-                    }
-                    <ChatBox
-                        styles={{ overflowX: "hidden" }}
-                        value={this.state.messages}
-                        onSelected={(message: IMessage) => { }} />
-                    {
-                        (this.state.openButtomMenu) ?
-                            <GridListSimple
-                                boxHeight={this.h_stickerBox}
-                                srcs={imagesPath}
-                                onSelected={this.onSubmitStickerChat} />
-                            : null
-                    }
-
-                </div>
-                <div>
-                    <TypingBox
-                        disabled={this.props.chatroomReducer.chatDisabled}
-                        onSubmit={this.onSubmitTextChat}
-                        onValueChange={this.onTypingTextChange}
-                        value={this.state.typingText}
-                        fileReaderChange={this.fileReaderChange}
-                        onSticker={this.onToggleSticker} />
-                    <UploadingDialog />
-                    <SnackbarToolBox />
-                </div>
-            </div>
+            <Flexbox flexDirection="row" justifyContent="center" id={"app_body"}>
+                <Flexbox flexDirection="column">
+                    <Flexbox flexDirection="column">
+                        <Flexbox flexDirection="column"
+                            justifyContent="flex-start" alignItems="center"
+                            minWidth="400px"
+                            style={{ minHeight: this.chatHeight }}>
+                            {
+                                (this.state.earlyMessageReady) ?
+                                    <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
+                                    :
+                                    null
+                            }
+                            <ChatBox value={this.state.messages}
+                                onSelected={(message: IMessage) => { }}
+                                styles={{ overflowY: "auto" }} />
+                        </Flexbox>
+                        <Flexbox>
+                            {
+                                (this.state.openButtomMenu) ?
+                                    <GridListSimple
+                                        srcs={imagesPath}
+                                        onSelected={this.onSubmitStickerChat} />
+                                    : null
+                            }
+                        </Flexbox>
+                    </Flexbox>
+                    <Flexbox element="footer" justifyContent="center" alignContent="stretch" >
+                        <TypingBox
+                            disabled={this.props.chatroomReducer.chatDisabled}
+                            onSubmit={this.onSubmitTextChat}
+                            onValueChange={this.onTypingTextChange}
+                            value={this.state.typingText}
+                            fileReaderChange={this.fileReaderChange}
+                            onSticker={this.onToggleSticker} />
+                        <UploadingDialog />
+                        <SnackbarToolBox />
+                    </Flexbox>
+                </Flexbox >
+            </Flexbox>
         );
     }
 }

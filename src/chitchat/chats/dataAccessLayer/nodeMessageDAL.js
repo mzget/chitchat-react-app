@@ -1,13 +1,18 @@
-const store = require("react-native-simple-store");
-export class NodeMessageDAL {
-    getData(rid) {
+"use strict";
+var store = require("react-native-simple-store");
+var NodeMessageDAL = (function () {
+    function NodeMessageDAL() {
+    }
+    NodeMessageDAL.prototype.getData = function (rid) {
         return store.get(rid);
-    }
-    saveData(rid, chatRecord) {
+    };
+    NodeMessageDAL.prototype.saveData = function (rid, chatRecord) {
         return store.save(rid, chatRecord);
-    }
-    removeData(rid, callback) {
-    }
-    clearData(next) {
-    }
-}
+    };
+    NodeMessageDAL.prototype.removeData = function (rid, callback) {
+    };
+    NodeMessageDAL.prototype.clearData = function (next) {
+    };
+    return NodeMessageDAL;
+}());
+exports.NodeMessageDAL = NodeMessageDAL;

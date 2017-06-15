@@ -2,8 +2,9 @@ import * as React from "react";
 import * as Colors from "material-ui/styles/colors";
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import { Flex, Box } from "reflexbox";
+import Flexbox from "flexbox-react";
 import Subheader from 'material-ui/Subheader';
+import Avatar from 'material-ui/Avatar';
 
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
 import { groups } from "../chitchat/consts/AlertMsg";
@@ -36,44 +37,47 @@ const getView = (props: ISubToolbar) => {
         room = chatroomActions.getRoom(room_id);
     }
 
-    if (match.path.match("/chatroom/") && room && room.type != RoomType.privateChat) {
+    if (match.path.match("/chatroom/") && room) {
         return (
             <div style={{ margin: 2, backgroundColor: Colors.indigo50 }}>
-                <Flex flexColumn={false}>
+                <Flexbox flexDirection="row">
+                    <Avatar src={(room.image) ? room.image : room.name.charAt(0)} style={{ margin: 2 }} />
                     <Subheader style={{ color: Colors.indigo500 }}>{room.name.toUpperCase()}</Subheader>
-                    <Flex flexColumn>
-                        {/*<span style={{ color: Colors.grey500 }}>{RoomType[room.type].toUpperCase()}</span>*/}
-                    </Flex>
-                    <Flex flex>
-                    </Flex>
-                    <FlatButton label="Manage Group" style={{ margin: 2 }} onClick={() => {
-                        if (room.type == RoomType.organizationGroup) {
-                            if (checkAdminPermission(userReducer.teamProfile)) {
-                                history.push(`/chatroom/settings/${room_id}/add_member`);
-                            }
-                            else {
-                                onError(groups.request_admin_permission);
-                            }
-                        }
-                        else {
-                            history.push(`/chatroom/settings/${room_id}/add_member`);
-                        }
-                    }} />
-                    <FlatButton label="Edit Group Settings" style={{ margin: 2 }} onClick={() => {
-                        if (room.type == RoomType.organizationGroup) {
-                            if (checkAdminPermission(userReducer.teamProfile)) {
-                                history.push(`/chatroom/settings/${room_id}/edit`);
-                            }
-                            else {
-                                onError(groups.request_admin_permission);
-                            }
-                        }
-                        else {
-                            history.push(`/chatroom/settings/${room_id}/edit`);
-                        }
+
+                    {
+                        (room.type != RoomType.privateChat) ? (
+                            <Flexbox flexDirection="row">
+                                <FlatButton label="Manage Group" style={{ margin: 2 }} onClick={() => {
+                                    if (room.type == RoomType.organizationGroup) {
+                                        if (checkAdminPermission(userReducer.teamProfile)) {
+                                            history.push(`/chatroom/settings/${room_id}/add_member`);
+                                        }
+                                        else {
+                                            onError(groups.request_admin_permission);
+                                        }
+                                    }
+                                    else {
+                                        history.push(`/chatroom/settings/${room_id}/add_member`);
+                                    }
+                                }} />
+                                <FlatButton label="Edit Group Settings" style={{ margin: 2 }} onClick={() => {
+                                    if (room.type == RoomType.organizationGroup) {
+                                        if (checkAdminPermission(userReducer.teamProfile)) {
+                                            history.push(`/chatroom/settings/${room_id}/edit`);
+                                        }
+                                        else {
+                                            onError(groups.request_admin_permission);
+                                        }
+                                    }
+                                    else {
+                                        history.push(`/chatroom/settings/${room_id}/edit`);
+                                    }
+                                }
+                                } />
+                            </Flexbox>
+                        ) : null
                     }
-                    } />
-                </Flex>
+                </Flexbox>
             </div>
         );
     }

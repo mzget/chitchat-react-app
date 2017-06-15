@@ -1,16 +1,18 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "target": "es2015",
     "jsx": "react",
     "rootDirs": [
-      "client/**/*"
+      "client"
     ],
     "outDir": "src",
     "typeRoots": [
       "node_modules/@types",
       "node_modules/@reactivex/rxjs",
       "node_modules/stalk-js"
+    ],
+    "lib": [
+      "es2015"
     ]
   },
   "exclude": [

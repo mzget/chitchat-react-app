@@ -5,7 +5,7 @@
  */
 
 import { BackendFactory } from "../../chitchat/chats/BackendFactory";
-import HttpStatus from "../../chitchat/libs/stalk/utils/httpStatusCode";
+import { Utils } from "stalk-js";
 
 export class MessageActionsType {
     static STOP = "STOP";
@@ -36,12 +36,13 @@ export function getDirectMessageRoomId(token: string, myId: string, contactId: s
     return dispatch => {
         dispatch(getRoomId_request());
 
-        BackendFactory.getInstance().getServer().getPrivateChatRoomId(token, myId, contactId, (err, res) => {
+        let server = BackendFactory.getInstance().getServer();
+        server.getPrivateChatRoomId(token, myId, contactId, (err, res) => {
             if (err) {
                 dispatch(getRoomId_failure());
             }
             else {
-                if (res.code == HttpStatus.success) {
+                if (res.code == Utils.statusCode.success) {
                     let roomInfo = res.data;
                     dispatch(getRoomId_success(roomInfo));
                 }
@@ -69,12 +70,13 @@ export function leaveRoom(token: string, currentRid: string, username: string) {
     return dispatch => {
         dispatch(leaveRoom_request());
 
-        BackendFactory.getInstance().getServer().LeaveChatRoomRequest(token, currentRid, username, (err, res) => {
+        let server = BackendFactory.getInstance().getServer();
+        server.getLobby().leaveRoom(token, currentRid, (err, res) => {
             if (err) {
                 dispatch(leaveRoom_failure());
             }
             else {
-                if (res.code === HttpStatus.success) {
+                if (res.code === Utils.statusCode.success) {
                     dispatch(leaveRoom_success());
                 }
                 else {

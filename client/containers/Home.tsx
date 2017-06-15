@@ -30,6 +30,10 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
     alertTitle: string;
     alertMessage: string;
 
+    onForgotAccount() {
+        this.props.history.push("/forgotaccount");
+    }
+
     componentWillMount() {
         console.log("Home", global.userAgent, this.props);
 
@@ -42,8 +46,9 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
         this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight + this.footerHeight));
 
         this.props.dispatch(AppActions.getSession());
-    }
 
+        this.onForgotAccount = this.onForgotAccount.bind(this);
+    }
 
     componentWillReceiveProps(nextProps) {
         let { userReducer, authReducer, alertReducer
@@ -102,6 +107,11 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
                             <AuthenBox {...this.props} onError={this.props.onError} />
                             <Box p={2} flexAuto></Box>
                         </Flex>
+                        <Flex align="center">
+                            <Box p={2} flexAuto></Box>
+                            <a onClick={this.onForgotAccount}>Forgotten account</a>
+                            <Box p={2} flexAuto></Box>
+                        </Flex>
                         <Box flexAuto justify="flex-end"></Box>
                     </Flex>
                 </div>
@@ -110,7 +120,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
                     fontSize: 16, textAlign: "center", backgroundColor: Colors.indigo50
                 }}>
                     <Flex px={2} align="center" justify="center">
-                        <span>Powered by Stalk realtime messaging service.</span>
+                        <span>Powered by Stalk realtime communication API.</span>
                     </Flex>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Flex, Box } from "reflexbox";
+import Flexbox from 'flexbox-react';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 
@@ -13,16 +13,10 @@ import * as StalkBridgeActions from "../../chitchat/chats/redux/stalkBridge/stal
 import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
 import * as chatroomRx from "../../chitchat/chats/redux/chatroom/chatroomRxEpic";
 
-abstract class IStalktProps implements IComponentProps {
-    userReducer;
-    stalkReducer;
-    dispatch;
-}
-
-class StalkComponent extends React.Component<IStalktProps, any> {
+class StalkComponent extends React.Component<any, any> {
     render() {
         return (
-            <div>
+            <div style={{width:"100%"}}>
                 {
                     (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE ||
                         this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?

@@ -8,34 +8,36 @@
  * A Redux boilerplate setup
  *
  */
+"use strict";
 /**
  * ## Imports
  *
  * redux functions
  */
-import { createStore, applyMiddleware } from "redux";
-import thunk from "redux-thunk";
-import { createEpicMiddleware } from "redux-observable";
-import * as rootReducer from "./rootReducer";
-import * as rootRxEpic from "./rootRxEpic";
-const epicMiddleware = createEpicMiddleware(rootRxEpic.rootEpic);
-let middlewares = [thunk, epicMiddleware];
-let createStoreWithMiddleware = null;
-if (process.env.NODE_ENV === `development`) {
-    // const { logger } = require(`redux-logger`);
-    // middlewares.push(logger);
-    const reduxDevtools = require("redux-devtools-extension");
-    const { composeWithDevTools } = reduxDevtools;
-    createStoreWithMiddleware = composeWithDevTools(applyMiddleware(...middlewares))(createStore);
+var redux_1 = require("redux");
+var redux_thunk_1 = require("redux-thunk");
+var redux_observable_1 = require("redux-observable");
+var rootReducer = require("./rootReducer");
+var rootRxEpic = require("./rootRxEpic");
+var epicMiddleware = redux_observable_1.createEpicMiddleware(rootRxEpic.rootEpic);
+var middlewares = [redux_thunk_1["default"], epicMiddleware];
+var createStoreWithMiddleware = null;
+if (process.env.NODE_ENV === "development") {
+    var logger = require("redux-logger").logger;
+    middlewares.push(logger);
+    var reduxDevtools = require("redux-devtools-extension");
+    var composeWithDevTools = reduxDevtools.composeWithDevTools;
+    createStoreWithMiddleware = composeWithDevTools(redux_1.applyMiddleware.apply(void 0, middlewares))(redux_1.createStore);
 }
 else {
     console.log = function () { };
-    createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
+    createStoreWithMiddleware = redux_1.applyMiddleware.apply(void 0, middlewares)(redux_1.createStore);
 }
 function configureStore() {
-    let initialState = rootReducer.getInitialState();
+    var initialState = rootReducer.getInitialState();
     return createStoreWithMiddleware(rootReducer.rootReducer, initialState);
 }
 // !!! Note >>> Do not edit these 2 line below. I make it for call global store. @ Mzget.
-const store = configureStore();
-export default store;
+var store = configureStore();
+exports.__esModule = true;
+exports["default"] = store;

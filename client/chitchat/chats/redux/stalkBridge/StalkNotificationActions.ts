@@ -12,12 +12,14 @@ import { MessageImp } from "../../models/MessageImp";
 import * as CryptoHelper from "../../utils/CryptoHelper";
 import { MessageType } from "../../../shared/Message";
 
-import { ChitChatFactory } from "../../chitchatFactory";
+import { ChitChatFactory } from "../../ChitchatFactory";
 
 const getStore = () => ChitChatFactory.getInstance().store;
 
+type NotiMessage = { title: string; body: string; image: string; }
+
 export const STALK_NOTICE_NEW_MESSAGE = "STALK_NOTICE_NEW_MESSAGE";
-const stalkNotiNewMessage = (payload) => ({ type: STALK_NOTICE_NEW_MESSAGE, payload });
+const stalkNotiNewMessage = (payload: NotiMessage) => ({ type: STALK_NOTICE_NEW_MESSAGE, payload });
 
 const init = (onSuccess: (err, deviceToken) => void) => {
     console.log("Initialize NotificationManager.");
@@ -34,19 +36,19 @@ export const unsubscribeGlobalNotifyMessageEvent = () => {
 };
 
 export const notify = (messageImp: MessageImp) => {
-    let message = "";
+    let message = {
+        title: messageImp.user.username,
+        image: messageImp.user.avatar
+    } as NotiMessage;
+
     if (messageImp.type === MessageType[MessageType.Text]) {
         CryptoHelper.decryptionText(messageImp).then((decoded) => {
-            message = decoded.body;
+            message.body = decoded.body;
             getStore().dispatch(stalkNotiNewMessage(message));
         });
     }
-    else if (messageImp.type === MessageType[MessageType.Location]) {
-        message = "Sent you location";
-        getStore().dispatch(stalkNotiNewMessage(message));
-    }
-    else if (messageImp.type === MessageType[MessageType.Image]) {
-        message = "Sent you image";
+    else {
+        message.body = `Sent you ${messageImp.type.toLowerCase()}`;
         getStore().dispatch(stalkNotiNewMessage(message));
     }
 };

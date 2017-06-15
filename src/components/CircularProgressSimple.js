@@ -1,3 +1,4 @@
+"use strict";
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -6,11 +7,12 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-import * as React from 'react';
-import CircularProgress from 'material-ui/CircularProgress';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { withReflex } from 'reflexbox';
-const CircularProgressSimple = (props) => (React.createElement(MuiThemeProvider, null,
+var React = require("react");
+var CircularProgress_1 = require("material-ui/CircularProgress");
+var MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
+var reflexbox_1 = require("reflexbox");
+var CircularProgressSimple = function (props) { return (React.createElement(MuiThemeProvider_1["default"], null,
     React.createElement("div", __assign({}, props),
-        React.createElement(CircularProgress, { thickness: 7 }))));
-export default withReflex()(CircularProgressSimple);
+        React.createElement(CircularProgress_1["default"], { thickness: 7 })))); };
+exports.__esModule = true;
+exports["default"] = reflexbox_1.withReflex()(CircularProgressSimple);
