@@ -352,12 +352,10 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                         <Flexbox flexDirection="column"
                             justifyContent="flex-start" alignItems="center"
                             minWidth="400px"
-                            style={{ minHeight: this.chatHeight }}>
+                            style={{ height: this.chatHeight }}>
                             {
                                 (this.state.earlyMessageReady) ?
-                                    <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
-                                    :
-                                    null
+                                    <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p> : null
                             }
                             <ChatBox value={this.state.messages}
                                 onSelected={(message: IMessage) => { }}

@@ -282,11 +282,9 @@ var Chat = (function (_super) {
         return (React.createElement(flexbox_react_1["default"], { flexDirection: "row", justifyContent: "center", id: "app_body" },
             React.createElement(flexbox_react_1["default"], { flexDirection: "column" },
                 React.createElement(flexbox_react_1["default"], { flexDirection: "column" },
-                    React.createElement(flexbox_react_1["default"], { flexDirection: "column", justifyContent: "flex-start", alignItems: "center", minWidth: "400px", style: { minHeight: this.chatHeight } },
+                    React.createElement(flexbox_react_1["default"], { flexDirection: "column", justifyContent: "flex-start", alignItems: "center", minWidth: "400px", style: { height: this.chatHeight } },
                         (this.state.earlyMessageReady) ?
-                            React.createElement("p", { onClick: function () { return _this.onLoadEarlierMessages(); } }, "Load Earlier Messages!")
-                            :
-                                null,
+                            React.createElement("p", { onClick: function () { return _this.onLoadEarlierMessages(); } }, "Load Earlier Messages!") : null,
                         React.createElement(ChatBox_1.ChatBox, { value: this.state.messages, onSelected: function (message) { }, styles: { overflowY: "auto" } })),
                     React.createElement(flexbox_react_1["default"], null, (this.state.openButtomMenu) ?
                         React.createElement(GridListSimple_1.GridListSimple, { srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
