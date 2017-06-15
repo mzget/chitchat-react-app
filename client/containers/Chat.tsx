@@ -41,6 +41,9 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     h_subHeader = 34;
     h_body = null;
     h_typingArea = null;
+    clientHeight = document.documentElement.clientHeight;
+    chatHeight = null;
+    stickerBox = 204;
 
     componentWillMount() {
         this.state = {
@@ -51,6 +54,8 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             openButtomMenu: false,
             onAlert: false
         };
+
+        this.chatHeight = this.clientHeight - (56 + 52 + 52);
 
         this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
         this.onTypingTextChange = this.onTypingTextChange.bind(this);
@@ -324,7 +329,8 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     onToggleSticker() {
-        this.h_body = (this.state.openButtomMenu) ? this.h_body + this.h_stickerBox : this.h_body - this.h_stickerBox;
+        this.chatHeight = (this.state.openButtomMenu) ? this.chatHeight + this.stickerBox : this.chatHeight - this.stickerBox;
+
         this.setState(previousState => ({
             ...previousState,
             openButtomMenu: !previousState.openButtomMenu
@@ -334,31 +340,38 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         });
     }
 
+    // {/*height="calc(100vh - 56px - 52px - 52px)"*/}
+
     render(): JSX.Element {
         let { chatroomReducer, stalkReducer } = this.props;
+
         return (
             <Flexbox flexDirection="row" justifyContent="center" id={"app_body"}>
                 <Flexbox flexDirection="column">
-                    <Flexbox flexDirection="column" flexGrow={1} justifyContent="flex-start" alignItems="center"
-                        height="calc(100vh - 56px - 52px - 52px)" minWidth="400px">
-                        {
-                            (this.state.earlyMessageReady) ?
-                                <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
-                                :
-                                null
-                        }
-                        <ChatBox value={this.state.messages}
-                            onSelected={(message: IMessage) => { }}
-                            styles={{ overflowY: "auto" }} />
-                    </Flexbox>
-                    <Flexbox>
-                        {
-                            (this.state.openButtomMenu) ?
-                                <GridListSimple
-                                    srcs={imagesPath}
-                                    onSelected={this.onSubmitStickerChat} />
-                                : null
-                        }
+                    <Flexbox flexDirection="column">
+                        <Flexbox flexDirection="column"
+                            justifyContent="flex-start" alignItems="center"
+                            minWidth="400px"
+                            style={{ minHeight: this.chatHeight }}>
+                            {
+                                (this.state.earlyMessageReady) ?
+                                    <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p>
+                                    :
+                                    null
+                            }
+                            <ChatBox value={this.state.messages}
+                                onSelected={(message: IMessage) => { }}
+                                styles={{ overflowY: "auto" }} />
+                        </Flexbox>
+                        <Flexbox>
+                            {
+                                (this.state.openButtomMenu) ?
+                                    <GridListSimple
+                                        srcs={imagesPath}
+                                        onSelected={this.onSubmitStickerChat} />
+                                    : null
+                            }
+                        </Flexbox>
                     </Flexbox>
                     <Flexbox element="footer" justifyContent="center" alignContent="stretch" >
                         <TypingBox
