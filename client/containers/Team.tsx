@@ -65,16 +65,21 @@ class Team extends React.Component<IComponentProps, any> {
     public render(): JSX.Element {
         return (
             <MuiThemeProvider>
-                <Flexbox flexDirection="column" minHeight="100vh">
+                <Flexbox flexDirection="column" minHeight="100vh" style={{ backgroundColor: Colors.blueGrey50 }}>
                     <Flexbox element="header" >
                         <div style={{ width: "100%" }}>
                             <SimpleToolbar title={this.toolbar} menus={["logout"]} onSelectedMenuItem={this.onToolbarMenuItem} />
                         </div>
                     </Flexbox>
-                    <Flexbox flexDirection="column" flexGrow={1}>
-                        <TeamListBox teams={this.props.teamReducer.teams} onSelectTeam={this.onSelectTeam} />
-                        <TeamCreateBox {...this.props} />
+                    <Flexbox flexDirection="row">
+                        <Flexbox flexGrow={1} />
+                        <Flexbox flexDirection="column" justifyContent="center" flexGrow={1} >
+                            <TeamListBox teams={this.props.teamReducer.teams} onSelectTeam={this.onSelectTeam} />
+                            <TeamCreateBox {...this.props} />
+                        </Flexbox>
+                        <Flexbox flexGrow={1} />
                     </Flexbox>
+                    <Flexbox flexGrow={1} />
                     <Flexbox element="footer">
                         <StalkCompEnhancer />
                     </Flexbox>

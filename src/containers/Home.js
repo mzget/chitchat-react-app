@@ -89,7 +89,7 @@ var Home = (function (_super) {
         return (React.createElement("div", { style: { overflow: "hidden" } },
             React.createElement("div", { id: "toolbar", style: { height: this.headerHeight } },
                 React.createElement(SimpleToolbar_1.SimpleToolbar, { title: "ChitChat team communication." })),
-            React.createElement("div", { id: "app_body", style: { backgroundColor: Colors.indigo50, height: this.bodyHeight } },
+            React.createElement("div", { id: "app_body", style: { backgroundColor: Colors.blueGrey50, height: this.bodyHeight } },
                 React.createElement(reflexbox_1.Flex, { flexColumn: true },
                     React.createElement(reflexbox_1.Flex, { align: "center" },
                         React.createElement(reflexbox_1.Box, { p: 2, flexAuto: true }),
@@ -102,7 +102,7 @@ var Home = (function (_super) {
                     React.createElement(reflexbox_1.Box, { flexAuto: true, justify: "flex-end" }))),
             React.createElement("div", { id: "app_footer", style: {
                     width: this.clientWidth, height: this.footerHeight,
-                    fontSize: 16, textAlign: "center", backgroundColor: Colors.indigo50
+                    fontSize: 16, textAlign: "center", backgroundColor: Colors.blueGrey50
                 } },
                 React.createElement(reflexbox_1.Flex, { px: 2, align: "center", justify: "center" },
                     React.createElement("span", null, "Powered by Stalk realtime communication API.")))));

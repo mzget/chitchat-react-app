@@ -26,7 +26,7 @@ var MainPageEnhanced = MainPageEnhancer_1.MainPageEnhancer(function (_a) {
                     React.createElement(flexbox_react_1["default"], { maxHeight: "40px" },
                         React.createElement(StalkComponent_1.StalkCompEnhancer, null)),
                     React.createElement(flexbox_react_1["default"], { flexDirection: "row", flexGrow: 1, height: "calc(100vh - 56px)" },
-                        React.createElement(flexbox_react_1["default"], { flexDirection: "column", flexGrow: 0.3, style: { overflowY: "auto", backgroundColor: Colors.darkWhite } },
+                        React.createElement(flexbox_react_1["default"], { flexDirection: "column", flexGrow: 0.3, minWidth: "280px", style: { overflowY: "auto", backgroundColor: Colors.darkWhite } },
                             React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: fetch_orgGroups, groups: groupReducer.orgGroups, subHeader: "OrgGroups" }),
                             React.createElement(ConnectGroupListEnhancer_1.ConnectGroupListEnhancer, { fetchGroup: fetch_privateGroups, groups: groupReducer.privateGroups, subHeader: "Groups" }),
                             React.createElement(ChatLogsBox_1.ChatLogsBoxEnhancer, null)),
@@ -36,7 +36,7 @@ var MainPageEnhanced = MainPageEnhancer_1.MainPageEnhancer(function (_a) {
                                 React.createElement(flexbox_react_1["default"], { width: "400px" },
                                     React.createElement("div", { style: { width: "100%", backgroundColor: Colors.darkWhite } },
                                         React.createElement(AppBody_1.AppBody, { userReducer: userReducer, match: match, history: history, onError: onError }))),
-                                React.createElement(flexbox_react_1["default"], { width: "288px" },
+                                React.createElement(flexbox_react_1["default"], { minWidth: "280px" },
                                     React.createElement("div", { style: { width: "100%", backgroundColor: Colors.darkWhite } },
                                         React.createElement(RightNav_1.RightNav, { match: match, onError: onError, teamReducer: teamReducer })))))))))));
 });

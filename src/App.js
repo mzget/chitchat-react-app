@@ -47,10 +47,10 @@ var App = (function (_super) {
                     React.createElement(react_router_dom_1.Route, { exact: true, path: "/", component: HomeEnhanced_1.HomePageWithDialogBox }),
                     React.createElement(react_router_dom_1.Route, { path: "/forgotaccount", component: ForgottenAccount_1.ForgotAccount }),
                     React.createElement(react_router_dom_1.Route, { path: "/team/:filter", component: TeamPageEnhanced_1.TeamPageEnhanced }),
-                    React.createElement(react_router_dom_1.Route, { path: "/profile/:filter/:user", component: (this.clientWidth < Breakpoints_1.SMALL_WINDOW) ? ProfilePageEnhanced_1.ProfilePageEnhanced : Main_1.MainPageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/chatslist/:filter", component: (this.clientWidth < Breakpoints_1.SMALL_WINDOW) ? m_Main_1.M_MainPageEnhanced : Main_1.MainPageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/chatroom/chat/:room_id", component: (this.clientWidth < Breakpoints_1.SMALL_WINDOW) ? ChatPageEnhanced_1.ChatPageEnhanced : Main_1.MainPageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/chatroom/settings/:room_id/:edit", component: (this.clientWidth < Breakpoints_1.SMALL_WINDOW) ? ChatRoomSettingsPage_1.ChatRoomSettingsEnhanced : Main_1.MainPageWithDialogBox }),
+                    React.createElement(react_router_dom_1.Route, { path: "/profile/:filter/:user", component: (this.clientWidth < Breakpoints_1.MEDIUM_WINDOW) ? ProfilePageEnhanced_1.ProfilePageEnhanced : Main_1.MainPageWithDialogBox }),
+                    React.createElement(react_router_dom_1.Route, { path: "/chatslist/:filter", component: (this.clientWidth < Breakpoints_1.MEDIUM_WINDOW) ? m_Main_1.M_MainPageEnhanced : Main_1.MainPageWithDialogBox }),
+                    React.createElement(react_router_dom_1.Route, { path: "/chatroom/chat/:room_id", component: (this.clientWidth < Breakpoints_1.MEDIUM_WINDOW) ? ChatPageEnhanced_1.ChatPageEnhanced : Main_1.MainPageWithDialogBox }),
+                    React.createElement(react_router_dom_1.Route, { path: "/chatroom/settings/:room_id/:edit", component: (this.clientWidth < Breakpoints_1.MEDIUM_WINDOW) ? ChatRoomSettingsPage_1.ChatRoomSettingsEnhanced : Main_1.MainPageWithDialogBox }),
                     React.createElement(react_router_dom_1.Route, { path: "/admin/:filter", component: AdminPageEnhanced_1.AdminPageEnhanced })))));
     };
     return App;
