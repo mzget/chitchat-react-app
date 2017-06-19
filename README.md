@@ -1,7 +1,7 @@
 # chitchat-react-app
-ChitChat react-app code sample. The implementation of react, redux, rxjs ...
+ChitChat react-app code sample. The implementation of react, redux, rxjs , typescript ...
 
-Realtime powered by stalk chat service.
+Realtime powered by stalk message service.
 
 Demo #  https://chitchats.ga/
 
