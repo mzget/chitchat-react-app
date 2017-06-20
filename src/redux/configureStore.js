@@ -1,3 +1,4 @@
+"use strict";
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
@@ -8,7 +9,7 @@
  * A Redux boilerplate setup
  *
  */
-"use strict";
+exports.__esModule = true;
 /**
  * ## Imports
  *
@@ -39,5 +40,4 @@ function configureStore() {
 }
 // !!! Note >>> Do not edit these 2 line below. I make it for call global store. @ Mzget.
 var store = configureStore();
-exports.__esModule = true;
 exports["default"] = store;

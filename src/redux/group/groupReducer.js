@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var immutable_1 = require("immutable");
 var groupRx = require("./groupRx");
 var privateGroupRxActions = require("./privateGroupRxActions");

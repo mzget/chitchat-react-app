@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var Rx = require("rxjs");
 var ajax = Rx.Observable.ajax, AjaxResponse = Rx.AjaxResponse;
 var ChitchatFactory_1 = require("../../chitchat/chats/ChitchatFactory");

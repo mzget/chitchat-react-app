@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 require("isomorphic-fetch");
 var ChitchatFactory_1 = require("../ChitchatFactory");
 var chitchatServiceUtils_1 = require("../utils/chitchatServiceUtils");

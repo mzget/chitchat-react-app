@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 var Avatar_1 = require("material-ui/Avatar");
@@ -9,5 +10,4 @@ var Avatar_1 = require("material-ui/Avatar");
 var AvatarSimple = function (props) { return (React.createElement(MuiThemeProvider_1["default"], null,
     React.createElement("div", null, (!!props.src) ?
         React.createElement(Avatar_1["default"], { src: props.src }) : React.createElement(Avatar_1["default"], null, props.letter.charAt(0))))); };
-exports.__esModule = true;
 exports["default"] = AvatarSimple;

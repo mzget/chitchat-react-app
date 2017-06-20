@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var reflexbox_1 = require("reflexbox");
 var MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");

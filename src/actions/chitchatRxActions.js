@@ -1,9 +1,10 @@
+"use strict";
 /**
  * Copyright 2017 Ahoo Studio.co.th.
  *
  * This is pure function action for redux app.
  */
-"use strict";
+exports.__esModule = true;
 var Rx = require("rxjs/Rx");
 var ajax = Rx.Observable.ajax;
 var chatlogsActions_1 = require("../chitchat/chats/redux/chatlogs/chatlogsActions");

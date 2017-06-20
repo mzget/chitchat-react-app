@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var react_redux_1 = require("react-redux");
 var GroupListView_1 = require("./GroupListView");

@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var OrgLevel;
 (function (OrgLevel) {
     OrgLevel[OrgLevel["department"] = 0] = "department";

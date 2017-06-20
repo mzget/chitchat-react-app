@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var List_1 = require("material-ui/List");
 var grade_1 = require("material-ui/svg-icons/action/grade");

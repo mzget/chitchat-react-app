@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var ChitchatFactory_1 = require("../ChitchatFactory");
 var chitchatServiceUtils_1 = require("../utils/chitchatServiceUtils");
 var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };

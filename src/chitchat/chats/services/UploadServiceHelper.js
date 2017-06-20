@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var async_1 = require("async");
 var ChitchatFactory_1 = require("../ChitchatFactory");
 var config = ChitchatFactory_1.ChitChatFactory.getInstance().config;

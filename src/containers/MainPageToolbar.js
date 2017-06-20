@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var authRx = require("../redux/authen/authRx");
 var SimpleToolbar_1 = require("../components/SimpleToolbar");

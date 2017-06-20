@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var recompose_1 = require("recompose");
 var react_router_dom_1 = require("react-router-dom");

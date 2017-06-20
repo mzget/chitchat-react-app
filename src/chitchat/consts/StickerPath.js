@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 exports.imagesPath = [
     { img: require("../../images/stickers/sticker0.png"), title: "", author: "", tag: "" },
     { img: require("../../images/stickers/sticker1.png"), title: "", author: "", tag: "" },

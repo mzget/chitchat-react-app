@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var ChitchatFactory_1 = require("./chitchat/chats/ChitchatFactory");
 exports.chitchatFactory = ChitchatFactory_1.ChitChatFactory.createInstance();
 var api_stalk = "wss://chitchats.ga";

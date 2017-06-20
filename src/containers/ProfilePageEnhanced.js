@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var Profile_1 = require("./Profile");
 var DialogBoxEnhancer_1 = require("./toolsbox/DialogBoxEnhancer");

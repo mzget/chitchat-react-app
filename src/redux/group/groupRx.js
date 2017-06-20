@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var redux_actions_1 = require("redux-actions");
 var Rx = require("rxjs/Rx");
 var ajax = Rx.Observable.ajax;

@@ -1,3 +1,4 @@
+"use strict";
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
@@ -8,7 +9,7 @@
  * A Redux boilerplate setup
  *
  */
-"use strict";
+exports.__esModule = true;
 var redux_1 = require("redux");
 var reapop_1 = require("reapop");
 var authRx_1 = require("./authen/authRx");

@@ -1,9 +1,9 @@
+"use strict";
 /**
  * Copyright 2017 Ahoo Studio.co.th.
  *
  * This is pure function action for redux app.
  */
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -13,8 +13,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t;
-    return { next: verb(0), "throw": verb(1), "return": verb(2) };
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -40,6 +40,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var _this = this;
+exports.__esModule = true;
 var Rx = require("rxjs/Rx");
 var ajax = Rx.Observable.ajax;
 var BackendFactory_1 = require("../../BackendFactory");
@@ -148,6 +149,7 @@ exports.getLastAccessRoom_Epic = function (action$) { return (action$.ofType(exp
         .then(function (json) { return json; });
 })
     .map(function (json) {
+    console.log(exports.GET_LAST_ACCESS_ROOM, json);
     BackendFactory_1.BackendFactory.getInstance().dataListener.onAccessRoom(json.result);
     return getLastAccessRoomSuccess(json.result);
 })["catch"](function (json) { return Rx.Observable.of(getLastAccessRoomFailure(json.message)); })); };

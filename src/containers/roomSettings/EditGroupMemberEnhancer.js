@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var react_redux_1 = require("react-redux");
 var recompose_1 = require("recompose");
 var editGroupRxActions = require("../../redux/group/editGroupRxActions");

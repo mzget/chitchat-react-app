@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var Colors = require("material-ui/styles/colors");
 var FlatButton_1 = require("material-ui/FlatButton");
@@ -27,8 +28,8 @@ var getView = function (props) {
     if (match.path.match("/chatroom/") && room) {
         return (React.createElement("div", { style: { margin: 2, backgroundColor: Colors.indigo50 } },
             React.createElement(flexbox_react_1["default"], { flexDirection: "row" },
-                React.createElement(Avatar_1["default"], { src: (room.image) ? room.image : room.name.charAt(0), style: { margin: 2 } }),
-                React.createElement(Subheader_1["default"], { style: { color: Colors.indigo500 } }, room.name.toUpperCase()),
+                React.createElement(Avatar_1["default"], { src: (room.image) ? room.image : (room.name) ? room.name.charAt(0) : null, style: { margin: 2 } }),
+                React.createElement(Subheader_1["default"], { style: { color: Colors.indigo500 } }, (room.name) ? room.name.toUpperCase() : null),
                 (room.type != Room_1.RoomType.privateChat) ? (React.createElement(flexbox_react_1["default"], { flexDirection: "row" },
                     React.createElement(FlatButton_1["default"], { label: "Manage Group", style: { margin: 2 }, onClick: function () {
                             if (room.type == Room_1.RoomType.organizationGroup) {

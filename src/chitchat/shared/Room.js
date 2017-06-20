@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var MemberRole;
 (function (MemberRole) {
     MemberRole[MemberRole["member"] = 0] = "member";

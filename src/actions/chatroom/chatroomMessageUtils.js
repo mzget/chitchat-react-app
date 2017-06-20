@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var Message_1 = require("../../chitchat/shared/Message");
 var MessageImp_1 = require("../../chitchat/chats/models/MessageImp");
 var StickerPath_1 = require("../../chitchat/consts/StickerPath");

@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var EditGroupMember_1 = require("./EditGroupMember");
 var EditGroupMemberEnhancer_1 = require("./EditGroupMemberEnhancer");

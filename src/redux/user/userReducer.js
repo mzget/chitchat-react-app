@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var immutable_1 = require("immutable");
 var Rx = require("rxjs/Rx");
 var ajax = Rx.Observable.ajax;

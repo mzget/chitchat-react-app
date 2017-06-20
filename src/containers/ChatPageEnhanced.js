@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var react_router_dom_1 = require("react-router-dom");
 var DialogBoxEnhancer_1 = require("./toolsbox/DialogBoxEnhancer");

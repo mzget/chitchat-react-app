@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var validate = require("validate.js");
 function validateEmailPass(_email, _password, callback) {
     var constraints = {

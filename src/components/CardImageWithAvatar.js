@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var Divider_1 = require("material-ui/Divider");
 var colors_1 = require("material-ui/styles/colors");

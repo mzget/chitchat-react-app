@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var CryptoJS = require("crypto-js");
 var NodeSecureService = (function () {
     function NodeSecureService() {
@@ -57,5 +58,4 @@ var NodeSecureService = (function () {
     };
     return NodeSecureService;
 }());
-exports.__esModule = true;
 exports["default"] = NodeSecureService;

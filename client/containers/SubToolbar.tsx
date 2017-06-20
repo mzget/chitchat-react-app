@@ -41,8 +41,8 @@ const getView = (props: ISubToolbar) => {
         return (
             <div style={{ margin: 2, backgroundColor: Colors.indigo50 }}>
                 <Flexbox flexDirection="row">
-                    <Avatar src={(room.image) ? room.image : room.name.charAt(0)} style={{ margin: 2 }} />
-                    <Subheader style={{ color: Colors.indigo500 }}>{room.name.toUpperCase()}</Subheader>
+                    <Avatar src={(room.image) ? room.image : (room.name) ? room.name.charAt(0) : null} style={{ margin: 2 }} />
+                    <Subheader style={{ color: Colors.indigo500 }}>{(room.name) ? room.name.toUpperCase() : null}</Subheader>
 
                     {
                         (room.type != RoomType.privateChat) ? (

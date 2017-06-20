@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var PushDataListener = (function () {
     function PushDataListener() {
         this.onPushEvents = new Array();

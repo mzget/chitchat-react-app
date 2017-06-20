@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var localForage = require("localforage");
 var MessageDAL = (function () {
     function MessageDAL() {

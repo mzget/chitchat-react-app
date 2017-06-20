@@ -1,9 +1,10 @@
+"use strict";
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
  * Support by@ nattapon.r@live.com
  */
-"use strict";
+exports.__esModule = true;
 var stalk_js_1 = require("stalk-js");
 var ServerListener = (function () {
     function ServerListener() {
