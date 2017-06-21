@@ -19,16 +19,9 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 exports.__esModule = true;
 var React = require("react");
-var react_google_maps_1 = require("react-google-maps");
-var withScriptjs_1 = require("react-google-maps/lib/async/withScriptjs");
 var MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 var CircularProgress_1 = require("material-ui/CircularProgress");
-// Wrap all `react-google-maps` components with `withGoogleMap` HOC
-// and name it GettingStartedGoogleMap
-var GettingStartedGoogleMap = withScriptjs_1["default"](react_google_maps_1.withGoogleMap(function (props) {
-    console.log(props.markers);
-    return (React.createElement(react_google_maps_1.GoogleMap, { ref: props.onMapLoad, defaultZoom: 12, defaultCenter: props.markers[0].position, onClick: props.onMapClick }, props.markers.map(function (marker, index) { return (React.createElement(react_google_maps_1.Marker, __assign({}, marker))); })));
-}));
+var GoogleMap_1 = require("../../components/Maps/GoogleMap");
 var MapBox = (function (_super) {
     __extends(MapBox, _super);
     function MapBox() {
@@ -36,14 +29,14 @@ var MapBox = (function (_super) {
     }
     MapBox.prototype.componentWillMount = function () {
         this.state = {
-            markers: [{
-                    position: {
-                        lat: 0,
-                        lng: 0
-                    },
-                    key: "",
-                    defaultAnimation: 2
-                }],
+            marker: {
+                position: {
+                    lat: 0,
+                    lng: 0
+                },
+                key: "",
+                defaultAnimation: 2
+            },
             mapReady: false
         };
         this.handleMapLoad = this.handleMapLoad.bind(this);
@@ -53,12 +46,11 @@ var MapBox = (function (_super) {
         navigator.geolocation.getCurrentPosition(this.geoSuccess, this.geoError);
     };
     MapBox.prototype.geoSuccess = function (position) {
-        var _this = this;
         var latitude = position.coords.latitude;
         var longitude = position.coords.longitude;
-        var _markers = this.state.markers;
-        _markers[0].position = { lat: latitude, lng: longitude };
-        this.setState(function (prev) { return (__assign({}, prev, { mapReady: true, markers: _markers })); }, function () { console.log(_this.state); });
+        var _marker = this.state.marker;
+        _marker.position = { lat: latitude, lng: longitude };
+        this.setState(function (prev) { return (__assign({}, prev, { mapReady: true, marker: _marker })); });
     };
     MapBox.prototype.geoError = function () {
         console.log("Unable to retrieve your location");
@@ -67,17 +59,15 @@ var MapBox = (function (_super) {
         this._mapComponent = map;
     };
     MapBox.prototype.handleMapClick = function (event) {
-        var _markers = this.state.markers;
-        _markers[0].position = event.latLng;
-        _markers[0].key = Date.now();
-        this.setState({
-            markers: _markers
-        });
+        var _marker = this.state.marker;
+        _marker.position = { lat: event.latLng.lat(), lng: event.latLng.lng() };
+        _marker.key = Date.now();
+        this.setState({ marker: _marker });
     };
     MapBox.prototype.render = function () {
         return (React.createElement(MuiThemeProvider_1["default"], null,
-            React.createElement("div", { id: "map" }, (this.state.mapReady) ? (React.createElement(GettingStartedGoogleMap, { googleMapURL: "https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyCURNR7kARZEaHUchdx3MpEkX1azVlEO1E", loadingElement: React.createElement("div", { style: { height: "100%" } },
-                    React.createElement(CircularProgress_1["default"], null)), containerElement: React.createElement("div", { style: { height: 400, width: 400 } }), mapElement: React.createElement("div", { style: { height: "100%" } }), onMapLoad: this.handleMapLoad, onMapClick: this.handleMapClick, markers: this.state.markers })) : null)));
+            React.createElement("div", { id: "map" }, (this.state.mapReady) ? (React.createElement(GoogleMap_1.GettingStartedGoogleMap, { googleMapURL: "https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyCURNR7kARZEaHUchdx3MpEkX1azVlEO1E", loadingElement: React.createElement("div", { style: { height: "100%" } },
+                    React.createElement(CircularProgress_1["default"], null)), containerElement: React.createElement("div", { style: { height: 400, width: 400 } }), mapElement: React.createElement("div", { style: { height: "100%" } }), onMapLoad: this.handleMapLoad, onMapClick: this.handleMapClick, marker: this.state.marker })) : null)));
     };
     return MapBox;
 }(React.Component));

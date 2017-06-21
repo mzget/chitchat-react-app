@@ -4,30 +4,11 @@ import withScriptjs from "react-google-maps/lib/async/withScriptjs";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import CircularProgress from 'material-ui/CircularProgress';
 
-// Wrap all `react-google-maps` components with `withGoogleMap` HOC
-// and name it GettingStartedGoogleMap
-const GettingStartedGoogleMap = withScriptjs(withGoogleMap(props => {
-    console.log(props.markers);
-    return (
-        <GoogleMap
-            ref={props.onMapLoad}
-            defaultZoom={12}
-            defaultCenter={props.markers[0].position}
-            onClick={props.onMapClick}
-        >
-            {
-                props.markers.map((marker, index) => (
-                    <Marker
-                        {...marker}
-                    />
-                ))}
-        </GoogleMap>
-    )
-}));
+import { GettingStartedGoogleMap } from "../../components/Maps/GoogleMap";
 
 
 interface IMapBoxProps {
-    markers: Array<{ position, key, defaultAnimation }>;
+    marker: { position: { lat, lng }, key, defaultAnimation };
     mapReady: boolean;
 }
 
@@ -35,14 +16,14 @@ export class MapBox extends React.Component<any, IMapBoxProps> {
 
     componentWillMount() {
         this.state = {
-            markers: [{
+            marker: {
                 position: {
                     lat: 0,
                     lng: 0,
                 },
                 key: "",
                 defaultAnimation: 2,
-            }],
+            },
             mapReady: false
         }
 
@@ -58,9 +39,9 @@ export class MapBox extends React.Component<any, IMapBoxProps> {
         let latitude = position.coords.latitude;
         let longitude = position.coords.longitude;
 
-        let _markers = this.state.markers;
-        _markers[0].position = { lat: latitude, lng: longitude };
-        this.setState(prev => ({ ...prev, mapReady: true, markers: _markers }), () => { console.log(this.state) });
+        let _marker = this.state.marker;
+        _marker.position = { lat: latitude, lng: longitude };
+        this.setState(prev => ({ ...prev, mapReady: true, marker: _marker }));
     }
 
     geoError() {
@@ -71,15 +52,13 @@ export class MapBox extends React.Component<any, IMapBoxProps> {
     handleMapLoad(map) {
         this._mapComponent = map;
     }
+
     handleMapClick(event) {
+        let _marker = this.state.marker;
+        _marker.position = { lat: event.latLng.lat(), lng: event.latLng.lng() };
+        _marker.key = Date.now();
 
-        let _markers = this.state.markers;
-        _markers[0].position = event.latLng;
-        _markers[0].key = Date.now();
-
-        this.setState({
-            markers: _markers
-        });
+        this.setState({ marker: _marker });
     }
 
     render() {
@@ -103,7 +82,7 @@ export class MapBox extends React.Component<any, IMapBoxProps> {
                                 }
                                 onMapLoad={this.handleMapLoad}
                                 onMapClick={this.handleMapClick}
-                                markers={this.state.markers}
+                                marker={this.state.marker}
                             />) : null
                     }
                 </div>
