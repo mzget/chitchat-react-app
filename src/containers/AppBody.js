@@ -2,10 +2,10 @@
 exports.__esModule = true;
 var React = require("react");
 var Chat_1 = require("./Chat");
+var Post_1 = require("./Post");
 var ProfileDetailEnhancer_1 = require("./profile/ProfileDetailEnhancer");
 var AddMembers_1 = require("./roomSettings/AddMembers");
 var GroupDetailEnhancer_1 = require("./roomSettings/GroupDetailEnhancer");
-var MapBox_1 = require("./chat/MapBox");
 var getview = function (props) {
     var match = props.match, history = props.history, onError = props.onError, userReducer = props.userReducer;
     if (match.params.filter == "user") {
@@ -23,7 +23,7 @@ var getview = function (props) {
         }
     }
     else {
-        return React.createElement(MapBox_1.MapBox, null);
+        return React.createElement(Post_1.Post, null);
     }
 };
 exports.AppBody = function (props) { return (React.createElement("div", null,

@@ -29,7 +29,7 @@ var ChatBox_1 = require("./chat/ChatBox");
 var SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
 var UploadingDialog_1 = require("./UploadingDialog");
 var GridListSimple_1 = require("../components/GridListSimple");
-var MapBox_1 = require("./chat/MapBox");
+var MapDialog_1 = require("./chat/MapDialog");
 var StalkBridgeActions = require("../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
 var chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
 var chatroomRxEpic = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
@@ -297,13 +297,11 @@ var Chat = (function (_super) {
                     React.createElement(flexbox_react_1["default"], { flexDirection: "column", justifyContent: "flex-start", alignItems: "center", minWidth: "400px", style: { height: this.chatHeight } },
                         (this.state.earlyMessageReady) ?
                             React.createElement("p", { onClick: function () { return _this.onLoadEarlierMessages(); } }, "Load Earlier Messages!") : null,
-                        React.createElement(ChatBox_1.ChatBox, { value: this.state.messages, onSelected: function (message) { }, styles: { overflowY: "auto" } })),
-                    React.createElement(flexbox_react_1["default"], null,
-                        (this.state.openButtomMenu) ?
-                            React.createElement(GridListSimple_1.GridListSimple, { srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
-                            : null,
-                        (this.state.openMapDialog) ?
-                            React.createElement(MapBox_1.MapBox, null) : null)),
+                        React.createElement(ChatBox_1.ChatBox, { value: this.state.messages, onSelected: function (message) { }, styles: { overflowY: "auto" } }),
+                        React.createElement(MapDialog_1.MapDialog, { open: this.state.openMapDialog })),
+                    React.createElement(flexbox_react_1["default"], null, (this.state.openButtomMenu) ?
+                        React.createElement(GridListSimple_1.GridListSimple, { srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
+                        : null)),
                 React.createElement(flexbox_react_1["default"], { element: "footer", justifyContent: "center", alignContent: "stretch" },
                     React.createElement(TypingBox_1.TypingBox, { disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker, onLocation: this.onLocation }),
                     React.createElement(UploadingDialog_1["default"], null),

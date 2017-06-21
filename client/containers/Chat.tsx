@@ -14,6 +14,7 @@ import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import UploadingDialog from "./UploadingDialog";
 import { GridListSimple } from "../components/GridListSimple";
 import { MapBox } from "./chat/MapBox";
+import { MapDialog } from "./chat/MapDialog";
 
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
@@ -369,6 +370,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                             <ChatBox value={this.state.messages}
                                 onSelected={(message: IMessage) => { }}
                                 styles={{ overflowY: "auto" }} />
+                            <MapDialog open={this.state.openMapDialog} />
                         </Flexbox>
                         <Flexbox>
                             {
@@ -377,10 +379,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                                         srcs={imagesPath}
                                         onSelected={this.onSubmitStickerChat} />
                                     : null
-                            }
-                            {
-                                (this.state.openMapDialog) ?
-                                    <MapBox /> : null
                             }
                         </Flexbox>
                     </Flexbox>

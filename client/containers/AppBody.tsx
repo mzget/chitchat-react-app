@@ -6,8 +6,6 @@ import { ProfileDetailEnhanced } from "./profile/ProfileDetailEnhancer";
 import { AddMembersEnhanced } from "./roomSettings/AddMembers";
 import { GroupDetailEnhanced } from "./roomSettings/GroupDetailEnhancer";
 
-import { MapBox } from "./chat/MapBox";
-
 interface IAppBody { match, history, onError, userReducer }
 
 const getview = (props: IAppBody) => {
@@ -33,7 +31,7 @@ const getview = (props: IAppBody) => {
         }
     }
     else {
-        return <MapBox />
+        return <Post />
     }
 }
 
