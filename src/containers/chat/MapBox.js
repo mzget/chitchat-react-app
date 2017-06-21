@@ -31,8 +31,8 @@ var MapBox = (function (_super) {
         this.state = {
             marker: {
                 position: {
-                    lat: 0,
-                    lng: 0
+                    lat: 13,
+                    lng: 100
                 },
                 key: "",
                 defaultAnimation: 2
@@ -55,9 +55,7 @@ var MapBox = (function (_super) {
     MapBox.prototype.geoError = function () {
         console.log("Unable to retrieve your location");
     };
-    MapBox.prototype.handleMapLoad = function (map) {
-        this._mapComponent = map;
-    };
+    MapBox.prototype.handleMapLoad = function (map) { };
     MapBox.prototype.handleMapClick = function (event) {
         var _marker = this.state.marker;
         _marker.position = { lat: event.latLng.lat(), lng: event.latLng.lng() };
@@ -66,8 +64,8 @@ var MapBox = (function (_super) {
     };
     MapBox.prototype.render = function () {
         return (React.createElement(MuiThemeProvider_1["default"], null,
-            React.createElement("div", { id: "map" }, (this.state.mapReady) ? (React.createElement(GoogleMap_1.GettingStartedGoogleMap, { googleMapURL: "https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyCURNR7kARZEaHUchdx3MpEkX1azVlEO1E", loadingElement: React.createElement("div", { style: { height: "100%" } },
-                    React.createElement(CircularProgress_1["default"], null)), containerElement: React.createElement("div", { style: { height: 400, width: 400 } }), mapElement: React.createElement("div", { style: { height: "100%" } }), onMapLoad: this.handleMapLoad, onMapClick: this.handleMapClick, marker: this.state.marker })) : null)));
+            React.createElement("div", { id: "map" }, (this.state.mapReady) ? (React.createElement(GoogleMap_1.SimpleGoogleMap, { googleMapURL: "https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyCURNR7kARZEaHUchdx3MpEkX1azVlEO1E", loadingElement: React.createElement("div", { style: { height: "100%" } },
+                    React.createElement(CircularProgress_1["default"], null)), containerElement: React.createElement("div", { style: { height: 400, width: 400 } }), mapElement: React.createElement("div", { style: { height: "100%" } }), onMapLoad: this.handleMapLoad, onMapClick: this.handleMapClick, marker: this.state.marker })) : React.createElement(CircularProgress_1["default"], null))));
     };
     return MapBox;
 }(React.Component));

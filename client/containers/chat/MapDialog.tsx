@@ -9,47 +9,36 @@ import { MapBox } from "./MapBox";
 
 interface IMapDialogProps {
     open: boolean;
+    onClose: () => void;
 }
 
-export class MapDialog extends React.Component<IMapDialogProps, any> {
+const actions = (props) => [
+    <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={props.onClose}
+    />,
+    <FlatButton
+        label="Submit"
+        primary={true}
+        disabled={true}
+        onTouchTap={props.onClose}
+    />,
+];
 
-    componentWillMount() {
-    }
-
-    handleOpen() { }
-
-    handleClose() { }
-
-    render() {
-        const actions = [
-            <FlatButton
-                label="Cancel"
-                primary={true}
-                onTouchTap={this.handleClose}
-            />,
-            <FlatButton
-                label="Submit"
-                primary={true}
-                disabled={true}
-                onTouchTap={this.handleClose}
-            />,
-        ];
-
-        return (
-            <div>
-                <Dialog
-                    title="Map Dialog"
-                    actions={actions}
-                    modal={true}
-                    open={this.props.open}
-                    contentStyle={{
-                        width: 480,
-                        height: 600
-                    }}
-                >
-                    <MapBox />
-                </Dialog>
-            </div>
-        );
-    }
-}
+export const MapDialog = (props: IMapDialogProps) => (
+    <div>
+        <Dialog
+            title="Map Dialog"
+            actions={actions(props)}
+            modal={true}
+            open={props.open}
+            contentStyle={{
+                width: 480,
+                height: 600
+            }}
+        >
+            <MapBox />
+        </Dialog>
+    </div>
+);

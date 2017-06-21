@@ -346,7 +346,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     onLocation() {
         this.setState(previousState => ({
             ...previousState,
-            openMapDialog: true
+            openMapDialog: !previousState.openMapDialog
         }));
     }
 
@@ -370,7 +370,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                             <ChatBox value={this.state.messages}
                                 onSelected={(message: IMessage) => { }}
                                 styles={{ overflowY: "auto" }} />
-                            <MapDialog open={this.state.openMapDialog} />
+                            <MapDialog open={this.state.openMapDialog} onClose={this.onLocation} />
                         </Flexbox>
                         <Flexbox>
                             {

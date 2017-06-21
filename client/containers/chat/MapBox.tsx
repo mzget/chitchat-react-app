@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
+import { withGoogleMap, Marker } from "react-google-maps";
 import withScriptjs from "react-google-maps/lib/async/withScriptjs";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import CircularProgress from 'material-ui/CircularProgress';
 
-import { GettingStartedGoogleMap } from "../../components/Maps/GoogleMap";
+import { SimpleGoogleMap } from "../../components/Maps/GoogleMap";
 
 
 interface IMapBoxProps {
@@ -18,8 +18,8 @@ export class MapBox extends React.Component<any, IMapBoxProps> {
         this.state = {
             marker: {
                 position: {
-                    lat: 0,
-                    lng: 0,
+                    lat: 13,
+                    lng: 100,
                 },
                 key: "",
                 defaultAnimation: 2,
@@ -49,9 +49,7 @@ export class MapBox extends React.Component<any, IMapBoxProps> {
     }
 
 
-    handleMapLoad(map) {
-        this._mapComponent = map;
-    }
+    handleMapLoad(map) { }
 
     handleMapClick(event) {
         let _marker = this.state.marker;
@@ -67,7 +65,7 @@ export class MapBox extends React.Component<any, IMapBoxProps> {
                 <div id="map">
                     {
                         (this.state.mapReady) ? (
-                            <GettingStartedGoogleMap
+                            <SimpleGoogleMap
                                 googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyCURNR7kARZEaHUchdx3MpEkX1azVlEO1E"
                                 loadingElement={
                                     <div style={{ height: `100%` }}>
@@ -83,7 +81,7 @@ export class MapBox extends React.Component<any, IMapBoxProps> {
                                 onMapLoad={this.handleMapLoad}
                                 onMapClick={this.handleMapClick}
                                 marker={this.state.marker}
-                            />) : null
+                            />) : <CircularProgress />
                     }
                 </div>
             </MuiThemeProvider>

@@ -285,7 +285,7 @@ var Chat = (function (_super) {
         });
     };
     Chat.prototype.onLocation = function () {
-        this.setState(function (previousState) { return (__assign({}, previousState, { openMapDialog: true })); });
+        this.setState(function (previousState) { return (__assign({}, previousState, { openMapDialog: !previousState.openMapDialog })); });
     };
     // {/*height="calc(100vh - 56px - 52px - 52px)"*/}
     Chat.prototype.render = function () {
@@ -298,7 +298,7 @@ var Chat = (function (_super) {
                         (this.state.earlyMessageReady) ?
                             React.createElement("p", { onClick: function () { return _this.onLoadEarlierMessages(); } }, "Load Earlier Messages!") : null,
                         React.createElement(ChatBox_1.ChatBox, { value: this.state.messages, onSelected: function (message) { }, styles: { overflowY: "auto" } }),
-                        React.createElement(MapDialog_1.MapDialog, { open: this.state.openMapDialog })),
+                        React.createElement(MapDialog_1.MapDialog, { open: this.state.openMapDialog, onClose: this.onLocation })),
                     React.createElement(flexbox_react_1["default"], null, (this.state.openButtomMenu) ?
                         React.createElement(GridListSimple_1.GridListSimple, { srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
                         : null)),

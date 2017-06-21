@@ -10,7 +10,7 @@ interface IGoogleMapProps {
 
 // Wrap all `react-google-maps` components with `withGoogleMap` HOC
 // and name it GettingStartedGoogleMap
-export const GettingStartedGoogleMap = withScriptjs(withGoogleMap((props: IGoogleMapProps) => {
+export const SimpleGoogleMap = withScriptjs(withGoogleMap((props: IGoogleMapProps) => {
     console.log("GoogleMap", props.marker);
     return (
         <GoogleMap
