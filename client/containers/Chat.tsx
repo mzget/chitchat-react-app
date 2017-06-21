@@ -13,19 +13,18 @@ import { ChatBox } from "./chat/ChatBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import UploadingDialog from "./UploadingDialog";
 import { GridListSimple } from "../components/GridListSimple";
+import { MapBox } from "./chat/MapBox";
 
-import { IComponentProps } from "../utils/IComponentProps";
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
 import * as chatroomRxEpic from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
-
 import { MessageType, IMessage } from "../chitchat/shared/Message";
 import { MessageImp } from "../chitchat/chats/models/MessageImp";
-
 import { imagesPath } from "../chitchat/consts/StickerPath";
 import * as FileType from "../chitchat/shared/FileType";
 
 import { decorateMessage } from "../actions/chatroom/chatroomMessageUtils";
+import { IComponentProps } from "../utils/IComponentProps";
 
 interface IComponentNameState {
     messages: any[];
@@ -33,6 +32,7 @@ interface IComponentNameState {
     typingText: string;
     earlyMessageReady;
     openButtomMenu: boolean;
+    openMapDialog: boolean;
     onAlert: boolean;
 }
 
@@ -52,6 +52,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             isLoadingEarlierMessages: false,
             earlyMessageReady: false,
             openButtomMenu: false,
+            openMapDialog: false,
             onAlert: false
         };
 
@@ -63,6 +64,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.roomInitialize = this.roomInitialize.bind(this);
         this.onToggleSticker = this.onToggleSticker.bind(this);
         this.fileReaderChange = this.fileReaderChange.bind(this);
+        this.onLocation = this.onLocation.bind(this);
 
         let { chatroomReducer, userReducer, match: { params } } = this.props;
 
@@ -340,6 +342,13 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         });
     }
 
+    onLocation() {
+        this.setState(previousState => ({
+            ...previousState,
+            openMapDialog: true
+        }));
+    }
+
     // {/*height="calc(100vh - 56px - 52px - 52px)"*/}
 
     render(): JSX.Element {
@@ -369,6 +378,10 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                                         onSelected={this.onSubmitStickerChat} />
                                     : null
                             }
+                            {
+                                (this.state.openMapDialog) ?
+                                    <MapBox /> : null
+                            }
                         </Flexbox>
                     </Flexbox>
                     <Flexbox element="footer" justifyContent="center" alignContent="stretch" >
@@ -378,7 +391,8 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                             onValueChange={this.onTypingTextChange}
                             value={this.state.typingText}
                             fileReaderChange={this.fileReaderChange}
-                            onSticker={this.onToggleSticker} />
+                            onSticker={this.onToggleSticker}
+                            onLocation={this.onLocation} />
                         <UploadingDialog />
                         <SnackbarToolBox />
                     </Flexbox>
