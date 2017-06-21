@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *

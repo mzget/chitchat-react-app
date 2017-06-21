@@ -22,7 +22,7 @@ const getPrivateGroupFailure = (err) => ({ type: GET_PRIVATE_GROUP_FAILURE, payl
 const getPrivateGroupCancelled = () => ({ type: GET_PRIVATE_GROUP_CANCELLED });
 export const getPrivateGroup_Epic = action$ => (
     action$.ofType(GET_PRIVATE_GROUP)
-        .mergeMap(action => ajax.getJSON(`${config().api.group}/private_group`,
+        .mergeMap(action => ajax.getJSON(`${config().api.group}/private_group?team_id=${action.payload}`,
             { "x-access-token": Store.getState().authReducer.token })
             .map(response => getPrivateGroupSuccess(response))
             .takeUntil(action$.ofType(GET_PRIVATE_GROUP_CANCELLED))

@@ -1,9 +1,14 @@
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -12,10 +17,12 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
+exports.__esModule = true;
 var React = require("react");
 var react_redux_1 = require("react-redux");
 var flexbox_react_1 = require("flexbox-react");
 var MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
+var Colors = require("material-ui/styles/colors");
 var teamRx = require("../redux/team/teamRx");
 var authRx = require("../redux/authen/authRx");
 var TeamListBox_1 = require("./teams/TeamListBox");
@@ -58,13 +65,17 @@ var Team = (function (_super) {
     };
     Team.prototype.render = function () {
         return (React.createElement(MuiThemeProvider_1["default"], null,
-            React.createElement(flexbox_react_1["default"], { flexDirection: "column", minHeight: "100vh" },
+            React.createElement(flexbox_react_1["default"], { flexDirection: "column", minHeight: "100vh", style: { backgroundColor: Colors.blueGrey50 } },
                 React.createElement(flexbox_react_1["default"], { element: "header" },
                     React.createElement("div", { style: { width: "100%" } },
                         React.createElement(SimpleToolbar_1.SimpleToolbar, { title: this.toolbar, menus: ["logout"], onSelectedMenuItem: this.onToolbarMenuItem }))),
-                React.createElement(flexbox_react_1["default"], { flexDirection: "column", flexGrow: 1 },
-                    React.createElement(TeamListBox_1.TeamListBox, { teams: this.props.teamReducer.teams, onSelectTeam: this.onSelectTeam }),
-                    React.createElement(TeamCreateBox_1.TeamCreateBox, __assign({}, this.props))),
+                React.createElement(flexbox_react_1["default"], { flexDirection: "row" },
+                    React.createElement(flexbox_react_1["default"], { flexGrow: 1 }),
+                    React.createElement(flexbox_react_1["default"], { flexDirection: "column", justifyContent: "center", flexGrow: 1 },
+                        React.createElement(TeamListBox_1.TeamListBox, { teams: this.props.teamReducer.teams, onSelectTeam: this.onSelectTeam }),
+                        React.createElement(TeamCreateBox_1.TeamCreateBox, __assign({}, this.props))),
+                    React.createElement(flexbox_react_1["default"], { flexGrow: 1 })),
+                React.createElement(flexbox_react_1["default"], { flexGrow: 1 }),
                 React.createElement(flexbox_react_1["default"], { element: "footer" },
                     React.createElement(StalkComponent_1.StalkCompEnhancer, null)))));
     };

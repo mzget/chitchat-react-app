@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var Chat_1 = require("./Chat");
 var Post_1 = require("./Post");

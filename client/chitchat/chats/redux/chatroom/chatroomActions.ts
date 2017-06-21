@@ -47,9 +47,6 @@ export class ChatRoomActionsType {
     static ON_EARLY_MESSAGE_READY = "ON_EARLY_MESSAGE_READY";
 }
 
-export const CHATROOM_REDUCER_EMPTY_STATE = "CHATROOM_REDUCER_EMPTY_STATE";
-export const emptyState = () => ({ type: CHATROOM_REDUCER_EMPTY_STATE });
-
 export function initChatRoom(currentRoom: Room) {
     if (!currentRoom) { throw new Error("Empty roomInfo"); }
 
@@ -205,15 +202,6 @@ const send_message_failure = (error?: any) => ({ type: ChatRoomActionsType.SEND_
 export function sendMessage(message: IMessage) {
     return (dispatch) => {
         dispatch(send_message_request());
-
-        if (message.type === MessageType[MessageType.Location]) {
-            let backendFactory = BackendFactory.getInstance();
-            let chatApi = backendFactory.getServer().getChatRoomAPI();
-            chatApi.chat("*", message, (err, res) => {
-                dispatch(sendMessageResponse(err, res));
-            });
-            return;
-        }
 
         if (message.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption === true) {
             secure.encryption(message.body).then(result => {

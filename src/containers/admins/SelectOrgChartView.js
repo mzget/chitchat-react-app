@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var SelectField_1 = require("material-ui/SelectField");
 var MenuItem_1 = require("material-ui/MenuItem");

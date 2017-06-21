@@ -1,9 +1,10 @@
+"use strict";
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
  * This is pure function action for redux app.
  */
-"use strict";
+exports.__esModule = true;
 var BackendFactory_1 = require("../../BackendFactory");
 var ChatRoomComponent_1 = require("../../ChatRoomComponent");
 function stalkPushInit() {

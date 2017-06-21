@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var IconMenu_1 = require("material-ui/IconMenu");
 var IconButton_1 = require("material-ui/IconButton");

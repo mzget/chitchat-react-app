@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var ServiceProvider_1 = require("../chitchat/chats/services/ServiceProvider");
 test('getLastAccessRoomInfo', function () {
     var chitchatFactory = require("../Chitchat").chitchatFactory;

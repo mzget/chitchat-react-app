@@ -1,9 +1,10 @@
+"use strict";
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
  * This is pure function for redux app.
  */
-"use strict";
+exports.__esModule = true;
 var chatroomActions_1 = require("./chatroomActions");
 var chatroomRxActions = require("./chatroomRxEpic");
 var chatroomActions = require("./chatroomActions");

@@ -7,6 +7,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
+exports.__esModule = true;
 var React = require("react");
 var react_redux_1 = require("react-redux");
 var recompose_1 = require("recompose");

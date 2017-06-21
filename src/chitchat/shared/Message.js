@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var MessageType;
 (function (MessageType) {
     MessageType[MessageType["Text"] = 0] = "Text";

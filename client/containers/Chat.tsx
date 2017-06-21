@@ -13,19 +13,20 @@ import { ChatBox } from "./chat/ChatBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
 import UploadingDialog from "./UploadingDialog";
 import { GridListSimple } from "../components/GridListSimple";
+import { MapBox } from "./chat/MapBox";
+import { MapDialog } from "./chat/MapDialog";
+import { Point } from "./chat/MapBox";
 
-import { IComponentProps } from "../utils/IComponentProps";
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
 import * as chatroomRxEpic from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
-
 import { MessageType, IMessage } from "../chitchat/shared/Message";
 import { MessageImp } from "../chitchat/chats/models/MessageImp";
-
 import { imagesPath } from "../chitchat/consts/StickerPath";
 import * as FileType from "../chitchat/shared/FileType";
 
-import { decorateMessage } from "../actions/chatroom/chatroomMessageUtils";
+import { decorateMessage, IMessageDecorator } from "../actions/chatroom/chatroomMessageUtils";
+import { IComponentProps } from "../utils/IComponentProps";
 
 interface IComponentNameState {
     messages: any[];
@@ -33,6 +34,7 @@ interface IComponentNameState {
     typingText: string;
     earlyMessageReady;
     openButtomMenu: boolean;
+    openMapDialog: boolean;
     onAlert: boolean;
 }
 
@@ -44,6 +46,22 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     clientHeight = document.documentElement.clientHeight;
     chatHeight = null;
     stickerBox = 204;
+    tempLocation: Point;
+
+    constructor(props) {
+        super(props);
+
+        this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
+        this.onTypingTextChange = this.onTypingTextChange.bind(this);
+        this.onSubmitStickerChat = this.onSubmitStickerChat.bind(this);
+        this.roomInitialize = this.roomInitialize.bind(this);
+        this.onToggleSticker = this.onToggleSticker.bind(this);
+        this.fileReaderChange = this.fileReaderChange.bind(this);
+
+        this.onLocation = this.onLocation.bind(this);
+        this.onLocationChange = this.onLocationChange.bind(this);
+        this.onSubmitPosition = this.onSubmitPosition.bind(this);
+    }
 
     componentWillMount() {
         this.state = {
@@ -52,17 +70,11 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             isLoadingEarlierMessages: false,
             earlyMessageReady: false,
             openButtomMenu: false,
+            openMapDialog: false,
             onAlert: false
         };
 
         this.chatHeight = this.clientHeight - (56 + 52 + 52);
-
-        this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
-        this.onTypingTextChange = this.onTypingTextChange.bind(this);
-        this.onSubmitStickerChat = this.onSubmitStickerChat.bind(this);
-        this.roomInitialize = this.roomInitialize.bind(this);
-        this.onToggleSticker = this.onToggleSticker.bind(this);
-        this.fileReaderChange = this.fileReaderChange.bind(this);
 
         let { chatroomReducer, userReducer, match: { params } } = this.props;
 
@@ -158,12 +170,10 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
             case chatroomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
                 // this.setMessageStatus(chatroomReducer.responseMessage.uuid, "ErrorButton");
-                this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
             case chatroomActions.ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
                 this.setMessageTemp(chatroomReducer.responseMessage);
-                this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
             case chatroomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
@@ -293,7 +303,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.prepareSend(msg);
     }
 
-    prepareSend(msg) {
+    prepareSend(msg: IMessageDecorator) {
         let message = decorateMessage(msg);
         this.send(message);
 
@@ -340,8 +350,24 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         });
     }
 
-    // {/*height="calc(100vh - 56px - 52px - 52px)"*/}
+    onLocation() {
+        this.setState(previousState => ({
+            ...previousState,
+            openMapDialog: !previousState.openMapDialog
+        }));
+    }
+    onLocationChange(position: Point) {
+        this.tempLocation = position;
+    }
+    onSubmitPosition() {
+        let message = { position: this.tempLocation };
+        this.tempLocation = null;
 
+        this.onLocation();
+        this.prepareSend(message);
+    }
+
+    // {/*height="calc(100vh - 56px - 52px - 52px)"*/}
     render(): JSX.Element {
         let { chatroomReducer, stalkReducer } = this.props;
 
@@ -360,6 +386,10 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                             <ChatBox value={this.state.messages}
                                 onSelected={(message: IMessage) => { }}
                                 styles={{ overflowY: "auto" }} />
+                            <MapDialog open={this.state.openMapDialog}
+                                onClose={this.onLocation}
+                                onSubmit={this.onSubmitPosition}
+                                onLocationChange={this.onLocationChange} />
                         </Flexbox>
                         <Flexbox>
                             {
@@ -378,7 +408,8 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                             onValueChange={this.onTypingTextChange}
                             value={this.state.typingText}
                             fileReaderChange={this.fileReaderChange}
-                            onSticker={this.onToggleSticker} />
+                            onSticker={this.onToggleSticker}
+                            onLocation={this.onLocation} />
                         <UploadingDialog />
                         <SnackbarToolBox />
                     </Flexbox>

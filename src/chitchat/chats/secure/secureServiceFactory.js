@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var nodeSecureService_1 = require("./nodeSecureService");
 /**
  * SecureServiceFactory
@@ -11,5 +12,4 @@ var SecureServiceFactory = (function () {
     };
     return SecureServiceFactory;
 }());
-exports.__esModule = true;
 exports["default"] = SecureServiceFactory;

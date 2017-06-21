@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var flexbox_react_1 = require("flexbox-react");
 var Colors = require("material-ui/styles/colors");

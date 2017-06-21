@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var Subheader_1 = require("material-ui/Subheader");
 var RaisedButton_1 = require("material-ui/RaisedButton");

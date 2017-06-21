@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var FontAwesome = require("react-fontawesome");
 var List_1 = require("material-ui/List");
@@ -9,6 +10,7 @@ var CardTextWithAvatar_1 = require("../../components/CardTextWithAvatar");
 var CardImageWithAvatar_1 = require("../../components/CardImageWithAvatar");
 var CardFileWithAvatar_1 = require("../../components/CardFileWithAvatar");
 var CardVideoWithAvatar_1 = require("../../components/CardVideoWithAvatar");
+var CardMapWithAvatar_1 = require("../../components/Cards/CardMapWithAvatar");
 var configureStore_1 = require("../../redux/configureStore");
 ;
 exports.ChatBox = function (props) { return (React.createElement(MuiThemeProvider_1["default"], null,
@@ -71,6 +73,12 @@ var renderList = function (props) {
                                 React.createElement(Avatar_1["default"], null, message.user.username.charAt(0)), cardText: message.body, fileIcon: exports.getFontIcon(message), openAction: function () {
                                 window.open(message.src, "_blank");
                             }, readers: (!!message.readers && message.readers.length > 0) ? "Read " + message.readers.length : null, onClickReader: function () { return onClickReader(message); } }) }));
+                }
+            case Message_1.MessageType[Message_1.MessageType.Location]:
+                {
+                    return (React.createElement(List_1.ListItem, { key: i, style: { margin: "5px" }, containerElement: React.createElement(CardMapWithAvatar_1.CardMapWithAvatar, { title: message.user.username, subtitle: (message.createTime) ? message.createTime.toString() : "", avatar: (message.user.avatar) ?
+                                React.createElement(Avatar_1["default"], { src: message.user.avatar }) :
+                                React.createElement(Avatar_1["default"], null, message.user.username.charAt(0)), content: { position: message.body }, fileIcon: exports.getFontIcon(message), readers: (!!message.readers && message.readers.length > 0) ? "Read " + message.readers.length : null, onClickReader: function () { return onClickReader(message); } }) }));
                 }
             default:
                 break;

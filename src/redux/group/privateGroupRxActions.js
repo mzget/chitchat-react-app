@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var Rx = require("rxjs");
 var ajax = Rx.Observable.ajax, AjaxResponse = Rx.AjaxResponse;
 var ChitchatFactory_1 = require("../../chitchat/chats/ChitchatFactory");
@@ -15,7 +16,7 @@ var getPrivateGroupSuccess = function (payload) { return ({ type: exports.GET_PR
 var getPrivateGroupFailure = function (err) { return ({ type: exports.GET_PRIVATE_GROUP_FAILURE, payload: err }); };
 var getPrivateGroupCancelled = function () { return ({ type: GET_PRIVATE_GROUP_CANCELLED }); };
 exports.getPrivateGroup_Epic = function (action$) { return (action$.ofType(GET_PRIVATE_GROUP)
-    .mergeMap(function (action) { return ajax.getJSON(config().api.group + "/private_group", { "x-access-token": configureStore_1["default"].getState().authReducer.token })
+    .mergeMap(function (action) { return ajax.getJSON(config().api.group + "/private_group?team_id=" + action.payload, { "x-access-token": configureStore_1["default"].getState().authReducer.token })
     .map(function (response) { return getPrivateGroupSuccess(response); })
     .takeUntil(action$.ofType(GET_PRIVATE_GROUP_CANCELLED))["catch"](function (error) { return Rx.Observable.of(getPrivateGroupFailure(error.xhr.response)); })["do"](function (response) {
     if (response.type == exports.GET_PRIVATE_GROUP_SUCCESS) {

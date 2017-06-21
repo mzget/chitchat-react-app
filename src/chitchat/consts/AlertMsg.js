@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 exports.stalkInitFail = {
     title: "Stalk Service!",
     message: "Fail to connect to Stalk service."

@@ -1,3 +1,4 @@
+"use strict";
 /**
  *  NotificationManager
  *
@@ -6,7 +7,7 @@
  * The NotificationManager for react.js.
  *
  */
-"use strict";
+exports.__esModule = true;
 var BackendFactory_1 = require("../../BackendFactory");
 var CryptoHelper = require("../../utils/CryptoHelper");
 var Message_1 = require("../../../shared/Message");

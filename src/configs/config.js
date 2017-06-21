@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var chitchat_api = function (host) { return ({
     apiKey: "chitchat1234",
     host: "" + host,

@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var ChitchatFactory_1 = require("../../chitchat/chats/ChitchatFactory");
 var immutable_1 = require("immutable");
 var redux_actions_1 = require("redux-actions");

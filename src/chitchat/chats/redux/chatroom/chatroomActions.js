@@ -1,9 +1,9 @@
+"use strict";
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
  * This is pure function action for redux app.
  */
-"use strict";
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -21,8 +21,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t;
-    return { next: verb(0), "throw": verb(1), "return": verb(2) };
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -47,6 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+exports.__esModule = true;
 var R = require("ramda");
 var redux_actions_1 = require("redux-actions");
 var stalk_js_1 = require("stalk-js");
@@ -80,8 +81,6 @@ ChatRoomActionsType.SEND_MESSAGE_FAILURE = "SEND_MESSAGE_FAILURE";
 ChatRoomActionsType.REPLACE_MESSAGE = "REPLACE_MESSAGE";
 ChatRoomActionsType.ON_EARLY_MESSAGE_READY = "ON_EARLY_MESSAGE_READY";
 exports.ChatRoomActionsType = ChatRoomActionsType;
-exports.CHATROOM_REDUCER_EMPTY_STATE = "CHATROOM_REDUCER_EMPTY_STATE";
-exports.emptyState = function () { return ({ type: exports.CHATROOM_REDUCER_EMPTY_STATE }); };
 function initChatRoom(currentRoom) {
     if (!currentRoom) {
         throw new Error("Empty roomInfo");
@@ -238,14 +237,6 @@ var send_message_failure = function (error) { return ({ type: ChatRoomActionsTyp
 function sendMessage(message) {
     return function (dispatch) {
         dispatch(send_message_request());
-        if (message.type === Message_1.MessageType[Message_1.MessageType.Location]) {
-            var backendFactory = BackendFactory_1.BackendFactory.getInstance();
-            var chatApi = backendFactory.getServer().getChatRoomAPI();
-            chatApi.chat("*", message, function (err, res) {
-                dispatch(sendMessageResponse(err, res));
-            });
-            return;
-        }
         if (message.type === Message_1.MessageType[Message_1.MessageType.Text] && getConfig().appConfig.encryption === true) {
             secure.encryption(message.body).then(function (result) {
                 message.body = result;

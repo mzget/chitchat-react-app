@@ -14,10 +14,11 @@ import { CardTextWithAvatar } from "../../components/CardTextWithAvatar";
 import { CardImageWithAvatar, CardStickerWithAvatar } from "../../components/CardImageWithAvatar";
 import { CardFileWithAvatar } from "../../components/CardFileWithAvatar";
 import { CardVideoWithAvatar } from "../../components/CardVideoWithAvatar";
+import { CardMapWithAvatar } from "../../components/Cards/CardMapWithAvatar";
 
 import configureStore from "../../redux/configureStore";
 
-interface MyProps {
+interface IChatBoxProps {
     value: Array<MessageImp>;
     onSelected: (item) => void;
 
@@ -25,7 +26,7 @@ interface MyProps {
 };
 
 
-export const ChatBox = (props: MyProps) => (
+export const ChatBox = (props: IChatBoxProps) => (
     <MuiThemeProvider>
         <List style={props.styles} id={"chatbox"}>
             {(!!props.value) ? renderList(props) : null}
@@ -58,7 +59,7 @@ export const getFontIcon = (message: MessageImp) => {
 const onClickReader = (message: MessageImp) => {
     console.log(message);
 }
-const renderList = (props: MyProps) => {
+const renderList = (props: IChatBoxProps) => {
     let _store = configureStore as Store<any>;
 
     return props.value.map((message, i, arr) => {
@@ -152,6 +153,27 @@ const renderList = (props: MyProps) => {
                                 openAction={() => {
                                     window.open(message.src, "_blank");
                                 }}
+                                readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null}
+                                onClickReader={() => onClickReader(message)} />
+                        }>
+                        </ListItem>
+                    );
+                }
+            case MessageType[MessageType.Location]:
+                {
+                    return (
+                        <ListItem key={i} style={{ margin: "5px" }} containerElement={
+                            <CardMapWithAvatar
+                                title={message.user.username}
+                                subtitle={(message.createTime) ? message.createTime.toString() : ""}
+                                avatar={(message.user.avatar) ?
+                                    <Avatar src={message.user.avatar} /> :
+                                    <Avatar>{message.user.username.charAt(0)}</Avatar>
+                                }
+                                content={{ position: message.body }}
+                                fileIcon={
+                                    getFontIcon(message)
+                                }
                                 readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null}
                                 onClickReader={() => onClickReader(message)} />
                         }>

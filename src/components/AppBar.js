@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var AppBar_1 = require("material-ui/AppBar");
 var MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
@@ -8,5 +9,4 @@ var MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
  */
 var AppBarIcon = function (props) { return (React.createElement(MuiThemeProvider_1["default"], null,
     React.createElement(AppBar_1["default"], { title: props.title, showMenuIconButton: false }))); };
-exports.__esModule = true;
 exports["default"] = AppBarIcon;

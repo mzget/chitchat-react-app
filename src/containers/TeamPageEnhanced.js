@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var Team_1 = require("./Team");
 var DialogBoxEnhancer_1 = require("./toolsbox/DialogBoxEnhancer");

@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var ChitChatFactory = (function () {
     function ChitChatFactory() {
         this.appStore = { appState: "active" }; // active, background, inactive

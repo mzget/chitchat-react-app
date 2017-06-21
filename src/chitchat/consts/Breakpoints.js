@@ -1,3 +1,4 @@
+"use strict";
 /**
  * Breakpoints
  * For optimal user experience, material design user interfaces should adapt layouts for the following breakpoint widths:
@@ -5,7 +6,7 @@
  *
  * https://material.io/guidelines/layout/responsive-ui.html#
  */
-"use strict";
+exports.__esModule = true;
 exports.XSMALL_WINDOW = 600;
 exports.SMALL_WINDOW = 840;
 exports.MEDIUM_WINDOW = 960;

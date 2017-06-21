@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var store = require("react-native-simple-store");
 var NodeMessageDAL = (function () {
     function NodeMessageDAL() {

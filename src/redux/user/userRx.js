@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var redux_actions_1 = require("redux-actions");
 var Rx = require("rxjs/Rx");
 var ajax = Rx.Observable.ajax;
@@ -141,7 +142,13 @@ exports.suggestUser_Epic = function (action$) {
     return action$.ofType(exports.SUGGEST_USER)
         .mergeMap(function (action) { return UserService.suggestUser(action.payload.username, action.payload.team_id)
         .map(function (response) { return exports.suggestUserSuccess(response.xhr.response); })
-        .takeUntil(action$.ofType(exports.SUGGEST_USER_CANCELLED))["catch"](function (error) { return Rx.Observable.of(exports.suggestUserFailure(error.xhr.response)); }); });
+        .takeUntil(action$.ofType(exports.SUGGEST_USER_CANCELLED))["catch"](function (error) { return Rx.Observable.of(exports.suggestUserFailure(error.xhr.response)); }); }
+    // .do(x => {
+    //     if (x.type == SUGGEST_USER_SUCCESS) {
+    //         let members = x.payload as Array<ChitChatAccount>;
+    //     }
+    // })
+    );
 };
 exports.USERRX_EMPTY_STATE = "USERRX_EMPTY_STATE";
 exports.emptyState = redux_actions_1.createAction(exports.USERRX_EMPTY_STATE);

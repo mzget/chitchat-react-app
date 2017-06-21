@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var recompose_1 = require("recompose");
 var chatroomActions = require("../../chitchat/chats/redux/chatroom/chatroomActions");
 exports.GroupListEnhancer = recompose_1.compose(recompose_1.lifecycle({

@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var Rx = require("rxjs/Rx");
 var fetch = require("isomorphic-fetch");
 var ChitchatFactory_1 = require("../ChitchatFactory");

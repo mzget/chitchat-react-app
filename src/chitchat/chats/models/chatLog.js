@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var ChatLog = (function () {
     function ChatLog(room) {
         this.id = room._id;
@@ -17,5 +18,4 @@ var ChatLog = (function () {
     };
     return ChatLog;
 }());
-exports.__esModule = true;
 exports["default"] = ChatLog;

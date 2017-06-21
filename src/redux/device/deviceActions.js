@@ -1,3 +1,4 @@
+"use strict";
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
@@ -11,7 +12,7 @@
  * What version is the app?
  *
  */
-"use strict";
+exports.__esModule = true;
 // import NotificationManager from '../../chats/notificationManager';
 var DeviceActionsType = (function () {
     function DeviceActionsType() {

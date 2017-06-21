@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var DataListener = (function () {
     function DataListener(dataManager) {
         var _this = this;

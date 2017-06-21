@@ -1,9 +1,10 @@
+"use strict";
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
  *  RoomDAL.ts
  */
-"use strict";
+exports.__esModule = true;
 var localForage = require("localforage");
 var RoomDAL = (function () {
     function RoomDAL() {

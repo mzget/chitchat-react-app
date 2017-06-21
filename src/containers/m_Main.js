@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 var React = require("react");
 var MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
 var ProfileBox_1 = require("./profile/ProfileBox");

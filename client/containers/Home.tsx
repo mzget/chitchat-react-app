@@ -16,6 +16,7 @@ import * as AppActions from "../redux/app/persistentDataActions";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { AuthenBox } from "./authen/AuthenBox";
 
+
 interface IComponentNameState {
     alert: boolean;
 }
@@ -100,7 +101,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
                 <div id={"toolbar"} style={{ height: this.headerHeight }}>
                     <SimpleToolbar title={"ChitChat team communication."} />
                 </div>
-                <div id={"app_body"} style={{ backgroundColor: Colors.indigo50, height: this.bodyHeight }}>
+                <div id={"app_body"} style={{ backgroundColor: Colors.blueGrey50, height: this.bodyHeight }}>
                     <Flex flexColumn={true} >
                         <Flex align="center">
                             <Box p={2} flexAuto></Box>
@@ -117,7 +118,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
                 </div>
                 <div id={"app_footer"} style={{
                     width: this.clientWidth, height: this.footerHeight,
-                    fontSize: 16, textAlign: "center", backgroundColor: Colors.indigo50
+                    fontSize: 16, textAlign: "center", backgroundColor: Colors.blueGrey50
                 }}>
                     <Flex px={2} align="center" justify="center">
                         <span>Powered by Stalk realtime communication API.</span>

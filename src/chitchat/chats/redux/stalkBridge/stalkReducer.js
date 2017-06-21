@@ -1,9 +1,10 @@
+"use strict";
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
  * This is pure function for redux app.
  */
-"use strict";
+exports.__esModule = true;
 var StalkBridgeActions = require("../stalkBridge/stalkBridgeActions");
 var StalkNotificationActions = require("./StalkNotificationActions");
 var immutable_1 = require("immutable");
