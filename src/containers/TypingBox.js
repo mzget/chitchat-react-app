@@ -28,10 +28,13 @@ var SendButton = function (props) { return (React.createElement(IconButton_1["de
     React.createElement(FontIcon_1["default"], { className: "material-icons" }, "send"))); };
 var StickerButton = function (props) { return (React.createElement(IconButton_1["default"], { onClick: props.onSticker, disabled: props.disabled },
     React.createElement(FontIcon_1["default"], { className: "material-icons" }, "insert_emoticon"))); };
+var PlaceButton = function (props) { return (React.createElement(IconButton_1["default"], { onClick: props.onLocation, disabled: props.disabled },
+    React.createElement(FontIcon_1["default"], { className: "material-icons" }, "place"))); };
 exports.TypingBox = function (props) {
     return (React.createElement(MuiThemeProvider_1["default"], null,
         React.createElement("div", { id: "typing_box", style: { margin: 2, backgroundColor: Colors.darkWhite } },
             React.createElement(reflexbox_1.Flex, null,
+                React.createElement(PlaceButton, __assign({}, props)),
                 React.createElement(StickerButton, __assign({}, props)),
                 React.createElement(FileReaderBox, __assign({}, props)),
                 React.createElement(material_ui_1.TextField, { disabled: props.disabled, hintText: (props.disabled) ? "Chat room disabled!" : "Type your message", value: props.value, onChange: props.onValueChange, onKeyDown: function (e) {

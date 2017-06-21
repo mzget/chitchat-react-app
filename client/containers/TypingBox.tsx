@@ -17,6 +17,7 @@ const styles = {
 interface ITypingBox {
     onSubmit: () => void;
     onSticker?: () => void;
+    onLocation?: () => void;
     value: string;
     onValueChange: (text) => void;
     fileReaderChange: (e, results) => void;
@@ -44,11 +45,18 @@ const StickerButton = (props: ITypingBox) => (
     </IconButton>
 );
 
+const PlaceButton = (props: ITypingBox) => (
+    <IconButton onClick={props.onLocation} disabled={props.disabled} >
+        <FontIcon className="material-icons">place</FontIcon>
+    </IconButton>
+);
+
 export const TypingBox = (props: ITypingBox) => {
     return (
         < MuiThemeProvider >
             <div id={"typing_box"} style={{ margin: 2, backgroundColor: Colors.darkWhite }} >
                 <Flex>
+                    <PlaceButton {...props} />
                     <StickerButton {...props} />
                     <FileReaderBox {...props} />
                     <TextField
