@@ -38,8 +38,8 @@ var FileType = require("../chitchat/shared/FileType");
 var chatroomMessageUtils_1 = require("../actions/chatroom/chatroomMessageUtils");
 var Chat = (function (_super) {
     __extends(Chat, _super);
-    function Chat() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+    function Chat(props) {
+        var _this = _super.call(this, props) || this;
         _this.h_header = null;
         _this.h_subHeader = 34;
         _this.h_body = null;
@@ -59,6 +59,15 @@ var Chat = (function (_super) {
                 }
             });
         };
+        _this.onSubmitTextChat = _this.onSubmitTextChat.bind(_this);
+        _this.onTypingTextChange = _this.onTypingTextChange.bind(_this);
+        _this.onSubmitStickerChat = _this.onSubmitStickerChat.bind(_this);
+        _this.roomInitialize = _this.roomInitialize.bind(_this);
+        _this.onToggleSticker = _this.onToggleSticker.bind(_this);
+        _this.fileReaderChange = _this.fileReaderChange.bind(_this);
+        _this.onLocation = _this.onLocation.bind(_this);
+        _this.onLocationChange = _this.onLocationChange.bind(_this);
+        _this.onSubmitPosition = _this.onSubmitPosition.bind(_this);
         return _this;
     }
     Chat.prototype.componentWillMount = function () {
@@ -72,13 +81,6 @@ var Chat = (function (_super) {
             onAlert: false
         };
         this.chatHeight = this.clientHeight - (56 + 52 + 52);
-        this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
-        this.onTypingTextChange = this.onTypingTextChange.bind(this);
-        this.onSubmitStickerChat = this.onSubmitStickerChat.bind(this);
-        this.roomInitialize = this.roomInitialize.bind(this);
-        this.onToggleSticker = this.onToggleSticker.bind(this);
-        this.fileReaderChange = this.fileReaderChange.bind(this);
-        this.onLocation = this.onLocation.bind(this);
         var _a = this.props, chatroomReducer = _a.chatroomReducer, userReducer = _a.userReducer, params = _a.match.params;
         if (!chatroomReducer.room) {
             this.props.dispatch(chatroomActions.getPersistendChatroom(params.room_id));
@@ -287,6 +289,14 @@ var Chat = (function (_super) {
     Chat.prototype.onLocation = function () {
         this.setState(function (previousState) { return (__assign({}, previousState, { openMapDialog: !previousState.openMapDialog })); });
     };
+    Chat.prototype.onLocationChange = function (position) {
+        this.tempLocation = position;
+    };
+    Chat.prototype.onSubmitPosition = function () {
+        var message = { position: this.tempLocation };
+        this.onLocation();
+        this.prepareSend(message);
+    };
     // {/*height="calc(100vh - 56px - 52px - 52px)"*/}
     Chat.prototype.render = function () {
         var _this = this;
@@ -298,7 +308,7 @@ var Chat = (function (_super) {
                         (this.state.earlyMessageReady) ?
                             React.createElement("p", { onClick: function () { return _this.onLoadEarlierMessages(); } }, "Load Earlier Messages!") : null,
                         React.createElement(ChatBox_1.ChatBox, { value: this.state.messages, onSelected: function (message) { }, styles: { overflowY: "auto" } }),
-                        React.createElement(MapDialog_1.MapDialog, { open: this.state.openMapDialog, onClose: this.onLocation })),
+                        React.createElement(MapDialog_1.MapDialog, { open: this.state.openMapDialog, onClose: this.onLocation, onSubmit: this.onSubmitPosition, onLocationChange: this.onLocationChange })),
                     React.createElement(flexbox_react_1["default"], null, (this.state.openButtomMenu) ?
                         React.createElement(GridListSimple_1.GridListSimple, { srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
                         : null)),

@@ -206,15 +206,6 @@ export function sendMessage(message: IMessage) {
     return (dispatch) => {
         dispatch(send_message_request());
 
-        if (message.type === MessageType[MessageType.Location]) {
-            let backendFactory = BackendFactory.getInstance();
-            let chatApi = backendFactory.getServer().getChatRoomAPI();
-            chatApi.chat("*", message, (err, res) => {
-                dispatch(sendMessageResponse(err, res));
-            });
-            return;
-        }
-
         if (message.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption === true) {
             secure.encryption(message.body).then(result => {
                 message.body = result;

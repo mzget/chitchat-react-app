@@ -5,11 +5,13 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import { } from "recompose";
 
-import { MapBox } from "./MapBox";
+import { MapBox, Point } from "./MapBox";
 
 interface IMapDialogProps {
     open: boolean;
     onClose: () => void;
+    onSubmit: () => void;
+    onLocationChange: (position: Point) => void;
 }
 
 const actions = (props) => [
@@ -21,8 +23,7 @@ const actions = (props) => [
     <FlatButton
         label="Submit"
         primary={true}
-        disabled={true}
-        onTouchTap={props.onClose}
+        onTouchTap={props.onSubmit}
     />,
 ];
 
@@ -38,7 +39,7 @@ export const MapDialog = (props: IMapDialogProps) => (
                 height: 600
             }}
         >
-            <MapBox />
+            <MapBox onLocationChange={props.onLocationChange} />
         </Dialog>
     </div>
 );

@@ -46,21 +46,23 @@ var MapBox = (function (_super) {
         navigator.geolocation.getCurrentPosition(this.geoSuccess, this.geoError);
     };
     MapBox.prototype.geoSuccess = function (position) {
+        var _this = this;
         var latitude = position.coords.latitude;
         var longitude = position.coords.longitude;
         var _marker = this.state.marker;
         _marker.position = { lat: latitude, lng: longitude };
-        this.setState(function (prev) { return (__assign({}, prev, { mapReady: true, marker: _marker })); });
+        this.setState(function (prev) { return (__assign({}, prev, { mapReady: true, marker: _marker })); }, function () { return _this.props.onLocationChange(_this.state.marker.position); });
     };
     MapBox.prototype.geoError = function () {
-        console.log("Unable to retrieve your location");
+        console.error("Unable to retrieve your location");
     };
     MapBox.prototype.handleMapLoad = function (map) { };
     MapBox.prototype.handleMapClick = function (event) {
+        var _this = this;
         var _marker = this.state.marker;
         _marker.position = { lat: event.latLng.lat(), lng: event.latLng.lng() };
         _marker.key = Date.now();
-        this.setState({ marker: _marker });
+        this.setState({ marker: _marker }, function () { return _this.props.onLocationChange(_this.state.marker.position); });
     };
     MapBox.prototype.render = function () {
         return (React.createElement(MuiThemeProvider_1["default"], null,

@@ -6,7 +6,20 @@ import { imagesPath } from "../../chitchat/consts/StickerPath";
 
 import Store from "../../redux/configureStore";
 
-export function decorateMessage(msg): IMessage {
+export interface IMessageDecorator {
+    image?;
+    text?;
+    position?;
+    video?;
+    file?;
+    sticker?;
+
+    mimetype?;
+    src?;
+    size?;
+}
+
+export function decorateMessage(msg: IMessageDecorator): IMessage {
     let { chatroomReducer, userReducer } = Store.getState();
     let message = new MessageImp();
 
@@ -19,7 +32,8 @@ export function decorateMessage(msg): IMessage {
         message.body = msg.text;
         message.type = MessageType[MessageType.Text];
     }
-    else if (msg.location != null) {
+    else if (msg.position != null) {
+        message.body = msg.position;
         message.type = MessageType[MessageType.Location];
     }
     else if (msg.video != null) {
@@ -37,6 +51,9 @@ export function decorateMessage(msg): IMessage {
         message.body = msg.sticker;
         message.src = imagesPath[msg.sticker].img;
         message.type = MessageType[MessageType.Sticker];
+    }
+    else {
+        throw new Error("What the fuck!");
     }
 
     message.rid = chatroomReducer.room._id;

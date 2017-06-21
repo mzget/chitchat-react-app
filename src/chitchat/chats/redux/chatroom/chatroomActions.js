@@ -239,14 +239,6 @@ var send_message_failure = function (error) { return ({ type: ChatRoomActionsTyp
 function sendMessage(message) {
     return function (dispatch) {
         dispatch(send_message_request());
-        if (message.type === Message_1.MessageType[Message_1.MessageType.Location]) {
-            var backendFactory = BackendFactory_1.BackendFactory.getInstance();
-            var chatApi = backendFactory.getServer().getChatRoomAPI();
-            chatApi.chat("*", message, function (err, res) {
-                dispatch(sendMessageResponse(err, res));
-            });
-            return;
-        }
         if (message.type === Message_1.MessageType[Message_1.MessageType.Text] && getConfig().appConfig.encryption === true) {
             secure.encryption(message.body).then(function (result) {
                 message.body = result;

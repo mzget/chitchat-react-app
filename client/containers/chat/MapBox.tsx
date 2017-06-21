@@ -6,13 +6,16 @@ import CircularProgress from 'material-ui/CircularProgress';
 
 import { SimpleGoogleMap } from "../../components/Maps/GoogleMap";
 
-
-interface IMapBoxProps {
-    marker: { position: { lat, lng }, key, defaultAnimation };
+export type Point = { lat, lng };
+interface IMapBoxState {
+    marker: { position: Point, key, defaultAnimation };
     mapReady: boolean;
 }
+interface IMapBoxProps {
+    onLocationChange: (position: Point) => void;
+}
 
-export class MapBox extends React.Component<any, IMapBoxProps> {
+export class MapBox extends React.Component<IMapBoxProps, IMapBoxState> {
 
     componentWillMount() {
         this.state = {
@@ -25,7 +28,7 @@ export class MapBox extends React.Component<any, IMapBoxProps> {
                 defaultAnimation: 2,
             },
             mapReady: false
-        }
+        };
 
         this.handleMapLoad = this.handleMapLoad.bind(this);
         this.handleMapClick = this.handleMapClick.bind(this);
@@ -41,11 +44,13 @@ export class MapBox extends React.Component<any, IMapBoxProps> {
 
         let _marker = this.state.marker;
         _marker.position = { lat: latitude, lng: longitude };
-        this.setState(prev => ({ ...prev, mapReady: true, marker: _marker }));
+        this.setState(prev => ({ ...prev, mapReady: true, marker: _marker }),
+            () => this.props.onLocationChange(this.state.marker.position)
+        );
     }
 
     geoError() {
-        console.log("Unable to retrieve your location");
+        console.error("Unable to retrieve your location");
     }
 
 
@@ -56,7 +61,9 @@ export class MapBox extends React.Component<any, IMapBoxProps> {
         _marker.position = { lat: event.latLng.lat(), lng: event.latLng.lng() };
         _marker.key = Date.now();
 
-        this.setState({ marker: _marker });
+        this.setState({ marker: _marker },
+            () => this.props.onLocationChange(this.state.marker.position)
+        );
     }
 
     render() {

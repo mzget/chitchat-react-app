@@ -15,6 +15,7 @@ import UploadingDialog from "./UploadingDialog";
 import { GridListSimple } from "../components/GridListSimple";
 import { MapBox } from "./chat/MapBox";
 import { MapDialog } from "./chat/MapDialog";
+import { Point } from "./chat/MapBox";
 
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
@@ -24,7 +25,7 @@ import { MessageImp } from "../chitchat/chats/models/MessageImp";
 import { imagesPath } from "../chitchat/consts/StickerPath";
 import * as FileType from "../chitchat/shared/FileType";
 
-import { decorateMessage } from "../actions/chatroom/chatroomMessageUtils";
+import { decorateMessage, IMessageDecorator } from "../actions/chatroom/chatroomMessageUtils";
 import { IComponentProps } from "../utils/IComponentProps";
 
 interface IComponentNameState {
@@ -45,6 +46,22 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     clientHeight = document.documentElement.clientHeight;
     chatHeight = null;
     stickerBox = 204;
+    tempLocation: Point;
+
+    constructor(props) {
+        super(props);
+
+        this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
+        this.onTypingTextChange = this.onTypingTextChange.bind(this);
+        this.onSubmitStickerChat = this.onSubmitStickerChat.bind(this);
+        this.roomInitialize = this.roomInitialize.bind(this);
+        this.onToggleSticker = this.onToggleSticker.bind(this);
+        this.fileReaderChange = this.fileReaderChange.bind(this);
+
+        this.onLocation = this.onLocation.bind(this);
+        this.onLocationChange = this.onLocationChange.bind(this);
+        this.onSubmitPosition = this.onSubmitPosition.bind(this);
+    }
 
     componentWillMount() {
         this.state = {
@@ -58,14 +75,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         };
 
         this.chatHeight = this.clientHeight - (56 + 52 + 52);
-
-        this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
-        this.onTypingTextChange = this.onTypingTextChange.bind(this);
-        this.onSubmitStickerChat = this.onSubmitStickerChat.bind(this);
-        this.roomInitialize = this.roomInitialize.bind(this);
-        this.onToggleSticker = this.onToggleSticker.bind(this);
-        this.fileReaderChange = this.fileReaderChange.bind(this);
-        this.onLocation = this.onLocation.bind(this);
 
         let { chatroomReducer, userReducer, match: { params } } = this.props;
 
@@ -296,7 +305,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.prepareSend(msg);
     }
 
-    prepareSend(msg) {
+    prepareSend(msg: IMessageDecorator) {
         let message = decorateMessage(msg);
         this.send(message);
 
@@ -349,9 +358,17 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             openMapDialog: !previousState.openMapDialog
         }));
     }
+    onLocationChange(position: Point) {
+        this.tempLocation = position;
+    }
+    onSubmitPosition() {
+        let message = { position: this.tempLocation };
+
+        this.onLocation();
+        this.prepareSend(message);
+    }
 
     // {/*height="calc(100vh - 56px - 52px - 52px)"*/}
-
     render(): JSX.Element {
         let { chatroomReducer, stalkReducer } = this.props;
 
@@ -370,7 +387,10 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                             <ChatBox value={this.state.messages}
                                 onSelected={(message: IMessage) => { }}
                                 styles={{ overflowY: "auto" }} />
-                            <MapDialog open={this.state.openMapDialog} onClose={this.onLocation} />
+                            <MapDialog open={this.state.openMapDialog}
+                                onClose={this.onLocation}
+                                onSubmit={this.onSubmitPosition}
+                                onLocationChange={this.onLocationChange} />
                         </Flexbox>
                         <Flexbox>
                             {

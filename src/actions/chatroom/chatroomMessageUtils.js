@@ -16,7 +16,8 @@ function decorateMessage(msg) {
         message.body = msg.text;
         message.type = Message_1.MessageType[Message_1.MessageType.Text];
     }
-    else if (msg.location != null) {
+    else if (msg.position != null) {
+        message.body = msg.position;
         message.type = Message_1.MessageType[Message_1.MessageType.Location];
     }
     else if (msg.video != null) {
@@ -34,6 +35,9 @@ function decorateMessage(msg) {
         message.body = msg.sticker;
         message.src = StickerPath_1.imagesPath[msg.sticker].img;
         message.type = Message_1.MessageType[Message_1.MessageType.Sticker];
+    }
+    else {
+        throw new Error("What the fuck!");
     }
     message.rid = chatroomReducer.room._id;
     message.sender = userReducer.user._id;
