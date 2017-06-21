@@ -161,12 +161,10 @@ var Chat = (function (_super) {
             }
             case chatroomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
                 // this.setMessageStatus(chatroomReducer.responseMessage.uuid, "ErrorButton");
-                this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
             case chatroomActions.ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
                 this.setMessageTemp(chatroomReducer.responseMessage);
-                this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
             case chatroomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
@@ -294,6 +292,7 @@ var Chat = (function (_super) {
     };
     Chat.prototype.onSubmitPosition = function () {
         var message = { position: this.tempLocation };
+        this.tempLocation = null;
         this.onLocation();
         this.prepareSend(message);
     };

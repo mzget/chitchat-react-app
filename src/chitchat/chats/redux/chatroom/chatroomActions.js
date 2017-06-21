@@ -81,8 +81,6 @@ ChatRoomActionsType.SEND_MESSAGE_FAILURE = "SEND_MESSAGE_FAILURE";
 ChatRoomActionsType.REPLACE_MESSAGE = "REPLACE_MESSAGE";
 ChatRoomActionsType.ON_EARLY_MESSAGE_READY = "ON_EARLY_MESSAGE_READY";
 exports.ChatRoomActionsType = ChatRoomActionsType;
-exports.CHATROOM_REDUCER_EMPTY_STATE = "CHATROOM_REDUCER_EMPTY_STATE";
-exports.emptyState = function () { return ({ type: exports.CHATROOM_REDUCER_EMPTY_STATE }); };
 function initChatRoom(currentRoom) {
     if (!currentRoom) {
         throw new Error("Empty roomInfo");

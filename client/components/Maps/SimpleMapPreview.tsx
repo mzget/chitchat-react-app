@@ -3,33 +3,44 @@ import * as React from "react";
 
 import {
   withGoogleMap,
-  GoogleMap,
+  GoogleMap, Marker
 } from "react-google-maps";
 import withScriptjs from "react-google-maps/lib/async/withScriptjs";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import CircularProgress from 'material-ui/CircularProgress';
 
+
+interface IGoogleMapProps {
+  marker: {
+    position: { lat, lng }
+  };
+}
 /*
  * Sample From: https://developers.google.com/maps/documentation/javascript/examples/map-simple
  */
-const SimpleMapExampleGoogleMap = withScriptjs(withGoogleMap(props => (
+const SimpleGoogleMap = withScriptjs(withGoogleMap((props: IGoogleMapProps) => (
   <GoogleMap
-    defaultZoom={8}
-    defaultCenter={{ lat: -34.397, lng: 150.644 }}
-  />
+    defaultZoom={15}
+    defaultCenter={props.marker.position}
+  >
+    {
+      (props.marker) ? <Marker {...props.marker} /> : null
+    }
+  </GoogleMap>
 )));
 
 /*
  * Add <script src="https://maps.googleapis.com/maps/api/js"></script> to your HTML to provide google.maps reference
  */
-export default class SimpleMapExample extends React.Component<any, any> {
-
+export class SimpleMapPreview extends React.Component<IGoogleMapProps, any> {
   render() {
+    console.log(this.props);
+
     return (
       <MuiThemeProvider>
         <div>
-          <SimpleMapExampleGoogleMap
+          <SimpleGoogleMap
             googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyCURNR7kARZEaHUchdx3MpEkX1azVlEO1E"
             loadingElement={
               <div style={{ height: `100%` }}>
@@ -37,11 +48,12 @@ export default class SimpleMapExample extends React.Component<any, any> {
               </div>
             }
             containerElement={
-              <div style={{ width: 100, height: 100 }} />
+              <div style={{ width: 300, height: 300 }} />
             }
             mapElement={
               <div style={{ height: `100%` }} />
             }
+            marker={this.props.marker}
           />
         </div>
       </MuiThemeProvider>

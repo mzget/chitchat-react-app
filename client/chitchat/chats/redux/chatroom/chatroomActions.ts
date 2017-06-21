@@ -47,9 +47,6 @@ export class ChatRoomActionsType {
     static ON_EARLY_MESSAGE_READY = "ON_EARLY_MESSAGE_READY";
 }
 
-export const CHATROOM_REDUCER_EMPTY_STATE = "CHATROOM_REDUCER_EMPTY_STATE";
-export const emptyState = () => ({ type: CHATROOM_REDUCER_EMPTY_STATE });
-
 export function initChatRoom(currentRoom: Room) {
     if (!currentRoom) { throw new Error("Empty roomInfo"); }
 

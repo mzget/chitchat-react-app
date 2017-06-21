@@ -170,12 +170,10 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
             case chatroomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
                 // this.setMessageStatus(chatroomReducer.responseMessage.uuid, "ErrorButton");
-                this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
             case chatroomActions.ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
                 this.setMessageTemp(chatroomReducer.responseMessage);
-                this.props.dispatch(chatroomActions.emptyState());
                 break;
             }
             case chatroomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
@@ -363,6 +361,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
     onSubmitPosition() {
         let message = { position: this.tempLocation };
+        this.tempLocation = null;
 
         this.onLocation();
         this.prepareSend(message);
