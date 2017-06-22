@@ -52,8 +52,9 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
         if (!teamReducer.team || !teamReducer.team._id) {
             this.props.history.replace("/");
         }
-
-        this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
+        else {
+            this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
+        }
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
@@ -125,7 +126,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             case BoxState.isManageMember:
                 return <TeamMemberBox {...this.props} onError={this.props.onError} />;
             default:
-                return <MenuListview menus={this.menus} onSelectItem={this.onAdminMenuSelected} />;
+                return <p>Admin Panel</p>;
         }
     }
 
@@ -138,8 +139,11 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
                             <SimpleToolbar title={"Admin"} onBackPressed={this.onBackPressed} />
                         </div>
                     </div>
-                    <Flexbox flexDirection="row" justifyContent="center" height="calc(100vh - 56px)">
-                        <Flexbox width="400px" justifyContent="center">
+                    <Flexbox flexDirection="row" height="calc(100vh - 56px)">
+                        <Flexbox minWidth="400px" justifyContent="center">
+                            <MenuListview menus={this.menus} onSelectItem={this.onAdminMenuSelected} />
+                        </Flexbox>
+                        <Flexbox flexGrow={1} justifyContent="center">
                             {
                                 this.getAdminPanel()
                             }

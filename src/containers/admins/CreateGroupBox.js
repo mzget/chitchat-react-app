@@ -1,6 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import * as Immutable from "immutable";
+import { darkWhite } from "material-ui/styles/colors";
 import { CreateGroupView } from "./CreateGroupView";
 import { SelectOrgChartView } from "./SelectOrgChartView";
 import { ChitChatFactory } from "../../chitchat/chats/ChitchatFactory";
@@ -124,7 +125,7 @@ class CreateGroupBox extends React.Component {
         }
     }
     render() {
-        return (React.createElement("div", null,
+        return (React.createElement("div", { style: { backgroundColor: darkWhite, width: "100%" } },
             " ",
             this.getView()));
     }

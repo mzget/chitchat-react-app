@@ -22,7 +22,9 @@ const renderList = (props: IComponentProps) => (
                 secondaryText={
                     <p style={{ color: darkBlack }}>{item.chart_description}</p>
                 }
+                onClick={(event) => props.onSelected(item)}
             />
+            <Divider />
         </div>))
 );
 
@@ -32,6 +34,5 @@ export const OrgChartListView = (props: IComponentProps) => (
         <List>
             {(!!props.items) ? renderList(props) : null}
         </List>
-        <Divider />
     </div>
 );

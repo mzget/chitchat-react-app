@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Flex, Box } from "reflexbox";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import * as Colors from "material-ui/styles/colors";
 import { RaisedButton, TextField } from "material-ui";
 import Avatar from "material-ui/Avatar";
 import * as FileReaderInput from "react-file-reader-input";
@@ -22,7 +21,7 @@ const styles = {
 };
 const SubmitButton = (props) => (React.createElement(RaisedButton, { primary: true, label: "submit", onClick: props.onSubmit }));
 export const CreateGroupView = (props) => (comp) => (React.createElement(MuiThemeProvider, null,
-    React.createElement("div", { style: { height: (document.documentElement.clientHeight - styles.toolbar.height), backgroundColor: Colors.indigo50 } },
+    React.createElement("div", { style: { height: (document.documentElement.clientHeight - styles.toolbar.height) } },
         React.createElement(Flex, { flexColumn: true, align: "center" },
             React.createElement(Box, { justify: "center", align: "center", p: 2 },
                 React.createElement("h3", null, "Create Group"),

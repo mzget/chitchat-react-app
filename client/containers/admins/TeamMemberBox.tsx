@@ -1,6 +1,11 @@
 import * as React from "react";
-import { Flex, Box } from "reflexbox";
+import Flexbox from "flexbox-react";
 import { shallowEqual } from "recompose";
+import {
+    RaisedButton, TextField, MenuItem, SelectField, Subheader,
+    Divider, Paper, Card, CardActions, CardHeader, CardText, CardTitle
+} from "material-ui";
+import { darkWhite } from "material-ui/styles/colors";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 
@@ -14,13 +19,10 @@ import { ITeamProfile } from "../../chitchat/chats/models/TeamProfile";
 import { ITeamMember } from "../../chitchat/chats/models/ITeamMember";
 import { IOrgChart } from "../../chitchat/chats/models/OrgChart";
 import { UserRole } from "../../chitchat/chats/models/UserRole";
-import { Button, Row, Col, Panel, ListGroup, ListGroupItem, FormGroup, FormControl, Table, FieldGroup, ControlLabel } from 'react-bootstrap';
-import {
-    RaisedButton, TextField, MenuItem, SelectField, Subheader,
-    Divider, Paper, Card, CardActions, CardHeader, CardText, CardTitle
-} from "material-ui";
+
 const Styles = require("../../styles/generalStyles");
 const PageBox = Styles.generalStyles.pageBox;
+
 interface IComponentState {
     member: ITeamMember;
     dropdownValue: number;
@@ -119,7 +121,6 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
 
     render() {
         return (
-
             (!!this.state.member) ?
                 <ContactProfileView
                     member={this.state.member}
@@ -138,17 +139,16 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
                     }}
                 />
                 :
-                <Row>
-                    <Col md={6} mdOffset={3}>
+                <Flexbox width="100%" justifyContent="center" style={{ backgroundColor: darkWhite }}>
+                    <Flexbox flexDirection="column">
                         <Card>
-                            <CardTitle title="User List" subtitle="User List" />
+                            <CardTitle title="Team Lists" />
                         </Card>
                         <div style={PageBox}>
                             <MemberList onSelected={this.onSelectMember} items={this.props.teamReducer.members} />
                         </div>
-                    </Col>
-                </Row>
-
+                    </Flexbox>
+                </Flexbox>
         );
     }
 }

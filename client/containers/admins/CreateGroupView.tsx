@@ -40,7 +40,7 @@ const SubmitButton = (props: IComponentProps) => (
 
 export const CreateGroupView = (props: IComponentProps) => (comp: JSX.Element) => (
     <MuiThemeProvider>
-        <div style={{ height: (document.documentElement.clientHeight - styles.toolbar.height), backgroundColor: Colors.indigo50 }}>
+        <div style={{ height: (document.documentElement.clientHeight - styles.toolbar.height) }}>
             <Flex flexColumn align="center">
                 <Box justify="center" align="center" p={2}>
                     <h3>Create Group</h3>

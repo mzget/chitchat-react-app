@@ -41,7 +41,9 @@ class Admin extends React.Component {
         if (!teamReducer.team || !teamReducer.team._id) {
             this.props.history.replace("/");
         }
-        this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
+        else {
+            this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
+        }
     }
     componentWillReceiveProps(nextProps) {
         const { groupReducer, adminReducer } = nextProps;
@@ -104,7 +106,7 @@ class Admin extends React.Component {
             case BoxState.isManageMember:
                 return React.createElement(TeamMemberBox, Object.assign({}, this.props, { onError: this.props.onError }));
             default:
-                return React.createElement(MenuListview, { menus: this.menus, onSelectItem: this.onAdminMenuSelected });
+                return React.createElement("p", null, "Admin Panel");
         }
     }
     render() {
@@ -113,8 +115,10 @@ class Admin extends React.Component {
                 React.createElement("div", { style: { position: "relative", height: "56px" } },
                     React.createElement("div", { style: { position: "fixed", width: "100%", zIndex: 1 } },
                         React.createElement(SimpleToolbar, { title: "Admin", onBackPressed: this.onBackPressed }))),
-                React.createElement(Flexbox, { flexDirection: "row", justifyContent: "center", height: "calc(100vh - 56px)" },
-                    React.createElement(Flexbox, { width: "400px", justifyContent: "center" }, this.getAdminPanel())))));
+                React.createElement(Flexbox, { flexDirection: "row", height: "calc(100vh - 56px)" },
+                    React.createElement(Flexbox, { minWidth: "400px", justifyContent: "center" },
+                        React.createElement(MenuListview, { menus: this.menus, onSelectItem: this.onAdminMenuSelected })),
+                    React.createElement(Flexbox, { flexGrow: 1, justifyContent: "center" }, this.getAdminPanel())))));
     }
 }
 const mapstateToProps = (state) => (Object.assign({}, state));

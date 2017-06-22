@@ -1,6 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import * as Immutable from "immutable";
+import { darkWhite } from "material-ui/styles/colors";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 import { CreateGroupView } from "./CreateGroupView";
@@ -156,7 +157,7 @@ class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
 
     public render(): JSX.Element {
         return (
-            <div> {
+            <div style={{ backgroundColor: darkWhite, width: "100%" }}> {
                 this.getView()
             }
             </div>

@@ -1,12 +1,13 @@
 import * as React from "react";
+import Flexbox from "flexbox-react";
 import { shallowEqual } from "recompose";
+import { Card, CardTitle } from "material-ui";
+import { darkWhite } from "material-ui/styles/colors";
 import { MemberList } from "../../components/MemberList";
 import { ContactProfileView } from "./ContactProfileView";
 import * as adminRx from "../../redux/admin/adminRx";
 import * as teamRx from "../../redux/team/teamRx";
 import { UserRole } from "../../chitchat/chats/models/UserRole";
-import { Row, Col } from 'react-bootstrap';
-import { Card, CardTitle } from "material-ui";
 const Styles = require("../../styles/generalStyles");
 const PageBox = Styles.generalStyles.pageBox;
 export class TeamMemberBox extends React.Component {
@@ -91,10 +92,10 @@ export class TeamMemberBox extends React.Component {
                     this.setState(prev => (Object.assign({}, prev, { teamRoleValue: value })));
                 } })
             :
-                React.createElement(Row, null,
-                    React.createElement(Col, { md: 6, mdOffset: 3 },
+                React.createElement(Flexbox, { width: "100%", justifyContent: "center", style: { backgroundColor: darkWhite } },
+                    React.createElement(Flexbox, { flexDirection: "column" },
                         React.createElement(Card, null,
-                            React.createElement(CardTitle, { title: "User List", subtitle: "User List" })),
+                            React.createElement(CardTitle, { title: "Team Lists" })),
                         React.createElement("div", { style: PageBox },
                             React.createElement(MemberList, { onSelected: this.onSelectMember, items: this.props.teamReducer.members })))));
     }

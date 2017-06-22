@@ -24,6 +24,7 @@ export class ManageOrgChartBox extends React.Component {
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onCreateNew = this.onCreateNew.bind(this);
+        this.onSelectChart = this.onSelectChart.bind(this);
     }
     componentWillReceiveProps(nextProps) {
         const { adminReducer } = nextProps;
@@ -51,8 +52,11 @@ export class ManageOrgChartBox extends React.Component {
     onCreateNew() {
         this.setState(prevState => (Object.assign({}, prevState, { isOpenCreateNewForm: !this.state.isOpenCreateNewForm })));
     }
+    onSelectChart(item) {
+    }
     render() {
-        return (React.createElement(Flexbox, { flexDirection: "column", alignItems: "center", minWidth: "400px", style: { backgroundColor: Colors.darkWhite } }, (this.state.isOpenCreateNewForm) ? (React.createElement(CreateOrgChartForm, { orgChartName: this.state.chart_name, orgChart_description: this.state.chart_description, onOrgChartNameChange: (e, text) => { this.setState(previous => (Object.assign({}, previous, { chart_name: text }))); }, onOrgChartDescriptionChange: (e, text) => { this.setState(previous => (Object.assign({}, previous, { chart_description: text }))); }, dropdownItems: this.orgLevels, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => { this.setState(previous => (Object.assign({}, previous, { dropdownValue: value }))); }, onSubmit: this.onSubmit })) :
-            React.createElement(OrgChartPreview, { orgCharts: this.props.adminReducer.orgCharts, onCreateNew: this.onCreateNew })));
+        return (React.createElement(Flexbox, { flexDirection: "row", justifyContent: "flex-start", flexGrow: 1 },
+            React.createElement(Flexbox, { flexDirection: "column", style: { backgroundColor: Colors.darkWhite, width: "100%" } }, (this.state.isOpenCreateNewForm) ? (React.createElement(CreateOrgChartForm, { orgChartName: this.state.chart_name, orgChart_description: this.state.chart_description, onOrgChartNameChange: (e, text) => { this.setState(previous => (Object.assign({}, previous, { chart_name: text }))); }, onOrgChartDescriptionChange: (e, text) => { this.setState(previous => (Object.assign({}, previous, { chart_description: text }))); }, dropdownItems: this.orgLevels, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => { this.setState(previous => (Object.assign({}, previous, { dropdownValue: value }))); }, onSubmit: this.onSubmit })) :
+                React.createElement(OrgChartPreview, { orgCharts: this.props.adminReducer.orgCharts, onCreateNew: this.onCreateNew, onSelectItem: this.onSelectChart }))));
     }
 }
