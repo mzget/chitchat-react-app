@@ -4,7 +4,9 @@ export class NodeMessageDAL {
         return store.get(rid);
     }
     saveData(rid, chatRecord) {
-        return store.save(rid, chatRecord);
+        return store.save(rid, chatRecord).then(() => {
+            return store.get(rid);
+        });
     }
     removeData(rid, callback) {
     }
