@@ -1,5 +1,5 @@
 ﻿import * as React from "react";
-import { Flex, Box } from "reflexbox";
+import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import { RaisedButton, TextField } from "material-ui";
@@ -53,10 +53,10 @@ const ChartLevel = (props: IComponentProps) => (
 
 export const CreateOrgChartForm = (props: IComponentProps) => (
     <MuiThemeProvider>
-        <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align="center">
-            <Box justify="center" align="center" p={2}>
+        <Flexbox style={{ backgroundColor: Colors.darkWhite }} width="100%" flexDirection="column" alignItems="center">
+            <Flexbox justifyContent="center" alignItems="center" >
                 <h3>Create new ORG chart</h3>
-            </Box>
+            </Flexbox>
             <TextField
                 hintText="Name"
                 errorText="This field is required"
@@ -77,6 +77,6 @@ export const CreateOrgChartForm = (props: IComponentProps) => (
             <ChartLevel {...props} />
             <span style={styles.span} />
             <SubmitButton {...props} />
-        </Flex>
+        </Flexbox>
     </MuiThemeProvider >
 );

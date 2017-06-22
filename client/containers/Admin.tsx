@@ -1,5 +1,6 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
+import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import Subheader from "material-ui/Subheader";
@@ -8,7 +9,7 @@ import { IComponentProps } from "../utils/IComponentProps";
 
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { MenuListview } from "./admins/MenuListView";
-import ManageOrgChartBox from "./admins/ManageOrgChartBox";
+import { ManageOrgChartBox } from "./admins/ManageOrgChartBox";
 import CreateGroupBox, { createOrgGroup, createPjbGroup, createPvGroup } from "./admins/CreateGroupBox";
 import { TeamMemberBox } from "./admins/TeamMemberBox";
 import { DialogBox } from "../components/DialogBox";
@@ -131,21 +132,21 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     public render(): JSX.Element {
         return (
             <MuiThemeProvider>
-                <div style={{ position: "relative", }}>
+                <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
                     <div style={{ position: "relative", height: "56px" }}>
                         <div style={{ position: "fixed", width: "100%", zIndex: 1 }} >
                             <SimpleToolbar title={"Admin"} onBackPressed={this.onBackPressed} />
                         </div>
                     </div>
-                    <div style={{ position: "relative", overflowX: "hidden", height: "calc(100vh - 56px)" }} >
-                        {
-                            this.getAdminPanel()
-                        }
-
-                    </div>
-
-                </div>
-            </MuiThemeProvider>
+                    <Flexbox flexDirection="row" justifyContent="center" height="calc(100vh - 56px)">
+                        <Flexbox width="400px" justifyContent="center">
+                            {
+                                this.getAdminPanel()
+                            }
+                        </Flexbox>
+                    </Flexbox>
+                </Flexbox>
+            </MuiThemeProvider >
         );
     }
 }

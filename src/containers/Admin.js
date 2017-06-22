@@ -1,9 +1,11 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import * as Colors from "material-ui/styles/colors";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { MenuListview } from "./admins/MenuListView";
-import ManageOrgChartBox from "./admins/ManageOrgChartBox";
+import { ManageOrgChartBox } from "./admins/ManageOrgChartBox";
 import CreateGroupBox, { createOrgGroup, createPjbGroup, createPvGroup } from "./admins/CreateGroupBox";
 import { TeamMemberBox } from "./admins/TeamMemberBox";
 import * as adminRx from "../redux/admin/adminRx";
@@ -107,11 +109,12 @@ class Admin extends React.Component {
     }
     render() {
         return (React.createElement(MuiThemeProvider, null,
-            React.createElement("div", { style: { position: "relative", } },
+            React.createElement(Flexbox, { flexDirection: "column", style: { backgroundColor: Colors.blueGrey50 } },
                 React.createElement("div", { style: { position: "relative", height: "56px" } },
                     React.createElement("div", { style: { position: "fixed", width: "100%", zIndex: 1 } },
                         React.createElement(SimpleToolbar, { title: "Admin", onBackPressed: this.onBackPressed }))),
-                React.createElement("div", { style: { position: "relative", overflowX: "hidden", height: "calc(100vh - 56px)" } }, this.getAdminPanel()))));
+                React.createElement(Flexbox, { flexDirection: "row", justifyContent: "center", height: "calc(100vh - 56px)" },
+                    React.createElement(Flexbox, { width: "400px", justifyContent: "center" }, this.getAdminPanel())))));
     }
 }
 const mapstateToProps = (state) => (Object.assign({}, state));

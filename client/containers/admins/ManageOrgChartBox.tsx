@@ -1,32 +1,16 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
-import { Flex, Box } from "reflexbox";
+import Flexbox from "flexbox-react";
 import FlatButton from "material-ui/FlatButton";
 import * as Colors from "material-ui/styles/colors";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 import { CreateOrgChartForm } from "./CreateOrgChartForm";
-import { OrgChartListView } from "./OrgChartListView";
+import { OrgChartPreview } from "./OrgChartPreview";
 import { IOrgChart, OrgLevel } from "../../chitchat/chats/models/OrgChart";
 
 import * as adminRx from "../../redux/admin/adminRx";
 
-abstract class IComponentNameProps implements IComponentProps {
-    onError?: (error: string) => void;
-    location;
-    params;
-    history;
-    dispatch;
-    routing;
-    authReducer;
-    adminReducer;
-    userReducer;
-    chatroomReducer;
-    chatlogReducer;
-    stalkReducer;
-    teamReducer;
-    groupReducer;
-};
 
 interface IComponentNameState {
     dropdownValue: number;
@@ -36,7 +20,7 @@ interface IComponentNameState {
     isOpenCreateNewForm: boolean;
 };
 
-class ManageOrgChartBox extends React.Component<IComponentNameProps, IComponentNameState> {
+export class ManageOrgChartBox extends React.Component<IComponentProps, IComponentNameState> {
     orgChart: IOrgChart = {} as IOrgChart;
     orgLevels: Array<string> = new Array();
 
@@ -92,7 +76,7 @@ class ManageOrgChartBox extends React.Component<IComponentNameProps, IComponentN
 
     public render(): JSX.Element {
         return (
-            <Flex flexColumn justify="center" style={{ backgroundColor: Colors.indigo50 }}>
+            <Flexbox flexDirection="column" alignItems="center" minWidth="400px" style={{ backgroundColor: Colors.darkWhite }}>
                 {
                     (this.state.isOpenCreateNewForm) ? (
                         <CreateOrgChartForm
@@ -106,16 +90,10 @@ class ManageOrgChartBox extends React.Component<IComponentNameProps, IComponentN
                             dropdownChange={(event, id, value) => { this.setState(previous => ({ ...previous, dropdownValue: value })); }}
                             onSubmit={this.onSubmit}
                         />
-                    ) : (
-                            <div>
-                                <OrgChartListView items={this.props.adminReducer.orgCharts} />
-                                <FlatButton label="Create New" primary={true} onClick={this.onCreateNew} />
-                            </div>
-                        )
+                    ) :
+                        <OrgChartPreview orgCharts={this.props.adminReducer.orgCharts} onCreateNew={this.onCreateNew} />
                 }
-            </Flex>
+            </Flexbox>
         );
     }
 }
-
-export default ManageOrgChartBox;
