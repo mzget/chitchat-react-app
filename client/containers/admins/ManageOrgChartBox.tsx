@@ -7,17 +7,22 @@ import * as Colors from "material-ui/styles/colors";
 import { IComponentProps } from "../../utils/IComponentProps";
 import { CreateOrgChartForm } from "./CreateOrgChartForm";
 import { OrgChartPreview } from "./OrgChartPreview";
+import { GroupsOfChart } from "./GroupsOfChart";
 import { IOrgChart, OrgLevel } from "../../chitchat/chats/models/OrgChart";
+import { Room } from "../../chitchat/chats/models/Room";
 
 import * as adminRx from "../../redux/admin/adminRx";
 
-
+enum Page {
+    index = 0, create = 1, detail = 2
+}
 interface IComponentNameState {
     dropdownValue: number;
     chart_name: string;
     chart_description: string;
 
-    isOpenCreateNewForm: boolean;
+    page: Page;
+    chartItem: IOrgChart;
 };
 
 export class ManageOrgChartBox extends React.Component<IComponentProps, IComponentNameState> {
@@ -34,7 +39,8 @@ export class ManageOrgChartBox extends React.Component<IComponentProps, ICompone
             chart_name: "",
             chart_description: "",
 
-            isOpenCreateNewForm: false
+            page: Page.index,
+            chartItem: null
         };
 
         this.onSubmit = this.onSubmit.bind(this);
@@ -72,34 +78,54 @@ export class ManageOrgChartBox extends React.Component<IComponentProps, ICompone
     }
 
     onCreateNew() {
-        this.setState(prevState => ({ ...prevState, isOpenCreateNewForm: !this.state.isOpenCreateNewForm }));
+        this.setState(prevState => ({
+            ...prevState,
+            page: Page.create
+        }));
     }
     onSelectChart(item: IOrgChart) {
+        this.setState(prevState => ({
+            ...prevState,
+            page: Page.detail,
+            chartItem: item
+        }));
+    }
 
+    getPage(page: Page) {
+        switch (page) {
+            case Page.index:
+                return <OrgChartPreview
+                    orgCharts={this.props.adminReducer.orgCharts}
+                    onCreateNew={this.onCreateNew}
+                    onSelectItem={this.onSelectChart} />
+            case Page.create:
+                return <CreateOrgChartForm
+                    orgChartName={this.state.chart_name}
+                    orgChart_description={this.state.chart_description}
+                    onOrgChartNameChange={(e, text) => { this.setState(previous => ({ ...previous, chart_name: text })); }}
+                    onOrgChartDescriptionChange={(e, text) => { this.setState(previous => ({ ...previous, chart_description: text })); }}
+
+                    dropdownItems={this.orgLevels}
+                    dropdownValue={this.state.dropdownValue}
+                    dropdownChange={(event, id, value) => { this.setState(previous => ({ ...previous, dropdownValue: value })); }}
+                    onSubmit={this.onSubmit}
+                />
+            case Page.detail:
+                return <GroupsOfChart
+                    chartItem={this.state.chartItem}
+                    groups={this.props.adminReducer.orgCharts}
+                    onSelectItem={(item) => { }} />
+            default:
+                break;
+        }
     }
 
     public render(): JSX.Element {
         return (
-            <Flexbox flexDirection="row" justifyContent="flex-start" flexGrow={1}>
-                <Flexbox flexDirection="column" style={{ backgroundColor: Colors.darkWhite, width: "100%" }}>
+            <Flexbox flexDirection="row" justifyContent="flex-start" >
+                <Flexbox flexDirection="column" minWidth="400px" style={{ backgroundColor: Colors.darkWhite }}>
                     {
-                        (this.state.isOpenCreateNewForm) ? (
-                            <CreateOrgChartForm
-                                orgChartName={this.state.chart_name}
-                                orgChart_description={this.state.chart_description}
-                                onOrgChartNameChange={(e, text) => { this.setState(previous => ({ ...previous, chart_name: text })); }}
-                                onOrgChartDescriptionChange={(e, text) => { this.setState(previous => ({ ...previous, chart_description: text })); }}
-
-                                dropdownItems={this.orgLevels}
-                                dropdownValue={this.state.dropdownValue}
-                                dropdownChange={(event, id, value) => { this.setState(previous => ({ ...previous, dropdownValue: value })); }}
-                                onSubmit={this.onSubmit}
-                            />
-                        ) :
-                            <OrgChartPreview
-                                orgCharts={this.props.adminReducer.orgCharts}
-                                onCreateNew={this.onCreateNew}
-                                onSelectItem={this.onSelectChart} />
+                        this.getPage(this.state.page)
                     }
                 </Flexbox>
             </Flexbox>

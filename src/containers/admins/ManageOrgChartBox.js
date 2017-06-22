@@ -3,8 +3,15 @@ import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
 import { CreateOrgChartForm } from "./CreateOrgChartForm";
 import { OrgChartPreview } from "./OrgChartPreview";
+import { GroupsOfChart } from "./GroupsOfChart";
 import { OrgLevel } from "../../chitchat/chats/models/OrgChart";
 import * as adminRx from "../../redux/admin/adminRx";
+var Page;
+(function (Page) {
+    Page[Page["index"] = 0] = "index";
+    Page[Page["create"] = 1] = "create";
+    Page[Page["detail"] = 2] = "detail";
+})(Page || (Page = {}));
 ;
 export class ManageOrgChartBox extends React.Component {
     constructor() {
@@ -20,7 +27,8 @@ export class ManageOrgChartBox extends React.Component {
             dropdownValue: 0,
             chart_name: "",
             chart_description: "",
-            isOpenCreateNewForm: false
+            page: Page.index,
+            chartItem: null
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onCreateNew = this.onCreateNew.bind(this);
@@ -50,13 +58,25 @@ export class ManageOrgChartBox extends React.Component {
         }
     }
     onCreateNew() {
-        this.setState(prevState => (Object.assign({}, prevState, { isOpenCreateNewForm: !this.state.isOpenCreateNewForm })));
+        this.setState(prevState => (Object.assign({}, prevState, { page: Page.create })));
     }
     onSelectChart(item) {
+        this.setState(prevState => (Object.assign({}, prevState, { page: Page.detail, chartItem: item })));
+    }
+    getPage(page) {
+        switch (page) {
+            case Page.index:
+                return React.createElement(OrgChartPreview, { orgCharts: this.props.adminReducer.orgCharts, onCreateNew: this.onCreateNew, onSelectItem: this.onSelectChart });
+            case Page.create:
+                return React.createElement(CreateOrgChartForm, { orgChartName: this.state.chart_name, orgChart_description: this.state.chart_description, onOrgChartNameChange: (e, text) => { this.setState(previous => (Object.assign({}, previous, { chart_name: text }))); }, onOrgChartDescriptionChange: (e, text) => { this.setState(previous => (Object.assign({}, previous, { chart_description: text }))); }, dropdownItems: this.orgLevels, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => { this.setState(previous => (Object.assign({}, previous, { dropdownValue: value }))); }, onSubmit: this.onSubmit });
+            case Page.detail:
+                return React.createElement(GroupsOfChart, { chartItem: this.state.chartItem, groups: this.props.adminReducer.orgCharts, onSelectItem: (item) => { } });
+            default:
+                break;
+        }
     }
     render() {
-        return (React.createElement(Flexbox, { flexDirection: "row", justifyContent: "flex-start", flexGrow: 1 },
-            React.createElement(Flexbox, { flexDirection: "column", style: { backgroundColor: Colors.darkWhite, width: "100%" } }, (this.state.isOpenCreateNewForm) ? (React.createElement(CreateOrgChartForm, { orgChartName: this.state.chart_name, orgChart_description: this.state.chart_description, onOrgChartNameChange: (e, text) => { this.setState(previous => (Object.assign({}, previous, { chart_name: text }))); }, onOrgChartDescriptionChange: (e, text) => { this.setState(previous => (Object.assign({}, previous, { chart_description: text }))); }, dropdownItems: this.orgLevels, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => { this.setState(previous => (Object.assign({}, previous, { dropdownValue: value }))); }, onSubmit: this.onSubmit })) :
-                React.createElement(OrgChartPreview, { orgCharts: this.props.adminReducer.orgCharts, onCreateNew: this.onCreateNew, onSelectItem: this.onSelectChart }))));
+        return (React.createElement(Flexbox, { flexDirection: "row", justifyContent: "flex-start" },
+            React.createElement(Flexbox, { flexDirection: "column", minWidth: "400px", style: { backgroundColor: Colors.darkWhite } }, this.getPage(this.state.page))));
     }
 }

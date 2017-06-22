@@ -4,11 +4,11 @@ import { List, ListItem } from "material-ui/List";
 import Divider from "material-ui/Divider";
 import { grey400, darkBlack, lightBlack } from "material-ui/styles/colors";
 
-import { IOrgChart, OrgLevel } from "../../chitchat/chats/models/OrgChart";
+import { Room } from "../../chitchat/chats/models/Room";
 
 interface IComponentProps {
-    items: Array<IOrgChart>;
-    onSelected?: (item: IOrgChart) => void;
+    items: Array<Room>;
+    onSelected?: (item: Room) => void;
 }
 
 const renderList = (props: IComponentProps) => (
@@ -17,9 +17,9 @@ const renderList = (props: IComponentProps) => (
             <ListItem
                 leftIcon={null}
                 rightIcon={null}
-                primaryText={item.chart_name}
+                primaryText={item.name}
                 secondaryText={
-                    <p style={{ color: darkBlack }}>{item.chart_description}</p>
+                    <p style={{ color: darkBlack }}>{item.description}</p>
                 }
                 onClick={(event) => props.onSelected(item)}
             />
@@ -27,7 +27,7 @@ const renderList = (props: IComponentProps) => (
         </div>))
 );
 
-export const OrgChartListView = (props: IComponentProps) => (
+export const GroupListView = (props: IComponentProps) => (
     <div>
         <List>
             {(!!props.items) ? renderList(props) : null}
