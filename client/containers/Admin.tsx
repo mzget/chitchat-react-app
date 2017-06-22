@@ -48,7 +48,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     componentDidMount() {
         const { teamReducer } = this.props;
 
-        if (!teamReducer.team) {
+        if (!teamReducer.team || !teamReducer.team._id) {
             this.props.history.replace("/");
         }
 
@@ -101,7 +101,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             }
         }
         else if (key == this.developerIssue) {
-            window.open("https://github.com/mzget/chitchat-ionic-app/wiki", '_blank');
+            window.open("https://github.com/mzget/chitchat-ionic-reference-implementation/issues", '_blank');
         }
     }
 

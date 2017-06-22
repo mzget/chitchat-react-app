@@ -1,16 +1,13 @@
-"use strict";
-exports.__esModule = true;
-var immutable_1 = require("immutable");
-var authRx = require("./authRx");
-var AppActions = require("../app/persistentDataActions");
-exports.AuthenInitState = immutable_1.Record({
+import { Record } from "immutable";
+import * as authRx from "./authRx";
+import * as AppActions from "../app/persistentDataActions";
+export const AuthenInitState = Record({
     token: null,
     isFetching: false,
     state: null,
     user: null
 });
-exports.authReducer = function (state, action) {
-    if (state === void 0) { state = new exports.AuthenInitState(); }
+export const authReducer = (state = new AuthenInitState(), action) => {
     switch (action.type) {
         case authRx.SIGN_UP_SUCCESS:
             return state.set("state", authRx.SIGN_UP_SUCCESS);

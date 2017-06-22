@@ -1,54 +1,33 @@
-"use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-exports.__esModule = true;
-var React = require("react");
-var react_redux_1 = require("react-redux");
-var Subheader_1 = require("material-ui/Subheader");
-var chatroomActions = require("../../chitchat/chats/redux/chatroom/chatroomActions");
-var ChatLogRxActions = require("../../chitchat/chats/redux/chatlogs/chatlogRxActions");
-var ListChatLogs_1 = require("./ListChatLogs");
-var ChatLogsBox = (function (_super) {
-    __extends(ChatLogsBox, _super);
-    function ChatLogsBox() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    ChatLogsBox.prototype.componentWillMount = function () {
+import * as React from "react";
+import { connect } from "react-redux";
+import Subheader from "material-ui/Subheader";
+import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
+import * as ChatLogRxActions from "../../chitchat/chats/redux/chatlogs/chatlogRxActions";
+import { ListChatLogs } from "./ListChatLogs";
+export class ChatLogsBox extends React.Component {
+    componentWillMount() {
         this.state = {
             search: "",
             chatsLog: null
         };
         this.removedLog = this.removedLog.bind(this);
         this.enterRoom = this.enterRoom.bind(this);
-    };
-    ChatLogsBox.prototype.removedLog = function (log) {
+    }
+    removedLog(log) {
         console.log("removedLog", log);
         this.props.dispatch(ChatLogRxActions.removeRoomAccess(log.id));
-    };
-    ChatLogsBox.prototype.enterRoom = function (data) {
-        var _this = this;
+    }
+    enterRoom(data) {
         this.props.dispatch(chatroomActions.leaveRoomAction());
-        process.nextTick(function () {
-            return _this.props.dispatch(chatroomActions.getPersistendChatroom(data.id));
-        });
-    };
-    ChatLogsBox.prototype.render = function () {
+        process.nextTick(() => this.props.dispatch(chatroomActions.getPersistendChatroom(data.id)));
+    }
+    render() {
         return (React.createElement("div", null,
-            React.createElement(Subheader_1["default"], null, "Recent chats"),
-            React.createElement(ListChatLogs_1.ListChatLogs, { value: this.props.chatlogReducer.chatsLog, onSelected: this.enterRoom, onRemovedLog: this.removedLog })));
-    };
-    return ChatLogsBox;
-}(React.Component));
-exports.ChatLogsBox = ChatLogsBox;
-var mapStateToProps = function (state) { return ({
+            React.createElement(Subheader, null, "Recent chats"),
+            React.createElement(ListChatLogs, { value: this.props.chatlogReducer.chatsLog, onSelected: this.enterRoom, onRemovedLog: this.removedLog })));
+    }
+}
+const mapStateToProps = (state) => ({
     chatlogReducer: state.chatlogReducer
-}); };
-exports.ChatLogsBoxEnhancer = react_redux_1.connect(mapStateToProps)(ChatLogsBox);
+});
+export const ChatLogsBoxEnhancer = connect(mapStateToProps)(ChatLogsBox);

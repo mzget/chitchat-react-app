@@ -1,16 +1,14 @@
-"use strict";
-exports.__esModule = true;
-var React = require("react");
-var Dialog_1 = require("material-ui/Dialog");
-var FlatButton_1 = require("material-ui/FlatButton");
-var MapBox_1 = require("./MapBox");
-var actions = function (props) { return [
-    React.createElement(FlatButton_1["default"], { label: "Cancel", primary: true, onTouchTap: props.onClose }),
-    React.createElement(FlatButton_1["default"], { label: "Submit", primary: true, onTouchTap: props.onSubmit }),
-]; };
-exports.MapDialog = function (props) { return (React.createElement("div", null,
-    React.createElement(Dialog_1["default"], { title: "Map Dialog", actions: actions(props), modal: true, open: props.open, contentStyle: {
+import * as React from 'react';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import { MapBox } from "./MapBox";
+const actions = (props) => [
+    React.createElement(FlatButton, { label: "Cancel", primary: true, onTouchTap: props.onClose }),
+    React.createElement(FlatButton, { label: "Submit", primary: true, onTouchTap: props.onSubmit }),
+];
+export const MapDialog = (props) => (React.createElement("div", null,
+    React.createElement(Dialog, { title: "Your Location", actions: actions(props), modal: true, open: props.open, contentStyle: {
             width: 480,
             height: 600
         } },
-        React.createElement(MapBox_1.MapBox, { onLocationChange: props.onLocationChange })))); };
+        React.createElement(MapBox, { onLocationChange: props.onLocationChange }))));

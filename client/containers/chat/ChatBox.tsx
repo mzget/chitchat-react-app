@@ -171,9 +171,6 @@ const renderList = (props: IChatBoxProps) => {
                                     <Avatar>{message.user.username.charAt(0)}</Avatar>
                                 }
                                 content={{ position: message.body }}
-                                fileIcon={
-                                    getFontIcon(message)
-                                }
                                 readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null}
                                 onClickReader={() => onClickReader(message)} />
                         }>

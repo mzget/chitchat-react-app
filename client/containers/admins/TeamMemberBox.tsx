@@ -124,8 +124,8 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
                 <ContactProfileView
                     member={this.state.member}
                     onSubmit={this.onSubmit}
-                    dropdownItems={this.props.adminReducer.orgCharts}
-                    dropdownValue={this.state.dropdownValue}
+                    orgsRoleItems={this.props.adminReducer.orgCharts}
+                    orgRoleValue={this.state.dropdownValue}
                     dropdownChange={(event, id, value) => {
                         console.log("org chart change", value);
                         this.setState(previous => ({ ...previous, dropdownValue: value }));

@@ -1,62 +1,60 @@
-"use strict";
-exports.__esModule = true;
-var React = require("react");
-var Colors = require("material-ui/styles/colors");
-var FlatButton_1 = require("material-ui/FlatButton");
-var flexbox_react_1 = require("flexbox-react");
-var Subheader_1 = require("material-ui/Subheader");
-var Avatar_1 = require("material-ui/Avatar");
-var chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
-var AlertMsg_1 = require("../chitchat/consts/AlertMsg");
-var Room_1 = require("../chitchat/shared/Room");
-var UserRole_1 = require("../chitchat/chats/models/UserRole");
-var checkAdminPermission = function (teamProfile) {
-    var team_role = teamProfile.team_role;
-    if (team_role.toString() == UserRole_1.UserRole[UserRole_1.UserRole.admin]) {
+import * as React from "react";
+import * as Colors from "material-ui/styles/colors";
+import FlatButton from 'material-ui/FlatButton';
+import Flexbox from "flexbox-react";
+import Subheader from 'material-ui/Subheader';
+import Avatar from 'material-ui/Avatar';
+import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
+import { groups } from "../chitchat/consts/AlertMsg";
+import { RoomType } from "../chitchat/shared/Room";
+import { UserRole } from "../chitchat/chats/models/UserRole";
+const checkAdminPermission = (teamProfile) => {
+    let { team_role } = teamProfile;
+    if (team_role.toString() == UserRole[UserRole.admin]) {
         return true;
     }
     else
         return false;
 };
-var getView = function (props) {
-    var match = props.match, history = props.history, onError = props.onError, chatroomReducer = props.chatroomReducer, userReducer = props.userReducer;
-    var room_id = match.params.room_id;
-    var room = chatroomReducer.room;
+const getView = (props) => {
+    let { match, history, onError, chatroomReducer, userReducer } = props;
+    let { room_id } = match.params;
+    let { room } = chatroomReducer;
     if (room_id && !room) {
         room = chatroomActions.getRoom(room_id);
     }
     if (match.path.match("/chatroom/") && room) {
         return (React.createElement("div", { style: { margin: 2, backgroundColor: Colors.indigo50 } },
-            React.createElement(flexbox_react_1["default"], { flexDirection: "row" },
-                React.createElement(Avatar_1["default"], { src: (room.image) ? room.image : (room.name) ? room.name.charAt(0) : null, style: { margin: 2 } }),
-                React.createElement(Subheader_1["default"], { style: { color: Colors.indigo500 } }, (room.name) ? room.name.toUpperCase() : null),
-                (room.type != Room_1.RoomType.privateChat) ? (React.createElement(flexbox_react_1["default"], { flexDirection: "row" },
-                    React.createElement(FlatButton_1["default"], { label: "Manage Group", style: { margin: 2 }, onClick: function () {
-                            if (room.type == Room_1.RoomType.organizationGroup) {
+            React.createElement(Flexbox, { flexDirection: "row" },
+                React.createElement(Avatar, { src: (room.image) ? room.image : (room.name) ? room.name.charAt(0) : null, style: { margin: 2 } }),
+                React.createElement(Subheader, { style: { color: Colors.indigo500 } }, (room.name) ? room.name.toUpperCase() : null),
+                (room.type != RoomType.privateChat) ? (React.createElement(Flexbox, { flexDirection: "row" },
+                    React.createElement(FlatButton, { label: "Manage Group", style: { margin: 2 }, onClick: () => {
+                            if (room.type == RoomType.organizationGroup) {
                                 if (checkAdminPermission(userReducer.teamProfile)) {
-                                    history.push("/chatroom/settings/" + room_id + "/add_member");
+                                    history.push(`/chatroom/settings/${room_id}/add_member`);
                                 }
                                 else {
-                                    onError(AlertMsg_1.groups.request_admin_permission);
+                                    onError(groups.request_admin_permission);
                                 }
                             }
                             else {
-                                history.push("/chatroom/settings/" + room_id + "/add_member");
+                                history.push(`/chatroom/settings/${room_id}/add_member`);
                             }
                         } }),
-                    React.createElement(FlatButton_1["default"], { label: "Edit Group Settings", style: { margin: 2 }, onClick: function () {
-                            if (room.type == Room_1.RoomType.organizationGroup) {
+                    React.createElement(FlatButton, { label: "Edit Group Settings", style: { margin: 2 }, onClick: () => {
+                            if (room.type == RoomType.organizationGroup) {
                                 if (checkAdminPermission(userReducer.teamProfile)) {
-                                    history.push("/chatroom/settings/" + room_id + "/edit");
+                                    history.push(`/chatroom/settings/${room_id}/edit`);
                                 }
                                 else {
-                                    onError(AlertMsg_1.groups.request_admin_permission);
+                                    onError(groups.request_admin_permission);
                                 }
                             }
                             else {
-                                history.push("/chatroom/settings/" + room_id + "/edit");
+                                history.push(`/chatroom/settings/${room_id}/edit`);
                             }
                         } }))) : null)));
     }
 };
-exports.SubToolbar = function (props) { return (React.createElement("div", null, getView(props))); };
+export const SubToolbar = (props) => (React.createElement("div", null, getView(props)));

@@ -1,19 +1,13 @@
-"use strict";
-exports.__esModule = true;
-var store = require("react-native-simple-store");
-var NodeMessageDAL = (function () {
-    function NodeMessageDAL() {
-    }
-    NodeMessageDAL.prototype.getData = function (rid) {
+const store = require("react-native-simple-store");
+export class NodeMessageDAL {
+    getData(rid) {
         return store.get(rid);
-    };
-    NodeMessageDAL.prototype.saveData = function (rid, chatRecord) {
+    }
+    saveData(rid, chatRecord) {
         return store.save(rid, chatRecord);
-    };
-    NodeMessageDAL.prototype.removeData = function (rid, callback) {
-    };
-    NodeMessageDAL.prototype.clearData = function (next) {
-    };
-    return NodeMessageDAL;
-}());
-exports.NodeMessageDAL = NodeMessageDAL;
+    }
+    removeData(rid, callback) {
+    }
+    clearData(next) {
+    }
+}

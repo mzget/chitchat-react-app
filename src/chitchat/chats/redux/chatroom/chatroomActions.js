@@ -1,17 +1,8 @@
-"use strict";
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
  * This is pure function action for redux app.
  */
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -20,92 +11,59 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
-exports.__esModule = true;
-var R = require("ramda");
-var redux_actions_1 = require("redux-actions");
-var stalk_js_1 = require("stalk-js");
-var chatroomService = require("../../services/chatroomService");
-var MessageService = require("../../services/MessageService");
-var ChatRoomComponent_1 = require("../../ChatRoomComponent");
-var BackendFactory_1 = require("../../BackendFactory");
-var secureServiceFactory_1 = require("../../secure/secureServiceFactory");
-var NotificationManager = require("../stalkBridge/StalkNotificationActions");
-var chatlogRxActions_1 = require("../chatlogs/chatlogRxActions");
-var chatroomRxEpic_1 = require("./chatroomRxEpic");
-var Room_1 = require("../../..//shared/Room");
-var Message_1 = require("../../../shared/Message");
-var ChitchatFactory_1 = require("../../ChitchatFactory");
-var getStore = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().store; };
-var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
-var authReducer = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().authStore; };
-var appReducer = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().appStore; };
-var secure = secureServiceFactory_1["default"].getService();
+import * as R from "ramda";
+import { createAction } from "redux-actions";
+import { Utils } from "stalk-js";
+import * as chatroomService from "../../services/chatroomService";
+import * as MessageService from "../../services/MessageService";
+import { ChatRoomComponent, ON_CHAT, ON_MESSAGE_CHANGE } from "../../ChatRoomComponent";
+import { BackendFactory } from "../../BackendFactory";
+import SecureServiceFactory from "../../secure/secureServiceFactory";
+import * as NotificationManager from "../stalkBridge/StalkNotificationActions";
+import { updateLastAccessRoom } from "../chatlogs/chatlogRxActions";
+import { updateMessagesRead } from "./chatroomRxEpic";
+import { RoomType } from "../../..//shared/Room";
+import { MessageType } from "../../../shared/Message";
+import { ChitChatFactory } from "../../ChitchatFactory";
+const getStore = () => ChitChatFactory.getInstance().store;
+const getConfig = () => ChitChatFactory.getInstance().config;
+const authReducer = () => ChitChatFactory.getInstance().authStore;
+const appReducer = () => ChitChatFactory.getInstance().appStore;
+const secure = SecureServiceFactory.getService();
 /**
  * ChatRoomActionsType
  */
-var ChatRoomActionsType = (function () {
-    function ChatRoomActionsType() {
-    }
-    return ChatRoomActionsType;
-}());
+export class ChatRoomActionsType {
+}
 ChatRoomActionsType.SEND_MESSAGE_REQUEST = "SEND_MESSAGE_REQUEST";
 ChatRoomActionsType.SEND_MESSAGE_SUCCESS = "SEND_MESSAGE_SUCCESS";
 ChatRoomActionsType.SEND_MESSAGE_FAILURE = "SEND_MESSAGE_FAILURE";
 ChatRoomActionsType.REPLACE_MESSAGE = "REPLACE_MESSAGE";
 ChatRoomActionsType.ON_EARLY_MESSAGE_READY = "ON_EARLY_MESSAGE_READY";
-exports.ChatRoomActionsType = ChatRoomActionsType;
-function initChatRoom(currentRoom) {
+export function initChatRoom(currentRoom) {
     if (!currentRoom) {
         throw new Error("Empty roomInfo");
     }
-    var room_name = currentRoom.name;
-    if (!room_name && currentRoom.type === Room_1.RoomType.privateChat) {
-        currentRoom.members.some(function (v, id, arr) {
+    let room_name = currentRoom.name;
+    if (!room_name && currentRoom.type === RoomType.privateChat) {
+        currentRoom.members.some((v, id, arr) => {
             if (v._id !== authReducer().user._id) {
                 currentRoom.name = v.username;
                 return true;
             }
         });
     }
-    var chatroomComp = ChatRoomComponent_1.ChatRoomComponent.createInstance();
+    let chatroomComp = ChatRoomComponent.createInstance();
     chatroomComp.setRoomId(currentRoom._id);
     NotificationManager.unsubscribeGlobalNotifyMessageEvent();
     chatroomComp.chatroomDelegate = onChatRoomDelegate;
     chatroomComp.outsideRoomDelegete = onOutSideRoomDelegate;
 }
-exports.initChatRoom = initChatRoom;
 function onChatRoomDelegate(event, data) {
-    if (event === ChatRoomComponent_1.ON_CHAT) {
-        console.log("onChatRoomDelegate: ", ChatRoomComponent_1.ON_CHAT, data);
-        var messageImp = data;
-        var backendFactory = BackendFactory_1.BackendFactory.getInstance();
+    if (event === ON_CHAT) {
+        console.log("onChatRoomDelegate: ", ON_CHAT, data);
+        let messageImp = data;
+        let backendFactory = BackendFactory.getInstance();
         /**
          * Todo **
          * - if message_id is mine. Replace message_id to local messages list.
@@ -118,13 +76,13 @@ function onChatRoomDelegate(event, data) {
         else {
             console.log("is contact message");
             // @ Check app not run in background.
-            var appState = appReducer().appState;
+            let appState = appReducer().appState;
             console.log("AppState: ", appState); // active, background, inactive
             if (!!appState) {
                 if (appState === "active") {
-                    MessageService.updateMessageReader(messageImp._id, messageImp.rid).then(function (response) { return response.json(); }).then(function (value) {
+                    MessageService.updateMessageReader(messageImp._id, messageImp.rid).then(response => response.json()).then(value => {
                         console.log("updateMessageReader: ", value);
-                    })["catch"](function (err) {
+                    }).catch(err => {
                         console.warn("updateMessageReader: ", err);
                     });
                 }
@@ -136,26 +94,26 @@ function onChatRoomDelegate(event, data) {
             }
         }
     }
-    else if (event === ChatRoomComponent_1.ON_MESSAGE_CHANGE) {
+    else if (event === ON_MESSAGE_CHANGE) {
         getStore().dispatch(onMessageChangedAction(data));
     }
 }
 function onOutSideRoomDelegate(event, data) {
-    if (event === ChatRoomComponent_1.ON_CHAT) {
+    if (event === ON_CHAT) {
         console.log("Call notification here...", data); // active, background, inactive
         NotificationManager.notify(data);
     }
 }
-exports.ON_MESSAGE_CHANGED = "ON_MESSAGE_CHANGED";
-var onMessageChangedAction = redux_actions_1.createAction(exports.ON_MESSAGE_CHANGED, function (messages) { return messages; });
-var onEarlyMessageReady = function (data) { return ({ type: ChatRoomActionsType.ON_EARLY_MESSAGE_READY, payload: data }); };
-function checkOlderMessages() {
-    return function (dispatch) {
-        var room = getStore().getState().chatroomReducer.room;
-        ChatRoomComponent_1.ChatRoomComponent.getInstance().getTopEdgeMessageTime().then(function (res) {
+export const ON_MESSAGE_CHANGED = "ON_MESSAGE_CHANGED";
+const onMessageChangedAction = createAction(ON_MESSAGE_CHANGED, (messages) => messages);
+const onEarlyMessageReady = (data) => ({ type: ChatRoomActionsType.ON_EARLY_MESSAGE_READY, payload: data });
+export function checkOlderMessages() {
+    return dispatch => {
+        let room = getStore().getState().chatroomReducer.room;
+        ChatRoomComponent.getInstance().getTopEdgeMessageTime().then(res => {
             chatroomService.getOlderMessagesCount(room._id, res.toString(), false)
-                .then(function (response) { return response.json(); })
-                .then(function (result) {
+                .then(response => response.json())
+                .then((result) => {
                 console.log("getOlderMessagesCount", result);
                 if (result.success && result.result > 0) {
                     //               console.log("onOlderMessageReady is true ! Show load earlier message on top view.");
@@ -165,122 +123,109 @@ function checkOlderMessages() {
                     //                console.log("onOlderMessageReady is false ! Don't show load earlier message on top view.");
                     dispatch(onEarlyMessageReady(false));
                 }
-            })["catch"](function (err) {
+            }).catch(err => {
                 console.warn("getOlderMessagesCount fail", err);
                 dispatch(onEarlyMessageReady(false));
             });
         });
     };
 }
-exports.checkOlderMessages = checkOlderMessages;
-exports.LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
-var loadEarlyMessage_success = function (payload) { return ({ type: exports.LOAD_EARLY_MESSAGE_SUCCESS, payload: payload }); };
-function loadEarlyMessageChunk(room_id) {
-    return function (dispatch) {
-        ChatRoomComponent_1.ChatRoomComponent.getInstance().getOlderMessageChunk(room_id).then(function (docs) {
+export const LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
+const loadEarlyMessage_success = (payload) => ({ type: LOAD_EARLY_MESSAGE_SUCCESS, payload });
+export function loadEarlyMessageChunk(room_id) {
+    return dispatch => {
+        ChatRoomComponent.getInstance().getOlderMessageChunk(room_id).then(docs => {
             dispatch(loadEarlyMessage_success(docs));
             // @check older message again.
             dispatch(checkOlderMessages());
             //# update messages read.
             if (docs.length > 0) {
-                dispatch(chatroomRxEpic_1.updateMessagesRead(docs, room_id));
+                dispatch(updateMessagesRead(docs, room_id));
             }
-        })["catch"](function (err) {
+        }).catch(err => {
             console.warn("loadEarlyMessageChunk fail", err);
         });
     };
 }
-exports.loadEarlyMessageChunk = loadEarlyMessageChunk;
-exports.GET_NEWER_MESSAGE = "GET_NEWER_MESSAGE";
-exports.GET_NEWER_MESSAGE_FAILURE = "GET_NEWER_MESSAGE_FAILURE";
-exports.GET_NEWER_MESSAGE_SUCCESS = "GET_NEWER_MESSAGE_SUCCESS";
-var getNewerMessage = redux_actions_1.createAction(exports.GET_NEWER_MESSAGE);
-var getNewerMessage_failure = redux_actions_1.createAction(exports.GET_NEWER_MESSAGE_FAILURE);
-var getNewerMessage_success = redux_actions_1.createAction(exports.GET_NEWER_MESSAGE_SUCCESS, function (messages) { return messages; });
-function getNewerMessageFromNet() {
-    return function (dispatch) {
+export const GET_NEWER_MESSAGE = "GET_NEWER_MESSAGE";
+export const GET_NEWER_MESSAGE_FAILURE = "GET_NEWER_MESSAGE_FAILURE";
+export const GET_NEWER_MESSAGE_SUCCESS = "GET_NEWER_MESSAGE_SUCCESS";
+const getNewerMessage = createAction(GET_NEWER_MESSAGE);
+const getNewerMessage_failure = createAction(GET_NEWER_MESSAGE_FAILURE);
+const getNewerMessage_success = createAction(GET_NEWER_MESSAGE_SUCCESS, messages => messages);
+export function getNewerMessageFromNet() {
+    return dispatch => {
         dispatch(getNewerMessage());
-        var token = authReducer().chitchat_token;
-        ChatRoomComponent_1.ChatRoomComponent.getInstance().getNewerMessageRecord(token, function (results, room_id) {
+        let token = authReducer().chitchat_token;
+        ChatRoomComponent.getInstance().getNewerMessageRecord(token, (results, room_id) => {
             dispatch(getNewerMessage_success(results));
             //# update messages read.
             if (results.length > 0) {
-                dispatch(chatroomRxEpic_1.updateMessagesRead(results, room_id));
+                dispatch(updateMessagesRead(results, room_id));
             }
-        })["catch"](function (err) {
+        }).catch(err => {
             if (err)
                 console.warn("getNewerMessageRecord fail", err);
             dispatch(getNewerMessage_failure());
         });
     };
 }
-exports.getNewerMessageFromNet = getNewerMessageFromNet;
-function getMessages() {
-    return __awaiter(this, void 0, void 0, function () {
-        var chatroomComp, messages;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    chatroomComp = ChatRoomComponent_1.ChatRoomComponent.getInstance();
-                    return [4 /*yield*/, chatroomComp.getMessages()];
-                case 1:
-                    messages = _a.sent();
-                    return [2 /*return*/, messages];
-            }
-        });
+export function getMessages() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let chatroomComp = ChatRoomComponent.getInstance();
+        let messages = yield chatroomComp.getMessages();
+        return messages;
     });
 }
-exports.getMessages = getMessages;
-var send_message_request = function () { return ({ type: ChatRoomActionsType.SEND_MESSAGE_REQUEST }); };
-var send_message_success = function (data) { return ({ type: ChatRoomActionsType.SEND_MESSAGE_SUCCESS, payload: data }); };
-var send_message_failure = function (error) { return ({ type: ChatRoomActionsType.SEND_MESSAGE_FAILURE, payload: error }); };
-function sendMessage(message) {
-    return function (dispatch) {
+const send_message_request = () => ({ type: ChatRoomActionsType.SEND_MESSAGE_REQUEST });
+const send_message_success = (data) => ({ type: ChatRoomActionsType.SEND_MESSAGE_SUCCESS, payload: data });
+const send_message_failure = (error) => ({ type: ChatRoomActionsType.SEND_MESSAGE_FAILURE, payload: error });
+export function sendMessage(message) {
+    return (dispatch) => {
         dispatch(send_message_request());
-        if (message.type === Message_1.MessageType[Message_1.MessageType.Text] && getConfig().appConfig.encryption === true) {
-            secure.encryption(message.body).then(function (result) {
+        if (message.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption === true) {
+            secure.encryption(message.body).then(result => {
                 message.body = result;
-                var backendFactory = BackendFactory_1.BackendFactory.getInstance();
-                var chatApi = backendFactory.getServer().getChatRoomAPI();
-                chatApi.chat("*", message, function (err, res) {
+                let backendFactory = BackendFactory.getInstance();
+                let chatApi = backendFactory.getServer().getChatRoomAPI();
+                chatApi.chat("*", message, (err, res) => {
                     dispatch(sendMessageResponse(err, res));
                 });
-            })["catch"](function (err) {
+            }).catch(err => {
                 console.error(err);
                 dispatch(send_message_failure(err));
             });
         }
         else {
-            var backendFactory = BackendFactory_1.BackendFactory.getInstance();
-            var chatApi = backendFactory.getServer().getChatRoomAPI();
-            chatApi.chat("*", message, function (err, res) {
+            let backendFactory = BackendFactory.getInstance();
+            let chatApi = backendFactory.getServer().getChatRoomAPI();
+            chatApi.chat("*", message, (err, res) => {
                 dispatch(sendMessageResponse(err, res));
             });
         }
     };
 }
-exports.sendMessage = sendMessage;
 function sendMessageResponse(err, res) {
-    return function (dispatch) {
+    return dispatch => {
         if (!!err) {
             dispatch(send_message_failure(err.message));
         }
         else {
             console.log("server response!", res);
-            if (res.code == stalk_js_1.Utils.statusCode.success && res.data.hasOwnProperty("resultMsg")) {
-                var _msg_1 = __assign({}, res.data.resultMsg);
-                if (_msg_1.type === Message_1.MessageType[Message_1.MessageType.Text] && getConfig().appConfig.encryption) {
-                    secure.decryption(_msg_1.body).then(function (res) {
-                        _msg_1.body = res;
-                        dispatch(send_message_success(_msg_1));
-                    })["catch"](function (err) {
+            if (res.code == Utils.statusCode.success && res.data.hasOwnProperty("resultMsg")) {
+                let _msg = Object.assign({}, res.data.resultMsg);
+                if (_msg.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption) {
+                    secure.decryption(_msg.body).then(res => {
+                        _msg.body = res;
+                        dispatch(send_message_success(_msg));
+                    }).catch(err => {
                         console.error(err);
-                        _msg_1.body = err.toString();
-                        dispatch(send_message_success(_msg_1));
+                        _msg.body = err.toString();
+                        dispatch(send_message_success(_msg));
                     });
                 }
                 else {
-                    dispatch(send_message_success(_msg_1));
+                    dispatch(send_message_success(_msg));
                 }
             }
             else {
@@ -289,21 +234,21 @@ function sendMessageResponse(err, res) {
         }
     };
 }
-var JOIN_ROOM_REQUEST = "JOIN_ROOM_REQUEST";
-exports.JOIN_ROOM_SUCCESS = "JOIN_ROOM_SUCCESS";
-exports.JOIN_ROOM_FAILURE = "JOIN_ROOM_FAILURE";
-var joinRoom_request = function () { return ({ type: JOIN_ROOM_REQUEST }); };
-var joinRoom_success = function (data) { return ({ type: exports.JOIN_ROOM_SUCCESS, payload: data }); };
-var joinRoom_failure = function (error) { return ({ type: exports.JOIN_ROOM_FAILURE, payload: error }); };
-function joinRoom(roomId, token, username) {
-    return function (dispatch) {
+const JOIN_ROOM_REQUEST = "JOIN_ROOM_REQUEST";
+export const JOIN_ROOM_SUCCESS = "JOIN_ROOM_SUCCESS";
+export const JOIN_ROOM_FAILURE = "JOIN_ROOM_FAILURE";
+const joinRoom_request = () => ({ type: JOIN_ROOM_REQUEST });
+const joinRoom_success = (data) => ({ type: JOIN_ROOM_SUCCESS, payload: data });
+const joinRoom_failure = (error) => ({ type: JOIN_ROOM_FAILURE, payload: error });
+export function joinRoom(roomId, token, username) {
+    return (dispatch) => {
         dispatch(joinRoom_request());
         try {
-            var backendFactory = BackendFactory_1.BackendFactory.getInstance();
-            var server = backendFactory.getServer();
-            server.getLobby().joinRoom(token, username, roomId, function (err, res) {
+            let backendFactory = BackendFactory.getInstance();
+            let server = backendFactory.getServer();
+            server.getLobby().joinRoom(token, username, roomId, (err, res) => {
                 console.log("JoinChatRoomRequest value", res);
-                if (err || res.code !== stalk_js_1.Utils.statusCode.success) {
+                if (err || res.code !== Utils.statusCode.success) {
                     dispatch(joinRoom_failure(err));
                 }
                 else {
@@ -316,30 +261,29 @@ function joinRoom(roomId, token, username) {
         }
     };
 }
-exports.joinRoom = joinRoom;
-exports.LEAVE_ROOM = "LEAVE_ROOM";
-exports.LEAVE_ROOM_SUCCESS = "LEAVE_ROOM_SUCCESS";
-var leaveRoom = function () { return ({ type: exports.LEAVE_ROOM }); };
-var leaveRoomSuccess = function () { return ({ type: exports.LEAVE_ROOM_SUCCESS }); };
-function leaveRoomAction() {
-    return function (dispatch) {
-        var _room = getStore().getState().chatroomReducer.get("room");
+export const LEAVE_ROOM = "LEAVE_ROOM";
+export const LEAVE_ROOM_SUCCESS = "LEAVE_ROOM_SUCCESS";
+const leaveRoom = () => ({ type: LEAVE_ROOM });
+const leaveRoomSuccess = () => ({ type: LEAVE_ROOM_SUCCESS });
+export function leaveRoomAction() {
+    return (dispatch) => {
+        let _room = getStore().getState().chatroomReducer.get("room");
         if (!!_room) {
-            var token = getStore().getState().stalkReducer.stalkToken;
-            var room_id = _room._id;
-            ChatRoomComponent_1.ChatRoomComponent.getInstance().dispose();
+            let token = getStore().getState().stalkReducer.stalkToken;
+            let room_id = _room._id;
+            ChatRoomComponent.getInstance().dispose();
             dispatch(leaveRoom());
             try {
-                var backendFactory = BackendFactory_1.BackendFactory.getInstance();
-                var server = backendFactory.getServer();
-                server.getLobby().leaveRoom(token, room_id, function (err, res) {
+                let backendFactory = BackendFactory.getInstance();
+                let server = backendFactory.getServer();
+                server.getLobby().leaveRoom(token, room_id, (err, res) => {
                     console.log("LeaveChatRoomRequest", err, res);
                     NotificationManager.regisNotifyNewMessageEvent();
                 });
-                dispatch(chatlogRxActions_1.updateLastAccessRoom(room_id));
+                dispatch(updateLastAccessRoom(room_id));
             }
             catch (ex) {
-                dispatch(chatlogRxActions_1.updateLastAccessRoom(room_id));
+                dispatch(updateLastAccessRoom(room_id));
             }
         }
         else {
@@ -347,24 +291,23 @@ function leaveRoomAction() {
         }
     };
 }
-exports.leaveRoomAction = leaveRoomAction;
-exports.DISABLE_CHATROOM = "DISABLE_CHATROOM";
-exports.ENABLE_CHATROOM = "ENABLE_CHATROOM";
-exports.disableChatRoom = function () { return ({ type: exports.DISABLE_CHATROOM }); };
-exports.enableChatRoom = function () { return ({ type: exports.ENABLE_CHATROOM }); };
-exports.GET_PERSISTEND_CHATROOM = "GET_PERSISTEND_CHATROOM";
-var GET_PERSISTEND_CHATROOM_CANCELLED = "GET_PERSISTEND_CHATROOM_CANCELLED";
-exports.GET_PERSISTEND_CHATROOM_SUCCESS = "GET_PERSISTEND_CHATROOM_SUCCESS";
-exports.GET_PERSISTEND_CHATROOM_FAILURE = "GET_PERSISTEND_CHATROOM_FAILURE";
-var getPersistChatroomFail = function () { return ({ type: exports.GET_PERSISTEND_CHATROOM_FAILURE }); };
-var getPersistChatroomSuccess = function (roomInfo) { return ({ type: exports.GET_PERSISTEND_CHATROOM_SUCCESS, payload: roomInfo }); };
-exports.getPersistendChatroom = function (roomId) { return (function (dispatch) {
-    dispatch({ type: exports.GET_PERSISTEND_CHATROOM, payload: roomId });
-    var chatrooms = getStore().getState().chatroomReducer.chatrooms;
+export const DISABLE_CHATROOM = "DISABLE_CHATROOM";
+export const ENABLE_CHATROOM = "ENABLE_CHATROOM";
+export const disableChatRoom = () => ({ type: DISABLE_CHATROOM });
+export const enableChatRoom = () => ({ type: ENABLE_CHATROOM });
+export const GET_PERSISTEND_CHATROOM = "GET_PERSISTEND_CHATROOM";
+const GET_PERSISTEND_CHATROOM_CANCELLED = "GET_PERSISTEND_CHATROOM_CANCELLED";
+export const GET_PERSISTEND_CHATROOM_SUCCESS = "GET_PERSISTEND_CHATROOM_SUCCESS";
+export const GET_PERSISTEND_CHATROOM_FAILURE = "GET_PERSISTEND_CHATROOM_FAILURE";
+const getPersistChatroomFail = () => ({ type: GET_PERSISTEND_CHATROOM_FAILURE });
+const getPersistChatroomSuccess = (roomInfo) => ({ type: GET_PERSISTEND_CHATROOM_SUCCESS, payload: roomInfo });
+export const getPersistendChatroom = (roomId) => (dispatch => {
+    dispatch({ type: GET_PERSISTEND_CHATROOM, payload: roomId });
+    const { chatrooms } = getStore().getState().chatroomReducer;
     if (!chatrooms) {
         return dispatch(getPersistChatroomFail());
     }
-    var rooms = chatrooms.filter(function (room, index, array) {
+    const rooms = chatrooms.filter((room, index, array) => {
         if (room._id.toString() == roomId) {
             return room;
         }
@@ -375,30 +318,30 @@ exports.getPersistendChatroom = function (roomId) { return (function (dispatch) 
     else {
         dispatch(getPersistChatroomFail());
     }
-}); };
-exports.getRoom = function (room_id) {
-    var chatrooms = getStore().getState().chatroomReducer.chatrooms;
+});
+export const getRoom = (room_id) => {
+    let { chatrooms } = getStore().getState().chatroomReducer;
     if (!chatrooms) {
         return null;
     }
-    var rooms = chatrooms.filter(function (room, index, array) {
+    const rooms = chatrooms.filter((room, index, array) => {
         if (room._id.toString() == room_id) {
             return room;
         }
     });
     return rooms[0];
 };
-exports.createChatRoom = function (myUser, contactUser) {
+export const createChatRoom = (myUser, contactUser) => {
     if (myUser && contactUser) {
-        var owner = {};
+        let owner = {};
         owner._id = myUser._id;
         owner.user_role = (myUser.role) ? myUser.role : "user";
         owner.username = myUser.username;
-        var contact = {};
+        let contact = {};
         contact._id = contactUser._id;
         contact.user_role = (contactUser.role) ? contactUser.role : "user";
         contact.username = contactUser.username;
-        var members = { owner: owner, contact: contact };
+        let members = { owner, contact };
         return members;
     }
     else {
@@ -406,19 +349,19 @@ exports.createChatRoom = function (myUser, contactUser) {
         return null;
     }
 };
-exports.UPDATED_CHATROOMS = "UPDATED_CHATROOMS";
-exports.updatedChatRoomSuccess = function (chatrooms) { return ({ type: exports.UPDATED_CHATROOMS, payload: chatrooms }); };
-exports.updateChatRoom = function (rooms) {
-    return function (dispatch) {
-        var chatrooms = getStore().getState().chatroomReducer.get("chatrooms");
+export const UPDATED_CHATROOMS = "UPDATED_CHATROOMS";
+export const updatedChatRoomSuccess = (chatrooms) => ({ type: UPDATED_CHATROOMS, payload: chatrooms });
+export const updateChatRoom = (rooms) => {
+    return dispatch => {
+        let chatrooms = getStore().getState().chatroomReducer.get("chatrooms");
         if (chatrooms) {
             // R.unionWith(R.eqBy(R.prop('a')), l1, l2);
-            var _newRooms = R.unionWith(R.eqBy(R.prop("_id")), rooms, chatrooms);
-            dispatch(exports.updatedChatRoomSuccess(_newRooms));
+            let _newRooms = R.unionWith(R.eqBy(R.prop("_id")), rooms, chatrooms);
+            dispatch(updatedChatRoomSuccess(_newRooms));
         }
         else {
             chatrooms = rooms.slice();
-            dispatch(exports.updatedChatRoomSuccess(chatrooms));
+            dispatch(updatedChatRoomSuccess(chatrooms));
         }
     };
 };

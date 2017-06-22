@@ -1,12 +1,10 @@
-"use strict";
-exports.__esModule = true;
-var React = require("react");
-var AppBar_1 = require("material-ui/AppBar");
-var MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
+import * as React from 'react';
+import AppBar from 'material-ui/AppBar';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 /**
  * A simple example of `AppBar` with an icon on the right.
  * By default, the left icon is a navigation-menu.
  */
-var AppBarIcon = function (props) { return (React.createElement(MuiThemeProvider_1["default"], null,
-    React.createElement(AppBar_1["default"], { title: props.title, showMenuIconButton: false }))); };
-exports["default"] = AppBarIcon;
+const AppBarIcon = (props) => (React.createElement(MuiThemeProvider, null,
+    React.createElement(AppBar, { title: props.title, showMenuIconButton: false })));
+export default AppBarIcon;

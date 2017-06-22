@@ -1,17 +1,15 @@
-"use strict";
-exports.__esModule = true;
-var React = require("react");
-var authRx = require("../redux/authen/authRx");
-var SimpleToolbar_1 = require("../components/SimpleToolbar");
-var ToolbarEnhancer_1 = require("./toolsbox/ToolbarEnhancer");
-var ProfileBox_1 = require("./profile/ProfileBox");
-var menus = ["menu", "log out"];
-function listener(props, id, value) {
+import * as React from "react";
+import * as authRx from "../redux/authen/authRx";
+import { SimpleToolbar } from "../components/SimpleToolbar";
+import { ToolbarEnhancer } from "./toolsbox/ToolbarEnhancer";
+import { ProfileEnhanced } from "./profile/ProfileBox";
+const menus = ["menu", "log out"];
+export function listener(props, id, value) {
     console.log(menus[id]);
-    var authReducer = props.authReducer;
+    let { authReducer } = props;
     switch (id) {
         case 0:
-            props.history.push("/admin/" + authReducer.user);
+            props.history.push(`/admin/${authReducer.user}`);
             break;
         case 1:
             props.dispatch(authRx.logout(props.authReducer.token));
@@ -20,12 +18,5 @@ function listener(props, id, value) {
             break;
     }
 }
-exports.listener = listener;
-exports.WebToolbarEnhanced = ToolbarEnhancer_1.ToolbarEnhancer(function (_a) {
-    var teamReducer = _a.teamReducer, authReducer = _a.authReducer, onPressTitle = _a.onPressTitle, onMenuSelect = _a.onMenuSelect, listener = _a.listener, history = _a.history;
-    return React.createElement(SimpleToolbar_1.SimpleToolbar, { title: (teamReducer.team) ? teamReducer.team.name : "", onPressTitle: onPressTitle, menus: menus, onSelectedMenuItem: onMenuSelect, groupItem: React.createElement(ProfileBox_1.ProfileEnhanced, null) });
-});
-exports.MobileToolbarEnhanced = ToolbarEnhancer_1.ToolbarEnhancer(function (_a) {
-    var teamReducer = _a.teamReducer, authReducer = _a.authReducer, onMenuSelect = _a.onMenuSelect, listener = _a.listener, history = _a.history;
-    return React.createElement(SimpleToolbar_1.SimpleToolbar, { title: (teamReducer.team) ? teamReducer.team.name : "", menus: menus, onSelectedMenuItem: onMenuSelect });
-});
+export const WebToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onPressTitle, onMenuSelect, listener, history }) => React.createElement(SimpleToolbar, { title: (teamReducer.team) ? teamReducer.team.name : "", onPressTitle: onPressTitle, menus: menus, onSelectedMenuItem: onMenuSelect, groupItem: React.createElement(ProfileEnhanced, null) }));
+export const MobileToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onMenuSelect, listener, history }) => React.createElement(SimpleToolbar, { title: (teamReducer.team) ? teamReducer.team.name : "", menus: menus, onSelectedMenuItem: onMenuSelect }));

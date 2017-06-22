@@ -1,22 +1,19 @@
-"use strict";
-exports.__esModule = true;
-var react_redux_1 = require("react-redux");
-var recompose_1 = require("recompose");
-var userRx_1 = require("../../redux/user/userRx");
-var editGroupRxActions_1 = require("../../redux/group/editGroupRxActions");
-var chatroomActions = require("../../chitchat/chats/redux/chatroom/chatroomActions");
-var mapStateToProps = function (state) { return ({
+import { connect } from "react-redux";
+import { withState, withHandlers, compose, lifecycle, shallowEqual } from "recompose";
+import { suggestUser } from "../../redux/user/userRx";
+import { addGroupMember } from "../../redux/group/editGroupRxActions";
+import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
+const mapStateToProps = (state) => ({
     userReducer: state.userReducer,
     chatroomReducer: state.chatroomReducer
-}); };
-exports.AddMemberEnhancer = recompose_1.compose(react_redux_1.connect(mapStateToProps), recompose_1.withState("search", "setSearch", ""), recompose_1.withState("members", "setMembers", []), recompose_1.lifecycle({
-    componentWillReceiveProps: function (nextProps) {
-        var _this = this;
-        var searchUsers = nextProps.userReducer.searchUsers;
-        var params = nextProps.match.params, chatroomReducer = nextProps.chatroomReducer;
-        var update = function (room) {
-            var _members = searchUsers.filter(function (v) {
-                var _has = room.members.some(function (member) {
+});
+export const AddMemberEnhancer = compose(connect(mapStateToProps), withState("search", "setSearch", ""), withState("members", "setMembers", []), lifecycle({
+    componentWillReceiveProps(nextProps) {
+        let { searchUsers } = nextProps.userReducer;
+        let { match: { params }, chatroomReducer } = nextProps;
+        const update = (room) => {
+            let _members = searchUsers.filter(v => {
+                let _has = room.members.some(member => {
                     if (member._id == v._id) {
                         return true;
                     }
@@ -25,29 +22,29 @@ exports.AddMemberEnhancer = recompose_1.compose(react_redux_1.connect(mapStateTo
                     return v;
                 }
             });
-            _this.props.setMembers(function (members) { return _members; });
+            this.props.setMembers(members => _members);
         };
-        if (!recompose_1.shallowEqual(searchUsers, this.props.userReducer.searchUsers)) {
+        if (!shallowEqual(searchUsers, this.props.userReducer.searchUsers)) {
             if (Array.isArray(searchUsers)) {
-                var room = chatroomActions.getRoom(params.room_id);
+                let room = chatroomActions.getRoom(params.room_id);
                 update(room);
             }
         }
-        if (!recompose_1.shallowEqual(chatroomReducer.chatrooms, this.props.chatroomReducer.chatrooms)) {
+        if (!shallowEqual(chatroomReducer.chatrooms, this.props.chatroomReducer.chatrooms)) {
             if (Array.isArray(searchUsers)) {
-                var room = chatroomActions.getRoom(params.room_id);
+                let room = chatroomActions.getRoom(params.room_id);
                 update(room);
             }
         }
     }
-}), recompose_1.withHandlers({
-    onSearch: function (props) { return function () {
-        props.dispatch(userRx_1.suggestUser(props.search, null));
-    }; },
-    onAddMember: function (props) { return function (item) {
-        props.dispatch(editGroupRxActions_1.addGroupMember(props.match.params.room_id, item));
-    }; },
-    onTextChanged: function (props) { return function (e, value) {
-        props.setSearch(function (search) { return value; });
-    }; }
+}), withHandlers({
+    onSearch: (props) => () => {
+        props.dispatch(suggestUser(props.search, null));
+    },
+    onAddMember: (props) => item => {
+        props.dispatch(addGroupMember(props.match.params.room_id, item));
+    },
+    onTextChanged: (props) => (e, value) => {
+        props.setSearch(search => value);
+    }
 }));

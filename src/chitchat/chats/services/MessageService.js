@@ -1,25 +1,21 @@
-"use strict";
-exports.__esModule = true;
-var Rx = require("rxjs");
-var fetch = require("isomorphic-fetch");
-var ChitchatFactory_1 = require("../ChitchatFactory");
-var chitchatServiceUtils_1 = require("../utils/chitchatServiceUtils");
-var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
-var authReducer = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().authStore; };
-var ajax = Rx.Observable.ajax;
-function updateMessageReader(message_id, room_id) {
-    return fetch(getConfig().api.message + "/updateReader", {
+import * as Rx from "rxjs";
+import * as fetch from "isomorphic-fetch";
+import { ChitChatFactory } from "../ChitchatFactory";
+import { withToken, chitchat_headers } from "../utils/chitchatServiceUtils";
+const getConfig = () => ChitChatFactory.getInstance().config;
+const authReducer = () => ChitChatFactory.getInstance().authStore;
+const { ajax } = Rx.Observable;
+export function updateMessageReader(message_id, room_id) {
+    return fetch(`${getConfig().api.message}/updateReader`, {
         method: "POST",
-        headers: chitchatServiceUtils_1.withToken(chitchatServiceUtils_1.chitchat_headers())(authReducer().chitchat_token),
+        headers: withToken(chitchat_headers())(authReducer().chitchat_token),
         body: JSON.stringify({ room_id: room_id, message_id: message_id })
     });
 }
-exports.updateMessageReader = updateMessageReader;
-function updateMessagesReader(messages_id, room_id) {
-    return fetch(getConfig().api.message + "/updateMessagesReader", {
+export function updateMessagesReader(messages_id, room_id) {
+    return fetch(`${getConfig().api.message}/updateMessagesReader`, {
         method: "POST",
-        headers: chitchatServiceUtils_1.withToken(chitchatServiceUtils_1.chitchat_headers())(authReducer().chitchat_token),
+        headers: withToken(chitchat_headers())(authReducer().chitchat_token),
         body: JSON.stringify({ room_id: room_id, messages: messages_id })
     });
 }
-exports.updateMessagesReader = updateMessagesReader;

@@ -51,6 +51,7 @@ export class MapBox extends React.Component<IMapBoxProps, IMapBoxState> {
 
     geoError() {
         console.error("Unable to retrieve your location");
+        alert("Unable to retrieve your location");
     }
 
 

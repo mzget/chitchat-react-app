@@ -2,7 +2,7 @@ import * as React from "react";
 import Flexbox from "flexbox-react";
 
 import Divider from 'material-ui/Divider';
-import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from "material-ui/Card";
+import { Card, CardActions, CardHeader, CardMedia, CardTitle } from "material-ui/Card";
 import FlatButton from "material-ui/FlatButton";
 import { grey400, darkBlack, lightBlack } from "material-ui/styles/colors";
 
@@ -13,7 +13,6 @@ interface ICompProps {
     subtitle: string;
     avatar: any;
     content: any;
-    fileIcon: any;
     readers: string;
     onClickReader: () => void;
 }

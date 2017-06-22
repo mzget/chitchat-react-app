@@ -1,14 +1,12 @@
-"use strict";
-exports.__esModule = true;
-var Rx = require("rxjs/Rx");
-var ajax = Rx.Observable.ajax;
-var ChitchatFactory_1 = require("../ChitchatFactory");
-var chitchatServiceUtils_1 = require("../utils/chitchatServiceUtils");
-var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
-var authReducer = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().authStore; };
-function getTeamProfile(token, team_id) {
+import * as Rx from "rxjs/Rx";
+const { ajax } = Rx.Observable;
+import { ChitChatFactory } from "../ChitchatFactory";
+import { chitchat_headers } from "../utils/chitchatServiceUtils";
+const getConfig = () => ChitChatFactory.getInstance().config;
+const authReducer = () => ChitChatFactory.getInstance().authStore;
+export function getTeamProfile(token, team_id) {
     return Rx.Observable.ajax({
-        url: getConfig().api.user + "/teamProfile?team_id=" + team_id,
+        url: `${getConfig().api.user}/teamProfile?team_id=${team_id}`,
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -16,11 +14,10 @@ function getTeamProfile(token, team_id) {
         }
     });
 }
-exports.getTeamProfile = getTeamProfile;
-function setOrgChartId(token, user, team_id, orgChartId) {
+export function setOrgChartId(token, user, team_id, orgChartId) {
     return Rx.Observable.ajax({
         method: "POST",
-        url: getConfig().api.user + "/setOrgChartId",
+        url: `${getConfig().api.user}/setOrgChartId`,
         body: JSON.stringify({
             user_id: user._id,
             username: user.username,
@@ -33,31 +30,27 @@ function setOrgChartId(token, user, team_id, orgChartId) {
         }
     });
 }
-exports.setOrgChartId = setOrgChartId;
-function updateTeamProfile(user_id, team_id, profile) {
+export function updateTeamProfile(user_id, team_id, profile) {
     return Rx.Observable.ajax({
         method: "POST",
-        url: getConfig().api.user + "/teamProfile/" + team_id + "/" + user_id,
+        url: `${getConfig().api.user}/teamProfile/${team_id}/${user_id}`,
         body: JSON.stringify({
             profile: profile
         }),
-        headers: chitchatServiceUtils_1.chitchat_headers()
+        headers: chitchat_headers()
     });
 }
-exports.updateTeamProfile = updateTeamProfile;
-function fetchUser(username) {
+export function fetchUser(username) {
     return ajax({
         method: "GET",
-        url: getConfig().api.user + "/?username=" + username,
-        headers: chitchatServiceUtils_1.chitchat_headers()
+        url: `${getConfig().api.user}/?username=${username}`,
+        headers: chitchat_headers()
     });
 }
-exports.fetchUser = fetchUser;
-function suggestUser(username, team_id) {
+export function suggestUser(username, team_id) {
     return ajax({
         method: "GET",
-        url: getConfig().api.user + "/suggest/?username=" + username + "&team_id=" + team_id,
-        headers: chitchatServiceUtils_1.chitchat_headers()
+        url: `${getConfig().api.user}/suggest/?username=${username}&team_id=${team_id}`,
+        headers: chitchat_headers()
     });
 }
-exports.suggestUser = suggestUser;

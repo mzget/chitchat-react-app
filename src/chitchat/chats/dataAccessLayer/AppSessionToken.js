@@ -1,21 +1,17 @@
-"use strict";
-exports.__esModule = true;
-var localForage = require("localforage");
-var AppSessionToken = (function () {
-    function AppSessionToken() {
+import * as localForage from "localforage";
+export class AppSessionToken {
+    constructor() {
         this.store = localForage.createInstance({
             name: "sessionToken"
         });
     }
-    AppSessionToken.prototype.getSessionToken = function () {
+    getSessionToken() {
         return this.store.getItem("sessionToken");
-    };
-    AppSessionToken.prototype.saveSessionToken = function (token) {
+    }
+    saveSessionToken(token) {
         return this.store.setItem("sessionToken", token);
-    };
-    AppSessionToken.prototype.deleteSessionToken = function () {
+    }
+    deleteSessionToken() {
         this.store.removeItem("sessionToken");
-    };
-    return AppSessionToken;
-}());
-exports.AppSessionToken = AppSessionToken;
+    }
+}

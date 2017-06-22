@@ -1,8 +1,6 @@
-"use strict";
-exports.__esModule = true;
-var localForage = require("localforage");
-var MessageDAL = (function () {
-    function MessageDAL() {
+import * as localForage from "localforage";
+export class MessageDAL {
+    constructor() {
         // localforage.config({
         //     driver: localforage.WEBSQL, // Force WebSQL; same as using setDriver()
         //     name: 'myApp',
@@ -15,32 +13,30 @@ var MessageDAL = (function () {
             name: "message"
         });
     }
-    MessageDAL.prototype.getData = function (rid) {
+    getData(rid) {
         return this.store.getItem(rid);
-    };
-    MessageDAL.prototype.saveData = function (rid, chatRecord) {
+    }
+    saveData(rid, chatRecord) {
         return this.store.setItem(rid, chatRecord);
-    };
-    MessageDAL.prototype.removeData = function (rid, callback) {
-        this.store.removeItem(rid).then(function () {
+    }
+    removeData(rid, callback) {
+        this.store.removeItem(rid).then(() => {
             console.info("room_id %s is removed: ", rid);
             if (callback) {
                 callback(null, null);
             }
-        })["catch"](function (err) {
+        }).catch((err) => {
             console.warn(err);
         });
-    };
-    MessageDAL.prototype.clearData = function (next) {
+    }
+    clearData(next) {
         console.warn("MessageDAL.clearData");
-        this.store.clear(function (err) {
+        this.store.clear((err) => {
             if (err != null) {
                 console.warn("Clear database fail", err);
             }
             console.warn("message db now empty.");
             next(err);
         });
-    };
-    return MessageDAL;
-}());
-exports.MessageDAL = MessageDAL;
+    }
+}

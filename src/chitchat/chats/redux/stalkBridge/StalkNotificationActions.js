@@ -1,4 +1,3 @@
-"use strict";
 /**
  *  NotificationManager
  *
@@ -7,37 +6,36 @@
  * The NotificationManager for react.js.
  *
  */
-exports.__esModule = true;
-var BackendFactory_1 = require("../../BackendFactory");
-var CryptoHelper = require("../../utils/CryptoHelper");
-var Message_1 = require("../../../shared/Message");
-var ChitchatFactory_1 = require("../../ChitchatFactory");
-var getStore = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().store; };
-exports.STALK_NOTICE_NEW_MESSAGE = "STALK_NOTICE_NEW_MESSAGE";
-var stalkNotiNewMessage = function (payload) { return ({ type: exports.STALK_NOTICE_NEW_MESSAGE, payload: payload }); };
-var init = function (onSuccess) {
+import { BackendFactory } from "../../BackendFactory";
+import * as CryptoHelper from "../../utils/CryptoHelper";
+import { MessageType } from "../../../shared/Message";
+import { ChitChatFactory } from "../../ChitchatFactory";
+const getStore = () => ChitChatFactory.getInstance().store;
+export const STALK_NOTICE_NEW_MESSAGE = "STALK_NOTICE_NEW_MESSAGE";
+const stalkNotiNewMessage = (payload) => ({ type: STALK_NOTICE_NEW_MESSAGE, payload });
+const init = (onSuccess) => {
     console.log("Initialize NotificationManager.");
 };
-exports.regisNotifyNewMessageEvent = function () {
+export const regisNotifyNewMessageEvent = () => {
     console.log("subscribe global notify message event");
-    BackendFactory_1.BackendFactory.getInstance().dataListener.addOnChatListener(exports.notify);
+    BackendFactory.getInstance().dataListener.addOnChatListener(notify);
 };
-exports.unsubscribeGlobalNotifyMessageEvent = function () {
-    BackendFactory_1.BackendFactory.getInstance().dataListener.removeOnChatListener(exports.notify);
+export const unsubscribeGlobalNotifyMessageEvent = () => {
+    BackendFactory.getInstance().dataListener.removeOnChatListener(notify);
 };
-exports.notify = function (messageImp) {
-    var message = {
+export const notify = (messageImp) => {
+    let message = {
         title: messageImp.user.username,
         image: messageImp.user.avatar
     };
-    if (messageImp.type === Message_1.MessageType[Message_1.MessageType.Text]) {
-        CryptoHelper.decryptionText(messageImp).then(function (decoded) {
+    if (messageImp.type === MessageType[MessageType.Text]) {
+        CryptoHelper.decryptionText(messageImp).then((decoded) => {
             message.body = decoded.body;
             getStore().dispatch(stalkNotiNewMessage(message));
         });
     }
     else {
-        message.body = "Sent you " + messageImp.type.toLowerCase();
+        message.body = `Sent you ${messageImp.type.toLowerCase()}`;
         getStore().dispatch(stalkNotiNewMessage(message));
     }
 };
