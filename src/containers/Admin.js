@@ -77,12 +77,12 @@ class Admin extends React.Component {
             }
         }
         else if (key == this.teamMember) {
-            if (userReducer.teamProfile.team_role == UserRole[UserRole.admin]) {
-                this.setState(previous => (Object.assign({}, previous, { boxState: BoxState.isManageMember })));
-            }
-            else {
-                this.props.onError("Request for admin permision");
-            }
+            this.setState(previous => (Object.assign({}, previous, { boxState: BoxState.isManageMember })));
+            // if (userReducer.teamProfile.team_role == UserRole[UserRole.admin]) {
+            // }
+            // else {
+            //     this.props.onError("Request for admin permision");
+            // }
         }
         else if (key == this.developerIssue) {
             window.open("https://github.com/mzget/chitchat-ionic-reference-implementation/issues", '_blank');
@@ -98,13 +98,14 @@ class Admin extends React.Component {
         }
     }
     getAdminPanel() {
+        let { userReducer } = this.props;
         switch (this.state.boxState) {
             case BoxState.isManageTeam:
                 return React.createElement(ManageOrgChartBox, Object.assign({}, this.props, { onError: this.props.onError }));
             case BoxState.isCreateGroup:
                 return React.createElement(CreateGroupBox, Object.assign({}, this.props, { groupType: this.state.menuSelected, onError: this.props.onError }));
             case BoxState.isManageMember:
-                return React.createElement(TeamMemberBox, Object.assign({}, this.props, { onError: this.props.onError }));
+                return React.createElement(TeamMemberBox, Object.assign({}, this.props, { teamRole: userReducer.teamProfile.team_role, onError: this.props.onError }));
             default:
                 return React.createElement("p", null, "Admin Panel");
         }

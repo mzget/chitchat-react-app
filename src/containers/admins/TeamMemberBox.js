@@ -13,6 +13,7 @@ const PageBox = Styles.generalStyles.pageBox;
 export class TeamMemberBox extends React.Component {
     constructor() {
         super(...arguments);
+        this._canSubmit = false;
         this.userRoles = [
             UserRole[UserRole.personnel],
             UserRole[UserRole.section_chief],
@@ -27,6 +28,9 @@ export class TeamMemberBox extends React.Component {
             dropdownValue: 0,
             teamRoleValue: 0
         };
+        if (this.props.teamRole == UserRole[UserRole.admin]) {
+            this._canSubmit = true;
+        }
         this.onSelectMember = this.onSelectMember.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
@@ -84,7 +88,7 @@ export class TeamMemberBox extends React.Component {
     }
     render() {
         return ((!!this.state.member) ?
-            React.createElement(ContactProfileView, { member: this.state.member, onSubmit: this.onSubmit, orgsRoleItems: this.props.adminReducer.orgCharts, orgRoleValue: this.state.dropdownValue, dropdownChange: (event, id, value) => {
+            React.createElement(ContactProfileView, { member: this.state.member, onSubmit: this.onSubmit, canSubmit: this._canSubmit, orgsRoleItems: this.props.adminReducer.orgCharts, orgRoleValue: this.state.dropdownValue, dropdownChange: (event, id, value) => {
                     console.log("org chart change", value);
                     this.setState(previous => (Object.assign({}, previous, { dropdownValue: value })));
                 }, teamRoleItems: this.userRoles, teamRoleValue: this.state.teamRoleValue, onTeamRoleChange: (event, id, value) => {

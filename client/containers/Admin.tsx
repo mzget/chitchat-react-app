@@ -17,7 +17,7 @@ import { DialogBox } from "../components/DialogBox";
 import * as adminRx from "../redux/admin/adminRx";
 import * as groupRx from "../redux/group/groupRx";
 import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
-import { Room, RoomType, RoomStatus } from "../chitchat/shared/Room";
+import { Room, RoomType, RoomStatus } from "../chitchat/chats/models/Room";
 import { UserRole } from "../chitchat/chats/models/UserRole";
 
 enum BoxState {
@@ -95,12 +95,12 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             }
         }
         else if (key == this.teamMember) {
-            if (userReducer.teamProfile.team_role == UserRole[UserRole.admin]) {
-                this.setState(previous => ({ ...previous, boxState: BoxState.isManageMember }));
-            }
-            else {
-                this.props.onError("Request for admin permision");
-            }
+            this.setState(previous => ({ ...previous, boxState: BoxState.isManageMember }));
+            // if (userReducer.teamProfile.team_role == UserRole[UserRole.admin]) {
+            // }
+            // else {
+            //     this.props.onError("Request for admin permision");
+            // }
         }
         else if (key == this.developerIssue) {
             window.open("https://github.com/mzget/chitchat-ionic-reference-implementation/issues", '_blank');
@@ -118,13 +118,14 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     getAdminPanel() {
+        let { userReducer } = this.props;
         switch (this.state.boxState) {
             case BoxState.isManageTeam:
                 return <ManageOrgChartBox {...this.props} onError={this.props.onError} />;
             case BoxState.isCreateGroup:
                 return <CreateGroupBox {...this.props} groupType={this.state.menuSelected} onError={this.props.onError} />;
             case BoxState.isManageMember:
-                return <TeamMemberBox {...this.props} onError={this.props.onError} />;
+                return <TeamMemberBox {...this.props} teamRole={userReducer.teamProfile.team_role} onError={this.props.onError} />;
             default:
                 return <p>Admin Panel</p>;
         }

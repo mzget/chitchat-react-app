@@ -21,6 +21,7 @@ const ManageUserBox = Profile.Styles.manageUserBox;
 interface IComponentProps {
     member: ChitChatAccount;
     onSubmit: () => void;
+    canSubmit: boolean;
     orgsRoleItems: Array<IOrgChart>;
     orgRoleValue: number;
     dropdownChange: (event, id, value) => void;
@@ -31,21 +32,28 @@ interface IComponentProps {
 
 
 const SubmitButton = (props: IComponentProps) => (
-    <RaisedButton primary={true} label="submit" onClick={props.onSubmit} ></RaisedButton>
+    <div style={{ width: "100%", padding: 5 }}>
+        <RaisedButton
+            primary={true}
+            label="submit"
+            fullWidth={true}
+            onClick={props.onSubmit}
+            disabled={!props.canSubmit}></RaisedButton>
+    </div>
 );
 const DeleteButton = (props: IComponentProps) => (
     <RaisedButton label="delete" backgroundColor="red" labelColor="white" fullWidth></RaisedButton>
 );
-
 
 export const ContactProfileView = (props: IComponentProps) => {
     return (
         <MuiThemeProvider>
             <Flexbox flexDirection="row" width="100%" height="calc(100vh -56px)" style={{ backgroundColor: blueGrey50 }} >
                 <Flexbox flexGrow={1} />
-                <Flexbox flexDirection="column" justifyContent="center" minWidth="400"
+                <Flexbox flexDirection="column" minWidth="400"
                     style={{ overflowY: "auto", backgroundColor: darkWhite }} >
-                    <Flexbox justifyContent="center" alignItems="center" padding="10px" style={{ backgroundColor: darkBlack }}>
+                    <Flexbox justifyContent="center" alignItems="center" padding="10px"
+                        style={{ backgroundColor: darkBlack }}>
                         {props.member.avatar ? <Avatar src={props.member.avatar} size={100} />
                             : <Avatar src="https://thumb.ibb.co/hnoE5k/userdefault.png" size={100} />
                         }
@@ -118,12 +126,9 @@ export const ContactProfileView = (props: IComponentProps) => {
                                 </Panel>
                             </Col>
                         </Row>
-                        <FormGroup>
-                            <FormControl.Static style={Styles.generalStyles.flexEnd}>
-                                <SubmitButton  {...props} />
-                            </FormControl.Static>
-                        </FormGroup>
                     </div>
+                    <Flexbox flexGrow={1} />
+                    <SubmitButton  {...props} />
                 </Flexbox>
                 <Flexbox flexGrow={1} />
             </Flexbox>

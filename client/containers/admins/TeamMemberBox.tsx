@@ -23,13 +23,17 @@ import { UserRole } from "../../chitchat/chats/models/UserRole";
 const Styles = require("../../styles/generalStyles");
 const PageBox = Styles.generalStyles.pageBox;
 
+interface ICompProps extends IComponentProps {
+    teamRole: string;
+}
+
 interface IComponentState {
     member: ITeamMember;
     dropdownValue: number;
     teamRoleValue: number;
 }
-export class TeamMemberBox extends React.Component<IComponentProps, IComponentState> {
-
+export class TeamMemberBox extends React.Component<ICompProps, IComponentState> {
+    _canSubmit: boolean = false;
     orgChart_id: string;
     userRole: string;
     userRoles = [
@@ -45,6 +49,10 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
             dropdownValue: 0,
             teamRoleValue: 0
         };
+
+        if (this.props.teamRole == UserRole[UserRole.admin]) {
+            this._canSubmit = true;
+        }
 
         this.onSelectMember = this.onSelectMember.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -125,6 +133,7 @@ export class TeamMemberBox extends React.Component<IComponentProps, IComponentSt
                 <ContactProfileView
                     member={this.state.member}
                     onSubmit={this.onSubmit}
+                    canSubmit={this._canSubmit}
                     orgsRoleItems={this.props.adminReducer.orgCharts}
                     orgRoleValue={this.state.dropdownValue}
                     dropdownChange={(event, id, value) => {
