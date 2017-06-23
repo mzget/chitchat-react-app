@@ -7,7 +7,7 @@ import * as Colors from "material-ui/styles/colors";
 import { IComponentProps } from "../../utils/IComponentProps";
 import { CreateOrgChartForm } from "./CreateOrgChartForm";
 import { OrgChartPreview } from "./OrgChartPreview";
-import { GroupsOfChart } from "./GroupsOfChart";
+import { GroupsPure } from "./GroupsOfChart";
 import { IOrgChart, OrgLevel } from "../../chitchat/chats/models/OrgChart";
 import { Room } from "../../chitchat/chats/models/Room";
 
@@ -111,9 +111,8 @@ export class ManageOrgChartBox extends React.Component<IComponentProps, ICompone
                     onSubmit={this.onSubmit}
                 />
             case Page.detail:
-                return <GroupsOfChart
+                return <GroupsPure
                     chartItem={this.state.chartItem}
-                    groups={this.props.adminReducer.orgCharts}
                     onSelectItem={(item) => { }} />
             default:
                 break;

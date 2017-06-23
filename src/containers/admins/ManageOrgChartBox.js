@@ -3,7 +3,7 @@ import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
 import { CreateOrgChartForm } from "./CreateOrgChartForm";
 import { OrgChartPreview } from "./OrgChartPreview";
-import { GroupsOfChart } from "./GroupsOfChart";
+import { GroupsPure } from "./GroupsOfChart";
 import { OrgLevel } from "../../chitchat/chats/models/OrgChart";
 import * as adminRx from "../../redux/admin/adminRx";
 var Page;
@@ -70,7 +70,7 @@ export class ManageOrgChartBox extends React.Component {
             case Page.create:
                 return React.createElement(CreateOrgChartForm, { orgChartName: this.state.chart_name, orgChart_description: this.state.chart_description, onOrgChartNameChange: (e, text) => { this.setState(previous => (Object.assign({}, previous, { chart_name: text }))); }, onOrgChartDescriptionChange: (e, text) => { this.setState(previous => (Object.assign({}, previous, { chart_description: text }))); }, dropdownItems: this.orgLevels, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => { this.setState(previous => (Object.assign({}, previous, { dropdownValue: value }))); }, onSubmit: this.onSubmit });
             case Page.detail:
-                return React.createElement(GroupsOfChart, { chartItem: this.state.chartItem, groups: this.props.adminReducer.orgCharts, onSelectItem: (item) => { } });
+                return React.createElement(GroupsPure, { chartItem: this.state.chartItem, onSelectItem: (item) => { } });
             default:
                 break;
         }
