@@ -6,6 +6,12 @@ import {
     Link,
     Switch
 } from "react-router-dom";
+import { createNetworkInterface, ApolloProvider } from 'react-apollo';
+// const client = new ApolloClient({
+//     networkInterface: createNetworkInterface({
+//         uri: 'https://chitchats.ga/graphql',
+//     }),
+// });
 
 import { chitchatFactory } from "./Chitchat";
 /**
@@ -13,6 +19,7 @@ import { chitchatFactory } from "./Chitchat";
  *  ```configureStore``` will connect the ```reducers```,
  */
 import Store from "./redux/configureStore";
+import { apolloClient } from "./redux/rootReducer";
 
 import { ReapopNotiBoxWithState } from "./components/NotificationSystem";
 
@@ -42,7 +49,7 @@ class App extends React.Component<any, any> {
 
     render() {
         return (
-            <Provider store={Store}>
+            <ApolloProvider store={Store} client={apolloClient}>
                 <Router>
                     <div id="app">
                         <ReapopNotiBoxWithState />
@@ -57,7 +64,7 @@ class App extends React.Component<any, any> {
                         <Route path="/admin/:filter" component={AdminPageEnhanced} />
                     </div>
                 </Router>
-            </Provider>
+            </ApolloProvider>
         );
     }
 }

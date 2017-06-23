@@ -22,7 +22,7 @@ import * as rootReducer from "./rootReducer";
 import * as rootRxEpic from "./rootRxEpic";
 const epicMiddleware = createEpicMiddleware(rootRxEpic.rootEpic);
 
-let middlewares = [thunk, epicMiddleware] as Array<any>;
+let middlewares = [thunk, epicMiddleware, rootReducer.apolloMiddleWare] as Array<any>;
 
 let createStoreWithMiddleware = null;
 

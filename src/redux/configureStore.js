@@ -19,7 +19,7 @@ import { createEpicMiddleware } from "redux-observable";
 import * as rootReducer from "./rootReducer";
 import * as rootRxEpic from "./rootRxEpic";
 const epicMiddleware = createEpicMiddleware(rootRxEpic.rootEpic);
-let middlewares = [thunk, epicMiddleware];
+let middlewares = [thunk, epicMiddleware, rootReducer.apolloMiddleWare];
 let createStoreWithMiddleware = null;
 if (process.env.NODE_ENV === `development`) {
     // const { logger } = require(`redux-logger`);

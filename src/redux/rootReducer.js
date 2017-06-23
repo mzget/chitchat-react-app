@@ -10,6 +10,7 @@
  */
 import { combineReducers } from "redux";
 import { reducer as notificationsReducer } from 'reapop';
+import { ApolloClient } from 'react-apollo';
 import { LOG_OUT_SUCCESS } from "./authen/authRx";
 import { STALK_ON_SOCKET_RECONNECT } from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 /**
@@ -25,6 +26,8 @@ import { stalkReducer, StalkInitState } from "../chitchat/chats/redux/stalkBridg
 import { chatroomReducer, ChatRoomInitState } from "../chitchat/chats/redux/chatroom/chatroomReducer";
 import { chatlogReducer, ChatLogInitState } from "../chitchat/chats/redux/chatlogs/chatlogReducer";
 import { alertReducer, AlertInitState } from "./app/alertReducer";
+export const apolloClient = new ApolloClient();
+export const apolloMiddleWare = apolloClient.middleware();
 /**
  * ## CombineReducers
  *
@@ -42,7 +45,8 @@ const appReducer = combineReducers({
     userReducer,
     adminReducer,
     alertReducer,
-    notifications: notificationsReducer()
+    notifications: notificationsReducer(),
+    apollo: apolloClient.reducer()
 });
 /*
  *

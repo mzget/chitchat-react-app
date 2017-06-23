@@ -47,6 +47,7 @@
     "pomelo-protocol": "^0.1.6",
     "ramda": "^0.23.0",
     "react": "^15.6.1",
+    "react-apollo": "^1.4.2",
     "react-bootstrap": "0.30.8",
     "react-dom": "^15.6.1",
     "react-file-reader-input": "^1.1.0",
