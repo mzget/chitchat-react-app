@@ -18,13 +18,15 @@ const GroupsOfChart = ({ data, onSelectItem }) => (
 );
 
 
-const MyQuery = gql`query { charts {
-     _id
-    chart_name
-    chart_description
-    chart_level
-    team_id
-}}`;
+const MyQuery = gql`query getChartItems($team_id: String) {
+     charts(team_id: $team_id) {
+        _id
+        chart_name
+        chart_description
+        chart_level
+        team_id
+    }
+}`;
 const withData = graphql(MyQuery, {
     options: ({ team_id }) => ({
         variables: { team_id },

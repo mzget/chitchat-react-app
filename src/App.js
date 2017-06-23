@@ -1,11 +1,6 @@
 import * as React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { ApolloProvider } from 'react-apollo';
-// const client = new ApolloClient({
-//     networkInterface: createNetworkInterface({
-//         uri: 'https://chitchats.ga/graphql',
-//     }),
-// });
 import { chitchatFactory } from "./Chitchat";
 /**
  * ### configureStore

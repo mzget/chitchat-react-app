@@ -6,12 +6,8 @@ import {
     Link,
     Switch
 } from "react-router-dom";
-import { createNetworkInterface, ApolloProvider } from 'react-apollo';
-// const client = new ApolloClient({
-//     networkInterface: createNetworkInterface({
-//         uri: 'https://chitchats.ga/graphql',
-//     }),
-// });
+import {  ApolloProvider } from 'react-apollo';
+
 
 import { chitchatFactory } from "./Chitchat";
 /**
