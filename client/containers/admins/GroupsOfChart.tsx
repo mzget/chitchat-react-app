@@ -13,34 +13,42 @@ interface ICompProps {
     onSelectItem: (item: Room) => void;
 }
 
-const GroupsOfChart = ({ data, onSelectItem }) => (
-    <GroupListView items={data.groups} onSelected={onSelectItem} />
-);
+const GroupsOfChart = ({ data, onSelectItem }) => {
+    return (data.loading) ? null : <GroupListView items={data.chart.rooms} onSelected={onSelectItem} />
+};
 
 
-const MyQuery = gql`query getChartItems($team_id: String) {
-     charts(team_id: $team_id) {
+const getChartItemQuery = gql`query getChartItem($id: String!) {
+     chart(id: $id) {
         _id
         chart_name
         chart_description
         chart_level
         team_id
+        rooms {
+            name
+            status
+            type
+            team_id
+            description
+            createTime
+        }
     }
 }`;
-const withData = graphql(MyQuery, {
-    options: ({ team_id }) => ({
-        variables: { team_id },
+const withData = graphql(getChartItemQuery, {
+    options: ({ id }) => ({
+        variables: { id },
     })
 });
 // Attach the data HoC to the pure component
 const GroupsOfChartEnhanced = compose(
     withData,
     pure,
-)(GroupsOfChart) as React.ComponentClass<{ team_id, onSelectItem }>;
+)(GroupsOfChart) as React.ComponentClass<{ id, onSelectItem }>;
 
 export const GroupsPure = ({ chartItem, onSelectItem }: ICompProps) => (
     <div style={{ width: `100%` }}>
         <Subheader>{chartItem.chart_name}</Subheader>
-        <GroupsOfChartEnhanced team_id={chartItem.team_id} onSelectItem={onSelectItem} />
+        <GroupsOfChartEnhanced id={chartItem._id} onSelectItem={onSelectItem} />
     </div>
 );
