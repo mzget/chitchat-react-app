@@ -1,5 +1,5 @@
 # chitchat-react-app
-ChitChat react-app code sample. The implementation of react, redux, rxjs , typescript ...
+ChitChat react-app. The reference implementation of react, redux, rxjs , typescript, stalk-js... 
 
 Realtime powered by stalk message service.
 
