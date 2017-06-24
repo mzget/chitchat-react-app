@@ -14,7 +14,7 @@ import { ManageOrgChartBox } from "./admins/ManageOrgChartBox";
 import CreateGroupBox, { createOrgGroup, createPjbGroup, createPvGroup } from "./admins/CreateGroupBox";
 import { TeamMemberBox } from "./admins/TeamMemberBox";
 import { DialogBox } from "../components/DialogBox";
-import { ChatRoomOverview } from "./ChatRoomOverview";
+import { GroupPureComponent } from "./admins/Group";
 
 import * as adminRx from "../redux/admin/adminRx";
 import * as groupRx from "../redux/group/groupRx";
@@ -143,7 +143,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             case BoxState.isManageMember:
                 return <TeamMemberBox {...this.props} teamRole={userReducer.teamProfile.team_role} onError={this.props.onError} />;
             case BoxState.groupView:
-                return <ChatRoomOverview match={match} onError={onError} />;
+                return <GroupPureComponent room_id={match.params.id} />;
             default:
                 return <Subheader>Welcome To Admin Panel!</Subheader>;
         }
