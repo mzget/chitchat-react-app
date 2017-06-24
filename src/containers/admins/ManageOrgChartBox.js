@@ -1,4 +1,5 @@
 import * as React from "react";
+import { withRouter } from "react-router-dom";
 import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
 import Paper from 'material-ui/Paper';
@@ -14,7 +15,7 @@ var Page;
     Page[Page["detail"] = 2] = "detail";
 })(Page || (Page = {}));
 ;
-export class ManageOrgChartBox extends React.Component {
+class OrgChartBox extends React.Component {
     constructor() {
         super(...arguments);
         this.orgChart = {};
@@ -34,6 +35,7 @@ export class ManageOrgChartBox extends React.Component {
         this.onSubmit = this.onSubmit.bind(this);
         this.onCreateNew = this.onCreateNew.bind(this);
         this.onSelectChart = this.onSelectChart.bind(this);
+        this.onSelectGroup = this.onSelectGroup.bind(this);
     }
     componentWillReceiveProps(nextProps) {
         const { adminReducer } = nextProps;
@@ -64,6 +66,10 @@ export class ManageOrgChartBox extends React.Component {
     onSelectChart(item) {
         this.setState(prevState => (Object.assign({}, prevState, { page: Page.detail, chartItem: item })));
     }
+    onSelectGroup(item) {
+        console.log("onSelectGroup", item);
+        this.props.history.push(`/admin/group/${item._id}`);
+    }
     getPage(page) {
         switch (page) {
             case Page.index:
@@ -71,7 +77,7 @@ export class ManageOrgChartBox extends React.Component {
             case Page.create:
                 return React.createElement(CreateOrgChartForm, { orgChartName: this.state.chart_name, orgChart_description: this.state.chart_description, onOrgChartNameChange: (e, text) => { this.setState(previous => (Object.assign({}, previous, { chart_name: text }))); }, onOrgChartDescriptionChange: (e, text) => { this.setState(previous => (Object.assign({}, previous, { chart_description: text }))); }, dropdownItems: this.orgLevels, dropdownValue: this.state.dropdownValue, dropdownChange: (event, id, value) => { this.setState(previous => (Object.assign({}, previous, { dropdownValue: value }))); }, onSubmit: this.onSubmit });
             case Page.detail:
-                return React.createElement(GroupsPure, { chartItem: this.state.chartItem, onSelectItem: (item) => { } });
+                return React.createElement(GroupsPure, { chartItem: this.state.chartItem, onSelectItem: this.onSelectGroup });
             default:
                 break;
         }
@@ -83,3 +89,4 @@ export class ManageOrgChartBox extends React.Component {
             React.createElement(Flexbox, { flexGrow: 1 })));
     }
 }
+export const ManageOrgChartBox = withRouter(OrgChartBox);

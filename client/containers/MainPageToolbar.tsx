@@ -7,12 +7,10 @@ import { ProfileEnhanced } from "./profile/ProfileBox";
 
 const menus = ["menu", "log out"];
 export function listener(props, id, value) {
-    console.log(menus[id]);
-
     let { authReducer } = props;
     switch (id) {
         case 0:
-            props.history.push(`/admin/${authReducer.user}`);
+            props.history.push(`/admin`);
             break;
         case 1:
             props.dispatch(authRx.logout(props.authReducer.token));

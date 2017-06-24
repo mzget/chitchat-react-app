@@ -16,7 +16,7 @@ import { EditGroupMemberEnhanced } from "./roomSettings/EditGroupMemberEnhanced"
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
 import * as groupRx from "../redux/group/groupRx";
 
-import { Room, RoomType } from "../chitchat/shared/Room";
+import { Room, RoomType } from "../chitchat/chats/models/Room";
 
 class ChatRoomSettingsOverView extends React.Component<IComponentProps, any> {
     room: Room;

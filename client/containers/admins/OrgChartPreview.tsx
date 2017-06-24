@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { OrgChartListView } from "./OrgChartListView";
+import { OrgChartListView } from "../../components/OrgChartListView";
 import FlatButton from "material-ui/FlatButton";
 import Subheader from "material-ui/Subheader";
 

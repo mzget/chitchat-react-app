@@ -7,7 +7,7 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Subheader from "material-ui/Subheader";
 import { EditGroupMemberEnhanced } from "./roomSettings/EditGroupMemberEnhanced";
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
-import { RoomType } from "../chitchat/shared/Room";
+import { RoomType } from "../chitchat/chats/models/Room";
 class ChatRoomSettingsOverView extends React.Component {
     componentWillMount() {
         let { match: { params } } = this.props;

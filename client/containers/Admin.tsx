@@ -1,5 +1,6 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
@@ -13,6 +14,7 @@ import { ManageOrgChartBox } from "./admins/ManageOrgChartBox";
 import CreateGroupBox, { createOrgGroup, createPjbGroup, createPvGroup } from "./admins/CreateGroupBox";
 import { TeamMemberBox } from "./admins/TeamMemberBox";
 import { DialogBox } from "../components/DialogBox";
+import { ChatRoomOverview } from "./ChatRoomOverview";
 
 import * as adminRx from "../redux/admin/adminRx";
 import * as groupRx from "../redux/group/groupRx";
@@ -21,7 +23,7 @@ import { Room, RoomType, RoomStatus } from "../chitchat/chats/models/Room";
 import { UserRole } from "../chitchat/chats/models/UserRole";
 
 enum BoxState {
-    idle = 0, isCreateGroup = 1, isManageTeam, isManageMember
+    idle = 0, isCreateGroup = 1, isManageTeam, isManageMember, groupView
 }
 interface IComponentNameState {
     menuSelected: string;
@@ -35,7 +37,9 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     developerIssue: string = "Developer Issue";
     menus = [this.manageOrgChart, createOrgGroup, createPjbGroup, createPvGroup, this.teamMember, this.developerIssue];
 
-    componentWillMount() {
+    constructor(props) {
+        super(props);
+
         this.state = {
             boxState: BoxState.idle,
             menuSelected: "",
@@ -46,8 +50,8 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
         this.onAdminMenuSelected = this.onAdminMenuSelected.bind(this);
     }
 
-    componentDidMount() {
-        const { teamReducer } = this.props;
+    componentWillMount() {
+        const { teamReducer, match, location } = this.props;
 
         if (!teamReducer.team || !teamReducer.team._id) {
             this.props.history.replace("/");
@@ -58,7 +62,21 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        const { groupReducer, adminReducer } = nextProps;
+        const { groupReducer, adminReducer, match, location } = nextProps;
+
+        if (match.params.menu == "orgchart") {
+            this.setState(previous => ({ ...previous, boxState: BoxState.isManageTeam }));
+        }
+        else if (match.params.menu == "teamlist") {
+            this.setState(previous => ({ ...previous, boxState: BoxState.isManageMember }));
+        }
+        else if (match.params.menu == createPvGroup || match.params.menu == createOrgGroup) {
+            this.setState(previous => ({ ...previous, boxState: BoxState.isCreateGroup, menuSelected: match.params.menu }));
+        }
+
+        if (match.params.id) {
+            this.setState(previous => ({ ...previous, boxState: BoxState.groupView }));
+        }
 
         if (groupReducer.state == groupRx.CREATE_ORG_GROUP_SUCCESS ||
             groupReducer.state == privateGroupRxActions.CREATE_PRIVATE_GROUP_SUCCESS) {
@@ -75,7 +93,15 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
 
         let { userReducer } = this.props;
 
-        if (key == createOrgGroup || key == createPjbGroup || key == createPvGroup) {
+        if (key == this.manageOrgChart) {
+            if (userReducer.teamProfile.team_role == UserRole[UserRole.admin]) {
+                this.props.history.push("/admin/orgchart");
+            }
+            else {
+                this.props.onError("Request for admin permision");
+            }
+        }
+        else if (key == createOrgGroup || key == createPjbGroup || key == createPvGroup) {
             if (key == createOrgGroup && userReducer.teamProfile.team_role != UserRole[UserRole.admin]) {
                 return this.props.onError("Request for admin permision");
             }
@@ -84,23 +110,10 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
                 return this.props.onError("Not yet ready...");
             }
 
-            this.setState(previous => ({ ...previous, boxState: BoxState.isCreateGroup, menuSelected: key }));
-        }
-        else if (key == this.manageOrgChart) {
-            if (userReducer.teamProfile.team_role == UserRole[UserRole.admin]) {
-                this.setState(previous => ({ ...previous, boxState: BoxState.isManageTeam }));
-            }
-            else {
-                this.props.onError("Request for admin permision");
-            }
+            this.props.history.push(`/admin/${key}`);
         }
         else if (key == this.teamMember) {
-            this.setState(previous => ({ ...previous, boxState: BoxState.isManageMember }));
-            // if (userReducer.teamProfile.team_role == UserRole[UserRole.admin]) {
-            // }
-            // else {
-            //     this.props.onError("Request for admin permision");
-            // }
+            this.props.history.push("/admin/teamlist");
         }
         else if (key == this.developerIssue) {
             window.open("https://github.com/mzget/chitchat-ionic-reference-implementation/issues", '_blank');
@@ -118,7 +131,8 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     getAdminPanel() {
-        let { userReducer } = this.props;
+        let { userReducer, match, onError } = this.props;
+
         switch (this.state.boxState) {
             case BoxState.isManageTeam:
                 return <ManageOrgChartBox {...this.props} onError={this.props.onError} />;
@@ -126,6 +140,8 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
                 return <CreateGroupBox {...this.props} groupType={this.state.menuSelected} onError={this.props.onError} />;
             case BoxState.isManageMember:
                 return <TeamMemberBox {...this.props} teamRole={userReducer.teamProfile.team_role} onError={this.props.onError} />;
+            case BoxState.groupView:
+                return <ChatRoomOverview match={match} onError={onError} />;
             default:
                 return <Subheader>Welcome To Admin Panel!</Subheader>;
         }
@@ -157,4 +173,4 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
 }
 
 const mapstateToProps = (state) => ({ ...state });
-export const AdminPage = connect(mapstateToProps)(Admin) as React.ComponentClass<any>;
+export const AdminPage = withRouter(connect(mapstateToProps)(Admin));

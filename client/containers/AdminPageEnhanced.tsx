@@ -5,7 +5,7 @@ import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
 
 export const AdminPageEnhanced = DialogBoxEnhancer(({ title, message, open, handleClose, onError, location, history }: any) => (
     <div>
-        <AdminPage onError={onError} location={location} history={history} />
+        <AdminPage onError={onError} />
         <DialogBox
             title={title}
             message={message}

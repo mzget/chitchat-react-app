@@ -37,14 +37,16 @@ class App extends React.Component {
             React.createElement(Router, null,
                 React.createElement("div", { id: "app" },
                     React.createElement(ReapopNotiBoxWithState, null),
-                    React.createElement(Route, { exact: true, path: "/", component: HomePageWithDialogBox }),
+                    React.createElement(Route, { path: "/", exact: true, component: HomePageWithDialogBox }),
                     React.createElement(Route, { path: "/forgotaccount", component: ForgotAccount }),
                     React.createElement(Route, { path: "/team/:filter", component: TeamPageEnhanced }),
                     React.createElement(Route, { path: "/profile/:filter/:user", component: (this.clientWidth < MEDIUM_WINDOW) ? ProfilePageEnhanced : MainPageWithDialogBox }),
                     React.createElement(Route, { path: "/chatslist/:filter", component: (this.clientWidth < MEDIUM_WINDOW) ? M_MainPageEnhanced : MainPageWithDialogBox }),
                     React.createElement(Route, { path: "/chatroom/chat/:room_id", component: (this.clientWidth < MEDIUM_WINDOW) ? ChatPageEnhanced : MainPageWithDialogBox }),
                     React.createElement(Route, { path: "/chatroom/settings/:room_id/:edit", component: (this.clientWidth < MEDIUM_WINDOW) ? ChatRoomSettingsEnhanced : MainPageWithDialogBox }),
-                    React.createElement(Route, { path: "/admin/:filter", component: AdminPageEnhanced })))));
+                    React.createElement(Route, { path: "/admin", exact: true, component: AdminPageEnhanced }),
+                    React.createElement(Route, { path: "/admin/:menu", exact: true, component: AdminPageEnhanced }),
+                    React.createElement(Route, { path: "/admin/group/:id", component: AdminPageEnhanced })))));
     }
 }
 export default App;

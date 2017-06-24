@@ -4,7 +4,7 @@ import { List, ListItem } from "material-ui/List";
 import Divider from "material-ui/Divider";
 import { grey400, darkBlack, lightBlack } from "material-ui/styles/colors";
 
-import { IOrgChart, OrgLevel } from "../../chitchat/chats/models/OrgChart";
+import { IOrgChart, OrgLevel } from "../chitchat/chats/models/OrgChart";
 
 interface IComponentProps {
     items: Array<IOrgChart>;

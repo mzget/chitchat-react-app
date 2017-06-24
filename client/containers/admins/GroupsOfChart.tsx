@@ -26,6 +26,7 @@ const getChartItemQuery = gql`query getChartItem($id: String!) {
         chart_level
         team_id
         rooms {
+            _id
             name
             status
             type

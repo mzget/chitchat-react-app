@@ -30,7 +30,9 @@
     "redux-devtools-extension": "^2.13.0",
     "redux-devtools-log-monitor": "^1.3.0",
     "redux-logger": "^3.0.1",
-    "ts-jest": "^20.0.6"
+    "ts-jest": "^20.0.6",
+    "tslint": "^5.4.3",
+    "typescript": "^2.4.0"
   },
   "dependencies": {
     "async": "^2.4.1",
@@ -65,7 +67,7 @@
     "redux-thunk": "^2.2.0",
     "reflexbox": "^2.2.3",
     "rxjs": "^5.4.1",
-    "stalk-js": "0.0.3-f2",
+    "stalk-js": "0.0.3-f3",
     "valid-url": "^1.0.9",
     "validate.js": "^0.11.1"
   },

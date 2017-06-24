@@ -8,12 +8,7 @@
     "rootDirs": [
       "client"
     ],
-    "outDir": "src",
-    "typeRoots": [
-      "node_modules/@types",
-      "node_modules/@reactivex/rxjs",
-      "node_modules/stalk-js"
-    ]
+    "outDir": "src"
   },
   "exclude": [
     "node_modules"
