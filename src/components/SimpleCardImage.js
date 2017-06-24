@@ -1,8 +1,6 @@
-"use strict";
-exports.__esModule = true;
-var React = require("react");
-var Card_1 = require("material-ui/Card");
-var SimpleCardImage = function (props) { return (React.createElement(Card_1.Card, null,
-    React.createElement(Card_1.CardMedia, null,
-        React.createElement("img", { src: props.src, width: '100%', alt: "Image preview..." })))); };
-exports["default"] = SimpleCardImage;
+import * as React from 'react';
+import { Card, CardMedia } from 'material-ui/Card';
+const SimpleCardImage = (props) => (React.createElement(Card, null,
+    React.createElement(CardMedia, null,
+        React.createElement("img", { src: props.src, width: '100%', alt: "Image preview..." }))));
+export default SimpleCardImage;

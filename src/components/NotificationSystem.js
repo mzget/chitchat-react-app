@@ -1,30 +1,14 @@
-"use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-exports.__esModule = true;
-var React = require("react");
-var react_redux_1 = require("react-redux");
-var reapop_1 = require("reapop");
+import * as React from 'react';
+import { connect } from "react-redux";
+import NotificationsSystem from 'reapop';
 // 1. import theme
-var theme = require("reapop-theme-wybo");
-var reapop_2 = require("reapop");
-var ReapopComponent = (function (_super) {
-    __extends(ReapopComponent, _super);
-    function ReapopComponent() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    ReapopComponent.prototype.componentWillReceiveProps = function (nextProps) {
-        var stalkReducer = nextProps.stalkReducer;
+import * as theme from 'reapop-theme-wybo';
+import { addNotification } from 'reapop';
+class ReapopComponent extends React.Component {
+    componentWillReceiveProps(nextProps) {
+        let { stalkReducer } = nextProps;
         if (stalkReducer.notiMessage != this.props.stalkReducer.notiMessage) {
-            this.props.dispatch(reapop_2.addNotification({
+            this.props.dispatch(addNotification({
                 title: stalkReducer.notiMessage.title,
                 message: stalkReducer.notiMessage.body,
                 image: stalkReducer.notiMessage.image,
@@ -32,19 +16,18 @@ var ReapopComponent = (function (_super) {
                 dismissAfter: 3000
             }));
         }
-    };
-    ReapopComponent.prototype.render = function () {
+    }
+    render() {
         // 2. set `theme` prop
         return (React.createElement("div", null,
-            React.createElement(reapop_1["default"], { theme: theme })));
-    };
-    return ReapopComponent;
-}(React.Component));
+            React.createElement(NotificationsSystem, { theme: theme })));
+    }
+}
 /**
  * ## Redux boilerplate
  */
-var mapStateToProps = function (state) { return ({
+const mapStateToProps = (state) => ({
     notifications: state.notifications,
     stalkReducer: state.stalkReducer
-}); };
-exports.ReapopNotiBoxWithState = react_redux_1.connect(mapStateToProps)(ReapopComponent);
+});
+export const ReapopNotiBoxWithState = connect(mapStateToProps)(ReapopComponent);

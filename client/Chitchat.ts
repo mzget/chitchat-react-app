@@ -5,7 +5,8 @@ export const chitchatFactory = ChitChatFactory.createInstance();
 const api_stalk = "wss://chitchats.ga";
 const stalkPort = 3050;
 const stalkKey = "chitchat1234";
-const chitchat_api = "http://localhost:9000"; //"http://localhost:9000"; "https://chitchats.ga"
+const chitchat_api = "https://chitchats.ga"; //"http://localhost:9000"; "https://chitchats.ga"
+export const chitchat_graphql = "https://chitchats.ga/graphql"; // "http://localhost:9000/graphql" : "https://chitchats.ga/graphql";
 
 const config = {
     Stalk: {

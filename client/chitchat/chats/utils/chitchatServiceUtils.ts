@@ -4,7 +4,9 @@ const getConfig = () => ChitChatFactory.getInstance().config;
 export const chitchat_headers = () => ({
     "Content-Type": "application/json",
     "cache-control": "no-cache",
-    "x-api-key": getConfig().api.apiKey
+    "x-api-key": getConfig().api.apiKey,
+    "Access-Control-Allow-Credentials": "*",
+    "Access-Control-Allow-Origin": "*"
 });
 
 export const withToken = (headers) => (token) => {

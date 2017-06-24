@@ -1,40 +1,38 @@
-"use strict";
-exports.__esModule = true;
-var Message_1 = require("../../chitchat/shared/Message");
-var MessageImp_1 = require("../../chitchat/chats/models/MessageImp");
-var StickerPath_1 = require("../../chitchat/consts/StickerPath");
-var configureStore_1 = require("../../redux/configureStore");
-function decorateMessage(msg) {
-    var _a = configureStore_1["default"].getState(), chatroomReducer = _a.chatroomReducer, userReducer = _a.userReducer;
-    var message = new MessageImp_1.MessageImp();
+import { MessageType } from "../../chitchat/shared/Message";
+import { MessageImp } from "../../chitchat/chats/models/MessageImp";
+import { imagesPath } from "../../chitchat/consts/StickerPath";
+import Store from "../../redux/configureStore";
+export function decorateMessage(msg) {
+    let { chatroomReducer, userReducer } = Store.getState();
+    let message = new MessageImp();
     if (msg.image != null) {
         message.body = msg.image;
         message.src = msg.src;
-        message.type = Message_1.MessageType[Message_1.MessageType.Image];
+        message.type = MessageType[MessageType.Image];
     }
     else if (msg.text != null) {
         message.body = msg.text;
-        message.type = Message_1.MessageType[Message_1.MessageType.Text];
+        message.type = MessageType[MessageType.Text];
     }
     else if (msg.position != null) {
         message.body = msg.position;
-        message.type = Message_1.MessageType[Message_1.MessageType.Location];
+        message.type = MessageType[MessageType.Location];
     }
     else if (msg.video != null) {
         message.body = msg.video;
         message.src = msg.src;
-        message.type = Message_1.MessageType[Message_1.MessageType.Video];
+        message.type = MessageType[MessageType.Video];
     }
     else if (msg.file != null) {
         message.body = msg.file;
         message.meta = { mimetype: msg.mimetype, size: msg.size };
         message.src = msg.src;
-        message.type = Message_1.MessageType[Message_1.MessageType.File];
+        message.type = MessageType[MessageType.File];
     }
     else if (msg.sticker != null) {
         message.body = msg.sticker;
-        message.src = StickerPath_1.imagesPath[msg.sticker].img;
-        message.type = Message_1.MessageType[Message_1.MessageType.Sticker];
+        message.src = imagesPath[msg.sticker].img;
+        message.type = MessageType[MessageType.Sticker];
     }
     else {
         throw new Error("What the fuck!");
@@ -51,4 +49,3 @@ function decorateMessage(msg) {
     message.status = "Sending...";
     return message;
 }
-exports.decorateMessage = decorateMessage;

@@ -1,16 +1,14 @@
-"use strict";
-exports.__esModule = true;
-var recompose_1 = require("recompose");
-var chatroomActions = require("../../chitchat/chats/redux/chatroom/chatroomActions");
-exports.GroupListEnhancer = recompose_1.compose(recompose_1.lifecycle({
-    componentWillMount: function () {
+import { withHandlers, compose, lifecycle } from "recompose";
+import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
+export const GroupListEnhancer = compose(lifecycle({
+    componentWillMount() {
         this.props.fetchGroup();
     }
-}), recompose_1.withHandlers({
-    onselectGroup: function (props) { return function (data) {
+}), withHandlers({
+    onselectGroup: (props) => data => {
         props.dispatch(chatroomActions.leaveRoomAction());
-        process.nextTick(function () {
+        process.nextTick(() => {
             props.dispatch(chatroomActions.getPersistendChatroom(data._id));
         });
-    }; }
+    }
 }));

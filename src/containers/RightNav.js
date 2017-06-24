@@ -1,17 +1,12 @@
-"use strict";
-exports.__esModule = true;
-var React = require("react");
-var ContactBox_1 = require("./chatlist/ContactBox");
-var ChatRoomOverview_1 = require("./ChatRoomOverview");
-var getView = function (match, onError) {
+import * as React from "react";
+import { ContactBox } from "./chatlist/ContactBox";
+import { ChatRoomOverview } from "./ChatRoomOverview";
+const getView = (match, onError) => {
     if (match.path.match("/chatroom/")) {
-        return React.createElement(ChatRoomOverview_1.ChatRoomOverview, { match: match, onError: onError });
+        return React.createElement(ChatRoomOverview, { match: match, onError: onError });
     }
     else {
-        return React.createElement(ContactBox_1.ContactBox, null);
+        return React.createElement(ContactBox, null);
     }
 };
-exports.RightNav = function (_a) {
-    var match = _a.match, onError = _a.onError;
-    return (React.createElement("div", null, getView(match, onError)));
-};
+export const RightNav = ({ match, onError }) => (React.createElement("div", null, getView(match, onError)));

@@ -1,13 +1,11 @@
-"use strict";
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
  * This is pure function for redux app.
  */
-exports.__esModule = true;
-var StalkBridgeActions = require("../stalkBridge/stalkBridgeActions");
-var StalkNotificationActions = require("./StalkNotificationActions");
-var immutable_1 = require("immutable");
+import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
+import * as StalkNotificationActions from "./StalkNotificationActions";
+import { Record } from "immutable";
 /**
  * ## Initial State
  */
@@ -16,7 +14,7 @@ var immutable_1 = require("immutable");
  * This Record contains the state of the form and the
  * fields it contains.
  */
-exports.StalkInitState = immutable_1.Record({
+export const StalkInitState = Record({
     isInit: false,
     isFetching: false,
     state: null,
@@ -24,10 +22,9 @@ exports.StalkInitState = immutable_1.Record({
     stalkToken: "",
     user: null
 });
-var initialState = new exports.StalkInitState();
-function stalkReducer(state, action) {
-    if (state === void 0) { state = initialState; }
-    if (!(state instanceof exports.StalkInitState))
+const initialState = new StalkInitState();
+export function stalkReducer(state = initialState, action) {
+    if (!(state instanceof StalkInitState))
         return initialState.mergeDeep(state);
     switch (action.type) {
         case StalkBridgeActions.STALK_INIT: {
@@ -60,4 +57,3 @@ function stalkReducer(state, action) {
             return state;
     }
 }
-exports.stalkReducer = stalkReducer;

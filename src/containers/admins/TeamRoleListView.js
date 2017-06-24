@@ -1,15 +1,13 @@
-"use strict";
-exports.__esModule = true;
-var React = require("react");
-var List_1 = require("material-ui/List");
-var Divider_1 = require("material-ui/Divider");
-var Subheader_1 = require("material-ui/Subheader");
-var MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
-var renderList = function (props) { return (props.items.map(function (item, i) {
+import * as React from "react";
+import { List, ListItem } from "material-ui/List";
+import Divider from "material-ui/Divider";
+import Subheader from "material-ui/Subheader";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+const renderList = (props) => (props.items.map((item, i) => {
     return (React.createElement("div", { key: i },
-        React.createElement(List_1.ListItem, { onClick: function () { return props.onSelected(item); }, rightIcon: null, primaryText: item }),
-        React.createElement(Divider_1["default"], { inset: true })));
-})); };
-exports.TeamRoleList = function (props) { return (React.createElement(MuiThemeProvider_1["default"], null,
-    React.createElement(Subheader_1["default"], null, "Team roles."),
-    React.createElement(List_1.List, null, (!!props.items) ? renderList(props) : null))); };
+        React.createElement(ListItem, { onClick: () => props.onSelected(item), rightIcon: null, primaryText: item }),
+        React.createElement(Divider, { inset: true })));
+}));
+export const TeamRoleList = (props) => (React.createElement(MuiThemeProvider, null,
+    React.createElement(Subheader, null, "Team roles."),
+    React.createElement(List, null, (!!props.items) ? renderList(props) : null)));

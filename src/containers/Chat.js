@@ -1,76 +1,54 @@
-"use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
-exports.__esModule = true;
-var React = require("react");
-var react_redux_1 = require("react-redux");
-var recompose_1 = require("recompose");
-var flexbox_react_1 = require("flexbox-react");
-var ChitchatFactory_1 = require("../chitchat/chats/ChitchatFactory");
-var config = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
-var TypingBox_1 = require("./TypingBox");
-var ChatBox_1 = require("./chat/ChatBox");
-var SnackbarToolBox_1 = require("./toolsbox/SnackbarToolBox");
-var UploadingDialog_1 = require("./UploadingDialog");
-var GridListSimple_1 = require("../components/GridListSimple");
-var MapDialog_1 = require("./chat/MapDialog");
-var StalkBridgeActions = require("../chitchat/chats/redux/stalkBridge/stalkBridgeActions");
-var chatroomActions = require("../chitchat/chats/redux/chatroom/chatroomActions");
-var chatroomRxEpic = require("../chitchat/chats/redux/chatroom/chatroomRxEpic");
-var StickerPath_1 = require("../chitchat/consts/StickerPath");
-var FileType = require("../chitchat/shared/FileType");
-var chatroomMessageUtils_1 = require("../actions/chatroom/chatroomMessageUtils");
-var Chat = (function (_super) {
-    __extends(Chat, _super);
-    function Chat(props) {
-        var _this = _super.call(this, props) || this;
-        _this.h_header = null;
-        _this.h_subHeader = 34;
-        _this.h_body = null;
-        _this.h_typingArea = null;
-        _this.clientHeight = document.documentElement.clientHeight;
-        _this.chatHeight = null;
-        _this.stickerBox = 204;
-        _this.fileReaderChange = function (e, results) {
-            results.forEach(function (result) {
-                var progressEvent = result[0], file = result[1];
+import * as React from "react";
+import { connect } from "react-redux";
+import { shallowEqual } from "recompose";
+import Flexbox from "flexbox-react";
+import { ChitChatFactory } from "../chitchat/chats/ChitchatFactory";
+const config = () => ChitChatFactory.getInstance().config;
+import { TypingBox } from "./TypingBox";
+import { ChatBox } from "./chat/ChatBox";
+import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
+import UploadingDialog from "./UploadingDialog";
+import { GridListSimple } from "../components/GridListSimple";
+import { MapDialog } from "./chat/MapDialog";
+import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
+import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
+import * as chatroomRxEpic from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
+import { imagesPath } from "../chitchat/consts/StickerPath";
+import * as FileType from "../chitchat/shared/FileType";
+import { decorateMessage } from "../actions/chatroom/chatroomMessageUtils";
+class Chat extends React.Component {
+    constructor(props) {
+        super(props);
+        this.h_header = null;
+        this.h_subHeader = 34;
+        this.h_body = null;
+        this.h_typingArea = null;
+        this.clientHeight = document.documentElement.clientHeight;
+        this.chatHeight = null;
+        this.stickerBox = 204;
+        this.fileReaderChange = (e, results) => {
+            results.forEach(result => {
+                const [progressEvent, file] = result;
                 console.log(file.name, file.type);
                 if (file.type && file.type.length > 0) {
-                    _this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
+                    this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
                 }
                 else {
-                    _this.props.onError("Fail to upload file");
+                    this.props.onError("Fail to upload file");
                 }
             });
         };
-        _this.onSubmitTextChat = _this.onSubmitTextChat.bind(_this);
-        _this.onTypingTextChange = _this.onTypingTextChange.bind(_this);
-        _this.onSubmitStickerChat = _this.onSubmitStickerChat.bind(_this);
-        _this.roomInitialize = _this.roomInitialize.bind(_this);
-        _this.onToggleSticker = _this.onToggleSticker.bind(_this);
-        _this.fileReaderChange = _this.fileReaderChange.bind(_this);
-        _this.onLocation = _this.onLocation.bind(_this);
-        _this.onLocationChange = _this.onLocationChange.bind(_this);
-        _this.onSubmitPosition = _this.onSubmitPosition.bind(_this);
-        return _this;
+        this.onSubmitTextChat = this.onSubmitTextChat.bind(this);
+        this.onTypingTextChange = this.onTypingTextChange.bind(this);
+        this.onSubmitStickerChat = this.onSubmitStickerChat.bind(this);
+        this.roomInitialize = this.roomInitialize.bind(this);
+        this.onToggleSticker = this.onToggleSticker.bind(this);
+        this.fileReaderChange = this.fileReaderChange.bind(this);
+        this.onLocation = this.onLocation.bind(this);
+        this.onLocationChange = this.onLocationChange.bind(this);
+        this.onSubmitPosition = this.onSubmitPosition.bind(this);
     }
-    Chat.prototype.componentWillMount = function () {
+    componentWillMount() {
         this.state = {
             messages: new Array(),
             typingText: "",
@@ -81,24 +59,24 @@ var Chat = (function (_super) {
             onAlert: false
         };
         this.chatHeight = this.clientHeight - (56 + 52 + 52);
-        var _a = this.props, chatroomReducer = _a.chatroomReducer, userReducer = _a.userReducer, params = _a.match.params;
+        let { chatroomReducer, userReducer, match: { params } } = this.props;
         if (!chatroomReducer.room) {
             this.props.dispatch(chatroomActions.getPersistendChatroom(params.room_id));
         }
         else {
             this.roomInitialize(this.props);
         }
-    };
-    Chat.prototype.componentWillUnmount = function () {
+    }
+    componentWillUnmount() {
         this.props.dispatch(chatroomActions.leaveRoomAction());
-    };
-    Chat.prototype.componentWillReceiveProps = function (nextProps) {
-        var chatroomReducer = nextProps.chatroomReducer, stalkReducer = nextProps.stalkReducer;
+    }
+    componentWillReceiveProps(nextProps) {
+        let { chatroomReducer, stalkReducer } = nextProps;
         this.h_subHeader = (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
-        if (!recompose_1.shallowEqual(chatroomReducer.messages, this.props.chatroomReducer.messages)) {
-            this.setState(function (previousState) { return (__assign({}, previousState, { messages: chatroomReducer.messages })); }, function () {
-                var chatBox = document.getElementById("app_body");
+        if (!shallowEqual(chatroomReducer.messages, this.props.chatroomReducer.messages)) {
+            this.setState(previousState => (Object.assign({}, previousState, { messages: chatroomReducer.messages })), () => {
+                let chatBox = document.getElementById("app_body");
                 chatBox.scrollTop = chatBox.scrollHeight;
             });
         }
@@ -112,7 +90,7 @@ var Chat = (function (_super) {
             default:
                 break;
         }
-        if (recompose_1.shallowEqual(chatroomReducer.state, this.props.chatroomReducer.state))
+        if (shallowEqual(chatroomReducer.state, this.props.chatroomReducer.state))
             return;
         switch (chatroomReducer.state) {
             case chatroomActions.JOIN_ROOM_FAILURE: {
@@ -124,30 +102,30 @@ var Chat = (function (_super) {
                 break;
             }
             case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
-                if (!recompose_1.shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
+                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
                     this.roomInitialize(nextProps);
                 break;
             }
             case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS: {
-                if (!recompose_1.shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
+                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
                     this.roomInitialize(nextProps);
                 break;
             }
             case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_SUCCESS: {
-                if (!recompose_1.shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
+                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
                     this.roomInitialize(nextProps);
                 break;
             }
             case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
-                this.props.history.push("/");
+                this.props.history.push(`/`);
                 break;
             }
             case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_FAILURE: {
-                this.props.history.push("/");
+                this.props.history.push(`/`);
                 break;
             }
             case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
-                var responseFile = chatroomReducer.responseFile, fileInfo = chatroomReducer.fileInfo;
+                let { responseFile, fileInfo } = chatroomReducer;
                 if (responseFile.mimetype.match(FileType.imageType)) {
                     this.onSubmitImageChat(fileInfo, responseFile.path);
                 }
@@ -168,23 +146,23 @@ var Chat = (function (_super) {
                 break;
             }
             case chatroomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
-                this.setState(function (previousState) { return (__assign({}, previousState, { earlyMessageReady: chatroomReducer.earlyMessageReady })); });
+                this.setState((previousState) => (Object.assign({}, previousState, { earlyMessageReady: chatroomReducer.earlyMessageReady })));
                 break;
             }
             case chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS: {
-                this.setState(function (previousState) { return (__assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false })); });
+                this.setState(previousState => (Object.assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false })));
                 break;
             }
             default:
                 break;
         }
-    };
-    Chat.prototype.onLoadEarlierMessages = function () {
-        this.setState(function (previousState) { return (__assign({}, previousState, { isLoadingEarlierMessages: true })); });
+    }
+    onLoadEarlierMessages() {
+        this.setState(previousState => (Object.assign({}, previousState, { isLoadingEarlierMessages: true })));
         this.props.dispatch(chatroomActions.loadEarlyMessageChunk(this.props.chatroomReducer.room._id));
-    };
-    Chat.prototype.roomInitialize = function (props) {
-        var chatroomReducer = props.chatroomReducer, userReducer = props.userReducer;
+    }
+    roomInitialize(props) {
+        let { chatroomReducer, userReducer } = props;
         if (!userReducer.user) {
             return this.props.dispatch(chatroomActions.leaveRoomAction());
         }
@@ -194,13 +172,13 @@ var Chat = (function (_super) {
         // - Request join room.
         chatroomActions.initChatRoom(chatroomReducer.room);
         this.props.dispatch(chatroomActions.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
-    };
-    Chat.prototype.setMessageStatus = function (uniqueId, status) {
-        var messages = [];
-        var _messages = this.state.messages.slice();
-        for (var i = 0; i < _messages.length; i++) {
+    }
+    setMessageStatus(uniqueId, status) {
+        let messages = [];
+        let _messages = this.state.messages.slice();
+        for (let i = 0; i < _messages.length; i++) {
             if (_messages[i].uuid == uniqueId) {
-                var clone = Object.assign({}, _messages[i]);
+                let clone = Object.assign({}, _messages[i]);
                 clone.status = status;
                 messages.push(clone);
             }
@@ -208,11 +186,11 @@ var Chat = (function (_super) {
                 messages.push(_messages[i]);
             }
         }
-        this.setState(__assign({}, this.state, { messages: messages }));
-    };
-    Chat.prototype.setMessageTemp = function (server_msg) {
-        var _messages = this.state.messages.slice();
-        _messages.forEach(function (message) {
+        this.setState(Object.assign({}, this.state, { messages: messages }));
+    }
+    setMessageTemp(server_msg) {
+        let _messages = this.state.messages.slice();
+        _messages.forEach((message) => {
             if (message.uuid == server_msg.uuid) {
                 message.body = server_msg.body;
                 message.createTime = server_msg.createTime;
@@ -220,106 +198,104 @@ var Chat = (function (_super) {
                 message.status = "Sent";
             }
         });
-        this.setState(__assign({}, this.state, { messages: _messages }));
-    };
-    Chat.prototype.onTypingTextChange = function (event) {
-        this.setState(__assign({}, this.state, { typingText: event.target.value }));
-    };
-    Chat.prototype.onSubmitTextChat = function () {
+        this.setState(Object.assign({}, this.state, { messages: _messages }));
+    }
+    onTypingTextChange(event) {
+        this.setState(Object.assign({}, this.state, { typingText: event.target.value }));
+    }
+    onSubmitTextChat() {
         if (this.state.typingText.length <= 0)
             return;
-        var msg = {
+        let msg = {
             text: this.state.typingText
         };
         this.prepareSend(msg);
-    };
-    Chat.prototype.onSubmitImageChat = function (file, responseUrl) {
-        var msg = {
+    }
+    onSubmitImageChat(file, responseUrl) {
+        let msg = {
             image: file.name,
-            src: config().api.host + "/" + responseUrl
+            src: `${config().api.host}/${responseUrl}`
         };
         this.prepareSend(msg);
-    };
-    Chat.prototype.onSubmitVideoChat = function (file, responseUrl) {
-        var msg = {
+    }
+    onSubmitVideoChat(file, responseUrl) {
+        let msg = {
             video: file.name,
-            src: config().api.host + "/" + responseUrl
+            src: `${config().api.host}/${responseUrl}`
         };
         this.prepareSend(msg);
-    };
-    Chat.prototype.onSubmitFile = function (file, responseFile) {
-        var path = responseFile.path, mimetype = responseFile.mimetype, size = responseFile.size;
-        var msg = {
+    }
+    onSubmitFile(file, responseFile) {
+        let { path, mimetype, size } = responseFile;
+        let msg = {
             file: file.name,
             mimetype: mimetype,
             size: size,
-            src: config().api.host + "/" + path
+            src: `${config().api.host}/${path}`
         };
         this.prepareSend(msg);
-    };
-    Chat.prototype.onSubmitStickerChat = function (id) {
-        var msg = {
+    }
+    onSubmitStickerChat(id) {
+        let msg = {
             sticker: id
         };
         this.onToggleSticker();
         this.prepareSend(msg);
-    };
-    Chat.prototype.prepareSend = function (msg) {
-        var message = chatroomMessageUtils_1.decorateMessage(msg);
+    }
+    prepareSend(msg) {
+        let message = decorateMessage(msg);
         this.send(message);
-        var _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
+        let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
         _messages.push(message);
-        this.setState(function (previousState) { return (__assign({}, previousState, { typingText: "", messages: _messages })); }, function () {
-            var chatBox = document.getElementById("app_body");
+        this.setState(previousState => (Object.assign({}, previousState, { typingText: "", messages: _messages })), () => {
+            let chatBox = document.getElementById("app_body");
             chatBox.scrollTop = chatBox.scrollHeight;
         });
-    };
-    Chat.prototype.send = function (message) {
+    }
+    send(message) {
         this.props.dispatch(chatroomActions.sendMessage(message));
-    };
-    Chat.prototype.onToggleSticker = function () {
+    }
+    onToggleSticker() {
         this.chatHeight = (this.state.openButtomMenu) ? this.chatHeight + this.stickerBox : this.chatHeight - this.stickerBox;
-        this.setState(function (previousState) { return (__assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu })); }, function () {
-            var chatBox = document.getElementById("app_body");
+        this.setState(previousState => (Object.assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu })), () => {
+            let chatBox = document.getElementById("app_body");
             chatBox.scrollTop = chatBox.scrollHeight;
         });
-    };
-    Chat.prototype.onLocation = function () {
-        this.setState(function (previousState) { return (__assign({}, previousState, { openMapDialog: !previousState.openMapDialog })); });
-    };
-    Chat.prototype.onLocationChange = function (position) {
+    }
+    onLocation() {
+        this.setState(previousState => (Object.assign({}, previousState, { openMapDialog: !previousState.openMapDialog })));
+    }
+    onLocationChange(position) {
         this.tempLocation = position;
-    };
-    Chat.prototype.onSubmitPosition = function () {
-        var message = { position: this.tempLocation };
+    }
+    onSubmitPosition() {
+        let message = { position: this.tempLocation };
         this.tempLocation = null;
         this.onLocation();
         this.prepareSend(message);
-    };
+    }
     // {/*height="calc(100vh - 56px - 52px - 52px)"*/}
-    Chat.prototype.render = function () {
-        var _this = this;
-        var _a = this.props, chatroomReducer = _a.chatroomReducer, stalkReducer = _a.stalkReducer;
-        return (React.createElement(flexbox_react_1["default"], { flexDirection: "row", justifyContent: "center", id: "app_body" },
-            React.createElement(flexbox_react_1["default"], { flexDirection: "column" },
-                React.createElement(flexbox_react_1["default"], { flexDirection: "column" },
-                    React.createElement(flexbox_react_1["default"], { flexDirection: "column", justifyContent: "flex-start", alignItems: "center", minWidth: "400px", style: { height: this.chatHeight } },
+    render() {
+        let { chatroomReducer, stalkReducer } = this.props;
+        return (React.createElement(Flexbox, { flexDirection: "row", justifyContent: "center", id: "app_body" },
+            React.createElement(Flexbox, { flexDirection: "column" },
+                React.createElement(Flexbox, { flexDirection: "column" },
+                    React.createElement(Flexbox, { flexDirection: "column", justifyContent: "flex-start", alignItems: "center", minWidth: "400px", style: { height: this.chatHeight } },
                         (this.state.earlyMessageReady) ?
-                            React.createElement("p", { onClick: function () { return _this.onLoadEarlierMessages(); } }, "Load Earlier Messages!") : null,
-                        React.createElement(ChatBox_1.ChatBox, { value: this.state.messages, onSelected: function (message) { }, styles: { overflowY: "auto" } }),
-                        React.createElement(MapDialog_1.MapDialog, { open: this.state.openMapDialog, onClose: this.onLocation, onSubmit: this.onSubmitPosition, onLocationChange: this.onLocationChange })),
-                    React.createElement(flexbox_react_1["default"], null, (this.state.openButtomMenu) ?
-                        React.createElement(GridListSimple_1.GridListSimple, { srcs: StickerPath_1.imagesPath, onSelected: this.onSubmitStickerChat })
+                            React.createElement("p", { onClick: () => this.onLoadEarlierMessages() }, "Load Earlier Messages!") : null,
+                        React.createElement(ChatBox, { value: this.state.messages, onSelected: (message) => { }, styles: { overflowY: "auto" } }),
+                        React.createElement(MapDialog, { open: this.state.openMapDialog, onClose: this.onLocation, onSubmit: this.onSubmitPosition, onLocationChange: this.onLocationChange })),
+                    React.createElement(Flexbox, null, (this.state.openButtomMenu) ?
+                        React.createElement(GridListSimple, { srcs: imagesPath, onSelected: this.onSubmitStickerChat })
                         : null)),
-                React.createElement(flexbox_react_1["default"], { element: "footer", justifyContent: "center", alignContent: "stretch" },
-                    React.createElement(TypingBox_1.TypingBox, { disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker, onLocation: this.onLocation }),
-                    React.createElement(UploadingDialog_1["default"], null),
-                    React.createElement(SnackbarToolBox_1.SnackbarToolBox, null)))));
-    };
-    return Chat;
-}(React.Component));
+                React.createElement(Flexbox, { element: "footer", justifyContent: "center", alignContent: "stretch" },
+                    React.createElement(TypingBox, { disabled: this.props.chatroomReducer.chatDisabled, onSubmit: this.onSubmitTextChat, onValueChange: this.onTypingTextChange, value: this.state.typingText, fileReaderChange: this.fileReaderChange, onSticker: this.onToggleSticker, onLocation: this.onLocation }),
+                    React.createElement(UploadingDialog, null),
+                    React.createElement(SnackbarToolBox, null)))));
+    }
+}
 /**
  * ## Redux boilerplate
  */
-var mapStateToProps = function (state) { return (__assign({}, state)); };
-exports.ChatPage = react_redux_1.connect(mapStateToProps)(Chat);
+const mapStateToProps = (state) => (Object.assign({}, state));
+export const ChatPage = connect(mapStateToProps)(Chat);

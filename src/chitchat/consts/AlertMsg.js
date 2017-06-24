@@ -1,9 +1,7 @@
-"use strict";
-exports.__esModule = true;
-exports.stalkInitFail = {
+export const stalkInitFail = {
     title: "Stalk Service!",
     message: "Fail to connect to Stalk service."
 };
-exports.groups = {
+export const groups = {
     request_admin_permission: "Request for admin permission"
 };

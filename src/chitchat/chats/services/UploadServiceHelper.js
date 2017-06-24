@@ -1,19 +1,16 @@
-"use strict";
-exports.__esModule = true;
-var async_1 = require("async");
-var ChitchatFactory_1 = require("../ChitchatFactory");
-var config = ChitchatFactory_1.ChitChatFactory.getInstance().config;
-function manageUploadQueue(files, target_api, onFinished, speedCallBack, onSpeedCallBack) {
-    if (speedCallBack === void 0) { speedCallBack = false; }
-    var results = [];
-    var q = async_1.queue(function (task, callback) {
+import { queue } from "async";
+import { ChitChatFactory } from "../ChitchatFactory";
+const config = ChitChatFactory.getInstance().config;
+export function manageUploadQueue(files, target_api, onFinished, speedCallBack = false, onSpeedCallBack) {
+    let results = [];
+    let q = queue(function (task, callback) {
         console.log("queue worker");
-        uploadFile(task, target_api).then(function (url) {
+        uploadFile(task, target_api).then(url => {
             results.push(url);
             if (speedCallBack)
                 onSpeedCallBack({ url: url, id: task.uniqueId });
             callback();
-        })["catch"](function (err) {
+        }).catch(err => {
             callback(err);
         });
     }, 1);
@@ -30,12 +27,11 @@ function manageUploadQueue(files, target_api, onFinished, speedCallBack, onSpeed
     //     console.log('finished processing bar');
     // });
 }
-exports.manageUploadQueue = manageUploadQueue;
 function uploadFile(file, target_api) {
-    return new Promise(function (resolve, reject) {
-        var xhr = new XMLHttpRequest();
+    return new Promise((resolve, reject) => {
+        let xhr = new XMLHttpRequest();
         xhr.open('POST', target_api);
-        xhr.onload = function () {
+        xhr.onload = () => {
             if (xhr.status !== 200) {
                 console.log('Upload failed. ' + 'Expected HTTP 200 OK response, got ' + xhr.responseText);
                 reject(xhr.status);
@@ -46,9 +42,9 @@ function uploadFile(file, target_api) {
                 reject(xhr.status);
                 return;
             }
-            var response = JSON.parse(xhr.response);
-            var filename = response.filename;
-            var url = config.BOL_REST.host + filename;
+            let response = JSON.parse(xhr.response);
+            let filename = response.filename;
+            let url = config.BOL_REST.host + filename;
             resolve(url);
         };
         function onTimeout() {
@@ -64,13 +60,13 @@ function uploadFile(file, target_api) {
         xhr.ontimeout = onTimeout;
         xhr.onerror = onError;
         if (xhr.upload) {
-            xhr.upload.onprogress = function (event) {
+            xhr.upload.onprogress = (event) => {
                 if (event.lengthComputable) {
                     console.log('upload onprogress', event.loaded + '/' + event.total);
                 }
             };
         }
-        var formdata = new FormData();
+        let formdata = new FormData();
         formdata.append('image', {
             uri: file.image,
             name: file.image.slice((Math.max(0, file.image.lastIndexOf("/")) || Infinity) + 1),
@@ -82,9 +78,9 @@ function uploadFile(file, target_api) {
         xhr.send(formdata);
     });
 }
-function uploadImageChat(formdata) {
-    return new Promise(function (resolve, reject) {
-        var xhr = new XMLHttpRequest();
+export function uploadImageChat(formdata) {
+    return new Promise((resolve, reject) => {
+        let xhr = new XMLHttpRequest();
         xhr.open('POST', config.api.fileUpload);
         function onTimeout() {
             console.warn('Timeout');
@@ -108,10 +104,10 @@ function uploadImageChat(formdata) {
                 reject(xhr.status);
                 return;
             }
-            var response = JSON.parse(xhr.response);
-            var filename = response.filename;
-            var path = config.BOL_REST.host.substring(0, config.BOL_REST.host.length - 1);
-            var profilePicUrl = path + filename;
+            let response = JSON.parse(xhr.response);
+            let filename = response.filename;
+            let path = config.BOL_REST.host.substring(0, config.BOL_REST.host.length - 1);
+            let profilePicUrl = path + filename;
             console.log("result image url: ", profilePicUrl);
             resolve(profilePicUrl);
         }
@@ -120,7 +116,7 @@ function uploadImageChat(formdata) {
         xhr.ontimeout = onTimeout;
         xhr.onerror = onError;
         if (xhr.upload) {
-            xhr.upload.onprogress = function (event) {
+            xhr.upload.onprogress = (event) => {
                 console.log('upload onprogress', event);
             };
         }
@@ -131,4 +127,3 @@ function uploadImageChat(formdata) {
         xhr.send(formdata);
     });
 }
-exports.uploadImageChat = uploadImageChat;

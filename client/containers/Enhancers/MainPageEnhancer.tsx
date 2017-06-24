@@ -23,15 +23,6 @@ export const MainPageEnhancer = compose(
                 this.props.history.push("/");
             }
 
-            switch (chatroomReducer.state) {
-                case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
-                    console.warn("GET_PERSISTEND_CHATROOM_FAILURE");
-                    break;
-                }
-                default:
-                    break;
-            }
-
             if (chatroomReducer.state == GET_PERSISTEND_CHATROOM_SUCCESS ||
                 chatroomReducer.state == FETCH_PRIVATE_CHATROOM_SUCCESS ||
                 chatroomReducer.state == CREATE_PRIVATE_CHATROOM_SUCCESS) {

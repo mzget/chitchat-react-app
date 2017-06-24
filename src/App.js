@@ -1,64 +1,50 @@
-"use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-exports.__esModule = true;
-var React = require("react");
-var react_redux_1 = require("react-redux");
-var react_router_dom_1 = require("react-router-dom");
-var Chitchat_1 = require("./Chitchat");
+import * as React from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import { ApolloProvider } from 'react-apollo';
+import { chitchatFactory } from "./Chitchat";
 /**
  * ### configureStore
  *  ```configureStore``` will connect the ```reducers```,
  */
-var configureStore_1 = require("./redux/configureStore");
-var NotificationSystem_1 = require("./components/NotificationSystem");
-var HomeEnhanced_1 = require("./containers/HomeEnhanced");
-var ForgottenAccount_1 = require("./containers/ForgottenAccount");
-var ChatPageEnhanced_1 = require("./containers/ChatPageEnhanced");
-var ChatRoomSettingsPage_1 = require("./containers/ChatRoomSettingsPage");
-var TeamPageEnhanced_1 = require("./containers/TeamPageEnhanced");
-var ProfilePageEnhanced_1 = require("./containers/ProfilePageEnhanced");
-var Main_1 = require("./containers/Main");
-var m_Main_1 = require("./containers/m_Main");
-var AdminPageEnhanced_1 = require("./containers/AdminPageEnhanced");
-var Breakpoints_1 = require("./chitchat/consts/Breakpoints");
-Chitchat_1.chitchatFactory.initStore(configureStore_1["default"]);
-configureStore_1["default"].subscribe(function () {
-    Chitchat_1.chitchatFactory.setAuthStore(configureStore_1["default"].getState().userReducer.user, configureStore_1["default"].getState().authReducer.token);
-    Chitchat_1.chitchatFactory.setTeamStore({
-        team: configureStore_1["default"].getState().teamReducer.team,
-        members: configureStore_1["default"].getState().teamReducer.members
+import Store from "./redux/configureStore";
+import { apolloClient } from "./redux/rootReducer";
+import { ReapopNotiBoxWithState } from "./components/NotificationSystem";
+import { HomePageWithDialogBox } from "./containers/HomeEnhanced";
+import { ForgotAccount } from "./containers/ForgottenAccount";
+import { ChatPageEnhanced } from "./containers/ChatPageEnhanced";
+import { ChatRoomSettingsEnhanced } from "./containers/ChatRoomSettingsPage";
+import { TeamPageEnhanced } from "./containers/TeamPageEnhanced";
+import { ProfilePageEnhanced } from "./containers/ProfilePageEnhanced";
+import { MainPageWithDialogBox } from "./containers/Main";
+import { M_MainPageEnhanced } from "./containers/m_Main";
+import { AdminPageEnhanced } from "./containers/AdminPageEnhanced";
+import { MEDIUM_WINDOW } from "./chitchat/consts/Breakpoints";
+chitchatFactory.initStore(Store);
+Store.subscribe(() => {
+    chitchatFactory.setAuthStore(Store.getState().userReducer.user, Store.getState().authReducer.token);
+    chitchatFactory.setTeamStore({
+        team: Store.getState().teamReducer.team,
+        members: Store.getState().teamReducer.members
     });
 });
-var App = (function (_super) {
-    __extends(App, _super);
-    function App() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.clientWidth = document.documentElement.clientWidth;
-        return _this;
+class App extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.clientWidth = document.documentElement.clientWidth;
     }
-    App.prototype.render = function () {
-        return (React.createElement(react_redux_1.Provider, { store: configureStore_1["default"] },
-            React.createElement(react_router_dom_1.BrowserRouter, null,
+    render() {
+        return (React.createElement(ApolloProvider, { store: Store, client: apolloClient },
+            React.createElement(Router, null,
                 React.createElement("div", { id: "app" },
-                    React.createElement(NotificationSystem_1.ReapopNotiBoxWithState, null),
-                    React.createElement(react_router_dom_1.Route, { exact: true, path: "/", component: HomeEnhanced_1.HomePageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/forgotaccount", component: ForgottenAccount_1.ForgotAccount }),
-                    React.createElement(react_router_dom_1.Route, { path: "/team/:filter", component: TeamPageEnhanced_1.TeamPageEnhanced }),
-                    React.createElement(react_router_dom_1.Route, { path: "/profile/:filter/:user", component: (this.clientWidth < Breakpoints_1.MEDIUM_WINDOW) ? ProfilePageEnhanced_1.ProfilePageEnhanced : Main_1.MainPageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/chatslist/:filter", component: (this.clientWidth < Breakpoints_1.MEDIUM_WINDOW) ? m_Main_1.M_MainPageEnhanced : Main_1.MainPageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/chatroom/chat/:room_id", component: (this.clientWidth < Breakpoints_1.MEDIUM_WINDOW) ? ChatPageEnhanced_1.ChatPageEnhanced : Main_1.MainPageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/chatroom/settings/:room_id/:edit", component: (this.clientWidth < Breakpoints_1.MEDIUM_WINDOW) ? ChatRoomSettingsPage_1.ChatRoomSettingsEnhanced : Main_1.MainPageWithDialogBox }),
-                    React.createElement(react_router_dom_1.Route, { path: "/admin/:filter", component: AdminPageEnhanced_1.AdminPageEnhanced })))));
-    };
-    return App;
-}(React.Component));
-exports["default"] = App;
+                    React.createElement(ReapopNotiBoxWithState, null),
+                    React.createElement(Route, { exact: true, path: "/", component: HomePageWithDialogBox }),
+                    React.createElement(Route, { path: "/forgotaccount", component: ForgotAccount }),
+                    React.createElement(Route, { path: "/team/:filter", component: TeamPageEnhanced }),
+                    React.createElement(Route, { path: "/profile/:filter/:user", component: (this.clientWidth < MEDIUM_WINDOW) ? ProfilePageEnhanced : MainPageWithDialogBox }),
+                    React.createElement(Route, { path: "/chatslist/:filter", component: (this.clientWidth < MEDIUM_WINDOW) ? M_MainPageEnhanced : MainPageWithDialogBox }),
+                    React.createElement(Route, { path: "/chatroom/chat/:room_id", component: (this.clientWidth < MEDIUM_WINDOW) ? ChatPageEnhanced : MainPageWithDialogBox }),
+                    React.createElement(Route, { path: "/chatroom/settings/:room_id/:edit", component: (this.clientWidth < MEDIUM_WINDOW) ? ChatRoomSettingsEnhanced : MainPageWithDialogBox }),
+                    React.createElement(Route, { path: "/admin/:filter", component: AdminPageEnhanced })))));
+    }
+}
+export default App;

@@ -2,7 +2,6 @@
 
 import { List, ListItem } from "material-ui/List";
 import Divider from "material-ui/Divider";
-import Subheader from "material-ui/Subheader";
 import { grey400, darkBlack, lightBlack } from "material-ui/styles/colors";
 
 import { IOrgChart, OrgLevel } from "../../chitchat/chats/models/OrgChart";
@@ -22,16 +21,16 @@ const renderList = (props: IComponentProps) => (
                 secondaryText={
                     <p style={{ color: darkBlack }}>{item.chart_description}</p>
                 }
+                onClick={(event) => props.onSelected(item)}
             />
+            <Divider />
         </div>))
 );
 
 export const OrgChartListView = (props: IComponentProps) => (
     <div>
-        <Subheader>Org Charts</Subheader>
         <List>
             {(!!props.items) ? renderList(props) : null}
         </List>
-        <Divider />
     </div>
 );

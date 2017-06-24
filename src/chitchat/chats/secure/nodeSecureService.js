@@ -1,53 +1,51 @@
-"use strict";
-exports.__esModule = true;
-var CryptoJS = require("crypto-js");
-var NodeSecureService = (function () {
-    function NodeSecureService() {
+import * as CryptoJS from "crypto-js";
+export default class NodeSecureService {
+    constructor() {
         this.key = "CHITCHAT!@#$%^&*()_+|===";
         this.passiv = "ThisIsUrPassword";
     }
-    NodeSecureService.prototype.hashCompute = function (content, callback) {
-        var hash = CryptoJS.MD5(content);
+    hashCompute(content, callback) {
+        let hash = CryptoJS.MD5(content);
         callback(null, hash.toString());
-    };
-    NodeSecureService.prototype.encryption = function (content) {
-        var self = this;
-        return new Promise(function (resolve, reject) {
-            var ciphertext = CryptoJS.AES.encrypt(content, self.key);
+    }
+    encryption(content) {
+        let self = this;
+        return new Promise((resolve, reject) => {
+            let ciphertext = CryptoJS.AES.encrypt(content, self.key);
             if (!!ciphertext) {
                 resolve(ciphertext.toString());
             }
             else
                 reject();
         });
-    };
-    NodeSecureService.prototype.decryption = function (content) {
-        var self = this;
-        return new Promise(function (resolve, reject) {
-            var bytes = CryptoJS.AES.decrypt(content, self.key);
-            var plaintext = bytes.toString(CryptoJS.enc.Utf8);
+    }
+    decryption(content) {
+        let self = this;
+        return new Promise((resolve, reject) => {
+            let bytes = CryptoJS.AES.decrypt(content, self.key);
+            let plaintext = bytes.toString(CryptoJS.enc.Utf8);
             if (!!plaintext)
                 resolve(plaintext);
             else
                 reject();
         });
-    };
-    NodeSecureService.prototype.encryptWithSecureRandom = function (content, callback) {
-        var self = this;
-        var key = CryptoJS.enc.Utf8.parse(self.key);
-        var iv = CryptoJS.enc.Utf8.parse(self.passiv);
-        var ciphertext = CryptoJS.AES.encrypt(content, key, { iv: iv });
+    }
+    encryptWithSecureRandom(content, callback) {
+        let self = this;
+        let key = CryptoJS.enc.Utf8.parse(self.key);
+        let iv = CryptoJS.enc.Utf8.parse(self.passiv);
+        let ciphertext = CryptoJS.AES.encrypt(content, key, { iv: iv });
         callback(null, ciphertext.toString());
-    };
-    NodeSecureService.prototype.decryptWithSecureRandom = function (content) {
-        var self = this;
-        return new Promise(function (resolve, rejected) {
-            var key = CryptoJS.enc.Utf8.parse(self.key);
-            var iv = CryptoJS.enc.Utf8.parse(self.passiv);
-            var bytes = CryptoJS.AES.decrypt(content, key, { iv: iv, padding: CryptoJS.pad.Pkcs7, mode: CryptoJS.mode.CBC });
+    }
+    decryptWithSecureRandom(content) {
+        let self = this;
+        return new Promise((resolve, rejected) => {
+            let key = CryptoJS.enc.Utf8.parse(self.key);
+            let iv = CryptoJS.enc.Utf8.parse(self.passiv);
+            let bytes = CryptoJS.AES.decrypt(content, key, { iv: iv, padding: CryptoJS.pad.Pkcs7, mode: CryptoJS.mode.CBC });
             console.log(key, iv, bytes, content);
             try {
-                var plaintext = bytes.toString(CryptoJS.enc.Utf8);
+                let plaintext = bytes.toString(CryptoJS.enc.Utf8);
                 resolve(plaintext);
             }
             catch (e) {
@@ -55,7 +53,5 @@ var NodeSecureService = (function () {
                 rejected(e);
             }
         });
-    };
-    return NodeSecureService;
-}());
-exports["default"] = NodeSecureService;
+    }
+}

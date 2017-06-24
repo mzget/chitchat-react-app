@@ -1,35 +1,31 @@
-"use strict";
-exports.__esModule = true;
-var ChitChatFactory = (function () {
-    function ChitChatFactory() {
+export class ChitChatFactory {
+    constructor() {
         this.appStore = { appState: "active" }; // active, background, inactive
     }
-    ChitChatFactory.getInstance = function () {
+    static getInstance() {
         return ChitChatFactory.instance;
-    };
-    ChitChatFactory.createInstance = function () {
+    }
+    static createInstance() {
         if (ChitChatFactory.instance == null || ChitChatFactory.instance == undefined) {
             ChitChatFactory.instance = new ChitChatFactory();
             return ChitChatFactory.instance;
         }
-    };
-    ChitChatFactory.prototype.initStore = function (_store) {
+    }
+    initStore(_store) {
         this.store = _store;
-    };
-    ChitChatFactory.prototype.initConfig = function (_config) {
+    }
+    initConfig(_config) {
         this.config = _config;
-    };
-    ChitChatFactory.prototype.getStore = function () { return this.store; };
-    ChitChatFactory.prototype.getConfig = function () { return this.config; };
-    ChitChatFactory.prototype.setAuthStore = function (user, chitchat_token) {
+    }
+    getStore() { return this.store; }
+    getConfig() { return this.config; }
+    setAuthStore(user, chitchat_token) {
         this.authStore = { user: user, chitchat_token: chitchat_token };
-    };
-    ChitChatFactory.prototype.setTeamStore = function (store) {
+    }
+    setTeamStore(store) {
         this.teamStore = store;
-    };
-    ChitChatFactory.prototype.setAppStore = function (store) {
+    }
+    setAppStore(store) {
         this.appStore = store;
-    };
-    return ChitChatFactory;
-}());
-exports.ChitChatFactory = ChitChatFactory;
+    }
+}

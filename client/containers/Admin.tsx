@@ -1,5 +1,6 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
+import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import Subheader from "material-ui/Subheader";
@@ -8,7 +9,7 @@ import { IComponentProps } from "../utils/IComponentProps";
 
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { MenuListview } from "./admins/MenuListView";
-import ManageOrgChartBox from "./admins/ManageOrgChartBox";
+import { ManageOrgChartBox } from "./admins/ManageOrgChartBox";
 import CreateGroupBox, { createOrgGroup, createPjbGroup, createPvGroup } from "./admins/CreateGroupBox";
 import { TeamMemberBox } from "./admins/TeamMemberBox";
 import { DialogBox } from "../components/DialogBox";
@@ -16,7 +17,7 @@ import { DialogBox } from "../components/DialogBox";
 import * as adminRx from "../redux/admin/adminRx";
 import * as groupRx from "../redux/group/groupRx";
 import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
-import { Room, RoomType, RoomStatus } from "../chitchat/shared/Room";
+import { Room, RoomType, RoomStatus } from "../chitchat/chats/models/Room";
 import { UserRole } from "../chitchat/chats/models/UserRole";
 
 enum BoxState {
@@ -48,11 +49,12 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     componentDidMount() {
         const { teamReducer } = this.props;
 
-        if (!teamReducer.team) {
+        if (!teamReducer.team || !teamReducer.team._id) {
             this.props.history.replace("/");
         }
-
-        this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
+        else {
+            this.props.dispatch(adminRx.getOrgChart(teamReducer.team._id));
+        }
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
@@ -93,15 +95,15 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             }
         }
         else if (key == this.teamMember) {
-            if (userReducer.teamProfile.team_role == UserRole[UserRole.admin]) {
-                this.setState(previous => ({ ...previous, boxState: BoxState.isManageMember }));
-            }
-            else {
-                this.props.onError("Request for admin permision");
-            }
+            this.setState(previous => ({ ...previous, boxState: BoxState.isManageMember }));
+            // if (userReducer.teamProfile.team_role == UserRole[UserRole.admin]) {
+            // }
+            // else {
+            //     this.props.onError("Request for admin permision");
+            // }
         }
         else if (key == this.developerIssue) {
-            window.open("https://github.com/mzget/chitchat-ionic-app/wiki", '_blank');
+            window.open("https://github.com/mzget/chitchat-ionic-reference-implementation/issues", '_blank');
         }
     }
 
@@ -116,36 +118,40 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     getAdminPanel() {
+        let { userReducer } = this.props;
         switch (this.state.boxState) {
             case BoxState.isManageTeam:
                 return <ManageOrgChartBox {...this.props} onError={this.props.onError} />;
             case BoxState.isCreateGroup:
                 return <CreateGroupBox {...this.props} groupType={this.state.menuSelected} onError={this.props.onError} />;
             case BoxState.isManageMember:
-                return <TeamMemberBox {...this.props} onError={this.props.onError} />;
+                return <TeamMemberBox {...this.props} teamRole={userReducer.teamProfile.team_role} onError={this.props.onError} />;
             default:
-                return <MenuListview menus={this.menus} onSelectItem={this.onAdminMenuSelected} />;
+                return <Subheader>Welcome To Admin Panel!</Subheader>;
         }
     }
 
     public render(): JSX.Element {
         return (
             <MuiThemeProvider>
-                <div style={{ position: "relative", }}>
+                <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
                     <div style={{ position: "relative", height: "56px" }}>
                         <div style={{ position: "fixed", width: "100%", zIndex: 1 }} >
                             <SimpleToolbar title={"Admin"} onBackPressed={this.onBackPressed} />
                         </div>
                     </div>
-                    <div style={{ position: "relative", overflowX: "hidden", height: "calc(100vh - 56px)" }} >
-                        {
-                            this.getAdminPanel()
-                        }
-
-                    </div>
-
-                </div>
-            </MuiThemeProvider>
+                    <Flexbox flexDirection="row" height="calc(100vh - 56px)">
+                        <Flexbox minWidth="400px" justifyContent="center">
+                            <MenuListview menus={this.menus} onSelectItem={this.onAdminMenuSelected} />
+                        </Flexbox>
+                        <Flexbox flexGrow={1} justifyContent="center">
+                            {
+                                this.getAdminPanel()
+                            }
+                        </Flexbox>
+                    </Flexbox>
+                </Flexbox>
+            </MuiThemeProvider >
         );
     }
 }

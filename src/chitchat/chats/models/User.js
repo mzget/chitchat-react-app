@@ -1,24 +1,10 @@
-"use strict";
-exports.__esModule = true;
 ;
-var OnlineUser = (function () {
-    function OnlineUser() {
-    }
-    return OnlineUser;
-}());
-exports.OnlineUser = OnlineUser;
+export class OnlineUser {
+}
 ;
-var UserTransaction = (function () {
-    function UserTransaction() {
-    }
-    return UserTransaction;
-}());
-exports.UserTransaction = UserTransaction;
+export class UserTransaction {
+}
 ;
-var ChitChatAccount = (function () {
-    function ChitChatAccount() {
-    }
-    return ChitChatAccount;
-}());
-exports.ChitChatAccount = ChitChatAccount;
+export class ChitChatAccount {
+}
 ;

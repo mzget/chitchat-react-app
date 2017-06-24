@@ -1,15 +1,9 @@
-"use strict";
-exports.__esModule = true;
-var nodeSecureService_1 = require("./nodeSecureService");
+import NodeSecureService from "./nodeSecureService";
 /**
  * SecureServiceFactory
  */
-var SecureServiceFactory = (function () {
-    function SecureServiceFactory() {
+export default class SecureServiceFactory {
+    static getService() {
+        return new NodeSecureService();
     }
-    SecureServiceFactory.getService = function () {
-        return new nodeSecureService_1["default"]();
-    };
-    return SecureServiceFactory;
-}());
-exports["default"] = SecureServiceFactory;
+}

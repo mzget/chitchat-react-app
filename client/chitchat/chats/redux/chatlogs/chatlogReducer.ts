@@ -58,7 +58,8 @@ export function chatlogReducer(state = initialState, action) {
             }
         }
         case ChatlogRxActions.GET_LAST_ACCESS_ROOM_FAILURE: {
-            return state.set("roomAccess", null).set("isFetching", false);
+            return state.set("roomAccess", null)
+                .set("isFetching", false);
         }
 
         case ChatlogRxActions.UPDATE_LAST_ACCESS_ROOM_SUCCESS: {

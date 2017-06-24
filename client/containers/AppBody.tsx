@@ -6,14 +6,13 @@ import { ProfileDetailEnhanced } from "./profile/ProfileDetailEnhancer";
 import { AddMembersEnhanced } from "./roomSettings/AddMembers";
 import { GroupDetailEnhanced } from "./roomSettings/GroupDetailEnhancer";
 
-interface IAppBody { match, history, onError, userReducer }
+interface IAppBody { match, history, onError, userReducer };
 
 const getview = (props: IAppBody) => {
     let { match, history, onError, userReducer } = props;
 
     if (match.params.filter == "user") {
-        return <ProfileDetailEnhanced
-            user={userReducer.user}
+        return <ProfileDetailEnhanced user={userReducer.user}
             teamProfile={userReducer.teamProfile}
             alert={onError} />
     }

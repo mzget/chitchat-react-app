@@ -8,7 +8,7 @@ const authReducer = () => ChitChatFactory.getInstance().authStore;
 
 
 export function getLastAccessRoomInfo(team_id: string) {
-    return fetch(`${getConfig().api.stalk_user}/lastAccessRoom/?team_id=${team_id}`, {
+    return fetch(`${getConfig().api.stalk_user}/lastAccessRoom?team_id=${team_id}`, {
         method: "GET",
         headers: withToken(chitchat_headers())(authReducer().chitchat_token)
     });

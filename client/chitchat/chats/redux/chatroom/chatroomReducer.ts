@@ -156,9 +156,6 @@ export const chatroomReducer = (state = initialState, action) => {
             return state.set("chatrooms", action.payload);
         }
 
-        case chatroomActions.CHATROOM_REDUCER_EMPTY_STATE: {
-            return state.set("state", null);
-        }
         default:
             return state;
     }

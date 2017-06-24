@@ -1,134 +1,135 @@
-"use strict";
-exports.__esModule = true;
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
  * This is pure function action for redux app.
  */
-var Rx = require("rxjs/Rx");
-var redux_actions_1 = require("redux-actions");
-var _a = Rx.Observable, ajax = _a.ajax, fromPromise = _a.fromPromise;
-var ChatRoomComponent_1 = require("../../ChatRoomComponent");
-var ChitchatFactory_1 = require("../../ChitchatFactory");
-var chatroomActions_1 = require("./chatroomActions");
-var chatroomService = require("../../services/chatroomService");
-var MessageService_1 = require("../../services/MessageService");
-var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
-var getStore = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().store; };
-var authReducer = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().authStore; };
-exports.FETCH_PRIVATE_CHATROOM = "FETCH_PRIVATE_CHATROOM";
-exports.FETCH_PRIVATE_CHATROOM_FAILURE = "FETCH_PRIVATE_CHATROOM_FAILURE";
-exports.FETCH_PRIVATE_CHATROOM_SUCCESS = "FETCH_PRIVATE_CHATROOM_SUCCESS";
-exports.FETCH_PRIVATE_CHATROOM_CANCELLED = "FETCH_PRIVATE_CHATROOM_CANCELLED";
-exports.fetchPrivateChatRoom = function (ownerId, roommateId) { return ({ type: exports.FETCH_PRIVATE_CHATROOM, payload: { ownerId: ownerId, roommateId: roommateId } }); };
-var fetchPrivateChatRoomSuccess = function (payload) { return ({ type: exports.FETCH_PRIVATE_CHATROOM_SUCCESS, payload: payload }); };
-var cancelFetchPrivateChatRoom = function () { return ({ type: exports.FETCH_PRIVATE_CHATROOM_CANCELLED }); };
-var fetchPrivateChatRoomFailure = function (payload) { return ({ type: exports.FETCH_PRIVATE_CHATROOM_FAILURE, payload: payload }); };
-exports.getPrivateChatRoom_Epic = function (action$) {
-    return action$.ofType(exports.FETCH_PRIVATE_CHATROOM)
-        .mergeMap(function (action) { return fromPromise(chatroomService.getPrivateChatroom(action.payload.ownerId, action.payload.roommateId)); })
-        .mergeMap(function (response) { return fromPromise(response.json()); })
-        .map(function (json) {
-        if (json.success) {
-            return fetchPrivateChatRoomSuccess(json.result[0]);
-        }
-        else {
-            return fetchPrivateChatRoomFailure(json.message);
-        }
-    })._do(function (x) {
-        if (x.type == exports.FETCH_PRIVATE_CHATROOM_FAILURE) {
-            console.warn("Need to create private chat room!");
-        }
-    })
-        .takeUntil(action$.ofType(exports.FETCH_PRIVATE_CHATROOM_CANCELLED))["catch"](function (error) { return Rx.Observable.of(fetchPrivateChatRoomFailure(error.message)); });
-};
-exports.CREATE_PRIVATE_CHATROOM = "CREATE_PRIVATE_CHATROOM";
-exports.CREATE_PRIVATE_CHATROOM_SUCCESS = "CREATE_PRIVATE_CHATROOM_SUCCESS";
-exports.CREATE_PRIVATE_CHATROOM_CANCELLED = "CREATE_PRIVATE_CHATROOM_CANCELLED";
-exports.CREATE_PRIVATE_CHATROOM_FAILURE = "CREATE_PRIVATE_CHATROOM_FAILURE";
-exports.createPrivateChatRoom = function (owner, roommate) { return ({ type: exports.CREATE_PRIVATE_CHATROOM, payload: { owner: owner, roommate: roommate } }); };
-var createPrivateChatRoomSuccess = function (payload) { return ({ type: exports.CREATE_PRIVATE_CHATROOM_SUCCESS, payload: payload }); };
-var createPrivateRoomCancelled = function () { return ({ type: exports.CREATE_PRIVATE_CHATROOM_CANCELLED }); };
-var createPrivateChatRoomFailure = function (payload) { return ({ type: exports.CREATE_PRIVATE_CHATROOM_FAILURE, payload: payload }); };
-exports.createPrivateChatRoomEpic = function (action$) {
-    return action$.ofType(exports.CREATE_PRIVATE_CHATROOM)
-        .mergeMap(function (action) { return ajax({
+import * as Rx from "rxjs/Rx";
+import { createAction } from "redux-actions";
+const { ajax, fromPromise } = Rx.Observable;
+import { ChatRoomComponent } from "../../ChatRoomComponent";
+import { ChitChatFactory } from "../../ChitchatFactory";
+import { checkOlderMessages, getNewerMessageFromNet } from "./chatroomActions";
+import * as chatroomService from "../../services/chatroomService";
+import { updateMessagesReader } from "../../services/MessageService";
+const getConfig = () => ChitChatFactory.getInstance().config;
+const getStore = () => ChitChatFactory.getInstance().store;
+const authReducer = () => ChitChatFactory.getInstance().authStore;
+export const FETCH_PRIVATE_CHATROOM = "FETCH_PRIVATE_CHATROOM";
+export const FETCH_PRIVATE_CHATROOM_FAILURE = "FETCH_PRIVATE_CHATROOM_FAILURE";
+export const FETCH_PRIVATE_CHATROOM_SUCCESS = "FETCH_PRIVATE_CHATROOM_SUCCESS";
+export const FETCH_PRIVATE_CHATROOM_CANCELLED = "FETCH_PRIVATE_CHATROOM_CANCELLED";
+export const fetchPrivateChatRoom = (ownerId, roommateId) => ({ type: FETCH_PRIVATE_CHATROOM, payload: { ownerId, roommateId } });
+const fetchPrivateChatRoomSuccess = (payload) => ({ type: FETCH_PRIVATE_CHATROOM_SUCCESS, payload });
+const cancelFetchPrivateChatRoom = () => ({ type: FETCH_PRIVATE_CHATROOM_CANCELLED });
+const fetchPrivateChatRoomFailure = payload => ({ type: FETCH_PRIVATE_CHATROOM_FAILURE, payload });
+export const getPrivateChatRoom_Epic = action$ => action$.ofType(FETCH_PRIVATE_CHATROOM)
+    .mergeMap(action => fromPromise(chatroomService.getPrivateChatroom(action.payload.ownerId, action.payload.roommateId)))
+    .mergeMap(response => fromPromise(response.json()))
+    .map(json => {
+    if (json.success) {
+        return fetchPrivateChatRoomSuccess(json.result[0]);
+    }
+    else {
+        return fetchPrivateChatRoomFailure(json.message);
+    }
+})._do(x => {
+    if (x.type == FETCH_PRIVATE_CHATROOM_FAILURE) {
+        console.warn("Need to create private chat room!");
+    }
+})
+    .takeUntil(action$.ofType(FETCH_PRIVATE_CHATROOM_CANCELLED))
+    .catch(error => Rx.Observable.of(fetchPrivateChatRoomFailure(error.message)));
+export const CREATE_PRIVATE_CHATROOM = "CREATE_PRIVATE_CHATROOM";
+export const CREATE_PRIVATE_CHATROOM_SUCCESS = "CREATE_PRIVATE_CHATROOM_SUCCESS";
+export const CREATE_PRIVATE_CHATROOM_CANCELLED = "CREATE_PRIVATE_CHATROOM_CANCELLED";
+export const CREATE_PRIVATE_CHATROOM_FAILURE = "CREATE_PRIVATE_CHATROOM_FAILURE";
+export const createPrivateChatRoom = (owner, roommate) => ({ type: CREATE_PRIVATE_CHATROOM, payload: { owner, roommate } });
+const createPrivateChatRoomSuccess = (payload) => ({ type: CREATE_PRIVATE_CHATROOM_SUCCESS, payload });
+const createPrivateRoomCancelled = () => ({ type: CREATE_PRIVATE_CHATROOM_CANCELLED });
+const createPrivateChatRoomFailure = (payload) => ({ type: CREATE_PRIVATE_CHATROOM_FAILURE, payload });
+export const createPrivateChatRoomEpic = action$ => {
+    return action$.ofType(CREATE_PRIVATE_CHATROOM)
+        .mergeMap(action => ajax({
         method: "POST",
-        url: getConfig().api.group + "/private_chat/create",
+        url: `${getConfig().api.group}/private_chat/create`,
         body: action.payload,
         headers: {
             "Content-Type": "application/json",
             "x-access-token": authReducer().chitchat_token
         }
-    }); })
-        .map(function (json) { return createPrivateChatRoomSuccess(json.response); })
-        .takeUntil(action$.ofType(exports.CREATE_PRIVATE_CHATROOM_CANCELLED))["catch"](function (error) { return Rx.Observable.of(createPrivateChatRoomFailure(error.xhr.response)); });
+    }))
+        .map(json => createPrivateChatRoomSuccess(json.response))
+        .takeUntil(action$.ofType(CREATE_PRIVATE_CHATROOM_CANCELLED))
+        .catch(error => Rx.Observable.of(createPrivateChatRoomFailure(error.xhr.response)));
 };
-var GET_PERSISTEND_MESSAGE = "GET_PERSISTEND_MESSAGE";
-var GET_PERSISTEND_MESSAGE_CANCELLED = "GET_PERSISTEND_MESSAGE_CANCELLED";
-exports.GET_PERSISTEND_MESSAGE_SUCCESS = "GET_PERSISTEND_MESSAGE_SUCCESS";
-var GET_PERSISTEND_MESSAGE_FAILURE = "GET_PERSISTEND_MESSAGE_FAILURE";
-exports.getPersistendMessage = function (currentRid) { return ({ type: GET_PERSISTEND_MESSAGE, payload: currentRid }); };
-var getPersistendMessage_cancel = function () { return ({ type: GET_PERSISTEND_MESSAGE_CANCELLED }); };
-var getPersistendMessage_success = function (payload) { return ({ type: exports.GET_PERSISTEND_MESSAGE_SUCCESS, payload: payload }); };
-var getPersistendMessage_failure = function (error) { return ({ type: GET_PERSISTEND_MESSAGE_FAILURE, payload: error }); };
-exports.getPersistendMessageEpic = function (action$) {
+const GET_PERSISTEND_MESSAGE = "GET_PERSISTEND_MESSAGE";
+const GET_PERSISTEND_MESSAGE_CANCELLED = "GET_PERSISTEND_MESSAGE_CANCELLED";
+export const GET_PERSISTEND_MESSAGE_SUCCESS = "GET_PERSISTEND_MESSAGE_SUCCESS";
+const GET_PERSISTEND_MESSAGE_FAILURE = "GET_PERSISTEND_MESSAGE_FAILURE";
+export const getPersistendMessage = (currentRid) => ({ type: GET_PERSISTEND_MESSAGE, payload: currentRid });
+const getPersistendMessage_cancel = () => ({ type: GET_PERSISTEND_MESSAGE_CANCELLED });
+const getPersistendMessage_success = (payload) => ({ type: GET_PERSISTEND_MESSAGE_SUCCESS, payload });
+const getPersistendMessage_failure = (error) => ({ type: GET_PERSISTEND_MESSAGE_FAILURE, payload: error });
+export const getPersistendMessageEpic = action$ => {
     return action$.ofType(GET_PERSISTEND_MESSAGE)
-        .mergeMap(function (action) { return ChatRoomComponent_1.ChatRoomComponent.getInstance().getPersistentMessage(action.payload); })
-        .map(function (json) { return getPersistendMessage_success(json); })
-        .takeUntil(action$.ofType(GET_PERSISTEND_MESSAGE_CANCELLED))["catch"](function (error) { return Rx.Observable.of(getPersistendMessage_failure(error)); })
-        ._do(function (x) {
-        getStore().dispatch(chatroomActions_1.checkOlderMessages());
-        getStore().dispatch(chatroomActions_1.getNewerMessageFromNet());
+        .mergeMap(action => ChatRoomComponent.getInstance().getPersistentMessage(action.payload))
+        .map(json => getPersistendMessage_success(json))
+        .takeUntil(action$.ofType(GET_PERSISTEND_MESSAGE_CANCELLED))
+        .catch(error => Rx.Observable.of(getPersistendMessage_failure(error)))
+        ._do(x => {
+        getStore().dispatch(checkOlderMessages());
+        getStore().dispatch(getNewerMessageFromNet());
     });
 };
-exports.UPDATE_MESSAGES_READ = "UPDATE_MESSAGES_READ";
-exports.UPDATE_MESSAGES_READ_SUCCESS = "UPDATE_MESSAGES_READ_SUCCESS";
-exports.UPDATE_MESSAGES_READ_FAILUER = "UPDATE_MESSAGES_READ_FAILURE";
-exports.updateMessagesRead = redux_actions_1.createAction(exports.UPDATE_MESSAGES_READ, function (messages, room_id) { return ({ messages: messages, room_id: room_id }); });
-exports.updateMessagesRead_Success = redux_actions_1.createAction(exports.UPDATE_MESSAGES_READ_SUCCESS, function (payload) { return payload; });
-exports.updateMessagesRead_Failure = redux_actions_1.createAction(exports.UPDATE_MESSAGES_READ_FAILUER, function (payload) { return payload; });
-exports.updateMessagesRead_Epic = function (action$) {
-    return action$.ofType(exports.UPDATE_MESSAGES_READ)
-        .mergeMap(function (action) {
-        var messages = action.payload.messages;
-        var updates = messages.map(function (value) {
+export const UPDATE_MESSAGES_READ = "UPDATE_MESSAGES_READ";
+export const UPDATE_MESSAGES_READ_SUCCESS = "UPDATE_MESSAGES_READ_SUCCESS";
+export const UPDATE_MESSAGES_READ_FAILUER = "UPDATE_MESSAGES_READ_FAILURE";
+export const updateMessagesRead = createAction(UPDATE_MESSAGES_READ, (messages, room_id) => ({ messages, room_id }));
+export const updateMessagesRead_Success = createAction(UPDATE_MESSAGES_READ_SUCCESS, payload => payload);
+export const updateMessagesRead_Failure = createAction(UPDATE_MESSAGES_READ_FAILUER, payload => payload);
+export const updateMessagesRead_Epic = (action$) => {
+    return action$.ofType(UPDATE_MESSAGES_READ)
+        .mergeMap((action) => {
+        let messages = action.payload.messages;
+        let updates = messages.map((value) => {
             if (value.sender != authReducer().user._id) {
                 return value._id;
             }
         });
-        return MessageService_1.updateMessagesReader(updates, action.payload.room_id);
+        return updateMessagesReader(updates, action.payload.room_id);
     })
-        .mergeMap(function (response) { return response.json(); })
-        .map(function (json) {
+        .mergeMap(response => response.json())
+        .map((json) => {
         if (json.success) {
-            return exports.updateMessagesRead_Success(json);
+            return updateMessagesRead_Success(json);
         }
         else {
-            return exports.updateMessagesRead_Failure(json.message);
+            return updateMessagesRead_Failure(json.message);
         }
-    })["catch"](function (error) { return Rx.Observable.of(exports.updateMessagesRead_Failure(error)); });
+    })
+        .catch(error => Rx.Observable.of(updateMessagesRead_Failure(error)));
 };
-exports.CHATROOM_UPLOAD_FILE = "CHATROOM_UPLOAD_FILE";
-exports.CHATROOM_UPLOAD_FILE_SUCCESS = "CHATROOM_UPLOAD_FILE_SUCCESS";
-exports.CHATROOM_UPLOAD_FILE_FAILURE = "CHATROOM_UPLOAD_FILE_FAILURE";
-exports.CHATROOM_UPLOAD_FILE_CANCELLED = "CHATROOM_UPLOAD_FILE_CANCELLED";
-exports.uploadFile = function (progressEvent, file) { return ({
-    type: exports.CHATROOM_UPLOAD_FILE, payload: { data: progressEvent, file: file }
-}); };
-var uploadFileSuccess = function (result) { return ({ type: exports.CHATROOM_UPLOAD_FILE_SUCCESS, payload: result.result }); };
-var uploadFileFailure = function (error) { return ({ type: exports.CHATROOM_UPLOAD_FILE_FAILURE, payload: error }); };
-exports.uploadFileCanceled = function () { return ({ type: exports.CHATROOM_UPLOAD_FILE_CANCELLED }); };
-exports.uploadFileEpic = function (action$) { return (action$.ofType(exports.CHATROOM_UPLOAD_FILE)
-    .mergeMap(function (action) {
-    var body = new FormData();
+export const CHATROOM_UPLOAD_FILE = "CHATROOM_UPLOAD_FILE";
+export const CHATROOM_UPLOAD_FILE_SUCCESS = "CHATROOM_UPLOAD_FILE_SUCCESS";
+export const CHATROOM_UPLOAD_FILE_FAILURE = "CHATROOM_UPLOAD_FILE_FAILURE";
+export const CHATROOM_UPLOAD_FILE_CANCELLED = "CHATROOM_UPLOAD_FILE_CANCELLED";
+export const uploadFile = (progressEvent, file) => ({
+    type: CHATROOM_UPLOAD_FILE, payload: { data: progressEvent, file: file }
+});
+const uploadFileSuccess = (result) => ({ type: CHATROOM_UPLOAD_FILE_SUCCESS, payload: result.result });
+const uploadFileFailure = (error) => ({ type: CHATROOM_UPLOAD_FILE_FAILURE, payload: error });
+export const uploadFileCanceled = () => ({ type: CHATROOM_UPLOAD_FILE_CANCELLED });
+export const uploadFileEpic = action$ => (action$.ofType(CHATROOM_UPLOAD_FILE)
+    .mergeMap(action => {
+    let body = new FormData();
     body.append("file", action.payload.file);
     return ajax({
         method: "POST",
-        url: "" + getConfig().api.fileUpload,
+        url: `${getConfig().api.fileUpload}`,
         body: body,
         headers: {}
     });
 })
-    .map(function (json) { return uploadFileSuccess(json.response); })
-    .takeUntil(action$.ofType(exports.CHATROOM_UPLOAD_FILE_CANCELLED))["catch"](function (error) { return Rx.Observable.of(uploadFileFailure(error.xhr.response)); })); };
+    .map(json => uploadFileSuccess(json.response))
+    .takeUntil(action$.ofType(CHATROOM_UPLOAD_FILE_CANCELLED))
+    .catch(error => Rx.Observable.of(uploadFileFailure(error.xhr.response))));

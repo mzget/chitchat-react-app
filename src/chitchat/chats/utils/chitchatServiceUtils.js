@@ -1,13 +1,13 @@
-"use strict";
-exports.__esModule = true;
-var ChitchatFactory_1 = require("../ChitchatFactory");
-var getConfig = function () { return ChitchatFactory_1.ChitChatFactory.getInstance().config; };
-exports.chitchat_headers = function () { return ({
+import { ChitChatFactory } from "../ChitchatFactory";
+const getConfig = () => ChitChatFactory.getInstance().config;
+export const chitchat_headers = () => ({
     "Content-Type": "application/json",
     "cache-control": "no-cache",
-    "x-api-key": getConfig().api.apiKey
-}); };
-exports.withToken = function (headers) { return function (token) {
+    "x-api-key": getConfig().api.apiKey,
+    "Access-Control-Allow-Credentials": "*",
+    "Access-Control-Allow-Origin": "*"
+});
+export const withToken = (headers) => (token) => {
     headers["x-access-token"] = token;
     return headers;
-}; };
+};

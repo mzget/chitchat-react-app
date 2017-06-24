@@ -35,8 +35,6 @@ const SimpleGoogleMap = withScriptjs(withGoogleMap((props: IGoogleMapProps) => (
  */
 export class SimpleMapPreview extends React.Component<IGoogleMapProps, any> {
   render() {
-    console.log(this.props);
-
     return (
       <MuiThemeProvider>
         <div>

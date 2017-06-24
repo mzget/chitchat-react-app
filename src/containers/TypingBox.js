@@ -1,45 +1,35 @@
-"use strict";
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
-exports.__esModule = true;
-var React = require("react");
-var reflexbox_1 = require("reflexbox");
-var material_ui_1 = require("material-ui");
-var MuiThemeProvider_1 = require("material-ui/styles/MuiThemeProvider");
-var FontIcon_1 = require("material-ui/FontIcon");
-var IconButton_1 = require("material-ui/IconButton");
-var Colors = require("material-ui/styles/colors");
-var FileReaderInput = require("react-file-reader-input");
-var styles = {
+import * as React from "react";
+import { Flex } from "reflexbox";
+import { TextField } from "material-ui";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import FontIcon from "material-ui/FontIcon";
+import IconButton from "material-ui/IconButton";
+import * as Colors from "material-ui/styles/colors";
+import * as FileReaderInput from "react-file-reader-input";
+const styles = {
     span: {
         paddingRight: 2
     }
 };
-var FileReaderBox = function (props) { return (React.createElement(FileReaderInput, { as: "url", id: "file-input", onChange: props.fileReaderChange, disabled: props.disabled },
-    React.createElement(IconButton_1["default"], { disabled: props.disabled },
-        React.createElement(FontIcon_1["default"], { className: "material-icons" }, "attachment")))); };
-var SendButton = function (props) { return (React.createElement(IconButton_1["default"], { onClick: props.onSubmit, disabled: props.disabled },
-    React.createElement(FontIcon_1["default"], { className: "material-icons" }, "send"))); };
-var StickerButton = function (props) { return (React.createElement(IconButton_1["default"], { onClick: props.onSticker, disabled: props.disabled },
-    React.createElement(FontIcon_1["default"], { className: "material-icons" }, "insert_emoticon"))); };
-var PlaceButton = function (props) { return (React.createElement(IconButton_1["default"], { onClick: props.onLocation, disabled: props.disabled },
-    React.createElement(FontIcon_1["default"], { className: "material-icons" }, "place"))); };
-exports.TypingBox = function (props) {
-    return (React.createElement(MuiThemeProvider_1["default"], null,
+const FileReaderBox = (props) => (React.createElement(FileReaderInput, { as: "url", id: "file-input", onChange: props.fileReaderChange, disabled: props.disabled },
+    React.createElement(IconButton, { disabled: props.disabled },
+        React.createElement(FontIcon, { className: "material-icons" }, "attachment"))));
+const SendButton = (props) => (React.createElement(IconButton, { onClick: props.onSubmit, disabled: props.disabled },
+    React.createElement(FontIcon, { className: "material-icons" }, "send")));
+const StickerButton = (props) => (React.createElement(IconButton, { onClick: props.onSticker, disabled: props.disabled },
+    React.createElement(FontIcon, { className: "material-icons" }, "insert_emoticon")));
+const PlaceButton = (props) => (React.createElement(IconButton, { onClick: props.onLocation, disabled: props.disabled },
+    React.createElement(FontIcon, { className: "material-icons" }, "place")));
+export const TypingBox = (props) => {
+    return (React.createElement(MuiThemeProvider, null,
         React.createElement("div", { id: "typing_box", style: { margin: 2, backgroundColor: Colors.darkWhite } },
-            React.createElement(reflexbox_1.Flex, null,
-                React.createElement(PlaceButton, __assign({}, props)),
-                React.createElement(StickerButton, __assign({}, props)),
-                React.createElement(FileReaderBox, __assign({}, props)),
-                React.createElement(material_ui_1.TextField, { disabled: props.disabled, hintText: (props.disabled) ? "Chat room disabled!" : "Type your message", value: props.value, onChange: props.onValueChange, onKeyDown: function (e) {
+            React.createElement(Flex, null,
+                React.createElement(PlaceButton, Object.assign({}, props)),
+                React.createElement(StickerButton, Object.assign({}, props)),
+                React.createElement(FileReaderBox, Object.assign({}, props)),
+                React.createElement(TextField, { disabled: props.disabled, hintText: (props.disabled) ? "Chat room disabled!" : "Type your message", value: props.value, onChange: props.onValueChange, onKeyDown: (e) => {
                         if (e.key === "Enter")
                             props.onSubmit();
                     }, fullWidth: true }),
-                React.createElement(SendButton, __assign({}, props))))));
+                React.createElement(SendButton, Object.assign({}, props))))));
 };

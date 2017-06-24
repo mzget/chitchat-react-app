@@ -30,7 +30,7 @@ const actions = (props) => [
 export const MapDialog = (props: IMapDialogProps) => (
     <div>
         <Dialog
-            title="Map Dialog"
+            title="Your Location"
             actions={actions(props)}
             modal={true}
             open={props.open}
