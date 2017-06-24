@@ -6,7 +6,7 @@ import {
     Link,
     Switch
 } from "react-router-dom";
-import {  ApolloProvider } from 'react-apollo';
+import { ApolloProvider } from 'react-apollo';
 
 
 import { chitchatFactory } from "./Chitchat";
