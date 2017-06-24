@@ -34,7 +34,7 @@ const getDetailHeight = () => {
 export const ProfileDetail = (props) => (React.createElement(MuiThemeProvider, null,
     React.createElement(Flexbox, { style: { backgroundColor: Colors.blueGrey50 }, flexDirection: "column", minHeight: "calc(100vh - 56px)", id: "ProfileDetail" },
         React.createElement(Flexbox, { flexDirection: "column", alignItems: "center", flexGrow: 1 },
-            React.createElement(Subheader, null, "Edit you profile"),
+            React.createElement(Subheader, null, "Edit your profile"),
             React.createElement(FileReaderInput, { as: "url", id: "file-input", onChange: (props.onFileReaderChange) ? props.onFileReaderChange : () => { } },
                 React.createElement(Avatar, { src: props.user.avatar, size: 96, style: styles.avatar })),
             React.createElement("span", { style: styles.spanGap }),

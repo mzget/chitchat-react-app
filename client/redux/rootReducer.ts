@@ -11,7 +11,9 @@
 
 import { combineReducers } from "redux";
 import { reducer as notificationsReducer } from 'reapop';
+import { ApolloClient, createNetworkInterface } from 'react-apollo';
 
+import { chitchat_graphql } from "../Chitchat";
 import { LOG_OUT_SUCCESS } from "./authen/authRx";
 import { STALK_ON_SOCKET_RECONNECT } from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 
@@ -29,6 +31,13 @@ import { chatroomReducer, ChatRoomInitState } from "../chitchat/chats/redux/chat
 import { chatlogReducer, ChatLogInitState } from "../chitchat/chats/redux/chatlogs/chatlogReducer";
 import { alertReducer, AlertInitState } from "./app/alertReducer";
 
+export const apolloClient = new ApolloClient({
+    networkInterface: createNetworkInterface({
+        uri: chitchat_graphql,
+    })
+});
+const apolloReducer = apolloClient.reducer();
+export const apolloMiddleWare = apolloClient.middleware();
 /**
  * ## CombineReducers
  *
@@ -46,7 +55,8 @@ const appReducer = combineReducers({
     userReducer,
     adminReducer,
     alertReducer,
-    notifications: notificationsReducer()
+    notifications: notificationsReducer(),
+    apollo: apolloReducer
 });
 
 /*

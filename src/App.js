@@ -1,12 +1,13 @@
 import * as React from "react";
-import { Provider } from "react-redux";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import { ApolloProvider } from 'react-apollo';
 import { chitchatFactory } from "./Chitchat";
 /**
  * ### configureStore
  *  ```configureStore``` will connect the ```reducers```,
  */
 import Store from "./redux/configureStore";
+import { apolloClient } from "./redux/rootReducer";
 import { ReapopNotiBoxWithState } from "./components/NotificationSystem";
 import { HomePageWithDialogBox } from "./containers/HomeEnhanced";
 import { ForgotAccount } from "./containers/ForgottenAccount";
@@ -32,7 +33,7 @@ class App extends React.Component {
         this.clientWidth = document.documentElement.clientWidth;
     }
     render() {
-        return (React.createElement(Provider, { store: Store },
+        return (React.createElement(ApolloProvider, { store: Store, client: apolloClient },
             React.createElement(Router, null,
                 React.createElement("div", { id: "app" },
                     React.createElement(ReapopNotiBoxWithState, null),
