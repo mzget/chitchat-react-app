@@ -14,7 +14,7 @@ import { DataListener } from "./DataListener";
 import { BackendFactory } from "./BackendFactory";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import { IMessage, MessageType, IMessageMeta } from "../shared/Message";
-import { Room, RoomStatus, RoomType } from "../shared/Room";
+import { Room, RoomStatus, RoomType } from "./models/Room";
 import { RoomAccessData, StalkAccount } from "../shared/Stalk";
 import { ContactInfo } from "./models/Contact";
 import { MessageImp } from "./models/MessageImp";

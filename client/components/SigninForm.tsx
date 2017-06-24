@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Flex, Box } from 'reflexbox';
+import Flexbox from "flexbox-react";
 import { RaisedButton, TextField } from 'material-ui';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
@@ -29,23 +29,23 @@ interface ITypingBox {
 
 export const SigninForm = (props: ITypingBox) => {
     return (
-        < MuiThemeProvider >
-            <Flex flexColumn align='center' >
-                <Box justify='center' align='center' p={2}>
+        < MuiThemeProvider>
+            <Flexbox flexDirection="column" alignItems='center' >
+                <div>
                     <h3>Sign-in</h3>
                     <p>Enter your email address and password</p>
-                </Box>
+                </div>
                 <span style={styles.span} />
                 <TextField hintText="Type username here." value={props.username} onChange={props.onUsername} onKeyDown={(e) => {
                     if (e.key === 'Enter') props.onSubmit();
-                } } style={styles.textfield} />
+                }} style={styles.textfield} />
                 <span style={styles.span} />
                 <TextField type='password' hintText="Password" value={props.password} onChange={props.onPassword} onKeyDown={(e) => {
                     if (e.key === 'Enter') props.onSubmit();
-                } } style={styles.textfield} />
+                }} style={styles.textfield} />
                 <span style={styles.span} />
                 <SubmitButton {...props} />
-            </Flex>
-        </MuiThemeProvider >
+            </Flexbox>
+        </MuiThemeProvider>
     );
 }

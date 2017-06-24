@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Flex, Box } from "reflexbox";
+import Flexbox from "flexbox-react";
 
 import FontIcon from 'material-ui/FontIcon';
 import TextField from 'material-ui/TextField';
@@ -18,9 +18,9 @@ export interface IAddMembersProps {
 }
 
 export const AddMembers = (props: IAddMembersProps) => (
-    <Flex align='center' flex flexColumn>
+    <Flexbox flexDirection={"column"} alignItems='center' >
         <Subheader>Add Members</Subheader>
-        <Flex>
+        <Flexbox>
             <TextField value={props.search} onChange={props.onTextChanged} onKeyDown={(e) => {
                 if (e.key == "Enter") props.onSearch();
             }}
@@ -29,10 +29,10 @@ export const AddMembers = (props: IAddMembersProps) => (
             <IconButton tooltip="Search" onClick={props.onSearch}>
                 <FontIcon className="material-icons" >search</FontIcon>
             </IconButton>
-        </Flex>
+        </Flexbox>
         <Subheader>Contacts : {(props.members) ? props.members.length : ""}</Subheader>
         <MemberList items={props.members} onAdded={props.onAddMember} />
-    </Flex>
+    </Flexbox>
 );
 
 export const AddMembersEnhanced = AddMemberEnhancer(({ search, onSearch, onTextChanged, members, onAddMember, match }: IAddMembersProps) =>

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Flex, Box } from "reflexbox";
+import Flexbox from "flexbox-react";
 
 import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
@@ -110,9 +110,9 @@ class UploadingDialog extends React.Component<IComponentProps, IComponentNameSta
                         (this.state.openState) ?
                             getMediaCard() : null
                     }
-                    <Flex p={2} align="center">
+                    <Flexbox p={2} align="center">
                         <LinearProgressSimple />
-                    </Flex>
+                    </Flexbox>
                 </Dialog>
             </MuiThemeProvider>
         );

@@ -1,6 +1,6 @@
 import * as async from "async";
 import { StalkEvents } from "stalk-js";
-import { RoomType, MemberRole, Room } from "../shared/Room";
+import { RoomType, MemberRole, Room } from "./models/Room";
 import { StalkAccount, RoomAccessData } from "../shared/Stalk";
 
 import { ContactInfo } from "./models/Contact";

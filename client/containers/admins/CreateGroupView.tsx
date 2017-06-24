@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Flex, Box } from "reflexbox";
+import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import { RaisedButton, TextField } from "material-ui";
@@ -41,11 +41,11 @@ const SubmitButton = (props: IComponentProps) => (
 export const CreateGroupView = (props: IComponentProps) => (comp: JSX.Element) => (
     <MuiThemeProvider>
         <div style={{ height: (document.documentElement.clientHeight - styles.toolbar.height) }}>
-            <Flex flexColumn align="center">
-                <Box justify="center" align="center" p={2}>
+            <Flexbox flexDirection="column" alignItems="center">
+                <div>
                     <h3>Create Group</h3>
                     <p>Enter group informations</p>
-                </Box>
+                </div>
                 <FileReaderInput
                     as="url"
                     id="file-input"
@@ -76,7 +76,7 @@ export const CreateGroupView = (props: IComponentProps) => (comp: JSX.Element) =
                 <span style={styles.span} />
                 {comp}
                 <SubmitButton {...props} />
-            </Flex>
+            </Flexbox>
         </div>
     </MuiThemeProvider >
 );

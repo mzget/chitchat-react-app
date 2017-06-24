@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Flex, Box } from "reflexbox";
+import Flexbox from "flexbox-react";
 
 import Divider from 'material-ui/Divider';
 import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from "material-ui/Card";
@@ -25,10 +25,10 @@ export const CardFileWithAvatar = (props: ICompProps) => (
                 subtitle={<span>{props.subtitle}</span>}
                 avatar={props.avatar}
             />
-            <Flex flexColumn={false}>
+            <Flexbox flexDirection={"row"}>
                 {props.fileIcon}
                 <p style={{ color: darkBlack, marginLeft: 15, fontSize: 16 }}>{props.cardText}</p>
-            </Flex>
+            </Flexbox>
             <Divider inset={false} />
             <CardActions>
                 <FlatButton label="Open" primary={true} onClick={props.openAction} />

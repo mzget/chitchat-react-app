@@ -14,8 +14,10 @@ interface ICompProps {
 }
 
 const GroupsOfChart = ({ data, onSelectItem }) => {
-    return (data.loading) ? null : <GroupListView items={data.chart.rooms} onSelected={onSelectItem} />
-};
+    return (data.loading || data.error)
+        ? null
+        : <GroupListView items={data.chart.rooms} onSelected={onSelectItem} />;
+}
 
 
 const getChartItemQuery = gql`query getChartItem($id: String!) {

@@ -8,7 +8,7 @@ import Avatar from 'material-ui/Avatar';
 
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
 import { groups } from "../chitchat/consts/AlertMsg";
-import { Room, RoomType } from "../chitchat/shared/Room";
+import { Room, RoomType } from "../chitchat/chats/models/Room";
 import { ITeamProfile } from "../chitchat/chats/models/TeamProfile";
 import { UserRole } from "../chitchat/chats/models/UserRole";
 
@@ -39,7 +39,7 @@ const getView = (props: ISubToolbar) => {
 
     if (match.path.match("/chatroom/") && room) {
         return (
-            <div style={{ margin: 2, backgroundColor: Colors.indigo50 }}>
+            <div style={{ margin: 2, backgroundColor: Colors.blueGrey50 }}>
                 <Flexbox flexDirection="row">
                     <Avatar src={(room.image) ? room.image : (room.name) ? room.name.charAt(0) : null} style={{ margin: 2 }} />
                     <Subheader style={{ color: Colors.indigo500 }}>{(room.name) ? room.name.toUpperCase() : null}</Subheader>

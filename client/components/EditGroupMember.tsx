@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Flex, Box } from "reflexbox";
+import Flexbox from "flexbox-react";
 import { withRouter } from "react-router-dom";
 import { withProps, withState, withHandlers, compose, lifecycle, ComponentEnhancer } from "recompose";
 
@@ -15,7 +15,7 @@ import Avatar from "material-ui/Avatar";
 
 export const EditGroupMember = (props: { members: Array<any>, rightIconButton: (item: any) => JSX.Element }) => (
     <MuiThemeProvider>
-        <Flex flexColumn align="center">
+        <Flexbox alignItems="center">
             <List style={{ width: "100%" }}> {
                 (props.members && props.members.length > 0) ?
                     props.members.map((item, i, arr) => {
@@ -29,13 +29,13 @@ export const EditGroupMember = (props: { members: Array<any>, rightIconButton: (
                                             null
                                     }
                                     primaryText={item.username}
-                                    rightIconButton={props.rightIconButton(item)}
+                                    rightIconButton={(props.rightIconButton) ? props.rightIconButton(item) : () => { }}
                                 />
                                 <Divider inset={true} />
                             </div>);
                     }) : null
             }
             </List>
-        </Flex>
+        </Flexbox>
     </MuiThemeProvider>
 );

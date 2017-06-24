@@ -64,6 +64,8 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     componentWillReceiveProps(nextProps: IComponentProps) {
         const { groupReducer, adminReducer, match, location } = nextProps;
 
+        console.log(match.params);
+
         if (match.params.menu == "orgchart") {
             this.setState(previous => ({ ...previous, boxState: BoxState.isManageTeam }));
         }

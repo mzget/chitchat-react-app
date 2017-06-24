@@ -1,7 +1,7 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
 import { shallowEqual } from "recompose";
-import { Flex, Box } from "reflexbox";
+import Flexbox from "flexbox-react";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
@@ -102,27 +102,19 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
                     <SimpleToolbar title={"ChitChat team communication."} />
                 </div>
                 <div id={"app_body"} style={{ backgroundColor: Colors.blueGrey50, height: this.bodyHeight }}>
-                    <Flex flexColumn={true} >
-                        <Flex align="center">
-                            <Box p={2} flexAuto></Box>
+                    <Flexbox flexDirection="row">
+                        <Flexbox flexGrow={1} />
+                        <Flexbox flexDirection="column" >
                             <AuthenBox {...this.props} onError={this.props.onError} />
-                            <Box p={2} flexAuto></Box>
-                        </Flex>
-                        <Flex align="center">
-                            <Box p={2} flexAuto></Box>
                             <a onClick={this.onForgotAccount}>Forgotten account</a>
-                            <Box p={2} flexAuto></Box>
-                        </Flex>
-                        <Box flexAuto justify="flex-end"></Box>
-                    </Flex>
+                        </Flexbox>
+                        <Flexbox flexGrow={1} />
+                    </Flexbox>
                 </div>
-                <div id={"app_footer"} style={{
-                    width: this.clientWidth, height: this.footerHeight,
-                    fontSize: 16, textAlign: "center", backgroundColor: Colors.blueGrey50
-                }}>
-                    <Flex px={2} align="center" justify="center">
+                <div id={"app_footer"} style={{ backgroundColor: Colors.blueGrey50 }}>
+                    <Flexbox alignItems="center" justifyContent="center">
                         <span>Powered by Stalk realtime communication API.</span>
-                    </Flex>
+                    </Flexbox>
                 </div>
             </div>
         );
@@ -133,4 +125,4 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
  * ## Redux boilerplate
  */
 const mapStateToProps = (state) => ({ ...state });
-export const HomeWithState = connect(mapStateToProps)(Home);
+export const HomeWithStore = connect(mapStateToProps)(Home) as React.ComponentClass<{ onError, history }>;
