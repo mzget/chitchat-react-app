@@ -12,11 +12,7 @@
  *
  */
 // import NotificationManager from '../../chats/notificationManager';
-/**
- * Copyright 2016 Ahoo Studio.co.th.
- *
- * This is pure function for redux app.
- */ export class DeviceActionsType {
+export class DeviceActionsType {
 }
 DeviceActionsType.SET_PLATFORM = "SET_PLATFORM";
 DeviceActionsType.SET_VERSION = "SET_VERSION";

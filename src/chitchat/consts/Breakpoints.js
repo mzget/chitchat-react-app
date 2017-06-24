@@ -5,13 +5,7 @@
  *
  * https://material.io/guidelines/layout/responsive-ui.html#
  */
-/**
- * Breakpoints
- * For optimal user experience, material design user interfaces should adapt layouts for the following breakpoint widths:
- *  480, 600, 840, 960, 1280, 1440, and 1600dp.
- *
- * https://material.io/guidelines/layout/responsive-ui.html#
- */ export const XSMALL_WINDOW = 600;
+export const XSMALL_WINDOW = 600;
 export const SMALL_WINDOW = 840;
 export const MEDIUM_WINDOW = 960;
 export const LARGE_WINDOW = 1280;

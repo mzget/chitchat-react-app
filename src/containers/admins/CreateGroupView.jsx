@@ -1,0 +1,47 @@
+import * as React from "react";
+import Flexbox from "flexbox-react";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import { RaisedButton, TextField } from "material-ui";
+import Avatar from "material-ui/Avatar";
+import * as FileReaderInput from "react-file-reader-input";
+const styles = {
+    span: {
+        padding: 8
+    },
+    box: {
+        bottom: 0,
+        position: "absolute"
+    },
+    avatar: {
+        margin: 5
+    },
+    toolbar: {
+        height: 56
+    }
+};
+const SubmitButton = (props) => (<RaisedButton primary={true} label="submit" onClick={props.onSubmit}></RaisedButton>);
+export const CreateGroupView = (props) => (comp) => (<MuiThemeProvider>
+        <div style={{ height: (document.documentElement.clientHeight - styles.toolbar.height) }}>
+            <Flexbox flexDirection="column" alignItems="center">
+                <div>
+                    <h3>Create Group</h3>
+                    <p>Enter group informations</p>
+                </div>
+                <FileReaderInput as="url" id="file-input" onChange={(props.onFileReaderChange) ? props.onFileReaderChange : () => { }} disabled={props.disabledImage}>
+                    <Avatar src={props.image} size={96} style={styles.avatar}/>
+                </FileReaderInput>
+                <TextField hintText="group name" errorText="This field is required" value={props.group_name} onChange={props.onGroupNameChange} onKeyDown={(e) => {
+    if (e.key === "Enter")
+        props.onSubmit();
+}}/>
+                <span style={styles.span}/>
+                <TextField hintText="group description" value={props.group_description} onChange={props.onGroupDescriptionChange} onKeyDown={(e) => {
+    if (e.key === "Enter")
+        props.onSubmit();
+}}/>
+                <span style={styles.span}/>
+                {comp}
+                <SubmitButton {...props}/>
+            </Flexbox>
+        </div>
+    </MuiThemeProvider>);

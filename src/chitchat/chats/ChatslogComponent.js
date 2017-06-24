@@ -18,7 +18,7 @@ import ChatLog from "./models/chatLog";
 import { BackendFactory } from "./BackendFactory";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import { MessageType } from "../shared/Message";
-import { RoomType } from "../shared/Room";
+import { RoomType } from "./models/Room";
 import * as chatroomService from "./services/chatroomService";
 import * as chatlogActionsHelper from "./redux/chatlogs/chatlogActionsHelper";
 export class Unread {
