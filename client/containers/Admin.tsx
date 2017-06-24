@@ -127,7 +127,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             case BoxState.isManageMember:
                 return <TeamMemberBox {...this.props} teamRole={userReducer.teamProfile.team_role} onError={this.props.onError} />;
             default:
-                return <p>Admin Panel</p>;
+                return <Subheader>Welcome To Admin Panel!</Subheader>;
         }
     }
 

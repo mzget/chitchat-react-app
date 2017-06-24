@@ -9,7 +9,7 @@ import { darkWhite } from "material-ui/styles/colors";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 
-import { MemberList } from "../../components/MemberList";
+import { TeamsList } from "../../components/TeamsList";
 import { ContactProfileView } from "./ContactProfileView";
 
 import * as adminRx from "../../redux/admin/adminRx";
@@ -129,8 +129,8 @@ export class TeamMemberBox extends React.Component<ICompProps, IComponentState> 
 
     render() {
         return (
-            (!!this.state.member) ?
-                <ContactProfileView
+            (!!this.state.member)
+                ? <ContactProfileView
                     member={this.state.member}
                     onSubmit={this.onSubmit}
                     canSubmit={this._canSubmit}
@@ -147,17 +147,9 @@ export class TeamMemberBox extends React.Component<ICompProps, IComponentState> 
                         this.setState(prev => ({ ...prev, teamRoleValue: value }));
                     }}
                 />
-                :
-                <Flexbox width="100%" justifyContent="center" style={{ backgroundColor: darkWhite }}>
-                    <Flexbox flexDirection="column">
-                        <Card>
-                            <CardTitle title="Team Lists" />
-                        </Card>
-                        <div style={PageBox}>
-                            <MemberList onSelected={this.onSelectMember} items={this.props.teamReducer.members} />
-                        </div>
-                    </Flexbox>
-                </Flexbox>
+                : <TeamsList
+                    onSelectMember={this.onSelectMember}
+                    members={this.props.teamReducer.members} />
         );
     }
 }

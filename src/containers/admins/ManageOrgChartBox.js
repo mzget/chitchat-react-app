@@ -1,6 +1,7 @@
 import * as React from "react";
 import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
+import Paper from 'material-ui/Paper';
 import { CreateOrgChartForm } from "./CreateOrgChartForm";
 import { OrgChartPreview } from "./OrgChartPreview";
 import { GroupsPure } from "./GroupsOfChart";
@@ -76,7 +77,9 @@ export class ManageOrgChartBox extends React.Component {
         }
     }
     render() {
-        return (React.createElement(Flexbox, { flexDirection: "row", justifyContent: "flex-start" },
-            React.createElement(Flexbox, { flexDirection: "column", minWidth: "400px", style: { backgroundColor: Colors.darkWhite } }, this.getPage(this.state.page))));
+        return (React.createElement(Flexbox, { flexDirection: "row", justifyContent: "center", style: { width: "100%", backgroundColor: Colors.darkWhite } },
+            React.createElement(Flexbox, { flexGrow: 1 }),
+            React.createElement(Paper, { zDepth: 1, style: { width: 400 } }, this.getPage(this.state.page)),
+            React.createElement(Flexbox, { flexGrow: 1 })));
     }
 }

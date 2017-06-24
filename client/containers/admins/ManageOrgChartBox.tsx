@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import Flexbox from "flexbox-react";
 import FlatButton from "material-ui/FlatButton";
 import * as Colors from "material-ui/styles/colors";
+import Paper from 'material-ui/Paper';
+
 
 import { IComponentProps } from "../../utils/IComponentProps";
 import { CreateOrgChartForm } from "./CreateOrgChartForm";
@@ -121,12 +123,14 @@ export class ManageOrgChartBox extends React.Component<IComponentProps, ICompone
 
     public render(): JSX.Element {
         return (
-            <Flexbox flexDirection="row" justifyContent="flex-start" >
-                <Flexbox flexDirection="column" minWidth="400px" style={{ backgroundColor: Colors.darkWhite }}>
+            <Flexbox flexDirection="row" justifyContent="center" style={{ width: "100%", backgroundColor: Colors.darkWhite }}>
+                <Flexbox flexGrow={1} />
+                <Paper zDepth={1} style={{ width: 400 }}>
                     {
                         this.getPage(this.state.page)
                     }
-                </Flexbox>
+                </Paper>
+                <Flexbox flexGrow={1} />
             </Flexbox>
         );
     }

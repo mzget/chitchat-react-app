@@ -1,9 +1,6 @@
 import * as React from "react";
-import Flexbox from "flexbox-react";
 import { shallowEqual } from "recompose";
-import { Card, CardTitle } from "material-ui";
-import { darkWhite } from "material-ui/styles/colors";
-import { MemberList } from "../../components/MemberList";
+import { TeamsList } from "../../components/TeamsList";
 import { ContactProfileView } from "./ContactProfileView";
 import * as adminRx from "../../redux/admin/adminRx";
 import * as teamRx from "../../redux/team/teamRx";
@@ -87,20 +84,14 @@ export class TeamMemberBox extends React.Component {
         }
     }
     render() {
-        return ((!!this.state.member) ?
-            React.createElement(ContactProfileView, { member: this.state.member, onSubmit: this.onSubmit, canSubmit: this._canSubmit, orgsRoleItems: this.props.adminReducer.orgCharts, orgRoleValue: this.state.dropdownValue, dropdownChange: (event, id, value) => {
+        return ((!!this.state.member)
+            ? React.createElement(ContactProfileView, { member: this.state.member, onSubmit: this.onSubmit, canSubmit: this._canSubmit, orgsRoleItems: this.props.adminReducer.orgCharts, orgRoleValue: this.state.dropdownValue, dropdownChange: (event, id, value) => {
                     console.log("org chart change", value);
                     this.setState(previous => (Object.assign({}, previous, { dropdownValue: value })));
                 }, teamRoleItems: this.userRoles, teamRoleValue: this.state.teamRoleValue, onTeamRoleChange: (event, id, value) => {
                     console.log("team role change", value);
                     this.setState(prev => (Object.assign({}, prev, { teamRoleValue: value })));
                 } })
-            :
-                React.createElement(Flexbox, { width: "100%", justifyContent: "center", style: { backgroundColor: darkWhite } },
-                    React.createElement(Flexbox, { flexDirection: "column" },
-                        React.createElement(Card, null,
-                            React.createElement(CardTitle, { title: "Team Lists" })),
-                        React.createElement("div", { style: PageBox },
-                            React.createElement(MemberList, { onSelected: this.onSelectMember, items: this.props.teamReducer.members })))));
+            : React.createElement(TeamsList, { onSelectMember: this.onSelectMember, members: this.props.teamReducer.members }));
     }
 }

@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
+import Subheader from "material-ui/Subheader";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { MenuListview } from "./admins/MenuListView";
 import { ManageOrgChartBox } from "./admins/ManageOrgChartBox";
@@ -107,7 +108,7 @@ class Admin extends React.Component {
             case BoxState.isManageMember:
                 return React.createElement(TeamMemberBox, Object.assign({}, this.props, { teamRole: userReducer.teamProfile.team_role, onError: this.props.onError }));
             default:
-                return React.createElement("p", null, "Admin Panel");
+                return React.createElement(Subheader, null, "Welcome To Admin Panel!");
         }
     }
     render() {
