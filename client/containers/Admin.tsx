@@ -1,6 +1,7 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import { shallowEqual } from "recompose";
 import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
@@ -62,9 +63,13 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        const { groupReducer, adminReducer, match, location } = nextProps;
+        const { groupReducer, adminReducer, alertReducer, match, location } = nextProps;
 
         console.log(match.params);
+
+        if (!shallowEqual(alertReducer.error, this.props.alertReducer.error) && !!alertReducer.error) {
+            this.props.onError(alertReducer.error);
+        }
 
         if (match.params.menu == "orgchart") {
             this.setState(previous => ({ ...previous, boxState: BoxState.isManageTeam }));
@@ -91,17 +96,16 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     onAdminMenuSelected(key: string) {
-        console.log("on-Admin-Menu-Selected", key);
-
         let { userReducer } = this.props;
 
         if (key == this.manageOrgChart) {
-            if (userReducer.teamProfile.team_role == UserRole[UserRole.admin]) {
-                this.props.history.push("/admin/orgchart");
-            }
-            else {
-                this.props.onError("Request for admin permision");
-            }
+            this.props.history.push("/admin/orgchart");
+            //@ No need to check admin role.
+            // if (userReducer.teamProfile.team_role == UserRole[UserRole.admin]) {
+            // }
+            // else {
+            //     this.props.onError("Request for admin permision");
+            // }
         }
         else if (key == createOrgGroup || key == createPjbGroup || key == createPvGroup) {
             if (key == createOrgGroup && userReducer.teamProfile.team_role != UserRole[UserRole.admin]) {
@@ -137,7 +141,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
 
         switch (this.state.boxState) {
             case BoxState.isManageTeam:
-                return <ManageOrgChartBox {...this.props} onError={this.props.onError} />;
+                return <ManageOrgChartBox onError={this.props.onError} />;
             case BoxState.isCreateGroup:
                 return <CreateGroupBox {...this.props} groupType={this.state.menuSelected} onError={this.props.onError} />;
             case BoxState.isManageMember:

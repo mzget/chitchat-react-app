@@ -1,17 +1,15 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { shallowEqual } from "recompose";
+import { withRouter } from "react-router-dom";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { RoomOverview } from "../components/RoomOverview";
 import { EditGroupMemberEnhanced } from "./roomSettings/EditGroupMemberEnhanced";
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
-class ChatRoomSettingsOverView extends React.Component {
+class ChatRoomOverView extends React.Component {
     componentWillMount() {
         let { match: { params } } = this.props;
         this.room = chatroomActions.getRoom(params.room_id);
-        if (!this.room) {
-            this.props.history.replace("/");
-        }
     }
     componentWillReceiveProps(nextProps) {
         let { match, chatroomReducer } = nextProps;
@@ -30,12 +28,15 @@ class ChatRoomSettingsOverView extends React.Component {
         return (<MuiThemeProvider>
                 <div style={{ height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden" }}>
                     {(!!this.room)
-            ? <RoomOverview room={this.room}/>
+            ? (<div>
+                                    <RoomOverview room={this.room}/>
+                                    <EditGroupMemberEnhanced members={this.room.members} room_id={this.room._id}/>
+                                </div>)
             : null}
-                    <EditGroupMemberEnhanced members={this.room.members} room_id={this.room._id}/>
                 </div>
             </MuiThemeProvider>);
     }
 }
 const mapStateToProps = (state) => ({ chatroomReducer: state.chatroomReducer });
-export const ChatRoomOverview = connect(mapStateToProps)(ChatRoomSettingsOverView);
+export var ChatRoomOverviewEnhanced = connect(mapStateToProps)(ChatRoomOverView);
+ChatRoomOverviewEnhanced = withRouter(ChatRoomOverviewEnhanced);

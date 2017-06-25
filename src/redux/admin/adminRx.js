@@ -7,9 +7,9 @@ const config = () => ChitChatFactory.getInstance().config;
 import * as UserService from "../../chitchat/chats/services/UserService";
 const CREATE_NEW_ORG_CHART = "CREATE_NEW_ORG_CHART";
 export const CREATE_NEW_ORG_CHART_SUCCESS = "CREATE_NEW_ORG_CHART_SUCCESS";
-const CREATE_NEW_ORG_CHART_FAILURE = "CREATE_NEW_ORG_CHART_FAILURE";
+export const CREATE_NEW_ORG_CHART_FAILURE = "CREATE_NEW_ORG_CHART_FAILURE";
 const CREATE_NEW_ORG_CHART_CANCELLED = "CREATE_NEW_ORG_CHART_CANCELLED";
-export const createNewOrgChart = createAction(CREATE_NEW_ORG_CHART, payload => payload);
+export const createNewOrgChart = createAction(CREATE_NEW_ORG_CHART, (chart, team_role) => ({ chart, team_role }));
 const createNewOrgChartSuccess = createAction(CREATE_NEW_ORG_CHART_SUCCESS, payload => payload);
 const createNewOrgChartFailure = createAction(CREATE_NEW_ORG_CHART_FAILURE, error => error);
 const createNewOrgChartCancelled = createAction(CREATE_NEW_ORG_CHART_CANCELLED);
@@ -17,12 +17,16 @@ export const createNewOrgChartEpic = action$ => action$.ofType(CREATE_NEW_ORG_CH
     .mergeMap(action => ajax({
     method: "POST",
     url: `${config().api.orgChart}/create`,
-    body: JSON.stringify({ chart: action.payload }),
+    body: JSON.stringify({
+        chart: action.payload.chart,
+        permission: action.payload.team_role
+    }),
     headers: {
         "Content-Type": "application/json",
         "x-access-token": Store.getState().authReducer.token
     }
-}).map(result => createNewOrgChartSuccess(result.response.result))
+})
+    .map(result => createNewOrgChartSuccess(result.response.result))
     .takeUntil(action$.ofType(CREATE_NEW_ORG_CHART_CANCELLED))
     .catch(error => Rx.Observable.of(createNewOrgChartFailure(error.xhr.response))));
 const GET_ORG_CHART = "GET_ORG_CHART";

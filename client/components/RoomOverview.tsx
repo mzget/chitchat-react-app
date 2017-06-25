@@ -6,7 +6,7 @@ import { EditGroupMember } from "./EditGroupMember";
 import { Room, RoomType } from "../chitchat/chats/models/Room";
 
 export const RoomHeader = ({ room }) => (
-    <Flexbox flexDirection="row" alignItems="center" pading={4}>
+    <Flexbox flexDirection="row" alignItems="center" padding={"4"}>
         {
             (!!room && !!room.image)
                 ? <Avatar src={room.image} size={32} />

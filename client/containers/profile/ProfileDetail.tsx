@@ -93,7 +93,7 @@ export const ProfileDetail = (props: IProfileDetailProps) => (
                         <Flexbox flexGrow={1} />
                         <TextField style={styles.textBox}
                             hintText="tel"
-                            value={props.user.tel}
+                            value={(props.user.tel) ? props.user.tel : ""}
                             onChange={props.onTelNumberChange} />
                     </Flexbox>
                     <Flexbox flexDirection="row" >

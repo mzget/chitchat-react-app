@@ -1,4 +1,5 @@
 import * as React from "react";
+import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
@@ -48,13 +49,13 @@ class OrgChartBox extends React.Component {
         }
     }
     onSubmit() {
-        const { teamReducer } = this.props;
+        const { teamReducer, userReducer } = this.props;
         if (this.state.chart_name.length > 0) {
             this.orgChart.chart_level = this.state.dropdownValue;
             this.orgChart.team_id = teamReducer.team._id;
             this.orgChart.chart_name = this.state.chart_name;
             this.orgChart.chart_description = this.state.chart_description;
-            this.props.dispatch(adminRx.createNewOrgChart(this.orgChart));
+            this.props.dispatch(adminRx.createNewOrgChart(this.orgChart, userReducer.teamProfile.team_role));
         }
         else {
             this.props.onError("Missing require field");
@@ -92,4 +93,10 @@ class OrgChartBox extends React.Component {
             </Flexbox>);
     }
 }
-export const ManageOrgChartBox = withRouter(OrgChartBox);
+const mapStateToProps = (state) => ({
+    adminReducer: state.adminReducer,
+    userReducer: state.userReducer,
+    teamReducer: state.teamReducer
+});
+export var ManageOrgChartBox = connect(mapStateToProps)(OrgChartBox);
+ManageOrgChartBox = withRouter(ManageOrgChartBox);

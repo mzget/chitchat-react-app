@@ -2,6 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import Flexbox from "flexbox-react";
 import { shallowEqual } from "recompose";
+import { withRouter } from "react-router-dom";
 
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -17,16 +18,12 @@ import * as groupRx from "../redux/group/groupRx";
 import { IComponentProps } from "../utils/IComponentProps";
 import { Room, RoomType } from "../chitchat/chats/models/Room";
 
-class ChatRoomSettingsOverView extends React.Component<IComponentProps, any> {
+class ChatRoomOverView extends React.Component<IComponentProps, any> {
     room: Room;
 
     componentWillMount() {
         let { match: { params } } = this.props;
         this.room = chatroomActions.getRoom(params.room_id);
-
-        if (!this.room) {
-            this.props.history.replace("/");
-        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -50,10 +47,14 @@ class ChatRoomSettingsOverView extends React.Component<IComponentProps, any> {
                 <div style={{ height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden" }}>
                     {
                         (!!this.room)
-                            ? <RoomOverview room={this.room} />
+                            ? (
+                                <div>
+                                    <RoomOverview room={this.room} />
+                                    <EditGroupMemberEnhanced members={this.room.members} room_id={this.room._id} />
+                                </div>
+                            )
                             : null
                     }
-                    <EditGroupMemberEnhanced members={this.room.members} room_id={this.room._id} />
                 </div>
             </MuiThemeProvider>
         );
@@ -61,4 +62,5 @@ class ChatRoomSettingsOverView extends React.Component<IComponentProps, any> {
 }
 
 const mapStateToProps = (state) => ({ chatroomReducer: state.chatroomReducer });
-export const ChatRoomOverview = connect(mapStateToProps)(ChatRoomSettingsOverView) as React.ComponentClass<{ match, onError }>;
+export var ChatRoomOverviewEnhanced = connect(mapStateToProps)(ChatRoomOverView) as React.ComponentClass<any>;
+ChatRoomOverviewEnhanced = withRouter(ChatRoomOverviewEnhanced) as React.ComponentClass<{ onError }>;

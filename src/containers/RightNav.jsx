@@ -1,9 +1,9 @@
 import * as React from "react";
 import { ContactBox } from "./chatlist/ContactBox";
-import { ChatRoomOverview } from "./ChatRoomOverview";
+import { ChatRoomOverviewEnhanced } from "./ChatRoomOverview";
 const getView = (match, onError) => {
     if (match.path.match("/chatroom/")) {
-        return <ChatRoomOverview match={match} onError={onError}/>;
+        return <ChatRoomOverviewEnhanced onError={onError}/>;
     }
     else {
         return <ContactBox />;

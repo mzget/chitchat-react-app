@@ -20,17 +20,14 @@ const actions = (props: IDialoxBoxProps) => [
 export const DialogBox = (props: IDialoxBoxProps) => {
     return (
         <MuiThemeProvider>
-            <div>
-                <Dialog
-                    title={props.title}
-                    actions={actions(props)}
-                    modal={true}
-                    open={props.open}
-                    onRequestClose={props.handleClose}
-                >
-                    {props.message}
-                </Dialog>
-            </div>
+            <Dialog
+                title={props.title}
+                actions={actions(props)}
+                modal={true}
+                open={props.open}
+                onRequestClose={props.handleClose} >
+                {props.message}
+            </Dialog>
         </MuiThemeProvider>
     );
 };

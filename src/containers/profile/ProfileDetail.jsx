@@ -53,7 +53,7 @@ export const ProfileDetail = (props) => (<MuiThemeProvider>
                     <Flexbox flexDirection="row">
                         <p style={styles.label}>Tel :</p>
                         <Flexbox flexGrow={1}/>
-                        <TextField style={styles.textBox} hintText="tel" value={props.user.tel} onChange={props.onTelNumberChange}/>
+                        <TextField style={styles.textBox} hintText="tel" value={(props.user.tel) ? props.user.tel : ""} onChange={props.onTelNumberChange}/>
                     </Flexbox>
                     <Flexbox flexDirection="row">
                         <p style={styles.label}>Email :</p>

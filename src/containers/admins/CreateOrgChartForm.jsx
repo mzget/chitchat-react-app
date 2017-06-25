@@ -18,8 +18,7 @@ const styles = {
         fontSize: 16
     }
 };
-const SubmitButton = (props) => (<RaisedButton primary={true} label="submit" onClick={props.onSubmit}>
-    </RaisedButton>);
+const SubmitButton = (props) => (<RaisedButton primary={true} label="submit" onClick={props.onSubmit}>  </RaisedButton>);
 const ChartLevel = (props) => (<SelectField floatingLabelText="Org Level" value={props.dropdownValue} onChange={props.dropdownChange}>
         {(props.dropdownItems.length > 0) ?
     props.dropdownItems.map((value, id) => <MenuItem key={id} value={id} primaryText={value}/>) : null}

@@ -65,7 +65,7 @@ class OrgChartBox extends React.Component<IComponentProps, IComponentNameState> 
     }
 
     onSubmit() {
-        const { teamReducer } = this.props;
+        const { teamReducer, userReducer } = this.props;
 
         if (this.state.chart_name.length > 0) {
             this.orgChart.chart_level = this.state.dropdownValue;
@@ -73,7 +73,7 @@ class OrgChartBox extends React.Component<IComponentProps, IComponentNameState> 
             this.orgChart.chart_name = this.state.chart_name;
             this.orgChart.chart_description = this.state.chart_description;
 
-            this.props.dispatch(adminRx.createNewOrgChart(this.orgChart));
+            this.props.dispatch(adminRx.createNewOrgChart(this.orgChart, userReducer.teamProfile.team_role));
         }
         else {
             this.props.onError("Missing require field");
@@ -141,4 +141,10 @@ class OrgChartBox extends React.Component<IComponentProps, IComponentNameState> 
     }
 }
 
-export const ManageOrgChartBox = withRouter(OrgChartBox);
+const mapStateToProps = (state) => ({
+    adminReducer: state.adminReducer,
+    userReducer: state.userReducer,
+    teamReducer: state.teamReducer
+});
+export var ManageOrgChartBox = connect(mapStateToProps)(OrgChartBox) as React.ComponentClass<any>;
+ManageOrgChartBox = withRouter(ManageOrgChartBox) as React.ComponentClass<{ onError }>;

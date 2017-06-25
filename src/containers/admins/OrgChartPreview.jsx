@@ -1,9 +1,9 @@
 import * as React from "react";
+import Flexbox from "flexbox-react";
 import { OrgChartListView } from "../../components/OrgChartListView";
-import FlatButton from "material-ui/FlatButton";
-import Subheader from "material-ui/Subheader";
-export const OrgChartPreview = (props) => (<div style={{ width: `100%` }}>
+import { Subheader, RaisedButton } from "material-ui";
+export const OrgChartPreview = (props) => (<Flexbox flexDirection={"column"} minWidth={"400px"} justifyContent={"center"}>
         <Subheader>Org Charts</Subheader>
         <OrgChartListView items={props.orgCharts} onSelected={props.onSelectItem}/>
-        <FlatButton label="Create New" primary={true} onClick={props.onCreateNew}/>
-    </div>);
+        <RaisedButton label="Create New" primary={true} onClick={props.onCreateNew}/>
+    </Flexbox>);
