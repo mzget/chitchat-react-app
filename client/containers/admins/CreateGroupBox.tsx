@@ -166,4 +166,4 @@ class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
 }
 
 const mapStateToProps = (state) => ({ ...state });
-export default connect(mapStateToProps)(CreateGroupBox);
+export default connect(mapStateToProps)(CreateGroupBox) as React.ComponentClass<IProps>;

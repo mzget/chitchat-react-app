@@ -24,7 +24,7 @@ import { Room, RoomType, RoomStatus } from "../chitchat/chats/models/Room";
 import { UserRole } from "../chitchat/chats/models/UserRole";
 
 enum BoxState {
-    idle = 0, isCreateGroup = 1, isManageTeam, isManageMember, groupView
+    idle = 0, isCreateGroup = 1, isManageTeam, isManageMember, isManageRole, groupView
 }
 interface IComponentNameState {
     menuSelected: string;
@@ -33,10 +33,11 @@ interface IComponentNameState {
 }
 
 class Admin extends React.Component<IComponentProps, IComponentNameState> {
-    manageOrgChart: string = "Manage ORG Chart";
+    ORGChart: string = "ORG Chart";
     teamMember: string = "team-member";
+    teamRole: string = "team-role";
     developerIssue: string = "Developer Issue";
-    menus = [this.manageOrgChart, createOrgGroup, createPjbGroup, createPvGroup, this.teamMember, this.developerIssue];
+    menus = [this.ORGChart, createOrgGroup, createPjbGroup, createPvGroup, this.teamMember, this.teamRole, this.developerIssue];
 
     constructor(props) {
         super(props);
@@ -76,6 +77,9 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
         else if (match.params.menu == "teamlist") {
             this.setState(previous => ({ ...previous, boxState: BoxState.isManageMember }));
         }
+        else if (match.params.menu == "teamrole") {
+            this.setState(previous => ({ ...previous, boxState: BoxState.isManageRole }));
+        }
         else if (match.params.menu == createPvGroup || match.params.menu == createOrgGroup) {
             this.setState(previous => ({ ...previous, boxState: BoxState.isCreateGroup, menuSelected: match.params.menu }));
         }
@@ -97,7 +101,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     onAdminMenuSelected(key: string) {
         let { userReducer } = this.props;
 
-        if (key == this.manageOrgChart) {
+        if (key == this.ORGChart) {
             this.props.history.push("/admin/orgchart");
             //@ No need to check admin role.
             // if (userReducer.teamProfile.team_role == UserRole[UserRole.admin]) {
@@ -119,6 +123,9 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
         }
         else if (key == this.teamMember) {
             this.props.history.push("/admin/teamlist");
+        }
+        else if (key == this.teamRole) {
+            this.props.history.push("/admin/teamrole");
         }
         else if (key == this.developerIssue) {
             window.open("https://github.com/mzget/chitchat-ionic-reference-implementation/issues", '_blank');

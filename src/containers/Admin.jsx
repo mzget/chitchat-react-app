@@ -22,15 +22,17 @@ var BoxState;
     BoxState[BoxState["isCreateGroup"] = 1] = "isCreateGroup";
     BoxState[BoxState["isManageTeam"] = 2] = "isManageTeam";
     BoxState[BoxState["isManageMember"] = 3] = "isManageMember";
-    BoxState[BoxState["groupView"] = 4] = "groupView";
+    BoxState[BoxState["isManageRole"] = 4] = "isManageRole";
+    BoxState[BoxState["groupView"] = 5] = "groupView";
 })(BoxState || (BoxState = {}));
 class Admin extends React.Component {
     constructor(props) {
         super(props);
-        this.manageOrgChart = "Manage ORG Chart";
+        this.ORGChart = "ORG Chart";
         this.teamMember = "team-member";
+        this.teamRole = "team-role";
         this.developerIssue = "Developer Issue";
-        this.menus = [this.manageOrgChart, createOrgGroup, createPjbGroup, createPvGroup, this.teamMember, this.developerIssue];
+        this.menus = [this.ORGChart, createOrgGroup, createPjbGroup, createPvGroup, this.teamMember, this.teamRole, this.developerIssue];
         this.state = {
             boxState: BoxState.idle,
             menuSelected: "",
@@ -60,6 +62,9 @@ class Admin extends React.Component {
         else if (match.params.menu == "teamlist") {
             this.setState(previous => (Object.assign({}, previous, { boxState: BoxState.isManageMember })));
         }
+        else if (match.params.menu == "teamrole") {
+            this.setState(previous => (Object.assign({}, previous, { boxState: BoxState.isManageRole })));
+        }
         else if (match.params.menu == createPvGroup || match.params.menu == createOrgGroup) {
             this.setState(previous => (Object.assign({}, previous, { boxState: BoxState.isCreateGroup, menuSelected: match.params.menu })));
         }
@@ -77,7 +82,7 @@ class Admin extends React.Component {
     }
     onAdminMenuSelected(key) {
         let { userReducer } = this.props;
-        if (key == this.manageOrgChart) {
+        if (key == this.ORGChart) {
             this.props.history.push("/admin/orgchart");
             //@ No need to check admin role.
             // if (userReducer.teamProfile.team_role == UserRole[UserRole.admin]) {
@@ -97,6 +102,9 @@ class Admin extends React.Component {
         }
         else if (key == this.teamMember) {
             this.props.history.push("/admin/teamlist");
+        }
+        else if (key == this.teamRole) {
+            this.props.history.push("/admin/teamrole");
         }
         else if (key == this.developerIssue) {
             window.open("https://github.com/mzget/chitchat-ionic-reference-implementation/issues", '_blank');
