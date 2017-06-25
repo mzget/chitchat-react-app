@@ -17,5 +17,5 @@ export function listener(props, id, value) {
             break;
     }
 }
-export const WebToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onPressTitle, onMenuSelect, listener, history }) => <SimpleToolbar title={(teamReducer.team) ? teamReducer.team.name : ""} onPressTitle={onPressTitle} menus={menus} onSelectedMenuItem={onMenuSelect} groupItem={<ProfileEnhanced />}/>);
-export const MobileToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onMenuSelect, listener, history }) => <SimpleToolbar title={(teamReducer.team) ? teamReducer.team.name : ""} menus={menus} onSelectedMenuItem={onMenuSelect}/>);
+export const WebToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onPressTitle, onMenuSelect, listener, history }) => <SimpleToolbar title={(teamReducer.team) ? teamReducer.team.name.toUpperCase() : ""} onPressTitle={onPressTitle} menus={menus} onSelectedMenuItem={onMenuSelect} groupItem={<ProfileEnhanced />}/>);
+export const MobileToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onMenuSelect, listener, history }) => <SimpleToolbar title={(teamReducer.team) ? teamReducer.team.name.toUpperCase() : ""} menus={menus} onSelectedMenuItem={onMenuSelect}/>);

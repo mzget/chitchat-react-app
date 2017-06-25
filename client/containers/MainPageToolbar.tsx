@@ -22,7 +22,7 @@ export function listener(props, id, value) {
 
 export const WebToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onPressTitle, onMenuSelect, listener, history }: any) =>
     <SimpleToolbar
-        title={(teamReducer.team) ? teamReducer.team.name : ""}
+        title={(teamReducer.team) ? teamReducer.team.name.toUpperCase() : ""}
         onPressTitle={onPressTitle}
         menus={menus}
         onSelectedMenuItem={onMenuSelect}
@@ -31,7 +31,7 @@ export const WebToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, o
 
 export const MobileToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onMenuSelect, listener, history }: any) =>
     <SimpleToolbar
-        title={(teamReducer.team) ? teamReducer.team.name : ""}
+        title={(teamReducer.team) ? teamReducer.team.name.toUpperCase() : ""}
         menus={menus}
         onSelectedMenuItem={onMenuSelect} />
 );

@@ -26,7 +26,7 @@ const muiTheme = getMuiTheme({
 
 interface IComponentProps {
     title: string;
-    onPressTitle?: (e) => void;
+    onPressTitle?: (event) => void;
     menus?: string[];
     groupItem?: JSX.Element;
     onSelectedMenuItem?: (id, value) => void;
@@ -38,14 +38,13 @@ export const SimpleToolbar = (props: IComponentProps) => (
         <Toolbar>
             <ToolbarGroup firstChild={true}>
                 {
-                    (props.onBackPressed) ?
-                        <IconButton iconClassName="material-icons" onClick={props.onBackPressed}>
+                    (props.onBackPressed)
+                        ? <IconButton iconClassName="material-icons" onClick={props.onBackPressed}>
                             chevron_left
-                                </IconButton>
-                        :
-                        <span style={{ margin: 8 }} />
+                        </IconButton>
+                        : <span style={{ margin: 8 }} />
                 }
-                <ToolbarTitle text={props.title} style={{ color: Colors.white }} onClick={props.onPressTitle} />
+                <MenuItem primaryText={props.title} style={{ color: Colors.white }} onClick={props.onPressTitle} />
             </ToolbarGroup>
             <ToolbarGroup>
                 {

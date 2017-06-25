@@ -3,7 +3,7 @@ import IconMenu from "material-ui/IconMenu";
 import IconButton from "material-ui/IconButton";
 import NavigationExpandMoreIcon from "material-ui/svg-icons/navigation/expand-more";
 import MenuItem from "material-ui/MenuItem";
-import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from "material-ui/Toolbar";
+import { Toolbar, ToolbarGroup, ToolbarSeparator } from "material-ui/Toolbar";
 import * as Colors from "material-ui/styles/colors";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
@@ -24,13 +24,12 @@ const muiTheme = getMuiTheme({
 export const SimpleToolbar = (props) => (<MuiThemeProvider muiTheme={muiTheme}>
         <Toolbar>
             <ToolbarGroup firstChild={true}>
-                {(props.onBackPressed) ?
-    <IconButton iconClassName="material-icons" onClick={props.onBackPressed}>
+                {(props.onBackPressed)
+    ? <IconButton iconClassName="material-icons" onClick={props.onBackPressed}>
                             chevron_left
-                                </IconButton>
-    :
-        <span style={{ margin: 8 }}/>}
-                <ToolbarTitle text={props.title} style={{ color: Colors.white }} onClick={props.onPressTitle}/>
+                        </IconButton>
+    : <span style={{ margin: 8 }}/>}
+                <MenuItem primaryText={props.title} style={{ color: Colors.white }} onClick={props.onPressTitle}/>
             </ToolbarGroup>
             <ToolbarGroup>
                 {(props.groupItem) ? (<ToolbarGroup>

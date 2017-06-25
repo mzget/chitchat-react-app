@@ -37,6 +37,7 @@ class Admin extends React.Component {
             alert: false,
         };
         this.onBackPressed = this.onBackPressed.bind(this);
+        this.onTitlePressed = this.onTitlePressed.bind(this);
         this.onAdminMenuSelected = this.onAdminMenuSelected.bind(this);
     }
     componentWillMount() {
@@ -50,7 +51,6 @@ class Admin extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         const { groupReducer, adminReducer, alertReducer, match, location } = nextProps;
-        console.log(match.params);
         if (!shallowEqual(alertReducer.error, this.props.alertReducer.error) && !!alertReducer.error) {
             this.props.onError(alertReducer.error);
         }
@@ -111,6 +111,10 @@ class Admin extends React.Component {
             this.props.history.goBack();
         }
     }
+    onTitlePressed() {
+        let { history, teamReducer } = this.props;
+        history.replace(`/chatslist/${teamReducer.team.name}`);
+    }
     getAdminPanel() {
         let { userReducer, match, onError } = this.props;
         switch (this.state.boxState) {
@@ -131,7 +135,7 @@ class Admin extends React.Component {
                 <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
                     <div style={{ position: "relative", height: "56px" }}>
                         <div style={{ position: "fixed", width: "100%", zIndex: 1 }}>
-                            <SimpleToolbar title={"Admin"} onBackPressed={this.onBackPressed}/>
+                            <SimpleToolbar title={this.props.teamReducer.team.name.toUpperCase()} onBackPressed={this.onBackPressed} onPressTitle={this.onTitlePressed}/>
                         </div>
                     </div>
                     <Flexbox flexDirection="row" height="calc(100vh - 56px)">
