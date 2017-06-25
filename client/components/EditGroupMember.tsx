@@ -13,12 +13,12 @@ import Divider from "material-ui/Divider";
 import Avatar from "material-ui/Avatar";
 
 
-export const EditGroupMember = (props: { members: Array<any>, rightIconButton: (item: any) => JSX.Element }) => (
+export const EditGroupMember = (props: { members: Array<any>, rightIconButton?: (item: any) => JSX.Element }) => (
     <MuiThemeProvider>
         <Flexbox alignItems="center">
             <List style={{ width: "100%" }}> {
-                (props.members && props.members.length > 0) ?
-                    props.members.map((item, i, arr) => {
+                (props.members && props.members.length > 0)
+                    ? props.members.map((item, i, arr) => {
                         return (
                             <div key={i} >
                                 <ListItem
@@ -29,7 +29,7 @@ export const EditGroupMember = (props: { members: Array<any>, rightIconButton: (
                                             null
                                     }
                                     primaryText={item.username}
-                                    rightIconButton={(props.rightIconButton) ? props.rightIconButton(item) : () => { }}
+                                    rightIconButton={(props.rightIconButton) ? props.rightIconButton(item) : null}
                                 />
                                 <Divider inset={true} />
                             </div>);

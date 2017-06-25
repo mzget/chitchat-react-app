@@ -5,14 +5,14 @@ import Flexbox from "flexbox-react";
 import { darkWhite } from "material-ui/styles/colors";
 import { LinearProgressSimple } from "../../components/LinearProgressSimple";
 import { RoomOverview, RoomHeader } from "../../components/RoomOverview";
-import { EditGroupMemberEnhanced } from "../roomSettings/EditGroupMemberEnhanced";
+import { EditGroupMember } from '../../components/EditGroupMember';
 const GroupPureComponent = ({ data: { room, loading, error } }) => (<Flexbox justifyContent="center" minWidth="400px" style={{ height: "100%", overflowY: "scroll", backgroundColor: darkWhite }}>
         {(loading || error)
     ? <LinearProgressSimple />
     : (<div>
                         <RoomHeader room={room}/>
                         <RoomOverview room={room}/>
-                        <EditGroupMemberEnhanced members={room.members} room_id={room._id}/>
+                        <EditGroupMember members={room.members}/>
                     </div>)}
     </Flexbox>);
 // We use the gql tag to parse our query string into a query document

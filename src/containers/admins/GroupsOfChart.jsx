@@ -1,7 +1,7 @@
 import * as React from "react";
 import { gql, graphql } from 'react-apollo';
 import { compose, pure } from "recompose";
-import Subheader from "material-ui/Subheader";
+import { Card, CardTitle } from "material-ui";
 import { GroupListView } from "./GroupListView";
 const GroupsOfChart = ({ data, onSelectItem }) => {
     return (data.loading || data.error)
@@ -34,6 +34,8 @@ const withData = graphql(getChartItemQuery, {
 // Attach the data HoC to the pure component
 const GroupsOfChartEnhanced = compose(withData, pure)(GroupsOfChart);
 export const GroupsPure = ({ chartItem, onSelectItem }) => (<div style={{ width: `100%` }}>
-        <Subheader>{chartItem.chart_name}</Subheader>
+        <Card>
+            <CardTitle title={chartItem.chart_name}/>
+        </Card>
         <GroupsOfChartEnhanced id={chartItem._id} onSelectItem={onSelectItem}/>
     </div>);

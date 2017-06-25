@@ -9,7 +9,7 @@ import { grey400, darkBlack, darkWhite, lightBlack } from "material-ui/styles/co
 
 import { LinearProgressSimple } from "../../components/LinearProgressSimple";
 import { RoomOverview, RoomHeader } from "../../components/RoomOverview";
-import { EditGroupMemberEnhanced } from "../roomSettings/EditGroupMemberEnhanced";
+import { EditGroupMember } from '../../components/EditGroupMember';
 
 import { Room } from "../../chitchat/chats/models/Room";
 
@@ -22,7 +22,7 @@ const GroupPureComponent = ({ data: { room, loading, error } }) => (
                     <div>
                         <RoomHeader room={room} />
                         <RoomOverview room={room} />
-                        <EditGroupMemberEnhanced members={room.members} room_id={room._id} />
+                        <EditGroupMember members={room.members} />
                     </div>
                 )
         }

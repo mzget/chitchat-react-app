@@ -1,7 +1,7 @@
 import * as React from "react";
 import { gql, graphql } from 'react-apollo';
 import { compose, pure } from "recompose";
-import Subheader from "material-ui/Subheader";
+import { Card, CardTitle } from "material-ui";
 
 import { GroupListView } from "./GroupListView";
 import { Room } from "../../chitchat/chats/models/Room";
@@ -51,7 +51,9 @@ const GroupsOfChartEnhanced = compose(
 
 export const GroupsPure = ({ chartItem, onSelectItem }: ICompProps) => (
     <div style={{ width: `100%` }}>
-        <Subheader>{chartItem.chart_name}</Subheader>
+        <Card>
+            <CardTitle title={chartItem.chart_name} />
+        </Card>
         <GroupsOfChartEnhanced id={chartItem._id} onSelectItem={onSelectItem} />
     </div>
 );

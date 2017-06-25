@@ -68,7 +68,6 @@ class OrgChartBox extends React.Component {
         this.setState(prevState => (Object.assign({}, prevState, { page: Page.detail, chartItem: item })));
     }
     onSelectGroup(item) {
-        console.log("onSelectGroup", item);
         this.props.history.push(`/admin/group/${item._id}`);
     }
     getPage(page) {

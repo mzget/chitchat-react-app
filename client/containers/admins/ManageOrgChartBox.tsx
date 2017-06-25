@@ -94,7 +94,6 @@ class OrgChartBox extends React.Component<IComponentProps, IComponentNameState> 
         }));
     }
     onSelectGroup(item: Room) {
-        console.log("onSelectGroup", item);
         this.props.history.push(`/admin/group/${item._id}`);
     }
 

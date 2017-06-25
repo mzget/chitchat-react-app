@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Flex, Box } from "reflexbox";
 import { withProps, withState, withHandlers, compose, lifecycle, ComponentEnhancer } from "recompose";
 
 import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
