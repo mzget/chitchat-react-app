@@ -6,7 +6,7 @@ import { EditGroupMember } from "./EditGroupMember";
 import { Room, RoomType } from "../chitchat/chats/models/Room";
 
 export const RoomHeader = ({ room }) => (
-    <Flexbox flexDirection="row" alignItems="center">
+    <Flexbox flexDirection="row" alignItems="center" pading={4}>
         {
             (!!room && !!room.image)
                 ? <Avatar src={room.image} size={32} />
@@ -23,7 +23,7 @@ export const RoomHeader = ({ room }) => (
 );
 
 export const RoomOverview = ({ room }) => (
-    <Flexbox flexDirection="column" style={{ overflowY: "scroll", overflowX: "hidden" }}>
+    <Flexbox flexDirection="column">
         <Flexbox flexDirection="row">
             <p style={{ margin: 5 }}>TYPE : {RoomType[room.type].toUpperCase()}</p>
         </Flexbox>
@@ -31,7 +31,7 @@ export const RoomOverview = ({ room }) => (
             <p style={{ margin: 5 }}>DESCRIPTION : {room.description}</p>
         </Flexbox>
         <Flexbox flexDirection="row">
-            <p style={{ margin: 5 }}>MEMBERS {room.members.length}</p>
+            <p style={{ margin: 5 }}>MEMBERS {(!!room.members) ? room.members.length : 0}</p>
         </Flexbox>
     </Flexbox>
 );

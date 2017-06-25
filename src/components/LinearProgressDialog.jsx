@@ -3,7 +3,7 @@ import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
-import LinearProgressSimple from "./LinearProgressSimple";
+import { LinearProgressSimple } from "./LinearProgressSimple";
 const actions = (props) => [
     <FlatButton label="OK" primary={true} onMouseUp={props.handleClose}/>
 ];

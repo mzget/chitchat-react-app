@@ -10,7 +10,7 @@ import { MenuListview } from "./admins/MenuListView";
 import { ManageOrgChartBox } from "./admins/ManageOrgChartBox";
 import CreateGroupBox, { createOrgGroup, createPjbGroup, createPvGroup } from "./admins/CreateGroupBox";
 import { TeamMemberBox } from "./admins/TeamMemberBox";
-import { GroupPureComponent } from "./admins/Group";
+import { GroupPureEnhanced } from "./admins/Group";
 import * as adminRx from "../redux/admin/adminRx";
 import * as groupRx from "../redux/group/groupRx";
 import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
@@ -117,7 +117,7 @@ class Admin extends React.Component {
             case BoxState.isManageMember:
                 return <TeamMemberBox {...this.props} teamRole={userReducer.teamProfile.team_role} onError={this.props.onError}/>;
             case BoxState.groupView:
-                return <GroupPureComponent room_id={match.params.id}/>;
+                return <GroupPureEnhanced room_id={match.params.id}/>;
             default:
                 return <Subheader>Welcome To Admin Panel!</Subheader>;
         }

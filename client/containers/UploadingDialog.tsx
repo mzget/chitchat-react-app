@@ -13,7 +13,7 @@ import * as ChatroomRx from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
 
 import SimpleCardImage from "../components/SimpleCardImage";
 import SimpleCardVideo from "../components/SimpleCardVideo";
-import LinearProgressSimple from "../components/LinearProgressSimple";
+import { LinearProgressSimple } from "../components/LinearProgressSimple";
 
 import * as FileType from "../chitchat/shared/FileType";
 
@@ -110,7 +110,7 @@ class UploadingDialog extends React.Component<IComponentProps, IComponentNameSta
                         (this.state.openState) ?
                             getMediaCard() : null
                     }
-                    <Flexbox p={2} align="center">
+                    <Flexbox alignItems="center">
                         <LinearProgressSimple />
                     </Flexbox>
                 </Dialog>
