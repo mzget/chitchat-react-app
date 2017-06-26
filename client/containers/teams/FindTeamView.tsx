@@ -1,5 +1,5 @@
 ﻿import * as React from "react";
-import { Flex, Box } from 'reflexbox';
+import Flexbox from "flexbox-react";
 import { RaisedButton, TextField } from 'material-ui';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FontIcon from 'material-ui/FontIcon';
@@ -35,21 +35,21 @@ interface ITypingBox {
 export const FindTeamView = (props: ITypingBox) => {
     return (
         < MuiThemeProvider >
-            <Flex flexColumn align='center' justify='center' >
+            <Flexbox flexDirection="column" alignItems='center' justifyContent='center' >
                 <h3>Find your team</h3>
                 <TextField hintText="Enter your team name" value={props.team_name} onChange={props.onNameChange} onKeyDown={(e) => {
                     if (e.key === 'Enter') props.onSubmit();
-                } } />
+                }} />
                 <span style={styles.span} />
                 <FindButton {...props} />
                 <span style={styles.span} />
 
-                <Flex flexColumn={false} align='center' justify='center' >
+                <Flexbox flexDirection="row" alignItems='center' justifyContent='center' >
                     <p>Create new team?</p>
                     <span style={styles.span} />
                     <CreateNewButton {...props} />
-                </Flex>
-            </Flex>
+                </Flexbox>
+            </Flexbox>
         </MuiThemeProvider >
     );
 }

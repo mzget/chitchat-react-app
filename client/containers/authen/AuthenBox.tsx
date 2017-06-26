@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Flex, Box } from "reflexbox";
+import Flexbox from "flexbox-react";
 import { RaisedButton, TextField } from "material-ui";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
@@ -44,7 +44,7 @@ export class AuthenBox extends React.Component<IComponentNameProps, IComponentNa
     public render(): JSX.Element {
         return (
             <MuiThemeProvider >
-                <Flex flexColumn>
+                <Flexbox flexDirection="column" >
                     {
                         (this.state.showSignin) ?
                             <SigninBox dispatch={this.props.dispatch} onError={this.props.onError} /> :
@@ -52,16 +52,17 @@ export class AuthenBox extends React.Component<IComponentNameProps, IComponentNa
                     }
                     {
                         (this.state.showSignin) ?
-                            (<Flex justify="center" align="center" p={2}>
+                            (<Flexbox justifyContent="center" alignItems="center">
                                 <p>New to chitchat?</p>
                                 <RaisedButton primary={true} label="Sign up now" onClick={this.onSignupPressed} style={{ margin: 8 }}> </RaisedButton>
-                            </Flex>) :
-                            (<Flex justify="center" align="center" p={2}>
+                            </Flexbox>) :
+                            (<Flexbox justifyContent="center" alignItems="center">
                                 <p>Already have account?</p>
                                 <RaisedButton primary={true} label="Sign in" onClick={this.onSigninPressed} style={{ margin: 8 }}> </RaisedButton>
-                            </Flex>)
+                            </Flexbox>)
                     }
-                </Flex>
-            </MuiThemeProvider>);
+                </Flexbox>
+            </MuiThemeProvider>
+        );
     }
 }

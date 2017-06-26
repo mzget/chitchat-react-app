@@ -48,6 +48,7 @@ const CREATE_ORG_GROUP = "CREATE_ORG_GROUP";
 export const CREATE_ORG_GROUP_FAILURE = "CREATE_ORG_GROUP_FAILURE";
 export const CREATE_ORG_GROUP_SUCCESS = "CREATE_ORG_GROUP_SUCCESS";
 const CREATE_ORG_GROUP_CANCELLED = "CREATE_ORG_GROUP_CANCELLED";
+
 export const createOrgGroup = (group) => ({ type: CREATE_ORG_GROUP, payload: group });
 const createOrgGroupSuccess = createAction(CREATE_ORG_GROUP_SUCCESS, payload => payload);
 const createOrgGroupFailure = createAction(CREATE_ORG_GROUP_FAILURE, err => err);

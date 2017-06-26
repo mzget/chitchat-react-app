@@ -1,24 +1,24 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Flex, Box } from "reflexbox";
+import Flexbox from "flexbox-react";
 import { shallowEqual } from "recompose";
+import { withRouter } from "react-router-dom";
 
-import { IComponentProps } from "../utils/IComponentProps";
 
-import Avatar from 'material-ui/Avatar';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import Subheader from "material-ui/Subheader";
 
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { MenuListview } from "./admins/MenuListView";
+import { RoomOverview, RoomHeader } from "../components/RoomOverview";
 import { EditGroupMemberEnhanced } from "./roomSettings/EditGroupMemberEnhanced";
 
 import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
 import * as groupRx from "../redux/group/groupRx";
 
-import { Room, RoomType } from "../chitchat/shared/Room";
+import { IComponentProps } from "../utils/IComponentProps";
+import { Room, RoomType } from "../chitchat/chats/models/Room";
 
-class ChatRoomSettingsOverView extends React.Component<IComponentProps, any> {
+class ChatRoomOverView extends React.Component<IComponentProps, any> {
     room: Room;
 
     componentWillMount() {
@@ -43,38 +43,24 @@ class ChatRoomSettingsOverView extends React.Component<IComponentProps, any> {
 
     render() {
         return (
-            <MuiThemeProvider >
-                {(!!this.room) ? (
-                    <div style={{ height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden" }}>
-                        <Flex flexColumn={false} align="center" style={{ margin: 5 }}>
-                            {
-                                (!!this.room && !!this.room.image) ? <Avatar
-                                    src={this.room.image}
-                                    size={32} /> :
-                                    <Avatar>
-                                        {(!!this.room && !!this.room.name) ? this.room.name.charAt(0) : null}
-                                    </Avatar>
-                            }
-                            <span style={{ marginLeft: 5 }}>GROUP NAME : {(!!this.room && !!this.room.name) ? this.room.name : ""}</span>
-                        </Flex>
-                        <Flex flexColumn={false}>
-                            <Subheader>TYPE : {RoomType[this.room.type].toUpperCase()}</Subheader>
-                        </Flex>
-                        <Flex flexColumn={false}>
-                            <Subheader>DESCRIPTION : {this.room.description}</Subheader>
-                        </Flex>
-                        <Flex flexColumn={false}>
-                            <Subheader>MEMBERS {this.room.members.length}</Subheader>
-                        </Flex>
-                        <EditGroupMemberEnhanced
-                            members={this.room.members}
-                            room_id={this.room._id} />
-                    </div>
-                ) : null}
+            <MuiThemeProvider>
+                <div style={{ height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden" }}>
+                    {
+                        (!!this.room)
+                            ? (
+                                <div>
+                                    <RoomOverview room={this.room} />
+                                    <EditGroupMemberEnhanced members={this.room.members} room_id={this.room._id} />
+                                </div>
+                            )
+                            : null
+                    }
+                </div>
             </MuiThemeProvider>
         );
     }
 }
 
 const mapStateToProps = (state) => ({ chatroomReducer: state.chatroomReducer });
-export const ChatRoomOverview = connect(mapStateToProps)(ChatRoomSettingsOverView) as React.ComponentClass<{ match, onError }>;
+export var ChatRoomOverviewEnhanced = connect(mapStateToProps)(ChatRoomOverView) as React.ComponentClass<any>;
+ChatRoomOverviewEnhanced = withRouter(ChatRoomOverviewEnhanced) as React.ComponentClass<{ onError }>;

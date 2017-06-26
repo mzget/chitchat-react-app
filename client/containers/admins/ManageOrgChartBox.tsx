@@ -1,10 +1,10 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import Flexbox from "flexbox-react";
 import FlatButton from "material-ui/FlatButton";
 import * as Colors from "material-ui/styles/colors";
 import Paper from 'material-ui/Paper';
-
 
 import { IComponentProps } from "../../utils/IComponentProps";
 import { CreateOrgChartForm } from "./CreateOrgChartForm";
@@ -27,7 +27,7 @@ interface IComponentNameState {
     chartItem: IOrgChart;
 };
 
-export class ManageOrgChartBox extends React.Component<IComponentProps, IComponentNameState> {
+class OrgChartBox extends React.Component<IComponentProps, IComponentNameState> {
     orgChart: IOrgChart = {} as IOrgChart;
     orgLevels: Array<string> = new Array();
 
@@ -48,6 +48,7 @@ export class ManageOrgChartBox extends React.Component<IComponentProps, ICompone
         this.onSubmit = this.onSubmit.bind(this);
         this.onCreateNew = this.onCreateNew.bind(this);
         this.onSelectChart = this.onSelectChart.bind(this);
+        this.onSelectGroup = this.onSelectGroup.bind(this);
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
@@ -64,7 +65,7 @@ export class ManageOrgChartBox extends React.Component<IComponentProps, ICompone
     }
 
     onSubmit() {
-        const { teamReducer } = this.props;
+        const { teamReducer, userReducer } = this.props;
 
         if (this.state.chart_name.length > 0) {
             this.orgChart.chart_level = this.state.dropdownValue;
@@ -72,7 +73,7 @@ export class ManageOrgChartBox extends React.Component<IComponentProps, ICompone
             this.orgChart.chart_name = this.state.chart_name;
             this.orgChart.chart_description = this.state.chart_description;
 
-            this.props.dispatch(adminRx.createNewOrgChart(this.orgChart));
+            this.props.dispatch(adminRx.createNewOrgChart(this.orgChart, userReducer.teamProfile.team_role));
         }
         else {
             this.props.onError("Missing require field");
@@ -91,6 +92,9 @@ export class ManageOrgChartBox extends React.Component<IComponentProps, ICompone
             page: Page.detail,
             chartItem: item
         }));
+    }
+    onSelectGroup(item: Room) {
+        this.props.history.push(`/admin/group/${item._id}`);
     }
 
     getPage(page: Page) {
@@ -115,7 +119,7 @@ export class ManageOrgChartBox extends React.Component<IComponentProps, ICompone
             case Page.detail:
                 return <GroupsPure
                     chartItem={this.state.chartItem}
-                    onSelectItem={(item) => { }} />
+                    onSelectItem={this.onSelectGroup} />
             default:
                 break;
         }
@@ -135,3 +139,11 @@ export class ManageOrgChartBox extends React.Component<IComponentProps, ICompone
         );
     }
 }
+
+const mapStateToProps = (state) => ({
+    adminReducer: state.adminReducer,
+    userReducer: state.userReducer,
+    teamReducer: state.teamReducer
+});
+export var ManageOrgChartBox = connect(mapStateToProps)(OrgChartBox) as React.ComponentClass<any>;
+ManageOrgChartBox = withRouter(ManageOrgChartBox) as React.ComponentClass<{ onError }>;

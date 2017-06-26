@@ -1,12 +1,12 @@
 import * as React from "react";
-import { Flex, Box } from "reflexbox";
+import Flexbox from "flexbox-react";
 
 import { RaisedButton, TextField } from "material-ui";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
 
-import LinearProgressSimple from "./LinearProgressSimple";
+import { LinearProgressSimple } from "./LinearProgressSimple";
 
 interface ICompProps {
     title?: string;
@@ -30,12 +30,11 @@ export const LinearProgressDialog = (props: ICompProps) => {
                     actions={actions(props)}
                     modal={true}
                     open={props.open}
-                    onRequestClose={props.handleClose}
-                >
+                    onRequestClose={props.handleClose} >
                     {/*{props.message}*/}
-                    <Flex p={2} align="center">
+                    <Flexbox alignItems="center">
                         <LinearProgressSimple />
-                    </Flex>
+                    </Flexbox>
                 </Dialog>
             </div>
         </MuiThemeProvider>

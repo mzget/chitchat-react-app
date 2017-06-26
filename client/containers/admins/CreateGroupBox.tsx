@@ -10,7 +10,7 @@ import { SelectOrgChartView } from "./SelectOrgChartView";
 import { ChitChatFactory } from "../../chitchat/chats/ChitchatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 
-import { Room, RoomType, RoomStatus, IMember, MemberRole } from "../../chitchat/shared/Room";
+import { Room, RoomType, RoomStatus, IMember, MemberRole } from "../../chitchat/chats/models/Room";
 import { IOrgChart } from "../../chitchat/chats/models/OrgChart";
 
 import * as groupRx from "../../redux/group/groupRx";
@@ -166,4 +166,4 @@ class CreateGroupBox extends React.Component<IProps, IComponentNameState> {
 }
 
 const mapStateToProps = (state) => ({ ...state });
-export default connect(mapStateToProps)(CreateGroupBox);
+export default connect(mapStateToProps)(CreateGroupBox) as React.ComponentClass<IProps>;

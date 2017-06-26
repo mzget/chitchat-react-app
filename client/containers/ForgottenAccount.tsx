@@ -20,30 +20,31 @@ export class ForgotAccount extends React.Component<IComponentProps, any> {
     render() {
         return (
             <MuiThemeProvider >
-                <div style={{ overflow: "hidden" }}>
+                <Flexbox flexDirection="column" height="100vh"
+                    style={{ overflow: "hidden", backgroundColor: Colors.blueGrey50 }}>
                     <SimpleToolbar title={"ChitChat team communication."} onBackPressed={this.onBack.bind(this)} />
 
-                    <div style={{ overflow: "hidden", backgroundColor: Colors.indigo50 }}>
-                        <Flexbox flexDirection="row" justifyContent="center" alignItems="center" minHeight="90vh">
-                            <Card style={{ width: 400 }}>
-                                <Subheader style={{ color: Colors.black, fontSize: 16 }}>Find Your Account</Subheader>
-                                <Divider inset={false} />
-                                <CardText>
-                                    Please enter your email address to search for your account.
+                    <Flexbox flexGrow={1} />
+                    <Flexbox justifyContent="center" alignItems="center">
+                        <Card style={{ width: 400 }}>
+                            <Subheader style={{ color: Colors.black, fontSize: 16 }}>Find Your Account</Subheader>
+                            <Divider inset={false} />
+                            <CardText>
+                                Please enter your email address to search for your account.
                                 </CardText>
-                                <TextField hintText="Email address" style={{ paddingLeft: 15 }} value={""} onChange={() => { }} onKeyDown={() => { }} />
-                                <CardActions>
-                                    <FlatButton label="Search" primary={true} />
-                                    <FlatButton label="Cancel" onClick={this.onBack.bind(this)} />
-                                </CardActions>
-                            </Card>
-                        </Flexbox>
+                            <TextField hintText="Email address" style={{ paddingLeft: 15 }} value={""} onChange={() => { }} onKeyDown={() => { }} />
+                            <CardActions>
+                                <FlatButton label="Search" primary={true} />
+                                <FlatButton label="Cancel" onClick={this.onBack.bind(this)} />
+                            </CardActions>
+                        </Card>
+                    </Flexbox>
+                    <Flexbox flexGrow={1} />
 
-                        <Flexbox element="footer" justifyContent="center" maxHeight="10vh" style={{ backgroundColor: Colors.indigo50 }}>
-                            <span><b>Powered by Stalk realtime communication API.</b></span>
-                        </Flexbox>
-                    </div>
-                </div >
+                    <Flexbox element="footer" justifyContent="center">
+                        <span>Powered by Stalk realtime communication API.</span>
+                    </Flexbox>
+                </Flexbox>
             </MuiThemeProvider >
         );
     }

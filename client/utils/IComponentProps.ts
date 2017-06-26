@@ -1,3 +1,5 @@
+import { History } from "history";
+
 export interface IComponentProps {
     onError?: (error: string) => void;
     location: Location;
@@ -12,7 +14,7 @@ export interface IComponentProps {
     alertReducer;
     dispatch;
     match: Match;
-    history: ReactRouter.HistoryBase;
+    history: History;
     staticContext;
 }
 

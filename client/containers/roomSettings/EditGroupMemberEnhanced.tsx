@@ -1,5 +1,5 @@
 import * as React from "react";
-import { EditGroupMember } from "./EditGroupMember";
+import { EditGroupMember } from "../../components/EditGroupMember";
 import { EditGroupMemberEnhancer, IEnhanceProps } from "./EditGroupMemberEnhancer";
 
 import * as Colors from "material-ui/styles/colors";

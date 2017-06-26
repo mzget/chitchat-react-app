@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Flex, Box } from "reflexbox";
+import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import { RaisedButton, TextField } from "material-ui";
@@ -18,11 +18,11 @@ const styles = {
 
 export const GroupDetail = (props) => (
     <MuiThemeProvider>
-        <Flex style={{ backgroundColor: Colors.indigo50 }} flexColumn align="center">
-            <Box justify="center" align="center" p={2}>
+        <Flexbox style={{ backgroundColor: Colors.blueGrey50 }} flexDirection="column" alignItems="center" height={"100%"}>
+            <div>
                 <h3>Edit Group</h3>
                 <p>Enter group informations</p>
-            </Box>
+            </div>
             <FileReaderInput
                 as="url"
                 id="file-input"
@@ -52,6 +52,7 @@ export const GroupDetail = (props) => (
                 }} />
             <span style={styles.span} />
             <RaisedButton primary={true} label="submit" onClick={props.onSubmit} ></RaisedButton>
-        </Flex>
+            <Flexbox flexGrow={1} />
+        </Flexbox>
     </MuiThemeProvider >
 );

@@ -57,73 +57,53 @@ export const ContactProfileView = (props: IComponentProps) => {
                     }
                 </Flexbox>
                 <div style={{ marginLeft: "2%", marginRight: "2%" }}>
-                    <Row style={Styles.generalStyles.marginZero}>
-                        <Col md={10} mdOffset={1} style={Styles.generalStyles.paddingZero}>
-                            <Panel>
-                                <Row>
-                                    <Col md={12}>
-                                        <Col xs={12} md={3}>
-                                            <strong>Username : </strong>
-                                        </Col>
-                                        <Col xs={12} md={9}>
-                                            <FormGroup style={{ margin: "0" }}>
-                                                <FormControl value={props.member.username} disabled />
-                                            </FormGroup>
-                                        </Col>
-                                    </Col>
-                                </Row>
+                    <Paper style={{ width: "100%" }} zDepth={1}>
+                        <Flexbox flexDirection={"row"} style={{ margin: "2%" }}>
+                            <strong>Username : </strong>
+                            <Flexbox flexGrow={1} />
+                            <Col xs={12} md={9}>
+                                <FormGroup style={{ margin: "0" }}>
+                                    <FormControl value={props.member.username} disabled />
+                                </FormGroup>
+                            </Col>
+                        </Flexbox>
 
-                                <Row style={{ paddingTop: "2%" }}>
-                                    <Col md={12}>
-                                        <Col xs={12} md={3}>
-                                            <strong>Name : </strong>
-                                        </Col>
-                                        <Col xs={12} md={9}>
-                                            <FormGroup style={{ margin: "0" }}>
-                                                <FormControl value={props.member.firstname + " " + props.member.lastname} disabled />
-                                            </FormGroup>
-                                        </Col>
-                                    </Col>
-                                </Row>
+                        <Flexbox flexDirection={"row"} style={{ margin: "2%" }}>
+                            <strong>Name : </strong>
+                            <Flexbox flexGrow={1} />
+                            <Col xs={12} md={9}>
+                                <FormGroup style={{ margin: "0" }}>
+                                    <FormControl value={props.member.firstname + " " + props.member.lastname} disabled />
+                                </FormGroup>
+                            </Col>
+                        </Flexbox>
 
-                                <Row style={{ paddingTop: "2%" }}>
-                                    <Col md={12}>
-                                        <Col xs={12} md={3}>
-                                            <strong>Email : </strong>
-                                        </Col>
-                                        <Col xs={12} md={9}>
-                                            <FormGroup style={{ margin: "0" }}>
-                                                <FormControl value={props.member.email ? props.member.email : "not set"} disabled />
-                                            </FormGroup>
-                                        </Col>
-                                    </Col>
-                                </Row>
+                        <Flexbox flexDirection={"row"} style={{ margin: "2%" }}>
+                            <strong>Email : </strong>
+                            <Flexbox flexGrow={1} />
+                            <Col xs={12} md={9}>
+                                <FormGroup style={{ margin: "0" }}>
+                                    <FormControl value={props.member.email ? props.member.email : "not set"} disabled />
+                                </FormGroup>
+                            </Col>
+                        </Flexbox>
 
-                                <Row style={{ paddingTop: "2%" }}>
-                                    <Col md={12}>
-                                        <Col xs={12} md={3}>
-                                            <strong>Select Org. Group : </strong>
-                                        </Col>
-                                        <Col xs={12} md={9}>
-                                            <SelectOrgChart dropdownItems={props.orgsRoleItems} dropdownValue={props.orgRoleValue} dropdownChange={props.dropdownChange} />
-                                        </Col>
-                                    </Col>
-                                </Row>
+                        <Flexbox flexDirection={"row"} style={{ margin: "2%" }}>
+                            <strong>Select Org. Group : </strong>
+                            <Flexbox flexGrow={1} />
+                            <Col xs={12} md={9}>
+                                <SelectOrgChart dropdownItems={props.orgsRoleItems} dropdownValue={props.orgRoleValue} dropdownChange={props.dropdownChange} />
+                            </Col>
+                        </Flexbox>
 
-                                <Row style={{ paddingTop: "2%" }}>
-                                    <Col md={12}>
-                                        <Col xs={12} md={3}>
-                                            <strong>Select Team Role : </strong>
-                                        </Col>
-                                        <Col xs={12} md={9}>
-                                            <SelectTeamRole teamRoleItems={props.teamRoleItems} teamRoleValue={props.teamRoleValue} onTeamRoleChange={props.onTeamRoleChange} />
-                                        </Col>
-                                    </Col>
-                                </Row>
-
-                            </Panel>
-                        </Col>
-                    </Row>
+                        <Flexbox flexDirection={"row"} style={{ margin: "2%" }}>
+                            <strong>Select Team Role : </strong>
+                            <Flexbox flexGrow={1} />
+                            <Col xs={12} md={9}>
+                                <SelectTeamRole teamRoleItems={props.teamRoleItems} teamRoleValue={props.teamRoleValue} onTeamRoleChange={props.onTeamRoleChange} />
+                            </Col>
+                        </Flexbox>
+                    </Paper>
                 </div>
                 <Flexbox flexGrow={1} />
                 <SubmitButton  {...props} />

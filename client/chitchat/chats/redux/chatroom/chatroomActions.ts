@@ -22,7 +22,7 @@ import * as NotificationManager from "../stalkBridge/StalkNotificationActions";
 import { updateLastAccessRoom } from "../chatlogs/chatlogRxActions";
 import { updateMessagesRead } from "./chatroomRxEpic";
 
-import { Room, RoomType, IMember } from "../../..//shared/Room";
+import { Room, RoomType, IMember } from "../../models/Room";
 import { MessageType, IMessage } from "../../../shared/Message";
 import { MessageImp } from "../../models/MessageImp";
 import { MemberImp } from "../../models/MemberImp";

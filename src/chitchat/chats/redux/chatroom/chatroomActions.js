@@ -22,7 +22,7 @@ import SecureServiceFactory from "../../secure/secureServiceFactory";
 import * as NotificationManager from "../stalkBridge/StalkNotificationActions";
 import { updateLastAccessRoom } from "../chatlogs/chatlogRxActions";
 import { updateMessagesRead } from "./chatroomRxEpic";
-import { RoomType } from "../../..//shared/Room";
+import { RoomType } from "../../models/Room";
 import { MessageType } from "../../../shared/Message";
 import { ChitChatFactory } from "../../ChitchatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;

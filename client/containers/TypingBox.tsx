@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Flex, Box } from "reflexbox";
+import Flexbox from "flexbox-react";
 import { RaisedButton, TextField } from "material-ui";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import FontIcon from "material-ui/FontIcon";
@@ -55,7 +55,7 @@ export const TypingBox = (props: ITypingBox) => {
     return (
         < MuiThemeProvider >
             <div id={"typing_box"} style={{ margin: 2, backgroundColor: Colors.darkWhite }} >
-                <Flex>
+                <Flexbox>
                     <PlaceButton {...props} />
                     <StickerButton {...props} />
                     <FileReaderBox {...props} />
@@ -69,7 +69,7 @@ export const TypingBox = (props: ITypingBox) => {
                         }}
                         fullWidth={true} />
                     <SendButton {...props} />
-                </Flex>
+                </Flexbox>
             </div>
         </MuiThemeProvider >
     );

@@ -1,8 +1,8 @@
 import * as React from "react";
+import Flexbox from "flexbox-react";
 
-import { OrgChartListView } from "./OrgChartListView";
-import FlatButton from "material-ui/FlatButton";
-import Subheader from "material-ui/Subheader";
+import { OrgChartListView } from "../../components/OrgChartListView";
+import { Card, CardTitle, RaisedButton } from "material-ui";
 
 import { IOrgChart, OrgLevel } from "../../chitchat/chats/models/OrgChart";
 
@@ -13,9 +13,11 @@ interface ICompProps {
 }
 
 export const OrgChartPreview = (props: ICompProps) => (
-    <div style={{ width: `100%` }}>
-        <Subheader>Org Charts</Subheader>
+    <Flexbox flexDirection={"column"} minWidth={"400px"} justifyContent={"center"}>
+        <Card>
+            <CardTitle title="Org Charts" />
+        </Card>
         <OrgChartListView items={props.orgCharts} onSelected={props.onSelectItem} />
-        <FlatButton label="Create New" primary={true} onClick={props.onCreateNew} />
-    </div>
+        <RaisedButton label="Create New" primary={true} onClick={props.onCreateNew} />
+    </Flexbox>
 );

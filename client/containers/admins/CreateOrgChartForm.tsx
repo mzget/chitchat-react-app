@@ -33,8 +33,7 @@ interface IComponentProps {
 }
 
 const SubmitButton = (props: IComponentProps) => (
-    <RaisedButton primary={true} label="submit" onClick={props.onSubmit} >
-    </RaisedButton>
+    <RaisedButton primary={true} label="submit" onClick={props.onSubmit} >  </RaisedButton>
 );
 
 const ChartLevel = (props: IComponentProps) => (
