@@ -14,6 +14,7 @@ import { MenuListview } from "./admins/MenuListView";
 import { ManageOrgChartBox } from "./admins/ManageOrgChartBox";
 import CreateGroupBox, { createOrgGroup, createPjbGroup, createPvGroup } from "./admins/CreateGroupBox";
 import { TeamMemberBox } from "./admins/TeamMemberBox";
+import { TeamRoleEnhanced } from "./admins/TeamRole";
 import { DialogBox } from "../components/DialogBox";
 import { GroupPureEnhanced } from "./admins/Group";
 
@@ -156,6 +157,8 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
                 return <CreateGroupBox {...this.props} groupType={this.state.menuSelected} onError={this.props.onError} />;
             case BoxState.isManageMember:
                 return <TeamMemberBox {...this.props} teamRole={userReducer.teamProfile.team_role} onError={this.props.onError} />;
+            case BoxState.isManageRole:
+                return <TeamRoleEnhanced onSelectItem={(item) => { console.log(item) }} />;
             case BoxState.groupView:
                 return <GroupPureEnhanced room_id={match.params.id} />;
             default:
@@ -192,4 +195,5 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
 }
 
 const mapstateToProps = (state) => ({ ...state });
-export const AdminPage = withRouter(connect(mapstateToProps)(Admin));
+export var AdminPage = connect(mapstateToProps)(Admin) as React.ComponentClass<any>;
+AdminPage = withRouter(AdminPage);

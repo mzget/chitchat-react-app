@@ -5,3 +5,7 @@ export enum UserRole {
     division_chief,
     admin
 }
+export interface TeamRole {
+    _id: any;
+    name: string;
+}
