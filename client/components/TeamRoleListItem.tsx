@@ -24,7 +24,7 @@ const renderList = (props: IComponentProps) => (
         </div>))
 );
 
-export const TeamListPure = (props: IComponentProps) => (
+export const TeamRoleListItem = (props: IComponentProps) => (
     <div>
         <List>
             {(!!props.items) ? renderList(props) : null}

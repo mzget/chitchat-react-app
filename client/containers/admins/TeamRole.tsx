@@ -2,23 +2,18 @@ import * as React from "react";
 import Flexbox from "flexbox-react";
 import { Card, CardTitle, RaisedButton } from "material-ui";
 import { gql, graphql } from 'react-apollo';
-import { compose, pure } from "recompose";
+import { compose, pure, withHandlers, withProps } from "recompose";
 
-import { TeamListPure } from "../../components/TeamListPure";
+import { TeamRoleListItem } from "../../components/TeamRoleListItem";
 import { LinearProgressSimple } from "../../components/LinearProgressSimple";
 import { IOrgChart, OrgLevel } from "../../chitchat/chats/models/OrgChart";
-
-interface ICompProps {
-    // onCreateNew: () => void;
-    onSelectItem: (item: any) => void;
-}
 
 const TeamRole = ({ data: { teamRoles, loading, error }, onSelectItem }) => (
     <div>
         {
             (loading || error)
                 ? <LinearProgressSimple />
-                : <TeamListPure items={teamRoles} onSelected={onSelectItem} />
+                : <TeamRoleListItem items={teamRoles} onSelected={onSelectItem} />
         }
     </div>
 );
@@ -38,7 +33,17 @@ const TeamRoleWithData = compose(
     pure
 )(TeamRole) as React.ComponentClass<{ onSelectItem }>;
 
-export const TeamRoleEnhanced = ({ onSelectItem }) => (
+const TeamRoleEnhancer = compose(
+    withProps({}),
+    withHandlers({
+        onSelectItem: (props: any) => (item) => {
+            props.history.push(`/admin/role/${item.name}`);
+        }
+    }),
+    pure
+);
+
+export const TeamRoleEnhanced = TeamRoleEnhancer(({ history, onSelectItem }) => (
     <Flexbox minWidth={"400px"} justifyContent={"center"}>
         <Flexbox flexDirection="column" minWidth="400px">
             <Card>
@@ -47,4 +52,4 @@ export const TeamRoleEnhanced = ({ onSelectItem }) => (
             <TeamRoleWithData onSelectItem={onSelectItem} />
         </Flexbox>
     </Flexbox>
-);
+)) as React.ComponentClass<{ history }>;

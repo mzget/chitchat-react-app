@@ -57,9 +57,7 @@ class App extends React.Component<any, any> {
                         <Route path="/chatslist/:filter" component={(this.clientWidth < MEDIUM_WINDOW) ? M_MainPageEnhanced : MainPageWithDialogBox} />
                         <Route path="/chatroom/chat/:room_id" component={(this.clientWidth < MEDIUM_WINDOW) ? ChatPageEnhanced : MainPageWithDialogBox} />
                         <Route path="/chatroom/settings/:room_id/:edit" component={(this.clientWidth < MEDIUM_WINDOW) ? ChatRoomSettingsEnhanced : MainPageWithDialogBox} />
-                        <Route path="/admin" exact component={AdminPageEnhanced} />
-                        <Route path="/admin/:menu" exact component={AdminPageEnhanced} />
-                        <Route path="/admin/group/:id" component={AdminPageEnhanced} />
+                        <Route path="/admin/:menu?/:id?" component={AdminPageEnhanced} />
                     </div>
                 </Router>
             </ApolloProvider>
