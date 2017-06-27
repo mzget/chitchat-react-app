@@ -26,7 +26,7 @@ export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chat
                         <StalkCompEnhancer />
                     </Flexbox>
                     <Flexbox flexDirection="row" flexGrow={1} height="calc(100vh - 56px)">
-                        <Flexbox flexDirection="column" flexGrow={0.3} minWidth="280px" style={{ overflowY: "auto", backgroundColor: Colors.darkWhite }}>
+                        <Flexbox flexDirection="column" flexGrow={0.3} minWidth="280px" maxWidth={"280px"} style={{ overflowY: "auto", backgroundColor: Colors.darkWhite }}>
                             <ConnectGroupListEnhancer fetchGroup={fetch_orgGroups} groups={groupReducer.orgGroups} subHeader={"OrgGroups"}/>
                             <ConnectGroupListEnhancer fetchGroup={fetch_privateGroups} groups={groupReducer.privateGroups} subHeader={"Groups"}/>
                             <ChatLogsBoxEnhancer />
@@ -39,7 +39,7 @@ export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chat
                                         <AppBody userReducer={userReducer} match={match} history={history} onError={onError}/>
                                     </div>
                                 </Flexbox>
-                                <Flexbox minWidth="280px">
+                                <Flexbox minWidth="280px" maxWidth={"280px"}>
                                     <div style={{ width: "100%", backgroundColor: Colors.darkWhite }}>
                                         <RightNav match={match} onError={onError} teamReducer={teamReducer}/>
                                     </div>

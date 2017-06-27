@@ -22,9 +22,7 @@ export const getRoomDAL = () => {
     const backendFactory = BackendFactory.getInstance();
     return backendFactory.dataManager.roomDAL;
 };
-const onGetContactProfileFail = (contact_id: string) => {
-
-};
+const onGetContactProfileFail = (contact_id: string) => { };
 
 export const STALK_INIT = "STALK_INIT";
 export const STALK_INIT_SUCCESS = "STALK_INIT_SUCCESS";
