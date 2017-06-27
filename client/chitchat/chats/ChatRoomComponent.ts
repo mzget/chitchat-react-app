@@ -23,7 +23,7 @@ import { Room, IMember } from "./models/Room";
 import { RoomAccessData } from "../shared/Stalk";
 
 import { imagesPath } from "../consts/StickerPath";
-import { ChitChatFactory } from "./ChitchatFactory";
+import { ChitChatFactory } from "./ChitChatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 const getStore = () => ChitChatFactory.getInstance().store;
 

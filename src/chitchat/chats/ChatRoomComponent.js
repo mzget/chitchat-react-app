@@ -20,7 +20,7 @@ import * as chatroomService from "./services/chatroomService";
 import { SecureServiceFactory } from "./secure/secureServiceFactory";
 import { MessageType } from "../shared/Message";
 import { imagesPath } from "../consts/StickerPath";
-import { ChitChatFactory } from "./ChitchatFactory";
+import { ChitChatFactory } from "./ChitChatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 const getStore = () => ChitChatFactory.getInstance().store;
 export const ON_CHAT = "ON_CAHT";

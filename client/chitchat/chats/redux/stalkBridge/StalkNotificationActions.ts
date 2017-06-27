@@ -12,7 +12,7 @@ import { MessageImp } from "../../models/MessageImp";
 import * as CryptoHelper from "../../utils/CryptoHelper";
 import { MessageType } from "../../../shared/Message";
 
-import { ChitChatFactory } from "../../ChitchatFactory";
+import { ChitChatFactory } from "../../ChitChatFactory";
 
 const getStore = () => ChitChatFactory.getInstance().store;
 

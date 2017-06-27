@@ -15,7 +15,7 @@ import { BackendFactory } from "../../BackendFactory";
 import * as StalkNotificationAction from "./StalkNotificationActions";
 import * as ChatLogsActions from "../chatlogs/chatlogsActions";
 import * as StalkPushActions from "./stalkPushActions";
-import { ChitChatFactory } from "../../ChitchatFactory";
+import { ChitChatFactory } from "../../ChitChatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 export const getSessionToken = () => {
     const backendFactory = BackendFactory.getInstance();

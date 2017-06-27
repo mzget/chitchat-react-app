@@ -10,12 +10,12 @@ const { ajax } = Rx.Observable;
 import { BackendFactory } from "../../BackendFactory";
 import { ChatsLogComponent, IUnread, Unread } from "../../ChatslogComponent";
 import { RoomAccessData, StalkAccount } from "../../../shared/stalk";
-import { Room } from "../../../shared/Room";
+import { Room } from "../../models/Room";
 import ChatLog from "../../models/chatLog";
 import * as ServiceProvider from "../../services/ServiceProvider";
 import * as chatroomActions from "../chatroom/chatroomActions";
 
-import { ChitChatFactory } from "../../ChitchatFactory";
+import { ChitChatFactory } from "../../ChitChatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 const authReducer = () => ChitChatFactory.getInstance().authStore;
 

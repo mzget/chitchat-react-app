@@ -15,7 +15,7 @@ import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 import { BackendFactory } from "../../BackendFactory";
 import * as ServiceProvider from "../../services/ServiceProvider";
-import { ChitChatFactory } from "../../ChitchatFactory";
+import { ChitChatFactory } from "../../ChitChatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 const authReducer = () => ChitChatFactory.getInstance().authStore;
 export const STALK_REMOVE_ROOM_ACCESS = "STALK_REMOVE_ROOM_ACCESS";

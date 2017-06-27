@@ -1,6 +1,6 @@
 import * as Rx from "rxjs";
 const { Observable: { ajax }, AjaxResponse } = Rx;
-import { ChitChatFactory } from "../../chitchat/chats/ChitchatFactory";
+import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 import Store from "../configureStore";
 import { updateChatRoom } from "../../chitchat/chats/redux/chatroom/chatroomActions";

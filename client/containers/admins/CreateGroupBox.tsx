@@ -7,7 +7,7 @@ import { IComponentProps } from "../../utils/IComponentProps";
 import { CreateGroupView } from "./CreateGroupView";
 import { SelectOrgChartView } from "./SelectOrgChartView";
 
-import { ChitChatFactory } from "../../chitchat/chats/ChitchatFactory";
+import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 
 import { Room, RoomType, RoomStatus, IMember, MemberRole } from "../../chitchat/chats/models/Room";

@@ -27,7 +27,7 @@ import { MessageType, IMessage } from "../../../shared/Message";
 import { MessageImp } from "../../models/MessageImp";
 import { MemberImp } from "../../models/MemberImp";
 
-import { ChitChatFactory } from "../../ChitchatFactory";
+import { ChitChatFactory } from "../../ChitChatFactory";
 const getStore = () => ChitChatFactory.getInstance().store as Store<any>;
 const getConfig = () => ChitChatFactory.getInstance().config;
 const authReducer = () => ChitChatFactory.getInstance().authStore;

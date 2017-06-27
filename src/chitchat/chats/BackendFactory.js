@@ -16,7 +16,7 @@ import { DataListener } from "./DataListener";
 import { PushDataListener } from "./PushDataListener";
 import { ChatsLogComponent } from "./ChatslogComponent";
 import { ServerEventListener } from "./ServerEventListener";
-import { ChitChatFactory } from "./ChitchatFactory";
+import { ChitChatFactory } from "./ChitChatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 export class BackendFactory {
     static getInstance() {

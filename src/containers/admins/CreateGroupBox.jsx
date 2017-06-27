@@ -4,7 +4,7 @@ import * as Immutable from "immutable";
 import { darkWhite } from "material-ui/styles/colors";
 import { CreateGroupView } from "./CreateGroupView";
 import { SelectOrgChartView } from "./SelectOrgChartView";
-import { ChitChatFactory } from "../../chitchat/chats/ChitchatFactory";
+import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 import { RoomType, MemberRole } from "../../chitchat/chats/models/Room";
 import * as groupRx from "../../redux/group/groupRx";

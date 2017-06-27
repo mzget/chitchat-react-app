@@ -2,8 +2,7 @@ import { SecureServiceFactory } from "../secure/secureServiceFactory";
 import { MessageImp } from "../models/MessageImp";
 import { MessageType } from "../../shared/Message";
 
-import { ChitChatFactory } from "../ChitchatFactory";
-
+import { ChitChatFactory } from "../ChitChatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 
 export const decryptionText = async (message: MessageImp) => {

@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { shallowEqual } from "recompose";
 import Flexbox from "flexbox-react";
-import { ChitChatFactory } from "../chitchat/chats/ChitchatFactory";
+import { ChitChatFactory } from "../chitchat/chats/ChitChatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 import { TypingBox } from "./TypingBox";
 import { ChatBox } from "./chat/ChatBox";

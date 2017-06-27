@@ -5,7 +5,7 @@ const { ajax } = Rx.Observable;
 
 import { Room, RoomType, IMember } from "../../chitchat/chats/models/Room";
 import * as groupService from "../../chitchat/chats/services/groupService";
-import { ChitChatFactory } from "../../chitchat/chats/ChitchatFactory";
+import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 
 import Store from "../configureStore";

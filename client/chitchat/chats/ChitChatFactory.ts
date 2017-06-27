@@ -9,7 +9,7 @@ export type AuthStore = {
 
 export type TeamStore = {
     team: any;
-    members: Array<ITeamMember>,
+    members: Array<ITeamMember>
 };
 
 export type AppStore = {
