@@ -7,15 +7,16 @@ import { darkWhite } from "material-ui/styles/colors";
 import { LinearProgressSimple } from "../../components/LinearProgressSimple";
 import { MemberList } from "../../components/MemberList";
 const RoleDetail = ({ data: { teamProfiles, loading, error } }) => {
-    let users = [];
-    if (Array.isArray(teamProfiles)) {
-        users = teamProfiles.map(v => v.user);
+    if (!error && !loading) {
+        let users = [];
+        if (Array.isArray(teamProfiles)) {
+            users = teamProfiles.map(v => v.user);
+        }
+        return <MemberList items={users}/>;
     }
-    return (<Flexbox justifyContent="center" minWidth="400px" style={{ height: "100%", overflowY: "auto" }}>
-            {(loading || error)
-        ? <LinearProgressSimple />
-        : <MemberList items={users}/>}
-        </Flexbox>);
+    else {
+        return <LinearProgressSimple />;
+    }
 };
 // We use the gql tag to parse our query string into a query document
 const getTeamProfile = gql `
@@ -36,8 +37,7 @@ const getTeamProfile = gql `
 `;
 const withData = graphql(getTeamProfile, {
     options: ({ team_id, role_name }) => ({
-        variables: { team_id, role_name },
-        fetchPolicy: 'cache-and-network'
+        variables: { team_id, role_name }, fetchPolicy: 'cache-and-network'
     })
 });
 const RoleDetailWithData = compose(withData, pure)(RoleDetail);
