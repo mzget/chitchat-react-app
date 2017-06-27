@@ -45,7 +45,8 @@ const getTeamProfile = gql`
 `;
 const withData = graphql(getTeamProfile, {
     options: ({ team_id, role_name }) => ({
-        variables: { team_id, role_name }
+        variables: { team_id, role_name },
+        fetchPolicy: 'cache-and-network'
     })
 });
 const RoleDetailWithData = compose(
