@@ -1,12 +1,14 @@
 import * as CryptoJS from "crypto-js";
-export default class NodeSecureService {
-    constructor() {
-        this.key = "CHITCHAT!@#$%^&*()_+|===";
-        this.passiv = "ThisIsUrPassword";
+export class NodeSecureService {
+    constructor(secret_key) {
+        this.key = secret_key;
+        this.passiv = "chitchat#1234";
     }
-    hashCompute(content, callback) {
-        let hash = CryptoJS.MD5(content);
-        callback(null, hash.toString());
+    hashCompute(content) {
+        return new Promise((resolve, reject) => {
+            let hash = CryptoJS.MD5(content);
+            resolve(hash.toString());
+        });
     }
     encryption(content) {
         let self = this;

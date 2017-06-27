@@ -1,7 +1,7 @@
 import * as React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { ApolloProvider } from 'react-apollo';
-import { chitchatFactory } from "./Chitchat";
+import { chitchatFactory, config } from "./Chitchat";
 /**
  * ### configureStore
  *  ```configureStore``` will connect the ```reducers```,
@@ -19,7 +19,9 @@ import { MainPageWithDialogBox } from "./containers/Main";
 import { M_MainPageEnhanced } from "./containers/m_Main";
 import { AdminPageEnhanced } from "./containers/AdminPageEnhanced";
 import { MEDIUM_WINDOW } from "./chitchat/consts/Breakpoints";
+chitchatFactory.initConfig(config);
 chitchatFactory.initStore(Store);
+chitchatFactory.initSecureService();
 Store.subscribe(() => {
     chitchatFactory.setAuthStore(Store.getState().userReducer.user, Store.getState().authReducer.token);
     chitchatFactory.setTeamStore({

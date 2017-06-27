@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import SecureServiceFactory from "../secure/secureServiceFactory";
+import { SecureServiceFactory } from "../secure/secureServiceFactory";
 import { MessageType } from "../../shared/Message";
 import { ChitChatFactory } from "../ChitchatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
@@ -30,9 +30,5 @@ export const decryptionText = (message) => __awaiter(this, void 0, void 0, funct
 });
 export const hashComputation = (message) => {
     let secure = SecureServiceFactory.getService();
-    return new Promise((resolve, reject) => {
-        secure.hashCompute(message, (err, res) => {
-            resolve(res);
-        });
-    });
+    return secure.hashCompute(message);
 };

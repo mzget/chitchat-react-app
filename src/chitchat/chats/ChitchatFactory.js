@@ -1,3 +1,4 @@
+import { SecureServiceFactory } from "./secure/secureServiceFactory";
 export class ChitChatFactory {
     constructor() {
         this.appStore = { appState: "active" }; // active, background, inactive
@@ -16,6 +17,11 @@ export class ChitChatFactory {
     }
     initConfig(_config) {
         this.config = _config;
+    }
+    initSecureService() {
+        if (this.config.appConfig.encryption == true) {
+            SecureServiceFactory.createService(this.config.appConfig.secret);
+        }
     }
     getStore() { return this.store; }
     getConfig() { return this.config; }
