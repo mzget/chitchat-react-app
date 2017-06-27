@@ -1,5 +1,7 @@
 import { IStalkApi, IChitChatApi, IConfig } from "./iConfig";
 import { ITeamMember } from "./models/IteamMember";
+import { SecureServiceFactory } from "./secure/secureServiceFactory";
+
 export type AuthStore = {
     user: any;
     chitchat_token: string;
@@ -35,6 +37,11 @@ export class ChitChatFactory {
     config: IConfig;
     public initConfig(_config: IConfig) {
         this.config = _config;
+    }
+    public initSecureService() {
+        if (this.config.appConfig.encryption == true) {
+            SecureServiceFactory.createService(this.config.appConfig.secret);
+        }
     }
 
     public getStore() { return this.store; }

@@ -15,7 +15,7 @@ import * as chatroomService from "../../services/chatroomService";
 import * as MessageService from "../../services/MessageService";
 import { ChatRoomComponent, ON_CHAT, ON_MESSAGE_CHANGE } from "../../ChatRoomComponent";
 import { BackendFactory } from "../../BackendFactory";
-import SecureServiceFactory from "../../secure/secureServiceFactory";
+import { SecureServiceFactory } from "../../secure/secureServiceFactory";
 
 import * as NotificationManager from "../stalkBridge/StalkNotificationActions";
 
@@ -32,8 +32,6 @@ const getStore = () => ChitChatFactory.getInstance().store as Store<any>;
 const getConfig = () => ChitChatFactory.getInstance().config;
 const authReducer = () => ChitChatFactory.getInstance().authStore;
 const appReducer = () => ChitChatFactory.getInstance().appStore;
-
-const secure = SecureServiceFactory.getService();
 
 /**
  * ChatRoomActionsType
@@ -204,6 +202,7 @@ export function sendMessage(message: IMessage) {
         dispatch(send_message_request());
 
         if (message.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption === true) {
+            const secure = SecureServiceFactory.getService();
             secure.encryption(message.body).then(result => {
                 message.body = result;
                 let backendFactory = BackendFactory.getInstance();
@@ -237,6 +236,7 @@ function sendMessageResponse(err, res) {
             if (res.code == Utils.statusCode.success && res.data.hasOwnProperty("resultMsg")) {
                 let _msg = { ...res.data.resultMsg } as IMessage;
                 if (_msg.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption) {
+                    const secure = SecureServiceFactory.getService();
                     secure.decryption(_msg.body).then(res => {
                         _msg.body = res;
                         dispatch(send_message_success(_msg));

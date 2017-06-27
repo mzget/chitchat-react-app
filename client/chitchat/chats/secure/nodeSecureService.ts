@@ -2,18 +2,20 @@ import * as CryptoJS from "crypto-js";
 
 import { ISecureService } from "./ISecureService";
 
-export default class NodeSecureService implements ISecureService {
+export class NodeSecureService implements ISecureService {
     key: string;
     passiv: string;
 
-    constructor() {
-        this.key = "CHITCHAT!@#$%^&*()_+|===";
-        this.passiv = "ThisIsUrPassword";
+    constructor(secret_key: string) {
+        this.key = secret_key;
+        this.passiv = "chitchat#1234";
     }
 
-    hashCompute(content, callback: (err, res) => void) {
-        let hash = CryptoJS.MD5(content);
-        callback(null, hash.toString());
+    hashCompute(content) {
+        return new Promise((resolve: (data: string) => void, reject) => {
+            let hash = CryptoJS.MD5(content);
+            resolve(hash.toString());
+        });
     }
 
     encryption(content): Promise<string> {

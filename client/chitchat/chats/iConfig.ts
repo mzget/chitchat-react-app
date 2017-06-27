@@ -8,7 +8,8 @@ export interface IConfig {
     Stalk: IStalkApi;
     api: IChitChatApi;
     appConfig: {
-        encryption: boolean
+        encryption: boolean,
+        secret: string
     };
 }
 
