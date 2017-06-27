@@ -12,7 +12,7 @@ import { StalkAccount, RoomAccessData } from "../../../shared/Stalk";
 import { ChatRoomComponent } from "../../ChatRoomComponent";
 import * as ServiceProvider from "../../services/ServiceProvider";
 
-import { ChitChatFactory } from "../../ChitchatFactory";
+import { ChitChatFactory } from "../../ChitChatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 const authReducer = () => ChitChatFactory.getInstance().authStore;
 

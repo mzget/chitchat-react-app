@@ -16,7 +16,7 @@ const { ajax } = Rx.Observable;
 import { BackendFactory } from "../../BackendFactory";
 import { Unread } from "../../ChatslogComponent";
 import * as chatroomActions from "../chatroom/chatroomActions";
-import { ChitChatFactory } from "../../ChitchatFactory";
+import { ChitChatFactory } from "../../ChitChatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 const authReducer = () => ChitChatFactory.getInstance().authStore;
 export const STALK_INIT_CHATLOG = "STALK_INIT_CHATLOG";

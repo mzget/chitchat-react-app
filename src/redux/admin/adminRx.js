@@ -2,7 +2,7 @@ import { createAction } from "redux-actions";
 import * as Rx from "rxjs";
 const { ajax } = Rx.Observable;
 import Store from "../configureStore";
-import { ChitChatFactory } from "../../chitchat/chats/ChitchatFactory";
+import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 import * as UserService from "../../chitchat/chats/services/UserService";
 const CREATE_NEW_ORG_CHART = "CREATE_NEW_ORG_CHART";

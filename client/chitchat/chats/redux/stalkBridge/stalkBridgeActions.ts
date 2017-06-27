@@ -11,7 +11,7 @@ import * as StalkPushActions from "./stalkPushActions";
 
 import { StalkAccount, RoomAccessData } from "../../../shared/Stalk";
 
-import { ChitChatFactory } from "../../ChitchatFactory";
+import { ChitChatFactory } from "../../ChitChatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 
 export const getSessionToken = () => {

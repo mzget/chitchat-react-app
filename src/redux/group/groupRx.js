@@ -3,7 +3,7 @@ import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 import Store from "../configureStore";
 import { updateChatRoom } from "../../chitchat/chats/redux/chatroom/chatroomActions";
-import { ChitChatFactory } from "../../chitchat/chats/ChitchatFactory";
+import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 /**
  * Get org groups...

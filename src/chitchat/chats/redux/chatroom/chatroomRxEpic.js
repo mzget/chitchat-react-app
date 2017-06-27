@@ -7,7 +7,7 @@ import * as Rx from "rxjs/Rx";
 import { createAction } from "redux-actions";
 const { ajax, fromPromise } = Rx.Observable;
 import { ChatRoomComponent } from "../../ChatRoomComponent";
-import { ChitChatFactory } from "../../ChitchatFactory";
+import { ChitChatFactory } from "../../ChitChatFactory";
 import { checkOlderMessages, getNewerMessageFromNet } from "./chatroomActions";
 import * as chatroomService from "../../services/chatroomService";
 import { updateMessagesReader } from "../../services/MessageService";

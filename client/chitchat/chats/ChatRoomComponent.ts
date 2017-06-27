@@ -15,15 +15,15 @@ import * as CryptoHelper from "./utils/CryptoHelper";
 import * as chatroomService from "./services/chatroomService";
 
 import { ISecureService } from "./secure/ISecureService";
-import SecureServiceFactory from "./secure/secureServiceFactory";
+import { SecureServiceFactory } from "./secure/secureServiceFactory";
 
 import { MessageType, IMessage } from "../shared/Message";
 import { MessageImp } from "./models/MessageImp";
-import { Room, IMember } from "../shared/Room";
+import { Room, IMember } from "./models/Room";
 import { RoomAccessData } from "../shared/Stalk";
 
 import { imagesPath } from "../consts/StickerPath";
-import { ChitChatFactory } from "./ChitchatFactory";
+import { ChitChatFactory } from "./ChitChatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 const getStore = () => ChitChatFactory.getInstance().store;
 
@@ -282,7 +282,6 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         let value = await response.json();
 
         return new Promise((resolve, reject) => {
-            console.log("getChatHistory: ", value);
             if (value.success) {
                 let histories = new Array<IMessage>();
                 histories = value.result;

@@ -1,5 +1,5 @@
 import { queue } from "async";
-import { ChitChatFactory } from "../ChitchatFactory";
+import { ChitChatFactory } from "../ChitChatFactory";
 const config = ChitChatFactory.getInstance().config;
 export function manageUploadQueue(files, target_api, onFinished, speedCallBack = false, onSpeedCallBack) {
     let results = [];

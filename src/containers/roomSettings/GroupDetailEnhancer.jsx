@@ -5,7 +5,7 @@ import { withState, withHandlers, compose, lifecycle, shallowEqual } from "recom
 import { GroupDetail } from "./GroupDetail";
 import * as editGroupRxActions from "../../redux/group/editGroupRxActions";
 import * as groupRx from "../../redux/group/groupRx";
-import { ChitChatFactory } from "../../chitchat/chats/ChitchatFactory";
+import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
 import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
 const config = () => ChitChatFactory.getInstance().config;
 const submit = (props) => {

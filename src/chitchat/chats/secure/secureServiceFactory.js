@@ -1,9 +1,14 @@
-import NodeSecureService from "./nodeSecureService";
+import { NodeSecureService } from "./nodeSecureService";
 /**
  * SecureServiceFactory
  */
-export default class SecureServiceFactory {
+export class SecureServiceFactory {
+    static createService(secret_key) {
+        if (!SecureServiceFactory.service)
+            SecureServiceFactory.service = new NodeSecureService(secret_key);
+        return SecureServiceFactory.service;
+    }
     static getService() {
-        return new NodeSecureService();
+        return SecureServiceFactory.service;
     }
 }

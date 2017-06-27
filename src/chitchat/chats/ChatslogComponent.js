@@ -12,7 +12,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
  * ChatRoomComponent for handle some business logic of chat room.
  */
 import * as async from "async";
-import { ChitChatFactory } from "./ChitchatFactory";
+import { ChitChatFactory } from "./ChitChatFactory";
 const authReducer = () => ChitChatFactory.getInstance().authStore;
 import ChatLog from "./models/chatLog";
 import { BackendFactory } from "./BackendFactory";

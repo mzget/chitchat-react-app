@@ -9,7 +9,7 @@ import { createAction } from "redux-actions";
 const { ajax, fromPromise } = Rx.Observable;
 
 import { ChatRoomComponent } from "../../ChatRoomComponent";
-import { ChitChatFactory } from "../../ChitchatFactory";
+import { ChitChatFactory } from "../../ChitChatFactory";
 import { checkOlderMessages, getNewerMessageFromNet, GET_NEWER_MESSAGE_SUCCESS } from "./chatroomActions";
 import { MessageImp } from "../../models/MessageImp";
 

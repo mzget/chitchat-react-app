@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { withState, withHandlers, compose, lifecycle, shallowEqual } from "recompose";
 import { ProfileDetail } from "./ProfileDetail";
 import * as userRx from "../../redux/user/userRx";
-import { ChitChatFactory } from "../../chitchat/chats/ChitchatFactory";
+import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 const mapStateToProps = (state) => ({
     userReducer: state.userReducer,

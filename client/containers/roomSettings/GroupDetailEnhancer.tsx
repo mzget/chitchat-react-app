@@ -6,8 +6,8 @@ import { withProps, withState, withHandlers, compose, lifecycle, shallowEqual } 
 import { GroupDetail } from "./GroupDetail";
 import * as editGroupRxActions from "../../redux/group/editGroupRxActions";
 import * as groupRx from "../../redux/group/groupRx";
-import { Room } from "../../chitchat/shared/Room";
-import { ChitChatFactory } from "../../chitchat/chats/ChitchatFactory";
+import { Room } from "../../chitchat/chats/models/Room";
+import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
 import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
 
 const config = () => ChitChatFactory.getInstance().config;

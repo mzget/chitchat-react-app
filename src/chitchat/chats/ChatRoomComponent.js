@@ -17,10 +17,10 @@ import { BackendFactory } from "./BackendFactory";
 import { ChatEvents } from "stalk-js";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import * as chatroomService from "./services/chatroomService";
-import SecureServiceFactory from "./secure/secureServiceFactory";
+import { SecureServiceFactory } from "./secure/secureServiceFactory";
 import { MessageType } from "../shared/Message";
 import { imagesPath } from "../consts/StickerPath";
-import { ChitChatFactory } from "./ChitchatFactory";
+import { ChitChatFactory } from "./ChitChatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 const getStore = () => ChitChatFactory.getInstance().store;
 export const ON_CHAT = "ON_CAHT";
@@ -233,7 +233,6 @@ export class ChatRoomComponent {
             let response = yield chatroomService.getChatHistory(self.roomId, lastMessageTime, sessionToken);
             let value = yield response.json();
             return new Promise((resolve, reject) => {
-                console.log("getChatHistory: ", value);
                 if (value.success) {
                     let histories = new Array();
                     histories = value.result;
