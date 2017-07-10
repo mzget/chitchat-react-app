@@ -260,7 +260,7 @@ class Chat extends React.Component {
     // {/*height="calc(100vh - 56px - 52px - 52px)"*/}
     render() {
         let { chatroomReducer, stalkReducer } = this.props;
-        return (<Flexbox flexDirection="row" justifyContent="center" id={"app_body"}>
+        return (<div id={"app_body"}>
                 <Flexbox flexDirection="column">
                     <Flexbox flexDirection="column">
                         <Flexbox flexDirection="column" justifyContent="flex-start" alignItems="center" minWidth="400px" style={{ height: this.chatHeight }}>
@@ -281,7 +281,7 @@ class Chat extends React.Component {
                         <SnackbarToolBox />
                     </Flexbox>
                 </Flexbox>
-            </Flexbox>);
+            </div>);
     }
 }
 /**

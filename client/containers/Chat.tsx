@@ -355,7 +355,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         let { chatroomReducer, stalkReducer } = this.props;
 
         return (
-            <Flexbox flexDirection="row" justifyContent="center" id={"app_body"}>
+            <div id={"app_body"}>
                 <Flexbox flexDirection="column">
                     <Flexbox flexDirection="column">
                         <Flexbox flexDirection="column"
@@ -397,7 +397,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                         <SnackbarToolBox />
                     </Flexbox>
                 </Flexbox >
-            </Flexbox>
+            </div>
         );
     }
 }
