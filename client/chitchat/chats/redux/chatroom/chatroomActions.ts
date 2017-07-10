@@ -297,6 +297,7 @@ export function leaveRoomAction() {
             let token = getStore().getState().stalkReducer.stalkToken;
             let room_id = _room._id;
             ChatRoomComponent.getInstance().dispose();
+            NotificationManager.regisNotifyNewMessageEvent();
 
             dispatch(leaveRoom());
 
@@ -306,7 +307,6 @@ export function leaveRoomAction() {
 
                 server.getLobby().leaveRoom(token, room_id, (err, res) => {
                     console.log("LeaveChatRoomRequest", err, res);
-                    NotificationManager.regisNotifyNewMessageEvent();
                 });
                 dispatch(updateLastAccessRoom(room_id));
             } catch (ex) {

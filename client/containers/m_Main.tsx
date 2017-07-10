@@ -1,7 +1,6 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
 import { shallowEqual, compose, withHandlers, withState, lifecycle } from "recompose";
-import { Flex, Box } from "reflexbox";
 import * as immutable from "immutable";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";

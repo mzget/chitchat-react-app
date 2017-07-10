@@ -1,7 +1,7 @@
 ﻿import { ChatEvents } from "stalk-js";
 import { StalkAccount, RoomAccessData } from "../shared/Stalk";
 import { IMessage } from "../shared/Message";
-import { Room } from "../shared/Room";
+import { Room } from "./models/Room";
 
 import { DataManager } from "./DataManager";
 import { ServerListener } from "./ServerEventListener";

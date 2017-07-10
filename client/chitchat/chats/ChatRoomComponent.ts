@@ -62,6 +62,8 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
     private updateMessageQueue = new Array<MessageImp>();
 
     constructor() {
+        console.log("ChatRoomComponent: constructor");
+
         this.secure = SecureServiceFactory.getService();
 
         this.dataManager = BackendFactory.getInstance().dataManager;
@@ -80,7 +82,7 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
     }
 
     onChat(message: MessageImp) {
-        console.log("ChatRoomComponent.onChat");
+        console.log("ChatRoomComponent.onChat", message);
         let self = this;
 
         const saveMessages = (chatMessages: Array<MessageImp>) => {
@@ -473,6 +475,7 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
     }
 
     public dispose() {
+        console.log("ChatRoomComponent: dispose");
         this.dataListener.removeOnChatListener(this.onChat.bind(this));
         ChatRoomComponent.instance = null;
     }

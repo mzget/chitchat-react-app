@@ -79,7 +79,7 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         this.chatListeners.push(listener);
     }
     onChat(message) {
-        console.log("ChatsLogComponent.onChat");
+        console.log("ChatsLogComponent.onChat", message);
         let self = this;
 
         CryptoHelper.decryptionText(message).then((decoded) => {

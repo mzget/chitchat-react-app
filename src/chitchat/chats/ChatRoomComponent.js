@@ -28,6 +28,7 @@ export const ON_MESSAGE_CHANGE = "ON_MESSAGE_CHANGE";
 export class ChatRoomComponent {
     constructor() {
         this.updateMessageQueue = new Array();
+        console.log("ChatRoomComponent: constructor");
         this.secure = SecureServiceFactory.getService();
         this.dataManager = BackendFactory.getInstance().dataManager;
         this.dataListener = BackendFactory.getInstance().dataListener;
@@ -57,7 +58,7 @@ export class ChatRoomComponent {
         this.roomId = rid;
     }
     onChat(message) {
-        console.log("ChatRoomComponent.onChat");
+        console.log("ChatRoomComponent.onChat", message);
         let self = this;
         const saveMessages = (chatMessages) => {
             chatMessages.push(message);
@@ -413,6 +414,7 @@ export class ChatRoomComponent {
         });
     }
     dispose() {
+        console.log("ChatRoomComponent: dispose");
         this.dataListener.removeOnChatListener(this.onChat.bind(this));
         ChatRoomComponent.instance = null;
     }
