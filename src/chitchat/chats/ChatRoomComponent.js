@@ -23,7 +23,7 @@ import { imagesPath } from "../consts/StickerPath";
 import { ChitChatFactory } from "./ChitChatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 const getStore = () => ChitChatFactory.getInstance().store;
-export const ON_CHAT = "ON_CAHT";
+export const ON_CHAT = "ON_CHAT";
 export const ON_MESSAGE_CHANGE = "ON_MESSAGE_CHANGE";
 export class ChatRoomComponent {
     constructor() {

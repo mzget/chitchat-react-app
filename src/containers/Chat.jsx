@@ -11,7 +11,7 @@ import UploadingDialog from "./UploadingDialog";
 import { GridListSimple } from "../components/GridListSimple";
 import { MapDialog } from "./chat/MapDialog";
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
-import * as chatroomActions from "../chitchat/chats/redux/chatroom/chatroomActions";
+import * as chatroom from "../chitchat/chats/redux/chatroom/";
 import * as chatroomRxEpic from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
 import { imagesPath } from "../chitchat/consts/StickerPath";
 import * as FileType from "../chitchat/shared/FileType";
@@ -61,14 +61,14 @@ class Chat extends React.Component {
         this.chatHeight = this.clientHeight - (56 + 52 + 52);
         let { chatroomReducer, userReducer, match: { params } } = this.props;
         if (!chatroomReducer.room) {
-            this.props.dispatch(chatroomActions.getPersistendChatroom(params.room_id));
+            this.props.dispatch(chatroom.getPersistendChatroom(params.room_id));
         }
         else {
             this.roomInitialize(this.props);
         }
     }
     componentWillUnmount() {
-        this.props.dispatch(chatroomActions.leaveRoomAction());
+        this.props.dispatch(chatroom.leaveRoomAction());
     }
     componentWillReceiveProps(nextProps) {
         let { chatroomReducer, stalkReducer } = nextProps;
@@ -82,7 +82,7 @@ class Chat extends React.Component {
         }
         switch (stalkReducer.state) {
             case StalkBridgeActions.STALK_CONNECTION_PROBLEM:
-                this.props.dispatch(chatroomActions.disableChatRoom());
+                this.props.dispatch(chatroom.disableChatRoom());
                 break;
             case StalkBridgeActions.STALK_ON_SOCKET_RECONNECT:
                 this.props.history.replace("/");
@@ -93,15 +93,15 @@ class Chat extends React.Component {
         if (shallowEqual(chatroomReducer.state, this.props.chatroomReducer.state))
             return;
         switch (chatroomReducer.state) {
-            case chatroomActions.JOIN_ROOM_FAILURE: {
+            case chatroom.JOIN_ROOM_FAILURE: {
                 this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
                 break;
             }
-            case chatroomActions.JOIN_ROOM_SUCCESS: {
+            case chatroom.JOIN_ROOM_SUCCESS: {
                 this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
                 break;
             }
-            case chatroomActions.GET_PERSISTEND_CHATROOM_SUCCESS: {
+            case chatroom.GET_PERSISTEND_CHATROOM_SUCCESS: {
                 if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
                     this.roomInitialize(nextProps);
                 break;
@@ -116,7 +116,7 @@ class Chat extends React.Component {
                     this.roomInitialize(nextProps);
                 break;
             }
-            case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
+            case chatroom.GET_PERSISTEND_CHATROOM_FAILURE: {
                 this.props.history.push(`/`);
                 break;
             }
@@ -137,19 +137,15 @@ class Chat extends React.Component {
                 }
                 break;
             }
-            case chatroomActions.ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
+            case chatroom.SEND_MESSAGE_FAILURE: {
                 // this.setMessageStatus(chatroomReducer.responseMessage.uuid, "ErrorButton");
                 break;
             }
-            case chatroomActions.ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
-                this.setMessageTemp(chatroomReducer.responseMessage);
-                break;
-            }
-            case chatroomActions.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
+            case chatroom.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
                 this.setState((previousState) => (Object.assign({}, previousState, { earlyMessageReady: chatroomReducer.earlyMessageReady })));
                 break;
             }
-            case chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS: {
+            case chatroom.LOAD_EARLY_MESSAGE_SUCCESS: {
                 this.setState(previousState => (Object.assign({}, previousState, { isLoadingEarlierMessages: false, earlyMessageReady: false })));
                 break;
             }
@@ -159,19 +155,19 @@ class Chat extends React.Component {
     }
     onLoadEarlierMessages() {
         this.setState(previousState => (Object.assign({}, previousState, { isLoadingEarlierMessages: true })));
-        this.props.dispatch(chatroomActions.loadEarlyMessageChunk(this.props.chatroomReducer.room._id));
+        this.props.dispatch(chatroom.loadEarlyMessageChunk(this.props.chatroomReducer.room._id));
     }
     roomInitialize(props) {
         let { chatroomReducer, userReducer } = props;
         if (!userReducer.user) {
-            return this.props.dispatch(chatroomActions.leaveRoomAction());
+            return this.props.dispatch(chatroom.leaveRoomAction());
         }
         // todo
         // - Init chatroom service.
         // - getPersistedMessage.
         // - Request join room.
-        chatroomActions.initChatRoom(chatroomReducer.room);
-        this.props.dispatch(chatroomActions.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
+        chatroom.initChatRoom(chatroomReducer.room);
+        this.props.dispatch(chatroom.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
     }
     setMessageStatus(uniqueId, status) {
         let messages = [];
@@ -187,18 +183,6 @@ class Chat extends React.Component {
             }
         }
         this.setState(Object.assign({}, this.state, { messages: messages }));
-    }
-    setMessageTemp(server_msg) {
-        let _messages = this.state.messages.slice();
-        _messages.forEach((message) => {
-            if (message.uuid == server_msg.uuid) {
-                message.body = server_msg.body;
-                message.createTime = server_msg.createTime;
-                message.uuid = parseInt(server_msg._id);
-                message.status = "Sent";
-            }
-        });
-        this.setState(Object.assign({}, this.state, { messages: _messages }));
     }
     onTypingTextChange(event) {
         this.setState(Object.assign({}, this.state, { typingText: event.target.value }));
@@ -245,6 +229,7 @@ class Chat extends React.Component {
     prepareSend(msg) {
         let message = decorateMessage(msg);
         this.send(message);
+        //@ show last submit message witn sending... status.
         let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
         _messages.push(message);
         this.setState(previousState => (Object.assign({}, previousState, { typingText: "", messages: _messages })), () => {
@@ -253,7 +238,7 @@ class Chat extends React.Component {
         });
     }
     send(message) {
-        this.props.dispatch(chatroomActions.sendMessage(message));
+        this.props.dispatch(chatroom.sendMessage(message));
     }
     onToggleSticker() {
         this.chatHeight = (this.state.openButtomMenu) ? this.chatHeight + this.stickerBox : this.chatHeight - this.stickerBox;

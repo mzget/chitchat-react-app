@@ -3,18 +3,16 @@
  *
  * This is pure function for redux app.
  */
-import { ChatRoomActionsType, GET_NEWER_MESSAGE_SUCCESS, ON_MESSAGE_CHANGED } from "./chatroomActions";
+import { ChatRoomActionsType, GET_NEWER_MESSAGE_SUCCESS, ON_MESSAGE_CHANGED, SEND_MESSAGE_FAILURE } from "./";
 import * as chatroomRxActions from "./chatroomRxEpic";
 import * as chatroomActions from "./chatroomActions";
 import * as immutable from "immutable";
-/**
- * ## Initial State
- */
-export const ChatRoomInitState = immutable.Record({
+// Define our record defaults
+const chatroomDefaults = {
     isFetching: false,
     state: null,
     room: null,
-    responseMessage: null,
+    chatTargets: null,
     responseFile: null,
     messages: null,
     earlyMessageReady: false,
@@ -23,9 +21,22 @@ export const ChatRoomInitState = immutable.Record({
     error: null,
     chatDisabled: false,
     chatrooms: null
-});
-const initialState = new ChatRoomInitState();
-export const chatroomReducer = (state = initialState, action) => {
+};
+// Create our FruitRecord class
+export class ChatRoomRecoder extends immutable.Record(chatroomDefaults) {
+    // Set the params. This will also typecheck when we instantiate a new FruitRecord
+    constructor(params) {
+        super(params);
+    }
+    // This following line is the magic. It overrides the "get" method of record
+    // and lets typescript know the return type based on our IFruitParams interface
+    get(value) {
+        // super.get() is mapped to the original get() function on Record
+        return super.get(value);
+    }
+}
+export const chatRoomRecoder = new ChatRoomRecoder(chatroomDefaults);
+export const chatroomReducer = (state = chatRoomRecoder, action) => {
     switch (action.type) {
         case chatroomActions.JOIN_ROOM_FAILURE: {
             return state.set("state", chatroomActions.JOIN_ROOM_FAILURE)
@@ -56,16 +67,9 @@ export const chatroomReducer = (state = initialState, action) => {
             return state.set("state", chatroomRxActions.CHATROOM_UPLOAD_FILE_SUCCESS)
                 .set("responseFile", action.payload);
         }
-        case ChatRoomActionsType.SEND_MESSAGE_SUCCESS: {
+        case SEND_MESSAGE_FAILURE: {
             let payload = action.payload;
-            let nextState = state.set("state", ChatRoomActionsType.SEND_MESSAGE_SUCCESS)
-                .set("isFetching", false)
-                .set("responseMessage", payload);
-            return nextState;
-        }
-        case ChatRoomActionsType.SEND_MESSAGE_FAILURE: {
-            let payload = action.payload;
-            let nextState = state.set("state", ChatRoomActionsType.SEND_MESSAGE_FAILURE)
+            let nextState = state.set("state", SEND_MESSAGE_FAILURE)
                 .set("isFetching", false)
                 .set("error", payload);
             return nextState;

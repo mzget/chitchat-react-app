@@ -29,7 +29,7 @@ const getStore = () => ChitChatFactory.getInstance().store;
 
 import { ServerEventListener } from "./ServerEventListener";
 
-export const ON_CHAT = "ON_CAHT";
+export const ON_CHAT = "ON_CHAT";
 export const ON_MESSAGE_CHANGE = "ON_MESSAGE_CHANGE";
 
 export class ChatRoomComponent implements ChatEvents.IChatServerEvents {

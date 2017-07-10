@@ -132,7 +132,6 @@ export const getLastAccessRoom_Epic = action$ => (
                 .then(json => json);
         })
         .map(json => {
-            console.log(GET_LAST_ACCESS_ROOM, json);
             BackendFactory.getInstance().dataListener.onAccessRoom(json.result);
             return getLastAccessRoomSuccess(json.result);
         })

@@ -37,10 +37,6 @@ const appReducer = () => ChitChatFactory.getInstance().appStore;
  * ChatRoomActionsType
  */
 export class ChatRoomActionsType {
-    static SEND_MESSAGE_REQUEST = "SEND_MESSAGE_REQUEST";
-    static SEND_MESSAGE_SUCCESS = "SEND_MESSAGE_SUCCESS";
-    static SEND_MESSAGE_FAILURE = "SEND_MESSAGE_FAILURE";
-
     static REPLACE_MESSAGE = "REPLACE_MESSAGE";
     static ON_EARLY_MESSAGE_READY = "ON_EARLY_MESSAGE_READY";
 }
@@ -194,26 +190,30 @@ export async function getMessages() {
     return messages;
 }
 
-const send_message_request = () => ({ type: ChatRoomActionsType.SEND_MESSAGE_REQUEST });
-const send_message_success = (data: any) => ({ type: ChatRoomActionsType.SEND_MESSAGE_SUCCESS, payload: data });
-const send_message_failure = (error?: any) => ({ type: ChatRoomActionsType.SEND_MESSAGE_FAILURE, payload: error });
+const SEND_MESSAGE_REQUEST = "SEND_MESSAGE_REQUEST";
+const SEND_MESSAGE_SUCCESS = "SEND_MESSAGE_SUCCESS";
+export const SEND_MESSAGE_FAILURE = "SEND_MESSAGE_FAILURE";
+const send_message_request = () => ({ type: SEND_MESSAGE_REQUEST });
+const send_message_success = (data: any) => ({ type: SEND_MESSAGE_SUCCESS, payload: data });
+const send_message_failure = (error?: any) => ({ type: SEND_MESSAGE_FAILURE, payload: error });
 export function sendMessage(message: IMessage) {
     return (dispatch) => {
         dispatch(send_message_request());
 
         if (message.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption === true) {
             const secure = SecureServiceFactory.getService();
-            secure.encryption(message.body).then(result => {
-                message.body = result;
-                let backendFactory = BackendFactory.getInstance();
-                let chatApi = backendFactory.getServer().getChatRoomAPI();
-                chatApi.chat("*", message, (err, res) => {
-                    dispatch(sendMessageResponse(err, res));
+            secure.encryption(message.body)
+                .then(result => {
+                    message.body = result;
+                    let backendFactory = BackendFactory.getInstance();
+                    let chatApi = backendFactory.getServer().getChatRoomAPI();
+                    chatApi.chat("*", message, (err, res) => {
+                        dispatch(sendMessageResponse(err, res));
+                    });
+                }).catch(err => {
+                    console.error(err);
+                    dispatch(send_message_failure(err));
                 });
-            }).catch(err => {
-                console.error(err);
-                dispatch(send_message_failure(err));
-            });
         }
         else {
             let backendFactory = BackendFactory.getInstance();
