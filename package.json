@@ -22,14 +22,14 @@
     "@types/redux-actions": "^1.2.6",
     "gh-pages": "^0.12.0",
     "jest": "^20.0.4",
-    "parse": "^1.9.2",
-    "react-scripts": "^1.0.7",
+    "react-scripts": "1.0.10",
     "redux-devtools": "^3.4.0",
     "redux-devtools-dock-monitor": "^1.1.2",
     "redux-devtools-extension": "^2.13.0",
     "redux-devtools-log-monitor": "^1.3.0",
     "redux-logger": "^3.0.1",
-    "ts-jest": "^20.0.6"
+    "ts-jest": "^20.0.6",
+    "tslint": "^5.5.0"
   },
   "dependencies": {
     "async": "^2.4.1",
