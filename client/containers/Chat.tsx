@@ -47,6 +47,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     chatHeight = null;
     stickerBox = 204;
     tempLocation: Point;
+    chatBox: HTMLElement;
 
     constructor(props) {
         super(props);
@@ -86,6 +87,10 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         }
     }
 
+    componentDidMount() {
+        this.chatBox = document.getElementById("chatbox");
+    }
+
     componentWillUnmount() {
         this.props.dispatch(chatroom.leaveRoomAction());
     }
@@ -101,8 +106,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 ...previousState,
                 messages: chatroomReducer.messages
             }), () => {
-                let chatBox = document.getElementById("app_body");
-                chatBox.scrollTop = chatBox.scrollHeight;
+                this.chatBox.scrollTop = this.chatBox.scrollHeight;
             });
         }
 
@@ -297,8 +301,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             typingText: "",
             messages: _messages
         }), () => {
-            let chatBox = document.getElementById("app_body");
-            chatBox.scrollTop = chatBox.scrollHeight;
+            this.chatBox.scrollTop = this.chatBox.scrollHeight;
         });
     }
 
@@ -327,10 +330,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.setState(previousState => ({
             ...previousState,
             openButtomMenu: !previousState.openButtomMenu
-        }), () => {
-            let chatBox = document.getElementById("app_body");
-            chatBox.scrollTop = chatBox.scrollHeight;
-        });
+        }));
     }
 
     onLocation() {

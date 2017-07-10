@@ -67,6 +67,9 @@ class Chat extends React.Component {
             this.roomInitialize(this.props);
         }
     }
+    componentDidMount() {
+        this.chatBox = document.getElementById("chatbox");
+    }
     componentWillUnmount() {
         this.props.dispatch(chatroom.leaveRoomAction());
     }
@@ -76,8 +79,7 @@ class Chat extends React.Component {
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
         if (!shallowEqual(chatroomReducer.messages, this.props.chatroomReducer.messages)) {
             this.setState(previousState => (Object.assign({}, previousState, { messages: chatroomReducer.messages })), () => {
-                let chatBox = document.getElementById("app_body");
-                chatBox.scrollTop = chatBox.scrollHeight;
+                this.chatBox.scrollTop = this.chatBox.scrollHeight;
             });
         }
         switch (stalkReducer.state) {
@@ -233,8 +235,7 @@ class Chat extends React.Component {
         let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
         _messages.push(message);
         this.setState(previousState => (Object.assign({}, previousState, { typingText: "", messages: _messages })), () => {
-            let chatBox = document.getElementById("app_body");
-            chatBox.scrollTop = chatBox.scrollHeight;
+            this.chatBox.scrollTop = this.chatBox.scrollHeight;
         });
     }
     send(message) {
@@ -242,10 +243,7 @@ class Chat extends React.Component {
     }
     onToggleSticker() {
         this.chatHeight = (this.state.openButtomMenu) ? this.chatHeight + this.stickerBox : this.chatHeight - this.stickerBox;
-        this.setState(previousState => (Object.assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu })), () => {
-            let chatBox = document.getElementById("app_body");
-            chatBox.scrollTop = chatBox.scrollHeight;
-        });
+        this.setState(previousState => (Object.assign({}, previousState, { openButtomMenu: !previousState.openButtomMenu })));
     }
     onLocation() {
         this.setState(previousState => (Object.assign({}, previousState, { openMapDialog: !previousState.openMapDialog })));
