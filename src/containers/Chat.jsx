@@ -47,8 +47,6 @@ class Chat extends React.Component {
         this.onLocation = this.onLocation.bind(this);
         this.onLocationChange = this.onLocationChange.bind(this);
         this.onSubmitPosition = this.onSubmitPosition.bind(this);
-    }
-    componentWillMount() {
         this.state = {
             messages: new Array(),
             typingText: "",
