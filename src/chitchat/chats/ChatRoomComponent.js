@@ -144,7 +144,7 @@ export class ChatRoomComponent {
             let self = this;
             let messages = yield self.dataManager.messageDAL.getData(rid);
             if (messages && messages.length > 0) {
-                let prom = new Promise((resolve, reject) => {
+                let p = new Promise((resolve, reject) => {
                     let chats = messages.slice(0);
                     async.forEach(chats, function iterator(chat, result) {
                         if (chat.type === MessageType[MessageType.Text]) {
@@ -162,13 +162,11 @@ export class ChatRoomComponent {
                             result(null);
                         }
                     }, (err) => {
-                        console.log("decoded chats completed.", chats.length);
                         self.dataManager.messageDAL.saveData(rid, chats);
                         resolve(chats);
                     });
                 });
-                let chats = yield prom;
-                return chats;
+                return yield p;
             }
             else {
                 console.log("chatMessages is empty!");
@@ -356,7 +354,6 @@ export class ChatRoomComponent {
                             topEdgeMessageTime = messages[0].createTime;
                         }
                     }
-                    console.log("topEdgeMessageTime is: ", topEdgeMessageTime);
                     return topEdgeMessageTime;
                 });
             }

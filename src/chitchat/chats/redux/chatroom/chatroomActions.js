@@ -188,9 +188,17 @@ export function sendMessage(message) {
                 .then(result => {
                 message.body = result;
                 let backendFactory = BackendFactory.getInstance();
-                let chatApi = backendFactory.getServer().getChatRoomAPI();
-                chatApi.chat("*", message, (err, res) => {
-                    dispatch(sendMessageResponse(err, res));
+                // let chatApi = backendFactory.getServer().getChatRoomAPI();
+                // chatApi.chat("*", message, (err, res) => {
+                //     dispatch(sendMessageResponse(err, res));
+                // });
+                backendFactory.getServer().getSocket().request("chat.chatHandler.pushByUids", { data: message }, (result) => {
+                    if (result.code !== 200) {
+                        dispatch(sendMessageResponse(result, null));
+                    }
+                    else {
+                        dispatch(sendMessageResponse(null, result));
+                    }
                 });
             }).catch(err => {
                 console.error(err);
@@ -199,9 +207,17 @@ export function sendMessage(message) {
         }
         else {
             let backendFactory = BackendFactory.getInstance();
-            let chatApi = backendFactory.getServer().getChatRoomAPI();
-            chatApi.chat("*", message, (err, res) => {
-                dispatch(sendMessageResponse(err, res));
+            // let chatApi = backendFactory.getServer().getChatRoomAPI();
+            // chatApi.chat("*", message, (err, res) => {
+            //     dispatch(sendMessageResponse(err, res));
+            // });
+            backendFactory.getServer().getSocket().request("chat.chatHandler.pushByUids", { data: message }, (result) => {
+                if (result.code !== 200) {
+                    dispatch(sendMessageResponse(result, null));
+                }
+                else {
+                    dispatch(sendMessageResponse(null, result));
+                }
             });
         }
     };
@@ -275,21 +291,11 @@ export function leaveRoomAction() {
             let room_id = _room._id;
             ChatRoomComponent.getInstance().dispose();
             NotificationManager.regisNotifyNewMessageEvent();
+            dispatch(updateLastAccessRoom(room_id));
             dispatch(leaveRoom());
-            try {
-                let backendFactory = BackendFactory.getInstance();
-                let server = backendFactory.getServer();
-                server.getLobby().leaveRoom(token, room_id, (err, res) => {
-                    console.log("LeaveChatRoomRequest", err, res);
-                });
-                dispatch(updateLastAccessRoom(room_id));
-            }
-            catch (ex) {
-                dispatch(updateLastAccessRoom(room_id));
-            }
         }
         else {
-            dispatch({ type: "" });
+            dispatch(leaveRoom());
         }
     };
 }
@@ -367,3 +373,24 @@ export const updateChatRoom = (rooms) => {
         }
     };
 };
+const GET_CHAT_TARGET_UID = "GET_CHAT_TARGET_UID";
+export const GET_CHAT_TARGET_UID_SUCCESS = "GET_CHAT_TARGET_UID_SUCCESS";
+export const GET_CHAT_TARGET_UID_FAILURE = "GET_CHAT_TARGET_UID_FAILURE";
+const getChatTargetId = createAction(GET_CHAT_TARGET_UID, (room_id) => room_id);
+const getChatTargetIdSuccess = createAction(GET_CHAT_TARGET_UID_SUCCESS, (payload) => payload);
+const getChatTargetIdFailure = createAction(GET_CHAT_TARGET_UID_FAILURE, (error) => error);
+export function getChatTargetIds(room_id) {
+    return dispatch => {
+        dispatch(getChatTargetId(room_id));
+        let { room } = getStore().getState().chatroomReducer;
+        let { _id } = authReducer().user;
+        if (!room) {
+            dispatch(getChatTargetIdFailure("Has no room object!"));
+        }
+        else {
+            let results = new Array();
+            room.members.map(value => (value._id != _id) ? results.push(value._id) : null);
+            dispatch(getChatTargetIdSuccess(results));
+        }
+    };
+}

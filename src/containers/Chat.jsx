@@ -93,14 +93,6 @@ class Chat extends React.Component {
         if (shallowEqual(chatroomReducer.state, this.props.chatroomReducer.state))
             return;
         switch (chatroomReducer.state) {
-            case chatroom.JOIN_ROOM_FAILURE: {
-                this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
-                break;
-            }
-            case chatroom.JOIN_ROOM_SUCCESS: {
-                this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
-                break;
-            }
             case chatroom.GET_PERSISTEND_CHATROOM_SUCCESS: {
                 if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
                     this.roomInitialize(nextProps);
@@ -166,8 +158,10 @@ class Chat extends React.Component {
         // - Init chatroom service.
         // - getPersistedMessage.
         // - Request join room.
-        chatroom.initChatRoom(chatroomReducer.room);
-        this.props.dispatch(chatroom.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
+        let room = chatroomReducer.get("room");
+        chatroom.initChatRoom(room);
+        this.props.dispatch(chatroomRxEpic.getPersistendMessage(room._id));
+        this.props.dispatch(chatroom.getChatTargetIds(room._id));
     }
     setMessageStatus(uniqueId, status) {
         let messages = [];

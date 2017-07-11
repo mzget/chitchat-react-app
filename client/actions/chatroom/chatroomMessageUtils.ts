@@ -5,6 +5,7 @@ import { MessageImp } from "../../chitchat/chats/models/MessageImp";
 import { imagesPath } from "../../chitchat/consts/StickerPath";
 
 import Store from "../../redux/configureStore";
+import { ChatRoomRecoder } from "../../chitchat/chats/redux/chatroom/";
 
 export interface IMessageDecorator {
     image?;
@@ -20,7 +21,8 @@ export interface IMessageDecorator {
 }
 
 export function decorateMessage(msg: IMessageDecorator): IMessage {
-    let { chatroomReducer, userReducer } = Store.getState();
+    let { chatroomReducer }: { chatroomReducer: ChatRoomRecoder } = Store.getState();
+    let { userReducer } = Store.getState();
     let message = new MessageImp();
 
     if (msg.image != null) {
@@ -56,14 +58,14 @@ export function decorateMessage(msg: IMessageDecorator): IMessage {
         throw new Error("What the fuck!");
     }
 
-    message.rid = chatroomReducer.room._id;
+    message.rid = chatroomReducer.get("room")._id;
     message.sender = userReducer.user._id;
     message.user = {
         _id: userReducer.user._id,
         username: userReducer.user.username,
         avatar: userReducer.user.avatar
     };
-    message.target = "*";
+    message.target = chatroomReducer.get("chatTargets");
     message.uuid = Math.round(Math.random() * 10000); // simulating server-side unique id generation
     message.status = "Sending...";
 

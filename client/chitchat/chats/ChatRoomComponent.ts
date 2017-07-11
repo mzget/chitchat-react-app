@@ -188,7 +188,7 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         let messages = await self.dataManager.messageDAL.getData(rid);
 
         if (messages && messages.length > 0) {
-            let prom = new Promise((resolve: (data: Array<IMessage>) => void, reject) => {
+            let p = new Promise((resolve: (data: Array<IMessage>) => void, reject) => {
                 let chats = messages.slice(0) as Array<IMessage>;
                 async.forEach(chats, function iterator(chat, result) {
                     if (chat.type === MessageType[MessageType.Text]) {
@@ -207,15 +207,12 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
                         result(null);
                     }
                 }, (err) => {
-                    console.log("decoded chats completed.", chats.length);
-
                     self.dataManager.messageDAL.saveData(rid, chats);
                     resolve(chats);
                 });
             });
 
-            let chats = await prom;
-            return chats;
+            return await p;
         }
         else {
             console.log("chatMessages is empty!");
@@ -412,7 +409,6 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
                     topEdgeMessageTime = messages[0].createTime;
                 }
             }
-            console.log("topEdgeMessageTime is: ", topEdgeMessageTime);
 
             return topEdgeMessageTime;
         }

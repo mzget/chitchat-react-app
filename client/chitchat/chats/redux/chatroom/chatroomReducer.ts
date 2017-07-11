@@ -6,12 +6,14 @@
 
 import {
     ChatRoomActionsType, GET_NEWER_MESSAGE_SUCCESS, GET_NEWER_MESSAGE_FAILURE, ON_MESSAGE_CHANGED,
-    SEND_MESSAGE_FAILURE
+    SEND_MESSAGE_FAILURE,
+    GET_CHAT_TARGET_UID_SUCCESS, GET_CHAT_TARGET_UID_FAILURE
 } from "./";
 import * as chatroomRxActions from "./chatroomRxEpic";
 import * as chatroomActions from "./chatroomActions";
 import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
 import * as chatlogsActions from "../chatlogs/chatlogsActions";
+import * as actions from "../../../../actions/";
 import * as Models from "../../models/"
 
 import * as immutable from "immutable";
@@ -179,6 +181,12 @@ export const chatroomReducer = (state = chatRoomRecoder, action) => {
 
         case chatroomActions.UPDATED_CHATROOMS: {
             return state.set("chatrooms", action.payload);
+        }
+        case GET_CHAT_TARGET_UID_SUCCESS: {
+            return state.set("chatTargets", action.payload);
+        }
+        case GET_CHAT_TARGET_UID_FAILURE: {
+            return state.set("chatTargets", []);
         }
 
         default:

@@ -19,6 +19,7 @@ import { Point } from "./chat/MapBox";
 
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 import * as chatroom from "../chitchat/chats/redux/chatroom/";
+import { ChatRoomRecoder } from "../chitchat/chats/redux/chatroom/";
 import * as chatroomRxEpic from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
 import { MessageType, IMessage } from "../chitchat/shared/Message";
 import { MessageImp } from "../chitchat/chats/models/MessageImp";
@@ -121,15 +122,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
         if (shallowEqual(chatroomReducer.state, this.props.chatroomReducer.state)) return;
         switch (chatroomReducer.state) {
-            case chatroom.JOIN_ROOM_FAILURE: {
-                this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
-                break;
-            }
-            case chatroom.JOIN_ROOM_SUCCESS: {
-                this.props.dispatch(chatroomRxEpic.getPersistendMessage(chatroomReducer.room._id));
-                break;
-            }
-
             case chatroom.GET_PERSISTEND_CHATROOM_SUCCESS: {
                 if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
                     this.roomInitialize(nextProps);
@@ -205,7 +197,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     roomInitialize(props: IComponentProps) {
-        let { chatroomReducer, userReducer } = props;
+        let { chatroomReducer, userReducer }: { chatroomReducer: ChatRoomRecoder, userReducer: any } = props;
         if (!userReducer.user) {
             return this.props.dispatch(chatroom.leaveRoomAction());
         }
@@ -214,8 +206,10 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         // - Init chatroom service.
         // - getPersistedMessage.
         // - Request join room.
-        chatroom.initChatRoom(chatroomReducer.room);
-        this.props.dispatch(chatroom.joinRoom(chatroomReducer.room._id, StalkBridgeActions.getSessionToken(), userReducer.user.username));
+        let room = chatroomReducer.get("room");
+        chatroom.initChatRoom(room);
+        this.props.dispatch(chatroomRxEpic.getPersistendMessage(room._id));
+        this.props.dispatch(chatroom.getChatTargetIds(room._id));
     }
 
     setMessageStatus(uniqueId, status) {
