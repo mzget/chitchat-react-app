@@ -13,7 +13,6 @@ import * as CryptoHelper from "../../utils/CryptoHelper";
 import { MessageType } from "../../../shared/Message";
 
 import { ChitChatFactory } from "../../ChitChatFactory";
-
 const getStore = () => ChitChatFactory.getInstance().store;
 
 type NotiMessage = { title: string; body: string; image: string; }
