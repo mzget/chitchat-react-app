@@ -244,11 +244,11 @@ export function sendMessage(message: IMessage) {
 
 function sendMessageResponse(err, res) {
     return dispatch => {
+        console.log("sendMessageResponse!", err, res);
         if (!!err) {
             dispatch(send_message_failure(err.message));
         }
         else {
-            console.log("server response!", res);
 
             if (res.code == Utils.statusCode.success && res.data.hasOwnProperty("resultMsg")) {
                 let _msg = { ...res.data.resultMsg } as IMessage;
