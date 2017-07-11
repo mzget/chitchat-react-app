@@ -13,10 +13,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as R from "ramda";
 import { createAction } from "redux-actions";
-import { Utils } from "stalk-js";
+import { Utils, ChatEvents } from "stalk-js";
 import * as chatroomService from "../../services/chatroomService";
 import * as MessageService from "../../services/MessageService";
-import { ChatRoomComponent, ON_CHAT, ON_MESSAGE_CHANGE } from "../../ChatRoomComponent";
+import { ChatRoomComponent, ON_MESSAGE_CHANGE } from "../../ChatRoomComponent";
 import { BackendFactory } from "../../BackendFactory";
 import { SecureServiceFactory } from "../../secure/secureServiceFactory";
 import * as NotificationManager from "../stalkBridge/StalkNotificationActions";
@@ -56,7 +56,7 @@ export function initChatRoom(currentRoom) {
     chatroomComp.outsideRoomDelegete = onOutSideRoomDelegate;
 }
 function onChatRoomDelegate(event, data) {
-    if (event === ON_CHAT) {
+    if (event === ChatEvents.ON_CHAT) {
         let messageImp = data;
         let backendFactory = BackendFactory.getInstance();
         /**
@@ -96,7 +96,7 @@ function onChatRoomDelegate(event, data) {
     }
 }
 function onOutSideRoomDelegate(event, data) {
-    if (event === ON_CHAT) {
+    if (event === ChatEvents.ON_CHAT) {
         console.log("Call notification here...", data); // active, background, inactive
         NotificationManager.notify(data);
     }

@@ -23,7 +23,6 @@ import { imagesPath } from "../consts/StickerPath";
 import { ChitChatFactory } from "./ChitChatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 const getStore = () => ChitChatFactory.getInstance().store;
-export const ON_CHAT = "ON_CHAT";
 export const ON_MESSAGE_CHANGE = "ON_MESSAGE_CHANGE";
 export class ChatRoomComponent {
     constructor() {
@@ -34,7 +33,7 @@ export class ChatRoomComponent {
             self.dataManager.messageDAL.saveData(self.roomId, chatMessages)
                 .then(chats => {
                 if (!!self.chatroomDelegate) {
-                    self.chatroomDelegate(ON_CHAT, message);
+                    self.chatroomDelegate(ChatEvents.ON_CHAT, message);
                     self.chatroomDelegate(ON_MESSAGE_CHANGE, chatMessages);
                 }
             });

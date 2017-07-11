@@ -8,12 +8,12 @@ import * as Rx from "rxjs/Rx";
 import * as R from "ramda";
 import { Store } from "redux";
 import { createAction } from "redux-actions";
-import { Utils } from "stalk-js";
+import { Utils, ChatEvents } from "stalk-js";
 import { ServerEventListener } from "../../ServerEventListener";
 
 import * as chatroomService from "../../services/chatroomService";
 import * as MessageService from "../../services/MessageService";
-import { ChatRoomComponent, ON_CHAT, ON_MESSAGE_CHANGE } from "../../ChatRoomComponent";
+import { ChatRoomComponent, ON_MESSAGE_CHANGE } from "../../ChatRoomComponent";
 import { BackendFactory } from "../../BackendFactory";
 import { SecureServiceFactory } from "../../secure/secureServiceFactory";
 
@@ -64,7 +64,7 @@ export function initChatRoom(currentRoom: Room) {
 }
 
 function onChatRoomDelegate(event, data: MessageImp | Array<MessageImp>) {
-    if (event === ON_CHAT) {
+    if (event === ChatEvents.ON_CHAT) {
         let messageImp = data as MessageImp;
         let backendFactory = BackendFactory.getInstance();
         /**
@@ -104,7 +104,7 @@ function onChatRoomDelegate(event, data: MessageImp | Array<MessageImp>) {
     }
 }
 function onOutSideRoomDelegate(event, data) {
-    if (event === ON_CHAT) {
+    if (event === ChatEvents.ON_CHAT) {
         console.log("Call notification here...", data); // active, background, inactive
         NotificationManager.notify(data);
     }

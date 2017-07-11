@@ -27,7 +27,6 @@ const getStore = () => ChitChatFactory.getInstance().store;
 
 import { ServerEventListener } from "./ServerEventListener";
 
-export const ON_CHAT = "ON_CHAT";
 export const ON_MESSAGE_CHANGE = "ON_MESSAGE_CHANGE";
 
 export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
@@ -86,7 +85,7 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         self.dataManager.messageDAL.saveData(self.roomId, chatMessages)
             .then(chats => {
                 if (!!self.chatroomDelegate) {
-                    self.chatroomDelegate(ON_CHAT, message);
+                    self.chatroomDelegate(ChatEvents.ON_CHAT, message);
                     self.chatroomDelegate(ON_MESSAGE_CHANGE, chatMessages);
                 }
             });
