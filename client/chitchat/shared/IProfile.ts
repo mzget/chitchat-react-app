@@ -1,7 +1,7 @@
 ﻿
 import { UserRole } from "./UserRole";
 
-namespace IProfile {
+export namespace IProfile {
     export interface IProfile {
         uid: string;
         username: string;
@@ -28,4 +28,3 @@ namespace IProfile {
         role: UserRole;
     }
 }
-export = IProfile;

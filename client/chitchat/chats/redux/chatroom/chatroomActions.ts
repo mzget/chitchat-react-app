@@ -65,13 +65,11 @@ export function initChatRoom(currentRoom: Room) {
 
 function onChatRoomDelegate(event, data: MessageImp | Array<MessageImp>) {
     if (event === ON_CHAT) {
-        console.log("onChatRoomDelegate: ", ON_CHAT, data);
-
         let messageImp = data as MessageImp;
         let backendFactory = BackendFactory.getInstance();
         /**
          * Todo **
-         * - if message_id is mine. Replace message_id to local messages list.
+         * - if message_id is mine. Do nothing...
          * - if not my message. Update who read this message. And tell anyone.
          */
         if (authReducer().user._id == messageImp.sender) {
@@ -85,11 +83,13 @@ function onChatRoomDelegate(event, data: MessageImp | Array<MessageImp>) {
             console.log("AppState: ", appState); // active, background, inactive
             if (!!appState) {
                 if (appState === "active") {
-                    MessageService.updateMessageReader(messageImp._id, messageImp.rid).then(response => response.json()).then(value => {
-                        console.log("updateMessageReader: ", value);
-                    }).catch(err => {
-                        console.warn("updateMessageReader: ", err);
-                    });
+                    MessageService.updateMessageReader(messageImp._id, messageImp.rid)
+                        .then(response => response.json())
+                        .then(value => {
+                            console.log("updateMessageReader: ", value);
+                        }).catch(err => {
+                            console.warn("updateMessageReader: ", err);
+                        });
                 }
                 else if (appState !== "active") {
                     // @ When user joined room but appState is inActive.
@@ -249,6 +249,7 @@ function sendMessageResponse(err, res) {
             dispatch(send_message_failure(err.message));
         }
         else {
+            let chatroomComp = ChatRoomComponent.getInstance();
 
             if (res.code == Utils.statusCode.success && res.data.hasOwnProperty("resultMsg")) {
                 let _msg = { ...res.data.resultMsg } as IMessage;
@@ -256,14 +257,16 @@ function sendMessageResponse(err, res) {
                     const secure = SecureServiceFactory.getService();
                     secure.decryption(_msg.body).then(res => {
                         _msg.body = res;
+                        chatroomComp.saveToPersisted(_msg as MessageImp);
                         dispatch(send_message_success(_msg));
                     }).catch(err => {
-                        console.error(err);
                         _msg.body = err.toString();
+                        chatroomComp.saveToPersisted(_msg as MessageImp);
                         dispatch(send_message_success(_msg));
                     });
                 }
                 else {
+                    chatroomComp.saveToPersisted(_msg as MessageImp);
                     dispatch(send_message_success(_msg));
                 }
             }

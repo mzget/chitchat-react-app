@@ -18,7 +18,7 @@ import { ChatEvents } from "stalk-js";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import * as chatroomService from "./services/chatroomService";
 import { SecureServiceFactory } from "./secure/secureServiceFactory";
-import { MessageType } from "../shared/Message";
+import { MessageType } from "../shared/";
 import { imagesPath } from "../consts/StickerPath";
 import { ChitChatFactory } from "./ChitChatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
@@ -28,6 +28,17 @@ export const ON_MESSAGE_CHANGE = "ON_MESSAGE_CHANGE";
 export class ChatRoomComponent {
     constructor() {
         this.updateMessageQueue = new Array();
+        this.saveMessages = (chatMessages, message) => {
+            let self = this;
+            chatMessages.push(message);
+            self.dataManager.messageDAL.saveData(self.roomId, chatMessages)
+                .then(chats => {
+                if (!!self.chatroomDelegate) {
+                    self.chatroomDelegate(ON_CHAT, message);
+                    self.chatroomDelegate(ON_MESSAGE_CHANGE, chatMessages);
+                }
+            });
+        };
         console.log("ChatRoomComponent: constructor");
         this.secure = SecureServiceFactory.getService();
         this.dataManager = BackendFactory.getInstance().dataManager;
@@ -57,40 +68,34 @@ export class ChatRoomComponent {
     setRoomId(rid) {
         this.roomId = rid;
     }
+    saveToPersisted(message) {
+        let self = this;
+        this.dataManager.messageDAL.getData(this.roomId)
+            .then((chats) => {
+            let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
+            if (message.type === MessageType[MessageType.Text]) {
+                CryptoHelper.decryptionText(message)
+                    .then(decoded => {
+                    self.saveMessages(chatMessages, message);
+                })
+                    .catch(err => self.saveMessages(chatMessages, message));
+            }
+            else if (message.type === MessageType[MessageType.Sticker]) {
+                let sticker_id = parseInt(message.body);
+                message.src = imagesPath[sticker_id].img;
+                self.saveMessages(chatMessages, message);
+            }
+            else {
+                self.saveMessages(chatMessages, message);
+            }
+        }).catch(err => {
+            console.warn("Cannot get persistend message of room", err);
+        });
+    }
     onChat(message) {
         console.log("ChatRoomComponent.onChat", message);
-        let self = this;
-        const saveMessages = (chatMessages) => {
-            chatMessages.push(message);
-            self.dataManager.messageDAL.saveData(self.roomId, chatMessages)
-                .then(chats => {
-                if (!!this.chatroomDelegate) {
-                    this.chatroomDelegate(ON_CHAT, message);
-                    this.chatroomDelegate(ON_MESSAGE_CHANGE, chatMessages);
-                }
-            });
-        };
         if (this.roomId === message.rid) {
-            this.dataManager.messageDAL.getData(this.roomId).then((chats) => {
-                return chats;
-            }).then((chats) => {
-                let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
-                if (message.type === MessageType[MessageType.Text]) {
-                    CryptoHelper.decryptionText(message).then(decoded => {
-                        saveMessages(chatMessages);
-                    }).catch(err => saveMessages(chatMessages));
-                }
-                else if (message.type === MessageType[MessageType.Sticker]) {
-                    let sticker_id = parseInt(message.body);
-                    message.src = imagesPath[sticker_id].img;
-                    saveMessages(chatMessages);
-                }
-                else {
-                    saveMessages(chatMessages);
-                }
-            }).catch(err => {
-                console.warn("Cannot get persistend message of room", err);
-            });
+            this.saveToPersisted(message);
         }
         else {
             console.log("this msg come from other room.");

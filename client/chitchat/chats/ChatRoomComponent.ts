@@ -17,10 +17,8 @@ import * as chatroomService from "./services/chatroomService";
 import { ISecureService } from "./secure/ISecureService";
 import { SecureServiceFactory } from "./secure/secureServiceFactory";
 
-import { MessageType, IMessage } from "../shared/Message";
-import { MessageImp } from "./models/MessageImp";
-import { Room, IMember } from "./models/Room";
-import { RoomAccessData } from "../shared/Stalk";
+import { Room, IMember, MessageImp } from "./models/";
+import { RoomAccessData, MessageType, IMessage } from "../shared/";
 
 import { imagesPath } from "../consts/StickerPath";
 import { ChitChatFactory } from "./ChitChatFactory";
@@ -81,45 +79,50 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         });
     }
 
-    onChat(message: MessageImp) {
-        console.log("ChatRoomComponent.onChat", message);
+    private saveMessages = (chatMessages: Array<MessageImp>, message: MessageImp) => {
         let self = this;
+        chatMessages.push(message);
 
-        const saveMessages = (chatMessages: Array<MessageImp>) => {
-            chatMessages.push(message);
+        self.dataManager.messageDAL.saveData(self.roomId, chatMessages)
+            .then(chats => {
+                if (!!self.chatroomDelegate) {
+                    self.chatroomDelegate(ON_CHAT, message);
+                    self.chatroomDelegate(ON_MESSAGE_CHANGE, chatMessages);
+                }
+            });
+    };
 
-            self.dataManager.messageDAL.saveData(self.roomId, chatMessages)
-                .then(chats => {
-                    if (!!this.chatroomDelegate) {
-                        this.chatroomDelegate(ON_CHAT, message);
-                        this.chatroomDelegate(ON_MESSAGE_CHANGE, chatMessages);
-                    }
-                });
-        };
-
-        if (this.roomId === message.rid) {
-            this.dataManager.messageDAL.getData(this.roomId).then((chats: Array<any>) => {
-                return chats;
-            }).then((chats: IMessage[]) => {
+    public saveToPersisted(message: MessageImp) {
+        let self = this;
+        this.dataManager.messageDAL.getData(this.roomId)
+            .then((chats: Array<IMessage>) => {
                 let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
 
                 if (message.type === MessageType[MessageType.Text]) {
-                    CryptoHelper.decryptionText(message).then(decoded => {
-                        saveMessages(chatMessages);
-                    }).catch(err => saveMessages(chatMessages));
+                    CryptoHelper.decryptionText(message)
+                        .then(decoded => {
+                            self.saveMessages(chatMessages, message);
+                        })
+                        .catch(err => self.saveMessages(chatMessages, message));
                 }
                 else if (message.type === MessageType[MessageType.Sticker]) {
                     let sticker_id = parseInt(message.body);
-
                     message.src = imagesPath[sticker_id].img;
-                    saveMessages(chatMessages);
+                    self.saveMessages(chatMessages, message);
                 }
                 else {
-                    saveMessages(chatMessages);
+                    self.saveMessages(chatMessages, message);
                 }
             }).catch(err => {
                 console.warn("Cannot get persistend message of room", err);
             });
+    }
+
+    onChat(message: MessageImp) {
+        console.log("ChatRoomComponent.onChat", message);
+
+        if (this.roomId === message.rid) {
+            this.saveToPersisted(message);
         }
         else {
             console.log("this msg come from other room.");

@@ -1,4 +1,4 @@
-var IProfile;
+export var IProfile;
 (function (IProfile) {
     class Profile {
     }

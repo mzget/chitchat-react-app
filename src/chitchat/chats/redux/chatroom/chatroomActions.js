@@ -57,12 +57,11 @@ export function initChatRoom(currentRoom) {
 }
 function onChatRoomDelegate(event, data) {
     if (event === ON_CHAT) {
-        console.log("onChatRoomDelegate: ", ON_CHAT, data);
         let messageImp = data;
         let backendFactory = BackendFactory.getInstance();
         /**
          * Todo **
-         * - if message_id is mine. Replace message_id to local messages list.
+         * - if message_id is mine. Do nothing...
          * - if not my message. Update who read this message. And tell anyone.
          */
         if (authReducer().user._id == messageImp.sender) {
@@ -76,7 +75,9 @@ function onChatRoomDelegate(event, data) {
             console.log("AppState: ", appState); // active, background, inactive
             if (!!appState) {
                 if (appState === "active") {
-                    MessageService.updateMessageReader(messageImp._id, messageImp.rid).then(response => response.json()).then(value => {
+                    MessageService.updateMessageReader(messageImp._id, messageImp.rid)
+                        .then(response => response.json())
+                        .then(value => {
                         console.log("updateMessageReader: ", value);
                     }).catch(err => {
                         console.warn("updateMessageReader: ", err);
@@ -229,20 +230,23 @@ function sendMessageResponse(err, res) {
             dispatch(send_message_failure(err.message));
         }
         else {
+            let chatroomComp = ChatRoomComponent.getInstance();
             if (res.code == Utils.statusCode.success && res.data.hasOwnProperty("resultMsg")) {
                 let _msg = Object.assign({}, res.data.resultMsg);
                 if (_msg.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption) {
                     const secure = SecureServiceFactory.getService();
                     secure.decryption(_msg.body).then(res => {
                         _msg.body = res;
+                        chatroomComp.saveToPersisted(_msg);
                         dispatch(send_message_success(_msg));
                     }).catch(err => {
-                        console.error(err);
                         _msg.body = err.toString();
+                        chatroomComp.saveToPersisted(_msg);
                         dispatch(send_message_success(_msg));
                     });
                 }
                 else {
+                    chatroomComp.saveToPersisted(_msg);
                     dispatch(send_message_success(_msg));
                 }
             }
