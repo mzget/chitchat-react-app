@@ -135,7 +135,8 @@ export const chatroomReducer = (state = chatRoomRecoder, action) => {
         case chatroomActions.LEAVE_ROOM: {
             return state
                 .set("state", chatroomActions.LEAVE_ROOM)
-                .set("room", null);
+                .set("room", null)
+                .set("chatTargets", []);
         }
         case chatroomActions.UPDATED_CHATROOMS: {
             return state.set("chatrooms", action.payload);
