@@ -1,6 +1,8 @@
 import * as React from "react";
 import { WebRtc } from "./WebRtc";
 
+import { signalingServer } from "../Chitchat";
+
 export class WebRtcDemo extends React.Component<any, any> {
 
     constructor(props) {
@@ -9,9 +11,9 @@ export class WebRtcDemo extends React.Component<any, any> {
 
     render() {
         let object = {
-            roomname: "jsfiddletest",
+            roomname: "chitchat-test",
             /*provide a valid url for signalmaster otherwise this won't work*/
-            signalmasterUrl: "http://localhost:8888"
+            signalmasterUrl: signalingServer
         }
 
         return (

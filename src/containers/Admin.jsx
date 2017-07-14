@@ -6,6 +6,7 @@ import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import Subheader from "material-ui/Subheader";
+import { WebRtcDemo } from "../webrtc/";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { MenuListview } from "./admins/MenuListView";
 import { ManageOrgChartBox } from "./admins/ManageOrgChartBox";
@@ -147,7 +148,10 @@ class Admin extends React.Component {
             case BoxState.roleView:
                 return <RoleDetailEnhanced team_id={teamReducer.team._id} role_name={match.params.id}/>;
             default:
-                return <Subheader>Welcome To Admin Panel!</Subheader>;
+                return (<div>
+                        <Subheader>Welcome To Admin Panel!</Subheader>
+                        <WebRtcDemo />
+                    </div>);
         }
     }
     render() {

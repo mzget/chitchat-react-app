@@ -34,11 +34,12 @@ export class WebRtc extends React.Component {
     }
     addVideo(video, peer) {
         console.log('video added', peer);
+        console.log(video);
         //  console.log(this.refs.remotes);
         let remotes = ReactDOM.findDOMNode(this.refs.remotes);
-        console.log(remotes);
+        // console.log(remotes);
         if (remotes) {
-            var container = document.createElement('div');
+            let container = document.createElement('div');
             container.className = 'videoContainer';
             container.id = 'container_' + this.webrtc.getDomId(peer);
             container.appendChild(video);
@@ -70,10 +71,10 @@ export class WebRtc extends React.Component {
     }
     render() {
         return (<Flexbox flexDirection="column" justifyContent={"flex-start"}>
-                <video style={{ width: "100%" }} className="local" id="localVideo" ref="local">
-                </video>
                 <div style={{ width: "100%" }} className="remotes" id="remoteVideos" ref="remotes">
                 </div>
+                <video style={{ width: "150px" }} className="local" id="localVideo" ref="local">
+                </video>
             </Flexbox>);
     }
 }
