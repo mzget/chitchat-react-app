@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { WebRtcDemo } from "../webrtc/";
 import { ChatPage } from "./Chat";
 import { Post } from "./Post";
 import { ProfileDetailEnhanced } from "./profile/ProfileDetailEnhancer";
@@ -30,7 +31,7 @@ const getview = (props: IAppBody) => {
         }
     }
     else {
-        return <Post />
+        return <WebRtcDemo />
     }
 }
 

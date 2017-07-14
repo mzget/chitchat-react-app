@@ -1,6 +1,6 @@
 import * as React from "react";
+import { WebRtcDemo } from "../webrtc/";
 import { ChatPage } from "./Chat";
-import { Post } from "./Post";
 import { ProfileDetailEnhanced } from "./profile/ProfileDetailEnhancer";
 import { AddMembersEnhanced } from "./roomSettings/AddMembers";
 import { GroupDetailEnhanced } from "./roomSettings/GroupDetailEnhancer";
@@ -22,7 +22,7 @@ const getview = (props) => {
         }
     }
     else {
-        return <Post />;
+        return <WebRtcDemo />;
     }
 };
 export const AppBody = (props) => (<div>   {getview(props)}
