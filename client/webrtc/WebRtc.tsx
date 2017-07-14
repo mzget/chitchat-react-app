@@ -19,8 +19,11 @@ interface ICompProps {
         signalmasterUrl: string;
     }
 }
+interface ICompState {
+    readyToCall: boolean;
+}
 
-export class WebRtc extends React.Component<ICompProps, any> {
+export class WebRtc extends React.Component<ICompProps, ICompState> {
     webrtc: any;
 
     constructor(props) {
@@ -29,9 +32,27 @@ export class WebRtc extends React.Component<ICompProps, any> {
         this.addVideo = this.addVideo.bind(this);
         this.removeVideo = this.removeVideo.bind(this);
         this.readyToCall = this.readyToCall.bind(this);
+
+        this.disconnect = this.disconnect.bind(this);
+
+        this.state = {
+            readyToCall: false
+        }
     }
 
+    componentWillUnmount() {
+        this.disconnect();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.state.readyToCall) {
+
+        }
+    }
+
+
     componentDidMount() {
+        let self = this;
         this.webrtc = new SimpleWebRTC({
             localVideoEl: ReactDOM.findDOMNode(this.refs.local),
             remoteVideosEl: "",
@@ -39,18 +60,45 @@ export class WebRtc extends React.Component<ICompProps, any> {
             url: this.props.obj.signalmasterUrl
         });
 
-        console.log("webrtc component mounted");
+        console.log("webrtc component mounted", this.webrtc, this.state);
+
         this.webrtc.on('connectionReady', function (sessionId) {
             console.log("connectionReady", sessionId);
+        });
+        this.webrtc.on("leftRoom", (roomName) => {
+            console.log("leftRoom", roomName);
+        });
+        this.webrtc.on("createdPeer", peer => {
+            console.log("createdPeer", peer);
         })
         this.webrtc.on('videoAdded', this.addVideo);
         this.webrtc.on('videoRemoved', this.removeVideo);
         this.webrtc.on('readyToCall', this.readyToCall);
+        // local p2p/ice failure
+        this.webrtc.on('iceFailed', function (peer) {
+            var connstate = document.querySelector('#container_' + self.webrtc.getDomId(peer) + ' .connectionstate');
+            console.log('local fail', connstate);
+            if (connstate) {
+                connstate.innerText = 'Connection failed.';
+                // fileinput.disabled = 'disabled';
+            }
+        });
+
+        // remote p2p/ice failure
+        this.webrtc.on('connectivityError', function (peer) {
+            var connstate = document.querySelector('#container_' + self.webrtc.getDomId(peer) + ' .connectionstate');
+            console.log('remote fail', connstate);
+            if (connstate) {
+                connstate.innerText = 'Connection failed.';
+                // fileinput.disabled = 'disabled';
+            }
+        });
+
+        // this.webrtc.joinRoom(this.props.obj.roomname);
     }
 
     addVideo(video, peer) {
         console.log('video added', peer);
-        console.log(video);
         //  console.log(this.refs.remotes);
         let remotes = ReactDOM.findDOMNode(this.refs.remotes);
         // console.log(remotes);
@@ -66,6 +114,32 @@ export class WebRtc extends React.Component<ICompProps, any> {
             };
             console.log(container);
             remotes.appendChild(container);
+
+            // show the ice connection state
+            if (peer && peer.pc) {
+                let connstate = document.createElement('div');
+                connstate.className = 'connectionstate';
+                container.appendChild(connstate);
+                peer.pc.on('iceConnectionStateChange', function (event) {
+                    switch (peer.pc.iceConnectionState) {
+                        case 'checking':
+                            connstate.innerText = 'Connecting to peer...';
+                            break;
+                        case 'connected':
+                        case 'completed': // on caller side
+                            connstate.innerText = 'Connection established.';
+                            break;
+                        case 'disconnected':
+                            connstate.innerText = 'Disconnected.';
+                            break;
+                        case 'failed':
+                            break;
+                        case 'closed':
+                            connstate.innerText = 'Connection closed.';
+                            break;
+                    }
+                });
+            }
         }
     }
 
@@ -80,7 +154,7 @@ export class WebRtc extends React.Component<ICompProps, any> {
 
     readyToCall() {
         console.log('readyToCall ', this.props.obj.roomname);
-        return this.webrtc.joinRoom(this.props.obj.roomname);
+        this.setState({ readyToCall: true });
     }
 
     connect() {
@@ -89,21 +163,24 @@ export class WebRtc extends React.Component<ICompProps, any> {
 
     disconnect() {
         console.log("disconnected");
+        this.webrtc.leaveRoom();
+        // this.webrtc.disconnect();
+        // this.webrtc = null;
     }
 
     render() {
         return (
             <Flexbox flexDirection="column" justifyContent={"flex-start"}>
-                <div style={{ width: "100%" }}
-                    className="remotes"
-                    id="remoteVideos"
-                    ref="remotes">
-                </div>
                 <video style={{ width: "150px" }}
                     className="local"
                     id="localVideo"
                     ref="local" >
                 </video>
+                <div style={{ width: "150px" }}
+                    className="remotes"
+                    id="remoteVideos"
+                    ref="remotes">
+                </div>
             </Flexbox>
         );
     }
