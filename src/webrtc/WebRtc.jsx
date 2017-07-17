@@ -34,7 +34,9 @@ export class WebRtc extends React.Component {
             localVideoEl: ReactDOM.findDOMNode(this.refs.local),
             remoteVideosEl: "",
             autoRequestMedia: true,
-            url: this.props.obj.signalmasterUrl
+            enableDataChannels: false,
+            url: this.props.obj.signalmasterUrl,
+            debug: true
         });
         console.log("webrtc component mounted", this.webrtc);
         this.webrtc.on('connectionReady', function (sessionId) {
@@ -71,7 +73,6 @@ export class WebRtc extends React.Component {
         });
     }
     addVideo(video, peer) {
-        console.log('video added', peer);
         //  console.log(this.refs.remotes);
         let remotes = ReactDOM.findDOMNode(this.refs.remotes);
         // console.log(remotes);
@@ -84,7 +85,6 @@ export class WebRtc extends React.Component {
             video.oncontextmenu = function () {
                 return false;
             };
-            console.log(container);
             remotes.appendChild(container);
             // show the ice connection state
             if (peer && peer.pc) {
@@ -119,7 +119,6 @@ export class WebRtc extends React.Component {
         }
     }
     removeVideo(video, peer) {
-        console.log('video removed ', peer);
         let remotes = ReactDOM.findDOMNode(this.refs.remotes);
         let el = document.getElementById(peer ? 'container_' + this.webrtc.getDomId(peer) : 'localScreenContainer');
         if (remotes && el) {
@@ -130,11 +129,7 @@ export class WebRtc extends React.Component {
         console.log('readyToCall ', this.props.obj.roomname);
         this.webrtc.joinRoom(this.props.obj.roomname);
     }
-    connect() {
-        console.log("connected");
-    }
     disconnect() {
-        console.log("disconnected");
         this.webrtc.leaveRoom();
         this.webrtc.disconnect();
         this.webrtc = null;
