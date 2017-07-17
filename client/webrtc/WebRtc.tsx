@@ -10,6 +10,7 @@ Compatible with Chrome and Firefox.
 import * as React from "react";
 import * as ReactDOM from 'react-dom';
 import { connect } from "react-redux";
+import { shallowEqual } from "recompose";
 import { withRouter } from "react-router-dom";
 
 import Flexbox from "flexbox-react";
@@ -19,11 +20,7 @@ import { signalingServer } from "../Chitchat";
 import * as utils from "../utils/";
 import * as chatroom from "../chitchat/chats/redux/chatroom/";
 
-interface ICompState {
-    readyToCall: boolean;
-}
-
-class WebRtc extends React.Component<utils.IComponentProps, ICompState> {
+class WebRtc extends React.Component<utils.IComponentProps, any> {
     webrtc: any;
 
     constructor(props) {
@@ -34,19 +31,20 @@ class WebRtc extends React.Component<utils.IComponentProps, ICompState> {
         this.readyToCall = this.readyToCall.bind(this);
 
         this.disconnect = this.disconnect.bind(this);
-
-        this.state = {
-            readyToCall: false
-        }
     }
 
     componentWillUnmount() {
         this.disconnect();
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.state.readyToCall) {
+    componentWillReceiveProps(nextProps: utils.IComponentProps) {
+        let { alertReducer: { error } } = nextProps;
 
+        if (!shallowEqual(this.props.alertReducer.error, error) && !!error) {
+            this.props.onError(error);
+        }
+        if (!error && this.props.alertReducer.error) {
+            this.props.history.goBack();
         }
     }
 
@@ -158,7 +156,7 @@ class WebRtc extends React.Component<utils.IComponentProps, ICompState> {
     }
 
     readyToCall() {
-        console.log('readyToCall ', this.props);
+        console.log('readyToCall');
 
         let { match, userReducer: { user } } = this.props;
         let room_id = match.params.id;
@@ -218,7 +216,8 @@ class WebRtc extends React.Component<utils.IComponentProps, ICompState> {
 }
 
 const mapStateToProps = (state) => ({
-    userReducer: state.userReducer
+    userReducer: state.userReducer,
+    alertReducer: state.alertReducer
 });
-export var WebRtcPage = connect(mapStateToProps)(WebRtc);
+export var WebRtcPage = connect(mapStateToProps)(WebRtc) as React.ComponentClass<{ onError }>;
 WebRtcPage = withRouter(WebRtcPage);

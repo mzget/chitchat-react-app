@@ -9,6 +9,7 @@ Compatible with Chrome and Firefox.
 import * as React from "react";
 import * as ReactDOM from 'react-dom';
 import { connect } from "react-redux";
+import { shallowEqual } from "recompose";
 import { withRouter } from "react-router-dom";
 import Flexbox from "flexbox-react";
 import SimpleWebRTC from 'simplewebrtc';
@@ -21,15 +22,17 @@ class WebRtc extends React.Component {
         this.removeVideo = this.removeVideo.bind(this);
         this.readyToCall = this.readyToCall.bind(this);
         this.disconnect = this.disconnect.bind(this);
-        this.state = {
-            readyToCall: false
-        };
     }
     componentWillUnmount() {
         this.disconnect();
     }
     componentWillReceiveProps(nextProps) {
-        if (this.state.readyToCall) {
+        let { alertReducer: { error } } = nextProps;
+        if (!shallowEqual(this.props.alertReducer.error, error) && !!error) {
+            this.props.onError(error);
+        }
+        if (!error && this.props.alertReducer.error) {
+            this.props.history.goBack();
         }
     }
     componentDidMount() {
@@ -130,7 +133,7 @@ class WebRtc extends React.Component {
         }
     }
     readyToCall() {
-        console.log('readyToCall ', this.props);
+        console.log('readyToCall');
         let { match, userReducer: { user } } = this.props;
         let room_id = match.params.id;
         // this.webrtc.joinRoom(this.props.obj.roomname);
@@ -167,7 +170,8 @@ class WebRtc extends React.Component {
     }
 }
 const mapStateToProps = (state) => ({
-    userReducer: state.userReducer
+    userReducer: state.userReducer,
+    alertReducer: state.alertReducer
 });
 export var WebRtcPage = connect(mapStateToProps)(WebRtc);
 WebRtcPage = withRouter(WebRtcPage);

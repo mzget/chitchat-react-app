@@ -25,6 +25,13 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.onTitlePressed = this.onTitlePressed.bind(this);
     }
 
+    componentWillMount() {
+        if (!this.props.teamReducer.team) {
+            this.props.history.replace("/");
+        }
+    }
+
+
     componentWillReceiveProps(nextProps: IComponentProps) {
     }
 
@@ -53,7 +60,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                         <Flexbox minWidth="400px" justifyContent="center">
                         </Flexbox>
                         <Flexbox flexGrow={1} justifyContent="center">
-                            <WebRtcPage />
+                            <WebRtcPage onError={this.props.onError} />
                         </Flexbox>
                     </Flexbox>
                 </Flexbox>
@@ -65,5 +72,5 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 const mapStateToProps = (state) => ({
     teamReducer: state.teamReducer
 });
-export var VideoCallPage = connect(mapStateToProps)(VideoCall);
+export var VideoCallPage = connect(mapStateToProps)(VideoCall) as React.ComponentClass<{ onError }>;
 VideoCallPage = withRouter(VideoCallPage);

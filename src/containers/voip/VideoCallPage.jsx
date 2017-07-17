@@ -12,6 +12,11 @@ class VideoCall extends React.Component {
         this.onBackPressed = this.onBackPressed.bind(this);
         this.onTitlePressed = this.onTitlePressed.bind(this);
     }
+    componentWillMount() {
+        if (!this.props.teamReducer.team) {
+            this.props.history.replace("/");
+        }
+    }
     componentWillReceiveProps(nextProps) {
     }
     onBackPressed() {
@@ -34,7 +39,7 @@ class VideoCall extends React.Component {
                         <Flexbox minWidth="400px" justifyContent="center">
                         </Flexbox>
                         <Flexbox flexGrow={1} justifyContent="center">
-                            <WebRtcPage />
+                            <WebRtcPage onError={this.props.onError}/>
                         </Flexbox>
                     </Flexbox>
                 </Flexbox>
