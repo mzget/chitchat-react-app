@@ -160,7 +160,8 @@ export class WebRtc extends React.Component<ICompProps, ICompState> {
     readyToCall() {
         console.log('readyToCall ', this.props.obj.roomname);
 
-        this.webrtc.joinRoom(this.props.obj.roomname);
+        // this.webrtc.joinRoom(this.props.obj.roomname);
+        this.webrtc.createRoom(this.props.obj.roomname);
     }
 
     disconnect() {

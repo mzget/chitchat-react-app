@@ -127,7 +127,8 @@ export class WebRtc extends React.Component {
     }
     readyToCall() {
         console.log('readyToCall ', this.props.obj.roomname);
-        this.webrtc.joinRoom(this.props.obj.roomname);
+        // this.webrtc.joinRoom(this.props.obj.roomname);
+        this.webrtc.createRoom(this.props.obj.roomname);
     }
     disconnect() {
         this.webrtc.leaveRoom();

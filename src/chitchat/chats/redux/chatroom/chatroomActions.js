@@ -189,17 +189,16 @@ export function sendMessage(message) {
                 .then(result => {
                 message.body = result;
                 let backendFactory = BackendFactory.getInstance();
-                // let chatApi = backendFactory.getServer().getChatRoomAPI();
-                // chatApi.chat("*", message, (err, res) => {
-                //     dispatch(sendMessageResponse(err, res));
-                // });
-                backendFactory.getServer().getSocket().request("chat.chatHandler.pushByUids", { data: message }, (result) => {
+                let chatApi = backendFactory.getServer().getChatRoomAPI();
+                chatApi.pushByUids({ data: message }).then((result) => {
                     if (result.code !== 200) {
                         dispatch(sendMessageResponse(result, null));
                     }
                     else {
                         dispatch(sendMessageResponse(null, result));
                     }
+                }).catch(err => {
+                    dispatch(sendMessageResponse(err, null));
                 });
             }).catch(err => {
                 console.error(err);
