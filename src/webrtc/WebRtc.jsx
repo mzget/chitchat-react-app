@@ -8,9 +8,13 @@ Compatible with Chrome and Firefox.
 */
 import * as React from "react";
 import * as ReactDOM from 'react-dom';
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import Flexbox from "flexbox-react";
 import SimpleWebRTC from 'simplewebrtc';
-export class WebRtc extends React.Component {
+import { signalingServer } from "../Chitchat";
+import * as chatroom from "../chitchat/chats/redux/chatroom/";
+class WebRtc extends React.Component {
     constructor(props) {
         super(props);
         this.addVideo = this.addVideo.bind(this);
@@ -35,7 +39,7 @@ export class WebRtc extends React.Component {
             remoteVideosEl: "",
             autoRequestMedia: true,
             enableDataChannels: false,
-            url: this.props.obj.signalmasterUrl,
+            url: signalingServer,
             debug: true
         });
         console.log("webrtc component mounted", this.webrtc);
@@ -126,9 +130,19 @@ export class WebRtc extends React.Component {
         }
     }
     readyToCall() {
-        console.log('readyToCall ', this.props.obj.roomname);
+        console.log('readyToCall ', this.props);
+        let { match, userReducer: { user } } = this.props;
+        let room_id = match.params.id;
         // this.webrtc.joinRoom(this.props.obj.roomname);
-        this.webrtc.createRoom(this.props.obj.roomname);
+        this.webrtc.createRoom(room_id);
+        let room = chatroom.getRoom(room_id);
+        let targets = new Array();
+        room.members.map(value => {
+            if (value._id != user._id) {
+                targets.push(value._id);
+            }
+        });
+        this.props.dispatch(chatroom.videoCallRequest({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
     }
     disconnect() {
         this.webrtc.leaveRoom();
@@ -152,3 +166,8 @@ export class WebRtc extends React.Component {
             </Flexbox>);
     }
 }
+const mapStateToProps = (state) => ({
+    userReducer: state.userReducer
+});
+export var WebRtcPage = connect(mapStateToProps)(WebRtc);
+WebRtcPage = withRouter(WebRtcPage);

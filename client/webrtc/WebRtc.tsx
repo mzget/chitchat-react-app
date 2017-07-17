@@ -9,21 +9,21 @@ Compatible with Chrome and Firefox.
 
 import * as React from "react";
 import * as ReactDOM from 'react-dom';
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
 import Flexbox from "flexbox-react";
 import SimpleWebRTC from 'simplewebrtc';
 
-interface ICompProps {
-    obj: {
-        roomname: string;
-        signalmasterUrl: string;
-    }
-}
+import { signalingServer } from "../Chitchat";
+import * as utils from "../utils/";
+import * as chatroom from "../chitchat/chats/redux/chatroom/";
+
 interface ICompState {
     readyToCall: boolean;
 }
 
-export class WebRtc extends React.Component<ICompProps, ICompState> {
+class WebRtc extends React.Component<utils.IComponentProps, ICompState> {
     webrtc: any;
 
     constructor(props) {
@@ -58,7 +58,7 @@ export class WebRtc extends React.Component<ICompProps, ICompState> {
             remoteVideosEl: "",
             autoRequestMedia: true,
             enableDataChannels: false,
-            url: this.props.obj.signalmasterUrl,
+            url: signalingServer,
             debug: true
         });
 
@@ -72,7 +72,7 @@ export class WebRtc extends React.Component<ICompProps, ICompState> {
         });
         this.webrtc.on("createdPeer", peer => {
             console.log("createdPeer", peer);
-        })
+        });
         this.webrtc.on('videoAdded', this.addVideo);
         this.webrtc.on('videoRemoved', this.removeVideo);
         this.webrtc.on('readyToCall', this.readyToCall);
@@ -158,10 +158,22 @@ export class WebRtc extends React.Component<ICompProps, ICompState> {
     }
 
     readyToCall() {
-        console.log('readyToCall ', this.props.obj.roomname);
+        console.log('readyToCall ', this.props);
 
+        let { match, userReducer: { user } } = this.props;
+        let room_id = match.params.id;
         // this.webrtc.joinRoom(this.props.obj.roomname);
-        this.webrtc.createRoom(this.props.obj.roomname);
+        this.webrtc.createRoom(room_id);
+
+        let room = chatroom.getRoom(room_id);
+        let targets = new Array<string>();
+        room.members.map(value => {
+            if (value._id != user._id) {
+                targets.push(value._id);
+            }
+        });
+
+        this.props.dispatch(chatroom.videoCallRequest({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
     }
 
     disconnect() {
@@ -204,3 +216,9 @@ export class WebRtc extends React.Component<ICompProps, ICompState> {
         );
     }
 }
+
+const mapStateToProps = (state) => ({
+    userReducer: state.userReducer
+});
+export var WebRtcPage = connect(mapStateToProps)(WebRtc);
+WebRtcPage = withRouter(WebRtcPage);

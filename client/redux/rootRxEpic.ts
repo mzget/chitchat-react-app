@@ -1,8 +1,7 @@
 import { combineEpics } from "redux-observable";
 
 import * as userRx from "./user/userRx";
-import * as chatroomRxEpic from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
-import * as messageRxEpic from "../chitchat/chats/redux/chatroom/messageRxEpic";
+import * as chatroom from "../chitchat/chats/redux/chatroom/";
 import * as chatlogsActions from "../chitchat/chats/redux/chatlogs/chatlogsActions";
 import * as chatlogRxActions from "../chitchat/chats/redux/chatlogs/chatlogRxActions";
 import * as authRx from "./authen/authRx";
@@ -59,13 +58,14 @@ export const rootEpic = combineEpics(
     privateGroupRxActions.createPrivateGroup_Epic,
 
     ///@ChatRoom
-    chatroomRxEpic.getPrivateChatRoom_Epic,
-    chatroomRxEpic.getPersistendMessageEpic,
-    chatroomRxEpic.createPrivateChatRoomEpic,
-    chatroomRxEpic.uploadFileEpic,
-    chatroomRxEpic.updateMessagesRead_Epic,
+    chatroom.getPrivateChatRoom_Epic,
+    chatroom.getPersistendMessageEpic,
+    chatroom.createPrivateChatRoomEpic,
+    chatroom.uploadFileEpic,
+    chatroom.updateMessagesRead_Epic,
     /// @message rx.
     // messageRxEpic.fetchOlderMessageCount_Epic,
+    chatroom.videoCall_Epic,
 
     ///@chatlogs
     chatlogRxActions.getLastAccessRoom_Epic,

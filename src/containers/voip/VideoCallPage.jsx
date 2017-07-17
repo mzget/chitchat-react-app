@@ -5,7 +5,7 @@ import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import { SimpleToolbar } from "../../components/SimpleToolbar";
-import { WebRtcDemo } from "../../webrtc/";
+import { WebRtcPage } from "../../webrtc/";
 class VideoCall extends React.Component {
     constructor(props) {
         super(props);
@@ -34,7 +34,7 @@ class VideoCall extends React.Component {
                         <Flexbox minWidth="400px" justifyContent="center">
                         </Flexbox>
                         <Flexbox flexGrow={1} justifyContent="center">
-                            <WebRtcDemo />
+                            <WebRtcPage />
                         </Flexbox>
                     </Flexbox>
                 </Flexbox>

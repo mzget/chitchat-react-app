@@ -11,7 +11,7 @@ import Subheader from "material-ui/Subheader";
 import { IComponentProps } from "../../utils/IComponentProps";
 
 import { SimpleToolbar } from "../../components/SimpleToolbar";
-import { WebRtcDemo } from "../../webrtc/";
+import { WebRtcPage } from "../../webrtc/";
 
 interface IComponentNameState {
 }
@@ -53,7 +53,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                         <Flexbox minWidth="400px" justifyContent="center">
                         </Flexbox>
                         <Flexbox flexGrow={1} justifyContent="center">
-                            <WebRtcDemo />
+                            <WebRtcPage />
                         </Flexbox>
                     </Flexbox>
                 </Flexbox>
