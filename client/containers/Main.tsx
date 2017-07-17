@@ -49,8 +49,7 @@ export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chat
                             <ChatLogsBoxEnhancer />
                         </Flexbox>
                         <Flexbox flexDirection="column" flexGrow={0.7} >
-                            <SubToolbarEnhance
-                                onError={onError} />
+                            <SubToolbarEnhance onError={onError} />
                             <Flexbox height="calc(100vh - 56px)" >
                                 <Flexbox width="400px" >
                                     <div style={{ width: "100%", backgroundColor: Colors.darkWhite }}>
