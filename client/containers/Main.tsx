@@ -13,7 +13,7 @@ import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
 import { StalkCompEnhancer } from "./stalk/StalkComponent";
 import { AppBody } from "./AppBody";
 import { RightNav } from "./RightNav";
-import { SubToolbar } from "./SubToolbar";
+import { SubToolbarEnhance } from "./SubToolbar";
 
 import { ContactBox } from "./chatlist/ContactBox";
 
@@ -49,9 +49,8 @@ export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chat
                             <ChatLogsBoxEnhancer />
                         </Flexbox>
                         <Flexbox flexDirection="column" flexGrow={0.7} >
-                            <SubToolbar history={history} match={match} onError={onError}
-                                chatroomReducer={chatroomReducer}
-                                userReducer={userReducer} />
+                            <SubToolbarEnhance
+                                onError={onError} />
                             <Flexbox height="calc(100vh - 56px)" >
                                 <Flexbox width="400px" >
                                     <div style={{ width: "100%", backgroundColor: Colors.darkWhite }}>
