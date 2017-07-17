@@ -7,7 +7,7 @@ export type Push = {
     timestamp: Date;
     members: Array<string>;
 };
-export type IListener = (data: Push) => void;
+type IListener = (data: Push) => void;
 
 export class PushDataListener implements PushEvents.IPushServerListener {
 

@@ -48,7 +48,6 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
         }
     }
 
-
     componentDidMount() {
         let self = this;
         this.webrtc = new SimpleWebRTC({

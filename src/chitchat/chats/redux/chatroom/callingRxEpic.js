@@ -1,3 +1,4 @@
+import { CallingEvents } from "stalk-js";
 import { Observable } from "rxjs/Rx";
 import { createAction } from "redux-actions";
 import { ChitChatFactory } from "../../";
@@ -15,7 +16,7 @@ export const videoCall_Epic = action$ => action$.ofType(VIDEO_CALL_REQUEST)
     let backendFactory = BackendFactory.getInstance();
     let callingApi = backendFactory.getServer().getCallingAPI();
     let { target_ids, user_id, room_id } = action.payload;
-    return Observable.fromPromise(callingApi.videoCallRequest(target_ids, user_id, room_id, chitchatFac.config.Stalk.apiKey));
+    return Observable.fromPromise(callingApi.callingRequest(target_ids, CallingEvents.VideoCall, chitchatFac.config.Stalk.apiKey, { user_id, room_id }));
 })
     .map(response => videoCallSuccess(response))
     .catch(error => Observable.of(videoCallFailure(error)))

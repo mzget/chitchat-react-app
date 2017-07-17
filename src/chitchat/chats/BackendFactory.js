@@ -13,7 +13,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { StalkFactory } from "stalk-js";
 import { DataManager } from "./DataManager";
 import { DataListener } from "./DataListener";
-import { PushDataListener } from "./PushDataListener";
+import { PushDataListener, CallingDataListener } from "./";
 import { ChatsLogComponent } from "./ChatslogComponent";
 import { ServerEventListener } from "./ServerEventListener";
 import { ChitChatFactory } from "./ChitChatFactory";
@@ -31,6 +31,7 @@ export class BackendFactory {
     constructor() {
         console.log("BackendFactory:");
         this.pushDataListener = new PushDataListener();
+        this.callingDataListener = new CallingDataListener();
         this.dataManager = new DataManager();
         this.dataListener = new DataListener(this.dataManager);
     }
@@ -118,5 +119,6 @@ export class BackendFactory {
         this.serverEventsListener.addServerListener(this.dataListener);
         this.serverEventsListener.addChatListener(this.dataListener);
         this.serverEventsListener.addPushListener(this.pushDataListener);
+        this.serverEventsListener.addCallingListener(this.callingDataListener);
     }
 }

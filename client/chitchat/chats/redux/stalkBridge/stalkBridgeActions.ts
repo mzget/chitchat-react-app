@@ -7,7 +7,7 @@
 import { BackendFactory } from "../../BackendFactory";
 import * as StalkNotificationAction from "./StalkNotificationActions";
 import * as ChatLogsActions from "../chatlogs/chatlogsActions";
-import * as StalkPushActions from "./stalkPushActions";
+import { stalkPushInit, stalkCallingInit } from "./";
 
 import { StalkAccount, RoomAccessData } from "../../../shared/Stalk";
 
@@ -53,7 +53,8 @@ export function stalkLogin(user: any) {
                         backendFactory.getServerListener();
                         backendFactory.subscriptions();
                         StalkNotificationAction.regisNotifyNewMessageEvent();
-                        StalkPushActions.stalkPushInit();
+                        stalkPushInit();
+                        stalkCallingInit();
 
                         getStore().dispatch({ type: STALK_INIT_SUCCESS, payload: { token: result.token, user: account } });
                     }).catch(err => {
