@@ -70,7 +70,6 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     componentWillReceiveProps(nextProps: IComponentProps) {
         const { groupReducer, adminReducer, alertReducer, match, location } = nextProps;
 
-        console.log(match.params, location);
         let { menu, id } = match.params;
 
         if (!shallowEqual(alertReducer.error, this.props.alertReducer.error) && !!alertReducer.error) {
@@ -173,7 +172,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
                 return <RoleDetailEnhanced team_id={teamReducer.team._id} role_name={match.params.id} />;
             default:
                 return (
-                    <div>
+                    <div style={{ width: "100%" }}>
                         <Subheader>Welcome To Admin Panel!</Subheader>
                         <WebRtcDemo />
                     </div>

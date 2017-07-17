@@ -60,7 +60,7 @@ export class WebRtc extends React.Component<ICompProps, ICompState> {
             url: this.props.obj.signalmasterUrl
         });
 
-        console.log("webrtc component mounted", this.webrtc, this.state);
+        console.log("webrtc component mounted", this.webrtc);
 
         this.webrtc.on('connectionReady', function (sessionId) {
             console.log("connectionReady", sessionId);
@@ -76,7 +76,8 @@ export class WebRtc extends React.Component<ICompProps, ICompState> {
         this.webrtc.on('readyToCall', this.readyToCall);
         // local p2p/ice failure
         this.webrtc.on('iceFailed', function (peer) {
-            var connstate = document.querySelector('#container_' + self.webrtc.getDomId(peer) + ' .connectionstate');
+            console.warn("iceFailed", peer);
+            let connstate = document.querySelector('#container_' + self.webrtc.getDomId(peer) + ' .connectionstate');
             console.log('local fail', connstate);
             if (connstate) {
                 connstate.innerText = 'Connection failed.';
@@ -86,15 +87,14 @@ export class WebRtc extends React.Component<ICompProps, ICompState> {
 
         // remote p2p/ice failure
         this.webrtc.on('connectivityError', function (peer) {
-            var connstate = document.querySelector('#container_' + self.webrtc.getDomId(peer) + ' .connectionstate');
+            console.warn("connectivityError", peer);
+            let connstate = document.querySelector('#container_' + self.webrtc.getDomId(peer) + ' .connectionstate');
             console.log('remote fail', connstate);
             if (connstate) {
                 connstate.innerText = 'Connection failed.';
                 // fileinput.disabled = 'disabled';
             }
         });
-
-        // this.webrtc.joinRoom(this.props.obj.roomname);
     }
 
     addVideo(video, peer) {
@@ -120,12 +120,15 @@ export class WebRtc extends React.Component<ICompProps, ICompState> {
                 let connstate = document.createElement('div');
                 connstate.className = 'connectionstate';
                 container.appendChild(connstate);
+
                 peer.pc.on('iceConnectionStateChange', function (event) {
                     switch (peer.pc.iceConnectionState) {
                         case 'checking':
                             connstate.innerText = 'Connecting to peer...';
                             break;
                         case 'connected':
+                            connstate.innerText = 'connected...';
+                            break;
                         case 'completed': // on caller side
                             connstate.innerText = 'Connection established.';
                             break;
@@ -141,6 +144,9 @@ export class WebRtc extends React.Component<ICompProps, ICompState> {
                 });
             }
         }
+        else {
+            console.warn("can't find remotes dom!");
+        }
     }
 
     removeVideo(video, peer) {
@@ -154,7 +160,8 @@ export class WebRtc extends React.Component<ICompProps, ICompState> {
 
     readyToCall() {
         console.log('readyToCall ', this.props.obj.roomname);
-        this.setState({ readyToCall: true });
+
+        this.webrtc.joinRoom(this.props.obj.roomname);
     }
 
     connect() {
@@ -164,19 +171,36 @@ export class WebRtc extends React.Component<ICompProps, ICompState> {
     disconnect() {
         console.log("disconnected");
         this.webrtc.leaveRoom();
-        // this.webrtc.disconnect();
-        // this.webrtc = null;
+        this.webrtc.disconnect();
+        this.webrtc = null;
     }
 
     render() {
         return (
             <Flexbox flexDirection="column" justifyContent={"flex-start"}>
-                <video style={{ width: "150px" }}
-                    className="local"
-                    id="localVideo"
-                    ref="local" >
-                </video>
-                <div style={{ width: "150px" }}
+                <Flexbox flexDirection="row" height="150px" justifyContent={"flex-start"}>
+                    <video style={{ width: "150px" }}
+                        className="local"
+                        id="localVideo"
+                        ref="local" >
+                    </video>
+                    <video style={{ width: "150px" }}
+                        className="remotes"
+                        id="remoteVideos"
+                        ref="remotes">
+                    </video>
+                    <video style={{ width: "150px" }}
+                        className="remotes"
+                        id="remoteVideos"
+                        ref="remotes">
+                    </video>
+                    <video style={{ width: "150px" }}
+                        className="remotes"
+                        id="remoteVideos"
+                        ref="remotes">
+                    </video>
+                </Flexbox>
+                <div style={{ width: "100%" }}
                     className="remotes"
                     id="remoteVideos"
                     ref="remotes">
