@@ -14,6 +14,8 @@ import { TeamMemberBox } from "./admins/TeamMemberBox";
 import { TeamRoleEnhanced } from "./admins/TeamRole";
 import { GroupPureEnhanced } from "./admins/Group";
 import { RoleDetailEnhanced } from "./admins/RoleDetail";
+/**Demo */
+import { WebRtcDemo } from "../webrtc/";
 import * as adminRx from "../redux/admin/adminRx";
 import * as groupRx from "../redux/group/groupRx";
 import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
@@ -148,6 +150,7 @@ class Admin extends React.Component {
             default:
                 return (<div style={{ width: "100%" }}>
                         <Subheader>Welcome To Admin Panel!</Subheader>
+                        <WebRtcDemo />
                     </div>);
         }
     }
