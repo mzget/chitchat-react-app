@@ -6,6 +6,7 @@
 
 import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
 import * as StalkNotificationActions from "./StalkNotificationActions";
+import * as callingActions from "../../../calling/";
 
 import { Record } from "immutable";
 
@@ -17,18 +18,47 @@ import { Record } from "immutable";
  * This Record contains the state of the form and the
  * fields it contains.
  */
-export const StalkInitState = Record({
+export const stalkInitState = {
     isInit: false,
     isFetching: false,
     state: null,
+    webrtc: null,
     notiMessage: null,
     stalkToken: "",
     user: null
-});
-const initialState = new StalkInitState();
+};
+
+// Define our record types with a typescript interface 
+interface IStalkStoreParams {
+    isInit: boolean;
+    isFetching: boolean;
+    state: string;
+    webrtc: any;
+    notiMessage: any;
+    stalkToken: string;
+    user: any;
+}
+// Create our Record class
+export class StalkRecord extends Record(stalkInitState) {
+
+    // Set the params. This will also typecheck when we instantiate a new FruitRecord
+    constructor(params: IStalkStoreParams) {
+        super(params);
+    }
+
+    // This following line is the magic. It overrides the "get" method of record
+    // and lets typescript know the return type based on our IFruitParams interface
+    get<T extends keyof IStalkStoreParams>(value: T): IStalkStoreParams[T] {
+
+        // super.get() is mapped to the original get() function on Record
+        return super.get(value)
+    }
+
+}
+const initialState = new StalkRecord(stalkInitState);
 
 export function stalkReducer(state = initialState, action) {
-    if (!(state instanceof StalkInitState)) return initialState.mergeDeep(state);
+    if (!(state instanceof StalkRecord)) return initialState.mergeDeep(state);
 
     switch (action.type) {
         case StalkBridgeActions.STALK_INIT: {
@@ -53,6 +83,10 @@ export function stalkReducer(state = initialState, action) {
         }
         case StalkBridgeActions.STALK_ON_SOCKET_RECONNECT: {
             return state.set("state", StalkBridgeActions.STALK_ON_SOCKET_RECONNECT);
+        }
+
+        case callingActions.WEBRTC_CREATED: {
+            return state.set("webrtc", action.payload);
         }
 
         case StalkNotificationActions.STALK_NOTICE_NEW_MESSAGE: {

@@ -14,7 +14,7 @@ const styles = {
     }
 };
 export const GroupDetail = (props) => (<MuiThemeProvider>
-        <Flexbox style={{ backgroundColor: Colors.blueGrey50 }} flexDirection="column" alignItems="center" height={"100%"}>
+        <Flexbox style={{ backgroundColor: Colors.darkWhite }} flexDirection="column" alignItems="center" height={"100%"}>
             <div>
                 <h3>Edit Group</h3>
                 <p>Enter group informations</p>

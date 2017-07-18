@@ -90,8 +90,6 @@ export class ChatsLogComponent {
                 results.push(room);
                 resultCallback();
             }).catch(err => {
-                if (err)
-                    console.warn("getRoomInfo", err);
                 resultCallback();
             });
         }, (err) => {
@@ -115,8 +113,6 @@ export class ChatsLogComponent {
                     unreadLogs.push(value);
                     callback();
                 }).catch(err => {
-                    if (err)
-                        console.warn("getUnreadMessage", err);
                     callback();
                 });
             }
@@ -131,10 +127,7 @@ export class ChatsLogComponent {
         };
         // add some items to the queue (batch-wise)
         if (roomAccess && roomAccess.length > 0) {
-            q.push(roomAccess, function (err) {
-                if (!!err)
-                    console.error("getUnreadMessage err", err);
-            });
+            q.push(roomAccess, function (err) { });
         }
         else {
             callback(null, null);
@@ -144,7 +137,6 @@ export class ChatsLogComponent {
         return __awaiter(this, void 0, void 0, function* () {
             let response = yield chatroomService.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString());
             let value = yield response.json();
-            console.log("getUnreadMessage result: ", value);
             if (value.success) {
                 let unread = value.result;
                 unread.rid = roomAccess.roomId;
@@ -187,7 +179,6 @@ export class ChatsLogComponent {
             let self = this;
             let response = yield chatroomService.getRoomInfo(room_id);
             let json = yield response.json();
-            console.log("getRoomInfo value:", json);
             if (json.success) {
                 let roomInfos = json.result;
                 let room = yield self.decorateRoomInfoData(roomInfos[0]);
@@ -231,7 +222,6 @@ export class ChatsLogComponent {
                         callback();
                     });
                 }).catch(err => {
-                    console.warn(err);
                     callback();
                 });
             }
@@ -372,8 +362,6 @@ export class ChatsLogComponent {
                         resolve(room);
                     });
                 }).catch(err => {
-                    if (err)
-                        console.warn("getRoomInfo fail", err);
                     rejected(err);
                 });
             }

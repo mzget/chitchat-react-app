@@ -39,6 +39,7 @@ import { ProfilePageEnhanced } from "./containers/ProfilePageEnhanced";
 import { MainPageWithDialogBox } from "./containers/Main";
 import { M_MainPageEnhanced } from "./containers/m_Main";
 import { AdminPageEnhanced } from "./containers/AdminPageEnhanced";
+import { VideoCallEnhance } from "./containers/VideoCall";
 
 import { MEDIUM_WINDOW } from "./chitchat/consts/Breakpoints";
 
@@ -60,6 +61,7 @@ class App extends React.Component<any, any> {
                         <Route path="/chatroom/chat/:room_id" component={(this.clientWidth < MEDIUM_WINDOW) ? ChatPageEnhanced : MainPageWithDialogBox} />
                         <Route path="/chatroom/settings/:room_id/:edit" component={(this.clientWidth < MEDIUM_WINDOW) ? ChatRoomSettingsEnhanced : MainPageWithDialogBox} />
                         <Route path="/admin/:menu?/:id?" component={AdminPageEnhanced} />
+                        <Route path="/videocall/:id" component={VideoCallEnhance} />
                     </div>
                 </Router>
             </ApolloProvider>

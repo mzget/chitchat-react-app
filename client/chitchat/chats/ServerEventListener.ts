@@ -4,7 +4,7 @@
  * Support by@ nattapon.r@live.com
  */
 
-import { StalkEvents, ChatEvents, PushEvents, IPomelo } from "stalk-js";
+import { StalkEvents, ChatEvents, PushEvents, CallingEvents, IPomelo } from "stalk-js";
 export abstract class ServerListener implements StalkEvents.IServerListener, StalkEvents.BaseEvents {
     onUserLogin;
     onUserLogout;
@@ -14,10 +14,6 @@ export abstract class ServerListener implements StalkEvents.IServerListener, Sta
 }
 
 export class ServerEventListener {
-    public static ON_VIDEO_CALL: string = "onVideoCall";
-    public static ON_VOICE_CALL: string = "onVoiceCall";
-    public static ON_HANGUP_CALL: string = "onHangupCall";
-    public static ON_THE_LINE_IS_BUSY: string = "onTheLineIsBusy";
     // <!-- AccessRoom Info -->
     public static ON_ACCESS_ROOMS: string = "onAccessRooms";
     public static ON_ADD_ROOM_ACCESS: string = "onAddRoomAccess";
@@ -109,37 +105,16 @@ export class ServerEventListener {
     }
 
     /**
-     * 
-     * 
-     * @private
-     * @type {StalkEvents.IRTCListener}
-     * @memberof ServerEventListener
+     * Calling api listeners.
      */
-    private rtcCallListener: StalkEvents.IRTCListener;
-    public addRTCListener(obj: StalkEvents.IRTCListener): void {
-        this.rtcCallListener = obj;
+    private callingListener: CallingEvents.ICallingListener;
+    public addCallingListener(obj: CallingEvents.ICallingListener): void {
+        this.callingListener = obj;
 
         let self = this;
 
-        self.socket.on(ServerEventListener.ON_VIDEO_CALL, (data) => {
-            console.log(ServerEventListener.ON_VIDEO_CALL, JSON.stringify(data));
-
-            self.rtcCallListener.onVideoCall(data);
-        });
-        self.socket.on(ServerEventListener.ON_VOICE_CALL, (data) => {
-            console.log(ServerEventListener.ON_VOICE_CALL, JSON.stringify(data));
-
-            self.rtcCallListener.onVoiceCall(data);
-        });
-        self.socket.on(ServerEventListener.ON_HANGUP_CALL, (data) => {
-            console.log(ServerEventListener.ON_HANGUP_CALL, JSON.stringify(data));
-
-            self.rtcCallListener.onHangupCall(data);
-        });
-        self.socket.on(ServerEventListener.ON_THE_LINE_IS_BUSY, (data) => {
-            console.log(ServerEventListener.ON_THE_LINE_IS_BUSY, JSON.stringify(data));
-
-            self.rtcCallListener.onTheLineIsBusy(data);
+        self.socket.on(CallingEvents.ON_CALL, (data) => {
+            self.callingListener.onCall(data);
         });
     }
 

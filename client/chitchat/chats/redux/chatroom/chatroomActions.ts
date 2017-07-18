@@ -8,7 +8,7 @@ import * as Rx from "rxjs/Rx";
 import * as R from "ramda";
 import { Store } from "redux";
 import { createAction } from "redux-actions";
-import { Utils, ChatEvents } from "stalk-js";
+import { Utils, ChatEvents, IDictionary } from "stalk-js";
 import { ServerEventListener } from "../../ServerEventListener";
 
 import * as chatroomService from "../../services/chatroomService";
@@ -207,17 +207,16 @@ export function sendMessage(message: IMessage) {
                     message.body = result;
 
                     let backendFactory = BackendFactory.getInstance();
-                    // let chatApi = backendFactory.getServer().getChatRoomAPI();
-                    // chatApi.chat("*", message, (err, res) => {
-                    //     dispatch(sendMessageResponse(err, res));
-                    // });
-                    backendFactory.getServer().getSocket().request("chat.chatHandler.pushByUids", { data: message }, (result) => {
+                    let chatApi = backendFactory.getServer().getChatRoomAPI();
+                    chatApi.pushByUids({ data: message } as any).then((result: any) => {
                         if (result.code !== 200) {
                             dispatch(sendMessageResponse(result, null));
                         }
                         else {
                             dispatch(sendMessageResponse(null, result));
                         }
+                    }).catch(err => {
+                        dispatch(sendMessageResponse(err, null));
                     });
                 }).catch(err => {
                     console.error(err);
@@ -226,17 +225,16 @@ export function sendMessage(message: IMessage) {
         }
         else {
             let backendFactory = BackendFactory.getInstance();
-            // let chatApi = backendFactory.getServer().getChatRoomAPI();
-            // chatApi.chat("*", message, (err, res) => {
-            //     dispatch(sendMessageResponse(err, res));
-            // });
-            backendFactory.getServer().getSocket().request("chat.chatHandler.pushByUids", { data: message }, (result) => {
+            let chatApi = backendFactory.getServer().getChatRoomAPI();
+            chatApi.pushByUids({ data: message } as any).then((result: any) => {
                 if (result.code !== 200) {
                     dispatch(sendMessageResponse(result, null));
                 }
                 else {
                     dispatch(sendMessageResponse(null, result));
                 }
+            }).catch(err => {
+                dispatch(sendMessageResponse(err, null));
             });
         }
     };

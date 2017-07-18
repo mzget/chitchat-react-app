@@ -14,7 +14,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { BackendFactory } from "../../BackendFactory";
 import * as StalkNotificationAction from "./StalkNotificationActions";
 import * as ChatLogsActions from "../chatlogs/chatlogsActions";
-import * as StalkPushActions from "./stalkPushActions";
+import { stalkPushInit, stalkCallingInit } from "./";
 import { ChitChatFactory } from "../../ChitChatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 export const getSessionToken = () => {
@@ -52,7 +52,8 @@ export function stalkLogin(user) {
                         backendFactory.getServerListener();
                         backendFactory.subscriptions();
                         StalkNotificationAction.regisNotifyNewMessageEvent();
-                        StalkPushActions.stalkPushInit();
+                        stalkPushInit();
+                        stalkCallingInit();
                         getStore().dispatch({ type: STALK_INIT_SUCCESS, payload: { token: result.token, user: account } });
                     }).catch(err => {
                         console.warn("Stalk subscription fail: ", err);

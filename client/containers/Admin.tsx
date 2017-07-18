@@ -19,6 +19,9 @@ import { DialogBox } from "../components/DialogBox";
 import { GroupPureEnhanced } from "./admins/Group";
 import { RoleDetailEnhanced } from "./admins/RoleDetail";
 
+/**Demo */
+import { WebRtcDemo } from "../webrtc/";
+
 import * as adminRx from "../redux/admin/adminRx";
 import * as groupRx from "../redux/group/groupRx";
 import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
@@ -69,7 +72,6 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     componentWillReceiveProps(nextProps: IComponentProps) {
         const { groupReducer, adminReducer, alertReducer, match, location } = nextProps;
 
-        console.log(match.params, location);
         let { menu, id } = match.params;
 
         if (!shallowEqual(alertReducer.error, this.props.alertReducer.error) && !!alertReducer.error) {
@@ -171,7 +173,12 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             case BoxState.roleView:
                 return <RoleDetailEnhanced team_id={teamReducer.team._id} role_name={match.params.id} />;
             default:
-                return <Subheader>Welcome To Admin Panel!</Subheader>;
+                return (
+                    <div style={{ width: "100%" }}>
+                        <Subheader>Welcome To Admin Panel!</Subheader>
+                        <WebRtcDemo />
+                    </div>
+                );
         }
     }
 

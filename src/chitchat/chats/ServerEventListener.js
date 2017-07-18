@@ -3,7 +3,7 @@
  *
  * Support by@ nattapon.r@live.com
  */
-import { StalkEvents, ChatEvents, PushEvents } from "stalk-js";
+import { StalkEvents, ChatEvents, PushEvents, CallingEvents } from "stalk-js";
 export class ServerListener {
 }
 export class ServerEventListener {
@@ -56,24 +56,11 @@ export class ServerEventListener {
             self.chatServerListener.onGetMessagesReaders(data);
         });
     }
-    addRTCListener(obj) {
-        this.rtcCallListener = obj;
+    addCallingListener(obj) {
+        this.callingListener = obj;
         let self = this;
-        self.socket.on(ServerEventListener.ON_VIDEO_CALL, (data) => {
-            console.log(ServerEventListener.ON_VIDEO_CALL, JSON.stringify(data));
-            self.rtcCallListener.onVideoCall(data);
-        });
-        self.socket.on(ServerEventListener.ON_VOICE_CALL, (data) => {
-            console.log(ServerEventListener.ON_VOICE_CALL, JSON.stringify(data));
-            self.rtcCallListener.onVoiceCall(data);
-        });
-        self.socket.on(ServerEventListener.ON_HANGUP_CALL, (data) => {
-            console.log(ServerEventListener.ON_HANGUP_CALL, JSON.stringify(data));
-            self.rtcCallListener.onHangupCall(data);
-        });
-        self.socket.on(ServerEventListener.ON_THE_LINE_IS_BUSY, (data) => {
-            console.log(ServerEventListener.ON_THE_LINE_IS_BUSY, JSON.stringify(data));
-            self.rtcCallListener.onTheLineIsBusy(data);
+        self.socket.on(CallingEvents.ON_CALL, (data) => {
+            self.callingListener.onCall(data);
         });
     }
     addPushListener(obj) {
@@ -84,10 +71,6 @@ export class ServerEventListener {
         });
     }
 }
-ServerEventListener.ON_VIDEO_CALL = "onVideoCall";
-ServerEventListener.ON_VOICE_CALL = "onVoiceCall";
-ServerEventListener.ON_HANGUP_CALL = "onHangupCall";
-ServerEventListener.ON_THE_LINE_IS_BUSY = "onTheLineIsBusy";
 // <!-- AccessRoom Info -->
 ServerEventListener.ON_ACCESS_ROOMS = "onAccessRooms";
 ServerEventListener.ON_ADD_ROOM_ACCESS = "onAddRoomAccess";

@@ -26,7 +26,7 @@ import { UserInitState, userReducer } from "./user/userReducer";
 import { AdminInitState, adminReducer } from "./admin/adminReducer";
 import { AuthenInitState, authReducer } from "./authen/authReducer";
 import { GroupInitState, groupReducer } from "./group/groupReducer";
-import { stalkReducer, StalkInitState } from "../chitchat/chats/redux/stalkBridge/stalkReducer";
+import { stalkReducer, stalkInitState, StalkRecord } from "../chitchat/chats/redux/stalkBridge/stalkReducer";
 import { chatroomReducer, chatRoomRecoder } from "../chitchat/chats/redux/chatroom/chatroomReducer";
 import { chatlogReducer, ChatLogInitState } from "../chitchat/chats/redux/chatlogs/chatlogReducer";
 import { alertReducer, AlertInitState } from "./app/alertReducer";
@@ -70,7 +70,7 @@ export function getInitialState() {
         teamReducer: new TeamInitState(),
         groupReducer: new GroupInitState(),
         authReducer: new AuthenInitState(),
-        stalkReducer: new StalkInitState(),
+        stalkReducer: new StalkRecord(stalkInitState),
         chatroomReducer: chatRoomRecoder,
         chatlogReducer: new ChatLogInitState(),
         userReducer: new UserInitState(),

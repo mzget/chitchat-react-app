@@ -6,7 +6,7 @@
 import { Stalk, IDictionary, API, Utils, StalkEvents, StalkFactory, ServerImplemented } from "stalk-js";
 import { DataManager } from "./DataManager";
 import { DataListener } from "./DataListener";
-import { PushDataListener } from "./PushDataListener";
+import { PushDataListener, CallingDataListener } from "./";
 import { ChatsLogComponent } from "./ChatslogComponent";
 import { ServerEventListener } from "./ServerEventListener";
 
@@ -29,6 +29,7 @@ export class BackendFactory {
     stalk: ServerImplemented;
     serverEventsListener: ServerEventListener;
     pushDataListener: PushDataListener;
+    callingDataListener: CallingDataListener;
     dataManager: DataManager;
     dataListener: DataListener;
     chatLogComp: ChatsLogComponent;
@@ -37,6 +38,7 @@ export class BackendFactory {
         console.log("BackendFactory:");
 
         this.pushDataListener = new PushDataListener();
+        this.callingDataListener = new CallingDataListener();
         this.dataManager = new DataManager();
         this.dataListener = new DataListener(this.dataManager);
     }
@@ -125,5 +127,6 @@ export class BackendFactory {
         this.serverEventsListener.addServerListener(this.dataListener);
         this.serverEventsListener.addChatListener(this.dataListener);
         this.serverEventsListener.addPushListener(this.pushDataListener);
+        this.serverEventsListener.addCallingListener(this.callingDataListener);
     }
 }

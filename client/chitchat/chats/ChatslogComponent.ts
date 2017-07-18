@@ -113,9 +113,6 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
                     results.push(room);
                     resultCallback();
                 }).catch(err => {
-                    if (err)
-                        console.warn("getRoomInfo", err);
-
                     resultCallback();
                 });
         }, (err) => {
@@ -144,9 +141,6 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
                     unreadLogs.push(value);
                     callback();
                 }).catch(err => {
-                    if (err)
-                        console.warn("getUnreadMessage", err);
-
                     callback();
                 });
             } else {
@@ -162,10 +156,7 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
 
         // add some items to the queue (batch-wise)
         if (roomAccess && roomAccess.length > 0) {
-            q.push(roomAccess, function (err) {
-                if (!!err)
-                    console.error("getUnreadMessage err", err);
-            });
+            q.push(roomAccess, function (err) { });
         }
         else {
             callback(null, null);
@@ -176,7 +167,6 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         let response = await chatroomService.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString());
         let value = await response.json();
 
-        console.log("getUnreadMessage result: ", value);
         if (value.success) {
             let unread = value.result as IUnread;
             unread.rid = roomAccess.roomId;
@@ -224,8 +214,6 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
 
         let response = await chatroomService.getRoomInfo(room_id);
         let json = await response.json();
-
-        console.log("getRoomInfo value:", json);
 
         if (json.success) {
             let roomInfos = json.result as Array<Room>;
@@ -275,7 +263,6 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
                         callback();
                     });
                 }).catch(err => {
-                    console.warn(err);
                     callback();
                 });
             }
@@ -428,9 +415,6 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
                         resolve(room);
                     });
                 }).catch(err => {
-                    if (err)
-                        console.warn("getRoomInfo fail", err);
-
                     rejected(err);
                 });
             }
