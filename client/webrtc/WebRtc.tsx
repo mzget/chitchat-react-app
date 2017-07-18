@@ -3,7 +3,6 @@ This is a Tutorial App with a simpleWebRTC React component.
 Compatible with Chrome and Firefox.
 
 1. To join a room uncomment the line 76 in readyToCall(){...} and provide a room name in joinRoom('change-this-roomname').
-
 2. The app by default uses the signal server from simplewebrtc.com. To use a custom Signal server such as the one in  https://github.com/andyet/signalmaster, provide your url link in the code (line 38) as shown in the example at https://simplewebrtc.com/notsosimple.html. 
 */
 
@@ -19,6 +18,7 @@ import SimpleWebRTC from 'simplewebrtc';
 import { signalingServer } from "../Chitchat";
 import * as utils from "../utils/";
 import * as chatroom from "../chitchat/chats/redux/chatroom/";
+import * as callingActions from "../chitchat/calling/";
 
 class WebRtc extends React.Component<utils.IComponentProps, any> {
     webrtc: any;
@@ -49,7 +49,10 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
     }
 
     componentDidMount() {
+        let { stalkReducer } = this.props;
+        let _rtc = stalkReducer.get("webrtc");
         let self = this;
+
         this.webrtc = new SimpleWebRTC({
             localVideoEl: ReactDOM.findDOMNode(this.refs.local),
             remoteVideosEl: "",
@@ -83,7 +86,6 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
                 // fileinput.disabled = 'disabled';
             }
         });
-
         // remote p2p/ice failure
         this.webrtc.on('connectivityError', function (peer) {
             console.warn("connectivityError", peer);
@@ -94,6 +96,8 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
                 // fileinput.disabled = 'disabled';
             }
         });
+
+        this.props.dispatch(callingActions.saveWebRtcState(this.webrtc));
     }
 
     addVideo(video, peer) {
@@ -216,7 +220,8 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
 
 const mapStateToProps = (state) => ({
     userReducer: state.userReducer,
-    alertReducer: state.alertReducer
+    alertReducer: state.alertReducer,
+    stalkReducer: state.stalkReducer
 });
-export var WebRtcPage = connect(mapStateToProps)(WebRtc) as React.ComponentClass<{ onError }>;
+export var WebRtcPage = connect(mapStateToProps)(WebRtc) as React.ComponentClass<any>;
 WebRtcPage = withRouter(WebRtcPage);

@@ -23,10 +23,11 @@ export const stalkInitState = {
     isFetching: false,
     state: null,
     webrtc: null,
+    incommingCall: null,
     notiMessage: null,
     stalkToken: "",
     user: null
-};
+} as IStalkStoreParams;
 
 // Define our record types with a typescript interface 
 interface IStalkStoreParams {
@@ -34,6 +35,7 @@ interface IStalkStoreParams {
     isFetching: boolean;
     state: string;
     webrtc: any;
+    incommingCall: any;
     notiMessage: any;
     stalkToken: string;
     user: any;
@@ -87,6 +89,9 @@ export function stalkReducer(state = initialState, action) {
 
         case callingActions.WEBRTC_CREATED: {
             return state.set("webrtc", action.payload);
+        }
+        case callingActions.ON_VIDEOCALL_INCOMMING: {
+            return state.set("incommingCall", action.payload);
         }
 
         case StalkNotificationActions.STALK_NOTICE_NEW_MESSAGE: {

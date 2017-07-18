@@ -29,6 +29,7 @@ Store.subscribe(() => {
 });
 
 import { ReapopNotiBoxWithState } from "./components/NotificationSystem";
+import { StalkNotiDialog } from "./containers/stalk/StalkNotiDialog";
 
 import { HomePageWithDialogBox } from "./containers/HomeEnhanced";
 import { ForgotAccount } from "./containers/ForgottenAccount";
@@ -52,6 +53,7 @@ class App extends React.Component<any, any> {
                 <Router>
                     <div id="app">
                         <ReapopNotiBoxWithState />
+                        <StalkNotiDialog />
 
                         <Route path="/" exact component={HomePageWithDialogBox} />
                         <Route path="/forgotaccount" component={ForgotAccount} />

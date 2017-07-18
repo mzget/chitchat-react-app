@@ -5,6 +5,7 @@
  */
 import { CallingEvents } from "stalk-js";
 import { BackendFactory, CallPayload } from "../../";
+import * as callingActions from "../../../calling/";
 
 export function stalkCallingInit() {
     const callingDataListener = BackendFactory.getInstance().callingDataListener;
@@ -18,6 +19,7 @@ function onCall_handler(dataEvent) {
 
     switch (call.event) {
         case CallingEvents.VideoCall:
+            callingActions.onVideoCall(call.payload);
             break;
         case CallingEvents.VoiceCall:
             break;
