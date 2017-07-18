@@ -68,6 +68,9 @@ export function stalkReducer(state = initialState, action) {
         case callingActions.ON_VIDEOCALL_INCOMMING: {
             return state.set("incommingCall", action.payload);
         }
+        case callingActions.ON_HANGUP_VIDEOCALL: {
+            return state.set("incommingCall", null);
+        }
         case StalkNotificationActions.STALK_NOTICE_NEW_MESSAGE: {
             return state.set("notiMessage", action.payload);
         }

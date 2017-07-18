@@ -13,6 +13,7 @@ import { withRouter } from "react-router-dom";
 import Flexbox from "flexbox-react";
 import { signalingServer } from "../Chitchat";
 import * as chatroom from "../chitchat/chats/redux/chatroom/";
+import * as calling from "../chitchat/calling/";
 const SimpleWebRTC = require('../chitchat/libs/simplewebrtc');
 class WebRtc extends React.Component {
     constructor(props) {
@@ -148,12 +149,13 @@ class WebRtc extends React.Component {
                     targets.push(value._id);
                 }
             });
-            this.props.dispatch(chatroom.videoCallRequest({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
+            this.props.dispatch(calling.videoCallRequest({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
         }
     }
     disconnect() {
         this.webrtc.leaveRoom();
         this.webrtc.disconnect();
+        this.props.dispatch(calling.videoCallHangup());
     }
     render() {
         return (<Flexbox flexDirection="column" justifyContent={"flex-start"}>

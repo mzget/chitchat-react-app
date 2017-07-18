@@ -4,6 +4,7 @@ import * as userRx from "./user/userRx";
 import * as chatroom from "../chitchat/chats/redux/chatroom/";
 import * as chatlogsActions from "../chitchat/chats/redux/chatlogs/chatlogsActions";
 import * as chatlogRxActions from "../chitchat/chats/redux/chatlogs/chatlogRxActions";
+import * as calling from "../chitchat/calling/";
 import * as authRx from "./authen/authRx";
 import * as teamRx from "./team/teamRx";
 import * as adminRx from "./admin/adminRx";
@@ -65,7 +66,7 @@ export const rootEpic = combineEpics(
     chatroom.updateMessagesRead_Epic,
     /// @message rx.
     // messageRxEpic.fetchOlderMessageCount_Epic,
-    chatroom.videoCall_Epic,
+    calling.videoCall_Epic,
 
     ///@chatlogs
     chatlogRxActions.getLastAccessRoom_Epic,

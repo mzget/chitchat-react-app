@@ -17,7 +17,7 @@ import Flexbox from "flexbox-react";
 import { signalingServer } from "../Chitchat";
 import * as utils from "../utils/";
 import * as chatroom from "../chitchat/chats/redux/chatroom/";
-import * as callingActions from "../chitchat/calling/";
+import * as calling from "../chitchat/calling/";
 const SimpleWebRTC = require('../chitchat/libs/simplewebrtc');
 
 class WebRtc extends React.Component<utils.IComponentProps, any> {
@@ -172,13 +172,14 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
                 }
             });
 
-            this.props.dispatch(chatroom.videoCallRequest({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
+            this.props.dispatch(calling.videoCallRequest({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
         }
     }
 
     disconnect() {
         this.webrtc.leaveRoom();
         this.webrtc.disconnect();
+        this.props.dispatch(calling.videoCallHangup());
     }
 
     render() {

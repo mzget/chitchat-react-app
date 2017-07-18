@@ -1,8 +1,8 @@
 import { CallingEvents } from "stalk-js";
 import { Observable } from "rxjs/Rx";
 import { createAction } from "redux-actions";
-import { ChitChatFactory } from "../../";
-import { BackendFactory } from "../../BackendFactory";
+import { ChitChatFactory } from "../../chats/";
+import { BackendFactory } from "../../chats/BackendFactory";
 const VIDEO_CALL_REQUEST = "VIDEO_CALL_REQUEST";
 export const VIDEO_CALL_SUCCESS = "VIDEO_CALL_SUCCESS";
 export const VIDEO_CALL_FAILURE = "VIDEO_CALL_FAILURE";
