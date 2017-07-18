@@ -22,7 +22,6 @@ export const stalkInitState = {
     isInit: false,
     isFetching: false,
     state: null,
-    webrtc: null,
     incommingCall: null,
     notiMessage: null,
     stalkToken: "",
@@ -34,7 +33,6 @@ interface IStalkStoreParams {
     isInit: boolean;
     isFetching: boolean;
     state: string;
-    webrtc: any;
     incommingCall: any;
     notiMessage: any;
     stalkToken: string;
@@ -87,9 +85,6 @@ export function stalkReducer(state = initialState, action) {
             return state.set("state", StalkBridgeActions.STALK_ON_SOCKET_RECONNECT);
         }
 
-        case callingActions.WEBRTC_CREATED: {
-            return state.set("webrtc", action.payload);
-        }
         case callingActions.ON_VIDEOCALL_INCOMMING: {
             return state.set("incommingCall", action.payload);
         }

@@ -13,12 +13,12 @@ import { shallowEqual } from "recompose";
 import { withRouter } from "react-router-dom";
 
 import Flexbox from "flexbox-react";
-import SimpleWebRTC from 'simplewebrtc';
 
 import { signalingServer } from "../Chitchat";
 import * as utils from "../utils/";
 import * as chatroom from "../chitchat/chats/redux/chatroom/";
 import * as callingActions from "../chitchat/calling/";
+const SimpleWebRTC = require('../chitchat/libs/simplewebrtc');
 
 class WebRtc extends React.Component<utils.IComponentProps, any> {
     webrtc: any;
@@ -49,9 +49,8 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
     }
 
     componentDidMount() {
-        let { stalkReducer } = this.props;
-        let _rtc = stalkReducer.get("webrtc");
         let self = this;
+        let { stalkReducer } = this.props;
 
         this.webrtc = new SimpleWebRTC({
             localVideoEl: ReactDOM.findDOMNode(this.refs.local),
@@ -59,10 +58,9 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
             autoRequestMedia: true,
             enableDataChannels: false,
             url: signalingServer,
-            debug: true
+            socketio: { 'force new connection': true },
+            debug: false
         });
-
-        console.log("webrtc component mounted", this.webrtc);
 
         this.webrtc.on('connectionReady', function (sessionId) {
             console.log("connectionReady", sessionId);
@@ -96,8 +94,6 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
                 // fileinput.disabled = 'disabled';
             }
         });
-
-        this.props.dispatch(callingActions.saveWebRtcState(this.webrtc));
     }
 
     addVideo(video, peer) {
@@ -159,28 +155,30 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
     }
 
     readyToCall() {
-        console.log('readyToCall');
+        let { match, userReducer: { user }, stalkReducer } = this.props;
+        let incommingCall = stalkReducer.get("incommingCall");
+        if (!!incommingCall) {
+            this.webrtc.joinRoom(incommingCall.room_id);
+        }
+        else {
+            let room_id = match.params.id;
+            this.webrtc.joinRoom(room_id);
 
-        let { match, userReducer: { user } } = this.props;
-        let room_id = match.params.id;
-        // this.webrtc.joinRoom(this.props.obj.roomname);
-        this.webrtc.createRoom(room_id);
+            let room = chatroom.getRoom(room_id);
+            let targets = new Array<string>();
+            room.members.map(value => {
+                if (value._id != user._id) {
+                    targets.push(value._id);
+                }
+            });
 
-        let room = chatroom.getRoom(room_id);
-        let targets = new Array<string>();
-        room.members.map(value => {
-            if (value._id != user._id) {
-                targets.push(value._id);
-            }
-        });
-
-        this.props.dispatch(chatroom.videoCallRequest({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
+            this.props.dispatch(chatroom.videoCallRequest({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
+        }
     }
 
     disconnect() {
         this.webrtc.leaveRoom();
         this.webrtc.disconnect();
-        this.webrtc = null;
     }
 
     render() {

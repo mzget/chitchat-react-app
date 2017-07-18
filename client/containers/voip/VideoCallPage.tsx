@@ -31,7 +31,6 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         }
     }
 
-
     componentWillReceiveProps(nextProps: IComponentProps) {
     }
 
@@ -73,4 +72,4 @@ const mapStateToProps = (state) => ({
     teamReducer: state.teamReducer
 });
 export var VideoCallPage = connect(mapStateToProps)(VideoCall) as React.ComponentClass<{ onError }>;
-VideoCallPage = withRouter(VideoCallPage);
+VideoCallPage = withRouter<any>(VideoCallPage);
