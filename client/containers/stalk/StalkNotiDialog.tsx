@@ -27,12 +27,11 @@ class StalkNotiDialogModal extends React.Component<utils.IComponentProps, any> {
     }
 
     componentWillReceiveProps(nextProps: utils.IComponentProps) {
+        let inLine = this.props.stalkReducer.get("inline");
         let prevCall = this.props.stalkReducer.get("incommingCall");
         let nextCall = nextProps.stalkReducer.get("incommingCall");
-        if (!!nextCall && !shallowEqual(prevCall, nextCall)) {
-            if ((!prevCall && !!nextCall) || (prevCall.room_id != nextCall.room_id)) {
-                this.handleOpen();
-            }
+        if (!!nextCall && !shallowEqual(prevCall, nextCall) && nextCall.room_id != inLine) {
+            this.handleOpen();
         }
     }
 

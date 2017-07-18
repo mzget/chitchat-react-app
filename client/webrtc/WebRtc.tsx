@@ -155,14 +155,19 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
     }
 
     readyToCall() {
+        let self = this;
         let { match, userReducer: { user }, stalkReducer } = this.props;
         let incommingCall = stalkReducer.get("incommingCall");
         if (!!incommingCall) {
-            this.webrtc.joinRoom(incommingCall.room_id);
+            this.webrtc.joinRoom(incommingCall.room_id, () => {
+                self.props.dispatch(calling.onCalling(incommingCall.room_id));
+            });
         }
         else {
             let room_id = match.params.id;
-            this.webrtc.joinRoom(room_id);
+            this.webrtc.joinRoom(room_id, () => {
+                self.props.dispatch(calling.onCalling(room_id));
+            });
 
             let room = chatroom.getRoom(room_id);
             let targets = new Array<string>();

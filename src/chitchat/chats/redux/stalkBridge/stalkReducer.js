@@ -20,6 +20,7 @@ export const stalkInitState = {
     isFetching: false,
     state: null,
     incommingCall: null,
+    inline: "",
     notiMessage: null,
     stalkToken: "",
     user: null
@@ -69,7 +70,10 @@ export function stalkReducer(state = initialState, action) {
             return state.set("incommingCall", action.payload);
         }
         case callingActions.ON_HANGUP_VIDEOCALL: {
-            return state.set("incommingCall", null);
+            return state.set("incommingCall", null).set("inline", null);
+        }
+        case callingActions.ON_CALLING: {
+            return state.set("inline", action.payload);
         }
         case StalkNotificationActions.STALK_NOTICE_NEW_MESSAGE: {
             return state.set("notiMessage", action.payload);

@@ -14,3 +14,7 @@ export function onVideoCall(payload: any) {
 
 export const ON_HANGUP_VIDEOCALL = "ON_HANGUP_VIDEOCALL";
 export const videoCallHangup = createAction(ON_HANGUP_VIDEOCALL);
+
+
+export const ON_CALLING = "ON_CALLING";
+export const onCalling = createAction(ON_CALLING, room_id => room_id);
