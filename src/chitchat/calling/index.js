@@ -1,2 +1,2 @@
-export * from "./WebRtcFactory";
 export * from "./actions/CallingActions";
+export * from "./actions/CallingRxEpic";

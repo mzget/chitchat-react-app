@@ -3,7 +3,6 @@ This is a Tutorial App with a simpleWebRTC React component.
 Compatible with Chrome and Firefox.
 
 1. To join a room uncomment the line 76 in readyToCall(){...} and provide a room name in joinRoom('change-this-roomname').
-
 2. The app by default uses the signal server from simplewebrtc.com. To use a custom Signal server such as the one in  https://github.com/andyet/signalmaster, provide your url link in the code (line 38) as shown in the example at https://simplewebrtc.com/notsosimple.html.
 */
 import * as React from "react";
@@ -12,9 +11,10 @@ import { connect } from "react-redux";
 import { shallowEqual } from "recompose";
 import { withRouter } from "react-router-dom";
 import Flexbox from "flexbox-react";
-import SimpleWebRTC from 'simplewebrtc';
 import { signalingServer } from "../Chitchat";
 import * as chatroom from "../chitchat/chats/redux/chatroom/";
+import * as calling from "../chitchat/calling/";
+const SimpleWebRTC = require('../chitchat/libs/simplewebrtc');
 class WebRtc extends React.Component {
     constructor(props) {
         super(props);
@@ -37,15 +37,16 @@ class WebRtc extends React.Component {
     }
     componentDidMount() {
         let self = this;
+        let { stalkReducer } = this.props;
         this.webrtc = new SimpleWebRTC({
             localVideoEl: ReactDOM.findDOMNode(this.refs.local),
             remoteVideosEl: "",
             autoRequestMedia: true,
             enableDataChannels: false,
             url: signalingServer,
-            debug: true
+            socketio: { 'force new connection': true },
+            debug: false
         });
-        console.log("webrtc component mounted", this.webrtc);
         this.webrtc.on('connectionReady', function (sessionId) {
             console.log("connectionReady", sessionId);
         });
@@ -133,24 +134,33 @@ class WebRtc extends React.Component {
         }
     }
     readyToCall() {
-        console.log('readyToCall');
-        let { match, userReducer: { user } } = this.props;
-        let room_id = match.params.id;
-        // this.webrtc.joinRoom(this.props.obj.roomname);
-        this.webrtc.createRoom(room_id);
-        let room = chatroom.getRoom(room_id);
-        let targets = new Array();
-        room.members.map(value => {
-            if (value._id != user._id) {
-                targets.push(value._id);
-            }
-        });
-        this.props.dispatch(chatroom.videoCallRequest({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
+        let self = this;
+        let { match, userReducer: { user }, stalkReducer } = this.props;
+        let incommingCall = stalkReducer.get("incommingCall");
+        if (!!incommingCall) {
+            this.webrtc.joinRoom(incommingCall.room_id, () => {
+                self.props.dispatch(calling.onCalling(incommingCall.room_id));
+            });
+        }
+        else {
+            let room_id = match.params.id;
+            this.webrtc.joinRoom(room_id, () => {
+                self.props.dispatch(calling.onCalling(room_id));
+            });
+            let room = chatroom.getRoom(room_id);
+            let targets = new Array();
+            room.members.map(value => {
+                if (value._id != user._id) {
+                    targets.push(value._id);
+                }
+            });
+            this.props.dispatch(calling.videoCallRequest({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
+        }
     }
     disconnect() {
         this.webrtc.leaveRoom();
         this.webrtc.disconnect();
-        this.webrtc = null;
+        this.props.dispatch(calling.videoCallHangup());
     }
     render() {
         return (<Flexbox flexDirection="column" justifyContent={"flex-start"}>
@@ -171,7 +181,8 @@ class WebRtc extends React.Component {
 }
 const mapStateToProps = (state) => ({
     userReducer: state.userReducer,
-    alertReducer: state.alertReducer
+    alertReducer: state.alertReducer,
+    stalkReducer: state.stalkReducer
 });
 export var WebRtcPage = connect(mapStateToProps)(WebRtc);
 WebRtcPage = withRouter(WebRtcPage);
