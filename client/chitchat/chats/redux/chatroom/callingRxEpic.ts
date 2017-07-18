@@ -21,7 +21,8 @@ export const videoCall_Epic = action$ =>
             let callingApi = backendFactory.getServer().getCallingAPI();
 
             let { target_ids, user_id, room_id } = action.payload;
-            return Observable.fromPromise(callingApi.callingRequest(target_ids, CallingEvents.VideoCall, chitchatFac.config.Stalk.apiKey, { user_id, room_id }));
+            return Observable.fromPromise(
+                callingApi.callingRequest(target_ids, CallingEvents.VideoCall, chitchatFac.config.Stalk.apiKey, { user_id, room_id }));
         })
         .map(response => videoCallSuccess(response))
         .catch(error => Observable.of(videoCallFailure(error)))
