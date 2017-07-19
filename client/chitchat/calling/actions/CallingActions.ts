@@ -6,11 +6,14 @@ const getStore = () => ChitChatFactory.getInstance().store as Store<any>;
 
 
 export const ON_VIDEOCALL_INCOMMING = "ON_VIDEOCALL_INCOMMING";
-// export const WEBRTC_CREATE_FAILURE = "WEBRTC_CREATE_FAILURE";
 const videoCallIncoming = createAction(ON_VIDEOCALL_INCOMMING, payload => payload);
 export function onVideoCall(payload: any) {
     getStore().dispatch(videoCallIncoming(payload));
 }
+
+export function onHangupCall(payload: { user_id: string }) {
+    getStore().dispatch(onVideoCallEnded());
+};
 
 export const ON_VIDEOCALL_ENDED = "ON_VIDEOCALL_ENDED";
 export const onVideoCallEnded = createAction(ON_VIDEOCALL_ENDED);

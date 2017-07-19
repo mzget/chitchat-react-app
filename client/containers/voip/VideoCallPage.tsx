@@ -32,6 +32,11 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
+        let prevInline = this.props.stalkReducer.get("inline");
+        let nextInline = nextProps.stalkReducer.get("inline");
+        if (!nextInline && !shallowEqual(nextInline, prevInline)) {
+            this.onBackPressed();
+        }
     }
 
     onBackPressed() {
@@ -69,7 +74,8 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 }
 
 const mapStateToProps = (state) => ({
-    teamReducer: state.teamReducer
+    teamReducer: state.teamReducer,
+    stalkReducer: state.stalkReducer
 });
 export var VideoCallPage = connect(mapStateToProps)(VideoCall) as React.ComponentClass<{ onError }>;
 VideoCallPage = withRouter<any>(VideoCallPage);

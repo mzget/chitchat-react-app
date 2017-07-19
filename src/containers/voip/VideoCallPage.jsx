@@ -1,6 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import { shallowEqual } from "recompose";
 import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
@@ -18,6 +19,11 @@ class VideoCall extends React.Component {
         }
     }
     componentWillReceiveProps(nextProps) {
+        let prevInline = this.props.stalkReducer.get("inline");
+        let nextInline = nextProps.stalkReducer.get("inline");
+        if (!nextInline && !shallowEqual(nextInline, prevInline)) {
+            this.onBackPressed();
+        }
     }
     onBackPressed() {
         // Jump to main menu.
@@ -47,7 +53,8 @@ class VideoCall extends React.Component {
     }
 }
 const mapStateToProps = (state) => ({
-    teamReducer: state.teamReducer
+    teamReducer: state.teamReducer,
+    stalkReducer: state.stalkReducer
 });
 export var VideoCallPage = connect(mapStateToProps)(VideoCall);
 VideoCallPage = withRouter(VideoCallPage);

@@ -12,11 +12,13 @@ import * as calling from "../../chitchat/calling/";
 class StalkNotiDialogModal extends React.Component {
     constructor(props) {
         super(props);
-        this.handleOpen = () => {
-            this.setState({ open: true });
+        this.handleOpen = (cb) => {
+            if (!this.state.open) {
+                this.setState({ open: true }, cb);
+            }
         };
-        this.handleClose = () => {
-            this.setState({ open: false });
+        this.handleClose = (cb) => {
+            this.setState({ open: false }, cb);
         };
         this.state = {
             open: false,
@@ -28,20 +30,29 @@ class StalkNotiDialogModal extends React.Component {
         let inLine = this.props.stalkReducer.get("inline");
         let prevCall = this.props.stalkReducer.get("incommingCall");
         let nextCall = nextProps.stalkReducer.get("incommingCall");
-        if (!!nextCall && !shallowEqual(prevCall, nextCall) && nextCall.room_id != inLine) {
-            this.handleOpen();
+        if (!inLine && !!nextCall && !shallowEqual(prevCall, nextCall)) {
+            this.handleOpen(null);
+        }
+        else {
+            if (!!inLine && !!nextCall && (inLine != nextCall.room_id) && !shallowEqual(prevCall, nextCall)) {
+                this.handleOpen(null);
+            }
         }
     }
     rejectedCall() {
-        this.handleClose();
-        let { _id } = this.props.userReducer.user;
-        let { room_id, user_id } = this.props.stalkReducer.get("incommingCall");
-        this.props.dispatch(calling.hangupCallRequest({ target_ids: [user_id], user_id: _id }));
+        let self = this;
+        this.handleClose(() => {
+            let { _id } = self.props.userReducer.user;
+            let { room_id, user_id } = self.props.stalkReducer.get("incommingCall");
+            self.props.dispatch(calling.hangupCallRequest({ target_ids: [user_id], user_id: _id }));
+        });
     }
     answerCall() {
-        this.handleClose();
-        let { room_id } = this.props.stalkReducer.get("incommingCall");
-        this.props.history.push(`/videocall/${room_id}`);
+        let self = this;
+        this.handleClose(() => {
+            let { room_id } = self.props.stalkReducer.get("incommingCall");
+            self.props.history.push(`/videocall/${room_id}`);
+        });
     }
     render() {
         const actions = [
@@ -50,8 +61,8 @@ class StalkNotiDialogModal extends React.Component {
         ];
         return (<MuiThemeProvider>
                 <div>
-                    <Dialog title="Dialog With Actions" actions={actions} modal={true} open={this.state.open}>
-                        Only actions can close this dialog.
+                    <Dialog title="Incomming Call!" actions={actions} modal={true} open={this.state.open}>
+                        Incomming Call!
                  </Dialog>
                 </div>
             </MuiThemeProvider>);
