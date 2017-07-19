@@ -69,8 +69,11 @@ export function stalkReducer(state = initialState, action) {
         case callingActions.ON_VIDEOCALL_INCOMMING: {
             return state.set("incommingCall", action.payload);
         }
-        case callingActions.ON_HANGUP_VIDEOCALL: {
+        case callingActions.ON_VIDEOCALL_ENDED: {
             return state.set("incommingCall", null).set("inline", null);
+        }
+        case callingActions.HANGUP_CALL_SUCCESS: {
+            return state.set("incommingCall", null);
         }
         case callingActions.ON_CALLING: {
             return state.set("inline", action.payload);

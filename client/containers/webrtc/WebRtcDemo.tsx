@@ -3,25 +3,21 @@ This is a Tutorial App with a simpleWebRTC React component.
 Compatible with Chrome and Firefox.
 
 1. To join a room uncomment the line 76 in readyToCall(){...} and provide a room name in joinRoom('change-this-roomname').
+
 2. The app by default uses the signal server from simplewebrtc.com. To use a custom Signal server such as the one in  https://github.com/andyet/signalmaster, provide your url link in the code (line 38) as shown in the example at https://simplewebrtc.com/notsosimple.html. 
 */
 
 import * as React from "react";
 import * as ReactDOM from 'react-dom';
-import { connect } from "react-redux";
-import { shallowEqual } from "recompose";
-import { withRouter } from "react-router-dom";
 
 import Flexbox from "flexbox-react";
+import SimpleWebRTC from 'simplewebrtc';
 
-import { signalingServer } from "../Chitchat";
-import * as utils from "../utils/";
-import * as chatroom from "../chitchat/chats/redux/chatroom/";
-import * as calling from "../chitchat/calling/";
-const SimpleWebRTC = require('../chitchat/libs/simplewebrtc');
+import { signalingServer } from "../../Chitchat";
 
-class WebRtc extends React.Component<utils.IComponentProps, any> {
+export class WebRtcDemo extends React.Component<any, any> {
     webrtc: any;
+    roomname: string = "chitchate-rtc";
 
     constructor(props) {
         super(props);
@@ -37,30 +33,18 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
         this.disconnect();
     }
 
-    componentWillReceiveProps(nextProps: utils.IComponentProps) {
-        let { alertReducer: { error } } = nextProps;
-
-        if (!shallowEqual(this.props.alertReducer.error, error) && !!error) {
-            this.props.onError(error);
-        }
-        if (!error && this.props.alertReducer.error) {
-            this.props.history.goBack();
-        }
-    }
-
     componentDidMount() {
         let self = this;
-        let { stalkReducer } = this.props;
-
         this.webrtc = new SimpleWebRTC({
             localVideoEl: ReactDOM.findDOMNode(this.refs.local),
             remoteVideosEl: "",
             autoRequestMedia: true,
             enableDataChannels: false,
             url: signalingServer,
-            socketio: { 'force new connection': true },
             debug: false
         });
+
+        console.log("webrtc component mounted");
 
         this.webrtc.on('connectionReady', function (sessionId) {
             console.log("connectionReady", sessionId);
@@ -84,6 +68,7 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
                 // fileinput.disabled = 'disabled';
             }
         });
+
         // remote p2p/ice failure
         this.webrtc.on('connectivityError', function (peer) {
             console.warn("connectivityError", peer);
@@ -155,36 +140,14 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
     }
 
     readyToCall() {
-        let self = this;
-        let { match, userReducer: { user }, stalkReducer } = this.props;
-        let incommingCall = stalkReducer.get("incommingCall");
-        if (!!incommingCall) {
-            this.webrtc.joinRoom(incommingCall.room_id, () => {
-                self.props.dispatch(calling.onCalling(incommingCall.room_id));
-            });
-        }
-        else {
-            let room_id = match.params.id;
-            this.webrtc.joinRoom(room_id, () => {
-                self.props.dispatch(calling.onCalling(room_id));
-            });
-
-            let room = chatroom.getRoom(room_id);
-            let targets = new Array<string>();
-            room.members.map(value => {
-                if (value._id != user._id) {
-                    targets.push(value._id);
-                }
-            });
-
-            this.props.dispatch(calling.videoCallRequest({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
-        }
+        console.log('readyToCall');
+        this.webrtc.joinRoom(this.roomname);
     }
 
     disconnect() {
         this.webrtc.leaveRoom();
         this.webrtc.disconnect();
-        this.props.dispatch(calling.videoCallHangup());
+        this.webrtc = null;
     }
 
     render() {
@@ -221,11 +184,3 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
         );
     }
 }
-
-const mapStateToProps = (state) => ({
-    userReducer: state.userReducer,
-    alertReducer: state.alertReducer,
-    stalkReducer: state.stalkReducer
-});
-export var WebRtcPage = connect(mapStateToProps)(WebRtc) as React.ComponentClass<any>;
-WebRtcPage = withRouter(WebRtcPage);

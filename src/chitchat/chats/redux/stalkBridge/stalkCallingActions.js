@@ -20,6 +20,7 @@ function onCall_handler(dataEvent) {
         case CallingEvents.VoiceCall:
             break;
         case CallingEvents.HangupCall:
+            callingActions.onHangupCall(call.payload);
             break;
         case CallingEvents.TheLineIsBusy:
             break;

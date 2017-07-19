@@ -11,10 +11,10 @@ import { connect } from "react-redux";
 import { shallowEqual } from "recompose";
 import { withRouter } from "react-router-dom";
 import Flexbox from "flexbox-react";
-import { signalingServer } from "../Chitchat";
-import * as chatroom from "../chitchat/chats/redux/chatroom/";
-import * as calling from "../chitchat/calling/";
-const SimpleWebRTC = require('../chitchat/libs/simplewebrtc');
+import { signalingServer } from "../../Chitchat";
+import * as chatroom from "../../chitchat/chats/redux/chatroom/";
+import * as calling from "../../chitchat/calling/";
+const SimpleWebRTC = require('../../chitchat/libs/simplewebrtc');
 class WebRtc extends React.Component {
     constructor(props) {
         super(props);
@@ -161,6 +161,16 @@ class WebRtc extends React.Component {
         this.webrtc.leaveRoom();
         this.webrtc.disconnect();
         this.props.dispatch(calling.onVideoCallEnded());
+        let { match, userReducer: { user }, stalkReducer } = this.props;
+        let room_id = match.params.id;
+        let room = chatroom.getRoom(room_id);
+        let targets = new Array();
+        room.members.map(value => {
+            if (value._id != user._id) {
+                targets.push(value._id);
+            }
+        });
+        this.props.dispatch(calling.hangupCallRequest({ target_ids: targets, user_id: user._id }));
     }
     render() {
         return (<Flexbox flexDirection="column" justifyContent={"flex-start"}>

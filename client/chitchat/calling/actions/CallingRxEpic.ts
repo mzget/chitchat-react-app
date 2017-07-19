@@ -22,8 +22,28 @@ export const videoCall_Epic = action$ =>
 
             let { target_ids, user_id, room_id } = action.payload;
             return Observable.fromPromise(
-                callingApi.callingRequest(target_ids, CallingEvents.VideoCall, chitchatFac.config.Stalk.apiKey, { user_id, room_id }));
+                callingApi.calling(chitchatFac.config.Stalk.apiKey, CallingEvents.VideoCall, target_ids, { user_id, room_id }));
         })
         .map(response => videoCallSuccess(response))
         .catch(error => Observable.of(videoCallFailure(error)))
         .takeUntil(action$.ofType(VIDEO_CALL_CANCELLED));
+
+const HANGUP_CALL = "HANGUP_CALL";
+export const HANGUP_CALL_SUCCESS = "HANGUP_CALL_SUCCESS";
+export const HANGUP_CALL_FAILURE = "HANGUP_CALL_FAILURE";
+export const hangupCallRequest = createAction(HANGUP_CALL, ({ target_ids, user_id }) => ({ target_ids, user_id }));
+const hangupCallSuccess = createAction(HANGUP_CALL_SUCCESS, payload => payload);
+const hangupCallFailure = createAction(HANGUP_CALL_FAILURE, error => error);
+export const hangupVideoCall_Epic = action$ =>
+    action$.ofType(HANGUP_CALL)
+        .mergeMap(action => {
+            let chitchatFac = ChitChatFactory.getInstance();
+            let backendFactory = BackendFactory.getInstance();
+            let callingApi = backendFactory.getServer().getCallingAPI();
+
+            let { target_ids, user_id } = action.payload;
+            return Observable.fromPromise(
+                callingApi.calling(chitchatFac.config.Stalk.apiKey, CallingEvents.HangupCall, target_ids, { user_id }));
+        })
+        .map(response => hangupCallSuccess(response))
+        .catch(error => Observable.of(hangupCallFailure(error)));

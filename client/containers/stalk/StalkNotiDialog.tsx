@@ -9,6 +9,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 import * as utils from "../../utils/";
+import * as calling from "../../chitchat/calling/";
 
 /**
  * A modal dialog can only be closed by selecting one of the actions.
@@ -30,28 +31,44 @@ class StalkNotiDialogModal extends React.Component<utils.IComponentProps, any> {
         let inLine = this.props.stalkReducer.get("inline");
         let prevCall = this.props.stalkReducer.get("incommingCall");
         let nextCall = nextProps.stalkReducer.get("incommingCall");
-        if (!!nextCall && !shallowEqual(prevCall, nextCall) && nextCall.room_id != inLine) {
-            this.handleOpen();
+        if (!inLine && !!nextCall && !shallowEqual(prevCall, nextCall)) {
+            this.handleOpen(null);
+        }
+        else {
+            if (!!inLine && !!nextCall && (inLine != nextCall.room_id) && !shallowEqual(prevCall, nextCall)) {
+                this.handleOpen(null);
+            }
+            if (!inLine && !nextCall && !shallowEqual(prevCall, nextCall) {
+                this.handleClose(null);
+            }
         }
     }
 
     rejectedCall() {
-        this.handleClose();
+        let self = this;
+        this.handleClose(() => {
+            let { _id } = self.props.userReducer.user;
+            let { room_id, user_id } = self.props.stalkReducer.get("incommingCall");
+            self.props.dispatch(calling.hangupCallRequest({ target_ids: [user_id], user_id: _id }));
+        });
     }
 
     answerCall() {
-        this.handleClose();
-
-        let { room_id } = this.props.stalkReducer.get("incommingCall");
-        this.props.history.push(`/videocall/${room_id}`);
+        let self = this;
+        this.handleClose(() => {
+            let { room_id } = self.props.stalkReducer.get("incommingCall");
+            self.props.history.push(`/videocall/${room_id}`);
+        });
     }
 
-    handleOpen = () => {
-        this.setState({ open: true });
+    handleOpen = (cb) => {
+        if (!this.state.open) {
+            this.setState({ open: true }, cb);
+        }
     };
 
-    handleClose = () => {
-        this.setState({ open: false });
+    handleClose = (cb) => {
+        this.setState({ open: false }, cb);
     };
 
     render() {
@@ -72,12 +89,12 @@ class StalkNotiDialogModal extends React.Component<utils.IComponentProps, any> {
             <MuiThemeProvider>
                 <div>
                     <Dialog
-                        title="Dialog With Actions"
+                        title="Incomming Call!"
                         actions={actions}
                         modal={true}
                         open={this.state.open}
                     >
-                        Only actions can close this dialog.
+                        Incomming Call!
                  </Dialog>
                 </div>
             </MuiThemeProvider>
@@ -86,6 +103,7 @@ class StalkNotiDialogModal extends React.Component<utils.IComponentProps, any> {
 }
 
 const mapStateToProps = (state) => ({
+    userReducer: state.userReducer,
     stalkReducer: state.stalkReducer
 });
 export var StalkNotiDialog = connect(mapStateToProps)(StalkNotiDialogModal);
