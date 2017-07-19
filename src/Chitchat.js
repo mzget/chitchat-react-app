@@ -5,7 +5,7 @@ const stalkPort = 3050;
 const stalkKey = "chitchat1234";
 const chitchat_api = "https://chitchats.ga"; //"http://localhost:9000"; "https://chitchats.ga"
 export const chitchat_graphql = "https://chitchats.ga/graphql"; // "http://localhost:9000/graphql" : "https://chitchats.ga/graphql";
-export const signalingServer = "http://chitchats.ga:8888";
+export const signalingServer = "https://chitchats.ga:8888";
 export const config = {
     Stalk: {
         apiKey: stalkKey,
