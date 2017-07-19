@@ -9,7 +9,7 @@ import * as authRx from "../authen/authRx";
 import { UPDATE_LAST_ACCESS_ROOM_FAILURE } from "../../chitchat/chats/redux/chatlogs/chatlogRxActions";
 import * as editGroupActions from "../group/editGroupRxActions";
 import * as adminRx from "../admin/adminRx";
-import * as chatroom from "../../chitchat/chats/redux/chatroom/";
+import * as calling from "../../chitchat/calling/";
 
 export const CLEAR_ALERT = "CLEAR_ALERT";
 
@@ -62,7 +62,7 @@ export const alertReducer = (state = new AlertInitState(), action: ReduxActions.
         }
 
         /**calling actions */
-        case chatroom.VIDEO_CALL_FAILURE: {
+        case calling.VIDEO_CALL_FAILURE: {
             return state.set("error", JSON.stringify(action.payload));
         }
 
