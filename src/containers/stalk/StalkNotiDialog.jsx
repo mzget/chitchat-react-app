@@ -5,6 +5,7 @@ import { withRouter } from "react-router-dom";
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import * as calling from "../../chitchat/calling/";
 /**
  * A modal dialog can only be closed by selecting one of the actions.
  */
@@ -33,6 +34,9 @@ class StalkNotiDialogModal extends React.Component {
     }
     rejectedCall() {
         this.handleClose();
+        let { _id } = this.props.userReducer.user;
+        let { room_id, user_id } = this.props.stalkReducer.get("incommingCall");
+        this.props.dispatch(calling.hangupCallRequest({ target_ids: [user_id], user_id: _id }));
     }
     answerCall() {
         this.handleClose();
@@ -54,6 +58,7 @@ class StalkNotiDialogModal extends React.Component {
     }
 }
 const mapStateToProps = (state) => ({
+    userReducer: state.userReducer,
     stalkReducer: state.stalkReducer
 });
 export var StalkNotiDialog = connect(mapStateToProps)(StalkNotiDialogModal);

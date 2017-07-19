@@ -184,7 +184,7 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
     disconnect() {
         this.webrtc.leaveRoom();
         this.webrtc.disconnect();
-        this.props.dispatch(calling.videoCallHangup());
+        this.props.dispatch(calling.onVideoCallEnded());
     }
 
     render() {

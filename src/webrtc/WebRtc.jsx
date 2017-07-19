@@ -160,7 +160,7 @@ class WebRtc extends React.Component {
     disconnect() {
         this.webrtc.leaveRoom();
         this.webrtc.disconnect();
-        this.props.dispatch(calling.videoCallHangup());
+        this.props.dispatch(calling.onVideoCallEnded());
     }
     render() {
         return (<Flexbox flexDirection="column" justifyContent={"flex-start"}>

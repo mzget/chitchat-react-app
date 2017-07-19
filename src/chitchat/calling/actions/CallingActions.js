@@ -7,7 +7,7 @@ const videoCallIncoming = createAction(ON_VIDEOCALL_INCOMMING, payload => payloa
 export function onVideoCall(payload) {
     getStore().dispatch(videoCallIncoming(payload));
 }
-export const ON_HANGUP_VIDEOCALL = "ON_HANGUP_VIDEOCALL";
-export const videoCallHangup = createAction(ON_HANGUP_VIDEOCALL);
+export const ON_VIDEOCALL_ENDED = "ON_VIDEOCALL_ENDED";
+export const onVideoCallEnded = createAction(ON_VIDEOCALL_ENDED);
 export const ON_CALLING = "ON_CALLING";
 export const onCalling = createAction(ON_CALLING, room_id => room_id);

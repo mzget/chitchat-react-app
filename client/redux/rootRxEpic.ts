@@ -67,6 +67,7 @@ export const rootEpic = combineEpics(
     /// @message rx.
     // messageRxEpic.fetchOlderMessageCount_Epic,
     calling.videoCall_Epic,
+    calling.hangupVideoCall_Epic,
 
     ///@chatlogs
     chatlogRxActions.getLastAccessRoom_Epic,
