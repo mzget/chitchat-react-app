@@ -13,7 +13,7 @@ import * as ReactDOM from 'react-dom';
 import Flexbox from "flexbox-react";
 import SimpleWebRTC from 'simplewebrtc';
 
-import { signalingServer } from "../Chitchat";
+import { signalingServer } from "../../Chitchat";
 
 export class WebRtcDemo extends React.Component<any, any> {
     webrtc: any;

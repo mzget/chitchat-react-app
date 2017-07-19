@@ -11,7 +11,7 @@ import Subheader from "material-ui/Subheader";
 import { IComponentProps } from "../../utils/IComponentProps";
 
 import { SimpleToolbar } from "../../components/SimpleToolbar";
-import { WebRtcPage } from "../../webrtc/";
+import { WebRtcPage } from "../webrtc/";
 
 interface IComponentNameState {
 }

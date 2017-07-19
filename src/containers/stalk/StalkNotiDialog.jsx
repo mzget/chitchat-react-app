@@ -37,6 +37,9 @@ class StalkNotiDialogModal extends React.Component {
             if (!!inLine && !!nextCall && (inLine != nextCall.room_id) && !shallowEqual(prevCall, nextCall)) {
                 this.handleOpen(null);
             }
+            if (!inLine && !nextCall && !shallowEqual(prevCall, nextCall)) {
+                this.handleClose(null);
+            }
         }
     }
     rejectedCall() {
