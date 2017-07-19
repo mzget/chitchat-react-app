@@ -16,7 +16,7 @@ export const videoCall_Epic = action$ => action$.ofType(VIDEO_CALL_REQUEST)
     let backendFactory = BackendFactory.getInstance();
     let callingApi = backendFactory.getServer().getCallingAPI();
     let { target_ids, user_id, room_id } = action.payload;
-    return Observable.fromPromise(callingApi.callingRequest(target_ids, CallingEvents.VideoCall, chitchatFac.config.Stalk.apiKey, { user_id, room_id }));
+    return Observable.fromPromise(callingApi.calling(chitchatFac.config.Stalk.apiKey, CallingEvents.VideoCall, target_ids, { user_id, room_id }));
 })
     .map(response => videoCallSuccess(response))
     .catch(error => Observable.of(videoCallFailure(error)))
@@ -33,7 +33,7 @@ export const hangupVideoCall_Epic = action$ => action$.ofType(HANGUP_CALL)
     let backendFactory = BackendFactory.getInstance();
     let callingApi = backendFactory.getServer().getCallingAPI();
     let { target_ids, user_id } = action.payload;
-    return Observable.fromPromise(callingApi.callingRequest(target_ids, CallingEvents.HangupCall, chitchatFac.config.Stalk.apiKey, { user_id }));
+    return Observable.fromPromise(callingApi.calling(chitchatFac.config.Stalk.apiKey, CallingEvents.HangupCall, target_ids, { user_id }));
 })
     .map(response => hangupCallSuccess(response))
     .catch(error => Observable.of(hangupCallFailure(error)));
