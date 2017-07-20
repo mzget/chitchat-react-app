@@ -1,6 +1,5 @@
 {
   "name": "chitchat-react-app",
-  "productName": "chitchat",
   "version": "0.2.1",
   "private": true,
   "homepage": "./",
@@ -23,6 +22,7 @@
     "@types/recompose": "^0.22.1",
     "@types/redux-actions": "^1.2.6",
     "electron": "^1.6.11",
+    "electron-builder": "^19.16.1",
     "gh-pages": "^0.12.0",
     "jest": "^20.0.4",
     "react-scripts": "1.0.10",
@@ -80,7 +80,19 @@
     "eject": "react-scripts eject",
     "deploy": "gh-pages -d build",
     "electron": "electron .",
-    "electron-dev": "ELECTRON_START_URL=http://localhost:3000 electron ."
+    "electron-dev": "ELECTRON_START_URL=http://localhost:3000 electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "postinstall": "electron-builder install-app-deps"
   },
-  "main": "build/electron.js"
+  "main": "public/electron.js",
+  "productName": "ChitChat",
+  "description": "ChitChat react-app. The reference implementation of react, redux, rxjs , typescript, stalk-js",
+  "author": "nattapon.r@live.com",
+  "build": {
+    "appId": "com.ahoostudio.chitchat",
+    "directories": {
+      "buildResources": "assets"
+    }
+  }
 }
