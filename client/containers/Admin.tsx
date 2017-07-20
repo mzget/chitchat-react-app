@@ -135,7 +135,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             this.props.history.push("/admin/teamrole");
         }
         else if (key == this.developerIssue) {
-            window.open("https://github.com/mzget/chitchat-ionic-reference-implementation/issues", '_blank');
+            window.open("https://github.com/mzget/chitchat-react-app/issues", '_blank');
         }
     }
 
