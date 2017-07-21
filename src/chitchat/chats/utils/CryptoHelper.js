@@ -16,9 +16,14 @@ export const decryptionText = (message) => __awaiter(this, void 0, void 0, funct
     let secure = SecureServiceFactory.getService();
     if (message.type === MessageType[MessageType.Text]) {
         if (getConfig().appConfig.encryption === true) {
-            let result = yield secure.decryption(message.body);
-            message.body = result;
-            return message;
+            try {
+                let result = yield secure.decryption(message.body);
+                message.body = result;
+                return message;
+            }
+            catch (ex) {
+                return message;
+            }
         }
         else {
             return message;

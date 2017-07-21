@@ -18,10 +18,14 @@ const init = (onSuccess) => {
 };
 export const regisNotifyNewMessageEvent = () => {
     console.log("subscribe global notify message event");
-    BackendFactory.getInstance().dataListener.addOnChatListener(notify);
+    let backend = BackendFactory.getInstance();
+    if (!!backend)
+        backend.dataListener.addOnChatListener(notify);
 };
 export const unsubscribeGlobalNotifyMessageEvent = () => {
-    BackendFactory.getInstance().dataListener.removeOnChatListener(notify);
+    let backend = BackendFactory.getInstance();
+    if (!!backend)
+        backend.dataListener.removeOnChatListener(notify);
 };
 export const notify = (messageImp) => {
     let message = {

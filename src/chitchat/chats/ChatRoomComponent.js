@@ -17,7 +17,6 @@ import { BackendFactory } from "./BackendFactory";
 import { ChatEvents } from "stalk-js";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import * as chatroomService from "./services/chatroomService";
-import { SecureServiceFactory } from "./secure/secureServiceFactory";
 import { MessageType } from "../shared/";
 import { imagesPath } from "../consts/StickerPath";
 import { ChitChatFactory } from "./ChitChatFactory";
@@ -30,8 +29,7 @@ export class ChatRoomComponent {
         this.saveMessages = (chatMessages, message) => {
             let self = this;
             chatMessages.push(message);
-            self.dataManager.messageDAL.saveData(self.roomId, chatMessages)
-                .then(chats => {
+            self.save(self.roomId, chatMessages).then(chats => {
                 if (!!self.chatroomDelegate) {
                     self.chatroomDelegate(ChatEvents.ON_CHAT, message);
                     self.chatroomDelegate(ON_MESSAGE_CHANGE, chatMessages);
@@ -39,7 +37,6 @@ export class ChatRoomComponent {
             });
         };
         console.log("ChatRoomComponent: constructor");
-        this.secure = SecureServiceFactory.getService();
         this.dataManager = BackendFactory.getInstance().dataManager;
         this.dataListener = BackendFactory.getInstance().dataListener;
         this.dataListener.addOnChatListener(this.onChat.bind(this));
@@ -67,10 +64,21 @@ export class ChatRoomComponent {
     setRoomId(rid) {
         this.roomId = rid;
     }
+    save(room_id, messages) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let results = yield this.dataManager.messageDAL.saveData(room_id, messages);
+            return results;
+        });
+    }
+    get(room_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let results = yield this.dataManager.messageDAL.getData(room_id);
+            return results;
+        });
+    }
     saveToPersisted(message) {
         let self = this;
-        this.dataManager.messageDAL.getData(this.roomId)
-            .then((chats) => {
+        this.get(this.roomId).then((chats) => {
             let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
             if (message.type === MessageType[MessageType.Text]) {
                 CryptoHelper.decryptionText(message)
@@ -98,24 +106,7 @@ export class ChatRoomComponent {
             return new Promise((resolve, reject) => {
                 if (messages.length > 0) {
                     Rx.Observable.from(messages).mergeMap((item) => __awaiter(this, void 0, void 0, function* () {
-                        if (item.type === MessageType[MessageType.Text]) {
-                            if (getConfig().appConfig.encryption === true) {
-                                try {
-                                    let res = yield self.secure.decryption(item.body);
-                                    item.body = res;
-                                    return item;
-                                }
-                                catch (ex) {
-                                    return item;
-                                }
-                            }
-                            else {
-                                return item;
-                            }
-                        }
-                        else {
-                            return item;
-                        }
+                        return yield CryptoHelper.decryptionText(item);
                     })).subscribe(value => {
                         results.push(value);
                     }, (err) => {
@@ -149,7 +140,7 @@ export class ChatRoomComponent {
     messageReadTick(messageQueue, room_id) {
         return __awaiter(this, void 0, void 0, function* () {
             let chatMessages = Object.create(null);
-            let chats = yield this.dataManager.messageDAL.getData(room_id);
+            let chats = yield this.get(room_id);
             chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
             messageQueue.forEach(message => {
                 chatMessages.some(value => {
@@ -159,7 +150,7 @@ export class ChatRoomComponent {
                     }
                 });
             });
-            let results = yield this.dataManager.messageDAL.saveData(room_id, chatMessages);
+            let results = yield this.save(room_id, chatMessages);
             if (!!this.chatroomDelegate) {
                 this.chatroomDelegate(ON_MESSAGE_CHANGE, results);
             }
@@ -187,31 +178,11 @@ export class ChatRoomComponent {
     getPersistentMessage(rid) {
         return __awaiter(this, void 0, void 0, function* () {
             let self = this;
-            let messages = yield self.dataManager.messageDAL.getData(rid);
+            let messages = yield self.get(rid);
             if (messages && messages.length > 0) {
-                let p = new Promise((resolve, reject) => {
-                    let chats = messages.slice(0);
-                    async.forEach(chats, function iterator(chat, result) {
-                        if (chat.type === MessageType[MessageType.Text]) {
-                            if (getConfig().appConfig.encryption === true) {
-                                self.secure.decryption(chat.body).then(function (res) {
-                                    chat.body = res;
-                                    result(null);
-                                }).catch(err => result(null));
-                            }
-                            else {
-                                result(null);
-                            }
-                        }
-                        else {
-                            result(null);
-                        }
-                    }, (err) => {
-                        self.dataManager.messageDAL.saveData(rid, chats);
-                        resolve(chats);
-                    });
-                });
-                return yield p;
+                let results = yield self.decryptMessage(messages);
+                ;
+                return results;
             }
             else {
                 console.log("chatMessages is empty!");
@@ -236,23 +207,24 @@ export class ChatRoomComponent {
                     cb(result);
                 });
             };
-            const saveMergedMessage = (histories) => __awaiter(this, void 0, void 0, function* () {
+            const saveMergedMessage = (decryptedChats) => __awaiter(this, void 0, void 0, function* () {
                 let _results = new Array();
                 if (messages && messages.length > 0) {
-                    _results = messages.concat(histories);
+                    _results = messages.concat(decryptedChats);
                 }
                 else {
-                    _results = histories.slice();
+                    _results = decryptedChats.slice();
                 }
                 // Save persistent chats log here.
-                let results = yield self.dataManager.messageDAL.saveData(self.roomId, _results);
+                let results = yield self.save(self.roomId, _results);
                 callback(_results, this.roomId);
             });
             const getNewerMessage = () => __awaiter(this, void 0, void 0, function* () {
                 let histories = yield self.getNewerMessageFromNet(lastMessageTime, sessionToken);
-                saveMergedMessage(histories);
+                let decryptedChats = yield self.decryptMessage(histories);
+                saveMergedMessage(decryptedChats);
             });
-            let messages = yield self.dataManager.messageDAL.getData(this.roomId);
+            let messages = yield self.get(this.roomId);
             if (messages && messages.length > 0) {
                 if (messages[messages.length - 1] != null) {
                     lastMessageTime = messages[messages.length - 1].createTime;
@@ -290,15 +262,9 @@ export class ChatRoomComponent {
     getOlderMessageChunk(room_id) {
         return __awaiter(this, void 0, void 0, function* () {
             let self = this;
-            function waitForRoomMessages() {
-                return __awaiter(this, void 0, void 0, function* () {
-                    let messages = yield self.dataManager.messageDAL.getData(room_id);
-                    return messages;
-                });
-            }
             function saveRoomMessages(merged) {
                 return __awaiter(this, void 0, void 0, function* () {
-                    let value = yield self.dataManager.messageDAL.saveData(room_id, merged);
+                    let value = yield self.save(room_id, merged);
                     return value;
                 });
             }
@@ -314,10 +280,11 @@ export class ChatRoomComponent {
                  */
                 if (result.success && result.result.length > 0) {
                     let earlyMessages = result.result;
-                    let persistMessages = yield waitForRoomMessages();
+                    let decryptedChats = yield self.decryptMessage(earlyMessages);
+                    let persistMessages = yield self.get(room_id);
                     if (!!persistMessages && persistMessages.length > 0) {
                         let mergedMessageArray = new Array();
-                        mergedMessageArray = earlyMessages.concat(persistMessages);
+                        mergedMessageArray = decryptedChats.concat(persistMessages);
                         let resultsArray = new Array();
                         let results = yield new Promise((resolve, rejected) => {
                             async.map(mergedMessageArray, function iterator(item, cb) {
@@ -341,7 +308,7 @@ export class ChatRoomComponent {
                         return yield saveRoomMessages(results);
                     }
                     else {
-                        let merged = earlyMessages.sort(self.compareMessage);
+                        let merged = decryptedChats.sort(self.compareMessage);
                         return yield saveRoomMessages(merged);
                     }
                 }
@@ -360,7 +327,7 @@ export class ChatRoomComponent {
             function waitRoomMessage() {
                 return __awaiter(this, void 0, void 0, function* () {
                     let topEdgeMessageTime = new Date();
-                    let messages = yield self.dataManager.messageDAL.getData(self.roomId);
+                    let messages = yield self.get(self.roomId);
                     if (!!messages && messages.length > 0) {
                         if (!!messages[0].createTime) {
                             topEdgeMessageTime = messages[0].createTime;
@@ -418,7 +385,7 @@ export class ChatRoomComponent {
     }
     getMessages() {
         return __awaiter(this, void 0, void 0, function* () {
-            let messages = yield this.dataManager.messageDAL.getData(this.roomId);
+            let messages = yield this.get(this.roomId);
             return messages;
         });
     }

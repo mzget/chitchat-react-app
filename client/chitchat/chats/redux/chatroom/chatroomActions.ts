@@ -179,8 +179,6 @@ export function getNewerMessageFromNet() {
         let token = authReducer().chitchat_token;
         let chatroom = ChatRoomComponent.getInstance();
         chatroom.getNewerMessageRecord(token, (results, room_id: string) => {
-            console.log("getNewerMessageRecord", results.length);
-
             chatroom.decryptMessage(results).then(messages => {
                 dispatch(getNewerMessage_success(messages));
             });
