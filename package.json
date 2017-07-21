@@ -81,18 +81,24 @@
     "deploy": "gh-pages -d build",
     "electron": "electron .",
     "electron-dev": "ELECTRON_START_URL=http://localhost:3000 electron .",
-    "pack": "electron-builder --dir",
+    "pack": "electron-builder --dir --mac --win",
     "dist": "electron-builder",
     "postinstall": "electron-builder install-app-deps"
   },
-  "main": "public/electron.js",
+  "main": "src/electron.js",
   "productName": "ChitChat",
   "description": "ChitChat react-app. The reference implementation of react, redux, rxjs , typescript, stalk-js",
   "author": "nattapon.r@live.com",
   "build": {
     "appId": "com.ahoostudio.chitchat",
     "directories": {
-      "buildResources": "assets"
+      "buildResources": "public"
+    },
+    "mac": {
+      "icon": "public/icon512.png.icns"
+    },
+    "win": {
+      "icon": "public/icon512.png.ico"
     }
   }
 }
