@@ -122,7 +122,7 @@ export function checkOlderMessages() {
             chatroomService.getOlderMessagesCount(room._id, res.toString(), false)
                 .then(response => response.json())
                 .then((result: any) => {
-                    console.log("getOlderMessagesCount", result);
+                    console.log("getEarlyMessagesCount", result);
                     if (result.success && result.result > 0) {
                         //               console.log("onOlderMessageReady is true ! Show load earlier message on top view.");
                         dispatch(onEarlyMessageReady(true));
@@ -132,21 +132,29 @@ export function checkOlderMessages() {
                         dispatch(onEarlyMessageReady(false));
                     }
                 }).catch(err => {
-                    console.warn("getOlderMessagesCount fail", err);
+                    console.warn("getEarlyMessagesCount fail", err);
                     dispatch(onEarlyMessageReady(false));
                 });
         });
     };
 }
 
+export const LOAD_EARLY_MESSAGE = "LOAD_EARLY_MESSAGE";
 export const LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
+const loadEarlyMessage = createAction(LOAD_EARLY_MESSAGE, payload => payload);
 const loadEarlyMessage_success = (payload) => ({ type: LOAD_EARLY_MESSAGE_SUCCESS, payload });
 export function loadEarlyMessageChunk(room_id: string) {
     return dispatch => {
-        ChatRoomComponent.getInstance().getOlderMessageChunk(room_id).then(docs => {
-            dispatch(loadEarlyMessage_success(docs));
-            // @check older message again.
-            dispatch(checkOlderMessages());
+        dispatch(loadEarlyMessage(room_id));
+
+        let chatroom = ChatRoomComponent.getInstance();
+        chatroom.getOlderMessageChunk(room_id).then(docs => {
+            chatroom.decryptMessage(docs).then(messages => {
+                dispatch(loadEarlyMessage_success(messages));
+
+                // @check older message again.
+                dispatch(checkOlderMessages());
+            });
 
             //# update messages read.
             if (docs.length > 0) {
@@ -169,8 +177,13 @@ export function getNewerMessageFromNet() {
         dispatch(getNewerMessage());
 
         let token = authReducer().chitchat_token;
-        ChatRoomComponent.getInstance().getNewerMessageRecord(token, (results, room_id: string) => {
-            dispatch(getNewerMessage_success(results));
+        let chatroom = ChatRoomComponent.getInstance();
+        chatroom.getNewerMessageRecord(token, (results, room_id: string) => {
+            console.log("getNewerMessageRecord", results.length);
+
+            chatroom.decryptMessage(results).then(messages => {
+                dispatch(getNewerMessage_success(messages));
+            });
 
             //# update messages read.
             if (results.length > 0) {

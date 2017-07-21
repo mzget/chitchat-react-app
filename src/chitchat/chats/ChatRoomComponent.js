@@ -91,6 +91,47 @@ export class ChatRoomComponent {
             console.warn("Cannot get persistend message of room", err);
         });
     }
+    decryptMessage(messages) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let self = this;
+            let results = new Array();
+            return new Promise((resolve, reject) => {
+                if (messages.length > 0) {
+                    Rx.Observable.from(messages).mergeMap((item) => __awaiter(this, void 0, void 0, function* () {
+                        if (item.type === MessageType[MessageType.Text]) {
+                            if (getConfig().appConfig.encryption === true) {
+                                try {
+                                    let res = yield self.secure.decryption(item.body);
+                                    item.body = res;
+                                    return item;
+                                }
+                                catch (ex) {
+                                    return item;
+                                }
+                            }
+                            else {
+                                return item;
+                            }
+                        }
+                        else {
+                            return item;
+                        }
+                    })).subscribe(value => {
+                        results.push(value);
+                    }, (err) => {
+                        console.warn("decryptMessage", err);
+                        resolve(results);
+                    }, () => {
+                        console.log("decryptMessage complete");
+                        resolve(results);
+                    });
+                }
+                else {
+                    resolve(messages);
+                }
+            });
+        });
+    }
     onChat(message) {
         console.log("ChatRoomComponent.onChat", message);
         if (this.roomId === message.rid) {
@@ -235,48 +276,15 @@ export class ChatRoomComponent {
             let self = this;
             let response = yield chatroomService.getChatHistory(self.roomId, lastMessageTime, sessionToken);
             let value = yield response.json();
-            return new Promise((resolve, reject) => {
-                if (value.success) {
-                    let histories = new Array();
-                    histories = value.result;
-                    if (histories.length > 0) {
-                        async.forEach(histories, function (chat, cb) {
-                            if (chat.type === MessageType[MessageType.Text]) {
-                                if (getConfig().appConfig.encryption === true) {
-                                    self.secure.decryption(chat.body).then(function (res) {
-                                        chat.body = res;
-                                        cb(null);
-                                    }).catch(err => {
-                                        cb(null);
-                                    });
-                                }
-                                else {
-                                    cb(null);
-                                }
-                            }
-                            else {
-                                cb(null);
-                            }
-                        }, function done(err) {
-                            if (!!err) {
-                                console.error("get newer message error", err);
-                                reject(err);
-                            }
-                            else {
-                                resolve(histories);
-                            }
-                        });
-                    }
-                    else {
-                        console.log("Have no newer message.");
-                        resolve(histories);
-                    }
-                }
-                else {
-                    console.warn("WTF god only know.", value.message);
-                    reject(value.message);
-                }
-            });
+            if (value.success) {
+                let histories = new Array();
+                histories = value.result;
+                return histories;
+            }
+            else {
+                console.log("WTF god only know.", value.message);
+                throw new Error(value.message);
+            }
         });
     }
     getOlderMessageChunk(room_id) {

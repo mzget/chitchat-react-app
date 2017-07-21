@@ -117,6 +117,46 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
             });
     }
 
+    public async decryptMessage(messages: IMessage[]) {
+        let self = this;
+        let results = new Array<IMessage>();
+        return new Promise<Array<IMessage>>((resolve, reject) => {
+            if (messages.length > 0) {
+                Rx.Observable.from(messages).mergeMap(async (item) => {
+                    if (item.type === MessageType[MessageType.Text]) {
+                        if (getConfig().appConfig.encryption === true) {
+                            try {
+                                let res = await self.secure.decryption(item.body);
+                                item.body = res;
+                                return item;
+                            }
+                            catch (ex) {
+                                return item;
+                            }
+                        }
+                        else {
+                            return item;
+                        }
+                    }
+                    else {
+                        return item;
+                    }
+                }).subscribe(value => {
+                    results.push(value);
+                }, (err) => {
+                    console.warn("decryptMessage", err);
+                    resolve(results);
+                }, () => {
+                    console.log("decryptMessage complete");
+                    resolve(results);
+                });
+            }
+            else {
+                resolve(messages);
+            }
+        });
+    }
+
     onChat(message: MessageImp) {
         console.log("ChatRoomComponent.onChat", message);
 
@@ -258,7 +298,7 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
             saveMergedMessage(histories);
         };
 
-        let messages: IMessage[] = await self.dataManager.messageDAL.getData(this.roomId);
+        let messages = await self.dataManager.messageDAL.getData(this.roomId) as IMessage[];
         if (messages && messages.length > 0) {
             if (messages[messages.length - 1] != null) {
                 lastMessageTime = messages[messages.length - 1].createTime;
@@ -281,49 +321,15 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
 
         let response = await chatroomService.getChatHistory(self.roomId, lastMessageTime, sessionToken);
         let value = await response.json();
-
-        return new Promise((resolve, reject) => {
-            if (value.success) {
-                let histories = new Array<IMessage>();
-                histories = value.result;
-                if (histories.length > 0) {
-                    async.forEach(histories, function (chat, cb) {
-                        if (chat.type === MessageType[MessageType.Text]) {
-                            if (getConfig().appConfig.encryption === true) {
-                                self.secure.decryption(chat.body).then(function (res) {
-                                    chat.body = res;
-                                    cb(null);
-                                }).catch(err => {
-                                    cb(null);
-                                });
-                            }
-                            else {
-                                cb(null);
-                            }
-                        }
-                        else {
-                            cb(null);
-                        }
-                    }, function done(err) {
-                        if (!!err) {
-                            console.error("get newer message error", err);
-                            reject(err);
-                        }
-                        else {
-                            resolve(histories);
-                        }
-                    });
-                }
-                else {
-                    console.log("Have no newer message.");
-                    resolve(histories);
-                }
-            }
-            else {
-                console.warn("WTF god only know.", value.message);
-                reject(value.message);
-            }
-        });
+        if (value.success) {
+            let histories = new Array<IMessage>();
+            histories = value.result;
+            return histories;
+        }
+        else {
+            console.log("WTF god only know.", value.message);
+            throw new Error(value.message);
+        }
     }
 
     public async getOlderMessageChunk(room_id: string) {

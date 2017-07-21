@@ -33,7 +33,7 @@
     "redux-logger": "^3.0.1",
     "ts-jest": "^20.0.6",
     "tslint": "^5.5.0",
-    "typescript": "^2.4.1"
+    "typescript": "^2.4.2"
   },
   "dependencies": {
     "async": "^2.4.1",
@@ -69,7 +69,7 @@
     "redux-thunk": "^2.2.0",
     "rxjs": "^5.4.1",
     "simplewebrtc": "^3.0.1",
-    "stalk-js": "0.0.3-f15",
+    "stalk-js": "0.0.3-f20",
     "valid-url": "^1.0.9",
     "validate.js": "^0.11.1"
   },

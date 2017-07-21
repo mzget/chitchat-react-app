@@ -44,7 +44,7 @@ export function stalkLogin(user: any) {
     backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
     backendFactory.stalkInit().then(socket => {
         backendFactory.handshake(user._id).then((connector) => {
-            backendFactory.checkIn(user).then((value) => {
+            backendFactory.checkIn(user).then((value: any) => {
                 console.log("Joined stalk-service success", value);
                 let result: { success: boolean, token: any } = JSON.parse(JSON.stringify(value.data));
                 if (result.success) {

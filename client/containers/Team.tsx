@@ -15,7 +15,6 @@ import { DialogBox } from "../components/DialogBox";
 import { TeamListBox } from "./teams/TeamListBox";
 import { TeamCreateBox } from "./teams/TeamCreateBox";
 import { SimpleToolbar } from "../components/SimpleToolbar";
-import { StalkCompEnhancer } from "./stalk/StalkComponent";
 
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 import { ITeam } from "../chitchat/chats/models/ITeam";
@@ -80,9 +79,6 @@ class Team extends React.Component<IComponentProps, any> {
                         <Flexbox flexGrow={1} />
                     </Flexbox>
                     <Flexbox flexGrow={1} />
-                    <Flexbox element="footer">
-                        <StalkCompEnhancer />
-                    </Flexbox>
                 </Flexbox>
             </MuiThemeProvider>
         );

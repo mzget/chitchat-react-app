@@ -8,7 +8,6 @@ import * as authRx from "../redux/authen/authRx";
 import { TeamListBox } from "./teams/TeamListBox";
 import { TeamCreateBox } from "./teams/TeamCreateBox";
 import { SimpleToolbar } from "../components/SimpleToolbar";
-import { StalkCompEnhancer } from "./stalk/StalkComponent";
 /**
  * Containers of chatlist, chatlogs, etc...
  */
@@ -56,9 +55,6 @@ class Team extends React.Component {
                         <Flexbox flexGrow={1}/>
                     </Flexbox>
                     <Flexbox flexGrow={1}/>
-                    <Flexbox element="footer">
-                        <StalkCompEnhancer />
-                    </Flexbox>
                 </Flexbox>
             </MuiThemeProvider>);
     }

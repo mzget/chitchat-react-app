@@ -5,7 +5,6 @@ import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
 import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
 import { ContactBox } from "./chatlist/ContactBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
-import { StalkCompEnhancer } from "./stalk/StalkComponent";
 import { MainPageEnhancer } from "./Enhancers/MainPageEnhancer";
 import { MobileToolbarEnhanced, listener } from "./MainPageToolbar";
 export const M_MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, history, fetch_orgGroups, fetch_privateGroups }) => (<MuiThemeProvider>
@@ -20,9 +19,6 @@ export const M_MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer,
                     <ChatLogsBoxEnhancer />
                     <SnackbarToolBox />
                 </div>
-            </div>
-            <div id={"app_footer"}>
-                <StalkCompEnhancer />
             </div>
         </div>
     </MuiThemeProvider>));

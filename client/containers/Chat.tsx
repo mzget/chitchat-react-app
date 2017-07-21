@@ -97,7 +97,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     componentWillReceiveProps(nextProps: IComponentProps) {
         let { chatroomReducer, stalkReducer } = nextProps;
 
-        this.h_subHeader = (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
+        this.h_subHeader = (stalkReducer.get("state") === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
 
         if (!shallowEqual(chatroomReducer.messages, this.props.chatroomReducer.messages)) {
@@ -109,7 +109,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             });
         }
 
-        switch (stalkReducer.state) {
+        switch (stalkReducer.get("state")) {
             case StalkBridgeActions.STALK_CONNECTION_PROBLEM:
                 this.props.dispatch(chatroom.disableChatRoom());
                 break;

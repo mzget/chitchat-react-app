@@ -10,7 +10,6 @@ import * as Colors from "material-ui/styles/colors";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
 import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
-import { StalkCompEnhancer } from "./stalk/StalkComponent";
 import { AppBody } from "./AppBody";
 import { RightNav } from "./RightNav";
 import { SubToolbarEnhance } from "./SubToolbar";
@@ -33,7 +32,6 @@ export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chat
             <Flexbox flexDirection="row" justifyContent="center" style={{ backgroundColor: Colors.blueGrey50 }}>
                 <Flexbox flexDirection="column" justifyContent="center">
                     <Flexbox maxHeight="40px">
-                        <StalkCompEnhancer />
                     </Flexbox>
                     <Flexbox flexDirection="row" flexGrow={1} height="calc(100vh - 56px)">
                         <Flexbox flexDirection="column" flexGrow={0.3} minWidth="280px" maxWidth={"280px"}

@@ -68,7 +68,7 @@ const renderList = (props: IChatBoxProps) => {
             console.warn(message);
             return null;
         }
-        if (_store.getState().userReducer.user._id != message.sender) {
+        if (!!_store.getState().userReducer.user && _store.getState().userReducer.user._id != message.sender) {
             delete message.readers;
         }
 

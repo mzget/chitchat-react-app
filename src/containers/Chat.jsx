@@ -73,14 +73,14 @@ class Chat extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         let { chatroomReducer, stalkReducer } = nextProps;
-        this.h_subHeader = (stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
+        this.h_subHeader = (stalkReducer.get("state") === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
         if (!shallowEqual(chatroomReducer.messages, this.props.chatroomReducer.messages)) {
             this.setState(previousState => (Object.assign({}, previousState, { messages: chatroomReducer.messages })), () => {
                 this.chatBox.scrollTop = this.chatBox.scrollHeight;
             });
         }
-        switch (stalkReducer.state) {
+        switch (stalkReducer.get("state")) {
             case StalkBridgeActions.STALK_CONNECTION_PROBLEM:
                 this.props.dispatch(chatroom.disableChatRoom());
                 break;
