@@ -2,9 +2,9 @@ import * as React from "react";
 import Flexbox from "flexbox-react";
 import { darkWhite, grey100, darkBlack } from "material-ui/styles/colors";
 import { RaisedButton, Avatar, Paper } from "material-ui";
+import TextField from 'material-ui/TextField';
 import { SelectOrgChart } from "../../components/SelectOrgChart";
 import { SelectTeamRole } from "../../components/SelectTeamRole";
-import { Col, FormGroup, FormControl } from 'react-bootstrap';
 const Styles = require("../../styles/generalStyles");
 const Profile = require("../../styles/profile");
 const BoxShadow = Profile.Styles.boxShadow;
@@ -30,47 +30,31 @@ export const ContactProfileView = (props) => {
                         <Flexbox flexDirection={"row"} style={{ margin: "2%" }}>
                             <strong>Username : </strong>
                             <Flexbox flexGrow={1}/>
-                            <Col xs={12} md={9}>
-                                <FormGroup style={{ margin: "0" }}>
-                                    <FormControl value={props.member.username} disabled/>
-                                </FormGroup>
-                            </Col>
+                            <TextField value={props.member.username} disabled/>
                         </Flexbox>
 
                         <Flexbox flexDirection={"row"} style={{ margin: "2%" }}>
                             <strong>Name : </strong>
                             <Flexbox flexGrow={1}/>
-                            <Col xs={12} md={9}>
-                                <FormGroup style={{ margin: "0" }}>
-                                    <FormControl value={props.member.firstname + " " + props.member.lastname} disabled/>
-                                </FormGroup>
-                            </Col>
+                            <TextField value={props.member.firstname + " " + props.member.lastname} disabled/>
                         </Flexbox>
 
                         <Flexbox flexDirection={"row"} style={{ margin: "2%" }}>
                             <strong>Email : </strong>
                             <Flexbox flexGrow={1}/>
-                            <Col xs={12} md={9}>
-                                <FormGroup style={{ margin: "0" }}>
-                                    <FormControl value={props.member.email ? props.member.email : "not set"} disabled/>
-                                </FormGroup>
-                            </Col>
+                            <TextField value={props.member.email ? props.member.email : "not set"} disabled/>
                         </Flexbox>
 
                         <Flexbox flexDirection={"row"} style={{ margin: "2%" }}>
                             <strong>Select Org. Group : </strong>
                             <Flexbox flexGrow={1}/>
-                            <Col xs={12} md={9}>
-                                <SelectOrgChart dropdownItems={props.orgsRoleItems} dropdownValue={props.orgRoleValue} dropdownChange={props.dropdownChange}/>
-                            </Col>
+                            <SelectOrgChart dropdownItems={props.orgsRoleItems} dropdownValue={props.orgRoleValue} dropdownChange={props.dropdownChange}/>
                         </Flexbox>
 
                         <Flexbox flexDirection={"row"} style={{ margin: "2%" }}>
                             <strong>Select Team Role : </strong>
                             <Flexbox flexGrow={1}/>
-                            <Col xs={12} md={9}>
-                                <SelectTeamRole teamRoleItems={props.teamRoleItems} teamRoleValue={props.teamRoleValue} onTeamRoleChange={props.onTeamRoleChange}/>
-                            </Col>
+                            <SelectTeamRole teamRoleItems={props.teamRoleItems} teamRoleValue={props.teamRoleValue} onTeamRoleChange={props.onTeamRoleChange}/>
                         </Flexbox>
                     </Paper>
                 </div>
