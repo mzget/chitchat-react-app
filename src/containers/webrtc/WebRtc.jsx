@@ -150,7 +150,7 @@ class WebRtc extends React.Component {
             let room = chatroom.getRoom(room_id);
             let targets = new Array();
             room.members.map(value => {
-                if (value._id != user._id) {
+                if (value._id !== user._id) {
                     targets.push(value._id);
                 }
             });
@@ -160,13 +160,14 @@ class WebRtc extends React.Component {
     disconnect() {
         this.webrtc.leaveRoom();
         this.webrtc.disconnect();
+        this.webrtc.stopLocalVideo();
         this.props.dispatch(calling.onVideoCallEnded());
         let { match, userReducer: { user }, stalkReducer } = this.props;
         let room_id = match.params.id;
         let room = chatroom.getRoom(room_id);
         let targets = new Array();
         room.members.map(value => {
-            if (value._id != user._id) {
+            if (value._id !== user._id) {
                 targets.push(value._id);
             }
         });

@@ -153,7 +153,6 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
             remotes.removeChild(el);
         }
     }
-
     readyToCall() {
         let self = this;
         let { match, userReducer: { user }, stalkReducer } = this.props;
@@ -172,7 +171,7 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
             let room = chatroom.getRoom(room_id);
             let targets = new Array<string>();
             room.members.map(value => {
-                if (value._id != user._id) {
+                if (value._id !== user._id) {
                     targets.push(value._id);
                 }
             });
@@ -180,10 +179,10 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
             this.props.dispatch(calling.videoCallRequest({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
         }
     }
-
     disconnect() {
         this.webrtc.leaveRoom();
         this.webrtc.disconnect();
+        this.webrtc.stopLocalVideo();
         this.props.dispatch(calling.onVideoCallEnded());
 
         let { match, userReducer: { user }, stalkReducer } = this.props;
@@ -191,7 +190,7 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
         let room = chatroom.getRoom(room_id);
         let targets = new Array<string>();
         room.members.map(value => {
-            if (value._id != user._id) {
+            if (value._id !== user._id) {
                 targets.push(value._id);
             }
         });
