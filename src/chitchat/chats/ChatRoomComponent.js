@@ -159,22 +159,6 @@ export class ChatRoomComponent {
     onMessageRead(message) {
         this.updateMessageQueue.push(message);
     }
-    onGetMessagesReaders(dataEvent) {
-        console.log("onGetMessagesReaders", dataEvent);
-        let self = this;
-        let myMessagesArr = JSON.parse(JSON.stringify(dataEvent.data));
-        self.chatMessages.forEach((originalMsg, id, arr) => {
-            if (BackendFactory.getInstance().dataManager.isMySelf(originalMsg.sender)) {
-                myMessagesArr.some((myMsg, index, array) => {
-                    if (originalMsg._id === myMsg._id) {
-                        originalMsg.readers = myMsg.readers;
-                        return true;
-                    }
-                });
-            }
-        });
-        self.dataManager.messageDAL.saveData(self.roomId, self.chatMessages);
-    }
     getPersistentMessage(rid) {
         return __awaiter(this, void 0, void 0, function* () {
             let self = this;
@@ -355,19 +339,6 @@ export class ChatRoomComponent {
         // a must be equal to b
         return 0;
     }
-    updateReadMessages() {
-        let self = this;
-        let backendFactory = BackendFactory.getInstance();
-        async.map(self.chatMessages, function itorator(message, resultCb) {
-            if (!backendFactory.dataManager.isMySelf(message.sender)) {
-                let chatroomApi = backendFactory.getServer().getChatRoomAPI();
-                chatroomApi.updateMessageReader(message._id, message.rid);
-            }
-            resultCb(null, null);
-        }, function done(err) {
-            // done.
-        });
-    }
     updateWhoReadMyMessages() {
         return __awaiter(this, void 0, void 0, function* () {
             let self = this;
@@ -376,12 +347,6 @@ export class ChatRoomComponent {
             let chatroomApi = backendFactory.getServer().getChatRoomAPI();
             chatroomApi.getMessagesReaders(res.toString());
         });
-    }
-    getMemberProfile(member, callback) {
-        let server = BackendFactory.getInstance().getServer();
-        if (server) {
-            server.getMemberProfile(member._id, callback);
-        }
     }
     getMessages() {
         return __awaiter(this, void 0, void 0, function* () {

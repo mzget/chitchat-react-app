@@ -183,30 +183,6 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         this.updateMessageQueue.push(message as MessageImp);
     }
 
-    onGetMessagesReaders(dataEvent) {
-        console.log("onGetMessagesReaders", dataEvent);
-
-        let self = this;
-        interface Ireaders {
-            _id: string;
-            readers: Array<string>;
-        }
-        let myMessagesArr: Array<Ireaders> = JSON.parse(JSON.stringify(dataEvent.data));
-
-        self.chatMessages.forEach((originalMsg, id, arr) => {
-            if (BackendFactory.getInstance().dataManager.isMySelf(originalMsg.sender)) {
-                myMessagesArr.some((myMsg, index, array) => {
-                    if (originalMsg._id === myMsg._id) {
-                        originalMsg.readers = myMsg.readers;
-                        return true;
-                    }
-                });
-            }
-        });
-
-        self.dataManager.messageDAL.saveData(self.roomId, self.chatMessages);
-    }
-
     public async getPersistentMessage(rid: string) {
         let self = this;
         let messages = await self.get(rid) as Array<IMessage>;
@@ -395,21 +371,6 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         return 0;
     }
 
-    public updateReadMessages() {
-        let self = this;
-        let backendFactory = BackendFactory.getInstance();
-        async.map(self.chatMessages, function itorator(message, resultCb) {
-            if (!backendFactory.dataManager.isMySelf(message.sender)) {
-                let chatroomApi = backendFactory.getServer().getChatRoomAPI();
-                chatroomApi.updateMessageReader(message._id, message.rid);
-            }
-
-            resultCb(null, null);
-        }, function done(err) {
-            // done.
-        });
-    }
-
     public async updateWhoReadMyMessages() {
         let self = this;
 
@@ -417,14 +378,6 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         let backendFactory = BackendFactory.getInstance();
         let chatroomApi = backendFactory.getServer().getChatRoomAPI();
         chatroomApi.getMessagesReaders(res.toString());
-    }
-
-    public getMemberProfile(member: IMember, callback: (err, res) => void) {
-        let server = BackendFactory.getInstance().getServer();
-
-        if (server) {
-            server.getMemberProfile(member._id, callback);
-        }
     }
 
     public async getMessages() {
