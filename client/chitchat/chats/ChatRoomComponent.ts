@@ -6,11 +6,11 @@
 
 import * as async from "async";
 import * as Rx from "rxjs";
+import { Stalk, ChatEvents, ServerImplemented } from "stalk-js";
 
 import { BackendFactory } from "./BackendFactory";
 import { DataManager } from "./DataManager";
 import { DataListener } from "./DataListener";
-import { Stalk, ChatEvents, ServerImplemented } from "stalk-js";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import * as chatroomService from "./services/chatroomService";
 

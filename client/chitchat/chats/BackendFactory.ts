@@ -35,8 +35,6 @@ export class BackendFactory {
     chatLogComp: ChatsLogComponent;
 
     constructor() {
-        console.log("BackendFactory:");
-
         this.pushDataListener = new PushDataListener();
         this.callingDataListener = new CallingDataListener();
         this.dataManager = new DataManager();

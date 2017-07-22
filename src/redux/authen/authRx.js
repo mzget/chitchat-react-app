@@ -2,6 +2,7 @@ import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
 const { Observable } = Rx;
 const { ajax, fromPromise } = Observable;
+import { BackendFactory } from "../../chitchat/chats/BackendFactory";
 import * as authService from "../../chitchat/chats/services/authService";
 import * as AppActions from "../app/persistentDataActions";
 import * as stalkBridgeActions from "../../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
@@ -80,6 +81,7 @@ export const logoutUser_Epic = action$ => action$.ofType(LOG_OUT)
     .map(result => {
     if (result.success) {
         AppActions.removeSession();
+        BackendFactory.getInstance().dataManager.messageDAL.clearData((err) => console.warn(err));
         stalkBridgeActions.stalkLogout();
         return logoutSuccess(result.result);
     }

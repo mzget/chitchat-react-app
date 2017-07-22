@@ -26,11 +26,15 @@ const getSessionTokenFailure = createAction(GET_SESSION_TOKEN_FAILURE, err => er
 const getSessionTokenSuccess = createAction(GET_SESSION_TOKEN_SUCCESS, token => token);
 export function getSession() {
     return (dispatch) => {
-        appSession.getSessionToken().then(token => {
-            if (!!token)
+        appSession.getSessionToken()
+            .then(token => {
+            if (!!token) {
                 dispatch(getSessionTokenSuccess(token));
-            else
+            }
+            else {
                 dispatch(getSessionTokenFailure(null));
-        }).catch(err => dispatch(getSessionTokenFailure(err)));
+            }
+        })
+            .catch(err => dispatch(getSessionTokenFailure(err)));
     };
 }

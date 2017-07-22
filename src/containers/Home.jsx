@@ -21,7 +21,7 @@ class Home extends React.Component {
         this.props.history.push("/forgotaccount");
     }
     componentWillMount() {
-        console.log("Home", global.userAgent, this.props);
+        console.log("Home", global.userAgent);
         this.state = {
             alert: false
         };

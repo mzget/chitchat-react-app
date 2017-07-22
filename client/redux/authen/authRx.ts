@@ -4,8 +4,8 @@ const { Observable } = Rx;
 const { ajax, fromPromise } = Observable;
 
 import Store from "../configureStore";
+import { BackendFactory } from "../../chitchat/chats/BackendFactory";
 import * as authService from "../../chitchat/chats/services/authService";
-
 import * as AppActions from "../app/persistentDataActions";
 import * as stalkBridgeActions from "../../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 
@@ -87,7 +87,6 @@ const LOG_OUT = "LOG_OUT";
 export const LOG_OUT_SUCCESS = "LOG_OUT_SUCCESS";
 const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
 const LOG_OUT_CANCELLED = "LOG_OUT_CANCELLED";
-
 export const logout = createAction(LOG_OUT, payload => payload);
 const logoutSuccess = createAction(LOG_OUT_SUCCESS, payload => payload);
 const logoutFailure = createAction(LOG_OUT_FAILURE, payload => payload);
@@ -98,7 +97,9 @@ export const logoutUser_Epic = action$ => action$.ofType(LOG_OUT)
     .map(result => {
         if (result.success) {
             AppActions.removeSession();
+            BackendFactory.getInstance().dataManager.messageDAL.clearData((err) => console.warn(err));
             stalkBridgeActions.stalkLogout();
+
             return logoutSuccess(result.result);
         }
         else {

@@ -8,8 +8,7 @@ import { RoomType, MemberRole, Room } from "./models/Room";
 
 import { IRoomDAL } from "./dataAccessLayer/IRoomDAL";
 import { RoomDALFactory } from "./dataAccessLayer/RoomDALFactory";
-import { IMessageDAL } from "./dataAccessLayer/IMessageDAL";
-import { MessageDALFactory } from "./dataAccessLayer/messageDALFactory";
+import { IMessageDAL, MessageDALFactory } from "./dataAccessLayer/";
 
 interface IRoomMap {
     [key: string]: Room;
@@ -68,7 +67,7 @@ export class DataManager {
         }
     }
     public updateRoomAccessForUser(data: RoomAccessData) {
-        if (!this.myProfile.roomAccess) return;
+        if (!this.myProfile.roomAccess) { return; }
 
         this.myProfile.roomAccess.forEach(value => {
             if (value.roomId === data.roomId) {

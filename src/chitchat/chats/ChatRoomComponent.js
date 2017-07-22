@@ -13,8 +13,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as async from "async";
 import * as Rx from "rxjs";
-import { BackendFactory } from "./BackendFactory";
 import { ChatEvents } from "stalk-js";
+import { BackendFactory } from "./BackendFactory";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import * as chatroomService from "./services/chatroomService";
 import { MessageType } from "../shared/";

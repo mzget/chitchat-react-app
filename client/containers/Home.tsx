@@ -36,7 +36,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillMount() {
-        console.log("Home", global.userAgent, this.props);
+        console.log("Home", global.userAgent);
 
         this.state = {
             alert: false

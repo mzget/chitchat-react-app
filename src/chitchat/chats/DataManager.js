@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as async from "async";
 import { RoomType, MemberRole } from "./models/Room";
-import { MessageDALFactory } from "./dataAccessLayer/messageDALFactory";
+import { MessageDALFactory } from "./dataAccessLayer/";
 export class DataManager {
     constructor() {
         this.orgGroups = {};
@@ -47,8 +47,9 @@ export class DataManager {
         }
     }
     updateRoomAccessForUser(data) {
-        if (!this.myProfile.roomAccess)
+        if (!this.myProfile.roomAccess) {
             return;
+        }
         this.myProfile.roomAccess.forEach(value => {
             if (value.roomId === data.roomId) {
                 value.accessTime = data.accessTime;

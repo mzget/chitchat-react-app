@@ -30,9 +30,8 @@ export class MessageDAL {
         });
     }
     clearData(next) {
-        console.warn("MessageDAL.clearData");
         this.store.clear((err) => {
-            if (err != null) {
+            if (err !== null) {
                 console.warn("Clear database fail", err);
             }
             console.warn("message db now empty.");

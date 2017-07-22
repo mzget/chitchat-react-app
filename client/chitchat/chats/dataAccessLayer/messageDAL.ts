@@ -41,9 +41,8 @@ export class MessageDAL implements IMessageDAL {
     }
 
     clearData(next: (err?: Error) => void) {
-        console.warn("MessageDAL.clearData");
         this.store.clear((err) => {
-            if (err != null) {
+            if (err !== null) {
                 console.warn("Clear database fail", err);
             }
 

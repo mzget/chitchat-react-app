@@ -29,7 +29,6 @@ export class BackendFactory {
         return BackendFactory.instance;
     }
     constructor() {
-        console.log("BackendFactory:");
         this.pushDataListener = new PushDataListener();
         this.callingDataListener = new CallingDataListener();
         this.dataManager = new DataManager();
