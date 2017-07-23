@@ -23,7 +23,7 @@ export const stalkInitState = {
     isFetching: false,
     state: null,
     incommingCall: null,
-    inline: "";
+    inline: "",
     notiMessage: null,
     stalkToken: "",
     user: null

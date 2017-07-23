@@ -154,7 +154,7 @@ class WebRtc extends React.Component {
                     targets.push(value._id);
                 }
             });
-            this.props.dispatch(calling.videoCallRequest({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
+            this.props.dispatch(calling.videoCall_Epic({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
         }
     }
     disconnect() {

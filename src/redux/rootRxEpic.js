@@ -27,7 +27,7 @@ privateGroupRxActions.getPrivateGroup_Epic, privateGroupRxActions.createPrivateG
 chatroom.getPrivateChatRoom_Epic, chatroom.getPersistendMessageEpic, chatroom.createPrivateChatRoomEpic, chatroom.uploadFileEpic, chatroom.updateMessagesRead_Epic, 
 /// @message rx.
 // messageRxEpic.fetchOlderMessageCount_Epic,
-calling.videoCall_Epic, calling.hangupVideoCall_Epic, 
+calling.hangupVideoCall_Epic, 
 ///@chatlogs
 chatlogRxActions.getLastAccessRoom_Epic, chatlogRxActions.updateLastAccessRoom_Epic, 
 // chatlogRxActions.stalkInitChatlogs_Epic
