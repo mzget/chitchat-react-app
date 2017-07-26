@@ -15,7 +15,7 @@ const renderList = (props) => props.items.map((item, i) => <div key={i}>
     <Avatar size={32} src={item.avatar}/> : <Avatar size={32}>{item.username.charAt(0)}</Avatar>} rightIcon={(props.onAdded) ? addMemberView(item, props.onAdded) : null} rightToggle={(props.rightToggle) ?
     <Toggle onToggle={(event, isInputChecked) => {
         props.onToggleItem(item, isInputChecked);
-    }} disabled={true} defaultToggled={true}/> : null} primaryText={item.username}/>
+    }} disabled={true} defaultToggled={true}/> : null} primaryText={`${item.firstname} ${item.lastname}`}/>
         <Divider inset={true}/>
     </div>);
 export const MemberList = (props) => (<MuiThemeProvider>

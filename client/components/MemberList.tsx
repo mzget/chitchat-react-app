@@ -46,7 +46,7 @@ const renderList = (props: IComponentProps) => props.items.map((item, i) =>
                     disabled={true}
                     defaultToggled={true}
                 /> : null}
-            primaryText={item.username}
+            primaryText={`${item.firstname} ${item.lastname}`}
         />
         <Divider inset={true} />
     </div>
