@@ -61,7 +61,7 @@ export const SimpleToolbar = (props: IComponentProps) => (
                             <IconMenu
                                 iconButtonElement={
                                     <IconButton>
-                                        <NavigationExpandMoreIcon />
+                                        <NavigationExpandMoreIcon color={Colors.darkWhite} />
                                     </IconButton>
                                 }
                                 anchorOrigin={{ horizontal: "right", vertical: "top" }}

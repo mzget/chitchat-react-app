@@ -2,6 +2,7 @@ import * as React from "react";
 import { lifecycle, compose, withHandlers } from "recompose";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import * as Color from "material-ui/styles/colors";
 import { ProfileListView } from "./ProfileListView";
 import * as UserRx from "../../redux/user/userRx";
 const mapStateToProps = (state) => ({
@@ -23,5 +24,5 @@ const ProfileListViewEnhancer = compose(connect(mapStateToProps), lifecycle({
         props.history.push(`/profile/user/${item.username}`);
     }
 }));
-export let ProfileEnhanced = ProfileListViewEnhancer(({ userReducer, onClickMyProfile }) => (<ProfileListView item={userReducer.user} onSelected={onClickMyProfile}/>));
+export let ProfileEnhanced = ProfileListViewEnhancer(({ userReducer, onClickMyProfile }) => (<ProfileListView item={userReducer.user} onSelected={onClickMyProfile} styles={{ color: Color.darkWhite }}/>));
 ProfileEnhanced = withRouter(ProfileEnhanced);

@@ -2,6 +2,7 @@ import * as React from "react";
 import { pure, lifecycle, compose, withHandlers, ComponentEnhancer } from "recompose";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import * as Color from "material-ui/styles/colors";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 import { ProfileListView } from "./ProfileListView";
@@ -40,8 +41,8 @@ const ProfileListViewEnhancer = compose(
         }
     })
 );
-export let ProfileEnhanced = ProfileListViewEnhancer(({ userReducer, onClickMyProfile }: IEnhancerProps) => (
-    <ProfileListView item={userReducer.user} onSelected={onClickMyProfile} />
+export let ProfileEnhanced = ProfileListViewEnhancer(({ userReducer, onClickMyProfile }) => (
+    <ProfileListView item={userReducer.user} onSelected={onClickMyProfile} styles={{ color: Color.darkWhite }} />
 )) as React.ComponentClass<any>;
 
 ProfileEnhanced = withRouter(ProfileEnhanced);

@@ -6,8 +6,8 @@ export const ProfileListView = (props) => (<MuiThemeProvider>
         {(props.item) ?
     <List>
                     <ListItem onClick={() => props.onSelected(props.item)} leftAvatar={(!!props.item.avatar) ?
-        <Avatar src={props.item.avatar}/> : <Avatar>{props.item.username.charAt(0)}</Avatar>} rightIcon={null} primaryText={<span>{props.item.username}</span>} secondaryText={<p>
-                                <span>{props.item.email}</span>
+        <Avatar src={props.item.avatar}/> : <Avatar>{props.item.username.charAt(0)}</Avatar>} rightIcon={null} primaryText={<span style={props.styles}>{`${props.item.firstname} ${props.item.lastname}`}</span>} secondaryText={<p>
+                                <span style={props.styles}>{props.item.email}</span>
                             </p>}/>
                 </List> : null}
     </MuiThemeProvider>);

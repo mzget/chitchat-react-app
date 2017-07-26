@@ -38,7 +38,7 @@ export const SimpleToolbar = (props) => (<MuiThemeProvider muiTheme={muiTheme}>
                 <ToolbarSeparator />
                 {(props.menus && props.menus.length > 0) ?
     (<IconMenu iconButtonElement={<IconButton>
-                                        <NavigationExpandMoreIcon />
+                                        <NavigationExpandMoreIcon color={Colors.darkWhite}/>
                                     </IconButton>} anchorOrigin={{ horizontal: "right", vertical: "top" }} targetOrigin={{ horizontal: "right", vertical: "top" }}>
                                 {props.menus.map((value, i, arr) => {
         return <MenuItem key={i} primaryText={value} onClick={() => props.onSelectedMenuItem(i, value)}/>;
