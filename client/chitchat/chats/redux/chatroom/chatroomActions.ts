@@ -389,12 +389,12 @@ export const createChatRoom = (myUser, contactUser) => {
         let owner = {} as IMember;
         owner._id = myUser._id;
         owner.user_role = (myUser.role) ? myUser.role : "user";
-        owner.username = myUser.username;
+        owner.username = `${myUser.firstname} ${myUser.lastname}`;
 
         let contact = {} as IMember;
         contact._id = contactUser._id;
         contact.user_role = (contactUser.role) ? contactUser.role : "user";
-        contact.username = contactUser.username;
+        contact.username = `${contactUser.firstname} ${contactUser.lastname}`;
 
         let members = { owner, contact };
 

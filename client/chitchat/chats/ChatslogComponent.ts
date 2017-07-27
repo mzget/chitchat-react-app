@@ -3,6 +3,7 @@
  *
  * ChatRoomComponent for handle some business logic of chat room.
  */
+import * as Rx from "@reactivex/rxjs";
 import * as async from "async";
 import { ServerImplemented } from "stalk-js";
 import { ChitChatFactory } from "./ChitChatFactory";
@@ -99,26 +100,28 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         let roomAccess = dataEvent.roomAccess as Array<RoomAccessData>;
         let results = new Array<Room>();
 
-        const done = () => {
-            self._isReady = true;
-
-            if (!!self.onReady) {
-                self.onReady(results);
-            }
-        };
-
-        async.each(roomAccess, (item, resultCallback) => {
-            self.getRoomInfo(item.roomId)
-                .then(room => {
+        let source = Rx.Observable.from(roomAccess);
+        source.flatMap(async (item) => {
+            try {
+                let room = await self.getRoomInfo(item.roomId);
+                if (room) {
                     results.push(room);
-                    resultCallback();
-                }).catch(err => {
-                    resultCallback();
-                });
-        }, (err) => {
-            console.log("onAccessRoom.finished!", err);
-            done();
-        });
+                }
+
+                return room;
+            }
+            catch (ex) {
+                return null;
+            }
+        }).subscribe(room => { },
+            (err) => console.error("error", err),
+            () => {
+                self._isReady = true;
+
+                if (!!self.onReady) {
+                    self.onReady(results);
+                }
+            });
     }
 
     public addNewRoomAccessEvent: (data) => void;

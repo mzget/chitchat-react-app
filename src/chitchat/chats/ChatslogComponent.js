@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
  *
  * ChatRoomComponent for handle some business logic of chat room.
  */
+import * as Rx from "@reactivex/rxjs";
 import * as async from "async";
 import { ChitChatFactory } from "./ChitChatFactory";
 const authReducer = () => ChitChatFactory.getInstance().authStore;
@@ -78,23 +79,23 @@ export class ChatsLogComponent {
         this.chatslog.clear();
         let roomAccess = dataEvent.roomAccess;
         let results = new Array();
-        const done = () => {
+        let source = Rx.Observable.from(roomAccess);
+        source.flatMap((item) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                let room = yield self.getRoomInfo(item.roomId);
+                if (room) {
+                    results.push(room);
+                }
+                return room;
+            }
+            catch (ex) {
+                return null;
+            }
+        })).subscribe(room => { }, (err) => console.error("error", err), () => {
             self._isReady = true;
             if (!!self.onReady) {
                 self.onReady(results);
             }
-        };
-        async.each(roomAccess, (item, resultCallback) => {
-            self.getRoomInfo(item.roomId)
-                .then(room => {
-                results.push(room);
-                resultCallback();
-            }).catch(err => {
-                resultCallback();
-            });
-        }, (err) => {
-            console.log("onAccessRoom.finished!", err);
-            done();
         });
     }
     onAddRoomAccess(dataEvent) {

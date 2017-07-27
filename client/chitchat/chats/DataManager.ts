@@ -58,6 +58,11 @@ export class DataManager {
 
         return await this.myProfile;
     }
+    public isMySelf(uid: string): boolean {
+        if (uid === this.myProfile._id) return true;
+        else return false;
+    }
+
     public setRoomAccessForUser(data: StalkAccount) {
         if (!!this.myProfile && !!data.roomAccess) {
             this.myProfile.roomAccess = data.roomAccess;
@@ -295,9 +300,4 @@ export class DataManager {
     };
 
     onGetMe() { }
-
-    public isMySelf(uid: string): boolean {
-        if (uid === this.myProfile._id) return true;
-        else return false;
-    }
 }

@@ -58,8 +58,7 @@ export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chat
                                     <div style={{ width: "100%", backgroundColor: Colors.darkWhite }}>
                                         <RightNav
                                             match={match}
-                                            onError={onError}
-                                            teamReducer={teamReducer} />
+                                            onError={onError} />
                                     </div>
                                 </Flexbox>
                             </Flexbox>

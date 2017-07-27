@@ -28,7 +28,6 @@ const renderList = (props) => (props.value.map((log, i) => {
                         </div>} onClick={() => props.onSelected(log)} children={<div key={log.id} style={{ float: "right", position: "absolute", top: "10%", right: "2%", margin: "auto" }}>
                             {(log.count && log.count != 0) ? <BadgeSimple content={log.count}/> : null}
                             {rightIconMenu(log, props.onRemovedLog)}
-
                         </div>}/>
                 <Divider inset={true}/>
             </div>);

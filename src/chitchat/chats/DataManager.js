@@ -38,6 +38,12 @@ export class DataManager {
             return yield this.myProfile;
         });
     }
+    isMySelf(uid) {
+        if (uid === this.myProfile._id)
+            return true;
+        else
+            return false;
+    }
     setRoomAccessForUser(data) {
         if (!!this.myProfile && !!data.roomAccess) {
             this.myProfile.roomAccess = data.roomAccess;
@@ -253,10 +259,4 @@ export class DataManager {
     }
     ;
     onGetMe() { }
-    isMySelf(uid) {
-        if (uid === this.myProfile._id)
-            return true;
-        else
-            return false;
-    }
 }

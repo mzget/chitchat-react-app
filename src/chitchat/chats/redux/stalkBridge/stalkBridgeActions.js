@@ -21,10 +21,6 @@ export const getSessionToken = () => {
     const backendFactory = BackendFactory.getInstance();
     return getStore().getState().stalkReducer.stalkToken;
 };
-export const getRoomDAL = () => {
-    const backendFactory = BackendFactory.getInstance();
-    return backendFactory.dataManager.roomDAL;
-};
 const onGetContactProfileFail = (contact_id) => { };
 export const STALK_INIT = "STALK_INIT";
 export const STALK_INIT_SUCCESS = "STALK_INIT_SUCCESS";
