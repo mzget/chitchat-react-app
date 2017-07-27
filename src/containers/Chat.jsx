@@ -255,10 +255,10 @@ class Chat extends React.Component {
         return (<div id={"app_body"}>
                 <Flexbox flexDirection="column">
                     <Flexbox flexDirection="column">
-                        <Flexbox flexDirection="column" justifyContent="flex-start" alignItems="center" minWidth="400px" style={{ height: this.chatHeight }}>
+                        <Flexbox flexDirection="column" justifyContent="flex-start" alignItems="center" minWidth="300px" style={{ height: this.chatHeight }}>
                             {(this.state.earlyMessageReady) ?
             <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p> : null}
-                            <ChatBox value={this.state.messages} onSelected={(message) => { }} styles={{ overflowY: "auto" }}/>
+                            <ChatBox value={this.state.messages} onSelected={(message) => { }} styles={{ overflowY: "auto", overflowX: "hidden" }}/>
                             <MapDialog open={this.state.openMapDialog} onClose={this.onLocation} onSubmit={this.onSubmitPosition} onLocationChange={this.onLocationChange}/>
                         </Flexbox>
                         <Flexbox>

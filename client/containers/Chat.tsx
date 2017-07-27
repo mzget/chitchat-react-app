@@ -29,6 +29,8 @@ import * as FileType from "../chitchat/shared/FileType";
 import { decorateMessage, IMessageDecorator } from "../actions/chatroom/chatroomMessageUtils";
 import { IComponentProps } from "../utils/IComponentProps";
 
+
+
 interface IComponentNameState {
     messages: any[];
     isLoadingEarlierMessages;
@@ -352,7 +354,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                     <Flexbox flexDirection="column">
                         <Flexbox flexDirection="column"
                             justifyContent="flex-start" alignItems="center"
-                            minWidth="400px"
+                            minWidth="300px"
                             style={{ height: this.chatHeight }}>
                             {
                                 (this.state.earlyMessageReady) ?
@@ -360,7 +362,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                             }
                             <ChatBox value={this.state.messages}
                                 onSelected={(message: IMessage) => { }}
-                                styles={{ overflowY: "auto" }} />
+                                styles={{ overflowY: "auto", overflowX: "hidden" }} />
                             <MapDialog open={this.state.openMapDialog}
                                 onClose={this.onLocation}
                                 onSubmit={this.onSubmitPosition}
@@ -376,7 +378,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                             }
                         </Flexbox>
                     </Flexbox>
-                    <Flexbox element="footer" justifyContent="center" alignContent="stretch" >
+                    <Flexbox element="footer" justifyContent="center" alignContent="stretch"  >
                         <TypingBox
                             disabled={this.props.chatroomReducer.chatDisabled}
                             onSubmit={this.onSubmitTextChat}
