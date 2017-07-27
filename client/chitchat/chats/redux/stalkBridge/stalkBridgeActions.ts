@@ -48,6 +48,7 @@ export function stalkLogin(user: any) {
                         server.listenSocketEvents();
                         backendFactory.getServerListener();
                         backendFactory.subscriptions();
+                        StalkNotificationAction.initNativeNotiAPI();
                         StalkNotificationAction.regisNotifyNewMessageEvent();
                         stalkPushInit();
                         stalkCallingInit();

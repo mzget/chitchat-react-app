@@ -9,6 +9,7 @@
 import { BackendFactory } from "../../BackendFactory";
 import * as CryptoHelper from "../../utils/CryptoHelper";
 import { MessageType } from "../../../shared/Message";
+import { NotificationProvider as NotiAPI } from "../../../../actions/";
 import { ChitChatFactory } from "../../ChitChatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 export const STALK_NOTICE_NEW_MESSAGE = "STALK_NOTICE_NEW_MESSAGE";
@@ -35,21 +36,16 @@ export const notify = (messageImp) => {
     if (messageImp.type === MessageType[MessageType.Text]) {
         CryptoHelper.decryptionText(messageImp).then((decoded) => {
             message.body = decoded.body;
-            nativeNotification(message);
+            NotiAPI.NotificationAPI.getInstance().nativeNotifyAPI(message);
             getStore().dispatch(stalkNotiNewMessage(message));
         });
     }
     else {
         message.body = `Sent you ${messageImp.type.toLowerCase()}`;
-        nativeNotification(message);
+        NotiAPI.NotificationAPI.getInstance().nativeNotifyAPI(message);
         getStore().dispatch(stalkNotiNewMessage(message));
     }
 };
-export const nativeNotification = (message) => {
-    let myNotification = new Notification(message.title, {
-        body: message.body
-    });
-    myNotification.onclick = () => {
-        console.log('Notification clicked');
-    };
+export const initNativeNotiAPI = () => {
+    NotiAPI.NotificationAPI.createInstance();
 };
