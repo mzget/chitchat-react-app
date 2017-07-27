@@ -31,7 +31,7 @@ export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chat
                     <WebToolbarEnhanced history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
                 </div>
             </Flexbox>
-            <Flexbox flexDirection="row" justifyContent="center" style={{ backgroundColor: Colors.blueGrey50, marginTop: "56px" }}>
+            <Flexbox flexDirection="row" justifyContent="center" style={{ backgroundColor: Colors.blueGrey50, marginTop: "56px", overflow: "scroll" }}>
                 <Flexbox flexDirection="column" justifyContent="center">
                     <Flexbox maxHeight="40px">
                     </Flexbox>
