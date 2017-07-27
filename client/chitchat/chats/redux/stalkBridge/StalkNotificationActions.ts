@@ -45,11 +45,24 @@ export const notify = (messageImp: MessageImp) => {
     if (messageImp.type === MessageType[MessageType.Text]) {
         CryptoHelper.decryptionText(messageImp).then((decoded) => {
             message.body = decoded.body;
+
+            nativeNotification(message);
             getStore().dispatch(stalkNotiNewMessage(message));
         });
     }
     else {
         message.body = `Sent you ${messageImp.type.toLowerCase()}`;
+
+        nativeNotification(message);
         getStore().dispatch(stalkNotiNewMessage(message));
     }
 };
+
+export const nativeNotification = (message: NotiMessage) => {
+    let myNotification = new Notification(message.title, {
+        body: message.body
+    });
+    myNotification.onclick = () => {
+        console.log('Notification clicked')
+    };
+} 
