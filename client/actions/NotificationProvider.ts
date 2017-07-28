@@ -1,23 +1,27 @@
 
 
-export namespace NotificationProvider {
+export namespace NotificationAPI {
     export type NotiMessage = { title: string; body: string; image: string; }
-    export class NotificationAPI {
-        private static instance: NotificationAPI;
-        public static getInstance(): NotificationAPI {
-            return NotificationAPI.instance;
+    export class NotificationFactory {
+        private static instance: NotificationFactory;
+        public static getInstance(): NotificationFactory {
+            return NotificationFactory.instance;
         }
         public static createInstance() {
-            if (!NotificationAPI.instance) {
-                NotificationAPI.instance = new NotificationAPI();
+            if (!NotificationFactory.instance) {
+                NotificationFactory.instance = new NotificationFactory();
             }
 
-            return NotificationAPI.instance;
+            return NotificationFactory.instance;
         }
 
         constructor() {
+            console.log("Notification.permission", Notification.permission);
+
             Notification.requestPermission(function (status) {
-                // status is "granted", if accepted by user
+                if (Notification.permission !== status) {
+                    Notification.permission = status;
+                }
             });
         }
 

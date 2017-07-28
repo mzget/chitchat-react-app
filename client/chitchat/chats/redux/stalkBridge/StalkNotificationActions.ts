@@ -12,7 +12,7 @@ import { MessageImp } from "../../models/MessageImp";
 import * as CryptoHelper from "../../utils/CryptoHelper";
 import { MessageType } from "../../../shared/Message";
 
-import { NotificationProvider as NotiAPI } from "../../../../actions/";
+import { NotificationAPI as NotiAPI } from "../../../../actions/";
 import { ChitChatFactory } from "../../ChitChatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 
@@ -45,18 +45,18 @@ export const notify = (messageImp: MessageImp) => {
         CryptoHelper.decryptionText(messageImp).then((decoded) => {
             message.body = decoded.body;
 
-            NotiAPI.NotificationAPI.getInstance().nativeNotifyAPI(message);
+            NotiAPI.NotificationFactory.getInstance().nativeNotifyAPI(message);
             getStore().dispatch(stalkNotiNewMessage(message));
         });
     }
     else {
         message.body = `Sent you ${messageImp.type.toLowerCase()}`;
 
-        NotiAPI.NotificationAPI.getInstance().nativeNotifyAPI(message);
+        NotiAPI.NotificationFactory.getInstance().nativeNotifyAPI(message);
         getStore().dispatch(stalkNotiNewMessage(message));
     }
 };
 
 export const initNativeNotiAPI = () => {
-    NotiAPI.NotificationAPI.createInstance();
+    NotiAPI.NotificationFactory.createInstance();
 } 

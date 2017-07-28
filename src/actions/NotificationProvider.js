@@ -1,19 +1,22 @@
-export var NotificationProvider;
-(function (NotificationProvider) {
-    class NotificationAPI {
+export var NotificationAPI;
+(function (NotificationAPI) {
+    class NotificationFactory {
         constructor() {
+            console.log("Notification.permission", Notification.permission);
             Notification.requestPermission(function (status) {
-                // status is "granted", if accepted by user
+                if (Notification.permission !== status) {
+                    Notification.permission = status;
+                }
             });
         }
         static getInstance() {
-            return NotificationAPI.instance;
+            return NotificationFactory.instance;
         }
         static createInstance() {
-            if (!NotificationAPI.instance) {
-                NotificationAPI.instance = new NotificationAPI();
+            if (!NotificationFactory.instance) {
+                NotificationFactory.instance = new NotificationFactory();
             }
-            return NotificationAPI.instance;
+            return NotificationFactory.instance;
         }
         nativeNotifyAPI(message) {
             if (Notification && Notification.permission !== "denied") {
@@ -29,5 +32,5 @@ export var NotificationProvider;
             }
         }
     }
-    NotificationProvider.NotificationAPI = NotificationAPI;
-})(NotificationProvider || (NotificationProvider = {}));
+    NotificationAPI.NotificationFactory = NotificationFactory;
+})(NotificationAPI || (NotificationAPI = {}));
