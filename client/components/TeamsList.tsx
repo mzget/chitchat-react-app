@@ -4,7 +4,7 @@ import { Paper, Card, CardTitle } from "material-ui";
 import { darkWhite } from "material-ui/styles/colors";
 
 import { MemberList } from "./MemberList";
-const Styles = require("../styles/generalStyles");
+const Styles = require("../../styles/generalStyles");
 const PageBox = Styles.generalStyles.pageBox;
 
 export const TeamsList = (props: { onSelectMember, members }) => (

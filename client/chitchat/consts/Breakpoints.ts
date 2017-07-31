@@ -13,3 +13,8 @@ export const LARGE_WINDOW = 1280;
 export const XLARGE_WINDOW = 1920;
 export const LARGE = 1440;
 export const X_LARGE = 1600;
+
+export const xsmall_body_width = "300px";
+export const small_body_width = "350px";
+export const medium_body_width = "600px";
+export const large_body_width = "700px";

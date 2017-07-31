@@ -15,9 +15,7 @@ import { ChitChatAccount } from "../../chitchat/chats/models/User";
 import { ITeamProfile } from "../../chitchat/chats/models/TeamProfile";
 import { Button, Row, Col, Panel, FormGroup, FormControl, FieldGroup, ControlLabel } from "react-bootstrap";
 import { Card, CardActions, CardHeader, CardText, CardTitle } from "material-ui";
-const Styles = require("../../styles/generalStyles");
-const PageBox = Styles.generalStyles.pageBox;
-const PaddingZero = Styles.generalStyles.paddingZero;
+const Styles = require("../../../styles/generalStyles");
 
 const styles = {
     span: {

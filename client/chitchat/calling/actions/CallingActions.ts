@@ -15,6 +15,7 @@ export function onHangupCall(payload: { user_id: string }) {
     getStore().dispatch(onVideoCallEnded());
 };
 
+
 export const ON_VIDEOCALL_ENDED = "ON_VIDEOCALL_ENDED";
 export const onVideoCallEnded = createAction(ON_VIDEOCALL_ENDED);
 
