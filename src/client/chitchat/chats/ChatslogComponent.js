@@ -73,24 +73,32 @@ export class ChatsLogComponent {
         this.chatslog.clear();
         let roomAccess = dataEvent.roomAccess;
         let results = new Array();
-        let source = Rx.Observable.from(roomAccess);
-        source.flatMap((item) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                let room = yield self.getRoomInfo(item.roomId);
-                if (room) {
-                    results.push(room);
+        if (roomAccess.length > 0) {
+            let source = Rx.Observable.from(roomAccess);
+            source.flatMap((item) => __awaiter(this, void 0, void 0, function* () {
+                try {
+                    let room = yield self.getRoomInfo(item.roomId);
+                    if (room) {
+                        results.push(room);
+                    }
+                    return room;
                 }
-                return room;
-            }
-            catch (ex) {
-                return null;
-            }
-        })).subscribe(room => { }, (err) => console.error("error", err), () => {
+                catch (ex) {
+                    return null;
+                }
+            })).subscribe(room => { }, (err) => console.error("error", err), () => {
+                self._isReady = true;
+                if (!!self.onReady) {
+                    self.onReady(results);
+                }
+            });
+        }
+        else {
             self._isReady = true;
             if (!!self.onReady) {
                 self.onReady(results);
             }
-        });
+        }
     }
     onAddRoomAccess(dataEvent) {
         console.warn("ChatsLogComponent.onAddRoomAccess", JSON.stringify(dataEvent));

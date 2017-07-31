@@ -69,16 +69,18 @@ function getUnreadMessages() {
     let chatsLogComp = BackendFactory.getInstance().chatLogComp;
     let { _id } = authReducer().user;
     let { roomAccess, state } = getStore().getState().chatlogReducer;
-    chatsLogComp.getUnreadMessages(_id, roomAccess, function done(err, unreadLogs) {
-        if (!!unreadLogs) {
-            chatsLogComp.setUnreadMessageMap(unreadLogs);
-            calculateUnreadCount();
-            getUnreadMessageComplete();
-        }
-        if (roomAccess.length == 0) {
-            getChatsLog();
-        }
-    });
+    if (roomAccess && roomAccess.length > 0) {
+        chatsLogComp.getUnreadMessages(_id, roomAccess, function done(err, unreadLogs) {
+            if (!!unreadLogs) {
+                chatsLogComp.setUnreadMessageMap(unreadLogs);
+                calculateUnreadCount();
+                getUnreadMessageComplete();
+            }
+        });
+    }
+    else {
+        getChatsLog();
+    }
 }
 function calculateUnreadCount() {
     let chatsLogComp = BackendFactory.getInstance().chatLogComp;

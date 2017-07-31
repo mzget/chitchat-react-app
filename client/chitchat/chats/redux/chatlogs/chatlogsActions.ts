@@ -90,19 +90,20 @@ function getUnreadMessages() {
     let { _id } = authReducer().user;
     let { roomAccess, state } = getStore().getState().chatlogReducer;
 
-    chatsLogComp.getUnreadMessages(_id, roomAccess, function done(err, unreadLogs) {
-        if (!!unreadLogs) {
-            chatsLogComp.setUnreadMessageMap(unreadLogs);
+    if (roomAccess && roomAccess.length > 0) {
+        chatsLogComp.getUnreadMessages(_id, roomAccess, function done(err, unreadLogs) {
+            if (!!unreadLogs) {
+                chatsLogComp.setUnreadMessageMap(unreadLogs);
 
-            calculateUnreadCount();
+                calculateUnreadCount();
 
-            getUnreadMessageComplete();
-        }
-
-        if (roomAccess.length == 0) {
-            getChatsLog();
-        }
-    });
+                getUnreadMessageComplete();
+            }
+        });
+    }
+    else {
+        getChatsLog();
+    }
 }
 
 function calculateUnreadCount() {

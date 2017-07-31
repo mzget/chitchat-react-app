@@ -99,28 +99,37 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         let roomAccess = dataEvent.roomAccess as Array<RoomAccessData>;
         let results = new Array<Room>();
 
-        let source = Rx.Observable.from(roomAccess);
-        source.flatMap(async (item) => {
-            try {
-                let room = await self.getRoomInfo(item.roomId);
-                if (room) {
-                    results.push(room);
-                }
+        if (roomAccess.length > 0) {
+            let source = Rx.Observable.from(roomAccess);
+            source.flatMap(async (item) => {
+                try {
+                    let room = await self.getRoomInfo(item.roomId);
+                    if (room) {
+                        results.push(room);
+                    }
 
-                return room;
-            }
-            catch (ex) {
-                return null;
-            }
-        }).subscribe(room => { },
-            (err) => console.error("error", err),
-            () => {
-                self._isReady = true;
-
-                if (!!self.onReady) {
-                    self.onReady(results);
+                    return room;
                 }
-            });
+                catch (ex) {
+                    return null;
+                }
+            }).subscribe(room => { },
+                (err) => console.error("error", err),
+                () => {
+                    self._isReady = true;
+
+                    if (!!self.onReady) {
+                        self.onReady(results);
+                    }
+                });
+        }
+        else {
+            self._isReady = true;
+
+            if (!!self.onReady) {
+                self.onReady(results);
+            }
+        }
     }
 
     public addNewRoomAccessEvent: (data) => void;
@@ -132,7 +141,8 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         }
     }
 
-    public getUnreadMessages(user_id: string, roomAccess: RoomAccessData[], callback: (err: Error | null, logsData: Array<IUnread>) => void) {
+    public getUnreadMessages(user_id: string, roomAccess: RoomAccessData[],
+        callback: (err: Error | null, logsData: Array<IUnread>) => void) {
         let self = this;
         let unreadLogs = new Array<IUnread>();
 

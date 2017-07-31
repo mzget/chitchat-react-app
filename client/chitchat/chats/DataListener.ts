@@ -57,7 +57,7 @@ export class DataListener implements ServerListener, ChatEvents.IChatServerEvent
         this.dataManager = dataManager;
     }
 
-    onAccessRoom(dataEvent: Array<any>) {
+    onAccessRoom(dataEvent: Array<StalkAccount>) {
         if (Array.isArray(dataEvent) && dataEvent.length > 0) {
             let data = dataEvent[0] as StalkAccount;
 

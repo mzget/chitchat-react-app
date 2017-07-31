@@ -4,7 +4,7 @@
  * This is pure function action for redux app.
  */
 
-import * as Rx from "rxjs/Rx";
+import * as Rx from "@reactivex/rxjs";
 const { ajax } = Rx.Observable;
 
 import { BackendFactory } from "../../BackendFactory";
@@ -129,10 +129,14 @@ export const getLastAccessRoom_Epic = action$ => (
             let { team_id } = action.payload;
             return ServiceProvider.getLastAccessRoomInfo(team_id)
                 .then(response => response.json())
-                .then(json => json);
+                .then(json => {
+                    console.log("getLastAccessRoomInfo result", json);
+                    return json;
+                });
         })
         .map(json => {
-            BackendFactory.getInstance().dataListener.onAccessRoom(json.result);
-            return getLastAccessRoomSuccess(json.result);
+            let result = json.result as Array<StalkAccount>;
+            BackendFactory.getInstance().dataListener.onAccessRoom(result);
+            return getLastAccessRoomSuccess(result);
         })
-        .catch(json => Rx.Observable.of(getLastAccessRoomFailure(json.message))));
+        .catch(json => Rx.Observable.of(getLastAccessRoomFailure(json))));

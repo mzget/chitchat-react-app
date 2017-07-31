@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import * as Rx from "rxjs/Rx";
+import * as Rx from "@reactivex/rxjs";
 const { ajax } = Rx.Observable;
 import { BackendFactory } from "../../BackendFactory";
 import * as ServiceProvider from "../../services/ServiceProvider";
@@ -109,10 +109,14 @@ export const getLastAccessRoom_Epic = action$ => (action$.ofType(GET_LAST_ACCESS
     let { team_id } = action.payload;
     return ServiceProvider.getLastAccessRoomInfo(team_id)
         .then(response => response.json())
-        .then(json => json);
+        .then(json => {
+        console.log("getLastAccessRoomInfo result", json);
+        return json;
+    });
 })
     .map(json => {
-    BackendFactory.getInstance().dataListener.onAccessRoom(json.result);
-    return getLastAccessRoomSuccess(json.result);
+    let result = json.result;
+    BackendFactory.getInstance().dataListener.onAccessRoom(result);
+    return getLastAccessRoomSuccess(result);
 })
-    .catch(json => Rx.Observable.of(getLastAccessRoomFailure(json.message))));
+    .catch(json => Rx.Observable.of(getLastAccessRoomFailure(json))));

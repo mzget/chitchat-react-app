@@ -24,8 +24,8 @@ const getTeamProfile = gql `
         team_role
         user {
             username
-            firstName
-            lastName
+            firstname
+            lastname
             tel
             email
             avatar
