@@ -4,12 +4,14 @@
     "watch": true,
     "jsx": "preserve",
     "target": "es2015",
-    "module": "es2015",
-    "moduleResolution": "node",
     "rootDirs": [
       "client"
     ],
-    "outDir": "src"
+    "outDir": "src",
+    "removeComments": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ]
   },
   "exclude": [
     "node_modules"

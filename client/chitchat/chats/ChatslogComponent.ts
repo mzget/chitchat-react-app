@@ -24,7 +24,6 @@ import { MemberImp } from "./models/MemberImp";
 import * as chatroomService from "./services/chatroomService";
 import * as chatlogActionsHelper from "./redux/chatlogs/chatlogActionsHelper";
 
-
 export type ChatLogMap = Map<string, ChatLog>;
 export type UnreadMap = Map<string, IUnread>;
 export interface IUnread { message: IMessage; rid: string; count: number; }
