@@ -40,7 +40,7 @@ export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chat
                                 </Flexbox>
                                 <Flexbox minWidth="280px" width={window.innerWidth >= LARGE ? small_body_width : xsmall_body_width}>
                                     <div style={{ width: "100%", backgroundColor: Colors.darkWhite, overflowY: "auto" }}>
-                                        <RightNav match={match} onError={onError} teamReducer={teamReducer}/>
+                                        <RightNav match={match} onError={onError}/>
                                     </div>
                                 </Flexbox>
                             </Flexbox>
