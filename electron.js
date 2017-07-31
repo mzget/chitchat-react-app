@@ -24,9 +24,13 @@ function createWindow() {
     // }))
     var startUrl = process.env.ELECTRON_START_URL || "https://chitchats.ga";
     mainWindow.loadURL(startUrl);
-    app.dock.setBadge("");
     mainWindow.webContents.on('did-finish-load', function () {
+        // mainWindow.webContents.executeJavaScript('fetch("https://jsonplaceholder.typicode.com/users/1").then(resp => resp.json())', true)
+        //   .then((result) => {
+        //     console.log(result) // Will be the JSON object from the fetch call
+        //   })
         mainWindow.webContents.send('ping', 'whoooooooh!');
+        app.dock.setBadge("");
     });
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
