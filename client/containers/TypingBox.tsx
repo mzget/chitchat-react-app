@@ -8,7 +8,7 @@ import * as Colors from "material-ui/styles/colors";
 
 import * as FileReaderInput from "react-file-reader-input";
 
-import { small_body_width, large_body_width, LARGE, xsmall_body_width } from '../chitchat/consts/Breakpoints';
+import { small_body_width, large_body_width, LARGE_TABLET, xsmall_body_width } from '../chitchat/consts/Breakpoints';
 
 const styles = {
     span: {
@@ -56,7 +56,9 @@ const PlaceButton = (props: ITypingBox) => (
 export const TypingBox = (props: ITypingBox) => {
     return (
         < MuiThemeProvider >
-            <div id={"typing_box"} style={{ margin: 2, backgroundColor: Colors.darkWhite, width: window.innerWidth >= LARGE ? large_body_width : small_body_width }} >
+            <div
+                id={"typing_box"}
+                style={{ margin: 2, backgroundColor: Colors.darkWhite, width: window.innerWidth >= LARGE_TABLET ? large_body_width : small_body_width }} >
                 <Flexbox>
                     <PlaceButton {...props} />
                     <StickerButton {...props} />

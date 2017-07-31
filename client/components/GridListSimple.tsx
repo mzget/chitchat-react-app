@@ -6,7 +6,7 @@ import { GridList, GridTile } from "material-ui/GridList";
 import IconButton from "material-ui/IconButton";
 import Subheader from "material-ui/Subheader";
 
-import { small_body_width, large_body_width, LARGE } from '../chitchat/consts/Breakpoints';
+import { small_body_width, large_body_width, LARGE_TABLET } from '../chitchat/consts/Breakpoints';
 
 const styles = {
     root: {
@@ -32,7 +32,10 @@ interface IGridListProps {
 export const GridListSimple = (props: IGridListProps) => (
     <MuiThemeProvider>
         <Flexbox style={{ backgroundColor: Colors.indigo50 }} id={"sticker_box"}>
-            <GridList cols={6} cellHeight={100} style={{ padding: 20, height: 208, width: window.innerWidth >= LARGE ? large_body_width : small_body_width, overflowY: "scroll" }}>
+            <GridList
+                cols={6}
+                cellHeight={100}
+                style={{ padding: 20, height: 208, width: window.innerWidth >= LARGE_TABLET ? large_body_width : small_body_width, overflowY: "scroll" }}>
                 <Subheader>{props.subheader}</Subheader>
                 {
                     props.srcs.map((tile, i, arr) => (
