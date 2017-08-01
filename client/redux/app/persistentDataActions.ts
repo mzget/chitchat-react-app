@@ -5,7 +5,6 @@ import store from "../configureStore";
 import { AppSessionToken } from "../../chitchat/chats/dataAccessLayer/AppSessionToken";
 const appSession = new AppSessionToken();
 
-
 export async function saveSession() {
     await appSession.saveSessionToken(store.getState().authReducer.token);
 }
@@ -20,11 +19,15 @@ const getSessionTokenFailure = createAction(GET_SESSION_TOKEN_FAILURE, err => er
 const getSessionTokenSuccess = createAction(GET_SESSION_TOKEN_SUCCESS, token => token);
 export function getSession() {
     return (dispatch) => {
-        appSession.getSessionToken().then(token => {
-            if (!!token)
-                dispatch(getSessionTokenSuccess(token));
-            else
-                dispatch(getSessionTokenFailure(null));
-        }).catch(err => dispatch(getSessionTokenFailure(err)));
+        appSession.getSessionToken()
+            .then(token => {
+                if (!!token) {
+                    dispatch(getSessionTokenSuccess(token));
+                }
+                else {
+                    dispatch(getSessionTokenFailure(null));
+                }
+            })
+            .catch(err => dispatch(getSessionTokenFailure(err)));
     };
 }

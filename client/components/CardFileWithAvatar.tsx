@@ -6,6 +6,8 @@ import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from "m
 import FlatButton from "material-ui/FlatButton";
 import { grey400, darkBlack, lightBlack } from "material-ui/styles/colors";
 
+import { xsmall_body_width, medium_body_width, LARGE_TABLET } from '../chitchat/consts/Breakpoints';
+
 interface ICompProps {
     title: string;
     subtitle: string;
@@ -18,8 +20,8 @@ interface ICompProps {
 }
 
 export const CardFileWithAvatar = (props: ICompProps) => (
-    <div style={{ padding: 2, color: grey400 }}>
-        <Card>
+    <div style={{ padding: 2, color: grey400, alignItems: 'center', display: 'flex', justifyContent: 'center' }}>
+        <Card style={{ width: window.innerWidth >= LARGE_TABLET ? medium_body_width : xsmall_body_width }}>
             <CardHeader
                 title={<span style={{ color: "blue" }}>{props.title}</span>}
                 subtitle={<span>{props.subtitle}</span>}

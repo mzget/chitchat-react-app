@@ -9,7 +9,7 @@ import { createAction } from "redux-actions";
 const { ajax, fromPromise } = Rx.Observable;
 
 import { ChatRoomComponent } from "../../ChatRoomComponent";
-import { ChitChatFactory } from "../../ChitchatFactory";
+import { ChitChatFactory } from "../../ChitChatFactory";
 import { checkOlderMessages, getNewerMessageFromNet, GET_NEWER_MESSAGE_SUCCESS } from "./chatroomActions";
 import { MessageImp } from "../../models/MessageImp";
 
@@ -34,6 +34,7 @@ export const getPrivateChatRoom_Epic = action$ =>
         .mergeMap(action => fromPromise(chatroomService.getPrivateChatroom(action.payload.ownerId, action.payload.roommateId)))
         .mergeMap(response => fromPromise(response.json()))
         .map(json => {
+            console.log(json);
             if (json.success) {
                 return fetchPrivateChatRoomSuccess(json.result[0]);
             }

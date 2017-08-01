@@ -1,10 +1,8 @@
 ﻿import * as React from "react";
-import { Flex, Box } from "reflexbox";
 
 import { List, ListItem } from "material-ui/List";
 import Divider from "material-ui/Divider";
 import Subheader from "material-ui/Subheader";
-import * as Color from "material-ui/styles/colors";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Avatar from "material-ui/Avatar";
@@ -16,6 +14,7 @@ import { ChitChatAccount } from "../../chitchat/chats/models/User";
 interface IComponentProps {
     item: ChitChatAccount;
     onSelected: (item: ChitChatAccount) => void;
+    styles: any;
 }
 
 export const ProfileListView = (props: IComponentProps) => (
@@ -29,10 +28,10 @@ export const ProfileListView = (props: IComponentProps) => (
                             <Avatar src={props.item.avatar} /> : <Avatar>{props.item.username.charAt(0)}</Avatar>
                         }
                         rightIcon={null}
-                        primaryText={<span>{props.item.username}</span>}
+                        primaryText={<span style={props.styles}>{`${props.item.firstname} ${props.item.lastname}`}</span>}
                         secondaryText={
                             <p>
-                                <span>{props.item.email}</span>
+                                <span style={props.styles}>{props.item.email}</span>
                             </p>
                         }
                     />

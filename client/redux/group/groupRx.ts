@@ -6,11 +6,11 @@ const { ajax } = Rx.Observable;
 import Store from "../configureStore";
 
 import { BackendFactory } from "../../chitchat/chats/BackendFactory";
-import { Room, RoomType } from "../../chitchat/shared/Room";
+import { Room, RoomType } from "../../chitchat/chats/models/Room";
 
 import { updateChatRoom } from "../../chitchat/chats/redux/chatroom/chatroomActions";
 
-import { ChitChatFactory } from "../../chitchat/chats/ChitchatFactory";
+import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 
 /**

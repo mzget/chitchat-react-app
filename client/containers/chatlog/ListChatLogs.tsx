@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Flex, Box } from "reflexbox";
 
 import { List, ListItem } from "material-ui/List";
 import Divider from "material-ui/Divider";
@@ -18,10 +17,13 @@ import ChatLog from "../../chitchat/chats/models/chatLog";
 import BadgeSimple from "../../components/BadgeSimple";
 // import { ChatlogItem } from "../../components/ChatlogItem";
 
-interface IChatlogProps { value: Array<ChatLog>; onSelected: Function; onRemovedLog: (log: ChatLog) => void; }
+interface IChatlogProps {
+    value: Array<ChatLog>;
+    onSelected: Function;
+    onRemovedLog: (log: ChatLog) => void;
+}
 
 const iconButtonElement = (
-
     <IconButton
         touch={true}
         tooltip="more"
@@ -40,7 +42,6 @@ const rightIconMenu = (log: ChatLog, onRemovedLog: (log: ChatLog) => void) => (
     >
         <MenuItem value="1" style={{ paddingLeft: "0", paddingRight: "0" }}>Delete</MenuItem>
     </IconMenu>
-
 );
 
 const renderList = (props: IChatlogProps) => (
@@ -64,14 +65,14 @@ const renderList = (props: IChatlogProps) => (
                     }
                     onClick={() => props.onSelected(log)}
                     children={
-                        <div key={log.id} style={{ float: "right", position: "absolute", top: "10%", right: "2%", margin: "auto" }}>
+                        <div key={log.id}
+                            style={{ float: "right", position: "absolute", top: "10%", right: "2%", margin: "auto" }}>
                             {
                                 (log.count && log.count != 0) ? <BadgeSimple content={log.count} /> : null
                             }
                             {
                                 rightIconMenu(log, props.onRemovedLog)
                             }
-
                         </div>
                     }
                 />
@@ -81,9 +82,9 @@ const renderList = (props: IChatlogProps) => (
 );
 
 export const ListChatLogs = (props: IChatlogProps) => (
-    < MuiThemeProvider >
+    <MuiThemeProvider>
         <List>
             {(!!props.value) ? renderList(props) : null}
         </List>
-    </ MuiThemeProvider >
+    </MuiThemeProvider>
 );

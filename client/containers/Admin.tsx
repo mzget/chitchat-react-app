@@ -14,8 +14,10 @@ import { MenuListview } from "./admins/MenuListView";
 import { ManageOrgChartBox } from "./admins/ManageOrgChartBox";
 import CreateGroupBox, { createOrgGroup, createPjbGroup, createPvGroup } from "./admins/CreateGroupBox";
 import { TeamMemberBox } from "./admins/TeamMemberBox";
+import { TeamRoleEnhanced } from "./admins/TeamRole";
 import { DialogBox } from "../components/DialogBox";
 import { GroupPureEnhanced } from "./admins/Group";
+import { RoleDetailEnhanced } from "./admins/RoleDetail";
 
 import * as adminRx from "../redux/admin/adminRx";
 import * as groupRx from "../redux/group/groupRx";
@@ -24,7 +26,7 @@ import { Room, RoomType, RoomStatus } from "../chitchat/chats/models/Room";
 import { UserRole } from "../chitchat/chats/models/UserRole";
 
 enum BoxState {
-    idle = 0, isCreateGroup = 1, isManageTeam, isManageMember, isManageRole, groupView
+    idle = 0, isCreateGroup = 1, isManageTeam, isManageMember, isManageRole, groupView, roleView
 }
 interface IComponentNameState {
     menuSelected: string;
@@ -67,25 +69,30 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     componentWillReceiveProps(nextProps: IComponentProps) {
         const { groupReducer, adminReducer, alertReducer, match, location } = nextProps;
 
+        let { menu, id } = match.params;
+
         if (!shallowEqual(alertReducer.error, this.props.alertReducer.error) && !!alertReducer.error) {
             this.props.onError(alertReducer.error);
         }
 
-        if (match.params.menu == "orgchart") {
+        if (menu == "orgchart") {
             this.setState(previous => ({ ...previous, boxState: BoxState.isManageTeam }));
         }
-        else if (match.params.menu == "teamlist") {
+        else if (menu == "teamlist") {
             this.setState(previous => ({ ...previous, boxState: BoxState.isManageMember }));
         }
-        else if (match.params.menu == "teamrole") {
+        else if (menu == "teamrole") {
             this.setState(previous => ({ ...previous, boxState: BoxState.isManageRole }));
         }
-        else if (match.params.menu == createPvGroup || match.params.menu == createOrgGroup) {
+        else if (menu == createPvGroup || match.params.menu == createOrgGroup) {
             this.setState(previous => ({ ...previous, boxState: BoxState.isCreateGroup, menuSelected: match.params.menu }));
         }
 
-        if (match.params.id) {
+        if (menu == "group" && id) {
             this.setState(previous => ({ ...previous, boxState: BoxState.groupView }));
+        }
+        else if (menu == "role" && id) {
+            this.setState(previous => ({ ...previous, boxState: BoxState.roleView }));
         }
 
         if (groupReducer.state == groupRx.CREATE_ORG_GROUP_SUCCESS ||
@@ -128,7 +135,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             this.props.history.push("/admin/teamrole");
         }
         else if (key == this.developerIssue) {
-            window.open("https://github.com/mzget/chitchat-ionic-reference-implementation/issues", '_blank');
+            window.open("https://github.com/mzget/chitchat-react-app/issues", '_blank');
         }
     }
 
@@ -147,7 +154,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     getAdminPanel() {
-        let { userReducer, match, onError } = this.props;
+        let { userReducer, teamReducer, match, onError } = this.props;
 
         switch (this.state.boxState) {
             case BoxState.isManageTeam:
@@ -156,10 +163,18 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
                 return <CreateGroupBox {...this.props} groupType={this.state.menuSelected} onError={this.props.onError} />;
             case BoxState.isManageMember:
                 return <TeamMemberBox {...this.props} teamRole={userReducer.teamProfile.team_role} onError={this.props.onError} />;
+            case BoxState.isManageRole:
+                return <TeamRoleEnhanced history={this.props.history} />;
             case BoxState.groupView:
                 return <GroupPureEnhanced room_id={match.params.id} />;
+            case BoxState.roleView:
+                return <RoleDetailEnhanced team_id={teamReducer.team._id} role_name={match.params.id} />;
             default:
-                return <Subheader>Welcome To Admin Panel!</Subheader>;
+                return (
+                    <div style={{ width: "100%" }}>
+                        <Subheader>Welcome To Admin Panel!</Subheader>
+                    </div>
+                );
         }
     }
 
@@ -192,4 +207,5 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
 }
 
 const mapstateToProps = (state) => ({ ...state });
-export const AdminPage = withRouter(connect(mapstateToProps)(Admin));
+export var AdminPage = connect(mapstateToProps)(Admin) as React.ComponentClass<any>;
+AdminPage = withRouter(AdminPage);

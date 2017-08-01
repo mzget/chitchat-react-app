@@ -12,14 +12,12 @@ import { MessageImp } from "../../models/MessageImp";
 import * as CryptoHelper from "../../utils/CryptoHelper";
 import { MessageType } from "../../../shared/Message";
 
-import { ChitChatFactory } from "../../ChitchatFactory";
-
+import { NotificationAPI as NotiAPI } from "../../../../actions/";
+import { ChitChatFactory } from "../../ChitChatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 
-type NotiMessage = { title: string; body: string; image: string; }
-
 export const STALK_NOTICE_NEW_MESSAGE = "STALK_NOTICE_NEW_MESSAGE";
-const stalkNotiNewMessage = (payload: NotiMessage) => ({ type: STALK_NOTICE_NEW_MESSAGE, payload });
+const stalkNotiNewMessage = (payload: NotiAPI.NotiMessage) => ({ type: STALK_NOTICE_NEW_MESSAGE, payload });
 
 const init = (onSuccess: (err, deviceToken) => void) => {
     console.log("Initialize NotificationManager.");
@@ -28,27 +26,37 @@ const init = (onSuccess: (err, deviceToken) => void) => {
 export const regisNotifyNewMessageEvent = () => {
     console.log("subscribe global notify message event");
 
-    BackendFactory.getInstance().dataListener.addOnChatListener(notify);
+    let backend = BackendFactory.getInstance();
+    if (!!backend) backend.dataListener.addOnChatListener(notify);
 };
 
 export const unsubscribeGlobalNotifyMessageEvent = () => {
-    BackendFactory.getInstance().dataListener.removeOnChatListener(notify);
+    let backend = BackendFactory.getInstance();
+    if (!!backend) backend.dataListener.removeOnChatListener(notify);
 };
 
 export const notify = (messageImp: MessageImp) => {
     let message = {
         title: messageImp.user.username,
         image: messageImp.user.avatar
-    } as NotiMessage;
+    } as NotiAPI.NotiMessage;
 
     if (messageImp.type === MessageType[MessageType.Text]) {
         CryptoHelper.decryptionText(messageImp).then((decoded) => {
             message.body = decoded.body;
+
+            NotiAPI.NotificationFactory.getInstance().nativeNotifyAPI(message);
             getStore().dispatch(stalkNotiNewMessage(message));
         });
     }
     else {
         message.body = `Sent you ${messageImp.type.toLowerCase()}`;
+
+        NotiAPI.NotificationFactory.getInstance().nativeNotifyAPI(message);
         getStore().dispatch(stalkNotiNewMessage(message));
     }
 };
+
+export const initNativeNotiAPI = () => {
+    NotiAPI.NotificationFactory.createInstance();
+} 

@@ -1,4 +1,4 @@
-import { ChitChatFactory } from "../ChitchatFactory";
+import { ChitChatFactory } from "../ChitChatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 
 export const chitchat_headers = () => ({

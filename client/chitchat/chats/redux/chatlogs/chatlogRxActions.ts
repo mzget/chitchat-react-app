@@ -4,7 +4,7 @@
  * This is pure function action for redux app.
  */
 
-import * as Rx from "rxjs/Rx";
+import * as Rx from "@reactivex/rxjs";
 const { ajax } = Rx.Observable;
 
 import { BackendFactory } from "../../BackendFactory";
@@ -12,7 +12,7 @@ import { StalkAccount, RoomAccessData } from "../../../shared/Stalk";
 import { ChatRoomComponent } from "../../ChatRoomComponent";
 import * as ServiceProvider from "../../services/ServiceProvider";
 
-import { ChitChatFactory } from "../../ChitchatFactory";
+import { ChitChatFactory } from "../../ChitChatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
 const authReducer = () => ChitChatFactory.getInstance().authStore;
 
@@ -129,11 +129,14 @@ export const getLastAccessRoom_Epic = action$ => (
             let { team_id } = action.payload;
             return ServiceProvider.getLastAccessRoomInfo(team_id)
                 .then(response => response.json())
-                .then(json => json);
+                .then(json => {
+                    console.log("getLastAccessRoomInfo result", json);
+                    return json;
+                });
         })
         .map(json => {
-            console.log(GET_LAST_ACCESS_ROOM, json);
-            BackendFactory.getInstance().dataListener.onAccessRoom(json.result);
-            return getLastAccessRoomSuccess(json.result);
+            let result = json.result as Array<StalkAccount>;
+            BackendFactory.getInstance().dataListener.onAccessRoom(result);
+            return getLastAccessRoomSuccess(result);
         })
-        .catch(json => Rx.Observable.of(getLastAccessRoomFailure(json.message))));
+        .catch(json => Rx.Observable.of(getLastAccessRoomFailure(json))));

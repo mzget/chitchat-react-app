@@ -1,5 +1,4 @@
 ﻿import * as React from "react";
-import { Flex, Box } from "reflexbox";
 
 import { List, ListItem } from "material-ui/List";
 import Divider from "material-ui/Divider";

@@ -7,10 +7,9 @@
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
-import { STALK_INIT_CHATLOG } from "../chitchat/chats/redux/chatlogs/chatlogsActions";
+import { STALK_INIT_CHATLOG, getLastAccessRoom } from "../chitchat/chats/redux/chatlogs/";
 import { TEAM_SELECTED, getTeamsInfo } from "../redux/team/teamRx";
 import { FETCH_USER_SUCCESS } from "../redux/user/userRx";
-import { getLastAccessRoom } from "../chitchat/chats/redux/chatlogs/chatlogRxActions";
 
 import Store from "../redux/configureStore";
 

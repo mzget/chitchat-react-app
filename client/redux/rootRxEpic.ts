@@ -1,17 +1,17 @@
 import { combineEpics } from "redux-observable";
 
 import * as userRx from "./user/userRx";
-import * as chatroomRxEpic from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
-import * as messageRxEpic from "../chitchat/chats/redux/chatroom/messageRxEpic";
+import * as chatroom from "../chitchat/chats/redux/chatroom/";
 import * as chatlogsActions from "../chitchat/chats/redux/chatlogs/chatlogsActions";
 import * as chatlogRxActions from "../chitchat/chats/redux/chatlogs/chatlogRxActions";
+import * as calling from "../chitchat/calling/";
 import * as authRx from "./authen/authRx";
 import * as teamRx from "./team/teamRx";
 import * as adminRx from "./admin/adminRx";
 import * as groupRx from "./group/groupRx";
 import * as privateGroupRxActions from "./group/privateGroupRxActions";
 import * as editGroupRxActions from "./group/editGroupRxActions";
-import * as chitchatRxActions from "../actions/chitchatRxActions";
+import { stalkInitChatlog_Epic, getTeamsInfo_Epic } from "../actions/";
 
 export const rootEpic = combineEpics(
     // @Admin
@@ -59,13 +59,14 @@ export const rootEpic = combineEpics(
     privateGroupRxActions.createPrivateGroup_Epic,
 
     ///@ChatRoom
-    chatroomRxEpic.getPrivateChatRoom_Epic,
-    chatroomRxEpic.getPersistendMessageEpic,
-    chatroomRxEpic.createPrivateChatRoomEpic,
-    chatroomRxEpic.uploadFileEpic,
-    chatroomRxEpic.updateMessagesRead_Epic,
+    chatroom.getPrivateChatRoom_Epic,
+    chatroom.getPersistendMessageEpic,
+    chatroom.createPrivateChatRoomEpic,
+    chatroom.uploadFileEpic,
+    chatroom.updateMessagesRead_Epic,
     /// @message rx.
     // messageRxEpic.fetchOlderMessageCount_Epic,
+    calling.hangupVideoCall_Epic,
 
     ///@chatlogs
     chatlogRxActions.getLastAccessRoom_Epic,
@@ -73,6 +74,6 @@ export const rootEpic = combineEpics(
     // chatlogRxActions.stalkInitChatlogs_Epic
     chatlogRxActions.removeRoomAccess_Epic,
 
-    chitchatRxActions.stalkInitChatlog_Epic,
-    chitchatRxActions.getTeamsInfo_Epic
+    stalkInitChatlog_Epic,
+    getTeamsInfo_Epic
 );

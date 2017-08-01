@@ -3,9 +3,10 @@
  *
  * ChatRoomComponent for handle some business logic of chat room.
  */
+import * as Rx from "@reactivex/rxjs";
 import * as async from "async";
 import { ServerImplemented } from "stalk-js";
-import { ChitChatFactory } from "./ChitchatFactory";
+import { ChitChatFactory } from "./ChitChatFactory";
 const authReducer = () => ChitChatFactory.getInstance().authStore;
 
 import { IRoomAccessListenerImp } from "./abstracts/IRoomAccessListenerImp";
@@ -22,7 +23,6 @@ import { MemberImp } from "./models/MemberImp";
 
 import * as chatroomService from "./services/chatroomService";
 import * as chatlogActionsHelper from "./redux/chatlogs/chatlogActionsHelper";
-
 
 export type ChatLogMap = Map<string, ChatLog>;
 export type UnreadMap = Map<string, IUnread>;
@@ -79,7 +79,7 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         this.chatListeners.push(listener);
     }
     onChat(message) {
-        console.log("ChatsLogComponent.onChat");
+        console.log("ChatsLogComponent.onChat", message);
         let self = this;
 
         CryptoHelper.decryptionText(message).then((decoded) => {
@@ -99,29 +99,37 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         let roomAccess = dataEvent.roomAccess as Array<RoomAccessData>;
         let results = new Array<Room>();
 
-        const done = () => {
+        if (roomAccess.length > 0) {
+            let source = Rx.Observable.from(roomAccess);
+            source.flatMap(async (item) => {
+                try {
+                    let room = await self.getRoomInfo(item.roomId);
+                    if (room) {
+                        results.push(room);
+                    }
+
+                    return room;
+                }
+                catch (ex) {
+                    return null;
+                }
+            }).subscribe(room => { },
+                (err) => console.error("error", err),
+                () => {
+                    self._isReady = true;
+
+                    if (!!self.onReady) {
+                        self.onReady(results);
+                    }
+                });
+        }
+        else {
             self._isReady = true;
 
             if (!!self.onReady) {
                 self.onReady(results);
             }
-        };
-
-        async.each(roomAccess, (item, resultCallback) => {
-            self.getRoomInfo(item.roomId)
-                .then(room => {
-                    results.push(room);
-                    resultCallback();
-                }).catch(err => {
-                    if (err)
-                        console.warn("getRoomInfo", err);
-
-                    resultCallback();
-                });
-        }, (err) => {
-            console.log("onAccessRoom.finished!", err);
-            done();
-        });
+        }
     }
 
     public addNewRoomAccessEvent: (data) => void;
@@ -133,7 +141,8 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         }
     }
 
-    public getUnreadMessages(user_id: string, roomAccess: RoomAccessData[], callback: (err: Error | null, logsData: Array<IUnread>) => void) {
+    public getUnreadMessages(user_id: string, roomAccess: RoomAccessData[],
+        callback: (err: Error | null, logsData: Array<IUnread>) => void) {
         let self = this;
         let unreadLogs = new Array<IUnread>();
 
@@ -144,9 +153,6 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
                     unreadLogs.push(value);
                     callback();
                 }).catch(err => {
-                    if (err)
-                        console.warn("getUnreadMessage", err);
-
                     callback();
                 });
             } else {
@@ -162,10 +168,7 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
 
         // add some items to the queue (batch-wise)
         if (roomAccess && roomAccess.length > 0) {
-            q.push(roomAccess, function (err) {
-                if (!!err)
-                    console.error("getUnreadMessage err", err);
-            });
+            q.push(roomAccess, function (err) { });
         }
         else {
             callback(null, null);
@@ -176,7 +179,6 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         let response = await chatroomService.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString());
         let value = await response.json();
 
-        console.log("getUnreadMessage result: ", value);
         if (value.success) {
             let unread = value.result as IUnread;
             unread.rid = roomAccess.roomId;
@@ -224,8 +226,6 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
 
         let response = await chatroomService.getRoomInfo(room_id);
         let json = await response.json();
-
-        console.log("getRoomInfo value:", json);
 
         if (json.success) {
             let roomInfos = json.result as Array<Room>;
@@ -275,7 +275,6 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
                         callback();
                     });
                 }).catch(err => {
-                    console.warn(err);
                     callback();
                 });
             }
@@ -428,9 +427,6 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
                         resolve(room);
                     });
                 }).catch(err => {
-                    if (err)
-                        console.warn("getRoomInfo fail", err);
-
                     rejected(err);
                 });
             }

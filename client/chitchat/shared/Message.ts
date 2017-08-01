@@ -19,7 +19,7 @@ export interface IMessage {
     createTime: Date;
     readers: string[];
     meta: IMessageMeta;
-    target: string;
+    target: string | string[];
     /**
      * uuid mean client side uuid.
      */

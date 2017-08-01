@@ -1,13 +1,10 @@
 ﻿import * as React from "react";
-import { Flex, Box } from "reflexbox";
-
 import { List, ListItem } from "material-ui/List";
 import Divider from "material-ui/Divider";
 import Subheader from "material-ui/Subheader";
 import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
 import { grey400, darkBlack, lightBlack, indigoA700 } from "material-ui/styles/colors";
-
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Avatar from "material-ui/Avatar";
 import Toggle from "material-ui/Toggle";
@@ -46,8 +43,9 @@ const renderList = (props: IComponentProps) => props.items.map((item, i) =>
                     }}
                     disabled={true}
                     defaultToggled={true}
-                /> : null}
-            primaryText={item.username}
+                /> : null
+            }
+            primaryText={`${item.firstname} ${item.lastname}`}
         />
         <Divider inset={true} />
     </div>

@@ -2,7 +2,7 @@ import * as UserService from "../../services/UserService";
 
 import { ITeamMember } from "../../models/IteamMember";
 
-import { ChitChatFactory } from "../../ChitchatFactory";
+import { ChitChatFactory } from "../../ChitChatFactory";
 const getTeam = () => ChitChatFactory.getInstance().teamStore;
 
 export async function getContactProfile(userId: string) {

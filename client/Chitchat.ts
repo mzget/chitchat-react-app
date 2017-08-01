@@ -1,14 +1,15 @@
-import { ChitChatFactory } from "./chitchat/chats/ChitchatFactory";
+import { ChitChatFactory } from "./chitchat/chats/ChitChatFactory";
 import { IConfig, IChitChatApi, IStalkApi } from "./chitchat/chats/iConfig";
 export const chitchatFactory = ChitChatFactory.createInstance();
 
-const api_stalk = "wss://chitchats.ga";
+const api_stalk = "wss://chitchats.ga"; //"wss://chitchats.ga";
 const stalkPort = 3050;
 const stalkKey = "chitchat1234";
 const chitchat_api = "https://chitchats.ga"; //"http://localhost:9000"; "https://chitchats.ga"
 export const chitchat_graphql = "https://chitchats.ga/graphql"; // "http://localhost:9000/graphql" : "https://chitchats.ga/graphql";
+export const signalingServer = "https://chitchats.ga:8888";
 
-const config = {
+export const config = {
     Stalk: {
         apiKey: stalkKey,
         chat: `${api_stalk}`,
@@ -29,7 +30,7 @@ const config = {
         fileUpload: `${chitchat_api}/chats/upload`
     } as IChitChatApi,
     appConfig: {
-        encryption: false
+        encryption: true,
+        secret: "chitchat#1234"
     }
 } as IConfig;
-chitchatFactory.initConfig(config);
