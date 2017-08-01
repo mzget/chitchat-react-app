@@ -36,6 +36,7 @@
   "dependencies": {
     "@reactivex/rxjs": "^5.4.2",
     "async": "^2.4.1",
+    "auto-launch": "^5.0.1",
     "crypto-js": "^3.1.9-1",
     "flexbox-react": "^4.4.0",
     "immutability-helper": "^2.3.0",

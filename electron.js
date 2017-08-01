@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var electron = require("electron");
+var AutoLaunch = require('auto-launch');
 // Module to control application life.
 var app = electron.app;
 // Module to create native browser window.
@@ -10,9 +11,6 @@ var url = require('url');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 var mainWindow;
-var badgeCount = function () {
-    return "0";
-};
 function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({ width: 1280, height: 720 });
@@ -63,3 +61,20 @@ app.on('activate', function () {
 });
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+var chitchatAutoLauncher = new AutoLaunch({
+    name: app.getName(),
+    mac: {
+        useLaunchAgent: true
+    }
+});
+chitchatAutoLauncher.enable();
+//minecraftAutoLauncher.disable();
+chitchatAutoLauncher.isEnabled().then(function (isEnabled) {
+    console.log("AutoLaunch", isEnabled);
+    if (isEnabled) {
+        return;
+    }
+    chitchatAutoLauncher.enable();
+}).catch(function (err) {
+    // handle error
+});

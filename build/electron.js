@@ -1,24 +1,35 @@
-const electron = require('electron');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var electron = require("electron");
+var AutoLaunch = require('auto-launch');
 // Module to control application life.
-const app = electron.app;
+var app = electron.app;
 // Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow;
-const path = require('path');
-const url = require('url');
+var BrowserWindow = electron.BrowserWindow;
+var path = require('path');
+var url = require('url');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
+var mainWindow;
 function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({ width: 1280, height: 720 });
     // and load the index.html of the app.
     // mainWindow.loadURL(url.format({
-    //   pathname: path.join(__dirname, 'index.html'),
+    //   pathname: path.join(__dirname, '/index.html'),
     //   protocol: 'file:',
     //   slashes: true
     // }))
-    const startUrl = process.env.ELECTRON_START_URL || "https://chitchats.ga";
+    var startUrl = process.env.ELECTRON_START_URL || "https://chitchats.ga";
     mainWindow.loadURL(startUrl);
+    mainWindow.webContents.on('did-finish-load', function () {
+        // mainWindow.webContents.executeJavaScript('fetch("https://jsonplaceholder.typicode.com/users/1").then(resp => resp.json())', true)
+        //   .then((result) => {
+        //     console.log(result) // Will be the JSON object from the fetch call
+        //   })
+        mainWindow.webContents.send('ping', 'whoooooooh!');
+        app.dock.setBadge("");
+    });
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
     // Emitted when the window is closed.
@@ -50,3 +61,20 @@ app.on('activate', function () {
 });
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+var chitchatAutoLauncher = new AutoLaunch({
+    name: app.getName(),
+    mac: {
+        useLaunchAgent: true
+    }
+});
+chitchatAutoLauncher.enable();
+//minecraftAutoLauncher.disable();
+chitchatAutoLauncher.isEnabled().then(function (isEnabled) {
+    console.log("AutoLaunch", isEnabled);
+    if (isEnabled) {
+        return;
+    }
+    chitchatAutoLauncher.enable();
+}).catch(function (err) {
+    // handle error
+});
