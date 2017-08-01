@@ -4,13 +4,13 @@ import FontIcon from 'material-ui/FontIcon';
 import MapsPersonPin from 'material-ui/svg-icons/maps/person-pin';
 import * as Colors from "material-ui/styles/colors";
 
-export const TabsExampleIconText = () => (
+export const ChatTabs = ({ groupComp, chatlogs }) => (
     <Tabs>
-        <Tab
-            icon={<FontIcon className="material-icons">group</FontIcon>}
-        />
-        <Tab
-            icon={<FontIcon className="material-icons">chat</FontIcon>}
-        />
+        <Tab icon={<FontIcon className="material-icons">group</FontIcon>} >
+            {groupComp}
+        </Tab>
+        <Tab icon={<FontIcon className="material-icons">chat</FontIcon>} >
+            {chatlogs}
+        </Tab>
     </Tabs>
 );
