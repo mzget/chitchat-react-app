@@ -21,7 +21,7 @@ import { MainPageEnhancer } from "./Enhancers/MainPageEnhancer";
 import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
 import { WebToolbarEnhanced, listener } from "./MainPageToolbar";
 import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
-import { ChatTabs } from "../components/ChatTabs";
+import { ChatTabsEnhanced } from "./toolsbox/ChatTabsEnhance";
 
 import { small_body_width, large_body_width, LARGE_TABLET, xsmall_body_width } from '../chitchat/consts/Breakpoints';
 import { defaultMuiTheme } from "../utils/";
@@ -45,9 +45,9 @@ export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chat
                             minWidth="280px"
                             width={window.innerWidth >= LARGE_TABLET ? small_body_width : xsmall_body_width}
                             style={{ overflowY: "auto", backgroundColor: Colors.darkWhite }}>
-                            <ChatTabs
+                            <ChatTabsEnhanced
                                 groupComp={
-                                    <div style={{ height: "calc(100vh - 56px)" }}>
+                                    <div style={{ height: "calc(100vh - (56px + 48px))" }}>
                                         <ConnectGroupListEnhancer
                                             fetchGroup={fetch_orgGroups}
                                             groups={groupReducer.orgGroups}

@@ -14,6 +14,9 @@ export const defaultMuiTheme = getMuiTheme({
         backgroundColor: Colors.indigo500,
     },
     tabs: {
-        backgroundColor: Colors.indigo700
+        backgroundColor: Colors.indigo700,
+    },
+    badge: {
+        primaryColor: Colors.red500
     }
 });
