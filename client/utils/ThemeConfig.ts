@@ -15,10 +15,10 @@ export const defaultMuiTheme = getMuiTheme({
     },
     toolbar: {
         color: Colors.white,
-        backgroundColor: Colors.indigo500,
+        backgroundColor: Colors.indigo700,
     },
     tabs: {
-        backgroundColor: Colors.indigo700,
+        backgroundColor: Colors.indigo500,
     },
     badge: {
         primaryColor: Colors.red500
