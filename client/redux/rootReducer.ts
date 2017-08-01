@@ -28,7 +28,7 @@ import { AuthenInitState, authReducer } from "./authen/authReducer";
 import { GroupInitState, groupReducer } from "./group/groupReducer";
 import { stalkReducer, stalkInitState, StalkRecord } from "../chitchat/chats/redux/stalkBridge/stalkReducer";
 import { chatroomReducer, chatRoomRecoder } from "../chitchat/chats/redux/chatroom/chatroomReducer";
-import { chatlogReducer, ChatLogInitState } from "../chitchat/chats/redux/chatlogs/chatlogReducer";
+import { chatlogReducer, ChatLogRecord, chatlogDefaults } from "../chitchat/chats/redux/chatlogs/chatlogReducer";
 import { alertReducer, AlertInitState } from "./app/alertReducer";
 
 export const apolloClient = new ApolloClient({
@@ -72,7 +72,7 @@ export function getInitialState() {
         authReducer: new AuthenInitState(),
         stalkReducer: new StalkRecord(stalkInitState),
         chatroomReducer: chatRoomRecoder,
-        chatlogReducer: new ChatLogInitState(),
+        chatlogReducer: new ChatLogRecord(chatlogDefaults),
         userReducer: new UserInitState(),
         adminReducer: new AdminInitState(),
         alertReducer: new AlertInitState()

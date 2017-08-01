@@ -1,20 +1,30 @@
 import * as ChatlogsActions from "../chatlogs/chatlogsActions";
 import * as ChatlogRxActions from "../chatlogs/chatlogRxActions";
 import { Record } from "immutable";
-export const ChatLogInitState = Record({
+export const chatlogDefaults = {
     isFetching: false,
     state: null,
     chatsLog: null,
+    logCount: null,
     roomAccess: null,
     error: null
-});
-const initialState = new ChatLogInitState();
+};
+export class ChatLogRecord extends Record(chatlogDefaults) {
+    constructor(params) {
+        super(params);
+    }
+    get(value) {
+        return super.get(value);
+    }
+}
+const initialState = new ChatLogRecord(chatlogDefaults);
 export function chatlogReducer(state = initialState, action) {
-    if (!(state instanceof ChatLogInitState))
-        return initialState.mergeDeep(state);
     switch (action.type) {
         case ChatlogsActions.STALK_GET_CHATSLOG_COMPLETE: {
-            return state.set("chatsLog", action.payload).set("state", ChatlogsActions.STALK_GET_CHATSLOG_COMPLETE);
+            let { chatsLog, logCount } = action.payload;
+            return state.set("chatsLog", chatsLog)
+                .set("logCount", logCount)
+                .set("state", ChatlogsActions.STALK_GET_CHATSLOG_COMPLETE);
         }
         case ChatlogsActions.STALK_CHATLOG_CONTACT_COMPLETE: {
             let nextState = state.set("state", ChatlogsActions.STALK_CHATLOG_CONTACT_COMPLETE)
@@ -22,7 +32,9 @@ export function chatlogReducer(state = initialState, action) {
             return nextState;
         }
         case ChatlogsActions.STALK_CHATLOG_MAP_CHANGED: {
-            let nextState = state.set("chatsLog", action.payload)
+            let { chatsLog, logCount } = action.payload;
+            let nextState = state.set("chatsLog", chatsLog)
+                .set("logCount", logCount)
                 .set("state", ChatlogsActions.STALK_CHATLOG_MAP_CHANGED);
             return nextState;
         }

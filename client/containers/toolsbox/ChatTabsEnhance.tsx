@@ -1,5 +1,6 @@
 import * as React from "react";
-import { pure, compose, withProps, lifecycle } from "recompose";
+import { pure, compose, lifecycle } from "recompose";
+import { connect } from "react-redux";
 
 import { ChatTabs } from "../../components/ChatTabs";
 
@@ -8,6 +9,7 @@ import { ChatTabs } from "../../components/ChatTabs";
 // Do this instead
 // Note that the order has reversed — props flow from top to bottom
 const enhance = compose(
+    connect((state) => ({ logCount: state.chatlogReducer.get("logCount") })),
     pure
 );
 

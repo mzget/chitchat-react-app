@@ -105,9 +105,10 @@ function getUnreadMessageMap() {
 function getChatsLog() {
     let chatsLogComp = BackendFactory.getInstance().chatLogComp;
     let chatsLog = chatsLogComp.getChatsLog();
+    let logCount = chatsLogComp.getChatsLogCount();
     getStore().dispatch({
         type: STALK_GET_CHATSLOG_COMPLETE,
-        payload: chatsLog
+        payload: { chatsLog, logCount }
     });
 }
 function onUnreadMessageMapChanged(unread) {
@@ -119,9 +120,10 @@ function onUnreadMessageMapChanged(unread) {
             updateRooms(room);
         }
         let chatsLog = chatsLogComp.getChatsLog();
+        let logCount = chatsLogComp.getChatsLogCount();
         getStore().dispatch({
             type: STALK_CHATLOG_MAP_CHANGED,
-            payload: chatsLog
+            payload: { chatsLog, logCount }
         });
     });
 }
