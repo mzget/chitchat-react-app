@@ -4,6 +4,7 @@ import { withRouter } from "react-router-dom";
 import { shallowEqual } from "recompose";
 import Flexbox from 'flexbox-react';
 import * as immutable from "immutable";
+
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 
@@ -20,11 +21,13 @@ import { MainPageEnhancer } from "./Enhancers/MainPageEnhancer";
 import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
 import { WebToolbarEnhanced, listener } from "./MainPageToolbar";
 import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
+import { TabsExampleIconText } from "../components/ChatTabs";
 
 import { small_body_width, large_body_width, LARGE_TABLET, xsmall_body_width } from '../chitchat/consts/Breakpoints';
+import { defaultMuiTheme } from "../utils/";
 
 export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chatroomReducer, match, history, onError, fetch_orgGroups, fetch_privateGroups }) => (
-    <MuiThemeProvider>
+    <MuiThemeProvider muiTheme={defaultMuiTheme}>
         <Flexbox flexDirection="column" minHeight="100vh">
             <Flexbox element="header" maxHeight="56px">
                 <div id={"app_bar"} style={{ width: "100%", position: 'fixed', zIndex: 99 }}>
@@ -36,8 +39,10 @@ export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chat
                     <Flexbox maxHeight="40px">
                     </Flexbox>
                     <Flexbox flexDirection="row" flexGrow={1} height="calc(100vh - 56px)">
-                        <Flexbox flexDirection="column" flexGrow={0.3} minWidth="280px" width={window.innerWidth >= LARGE_TABLET ? small_body_width : xsmall_body_width}
+                        <Flexbox flexDirection="column" flexGrow={0.3}
+                            minWidth="280px" width={window.innerWidth >= LARGE_TABLET ? small_body_width : xsmall_body_width}
                             style={{ overflowY: "auto", backgroundColor: Colors.darkWhite }}>
+                            <TabsExampleIconText />
                             <ConnectGroupListEnhancer
                                 fetchGroup={fetch_orgGroups}
                                 groups={groupReducer.orgGroups}
