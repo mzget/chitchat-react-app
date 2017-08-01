@@ -13,8 +13,10 @@ const enhance = compose(
     pure
 );
 
-export const ChatTabsEnhanced = enhance(({ groupComp, chatlogs, logCount }) => <ChatTabs
-    groupComp={groupComp}
-    chatlogs={chatlogs}
-    logCount={logCount}
-/>) as React.ComponentClass<{ groupComp, chatlogs }>;
+export const ChatTabsEnhanced = enhance(({ groupComp, chatlogs, logCount }) =>
+    <ChatTabs
+        groupComp={groupComp}
+        chatlogs={chatlogs}
+        logCount={logCount}
+    />
+) as React.ComponentClass<{ groupComp, chatlogs }>;
