@@ -78,7 +78,7 @@ export const findTeamEpic = action$ => action$.ofType(FIND_TEAM)
 
 const JOIN_TEAM = "JOIN_TEAM";
 const JOIN_TEAM_SUCCESS = "JOIN_TEAM_SUCCESS";
-const JOIN_TEAM_FAILURE = "JOIN_TEAM_FAILURE";
+export const JOIN_TEAM_FAILURE = "JOIN_TEAM_FAILURE";
 const JOIN_TEAM_CANCELLED = "JOIN_TEAM_CANCELLED";
 
 export const joinTeam = createAction(JOIN_TEAM, team_name => team_name);
@@ -109,7 +109,7 @@ export const joinTeamEpic = action$ =>
 
 const GET_TEAMS_INFO = "GET_TEAMS_INFO";
 const GET_TEAMS_INFO_SUCCESS = "GET_TEAMS_INFO_SUCCESS";
-const GET_TEAMS_INFO_FAILURE = "GET_TEAMS_INFO_FAILURE";
+export const GET_TEAMS_INFO_FAILURE = "GET_TEAMS_INFO_FAILURE";
 const GET_TEAMS_INFO_CANCELLED = "GET_TEAMS_INFO_CANCELLED";
 export const getTeamsInfo = (params) => ({ type: GET_TEAMS_INFO, payload: params });
 export const getTeamsInfoSuccess = (payload) => ({ type: GET_TEAMS_INFO_SUCCESS, payload });
@@ -186,8 +186,7 @@ export const TeamInitState = Record({
     teams: new Array<any>(),
     team: null,
     members: null,
-    findingTeams: null,
-    error: null
+    findingTeams: null
 });
 export const teamReducer = (state = new TeamInitState(), action: ReduxActions.Action<any>) => {
     switch (action.type) {
@@ -196,10 +195,6 @@ export const teamReducer = (state = new TeamInitState(), action: ReduxActions.Ac
             let newItems = teams.concat(action.payload.result);
 
             return state.set("teams", newItems);
-        }
-        case CREATE_TEAM_FAILURE: {
-            return state.set("state", CREATE_TEAM_FAILURE)
-                .set("error", action.payload.message);
         }
 
         case FIND_TEAM: {
@@ -218,11 +213,10 @@ export const teamReducer = (state = new TeamInitState(), action: ReduxActions.Ac
             return state.set("isFetching", true);
         }
         case JOIN_TEAM_SUCCESS: {
-            return state.set("isFetching", false);
+            return state.set("isFetching", false).set("findingTeams", null);
         }
         case JOIN_TEAM_FAILURE: {
-            return state.set("isFetching", false)
-                .set("error", action.payload.message);
+            return state.set("isFetching", false);
         }
 
         case FETCH_USER_TEAMS_SUCCESS: {
@@ -231,9 +225,6 @@ export const teamReducer = (state = new TeamInitState(), action: ReduxActions.Ac
 
         case GET_TEAMS_INFO_SUCCESS: {
             return state.set("teams", action.payload.result);
-        }
-        case GET_TEAMS_INFO_FAILURE: {
-            return state.set("error", action.payload.message);
         }
 
         case TEAM_SELECTED: {

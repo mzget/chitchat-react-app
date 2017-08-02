@@ -1,6 +1,7 @@
 import { Record } from "immutable";
 import { UPLOAD_USER_AVATAR_FAILURE, FETCH_USER_FAILURE, UPDATE_USER_INFO_FAILURE } from "../user/userRx";
 import * as authRx from "../authen/authRx";
+import * as teamRx from "../team/teamRx";
 import { UPDATE_LAST_ACCESS_ROOM_FAILURE } from "../../chitchat/chats/redux/chatlogs/chatlogRxActions";
 import * as editGroupActions from "../group/editGroupRxActions";
 import * as adminRx from "../admin/adminRx";
@@ -42,6 +43,15 @@ export const alertReducer = (state = new AlertInitState(), action) => {
         }
         case calling.VIDEO_CALL_FAILURE: {
             return state.set("error", JSON.stringify(action.payload));
+        }
+        case teamRx.CREATE_TEAM_FAILURE: {
+            return state.set("error", JSON.stringify(action.payload.message));
+        }
+        case teamRx.JOIN_TEAM_FAILURE: {
+            return state.set("error", JSON.stringify(action.payload.message));
+        }
+        case teamRx.GET_TEAMS_INFO_FAILURE: {
+            return state.set("error", JSON.stringify(action.payload.message));
         }
         case CLEAR_ALERT:
             return state.set("error", null);

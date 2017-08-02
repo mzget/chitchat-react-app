@@ -11,7 +11,6 @@ import { IComponentProps } from "../../utils/IComponentProps";
 
 
 export interface IDialoxBoxProps {
-    message?: string;
     open: boolean;
     handleClose: () => void;
 }
