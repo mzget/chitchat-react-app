@@ -169,11 +169,26 @@ export const teamReducer = (state = new TeamInitState(), action) => {
             return state.set("state", CREATE_TEAM_FAILURE)
                 .set("error", action.payload.message);
         }
+        case FIND_TEAM: {
+            return state.set("isFetching", true);
+        }
         case FIND_TEAM_SUCCESS: {
-            return state.set("findingTeams", action.payload.result);
+            return state.set("findingTeams", action.payload.result)
+                .set("isFetching", false);
         }
         case FIND_TEAM_FAILURE: {
-            return state.set("findingTeams", null);
+            return state.set("findingTeams", null)
+                .set("isFetching", false);
+        }
+        case JOIN_TEAM: {
+            return state.set("isFetching", true);
+        }
+        case JOIN_TEAM_SUCCESS: {
+            return state.set("isFetching", false);
+        }
+        case JOIN_TEAM_FAILURE: {
+            return state.set("isFetching", false)
+                .set("error", action.payload.message);
         }
         case FETCH_USER_TEAMS_SUCCESS: {
             return state.set("teams", action.payload.result);
