@@ -12,9 +12,15 @@ const getview = (props: IAppBody) => {
     let { match, history, onError, userReducer } = props;
 
     if (match.params.filter == "user") {
-        return <ProfileDetailEnhanced user={userReducer.user}
+        if (!userReducer.user) {
+            return null;
+        }
+
+        return <ProfileDetailEnhanced
+            user={userReducer.user}
             teamProfile={userReducer.teamProfile}
-            alert={onError} />
+            alert={onError}
+        />
     }
     else if (match.path.match("chatroom")) {
         if (match.path.match("chatroom/chat")) {

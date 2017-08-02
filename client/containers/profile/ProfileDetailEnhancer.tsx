@@ -8,6 +8,8 @@ import * as userRx from "../../redux/user/userRx";
 import { ChitChatAccount } from "../../chitchat/chats/models/User";
 import { ITeamProfile } from "../../chitchat/chats/models/TeamProfile";
 import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
+import { IComponentProps } from "../../utils/IComponentProps";
+
 const config = () => ChitChatFactory.getInstance().config;
 
 interface IEnhanceProps {
@@ -35,7 +37,7 @@ const ProfileDetailEnhancer = compose(
     withState("user", "updateUser", ({ user }) => user),
     withState("imageFile", "setImageFile", null),
     lifecycle({
-        componentWillReceiveProps(nextProps) {
+        componentWillReceiveProps(nextProps: IComponentProps) {
             let { userReducer, alertReducer } = nextProps;
 
             if (userReducer.state == userRx.UPLOAD_USER_AVATAR_SUCCESS) {
