@@ -1,5 +1,5 @@
 import * as React from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ApolloProvider } from 'react-apollo';
 import Store from "./redux/configureStore";
 import { apolloClient } from "./redux/rootReducer";
@@ -29,6 +29,9 @@ import { M_MainPageEnhanced } from "./containers/m_Main";
 import { AdminPageEnhanced } from "./containers/AdminPageEnhanced";
 import { VideoCallEnhance } from "./containers/VideoCall";
 import { SMALL_TABLET } from "./chitchat/consts/Breakpoints";
+const NoMatch = ({ location }) => (<div>
+        <h3>No match for <code>{location.pathname}</code></h3>
+    </div>);
 class App extends React.Component {
     constructor() {
         super(...arguments);
@@ -42,16 +45,18 @@ class App extends React.Component {
                         <StalkNotiDialog />
                         <StalkCompEnhancer />
                         <FetchingDialogEnhance />
-
-                        <Route path="/" exact component={HomePageWithDialogBox}/>
-                        <Route path="/forgotaccount" component={ForgotAccount}/>
-                        <Route path="/team/:filter" component={TeamPageEnhanced}/>
-                        <Route path="/profile/:filter/:user" component={(this.clientWidth < SMALL_TABLET) ? m_ProfilePageEnhanced : MainPageWithDialogBox}/>
-                        <Route path="/chatslist/:filter" component={(this.clientWidth < SMALL_TABLET) ? M_MainPageEnhanced : MainPageWithDialogBox}/>
-                        <Route path="/chatroom/chat/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ChatPageEnhanced : MainPageWithDialogBox}/>
-                        <Route path="/chatroom/settings/:room_id/:edit" component={(this.clientWidth < SMALL_TABLET) ? ChatRoomSettingsEnhanced : MainPageWithDialogBox}/>
-                        <Route path="/admin/:menu?/:id?" component={AdminPageEnhanced}/>
-                        <Route path="/videocall/:id" component={VideoCallEnhance}/>
+                        <Switch>
+                            <Route path="/" exact component={HomePageWithDialogBox}/>
+                            <Route path="/forgotaccount" component={ForgotAccount}/>
+                            <Route path="/team/:filter" component={TeamPageEnhanced}/>
+                            <Route path="/profile/:filter/:user" component={(this.clientWidth < SMALL_TABLET) ? m_ProfilePageEnhanced : MainPageWithDialogBox}/>
+                            <Route path="/chatslist/:filter" component={(this.clientWidth < SMALL_TABLET) ? M_MainPageEnhanced : MainPageWithDialogBox}/>
+                            <Route path="/chatroom/chat/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ChatPageEnhanced : MainPageWithDialogBox}/>
+                            <Route path="/chatroom/settings/:room_id/:edit" component={(this.clientWidth < SMALL_TABLET) ? ChatRoomSettingsEnhanced : MainPageWithDialogBox}/>
+                            <Route path="/admin/:menu?/:id?" component={AdminPageEnhanced}/>
+                            <Route path="/videocall/:id" component={VideoCallEnhance}/>
+                            <Route component={NoMatch}/>
+                        </Switch>
                     </div>
                 </Router>
             </ApolloProvider>);
