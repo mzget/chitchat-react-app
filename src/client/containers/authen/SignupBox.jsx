@@ -25,6 +25,7 @@ export class SignupBox extends React.Component {
                         CryptoHelper.hashComputation(this.state.password).then((hash) => {
                             this.setState(previous => (Object.assign({}, previous, { password: hash, confirmPassword: "" })), () => {
                                 this.props.dispatch(AuthRx.signup(this.state));
+                                this.setState(prev => (Object.assign({}, prev, { password: "", confirmPassword: "" })));
                             });
                         });
                     }
@@ -33,7 +34,7 @@ export class SignupBox extends React.Component {
                     }
                 }
                 else {
-                    console.warn(JSON.stringify(result));
+                    this.props.onError(JSON.stringify(result));
                 }
             });
         }

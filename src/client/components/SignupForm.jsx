@@ -21,30 +21,31 @@ export const SignupForm = (props) => {
                     <h3>Sign-up</h3>
                     <p>Enter your information</p>
                 </div>
-                <TextField hintText="Email address" errorText="This field is required" value={props.email} onChange={props.onEmailChange} onKeyDown={(e) => {
+                <TextField hintText="Email address" errorText={(!props.email) ? "This field is required" : ""} value={props.email} onChange={props.onEmailChange} onKeyDown={(e) => {
         if (e.key === 'Enter')
             props.onSubmit();
     }}/>
                 <span style={styles.span}/>
-                <TextField hintText="Password" type="password" errorText="This field is required" value={props.password} onChange={props.onPasswordChange} onKeyDown={(e) => {
+                <TextField hintText="Password" type="password" errorText={(!props.password) ? "This field is required" : ""} value={props.password} onChange={props.onPasswordChange} onKeyDown={(e) => {
         if (e.key === 'Enter')
             props.onSubmit();
     }}/>
                 <span style={styles.span}/>
-                <TextField hintText="Confirm password" type="password" errorText="This field is required" value={props.confirmPassword} onChange={props.onConfirmPasswordChange} onKeyDown={(e) => {
+                <TextField hintText="Confirm password" type="password" errorText={(!props.confirmPassword) ? "This field is required" : ""} value={props.confirmPassword} onChange={props.onConfirmPasswordChange} onKeyDown={(e) => {
         if (e.key === 'Enter')
             props.onSubmit();
     }}/>
                 <span style={styles.span}/>
-                <TextField hintText="Firstname" value={props.firstname} onChange={props.onFirstnameChange} onKeyDown={(e) => {
+                <TextField hintText="Firstname" value={props.firstname} errorText={(!props.firstname) ? "This field is required" : ""} onChange={props.onFirstnameChange} onKeyDown={(e) => {
         if (e.key === 'Enter')
             props.onSubmit();
     }}/>
                 <span style={styles.span}/>
-                <TextField hintText="Lastname" value={props.lastname} onChange={props.onLastnameChange} onKeyDown={(e) => {
+                <TextField hintText="Lastname" value={props.lastname} errorText={(!props.lastname) ? "This field is required" : ""} onChange={props.onLastnameChange} onKeyDown={(e) => {
         if (e.key === 'Enter')
             props.onSubmit();
     }}/>
+                <span style={styles.span}/>
                 <SubmitButton {...props}/>
             </Flexbox>
         </MuiThemeProvider>);

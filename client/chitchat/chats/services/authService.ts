@@ -12,6 +12,17 @@ export function auth(user: { email: string, password: string }) {
     });
 }
 
+export function authWithSocial(user: { email: string, social_type: string }) {
+    return fetch(`${getConfig().api.auth}/social`, {
+        method: "POST",
+        body: JSON.stringify({
+            email: user.email,
+            social_type: user.social_type
+        }),
+        headers: chitchat_headers()
+    });
+}
+
 export function tokenAuth(token: string) {
     return fetch(`${getConfig().api.auth}/verify`, {
         method: "POST",
