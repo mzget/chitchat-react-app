@@ -23,7 +23,7 @@ import { WebToolbarEnhanced, listener } from "./MainPageToolbar";
 import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
 import { ChatTabsEnhanced } from "./toolsbox/ChatTabsEnhance";
 
-import { small_body_width, large_body_width, LARGE_TABLET, xsmall_body_width } from '../chitchat/consts/Breakpoints';
+import { small_width, large_body_width, LARGE_TABLET, xsmall_width } from '../chitchat/consts/Breakpoints';
 import { defaultMuiTheme } from "../utils/";
 
 const styles = {
@@ -48,7 +48,7 @@ export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chat
                     flexDirection="column"
                     flexGrow={0.3}
                     minWidth="280px"
-                    width={window.innerWidth >= LARGE_TABLET ? small_body_width : xsmall_body_width}
+                    width={window.innerWidth >= LARGE_TABLET ? small_width : xsmall_width}
                     style={{ overflowY: "hidden", backgroundColor: Colors.darkWhite }}>
                     <ChatTabsEnhanced
                         groupComp={
@@ -73,12 +73,14 @@ export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chat
                 <Flexbox flexDirection="column" flexGrow={0.7} >
                     <SubToolbarEnhance onError={onError} />
                     <Flexbox height="calc(100vh - 56px)" >
-                        <Flexbox width={window.innerWidth >= LARGE_TABLET ? large_body_width : small_body_width} >
+                        <Flexbox flexGrow={1} />
+                        <Flexbox width={window.innerWidth >= LARGE_TABLET ? large_body_width : small_width} >
                             <div style={{ width: "100%", backgroundColor: Colors.darkWhite }}>
                                 <AppBody userReducer={userReducer} match={match} history={history} onError={onError} />
                             </div>
                         </Flexbox>
-                        <Flexbox minWidth="280px" width={window.innerWidth >= LARGE_TABLET ? small_body_width : xsmall_body_width} >
+                        <Flexbox flexGrow={1} />
+                        <Flexbox minWidth="280px" width={window.innerWidth >= LARGE_TABLET ? small_width : xsmall_width} >
                             <div style={{ width: "100%", backgroundColor: Colors.darkWhite, overflowY: "auto" }}>
                                 <RightNav
                                     match={match}
@@ -93,7 +95,8 @@ export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chat
     </MuiThemeProvider >
 );
 
-const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer, chatroomReducer, history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
+const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer, chatroomReducer,
+    history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
     return (
         <Main
             userReducer={userReducer}

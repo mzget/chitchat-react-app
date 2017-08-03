@@ -2,9 +2,9 @@ import * as React from "react";
 import Divider from 'material-ui/Divider';
 import { grey400 } from "material-ui/styles/colors";
 import { Card, CardHeader, CardMedia, CardText } from "material-ui/Card";
-import { xsmall_body_width, medium_body_width, LARGE_TABLET } from '../chitchat/consts/Breakpoints';
+import { small_card_width, medium_card_width, LARGE_TABLET } from '../chitchat/consts/Breakpoints';
 export const CardImageWithAvatar = (props) => (<div style={{ padding: 2, color: grey400, alignItems: 'center', display: 'flex', justifyContent: 'center' }}>
-        <Card style={{ width: window.innerWidth >= LARGE_TABLET ? medium_body_width : xsmall_body_width }}>
+        <Card style={{ width: window.innerWidth >= LARGE_TABLET ? medium_card_width : small_card_width }}>
             <CardHeader title={<span style={{ color: "blue" }}>{props.title}</span>} subtitle={<span>{props.subtitle}</span>} avatar={props.avatar}/>
             <CardText style={{ color: "black", marginLeft: 15 }}>
                 {props.cardText}
@@ -19,7 +19,7 @@ export const CardImageWithAvatar = (props) => (<div style={{ padding: 2, color: 
         </Card>
     </div>);
 export const CardStickerWithAvatar = (props) => (<div style={{ padding: 2, color: grey400, alignItems: 'center', display: 'flex', justifyContent: 'center' }}>
-        <Card style={{ width: window.innerWidth >= LARGE_TABLET ? medium_body_width : xsmall_body_width }}>
+        <Card style={{ width: window.innerWidth >= LARGE_TABLET ? medium_card_width : small_card_width }}>
             <CardHeader title={<span style={{ color: "blue" }}>{props.title}</span>} subtitle={<span>{props.subtitle}</span>} avatar={props.avatar}/>
             <CardMedia>
                 <img src={props.imageSrc} alt={`Image preview:`} style={{ padding: 20, width: "50%", minWidth: "128px", maxWidth: "160px" }}/>

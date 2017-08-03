@@ -6,7 +6,7 @@ import { GridList, GridTile } from "material-ui/GridList";
 import IconButton from "material-ui/IconButton";
 import Subheader from "material-ui/Subheader";
 
-import { small_body_width, large_body_width, LARGE_TABLET } from '../chitchat/consts/Breakpoints';
+import { small_width, large_body_width, LARGE_TABLET } from '../chitchat/consts/Breakpoints';
 
 const styles = {
     root: {
@@ -35,7 +35,7 @@ export const GridListSimple = (props: IGridListProps) => (
             <GridList
                 cols={6}
                 cellHeight={100}
-                style={{ padding: 20, height: 208, width: window.innerWidth >= LARGE_TABLET ? large_body_width : small_body_width, overflowY: "scroll" }}>
+                style={{ padding: 20, height: 208, width: window.innerWidth >= LARGE_TABLET ? large_body_width : small_width, overflowY: "scroll" }}>
                 <Subheader>{props.subheader}</Subheader>
                 {
                     props.srcs.map((tile, i, arr) => (

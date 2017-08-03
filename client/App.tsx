@@ -1,11 +1,6 @@
 import * as React from "react";
 import { Provider } from "react-redux";
-import {
-    BrowserRouter as Router,
-    Route,
-    Link,
-    Switch
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { ApolloProvider } from 'react-apollo';
 /**
  * ### configureStore
