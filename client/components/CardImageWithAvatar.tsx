@@ -29,7 +29,7 @@ export const CardImageWithAvatar = (props: ICompProps) => (
                 {props.cardText}
             </CardText>
             <CardMedia>
-                <img src={props.imageSrc} style={{ padding: 20, maxWidth: "250px" }} alt={`Image preview: ${props.cardText}`} />
+                <img src={props.imageSrc} style={{ padding: 5, maxWidth: "100%" }} alt={`Image preview: ${props.cardText}`} />
             </CardMedia>
             {
                 (!!props.readers && props.readers.length) ? (

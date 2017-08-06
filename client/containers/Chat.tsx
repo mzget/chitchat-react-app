@@ -102,13 +102,30 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         this.h_subHeader = (stalkReducer.get("state") === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
 
-        if (!shallowEqual(chatroomReducer.messages, this.props.chatroomReducer.messages)) {
+        if (!shallowEqual(chatroomReducer.get("messages"), this.props.chatroomReducer.get("messages"))) {
             this.setState(previousState => ({
                 ...previousState,
-                messages: chatroomReducer.messages
+                messages: chatroomReducer.get("messages")
             }), () => {
                 this.chatBox.scrollTop = this.chatBox.scrollHeight;
             });
+        }
+
+        let prevUpload = this.props.chatroomReducer.get("uploading");
+        if (chatroomReducer.get("uploading") == false && !shallowEqual(chatroomReducer.get("uploading"), prevUpload)) {
+            let responseFile = chatroomReducer.get("responseFile");
+            let fileInfo = chatroomReducer.get("fileInfo");
+
+            if (responseFile.mimetype.match(FileType.imageType)) {
+                this.onSubmitImageChat(responseFile.originalname, responseFile.path);
+            }
+            else if (responseFile.mimetype.match(FileType.videoType)) {
+                this.onSubmitVideoChat(fileInfo, responseFile.path);
+            }
+            else if (responseFile.mimetype.match(FileType.textType) || fileInfo.type.match(FileType.file)) {
+                this.onSubmitFile(fileInfo, responseFile);
+            }
+
         }
 
         switch (stalkReducer.get("state")) {
@@ -145,23 +162,6 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             }
             case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_FAILURE: {
                 this.props.history.push(`/`);
-                break;
-            }
-
-            case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
-                let responseFile = chatroomReducer.get("responseFile");
-                let fileInfo = chatroomReducer.get("fileInfo");
-
-                if (responseFile.mimetype.match(FileType.imageType)) {
-                    this.onSubmitImageChat(responseFile.originalname, responseFile.path);
-                }
-                else if (responseFile.mimetype.match(FileType.videoType)) {
-                    this.onSubmitVideoChat(fileInfo, responseFile.path);
-                }
-                else if (responseFile.mimetype.match(FileType.textType) || fileInfo.type.match(FileType.file)) {
-                    this.onSubmitFile(fileInfo, responseFile);
-                }
-
                 break;
             }
 
@@ -308,13 +308,11 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         results.forEach(result => {
             const [progressEvent, file] = result;
 
-            console.log(file.name, file.type);
-
             if (file.type && file.type.length > 0) {
                 this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
             }
             else {
-                this.props.onError("Fail to upload file");
+                this.props.onError("Can't upload unknown file type.");
             }
         });
     }
@@ -361,9 +359,11 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                                 (this.state.earlyMessageReady) ?
                                     <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p> : null
                             }
-                            <ChatBox value={this.state.messages}
+                            <ChatBox
+                                value={this.state.messages}
                                 onSelected={(message: IMessage) => { }}
-                                styles={{ overflowY: "auto", overflowX: "hidden" }} />
+                                styles={{ overflowY: "auto", overflowX: "hidden" }}
+                            />
                             <MapDialog open={this.state.openMapDialog}
                                 onClose={this.onLocation}
                                 onSubmit={this.onSubmitPosition}
@@ -381,7 +381,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                     </Flexbox>
                     <Flexbox element="footer" justifyContent="center" alignContent="stretch"  >
                         <TypingBox
-                            disabled={this.props.chatroomReducer.chatDisabled}
+                            disabled={this.props.chatroomReducer.get("chatDisabled")}
                             onSubmit={this.onSubmitTextChat}
                             onValueChange={this.onTypingTextChange}
                             value={this.state.typingText}

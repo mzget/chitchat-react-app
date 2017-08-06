@@ -113,6 +113,7 @@ const renderList = (props: IChatBoxProps) => {
                             avatar={(message.user.avatar) ?
                                 <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                             }
+                            cardText={message.body}
                             imageSrc={message.src}
                             readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null}
                             onClickReader={() => onClickReader(message)} />
@@ -129,6 +130,7 @@ const renderList = (props: IChatBoxProps) => {
                                 avatar={(message.user.avatar) ?
                                     <Avatar src={message.user.avatar} /> : <Avatar>{message.user.username.charAt(0)}</Avatar>
                                 }
+                                cardText={message.body}
                                 src={message.src}
                                 readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null}
                                 onClickReader={() => onClickReader(message)} />

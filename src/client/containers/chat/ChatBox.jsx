@@ -62,13 +62,13 @@ const renderList = (props) => {
             }
             case MessageType[MessageType.Image]: {
                 return (<ListItem key={i} style={{ margin: "5px" }} containerElement={<CardImageWithAvatar title={message.user.username} subtitle={(message.createTime) ? message.createTime.toString() : ""} avatar={(message.user.avatar) ?
-                    <Avatar src={message.user.avatar}/> : <Avatar>{message.user.username.charAt(0)}</Avatar>} imageSrc={message.src} readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null} onClickReader={() => onClickReader(message)}/>}>
+                    <Avatar src={message.user.avatar}/> : <Avatar>{message.user.username.charAt(0)}</Avatar>} cardText={message.body} imageSrc={message.src} readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null} onClickReader={() => onClickReader(message)}/>}>
                     </ListItem>);
             }
             case MessageType[MessageType.Video]:
                 {
                     return (<ListItem key={i} style={{ margin: "5px" }} containerElement={<CardVideoWithAvatar title={message.user.username} subtitle={(message.createTime) ? message.createTime.toString() : ""} avatar={(message.user.avatar) ?
-                        <Avatar src={message.user.avatar}/> : <Avatar>{message.user.username.charAt(0)}</Avatar>} src={message.src} readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null} onClickReader={() => onClickReader(message)}/>}>
+                        <Avatar src={message.user.avatar}/> : <Avatar>{message.user.username.charAt(0)}</Avatar>} cardText={message.body} src={message.src} readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null} onClickReader={() => onClickReader(message)}/>}>
                         </ListItem>);
                 }
             case MessageType[MessageType.File]:

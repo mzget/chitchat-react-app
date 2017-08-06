@@ -1,6 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import Flexbox from "flexbox-react";
+import { shallowEqual } from "recompose";
 
 import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
@@ -38,26 +39,10 @@ class UploadingDialog extends React.Component<IComponentProps, IComponentNameSta
         let { chatroomReducer } = nextProps;
         let self = this;
 
-        switch (chatroomReducer.state) {
-            case ChatroomRx.CHATROOM_UPLOAD_FILE:
-                this.setState(previouseState => ({ ...previouseState, openState: true }));
-                break;
-            case ChatroomRx.CHATROOM_UPLOAD_FILE_SUCCESS: {
-                this.setState(previouseState => ({ ...previouseState, dialogTitle: "Upload Success!" }));
-                setTimeout(function () {
-                    self.closeDialog();
-                }, 3000);
-                break;
-            }
-            case ChatroomRx.CHATROOM_UPLOAD_FILE_FAILURE: {
-                this.setState(previouseState => ({ ...previouseState, dialogTitle: "Upload Fail!" }));
-                setTimeout(function () {
-                    self.closeDialog();
-                }, 3000);
-                break;
-            }
-            default:
-                break;
+        let prev = this.props.chatroomReducer.get("uploading");
+        let next = chatroomReducer.get("uploading");
+        if (!shallowEqual(prev, next)) {
+            this.setState(previouseState => ({ ...previouseState, openState: next }));
         }
     }
 
@@ -68,7 +53,7 @@ class UploadingDialog extends React.Component<IComponentProps, IComponentNameSta
     cancelFileUpload = () => {
         let { chatroomReducer } = this.props as IComponentProps;
 
-        if (chatroomReducer.state == ChatroomRx.CHATROOM_UPLOAD_FILE) {
+        if (chatroomReducer.get("uploading") == true) {
             this.props.dispatch(ChatroomRx.uploadFileCanceled());
         }
 
@@ -101,18 +86,18 @@ class UploadingDialog extends React.Component<IComponentProps, IComponentNameSta
         return (
             <MuiThemeProvider>
                 <Dialog
+                    contentStyle={{ width: "350px" }}
                     title={this.state.dialogTitle}
                     actions={actions}
                     modal={true}
-                    open={this.state.openState}
-                >
+                    open={this.state.openState} >
+                    <Flexbox alignItems="center">
+                        <LinearProgressSimple />
+                    </Flexbox>
                     {
                         (this.state.openState) ?
                             getMediaCard() : null
                     }
-                    <Flexbox alignItems="center">
-                        <LinearProgressSimple />
-                    </Flexbox>
                 </Dialog>
             </MuiThemeProvider>
         );
@@ -124,7 +109,7 @@ class UploadingDialog extends React.Component<IComponentProps, IComponentNameSta
  */
 function mapStateToProps(state) {
     return {
-        ...state
+        chatroomReducer: state.chatroomReducer
     };
 }
 export default connect(mapStateToProps)(UploadingDialog);

@@ -128,7 +128,7 @@ export const updateMessagesRead_Epic = (action$) => {
 export const CHATROOM_UPLOAD_FILE = "CHATROOM_UPLOAD_FILE";
 export const CHATROOM_UPLOAD_FILE_SUCCESS = "CHATROOM_UPLOAD_FILE_SUCCESS";
 export const CHATROOM_UPLOAD_FILE_FAILURE = "CHATROOM_UPLOAD_FILE_FAILURE";
-export const CHATROOM_UPLOAD_FILE_CANCELLED = "CHATROOM_UPLOAD_FILE_CANCELLED";
+const CHATROOM_UPLOAD_FILE_CANCELLED = "CHATROOM_UPLOAD_FILE_CANCELLED";
 
 
 export const uploadFile = (progressEvent: ProgressEvent, file) => ({

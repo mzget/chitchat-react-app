@@ -29,12 +29,11 @@ class Chat extends React.Component {
         this.fileReaderChange = (e, results) => {
             results.forEach(result => {
                 const [progressEvent, file] = result;
-                console.log(file.name, file.type);
                 if (file.type && file.type.length > 0) {
                     this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
                 }
                 else {
-                    this.props.onError("Fail to upload file");
+                    this.props.onError("Can't upload unknown file type.");
                 }
             });
         };
@@ -75,10 +74,24 @@ class Chat extends React.Component {
         let { chatroomReducer, stalkReducer } = nextProps;
         this.h_subHeader = (stalkReducer.get("state") === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
-        if (!shallowEqual(chatroomReducer.messages, this.props.chatroomReducer.messages)) {
-            this.setState(previousState => (Object.assign({}, previousState, { messages: chatroomReducer.messages })), () => {
+        if (!shallowEqual(chatroomReducer.get("messages"), this.props.chatroomReducer.get("messages"))) {
+            this.setState(previousState => (Object.assign({}, previousState, { messages: chatroomReducer.get("messages") })), () => {
                 this.chatBox.scrollTop = this.chatBox.scrollHeight;
             });
+        }
+        let prevUpload = this.props.chatroomReducer.get("uploading");
+        if (chatroomReducer.get("uploading") == false && !shallowEqual(chatroomReducer.get("uploading"), prevUpload)) {
+            let responseFile = chatroomReducer.get("responseFile");
+            let fileInfo = chatroomReducer.get("fileInfo");
+            if (responseFile.mimetype.match(FileType.imageType)) {
+                this.onSubmitImageChat(responseFile.originalname, responseFile.path);
+            }
+            else if (responseFile.mimetype.match(FileType.videoType)) {
+                this.onSubmitVideoChat(fileInfo, responseFile.path);
+            }
+            else if (responseFile.mimetype.match(FileType.textType) || fileInfo.type.match(FileType.file)) {
+                this.onSubmitFile(fileInfo, responseFile);
+            }
         }
         switch (stalkReducer.get("state")) {
             case StalkBridgeActions.STALK_CONNECTION_PROBLEM:
@@ -114,20 +127,6 @@ class Chat extends React.Component {
             }
             case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_FAILURE: {
                 this.props.history.push(`/`);
-                break;
-            }
-            case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
-                let responseFile = chatroomReducer.get("responseFile");
-                let fileInfo = chatroomReducer.get("fileInfo");
-                if (responseFile.mimetype.match(FileType.imageType)) {
-                    this.onSubmitImageChat(responseFile.originalname, responseFile.path);
-                }
-                else if (responseFile.mimetype.match(FileType.videoType)) {
-                    this.onSubmitVideoChat(fileInfo, responseFile.path);
-                }
-                else if (responseFile.mimetype.match(FileType.textType) || fileInfo.type.match(FileType.file)) {
-                    this.onSubmitFile(fileInfo, responseFile);
-                }
                 break;
             }
             case chatroom.SEND_MESSAGE_FAILURE: {
@@ -262,7 +261,7 @@ class Chat extends React.Component {
                         </Flexbox>
                     </Flexbox>
                     <Flexbox element="footer" justifyContent="center" alignContent="stretch">
-                        <TypingBox disabled={this.props.chatroomReducer.chatDisabled} onSubmit={this.onSubmitTextChat} onValueChange={this.onTypingTextChange} value={this.state.typingText} fileReaderChange={this.fileReaderChange} onSticker={this.onToggleSticker} onLocation={this.onLocation}/>
+                        <TypingBox disabled={this.props.chatroomReducer.get("chatDisabled")} onSubmit={this.onSubmitTextChat} onValueChange={this.onTypingTextChange} value={this.state.typingText} fileReaderChange={this.fileReaderChange} onSticker={this.onToggleSticker} onLocation={this.onLocation}/>
                         <UploadingDialog />
                         <SnackbarToolBox />
                     </Flexbox>
