@@ -11,7 +11,7 @@
     "@types/isomorphic-fetch": "0.0.34",
     "@types/jest": "^19.2.4",
     "@types/localforage": "^0.0.34",
-    "@types/material-ui": "^0.17.19",
+    "@types/material-ui": "^0.17.20",
     "@types/node": "^7.0.39",
     "@types/ramda": "^0.0.7",
     "@types/react-file-reader-input": "^0.0.6",

@@ -1,6 +1,7 @@
 import { History } from "history";
 import { StalkRecord } from "../chitchat/chats/redux/stalkBridge/";
 import { ChatLogRecord } from "../chitchat/chats/redux/chatlogs/";
+import { ChatRoomRecoder } from "../chitchat/chats/redux/chatroom";
 
 export interface IComponentProps {
     onError?: (error: string) => void;
@@ -8,7 +9,7 @@ export interface IComponentProps {
     adminReducer;
     authReducer;
     userReducer: IUserReducer;
-    chatroomReducer;
+    chatroomReducer: ChatRoomRecoder;
     chatlogReducer: ChatLogRecord;
     stalkReducer: StalkRecord;
     teamReducer;

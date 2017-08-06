@@ -172,8 +172,7 @@ export function sendMessage(message) {
         dispatch(send_message_request());
         if (message.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption === true) {
             const secure = SecureServiceFactory.getService();
-            secure.encryption(message.body)
-                .then(result => {
+            secure.encryption(message.body).then(result => {
                 message.body = result;
                 let backendFactory = BackendFactory.getInstance();
                 let chatApi = backendFactory.getServer().getChatRoomAPI();

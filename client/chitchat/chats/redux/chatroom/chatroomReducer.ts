@@ -18,6 +18,16 @@ import * as Models from "../../models/"
 
 import * as immutable from "immutable";
 
+export type FileResult = {
+    destination: string;
+    encoding: string;
+    fieldname: string;
+    filename: string;
+    mimetype: string;
+    originalname: string;
+    path: string;
+    size: number;
+};
 // Define our record defaults
 const chatroomDefaults = {
     isFetching: false,
@@ -39,7 +49,7 @@ interface IChatroom {
     state: string;
     room: Models.Room;
     chatTargets: Array<string>;
-    responseFile: any;
+    responseFile: FileResult;
     messages: Array<Models.MessageImp>;
     earlyMessageReady: any;
     uploadingFile: any;

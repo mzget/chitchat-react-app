@@ -1,11 +1,10 @@
-import { ChitChatFactory } from "./chitchat/chats/ChitChatFactory";
-import { IConfig, IChitChatApi, IStalkApi } from "./chitchat/chats/iConfig";
+import { IConfig, IChitChatApi, IStalkApi, ChitChatFactory } from "./chitchat/chats/";
 export const chitchatFactory = ChitChatFactory.createInstance();
 
 const api_stalk = "wss://chitchats.ga"; //"wss://chitchats.ga";
-const stalkPort = 3050;
+const stalkPort = 3050; //3010
 const stalkKey = "chitchat1234";
-const chitchat_api = "https://chitchats.ga"; //"http://localhost:9000"; "https://chitchats.ga"
+const chitchat_api = "http://localhost:9000"; //"http://localhost:9000"; "https://chitchats.ga"
 export const chitchat_graphql = "https://chitchats.ga/graphql"; // "http://localhost:9000/graphql" : "https://chitchats.ga/graphql";
 export const signalingServer = "https://chitchats.ga:8888";
 

@@ -117,9 +117,10 @@ class Chat extends React.Component {
                 break;
             }
             case chatroomRxEpic.CHATROOM_UPLOAD_FILE_SUCCESS: {
-                let { responseFile, fileInfo } = chatroomReducer;
+                let responseFile = chatroomReducer.get("responseFile");
+                let fileInfo = chatroomReducer.get("fileInfo");
                 if (responseFile.mimetype.match(FileType.imageType)) {
-                    this.onSubmitImageChat(fileInfo, responseFile.path);
+                    this.onSubmitImageChat(responseFile.originalname, responseFile.path);
                 }
                 else if (responseFile.mimetype.match(FileType.videoType)) {
                     this.onSubmitVideoChat(fileInfo, responseFile.path);
@@ -184,9 +185,9 @@ class Chat extends React.Component {
         };
         this.prepareSend(msg);
     }
-    onSubmitImageChat(file, responseUrl) {
+    onSubmitImageChat(filename, responseUrl) {
         let msg = {
-            image: file.name,
+            image: filename,
             src: `${config().api.host}/${responseUrl}`
         };
         this.prepareSend(msg);
