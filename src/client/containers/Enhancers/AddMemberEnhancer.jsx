@@ -5,7 +5,8 @@ import { addGroupMember } from "../../redux/group/editGroupRxActions";
 import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
 const mapStateToProps = (state) => ({
     userReducer: state.userReducer,
-    chatroomReducer: state.chatroomReducer
+    chatroomReducer: state.chatroomReducer,
+    teamReducer: state.teamReducer
 });
 export const AddMemberEnhancer = compose(connect(mapStateToProps), withState("search", "setSearch", ""), withState("members", "setMembers", []), lifecycle({
     componentWillReceiveProps(nextProps) {
@@ -39,7 +40,7 @@ export const AddMemberEnhancer = compose(connect(mapStateToProps), withState("se
     }
 }), withHandlers({
     onSearch: (props) => () => {
-        props.dispatch(suggestUser(props.search, null));
+        props.dispatch(suggestUser(props.search, props.teamReducer.team._id));
     },
     onAddMember: (props) => item => {
         props.dispatch(addGroupMember(props.match.params.room_id, item));

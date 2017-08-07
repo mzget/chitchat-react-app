@@ -1,6 +1,5 @@
 import * as  React from "react";
 import { connect } from "react-redux";
-import { Flex, Box } from "reflexbox";
 import { withProps, withState, withHandlers, compose, lifecycle, shallowEqual, ComponentEnhancer } from "recompose";
 
 import { ChitChatAccount } from "../../chitchat/chats/models/User";
@@ -13,7 +12,8 @@ import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomAc
 
 const mapStateToProps = (state) => ({
     userReducer: state.userReducer,
-    chatroomReducer: state.chatroomReducer
+    chatroomReducer: state.chatroomReducer,
+    teamReducer: state.teamReducer
 });
 export const AddMemberEnhancer = compose(
     connect(mapStateToProps),
@@ -56,7 +56,7 @@ export const AddMemberEnhancer = compose(
     }),
     withHandlers({
         onSearch: (props: IAddMembersProps) => () => {
-            props.dispatch(suggestUser(props.search, null));
+            props.dispatch(suggestUser(props.search, props.teamReducer.team._id));
         },
         onAddMember: (props: IAddMembersProps) => item => {
             props.dispatch(addGroupMember(props.match.params.room_id, item));
