@@ -149,12 +149,10 @@ export function loadEarlyMessageChunk(room_id: string) {
 
         let chatroom = ChatRoomComponent.getInstance();
         chatroom.getOlderMessageChunk(room_id).then(docs => {
-            chatroom.decryptMessage(docs).then(messages => {
-                dispatch(loadEarlyMessage_success(messages));
+            dispatch(loadEarlyMessage_success(docs));
 
-                // @check older message again.
-                dispatch(checkOlderMessages());
-            });
+            // @check older message again.
+            dispatch(checkOlderMessages());
 
             //# update messages read.
             if (docs.length > 0) {

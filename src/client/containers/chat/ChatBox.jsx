@@ -36,6 +36,9 @@ export const getFontIcon = (message) => {
             return <FontAwesome style={{ padding: 5, marginLeft: 5 }} name="file-o" size="3x"/>;
     }
 };
+const setUpDateTime = (data) => {
+    return `${data.getUTCDate()}/${data.getUTCMonth()}/${data.getUTCFullYear()} : ${data.toLocaleTimeString()}`;
+};
 const onClickReader = (message) => {
     console.log(message);
 };
@@ -49,6 +52,8 @@ const renderList = (props) => {
         if (!!_store.getState().userReducer.user && _store.getState().userReducer.user._id != message.sender) {
             delete message.readers;
         }
+        let d = new Date(message.createTime);
+        message.createTime = setUpDateTime(d);
         switch (message.type) {
             case MessageType[MessageType.Text]: {
                 return (<ListItem key={i} containerElement={<CardTextWithAvatar title={message.user.username} subtitle={(message.createTime) ? message.createTime.toString() : ""} avatar={(message.user.avatar) ?
