@@ -57,7 +57,7 @@ export const getFontIcon = (message: MessageImp) => {
 };
 
 const setUpDateTime = (data: Date) => {
-    return `${data.getUTCDate()}/${data.getUTCMonth()}/${data.getUTCFullYear()} : ${data.toLocaleTimeString()}`;
+    return `${data.toLocaleTimeString()} : ${data.toLocaleDateString()} `;
 }
 const onClickReader = (message: MessageImp) => {
     console.log(message);
@@ -75,7 +75,7 @@ const renderList = (props: IChatBoxProps) => {
             delete message.readers;
         }
 
-        let d = new Date(message.createTime);
+        let d = new Date(message.createTime.toLocaleString());
         message.createTime = setUpDateTime(d);
 
         switch (message.type) {

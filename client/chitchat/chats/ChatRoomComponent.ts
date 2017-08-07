@@ -130,7 +130,8 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
                     resolve(results);
                 }, () => {
                     console.log("decryptMessage complete");
-                    resolve(results);
+                    let sortResult = results.sort(self.compareMessage);
+                    resolve(sortResult);
                 });
             }
             else {

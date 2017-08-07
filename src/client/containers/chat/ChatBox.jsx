@@ -37,7 +37,7 @@ export const getFontIcon = (message) => {
     }
 };
 const setUpDateTime = (data) => {
-    return `${data.getUTCDate()}/${data.getUTCMonth()}/${data.getUTCFullYear()} : ${data.toLocaleTimeString()}`;
+    return `${data.toLocaleTimeString()} : ${data.toLocaleDateString()} `;
 };
 const onClickReader = (message) => {
     console.log(message);
@@ -52,7 +52,7 @@ const renderList = (props) => {
         if (!!_store.getState().userReducer.user && _store.getState().userReducer.user._id != message.sender) {
             delete message.readers;
         }
-        let d = new Date(message.createTime);
+        let d = new Date(message.createTime.toLocaleString());
         message.createTime = setUpDateTime(d);
         switch (message.type) {
             case MessageType[MessageType.Text]: {

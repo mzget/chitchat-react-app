@@ -109,7 +109,8 @@ export class ChatRoomComponent {
                         resolve(results);
                     }, () => {
                         console.log("decryptMessage complete");
-                        resolve(results);
+                        let sortResult = results.sort(self.compareMessage);
+                        resolve(sortResult);
                     });
                 }
                 else {
