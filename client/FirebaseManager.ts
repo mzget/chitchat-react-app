@@ -91,7 +91,7 @@ export namespace FirebaseManager {
             if (this.isSubscribed) {
                 // TODO: Unsubscribe user
             } else {
-                self.subscribeUser();
+                // self.subscribeUser();
             }
 
             // Set the initial subscription value

@@ -60,7 +60,6 @@ export var FirebaseManager;
             if (this.isSubscribed) {
             }
             else {
-                self.subscribeUser();
             }
             self.swRegistration.pushManager.getSubscription().then(function (subscription) {
                 self.isSubscribed = !(subscription === null);
