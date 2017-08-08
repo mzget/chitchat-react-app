@@ -9,8 +9,8 @@ export async function saveSession() {
     await appSession.save("sessionToken", store.getState().authReducer.token);
 }
 
-export async function removeSession() {
-    appSession.remove("sessionToken");
+export async function clearSession() {
+    appSession.clear();
 }
 
 export const GET_SESSION_TOKEN_SUCCESS = "GET_SESSION_TOKEN_SUCCESS";

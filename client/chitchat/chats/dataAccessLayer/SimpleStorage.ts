@@ -24,8 +24,6 @@ class SimpleStorage implements SimpleStoreInterface {
         this.store = localForage.createInstance({
             name: storeName
         });
-
-        localForage.keys().then(items => console.log(items));
     }
 
     get(key: string) {

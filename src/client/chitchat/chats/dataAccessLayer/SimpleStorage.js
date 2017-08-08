@@ -16,7 +16,6 @@ class SimpleStorage {
         this.store = localForage.createInstance({
             name: storeName
         });
-        localForage.keys().then(items => console.log(items));
     }
     get(key) {
         return this.store.getItem(key);

@@ -15,9 +15,9 @@ export function saveSession() {
         yield appSession.save("sessionToken", store.getState().authReducer.token);
     });
 }
-export function removeSession() {
+export function clearSession() {
     return __awaiter(this, void 0, void 0, function* () {
-        appSession.remove("sessionToken");
+        appSession.clear();
     });
 }
 export const GET_SESSION_TOKEN_SUCCESS = "GET_SESSION_TOKEN_SUCCESS";
