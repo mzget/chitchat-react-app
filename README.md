@@ -3,9 +3,7 @@ ChitChat react-app. The reference implementation of react, redux, rxjs , typescr
 
 Realtime powered by stalk message service.
 
-Demo #  https://chitchats.ga/
-
-Demo # http://mzget.github.io/chitchat-react-app/
+Demo #  https://chitchat-1ee07.firebaseapp.com
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
