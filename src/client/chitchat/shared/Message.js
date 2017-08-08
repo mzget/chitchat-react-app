@@ -7,5 +7,5 @@ export var MessageType;
     MessageType[MessageType["Location"] = 4] = "Location";
     MessageType[MessageType["Sticker"] = 5] = "Sticker";
     MessageType[MessageType["File"] = 6] = "File";
-})(MessageType || (MessageType = {}));
+})(MessageType = MessageType || (MessageType = {}));
 ;

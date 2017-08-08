@@ -33,4 +33,4 @@ export var NotificationAPI;
         }
     }
     NotificationAPI.NotificationFactory = NotificationFactory;
-})(NotificationAPI || (NotificationAPI = {}));
+})(NotificationAPI = NotificationAPI || (NotificationAPI = {}));

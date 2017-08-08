@@ -1,5 +1,5 @@
 const store = require("react-native-simple-store");
-export class NodeMessageDAL {
+export class MessageDAL_Native {
     getData(rid) {
         return store.get(rid);
     }

@@ -1,4 +1,6 @@
 import * as firebase from "firebase";
+import { SimpleStorageFactory } from "./chitchat/chats/dataAccessLayer/";
+const appStorage = SimpleStorageFactory.getObject("app");
 export var FirebaseManager;
 (function (FirebaseManager) {
     class Firebase {
@@ -36,6 +38,7 @@ export var FirebaseManager;
                 messaging.getToken().then(function (currentToken) {
                     if (currentToken) {
                         console.log("currentToken", currentToken);
+                        appStorage.save("deviceToken", currentToken);
                     }
                     else {
                         console.log('No Instance ID token available. Request permission to generate one.');
@@ -46,6 +49,7 @@ export var FirebaseManager;
                 messaging.onTokenRefresh(function () {
                     messaging.getToken().then(function (refreshedToken) {
                         console.log('Token refreshed.', refreshedToken);
+                        appStorage.save("deviceToken", refreshedToken);
                     }).catch(function (err) {
                         console.log('Unable to retrieve refreshed token ', err);
                     });
@@ -93,4 +97,4 @@ export var FirebaseManager;
         }
     }
     FirebaseManager.Firebase = Firebase;
-})(FirebaseManager || (FirebaseManager = {}));
+})(FirebaseManager = FirebaseManager || (FirebaseManager = {}));

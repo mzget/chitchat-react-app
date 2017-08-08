@@ -1,5 +1,8 @@
 import * as firebase from "firebase";
 
+import { SimpleStorageFactory } from "./chitchat/chats/dataAccessLayer/";
+const appStorage = SimpleStorageFactory.getObject("app");
+
 export namespace FirebaseManager {
     export class Firebase {
         firebaseApp: firebase.app.App;
@@ -52,8 +55,9 @@ export namespace FirebaseManager {
 
                 messaging.getToken().then(function (currentToken) {
                     if (currentToken) {
-                        console.log("currentToken", currentToken)
-                        // updateUIForPushEnabled(currentToken);
+                        console.log("currentToken", currentToken);
+
+                        appStorage.save("deviceToken", currentToken);
                     } else {
                         // Show permission request.
                         console.log('No Instance ID token available. Request permission to generate one.');
@@ -72,9 +76,7 @@ export namespace FirebaseManager {
                         console.log('Token refreshed.', refreshedToken);
                         // Indicate that the new Instance ID token has not yet been sent to the
                         // app server.
-                        // setTokenSentToServer(false);
-                        // Send Instance ID token to app server.
-                        // sendTokenToServer(refreshedToken);                            
+                        appStorage.save("deviceToken", refreshedToken);
                     }).catch(function (err) {
                         console.log('Unable to retrieve refreshed token ', err);
                         // showToken('Unable to retrieve refreshed token ', err);

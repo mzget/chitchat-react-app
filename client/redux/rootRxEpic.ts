@@ -28,6 +28,7 @@ export const rootEpic = combineEpics(
     userRx.getTeamProfileEpic,
     userRx.uploadUserAvatar_Epic,
     userRx.updateUserInfo_Epic,
+    userRx.saveDeviceToken_Epic,
 
     ///@ Signup user.
     authRx.signupUserEpic,

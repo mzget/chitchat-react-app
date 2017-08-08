@@ -6,7 +6,7 @@ import { StalkAccount, RoomAccessData } from "../shared/Stalk";
 import { ContactInfo } from "./models/Contact";
 import { RoomType, MemberRole, Room } from "./models/Room";
 
-import { IRoomDAL } from "./dataAccessLayer/IRoomDAL";
+import { SimpleStoreInterface } from "./dataAccessLayer/SimpleStoreInterface";
 import { RoomDALFactory } from "./dataAccessLayer/RoomDALFactory";
 import { IMessageDAL, MessageDALFactory } from "./dataAccessLayer/";
 
@@ -44,9 +44,12 @@ export class DataManager {
     public messageDAL: IMessageDAL;
 
     constructor() {
-        console.log("userAgent", global.userAgent);
-
-        this.messageDAL = MessageDALFactory.getObject();
+        let self = this;
+        MessageDALFactory.getObject().then(storage => {
+            self.messageDAL = storage;
+        }).catch(err => {
+            console.warn("Cannot get properly storage engine.")
+        });
     }
 
     // @ Profile...

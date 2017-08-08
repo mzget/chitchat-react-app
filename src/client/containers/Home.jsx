@@ -86,7 +86,7 @@ class Home extends React.Component {
                 </div>
                 <div id={"app_footer"} style={{ backgroundColor: Colors.blueGrey50 }}>
                     <Flexbox alignItems="center" justifyContent="center">
-                        <span>Powered by Stalk realtime communication API.</span>
+                        <span>Powered by S-Talk Communication API.</span>
                     </Flexbox>
                 </div>
             </div>);

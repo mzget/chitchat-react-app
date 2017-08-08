@@ -1,5 +1,5 @@
 import * as localForage from "localforage";
-export class MessageDAL {
+export class MessageDAL_Web {
     constructor() {
         this.store = localForage.createInstance({
             name: "message"

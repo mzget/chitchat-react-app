@@ -3,4 +3,4 @@ export var IProfile;
     class Profile {
     }
     IProfile.Profile = Profile;
-})(IProfile || (IProfile = {}));
+})(IProfile = IProfile || (IProfile = {}));

@@ -4,4 +4,4 @@ export var OrgLevel;
     OrgLevel[OrgLevel["division"] = 1] = "division";
     OrgLevel[OrgLevel["section"] = 2] = "section";
     OrgLevel[OrgLevel["unit"] = 3] = "unit";
-})(OrgLevel || (OrgLevel = {}));
+})(OrgLevel = OrgLevel || (OrgLevel = {}));
