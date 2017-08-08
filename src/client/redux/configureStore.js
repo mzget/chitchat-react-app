@@ -14,7 +14,6 @@ if (process.env.NODE_ENV === `development`) {
     createStoreWithMiddleware = composeWithDevTools(applyMiddleware(...middlewares))(createStore);
 }
 else {
-    console.log = function () { };
     createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 }
 function configureStore() {

@@ -9,6 +9,7 @@ import { ApolloProvider } from 'react-apollo';
 import Store from "./redux/configureStore";
 import { apolloClient } from "./redux/rootReducer";
 
+import { FirebaseManager } from "./FirebaseManager";
 import { chitchatFactory, config } from "./Chitchat";
 chitchatFactory.initConfig(config);
 chitchatFactory.initStore(Store);
@@ -22,6 +23,8 @@ Store.subscribe(() => {
         members: Store.getState().teamReducer.members
     });
 });
+// const fired = new FirebaseManager.Firebase();
+// fired.initToken();
 
 import { ReapopNotiBoxWithState } from "./components/NotificationSystem";
 import { StalkNotiDialog } from "./containers/stalk/StalkNotiDialog";
