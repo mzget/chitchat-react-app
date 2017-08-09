@@ -54,6 +54,8 @@ export const RoleDetailEnhanced = ({ team_id, role_name }) => (
         <Card>
             <CardTitle title={role_name} />
         </Card>
-        <RoleDetailWithData team_id={team_id} role_name={role_name} />
+        <div style={{ overflowY: "auto" }}>
+            <RoleDetailWithData team_id={team_id} role_name={role_name} />
+        </div>
     </Flexbox>
 );
