@@ -182,7 +182,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
         let { teamReducer } = this.props;
         return (
             <MuiThemeProvider>
-                <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
+                <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50, overflowY: "hidden" }} height="100vh">
                     <div style={{ position: "relative", height: "56px" }}>
                         <div style={{ position: "fixed", width: "100%", zIndex: 1 }} >
                             <SimpleToolbar
@@ -208,5 +208,5 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
 }
 
 const mapstateToProps = (state) => ({ ...state });
-export var AdminPage = connect(mapstateToProps)(Admin) as React.ComponentClass<any>;
-AdminPage = withRouter(AdminPage);
+export var AdminPage = connect(mapstateToProps)(Admin);
+AdminPage = withRouter<any>(AdminPage);

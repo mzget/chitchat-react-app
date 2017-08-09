@@ -13,7 +13,7 @@ export const TeamsList = (props: { onSelectMember, members }) => (
             <Card>
                 <CardTitle title="Team Lists" />
             </Card>
-            <div style={PageBox}>
+            <div style={{ overflowY: "auto" }}>
                 <MemberList onSelected={props.onSelectMember} items={props.members} />
             </div>
         </Flexbox>
