@@ -2,6 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { shallowEqual } from "recompose";
 import Flexbox from "flexbox-react";
+import { grey50 } from "material-ui/styles/colors";
 import { ChitChatFactory } from "../chitchat/chats/ChitChatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 import { TypingBox } from "./TypingBox";
@@ -251,7 +252,7 @@ class Chat extends React.Component {
                         <Flexbox flexDirection="column" justifyContent="flex-start" alignItems="center" minWidth="300px" style={{ height: this.chatHeight }}>
                             {(this.state.earlyMessageReady) ?
             <p onClick={() => this.onLoadEarlierMessages()}>Load Earlier Messages!</p> : null}
-                            <ChatBox value={this.state.messages} onSelected={(message) => { }} styles={{ overflowY: "auto", overflowX: "hidden" }}/>
+                            <ChatBox value={this.state.messages} onSelected={(message) => { }} styles={{ overflowY: "auto", overflowX: "hidden", backgroundColor: grey50 }}/>
                             <MapDialog open={this.state.openMapDialog} onClose={this.onLocation} onSubmit={this.onSubmitPosition} onLocationChange={this.onLocationChange}/>
                         </Flexbox>
                         <Flexbox>

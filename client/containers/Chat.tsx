@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { shallowEqual } from "recompose";
 import * as async from "async";
 import Flexbox from "flexbox-react";
-import * as Colors from "material-ui/styles/colors";
+import { indigo50, white, grey50 } from "material-ui/styles/colors";
 
 import { ChitChatFactory } from "../chitchat/chats/ChitChatFactory";
 const config = () => ChitChatFactory.getInstance().config;
@@ -362,7 +362,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                             <ChatBox
                                 value={this.state.messages}
                                 onSelected={(message: IMessage) => { }}
-                                styles={{ overflowY: "auto", overflowX: "hidden" }}
+                                styles={{ overflowY: "auto", overflowX: "hidden", backgroundColor: grey50 }}
                             />
                             <MapDialog open={this.state.openMapDialog}
                                 onClose={this.onLocation}
