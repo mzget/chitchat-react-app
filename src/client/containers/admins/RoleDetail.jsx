@@ -10,7 +10,7 @@ const RoleDetail = ({ data: { teamProfiles, loading, error } }) => {
     if (!error && !loading) {
         let users = [];
         if (Array.isArray(teamProfiles)) {
-            users = teamProfiles.map(v => v.user);
+            teamProfiles.map(v => (!!v.user) ? users.push(v.user) : null);
         }
         return <MemberList items={users}/>;
     }
