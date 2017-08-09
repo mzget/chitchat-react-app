@@ -100,8 +100,18 @@ export class ChatRoomComponent {
             let results = new Array();
             return new Promise((resolve, reject) => {
                 if (messages.length > 0) {
-                    Rx.Observable.from(messages).mergeMap((item) => __awaiter(this, void 0, void 0, function* () {
-                        return yield CryptoHelper.decryptionText(item);
+                    Rx.Observable.from(messages).mergeMap((message) => __awaiter(this, void 0, void 0, function* () {
+                        if (message.type === MessageType[MessageType.Text]) {
+                            return yield CryptoHelper.decryptionText(message);
+                        }
+                        else if (message.type === MessageType[MessageType.Sticker]) {
+                            let sticker_id = parseInt(message.body);
+                            message["src"] = imagesPath[sticker_id].img;
+                            return yield message;
+                        }
+                        else {
+                            return message;
+                        }
                     })).subscribe(value => {
                         results.push(value);
                     }, (err) => {
@@ -160,9 +170,7 @@ export class ChatRoomComponent {
             let self = this;
             let messages = yield self.get(rid);
             if (messages && messages.length > 0) {
-                let results = yield self.decryptMessage(messages);
-                ;
-                return results;
+                return messages;
             }
             else {
                 console.log("chatMessages is empty!");

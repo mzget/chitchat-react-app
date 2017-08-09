@@ -110,7 +110,8 @@ const renderList = (props: IChatBoxProps) => {
                             readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null}
                             onClickReader={() => onClickReader(message)} />
                     }>
-                    </ListItem>);
+                    </ListItem>
+                );
             }
             case MessageType[MessageType.Image]: {
                 return (

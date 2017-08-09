@@ -121,8 +121,18 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         let results = new Array<IMessage>();
         return new Promise<Array<IMessage>>((resolve, reject) => {
             if (messages.length > 0) {
-                Rx.Observable.from(messages).mergeMap(async (item) => {
-                    return await CryptoHelper.decryptionText(item as MessageImp);
+                Rx.Observable.from(messages).mergeMap(async (message) => {
+                    if (message.type === MessageType[MessageType.Text]) {
+                        return await CryptoHelper.decryptionText(message as MessageImp);
+                    }
+                    else if (message.type === MessageType[MessageType.Sticker]) {
+                        let sticker_id = parseInt(message.body);
+                        message["src"] = imagesPath[sticker_id].img;
+                        return await message;
+                    }
+                    else {
+                        return message;
+                    }
                 }).subscribe(value => {
                     results.push(value);
                 }, (err) => {
@@ -189,8 +199,7 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         let messages = await self.get(rid) as Array<IMessage>;
 
         if (messages && messages.length > 0) {
-            let results = await self.decryptMessage(messages);;
-            return results;
+            return messages;
         }
         else {
             console.log("chatMessages is empty!");

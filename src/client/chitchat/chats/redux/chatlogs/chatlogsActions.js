@@ -19,9 +19,8 @@ export const STALK_GET_CHATSLOG_COMPLETE = "STALK_GET_CHATSLOG_COMPLETE";
 export const STALK_CHATLOG_MAP_CHANGED = "STALK_CHATLOG_MAP_CHANGED";
 export const STALK_CHATLOG_CONTACT_COMPLETE = "STALK_CHATLOG_CONTACT_COMPLETE";
 const listenerImp = (newMsg) => {
-    let dataManager = BackendFactory.getInstance().dataManager;
     let chatsLogComp = BackendFactory.getInstance().chatLogComp;
-    if (!dataManager.isMySelf(newMsg.sender)) {
+    if (newMsg.sender != authReducer().user) {
         chatsLogComp.increaseChatsLogCount(1);
         let unread = new Unread();
         unread.message = newMsg;
