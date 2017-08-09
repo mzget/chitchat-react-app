@@ -3,9 +3,7 @@
  *
  * Copyright 2016 Ahoo Studio.co.th.
  */
-
-const REACT_NATIVE = "react-native";
-const REACTJS = "react-js";
+import { REACT_NATIVE, REACTJS } from "../../consts/Platform";
 
 export class MessageDALFactory {
     static async getObject() {

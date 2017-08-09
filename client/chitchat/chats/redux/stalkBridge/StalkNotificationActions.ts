@@ -12,6 +12,7 @@ import { MessageImp } from "../../models/MessageImp";
 import * as CryptoHelper from "../../utils/CryptoHelper";
 import { MessageType } from "../../../shared/Message";
 
+import { REACTJS, REACT_NATIVE } from "../../../consts/Platform";
 import { NotificationAPI as NotiAPI } from "../../../../actions/";
 import { ChitChatFactory } from "../../ChitChatFactory";
 const getStore = () => ChitChatFactory.getInstance().store;
@@ -58,5 +59,6 @@ export const notify = (messageImp: MessageImp) => {
 };
 
 export const initNativeNotiAPI = () => {
-    NotiAPI.NotificationFactory.createInstance();
+    if (global["userAgent"] == REACTJS)
+        NotiAPI.NotificationFactory.createInstance();
 } 

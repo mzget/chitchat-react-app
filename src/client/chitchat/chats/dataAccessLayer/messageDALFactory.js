@@ -6,8 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const REACT_NATIVE = "react-native";
-const REACTJS = "react-js";
+import { REACT_NATIVE, REACTJS } from "../../consts/Platform";
 export class MessageDALFactory {
     static getObject() {
         return __awaiter(this, void 0, void 0, function* () {
