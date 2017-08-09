@@ -52,8 +52,10 @@ const renderList = (props) => {
         if (!!_store.getState().userReducer.user && _store.getState().userReducer.user._id != message.sender) {
             delete message.readers;
         }
-        let d = new Date(message.createTime.toLocaleString());
-        message.createTime = setUpDateTime(d);
+        if (!!message.createTime) {
+            let d = new Date(message.createTime.toLocaleString());
+            message.createTime = setUpDateTime(d);
+        }
         switch (message.type) {
             case MessageType[MessageType.Text]: {
                 return (<ListItem key={i} containerElement={<CardTextWithAvatar title={message.user.username} subtitle={(message.createTime) ? message.createTime.toString() : ""} avatar={(message.user.avatar) ?

@@ -75,8 +75,10 @@ const renderList = (props: IChatBoxProps) => {
             delete message.readers;
         }
 
-        let d = new Date(message.createTime.toLocaleString());
-        message.createTime = setUpDateTime(d);
+        if (!!message.createTime) {
+            let d = new Date(message.createTime.toLocaleString());
+            message.createTime = setUpDateTime(d);
+        }
 
         switch (message.type) {
             case MessageType[MessageType.Text]: {

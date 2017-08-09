@@ -33,11 +33,12 @@ class VideoCall extends React.Component {
         history.replace(`/chatslist/${teamReducer.team.name}`);
     }
     render() {
+        let { team } = this.props.teamReducer;
         return (<MuiThemeProvider>
                 <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
                     <div style={{ position: "relative", height: "56px" }}>
                         <div style={{ position: "fixed", width: "100%", zIndex: 1 }}>
-                            <SimpleToolbar title={this.props.teamReducer.team.name.toUpperCase()} onBackPressed={this.onBackPressed} onPressTitle={this.onTitlePressed}/>
+                            <SimpleToolbar title={(!!team) ? team.name.toUpperCase() : ""} onBackPressed={this.onBackPressed} onPressTitle={this.onTitlePressed}/>
                         </div>
                     </div>
                     <Flexbox flexDirection="row" height="calc(100vh - 56px)">
