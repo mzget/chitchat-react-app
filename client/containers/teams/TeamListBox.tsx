@@ -16,7 +16,7 @@ abstract class IComponentNameProps {
 
 export const TeamListBox = (props: IComponentNameProps) => (
     <div>
-        <Subheader>Your Teams</Subheader>
+        <Subheader>You're already to join this team:</Subheader>
         <TeamListView
             items={props.teams}
             onSelectItem={props.onSelectTeam}
