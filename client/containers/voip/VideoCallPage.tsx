@@ -76,14 +76,14 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                             {
                                 this.state.isMuteVoice ?
                                     <RaisedButton secondary
-                                        icon={<FontIcon className="material-icons">volume_off</FontIcon>}
+                                        icon={<FontIcon className="material-icons">mic_off</FontIcon>}
                                         onClick={() => {
                                             this.webrtc.unmute();
                                             this.setState({ isMuteVoice: false });
                                         }} />
                                     :
                                     <RaisedButton
-                                        icon={<FontIcon className="material-icons">volume_up</FontIcon>}
+                                        icon={<FontIcon className="material-icons">mic</FontIcon>}
                                         onClick={() => {
                                             this.webrtc.mute();
                                             this.setState({ isMuteVoice: true });
