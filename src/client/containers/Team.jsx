@@ -24,7 +24,7 @@ class Team extends React.Component {
     }
     onSelectTeam(team) {
         this.props.dispatch(teamRx.selectTeam(team));
-        this.props.history.push(`/chatslist/${team.name}`);
+        this.props.history.push(`/team/${team._id}`);
     }
     onToolbarMenuItem(id, value) {
         if (value == "logout") {

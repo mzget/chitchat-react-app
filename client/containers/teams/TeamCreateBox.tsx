@@ -41,7 +41,6 @@ export class TeamCreateBox extends React.Component<IComponentProps, IComponentNa
         else {
             console.warn("Empty team name!");
             this.props.onError("Empty team name!");
-
         }
     }
 

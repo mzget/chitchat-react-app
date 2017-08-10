@@ -15,8 +15,7 @@ export const authReducer = (state = new AuthenInitState(), action) => {
             return state.set("user", action.payload.email);
         }
         case authRx.AUTH_USER_SUCCESS: {
-            return state.set("state", authRx.AUTH_USER_SUCCESS)
-                .set("token", action.payload);
+            return state.set("token", action.payload);
         }
         case authRx.AUTH_USER_FAILURE: {
             return state.set("state", authRx.AUTH_USER_FAILURE)

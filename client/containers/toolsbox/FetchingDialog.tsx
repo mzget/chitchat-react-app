@@ -12,7 +12,7 @@ import { IComponentProps } from "../../utils/IComponentProps";
 
 export interface IDialoxBoxProps {
     open: boolean;
-    handleClose: () => void;
+    handleClose?: () => void;
 }
 const FetchingDialog = (props: IDialoxBoxProps) => {
     return (
@@ -39,7 +39,7 @@ const enhance = compose(
         }
     }),
     pure
-);
+)
 export const FetchingDialogEnhance = enhance(({ open }) =>
     <FetchingDialog open={open} />
 );

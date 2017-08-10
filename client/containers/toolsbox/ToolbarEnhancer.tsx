@@ -17,7 +17,7 @@ export const ToolbarEnhancer = compose(
             props.history.goBack();
         },
         onPressTitle: (props: any) => (e) => {
-            props.history.replace(`/chatslist/${props.teamReducer.team.name}`);
+            props.history.replace(`/team/${props.teamReducer.team._id}`);
         }
     })
 ) as ComponentEnhancer<{ onMenuSelect, onBackPressed, listener: (props, id, value) => void, history }, any>;

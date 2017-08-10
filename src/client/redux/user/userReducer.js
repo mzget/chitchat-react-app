@@ -15,8 +15,7 @@ const userInitState = new UserInitState();
 export const userReducer = (state = userInitState, action) => {
     switch (action.type) {
         case FETCH_USER_SUCCESS:
-            return state.set("user", action.payload[0])
-                .set("state", FETCH_USER_SUCCESS);
+            return state.set("user", action.payload[0]);
         case SUGGEST_USER_SUCCESS:
             return state.set("searchUsers", action.payload);
         case LOG_OUT_SUCCESS: {

@@ -121,7 +121,7 @@ class Admin extends React.Component {
     }
     onTitlePressed() {
         let { history, teamReducer } = this.props;
-        history.replace(`/chatslist/${teamReducer.team.name}`);
+        history.replace(`/team/${teamReducer.team._id}`);
     }
     getAdminPanel() {
         let { userReducer, teamReducer, match, onError } = this.props;

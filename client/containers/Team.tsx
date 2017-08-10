@@ -47,7 +47,7 @@ class Team extends React.Component<IComponentProps, any> {
 
     onSelectTeam(team: ITeam) {
         this.props.dispatch(teamRx.selectTeam(team));
-        this.props.history.push(`/chatslist/${team.name}`);
+        this.props.history.push(`/team/${team._id}`);
     }
 
     onToolbarMenuItem(id, value) {

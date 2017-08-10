@@ -48,6 +48,7 @@ export const authUser_Epic = action$ =>
         .mergeMap(response => Rx.Observable.from(response.json()))
         .map((result: any) => {
             if (result.success) {
+                AppActions.saveSession(result.result);
                 return authUserSuccess(result.result);
             }
             else {
