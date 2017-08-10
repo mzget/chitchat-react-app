@@ -64,7 +64,7 @@ export class SignupBox extends React.Component<IComponentNameProps, IComponentNa
 
     public render(): JSX.Element {
         return (
-            <span>
+            <div>
                 <SignupForm
                     email={this.state.email} onEmailChange={(e, text) => {
                         this.setState(previous => ({ ...previous, email: text }));
@@ -83,7 +83,7 @@ export class SignupBox extends React.Component<IComponentNameProps, IComponentNa
                     }}
                     onSubmit={this.onSubmitForm}
                 />
-            </span>
+            </div>
         );
     }
 }

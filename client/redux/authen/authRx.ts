@@ -58,6 +58,50 @@ export const authUser_Epic = action$ =>
         .catch(error =>
             Rx.Observable.of(authUserFailure((error.message))));
 
+const AUTH_SOCIAL = "AUTH_SOCIAL";
+export const AUTH_SOCIAL_FAILURE = "AUTH_SOCIAL_FAILURE";
+const AUTH_SOCIAL_SUCCESS = "AUTH_SOCIAL_SUCCESS";
+export const authSocial = createAction(AUTH_SOCIAL, ({ email, social_type }) => ({ email, social_type }));
+export const authSocial_Failure = createAction(AUTH_SOCIAL_FAILURE, error => error);
+export const authSocial_Success = createAction(AUTH_SOCIAL_SUCCESS, payload => payload);
+export const authSocial_Epic = (action$) =>
+    action$.ofType(AUTH_SOCIAL)
+        .mergeMap(action => Rx.Observable.fromPromise(authService.authWithSocial(action.payload)))
+        .mergeMap(response => Rx.Observable.from(response.json()))
+        .map((result: any) => {
+            if (result.success) {
+                return authSocial_Success(result.result);
+            }
+            else {
+                return authSocial_Failure(result.message);
+            }
+        })
+        .takeUntil(action$.ofType(AUTH_USER_CANCELLED))
+        .catch(error => Rx.Observable.of(authSocial_Failure((error.message))));
+
+const SIGNUP_SOCIAL = "SIGNUP_SOCIAL";
+const SIGNUP_SOCIAL_FAILURE = "SIGNUP_SOCIAL_FAILURE";
+const SIGNUP_SOCIAL_SUCCESS = "SIGNUP_SOCIAL_SUCCESS";
+const SIGNUP_SOCIAL_CANCELLED = "SIGNUP_SOCIAL_CANCELLED";
+export const signupSocial = createAction(SIGNUP_SOCIAL, user => user);
+export const signupSocial_Failure = createAction(SIGNUP_SOCIAL_FAILURE, error => error);
+export const signupSocial_Success = createAction(SIGNUP_SOCIAL_SUCCESS, payload => payload);
+const signupSocial_Cancelled = createAction(SIGNUP_SOCIAL_CANCELLED);
+export const SignupSocial_Epic = (action$) => {
+    return action$.filter(action => action.type === SIGNUP_SOCIAL)
+        .mergeMap(action => Rx.Observable.fromPromise(authService.signup(action.payload)))
+        .mergeMap(response => Rx.Observable.from(response.json()))
+        .map((result: any) => {
+            if (result.success) {
+                return signupSocial_Success(result.result);
+            }
+            else {
+                return signupSocial_Failure(result.message);
+            }
+        })
+        .takeUntil(action$.ofType(SIGNUP_SOCIAL_CANCELLED))
+        .catch(error => Rx.Observable.of(signupSocial_Failure((error.message))));
+}
 
 const TOKEN_AUTH_USER = "TOKEN_AUTH_USER";
 export const TOKEN_AUTH_USER_SUCCESS = "TOKEN_AUTH_USER_SUCCESS";

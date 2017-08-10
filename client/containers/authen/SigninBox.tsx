@@ -2,13 +2,8 @@ import * as React from "react";
 
 import { SigninForm } from "../../components/SigninForm";
 
-import * as CryptoHelper from "../../chitchat/chats/utils/CryptoHelper";
-import * as ValidateUtils from "../../utils/ValidationUtils";
-import * as AuthRx from "../../redux/authen/authRx";
-
 interface IComponentNameProps {
-    onError: (error: string) => void;
-    dispatch;
+    onLogingIn: (username, password) => void;
 };
 
 interface IComponentNameState {
@@ -39,17 +34,9 @@ export class SigninBox extends React.Component<IComponentNameProps, IComponentNa
         let username = this.state.username;
         let password = this.state.password;
 
-        this.setState({ username: "", password: "" });
+        this.props.onLogingIn(username, password);
 
-        if (username.length > 0 && password.length > 0) {
-            CryptoHelper.hashComputation(password).then((hash: string) => {
-                this.props.dispatch(AuthRx.authUser({ email: username, password: hash }));
-            });
-        }
-        else {
-            console.error("Require fields is missing!");
-            this.props.onError("Require fields is missing!");
-        }
+        this.setState({ username: "", password: "" });
     }
 
     public render(): JSX.Element {

@@ -23,6 +23,9 @@ export const authReducer = (state = new AuthenInitState(), action) => {
                 .set("token", null)
                 .set("user", null);
         }
+        case authRx.AUTH_SOCIAL_FAILURE: {
+            return state.set("state", authRx.AUTH_SOCIAL_FAILURE);
+        }
         case AppActions.GET_SESSION_TOKEN_SUCCESS: {
             return state.set("token", action.payload)
                 .set("state", AppActions.GET_SESSION_TOKEN_SUCCESS);
