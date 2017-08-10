@@ -3,10 +3,11 @@ import { connect } from "react-redux";
 import Flexbox from 'flexbox-react';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
+import Divider from "material-ui/Divider";
 import * as teamRx from "../redux/team/teamRx";
 import * as authRx from "../redux/authen/authRx";
 import { TeamListBox } from "./teams/TeamListBox";
-import { TeamCreateBox } from "./teams/TeamCreateBox";
+import { TeamsBox } from "./teams/TeamCreateBox";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 class Team extends React.Component {
     componentWillMount() {
@@ -42,8 +43,10 @@ class Team extends React.Component {
                     <Flexbox flexDirection="row">
                         <Flexbox flexGrow={1}/>
                         <Flexbox flexDirection="column" justifyContent="center" flexGrow={1}>
+                            <p>Start with a team</p>
+                            <Divider />
                             <TeamListBox teams={this.props.teamReducer.teams} onSelectTeam={this.onSelectTeam}/>
-                            <TeamCreateBox {...this.props}/>
+                            <TeamsBox onError={this.props.onError}/>
                         </Flexbox>
                         <Flexbox flexGrow={1}/>
                     </Flexbox>
@@ -52,5 +55,11 @@ class Team extends React.Component {
             </MuiThemeProvider>);
     }
 }
-function mapStateToProps(state) { return Object.assign({}, state); }
+function mapStateToProps(state) {
+    return {
+        userReducer: state.userReducer,
+        authReducer: state.authReducer,
+        teamReducer: state.teamReducer
+    };
+}
 export const TeamPage = connect(mapStateToProps)(Team);

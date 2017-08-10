@@ -1,6 +1,12 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
 
+import { indigo100, indigo500 } from "material-ui/styles/colors";
+import Avatar from 'material-ui/Avatar';
+import FontIcon from 'material-ui/FontIcon';
+import List from 'material-ui/List/List';
+import ListItem from 'material-ui/List/ListItem';
+
 import { TeamCreateView } from "./TeamCreateView";
 import { FindTeamView } from "./FindTeamView";
 import { FindTeamListBox } from "./FindTeamListBox";
@@ -15,7 +21,7 @@ interface IComponentNameState {
     is_FindTeam: boolean;
 }
 
-export class TeamCreateBox extends React.Component<IComponentProps, IComponentNameState> {
+class TeamCreateBox extends React.Component<IComponentProps, IComponentNameState> {
     componentWillMount() {
         this.state = {
             team_name: "",
@@ -66,6 +72,29 @@ export class TeamCreateBox extends React.Component<IComponentProps, IComponentNa
     public render(): JSX.Element {
         return (
             <div>
+                <List>
+                    <ListItem
+                        leftAvatar={
+                            <Avatar
+                                icon={<FontIcon className="material-icons">group </FontIcon>}
+                                backgroundColor={indigo500} />
+                        }
+                        onClick={this.onToggleView}
+                    >
+                        Join an existing team
+    </ListItem>
+                    <ListItem
+                        leftAvatar={
+                            <Avatar
+                                icon={<FontIcon className="material-icons">group_add</FontIcon>}
+                                backgroundColor={indigo500}
+                            />
+                        }
+                        onClick={this.onToggleView}
+                    >
+                        Create a new team
+    </ListItem>
+                </List>
                 {
                     (!this.state.is_FindTeam) ?
                         <TeamCreateView
@@ -86,3 +115,6 @@ export class TeamCreateBox extends React.Component<IComponentProps, IComponentNa
             </div>);
     }
 }
+
+const mapStateToProps = (state) => ({ teamReducer: state.teamReducer });
+export const TeamsBox = connect(mapStateToProps)(TeamCreateBox) as React.ComponentClass<{ onError }>;

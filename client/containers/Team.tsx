@@ -4,6 +4,7 @@ import Flexbox from 'flexbox-react';
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
+import Divider from "material-ui/Divider";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
@@ -13,7 +14,7 @@ import * as authRx from "../redux/authen/authRx";
 
 import { DialogBox } from "../components/DialogBox";
 import { TeamListBox } from "./teams/TeamListBox";
-import { TeamCreateBox } from "./teams/TeamCreateBox";
+import { TeamsBox } from "./teams/TeamCreateBox";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
@@ -37,8 +38,7 @@ class Team extends React.Component<IComponentProps, any> {
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let { location, userReducer, authReducer, teamReducer
-        } = nextProps;
+        let { location, userReducer, authReducer, teamReducer } = nextProps;
 
         if (!userReducer.user || authReducer.state == authRx.LOG_OUT_SUCCESS) {
             this.props.history.replace("/");
@@ -68,8 +68,10 @@ class Team extends React.Component<IComponentProps, any> {
                     <Flexbox flexDirection="row">
                         <Flexbox flexGrow={1} />
                         <Flexbox flexDirection="column" justifyContent="center" flexGrow={1} >
+                            <p>Start with a team</p>
+                            <Divider />
                             <TeamListBox teams={this.props.teamReducer.teams} onSelectTeam={this.onSelectTeam} />
-                            <TeamCreateBox {...this.props} />
+                            <TeamsBox onError={this.props.onError} />
                         </Flexbox>
                         <Flexbox flexGrow={1} />
                     </Flexbox>
@@ -83,5 +85,11 @@ class Team extends React.Component<IComponentProps, any> {
 /**
  * ## Redux boilerplate
  */
-function mapStateToProps(state) { return { ...state }; }
+function mapStateToProps(state) {
+    return {
+        userReducer: state.userReducer,
+        authReducer: state.authReducer,
+        teamReducer: state.teamReducer
+    };
+}
 export const TeamPage = connect(mapStateToProps)(Team) as React.ComponentClass<any>;

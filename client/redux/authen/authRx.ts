@@ -59,9 +59,9 @@ export const authUser_Epic = action$ =>
         .catch(error =>
             Rx.Observable.of(authUserFailure((error.message))));
 
-const AUTH_SOCIAL = "AUTH_SOCIAL";
+export const AUTH_SOCIAL = "AUTH_SOCIAL";
 export const AUTH_SOCIAL_FAILURE = "AUTH_SOCIAL_FAILURE";
-const AUTH_SOCIAL_SUCCESS = "AUTH_SOCIAL_SUCCESS";
+export const AUTH_SOCIAL_SUCCESS = "AUTH_SOCIAL_SUCCESS";
 export const authSocial = createAction(AUTH_SOCIAL, ({ email, social_type }) => ({ email, social_type }));
 export const authSocial_Failure = createAction(AUTH_SOCIAL_FAILURE, error => error);
 export const authSocial_Success = createAction(AUTH_SOCIAL_SUCCESS, payload => payload);
@@ -71,6 +71,7 @@ export const authSocial_Epic = (action$) =>
         .mergeMap(response => Rx.Observable.from(response.json()))
         .map((result: any) => {
             if (result.success) {
+                AppActions.saveSession(result.result);
                 return authSocial_Success(result.result);
             }
             else {

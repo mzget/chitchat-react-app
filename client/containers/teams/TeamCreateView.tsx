@@ -18,11 +18,7 @@ const styles = {
 };
 
 const SubmitButton = (props: ITypingBox) => (
-    <RaisedButton primary={true} label="Create Team" onClick={props.onCreateTeam}>
-    </RaisedButton>
-);
-const FindButton = (props: ITypingBox) => (
-    <RaisedButton primary={true} label="Find Team" onClick={props.onFindTeam}>
+    <RaisedButton primary={true} label="Create" onClick={props.onCreateTeam} style={{ height: 40, margin: 4 }}>
     </RaisedButton>
 );
 
@@ -37,18 +33,12 @@ export const TeamCreateView = (props: ITypingBox) => {
     return (
         < MuiThemeProvider >
             <Flexbox flexDirection="column" alignItems='center' justifyContent='center' >
-                <h3>Create a new team</h3>
-                <TextField hintText="Team name" value={props.team_name} onChange={props.onNameChange} onKeyDown={(e) => {
-                    if (e.key === 'Enter') props.onCreateTeam();
-                }} />
-                <span style={styles.span} />
-                <SubmitButton {...props} />
-                <span style={styles.span} />
-
-                <Flexbox flexDirection="row" alignItems='center' justifyContent='center' >
-                    <p>Looking for existing team?</p>
-                    <span style={styles.span} />
-                    <FindButton {...props} />
+                <p>Create a new team</p>
+                <Flexbox flexDirection="row">
+                    <TextField hintText="Enter a team name" value={props.team_name} onChange={props.onNameChange} onKeyDown={(e) => {
+                        if (e.key === 'Enter') props.onCreateTeam();
+                    }} />
+                    <SubmitButton {...props} />
                 </Flexbox>
             </Flexbox>
         </MuiThemeProvider >

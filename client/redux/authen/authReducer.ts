@@ -25,6 +25,10 @@ export const authReducer = (state = new AuthenInitState(), action) => {
                 .set("token", null)
                 .set("user", null);
         }
+
+        case authRx.AUTH_SOCIAL: {
+            return state.set("user", action.payload.email);
+        }
         case authRx.AUTH_SOCIAL_FAILURE: {
             return state.set("state", authRx.AUTH_SOCIAL_FAILURE);
         }
