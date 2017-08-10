@@ -6,22 +6,8 @@ import MenuItem from "material-ui/MenuItem";
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from "material-ui/Toolbar";
 import * as Colors from "material-ui/styles/colors";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import getMuiTheme from "material-ui/styles/getMuiTheme";
-const muiTheme = getMuiTheme({
-    palette: {
-        textColor: Colors.darkBlack,
-        alternateTextColor: Colors.darkWhite,
-        primary1Color: Colors.indigo200,
-        primary2Color: Colors.indigo700,
-        accent1Color: Colors.redA200,
-        pickerHeaderColor: Colors.darkBlack,
-    },
-    toolbar: {
-        color: Colors.white,
-        backgroundColor: Colors.indigo500,
-    },
-});
-export const SimpleToolbar = (props) => (<MuiThemeProvider muiTheme={muiTheme}>
+import { defaultMuiTheme } from "../utils/";
+export const SimpleToolbar = (props) => (<MuiThemeProvider muiTheme={defaultMuiTheme}>
         <Toolbar>
             <ToolbarGroup firstChild={true}>
                 {(props.onBackPressed)

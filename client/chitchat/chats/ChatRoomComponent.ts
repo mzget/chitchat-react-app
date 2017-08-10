@@ -25,6 +25,12 @@ const getStore = () => ChitChatFactory.getInstance().store;
 import { ServerEventListener } from "./ServerEventListener";
 
 export const ON_MESSAGE_CHANGE = "ON_MESSAGE_CHANGE";
+export function getStickerPath(message: IMessage) {
+    let sticker_id = parseInt(message.body);
+    message["src"] = imagesPath[sticker_id].img;
+
+    return message as MessageImp;
+}
 
 export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
     private static instance: ChatRoomComponent;
@@ -104,9 +110,8 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
                     .catch(err => self.saveMessages(chatMessages, message));
             }
             else if (message.type === MessageType[MessageType.Sticker]) {
-                let sticker_id = parseInt(message.body);
-                message.src = imagesPath[sticker_id].img;
-                self.saveMessages(chatMessages, message);
+                let _message = getStickerPath(message);
+                self.saveMessages(chatMessages, _message);
             }
             else {
                 self.saveMessages(chatMessages, message);
@@ -121,17 +126,28 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         let results = new Array<IMessage>();
         return new Promise<Array<IMessage>>((resolve, reject) => {
             if (messages.length > 0) {
-                Rx.Observable.from(messages).mergeMap(async (item) => {
-                    return await CryptoHelper.decryptionText(item as MessageImp);
-                }).subscribe(value => {
-                    results.push(value);
-                }, (err) => {
-                    console.warn("decryptMessage", err);
-                    resolve(results);
-                }, () => {
-                    console.log("decryptMessage complete");
-                    resolve(results);
-                });
+                Rx.Observable.from(messages)
+                    .mergeMap(async (message) => {
+                        if (message.type === MessageType[MessageType.Text]) {
+                            return await CryptoHelper.decryptionText(message as MessageImp);
+                        }
+                        else if (message.type === MessageType[MessageType.Sticker]) {
+                            let _message = getStickerPath(message);
+                            return await _message;
+                        }
+                        else {
+                            return message;
+                        }
+                    }).subscribe(value => {
+                        results.push(value);
+                    }, (err) => {
+                        console.warn("decryptMessage", err);
+                        resolve(results);
+                    }, () => {
+                        console.log("decryptMessage complete");
+                        let sortResult = results.sort(self.compareMessage);
+                        resolve(sortResult);
+                    });
             }
             else {
                 resolve(messages);
@@ -188,8 +204,7 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         let messages = await self.get(rid) as Array<IMessage>;
 
         if (messages && messages.length > 0) {
-            let results = await self.decryptMessage(messages);;
-            return results;
+            return messages;
         }
         else {
             console.log("chatMessages is empty!");

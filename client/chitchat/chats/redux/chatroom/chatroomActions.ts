@@ -149,12 +149,10 @@ export function loadEarlyMessageChunk(room_id: string) {
 
         let chatroom = ChatRoomComponent.getInstance();
         chatroom.getOlderMessageChunk(room_id).then(docs => {
-            chatroom.decryptMessage(docs).then(messages => {
-                dispatch(loadEarlyMessage_success(messages));
+            dispatch(loadEarlyMessage_success(docs));
 
-                // @check older message again.
-                dispatch(checkOlderMessages());
-            });
+            // @check older message again.
+            dispatch(checkOlderMessages());
 
             //# update messages read.
             if (docs.length > 0) {
@@ -213,26 +211,25 @@ export function sendMessage(message: IMessage) {
 
         if (message.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption === true) {
             const secure = SecureServiceFactory.getService();
-            secure.encryption(message.body)
-                .then(result => {
-                    message.body = result;
+            secure.encryption(message.body).then(result => {
+                message.body = result;
 
-                    let backendFactory = BackendFactory.getInstance();
-                    let chatApi = backendFactory.getServer().getChatRoomAPI();
-                    chatApi.pushByUids({ data: message } as any).then((result: any) => {
-                        if (result.code !== 200) {
-                            dispatch(sendMessageResponse(result, null));
-                        }
-                        else {
-                            dispatch(sendMessageResponse(null, result));
-                        }
-                    }).catch(err => {
-                        dispatch(sendMessageResponse(err, null));
-                    });
+                let backendFactory = BackendFactory.getInstance();
+                let chatApi = backendFactory.getServer().getChatRoomAPI();
+                chatApi.pushByUids({ data: message } as any).then((result: any) => {
+                    if (result.code !== 200) {
+                        dispatch(sendMessageResponse(result, null));
+                    }
+                    else {
+                        dispatch(sendMessageResponse(null, result));
+                    }
                 }).catch(err => {
-                    console.error(err);
-                    dispatch(send_message_failure(err));
+                    dispatch(sendMessageResponse(err, null));
                 });
+            }).catch(err => {
+                console.error(err);
+                dispatch(send_message_failure(err));
+            });
         }
         else {
             let backendFactory = BackendFactory.getInstance();

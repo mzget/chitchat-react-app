@@ -61,7 +61,7 @@ export const findTeamEpic = action$ => action$.ofType(FIND_TEAM)
     .catch(error => Rx.Observable.of(findTeamFailure(error.xhr.response))));
 const JOIN_TEAM = "JOIN_TEAM";
 const JOIN_TEAM_SUCCESS = "JOIN_TEAM_SUCCESS";
-const JOIN_TEAM_FAILURE = "JOIN_TEAM_FAILURE";
+export const JOIN_TEAM_FAILURE = "JOIN_TEAM_FAILURE";
 const JOIN_TEAM_CANCELLED = "JOIN_TEAM_CANCELLED";
 export const joinTeam = createAction(JOIN_TEAM, team_name => team_name);
 const joinTeamSuccess = createAction(JOIN_TEAM_SUCCESS, payload => payload);
@@ -86,7 +86,7 @@ export const joinTeamEpic = action$ => action$.ofType(JOIN_TEAM)
 }));
 const GET_TEAMS_INFO = "GET_TEAMS_INFO";
 const GET_TEAMS_INFO_SUCCESS = "GET_TEAMS_INFO_SUCCESS";
-const GET_TEAMS_INFO_FAILURE = "GET_TEAMS_INFO_FAILURE";
+export const GET_TEAMS_INFO_FAILURE = "GET_TEAMS_INFO_FAILURE";
 const GET_TEAMS_INFO_CANCELLED = "GET_TEAMS_INFO_CANCELLED";
 export const getTeamsInfo = (params) => ({ type: GET_TEAMS_INFO, payload: params });
 export const getTeamsInfoSuccess = (payload) => ({ type: GET_TEAMS_INFO_SUCCESS, payload });
@@ -155,8 +155,7 @@ export const TeamInitState = Record({
     teams: new Array(),
     team: null,
     members: null,
-    findingTeams: null,
-    error: null
+    findingTeams: null
 });
 export const teamReducer = (state = new TeamInitState(), action) => {
     switch (action.type) {
@@ -165,24 +164,31 @@ export const teamReducer = (state = new TeamInitState(), action) => {
             let newItems = teams.concat(action.payload.result);
             return state.set("teams", newItems);
         }
-        case CREATE_TEAM_FAILURE: {
-            return state.set("state", CREATE_TEAM_FAILURE)
-                .set("error", action.payload.message);
+        case FIND_TEAM: {
+            return state.set("isFetching", true);
         }
         case FIND_TEAM_SUCCESS: {
-            return state.set("findingTeams", action.payload.result);
+            return state.set("findingTeams", action.payload.result)
+                .set("isFetching", false);
         }
         case FIND_TEAM_FAILURE: {
-            return state.set("findingTeams", null);
+            return state.set("findingTeams", null)
+                .set("isFetching", false);
+        }
+        case JOIN_TEAM: {
+            return state.set("isFetching", true);
+        }
+        case JOIN_TEAM_SUCCESS: {
+            return state.set("isFetching", false).set("findingTeams", null);
+        }
+        case JOIN_TEAM_FAILURE: {
+            return state.set("isFetching", false);
         }
         case FETCH_USER_TEAMS_SUCCESS: {
             return state.set("teams", action.payload.result);
         }
         case GET_TEAMS_INFO_SUCCESS: {
             return state.set("teams", action.payload.result);
-        }
-        case GET_TEAMS_INFO_FAILURE: {
-            return state.set("error", action.payload.message);
         }
         case TEAM_SELECTED: {
             return state.set("team", action.payload)

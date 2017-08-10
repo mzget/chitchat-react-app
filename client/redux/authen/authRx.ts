@@ -96,7 +96,7 @@ export const logoutUser_Epic = action$ => action$.ofType(LOG_OUT)
     .mergeMap(response => Rx.Observable.fromPromise(response.json()))
     .map(result => {
         if (result.success) {
-            AppActions.removeSession();
+            AppActions.clearSession();
             BackendFactory.getInstance().dataManager.messageDAL.clearData((err) => console.warn(err));
             stalkBridgeActions.stalkLogout();
 

@@ -7,22 +7,8 @@ import DropDownMenu from "material-ui/DropDownMenu";
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from "material-ui/Toolbar";
 import * as Colors from "material-ui/styles/colors";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import getMuiTheme from "material-ui/styles/getMuiTheme";
 
-const muiTheme = getMuiTheme({
-    palette: {
-        textColor: Colors.darkBlack,
-        alternateTextColor: Colors.darkWhite,
-        primary1Color: Colors.indigo200,
-        primary2Color: Colors.indigo700,
-        accent1Color: Colors.redA200,
-        pickerHeaderColor: Colors.darkBlack,
-    },
-    toolbar: {
-        color: Colors.white,
-        backgroundColor: Colors.indigo500,
-    },
-});
+import { defaultMuiTheme } from "../utils/";
 
 interface IComponentProps {
     title: string;
@@ -34,7 +20,7 @@ interface IComponentProps {
 }
 
 export const SimpleToolbar = (props: IComponentProps) => (
-    <MuiThemeProvider muiTheme={muiTheme} >
+    <MuiThemeProvider muiTheme={defaultMuiTheme} >
         <Toolbar>
             <ToolbarGroup firstChild={true}>
                 {

@@ -9,6 +9,16 @@ export function auth(user) {
         headers: chitchat_headers()
     });
 }
+export function authWithSocial(user) {
+    return fetch(`${getConfig().api.auth}/social`, {
+        method: "POST",
+        body: JSON.stringify({
+            email: user.email,
+            social_type: user.social_type
+        }),
+        headers: chitchat_headers()
+    });
+}
 export function tokenAuth(token) {
     return fetch(`${getConfig().api.auth}/verify`, {
         method: "POST",

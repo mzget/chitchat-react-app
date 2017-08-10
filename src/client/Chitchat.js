@@ -1,4 +1,4 @@
-import { ChitChatFactory } from "./chitchat/chats/ChitChatFactory";
+import { ChitChatFactory } from "./chitchat/chats/";
 export const chitchatFactory = ChitChatFactory.createInstance();
 const api_stalk = "wss://chitchats.ga";
 const stalkPort = 3050;

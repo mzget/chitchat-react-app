@@ -4,6 +4,7 @@ import * as chatroomActions from "./chatroomActions";
 import * as immutable from "immutable";
 const chatroomDefaults = {
     isFetching: false,
+    uploading: false,
     state: null,
     room: null,
     chatTargets: null,
@@ -44,16 +45,16 @@ export const chatroomReducer = (state = chatRoomRecoder, action) => {
                 .set("chatDisabled", false);
         }
         case chatroomRxActions.CHATROOM_UPLOAD_FILE: {
-            return state.set("state", chatroomRxActions.CHATROOM_UPLOAD_FILE)
+            return state.set("uploading", true)
                 .set("uploadingFile", action.payload.data.target.result)
                 .set("fileInfo", action.payload.file);
         }
         case chatroomRxActions.CHATROOM_UPLOAD_FILE_FAILURE: {
-            return state.set("state", chatroomRxActions.CHATROOM_UPLOAD_FILE_FAILURE)
+            return state.set("uploading", false)
                 .set("error", JSON.stringify(action.payload.message));
         }
         case chatroomRxActions.CHATROOM_UPLOAD_FILE_SUCCESS: {
-            return state.set("state", chatroomRxActions.CHATROOM_UPLOAD_FILE_SUCCESS)
+            return state.set("uploading", false)
                 .set("responseFile", action.payload);
         }
         case SEND_MESSAGE_FAILURE: {

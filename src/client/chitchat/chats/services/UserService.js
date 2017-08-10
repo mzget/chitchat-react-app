@@ -1,9 +1,8 @@
-import * as Rx from "rxjs/Rx";
+import * as Rx from "@reactivex/rxjs";
 const { ajax } = Rx.Observable;
 import { ChitChatFactory } from "../ChitChatFactory";
 import { chitchat_headers } from "../utils/chitchatServiceUtils";
 const getConfig = () => ChitChatFactory.getInstance().config;
-const authReducer = () => ChitChatFactory.getInstance().authStore;
 export function getTeamProfile(token, team_id) {
     return Rx.Observable.ajax({
         url: `${getConfig().api.user}/teamProfile?team_id=${team_id}`,
@@ -52,5 +51,16 @@ export function suggestUser(username, team_id) {
         method: "GET",
         url: `${getConfig().api.user}/suggest/?username=${username}&team_id=${team_id}`,
         headers: chitchat_headers()
+    });
+}
+export function saveDevice(registration_id, user_id) {
+    return ajax({
+        method: "POST",
+        url: `${getConfig().api.user}/saveDevice/`,
+        headers: chitchat_headers(),
+        body: JSON.stringify({
+            deviceToken: registration_id,
+            user_id: user_id
+        })
     });
 }

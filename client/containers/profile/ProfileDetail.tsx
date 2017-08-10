@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Flex, Box } from "reflexbox";
 import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
@@ -13,7 +12,6 @@ import * as FileReaderInput from "react-file-reader-input";
 
 import { ChitChatAccount } from "../../chitchat/chats/models/User";
 import { ITeamProfile } from "../../chitchat/chats/models/TeamProfile";
-import { Button, Row, Col, Panel, FormGroup, FormControl, FieldGroup, ControlLabel } from "react-bootstrap";
 import { Card, CardActions, CardHeader, CardText, CardTitle } from "material-ui";
 const Styles = require("../../../styles/generalStyles");
 

@@ -22,7 +22,7 @@ export const SigninForm = (props) => {
                     <p>Enter your email address and password</p>
                 </div>
                 <span style={styles.span}/>
-                <TextField hintText="Type username here." value={props.username} onChange={props.onUsername} onKeyDown={(e) => {
+                <TextField hintText="Type email address here." value={props.username} onChange={props.onUsername} onKeyDown={(e) => {
         if (e.key === 'Enter')
             props.onSubmit();
     }} style={styles.textfield}/>

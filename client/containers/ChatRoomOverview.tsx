@@ -44,7 +44,7 @@ class ChatRoomOverView extends React.Component<IComponentProps, any> {
     render() {
         return (
             <MuiThemeProvider>
-                <div style={{ height: "calc(100vh - 108px)", overflowY: "scroll", overflowX: "hidden" }}>
+                <div style={{ height: "calc(100vh - 108px)", overflowY: "auto", overflowX: "hidden" }}>
                     {
                         (!!this.room)
                             ? (

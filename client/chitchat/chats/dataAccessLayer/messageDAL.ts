@@ -2,7 +2,7 @@
 
 import * as localForage from "localforage";
 
-export class MessageDAL implements IMessageDAL {
+export class MessageDAL_Web implements IMessageDAL {
 
     store: LocalForage;
 

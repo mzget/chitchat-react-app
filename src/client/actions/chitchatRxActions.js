@@ -21,6 +21,6 @@ export const getTeamsInfo_Epic = (action$) => (action$.filter(action => action.t
         return getTeamsInfo(userReducer.user.teams);
     }
     else {
-        return { type: "" };
+        return { type: "WAIT_FOR_USER_TEAMS" };
     }
 }));

@@ -1,3 +1,4 @@
+export * from "./iConfig";
 export * from "./ChitChatFactory";
 export * from "./BackendFactory";
 

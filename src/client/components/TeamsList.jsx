@@ -10,7 +10,7 @@ export const TeamsList = (props) => (<Flexbox width="100%" justifyContent="cente
             <Card>
                 <CardTitle title="Team Lists"/>
             </Card>
-            <div style={PageBox}>
+            <div style={{ overflowY: "auto" }}>
                 <MemberList onSelected={props.onSelectMember} items={props.members}/>
             </div>
         </Flexbox>

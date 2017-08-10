@@ -117,10 +117,8 @@ export function loadEarlyMessageChunk(room_id) {
         dispatch(loadEarlyMessage(room_id));
         let chatroom = ChatRoomComponent.getInstance();
         chatroom.getOlderMessageChunk(room_id).then(docs => {
-            chatroom.decryptMessage(docs).then(messages => {
-                dispatch(loadEarlyMessage_success(messages));
-                dispatch(checkOlderMessages());
-            });
+            dispatch(loadEarlyMessage_success(docs));
+            dispatch(checkOlderMessages());
             if (docs.length > 0) {
                 dispatch(updateMessagesRead(docs, room_id));
             }
@@ -172,8 +170,7 @@ export function sendMessage(message) {
         dispatch(send_message_request());
         if (message.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption === true) {
             const secure = SecureServiceFactory.getService();
-            secure.encryption(message.body)
-                .then(result => {
+            secure.encryption(message.body).then(result => {
                 message.body = result;
                 let backendFactory = BackendFactory.getInstance();
                 let chatApi = backendFactory.getServer().getChatRoomAPI();

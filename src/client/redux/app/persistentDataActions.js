@@ -8,16 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { createAction } from "redux-actions";
 import store from "../configureStore";
-import { AppSessionToken } from "../../chitchat/chats/dataAccessLayer/AppSessionToken";
-const appSession = new AppSessionToken();
+import { SimpleStorageFactory } from "../../chitchat/chats/dataAccessLayer/";
+const appSession = SimpleStorageFactory.getObject("app");
 export function saveSession() {
     return __awaiter(this, void 0, void 0, function* () {
-        yield appSession.saveSessionToken(store.getState().authReducer.token);
+        yield appSession.save("sessionToken", store.getState().authReducer.token);
     });
 }
-export function removeSession() {
+export function clearSession() {
     return __awaiter(this, void 0, void 0, function* () {
-        appSession.deleteSessionToken();
+        appSession.clear();
     });
 }
 export const GET_SESSION_TOKEN_SUCCESS = "GET_SESSION_TOKEN_SUCCESS";
@@ -26,8 +26,7 @@ const getSessionTokenFailure = createAction(GET_SESSION_TOKEN_FAILURE, err => er
 const getSessionTokenSuccess = createAction(GET_SESSION_TOKEN_SUCCESS, token => token);
 export function getSession() {
     return (dispatch) => {
-        appSession.getSessionToken()
-            .then(token => {
+        appSession.get("sessionToken").then(token => {
             if (!!token) {
                 dispatch(getSessionTokenSuccess(token));
             }

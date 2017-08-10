@@ -1,6 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import Flexbox from "flexbox-react";
+import { shallowEqual } from "recompose";
 import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -18,7 +19,7 @@ class UploadingDialog extends React.Component {
         };
         this.cancelFileUpload = () => {
             let { chatroomReducer } = this.props;
-            if (chatroomReducer.state == ChatroomRx.CHATROOM_UPLOAD_FILE) {
+            if (chatroomReducer.get("uploading") == true) {
                 this.props.dispatch(ChatroomRx.uploadFileCanceled());
             }
             this.closeDialog();
@@ -35,26 +36,10 @@ class UploadingDialog extends React.Component {
     componentWillReceiveProps(nextProps) {
         let { chatroomReducer } = nextProps;
         let self = this;
-        switch (chatroomReducer.state) {
-            case ChatroomRx.CHATROOM_UPLOAD_FILE:
-                this.setState(previouseState => (Object.assign({}, previouseState, { openState: true })));
-                break;
-            case ChatroomRx.CHATROOM_UPLOAD_FILE_SUCCESS: {
-                this.setState(previouseState => (Object.assign({}, previouseState, { dialogTitle: "Upload Success!" })));
-                setTimeout(function () {
-                    self.closeDialog();
-                }, 3000);
-                break;
-            }
-            case ChatroomRx.CHATROOM_UPLOAD_FILE_FAILURE: {
-                this.setState(previouseState => (Object.assign({}, previouseState, { dialogTitle: "Upload Fail!" })));
-                setTimeout(function () {
-                    self.closeDialog();
-                }, 3000);
-                break;
-            }
-            default:
-                break;
+        let prev = this.props.chatroomReducer.get("uploading");
+        let next = chatroomReducer.get("uploading");
+        if (!shallowEqual(prev, next)) {
+            this.setState(previouseState => (Object.assign({}, previouseState, { openState: next })));
         }
     }
     render() {
@@ -74,17 +59,19 @@ class UploadingDialog extends React.Component {
             }
         };
         return (<MuiThemeProvider>
-                <Dialog title={this.state.dialogTitle} actions={actions} modal={true} open={this.state.openState}>
-                    {(this.state.openState) ?
-            getMediaCard() : null}
+                <Dialog contentStyle={{ width: "350px" }} title={this.state.dialogTitle} actions={actions} modal={true} open={this.state.openState}>
                     <Flexbox alignItems="center">
                         <LinearProgressSimple />
                     </Flexbox>
+                    {(this.state.openState) ?
+            getMediaCard() : null}
                 </Dialog>
             </MuiThemeProvider>);
     }
 }
 function mapStateToProps(state) {
-    return Object.assign({}, state);
+    return {
+        chatroomReducer: state.chatroomReducer
+    };
 }
 export default connect(mapStateToProps)(UploadingDialog);

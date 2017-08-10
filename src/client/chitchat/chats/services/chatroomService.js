@@ -1,4 +1,4 @@
-import { ChitChatFactory } from "../ChitChatFactory";
+import { ChitChatFactory } from "../";
 import { withToken, chitchat_headers } from "../utils/chitchatServiceUtils";
 const getConfig = () => ChitChatFactory.getInstance().config;
 const authReducer = () => ChitChatFactory.getInstance().authStore;

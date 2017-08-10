@@ -36,7 +36,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillMount() {
-        console.log("Home", global.userAgent);
+        console.log("Home", global["userAgent"]);
 
         this.state = {
             alert: false
@@ -113,7 +113,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
                 </div>
                 <div id={"app_footer"} style={{ backgroundColor: Colors.blueGrey50 }}>
                     <Flexbox alignItems="center" justifyContent="center">
-                        <span>Powered by Stalk realtime communication API.</span>
+                        <span>Powered by S-Talk Communication API.</span>
                     </Flexbox>
                 </div>
             </div>

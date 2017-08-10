@@ -5,5 +5,5 @@ export var UserRole;
     UserRole[UserRole["department_chief"] = 2] = "department_chief";
     UserRole[UserRole["division_chief"] = 3] = "division_chief";
     UserRole[UserRole["admin"] = 4] = "admin";
-})(UserRole || (UserRole = {}));
+})(UserRole = UserRole || (UserRole = {}));
 ;

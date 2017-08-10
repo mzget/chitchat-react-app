@@ -18,11 +18,7 @@ class Team extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         let { location, userReducer, authReducer, teamReducer } = nextProps;
-        if (teamReducer.error) {
-            this.props.onError(teamReducer.error);
-        }
-        if (!userReducer.user ||
-            authReducer.state == authRx.LOG_OUT_SUCCESS) {
+        if (!userReducer.user || authReducer.state == authRx.LOG_OUT_SUCCESS) {
             this.props.history.replace("/");
         }
     }

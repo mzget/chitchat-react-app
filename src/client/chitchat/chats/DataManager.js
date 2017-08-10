@@ -16,8 +16,12 @@ export class DataManager {
         this.contactsMember = {};
         this.isOrgMembersReady = false;
         this.getContactInfoFailEvents = new Array();
-        console.log("userAgent", global.userAgent);
-        this.messageDAL = MessageDALFactory.getObject();
+        let self = this;
+        MessageDALFactory.getObject().then(storage => {
+            self.messageDAL = storage;
+        }).catch(err => {
+            console.warn("Cannot get properly storage engine.");
+        });
     }
     addContactInfoFailEvents(func) {
         this.getContactInfoFailEvents.push(func);

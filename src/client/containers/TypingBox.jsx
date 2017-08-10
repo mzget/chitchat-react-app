@@ -6,7 +6,7 @@ import FontIcon from "material-ui/FontIcon";
 import IconButton from "material-ui/IconButton";
 import * as Colors from "material-ui/styles/colors";
 import * as FileReaderInput from "react-file-reader-input";
-import { small_body_width, large_body_width, LARGE_TABLET } from '../chitchat/consts/Breakpoints';
+import { small_width, large_body_width, LARGE_TABLET } from '../chitchat/consts/Breakpoints';
 const styles = {
     span: {
         paddingRight: 2
@@ -28,7 +28,7 @@ const PlaceButton = (props) => (<IconButton onClick={props.onLocation} disabled=
     </IconButton>);
 export const TypingBox = (props) => {
     return (<MuiThemeProvider>
-            <div id={"typing_box"} style={{ margin: 2, backgroundColor: Colors.darkWhite, width: window.innerWidth >= LARGE_TABLET ? large_body_width : small_body_width }}>
+            <div id={"typing_box"} style={{ margin: 2, backgroundColor: Colors.darkWhite, width: window.innerWidth >= LARGE_TABLET ? large_body_width : small_width }}>
                 <Flexbox>
                     <PlaceButton {...props}/>
                     <StickerButton {...props}/>

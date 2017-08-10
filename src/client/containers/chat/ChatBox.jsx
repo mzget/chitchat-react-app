@@ -1,5 +1,6 @@
 import * as React from "react";
 const FontAwesome = require("react-fontawesome");
+import { white, green50 } from "material-ui/styles/colors";
 import { List, ListItem } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -36,6 +37,17 @@ export const getFontIcon = (message) => {
             return <FontAwesome style={{ padding: 5, marginLeft: 5 }} name="file-o" size="3x"/>;
     }
 };
+const isMyMessage = (message) => {
+    let _store = configureStore;
+    if (!!_store.getState().userReducer.user && _store.getState().userReducer.user._id == message.sender) {
+        return true;
+    }
+    else
+        return false;
+};
+const setUpDateTime = (data) => {
+    return `${data.toLocaleTimeString()} : ${data.toLocaleDateString()} `;
+};
 const onClickReader = (message) => {
     console.log(message);
 };
@@ -49,42 +61,46 @@ const renderList = (props) => {
         if (!!_store.getState().userReducer.user && _store.getState().userReducer.user._id != message.sender) {
             delete message.readers;
         }
+        if (!!message.createTime) {
+            let d = new Date(message.createTime.toLocaleString());
+            message.createTime = setUpDateTime(d);
+        }
         switch (message.type) {
             case MessageType[MessageType.Text]: {
                 return (<ListItem key={i} containerElement={<CardTextWithAvatar title={message.user.username} subtitle={(message.createTime) ? message.createTime.toString() : ""} avatar={(message.user.avatar) ?
-                    <Avatar src={message.user.avatar}/> : <Avatar>{message.user.username.charAt(0)}</Avatar>} cardText={message.body} readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null} onClickReader={() => onClickReader(message)}/>}>
+                    <Avatar src={message.user.avatar}/> : <Avatar>{message.user.username.charAt(0)}</Avatar>} cardText={message.body} readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null} onClickReader={() => onClickReader(message)} bg_color={(isMyMessage(message)) ? green50 : white}/>}>
                     </ListItem>);
             }
             case MessageType[MessageType.Sticker]: {
-                return (<ListItem key={i} style={{ margin: "5px" }} containerElement={<CardStickerWithAvatar title={message.user.username} subtitle={(message.createTime) ? message.createTime.toString() : ""} avatar={(message.user.avatar) ?
-                    <Avatar src={message.user.avatar}/> : <Avatar>{message.user.username.charAt(0)}</Avatar>} imageSrc={message.src} readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null} onClickReader={() => onClickReader(message)}/>}>
+                return (<ListItem key={i} containerElement={<CardStickerWithAvatar title={message.user.username} subtitle={(message.createTime) ? message.createTime.toString() : ""} avatar={(message.user.avatar) ?
+                    <Avatar src={message.user.avatar}/> : <Avatar>{message.user.username.charAt(0)}</Avatar>} imageSrc={message.src} readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null} onClickReader={() => onClickReader(message)} bg_color={(isMyMessage(message)) ? green50 : white}/>}>
                     </ListItem>);
             }
             case MessageType[MessageType.Image]: {
-                return (<ListItem key={i} style={{ margin: "5px" }} containerElement={<CardImageWithAvatar title={message.user.username} subtitle={(message.createTime) ? message.createTime.toString() : ""} avatar={(message.user.avatar) ?
-                    <Avatar src={message.user.avatar}/> : <Avatar>{message.user.username.charAt(0)}</Avatar>} imageSrc={message.src} readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null} onClickReader={() => onClickReader(message)}/>}>
+                return (<ListItem key={i} containerElement={<CardImageWithAvatar title={message.user.username} subtitle={(message.createTime) ? message.createTime.toString() : ""} avatar={(message.user.avatar) ?
+                    <Avatar src={message.user.avatar}/> : <Avatar>{message.user.username.charAt(0)}</Avatar>} cardText={message.body} imageSrc={message.src} readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null} onClickReader={() => onClickReader(message)} bg_color={(isMyMessage(message)) ? green50 : white}/>}>
                     </ListItem>);
             }
             case MessageType[MessageType.Video]:
                 {
-                    return (<ListItem key={i} style={{ margin: "5px" }} containerElement={<CardVideoWithAvatar title={message.user.username} subtitle={(message.createTime) ? message.createTime.toString() : ""} avatar={(message.user.avatar) ?
-                        <Avatar src={message.user.avatar}/> : <Avatar>{message.user.username.charAt(0)}</Avatar>} src={message.src} readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null} onClickReader={() => onClickReader(message)}/>}>
+                    return (<ListItem key={i} containerElement={<CardVideoWithAvatar title={message.user.username} subtitle={(message.createTime) ? message.createTime.toString() : ""} avatar={(message.user.avatar) ?
+                        <Avatar src={message.user.avatar}/> : <Avatar>{message.user.username.charAt(0)}</Avatar>} cardText={message.body} src={message.src} readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null} onClickReader={() => onClickReader(message)} bg_color={(isMyMessage(message)) ? green50 : white}/>}>
                         </ListItem>);
                 }
             case MessageType[MessageType.File]:
                 {
-                    return (<ListItem key={i} style={{ margin: "5px" }} containerElement={<CardFileWithAvatar title={message.user.username} subtitle={(message.createTime) ? message.createTime.toString() : ""} avatar={(message.user.avatar) ?
+                    return (<ListItem key={i} containerElement={<CardFileWithAvatar title={message.user.username} subtitle={(message.createTime) ? message.createTime.toString() : ""} avatar={(message.user.avatar) ?
                         <Avatar src={message.user.avatar}/> :
                         <Avatar>{message.user.username.charAt(0)}</Avatar>} cardText={message.body} fileIcon={getFontIcon(message)} openAction={() => {
                         window.open(message.src, "_blank");
-                    }} readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null} onClickReader={() => onClickReader(message)}/>}>
+                    }} readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null} onClickReader={() => onClickReader(message)} bg_color={(isMyMessage(message)) ? green50 : white}/>}>
                         </ListItem>);
                 }
             case MessageType[MessageType.Location]:
                 {
-                    return (<ListItem key={i} style={{ margin: "5px" }} containerElement={<CardMapWithAvatar title={message.user.username} subtitle={(message.createTime) ? message.createTime.toString() : ""} avatar={(message.user.avatar) ?
+                    return (<ListItem key={i} containerElement={<CardMapWithAvatar title={message.user.username} subtitle={(message.createTime) ? message.createTime.toString() : ""} avatar={(message.user.avatar) ?
                         <Avatar src={message.user.avatar}/> :
-                        <Avatar>{message.user.username.charAt(0)}</Avatar>} content={{ position: message.body }} readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null} onClickReader={() => onClickReader(message)}/>}>
+                        <Avatar>{message.user.username.charAt(0)}</Avatar>} content={{ position: message.body }} readers={(!!message.readers && message.readers.length > 0) ? `Read ${message.readers.length}` : null} onClickReader={() => onClickReader(message)} bg_color={(isMyMessage(message)) ? green50 : white}/>}>
                         </ListItem>);
                 }
             default:

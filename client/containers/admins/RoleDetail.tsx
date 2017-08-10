@@ -13,7 +13,7 @@ const RoleDetail = ({ data: { teamProfiles, loading, error } }) => {
     if (!error && !loading) {
         let users = [];
         if (Array.isArray(teamProfiles)) {
-            users = teamProfiles.map(v => v.user);
+            teamProfiles.map(v => (!!v.user) ? users.push(v.user) : null);
         }
 
         return <MemberList items={users} />
@@ -54,6 +54,8 @@ export const RoleDetailEnhanced = ({ team_id, role_name }) => (
         <Card>
             <CardTitle title={role_name} />
         </Card>
-        <RoleDetailWithData team_id={team_id} role_name={role_name} />
+        <div style={{ overflowY: "auto" }}>
+            <RoleDetailWithData team_id={team_id} role_name={role_name} />
+        </div>
     </Flexbox>
 );

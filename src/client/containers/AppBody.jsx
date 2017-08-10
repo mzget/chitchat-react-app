@@ -8,6 +8,9 @@ import { GroupDetailEnhanced } from "./roomSettings/GroupDetailEnhancer";
 const getview = (props) => {
     let { match, history, onError, userReducer } = props;
     if (match.params.filter == "user") {
+        if (!userReducer.user) {
+            return null;
+        }
         return <ProfileDetailEnhanced user={userReducer.user} teamProfile={userReducer.teamProfile} alert={onError}/>;
     }
     else if (match.path.match("chatroom")) {
