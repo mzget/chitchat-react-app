@@ -7,6 +7,7 @@ import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import Subheader from "material-ui/Subheader";
+import { RaisedButton, FontIcon } from "material-ui";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 
@@ -21,8 +22,14 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
     constructor(props) {
         super(props);
 
+        this.state = {
+            isMuteVoice: false,
+            isPauseVideo: false,
+        }
+
         this.onBackPressed = this.onBackPressed.bind(this);
         this.onTitlePressed = this.onTitlePressed.bind(this);
+        this.getWebRtc = this.getWebRtc.bind(this);
     }
 
     componentWillMount() {
@@ -48,6 +55,10 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         history.replace(`/chatslist/${teamReducer.team.name}`);
     }
 
+    getWebRtc(webrtc) {
+        this.webrtc = webrtc;
+    }
+
     render(): JSX.Element {
         return (
             <MuiThemeProvider>
@@ -61,10 +72,42 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                         </div>
                     </div>
                     <Flexbox flexDirection="row" height="calc(100vh - 56px)">
-                        <Flexbox minWidth="400px" justifyContent="center">
+                        <Flexbox flexDirection="column" minWidth="400px">
+                            {
+                                this.state.isMuteVoice ?
+                                    <RaisedButton secondary
+                                        icon={<FontIcon className="material-icons">volume_off</FontIcon>}
+                                        onClick={() => {
+                                            this.webrtc.unmute();
+                                            this.setState({ isMuteVoice: false });
+                                        }} />
+                                    :
+                                    <RaisedButton
+                                        icon={<FontIcon className="material-icons">volume_up</FontIcon>}
+                                        onClick={() => {
+                                            this.webrtc.mute();
+                                            this.setState({ isMuteVoice: true });
+                                        }} />
+                            }
+                            {
+                                this.state.isPauseVideo ?
+                                    <RaisedButton secondary
+                                        icon={<FontIcon className="material-icons">videocam_off</FontIcon>}
+                                        onClick={() => {
+                                            this.webrtc.resumeVideo();
+                                            this.setState({ isPauseVideo: false });
+                                        }} />
+                                    :
+                                    <RaisedButton
+                                        icon={<FontIcon className="material-icons">videocam</FontIcon>}
+                                        onClick={() => {
+                                            this.webrtc.pauseVideo();
+                                            this.setState({ isPauseVideo: true });
+                                        }} />
+                            }
                         </Flexbox>
                         <Flexbox flexGrow={1} justifyContent="center">
-                            <WebRtcPage onError={this.props.onError} />
+                            <WebRtcPage getWebRtc={this.getWebRtc} onError={this.props.onError} />
                         </Flexbox>
                     </Flexbox>
                 </Flexbox>
@@ -74,6 +117,8 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 }
 
 const mapStateToProps = (state) => ({
+    userReducer: state.userReducer,
+    alertReducer: state.alertReducer,
     teamReducer: state.teamReducer,
     stalkReducer: state.stalkReducer
 });

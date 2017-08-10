@@ -32,14 +32,16 @@ class WebRtc extends React.Component {
         let self = this;
         let { stalkReducer } = this.props;
         this.webrtc = new SimpleWebRTC({
-            localVideoEl: ReactDOM.findDOMNode(this.refs.local),
+            localVideoEl: ReactDOM.findDOMNode(this.refs.localVideo),
             remoteVideosEl: "",
             autoRequestMedia: true,
-            enableDataChannels: false,
+            enableDataChannels: true,
             url: signalingServer,
             socketio: { 'force new connection': true },
-            debug: false
+            debug: false,
+            detectSpeakingEvents: true,
         });
+        this.props.getWebRtc(this.webrtc);
         this.webrtc.on('connectionReady', function (sessionId) {
             console.log("connectionReady", sessionId);
         });
@@ -60,6 +62,24 @@ class WebRtc extends React.Component {
                 connstate.innerText = 'Connection failed.';
             }
         });
+        if (this.webrtc.config.detectSpeakingEvents) {
+            let localContainer = ReactDOM.findDOMNode(this.refs.localContainer);
+            var vol = document.createElement('meter');
+            vol.style.position = 'absolute';
+            vol.style.left = '15%';
+            vol.style.width = '70%';
+            vol.style.bottom = '2px';
+            vol.style.height = '5px';
+            vol.min = -45;
+            vol.max = -20;
+            vol.low = -40;
+            vol.high = -25;
+            localContainer.appendChild(vol);
+            const self = this;
+            this.webrtc.on('volumeChange', function (volume, treshold) {
+                self.showVolume(vol, volume);
+            });
+        }
         this.webrtc.on('connectivityError', function (peer) {
             console.warn("connectivityError", peer);
             let connstate = document.querySelector('#container_' + self.webrtc.getDomId(peer) + ' .connectionstate');
@@ -74,8 +94,26 @@ class WebRtc extends React.Component {
         if (remotes) {
             let container = document.createElement('div');
             container.className = 'videoContainer';
+            container.style.position = 'relative';
             container.id = 'container_' + this.webrtc.getDomId(peer);
             container.appendChild(video);
+            if (this.webrtc.config.enableDataChannels) {
+                var vol = document.createElement('meter');
+                vol.style.position = 'absolute';
+                vol.style.left = '15%';
+                vol.style.width = '70%';
+                vol.style.bottom = '2px';
+                vol.style.height = '5px';
+                vol.min = -45;
+                vol.max = -20;
+                vol.low = -40;
+                vol.high = -25;
+                container.appendChild(vol);
+                const self = this;
+                this.webrtc.on('remoteVolumeChange', function (peer, volume) {
+                    self.showVolume(vol, volume);
+                });
+            }
             video.oncontextmenu = function () {
                 return false;
             };
@@ -158,17 +196,23 @@ class WebRtc extends React.Component {
         });
         this.props.dispatch(calling.hangupCallRequest({ target_ids: targets, user_id: user._id }));
     }
+    showVolume(el, volume) {
+        if (!el)
+            return;
+        if (volume < -45)
+            volume = -45;
+        if (volume > -20)
+            volume = -20;
+        el.value = volume;
+    }
     render() {
         return (<Flexbox flexDirection="column" justifyContent={"flex-start"}>
                 <Flexbox flexDirection="row" height="150px" justifyContent={"flex-start"}>
-                    <video style={{ width: "150px" }} className="local" id="localVideo" ref="local">
-                    </video>
-                    <video style={{ width: "150px" }} className="remotes" id="remoteVideos" ref="remotes">
-                    </video>
-                    <video style={{ width: "150px" }} className="remotes" id="remoteVideos" ref="remotes">
-                    </video>
-                    <video style={{ width: "150px" }} className="remotes" id="remoteVideos" ref="remotes">
-                    </video>
+                    <div ref="localContainer" style={{ position: 'relative', width: '200px', height: '150px' }}>
+                        <video style={{ height: "150px", width: '100%' }} className="local" id="localVideo" ref="localVideo">
+                        </video>
+                    </div>
+                    
                 </Flexbox>
                 <div style={{ width: "100%" }} className="remotes" id="remoteVideos" ref="remotes">
                 </div>
