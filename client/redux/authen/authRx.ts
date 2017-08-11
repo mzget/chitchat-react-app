@@ -59,6 +59,9 @@ export const authUser_Epic = action$ =>
         .catch(error =>
             Rx.Observable.of(authUserFailure((error.message))));
 
+export const AUTH_FETCHING = "AUTH_FETCHING";
+export const authFetching = createAction(AUTH_FETCHING);
+
 export const AUTH_SOCIAL = "AUTH_SOCIAL";
 export const AUTH_SOCIAL_FAILURE = "AUTH_SOCIAL_FAILURE";
 export const AUTH_SOCIAL_SUCCESS = "AUTH_SOCIAL_SUCCESS";
@@ -105,7 +108,7 @@ export const SignupSocial_Epic = (action$) => {
         .catch(error => Rx.Observable.of(signupSocial_Failure((error.message))));
 }
 
-const TOKEN_AUTH_USER = "TOKEN_AUTH_USER";
+export const TOKEN_AUTH_USER = "TOKEN_AUTH_USER";
 export const TOKEN_AUTH_USER_SUCCESS = "TOKEN_AUTH_USER_SUCCESS";
 export const TOKEN_AUTH_USER_FAILURE = "TOKEN_AUTH_USER_FAILURE";
 const TOKEN_AUTH_USER_CANCELLED = "TOKEN_AUTH_USER_CANCELLED";

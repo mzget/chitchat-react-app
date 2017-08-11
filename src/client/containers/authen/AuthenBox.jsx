@@ -30,11 +30,12 @@ export class AuthenBox extends React.Component {
         this.onFacebookLogin = this.onFacebookLogin.bind(this);
     }
     componentWillReceiveProps(nextProps) {
-        let { authReducer } = nextProps;
+        let { authReducer, alertReducer } = nextProps;
         if (authReducer.state === AuthRx.SIGN_UP_SUCCESS) {
             this.setState({ showSignin: true });
         }
         else if (authReducer.state === AuthRx.AUTH_SOCIAL_FAILURE && !shallowEqual(authReducer.state, this.props.authReducer.state)) {
+            this.props.onError(alertReducer.error);
             this.props.dispatch(AuthRx.signupSocial(this.state.social));
         }
     }
@@ -45,6 +46,7 @@ export class AuthenBox extends React.Component {
         this.setState({ showSignin: true });
     }
     onSigning() {
+        this.props.dispatch(AuthRx.authFetching());
     }
     onFacebookLogin(response) {
         console.log("onFacebookLogin", response);
@@ -73,12 +75,14 @@ export class AuthenBox extends React.Component {
     }
     render() {
         return (<MuiThemeProvider>
-                <Flexbox flexDirection="column" style={{ overflowY: "auto" }}>
+                <Flexbox flexDirection="column" style={{ overflowY: "auto" }} width="400px">
                     {(this.state.showSignin) ?
             <SigninBox onLogingIn={this.onLogingIn}/> :
             <SignupBox {...this.props} onError={this.props.onError}/>}
                     <br />
-                    {<Facebook onSocialLogin={this.onFacebookLogin} onClicked={this.onSigning}/>}
+                    {<Flexbox justifyContent="center">
+                            <Facebook onSocialLogin={this.onFacebookLogin} onClicked={this.onSigning} label="Login with Facebook"/>
+                        </Flexbox>}
                     <br />
                     {(this.state.showSignin) ?
             (<Flexbox justifyContent="center" alignItems="center">

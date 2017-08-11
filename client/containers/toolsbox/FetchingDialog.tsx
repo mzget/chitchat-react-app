@@ -29,12 +29,15 @@ const FetchingDialog = (props: IDialoxBoxProps) => {
 };
 
 const enhance = compose(
-    connect((state => ({ teamReducer: state.teamReducer }))),
+    connect((state => ({ teamReducer: state.teamReducer, authReducer: state.authReducer }))),
     withState("open", "setOpen", false),
     lifecycle({
         componentWillReceiveProps(nextProps: IComponentProps) {
             if (!shallowEqual(this.props.teamReducer.isFetching, nextProps.teamReducer.isFetching)) {
                 this.props.setOpen(open => nextProps.teamReducer.isFetching);
+            }
+            if (!shallowEqual(this.props.authReducer.isFetching, nextProps.authReducer.isFetching)) {
+                this.props.setOpen(open => nextProps.authReducer.isFetching);
             }
         }
     }),

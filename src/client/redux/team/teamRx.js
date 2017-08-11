@@ -82,7 +82,7 @@ export const joinTeamEpic = action$ => action$.ofType(JOIN_TEAM)
     .catch(error => Rx.Observable.of(joinTeamFailure(error.xhr.response)))
     .do((x) => {
     if (x.type === JOIN_TEAM_SUCCESS)
-        Store.dispatch(userRx.fetchUser(Store.getState().userReducer.user.username));
+        Store.dispatch(userRx.fetchUser(Store.getState().authReducer.user));
 }));
 const GET_TEAMS_INFO = "GET_TEAMS_INFO";
 const GET_TEAMS_INFO_SUCCESS = "GET_TEAMS_INFO_SUCCESS";

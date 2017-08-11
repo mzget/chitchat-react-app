@@ -46,7 +46,7 @@ const Facebook = (props: { onSocialLogin, onClicked, label?}) => {
             textButton=""
             tag="div"
             icon={<Button
-                buttonStyle={{ backgroundColor: '#4267b2' }}
+                buttonStyle={{ backgroundColor: '#4267b2', width: "225px" }}
                 labelStyle={{ color: '#fff' }}
                 label={props.label}
                 icon={<FacebookLogo />} />}

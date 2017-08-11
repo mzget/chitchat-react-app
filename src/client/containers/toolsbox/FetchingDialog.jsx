@@ -11,10 +11,13 @@ const FetchingDialog = (props) => {
             </Dialog>
         </MuiThemeProvider>);
 };
-const enhance = compose(connect((state => ({ teamReducer: state.teamReducer }))), withState("open", "setOpen", false), lifecycle({
+const enhance = compose(connect((state => ({ teamReducer: state.teamReducer, authReducer: state.authReducer }))), withState("open", "setOpen", false), lifecycle({
     componentWillReceiveProps(nextProps) {
         if (!shallowEqual(this.props.teamReducer.isFetching, nextProps.teamReducer.isFetching)) {
             this.props.setOpen(open => nextProps.teamReducer.isFetching);
+        }
+        if (!shallowEqual(this.props.authReducer.isFetching, nextProps.authReducer.isFetching)) {
+            this.props.setOpen(open => nextProps.authReducer.isFetching);
         }
     }
 }), pure);

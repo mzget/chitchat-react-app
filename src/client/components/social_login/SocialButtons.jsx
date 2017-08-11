@@ -19,7 +19,7 @@ const Google = (props) => {
         </GoogleLogin>);
 };
 const Facebook = (props) => {
-    return (<FacebookLogin appId={facebookInfo.appID} fields={facebookInfo.permission} buttonStyle={STYLE.facebook} textButton="" tag="div" icon={<Button buttonStyle={{ backgroundColor: '#4267b2' }} labelStyle={{ color: '#fff' }} label={props.label} icon={<FacebookLogo />}/>} onClick={props.onClicked} callback={props.onSocialLogin}/>);
+    return (<FacebookLogin appId={facebookInfo.appID} fields={facebookInfo.permission} buttonStyle={STYLE.facebook} textButton="" tag="div" icon={<Button buttonStyle={{ backgroundColor: '#4267b2', width: "225px" }} labelStyle={{ color: '#fff' }} label={props.label} icon={<FacebookLogo />}/>} onClick={props.onClicked} callback={props.onSocialLogin}/>);
 };
 const Line = (props) => {
     return (<Button buttonStyle={{ width: '225px', backgroundColor: '#00C300' }} labelStyle={{ color: '#fff' }} label={props.label} icon={<LineLogo />} svgIconProps={{ viewBox: '0 0 35 35', style: { width: '35px', height: '35px' } }}/>);

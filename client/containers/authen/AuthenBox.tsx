@@ -52,12 +52,13 @@ export class AuthenBox extends React.Component<IComponentProps, IComponentNameSt
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let { authReducer } = nextProps;
+        let { authReducer, alertReducer } = nextProps;
 
         if (authReducer.state === AuthRx.SIGN_UP_SUCCESS) {
             this.setState({ showSignin: true });
         }
         else if (authReducer.state === AuthRx.AUTH_SOCIAL_FAILURE && !shallowEqual(authReducer.state, this.props.authReducer.state)) {
+            this.props.onError(alertReducer.error);
             this.props.dispatch(AuthRx.signupSocial(this.state.social));
         }
     }
@@ -69,7 +70,7 @@ export class AuthenBox extends React.Component<IComponentProps, IComponentNameSt
         this.setState({ showSignin: true });
     }
     onSigning() {
-
+        this.props.dispatch(AuthRx.authFetching());
     }
     onFacebookLogin(response) {
         console.log("onFacebookLogin", response);
@@ -106,7 +107,7 @@ export class AuthenBox extends React.Component<IComponentProps, IComponentNameSt
     public render(): JSX.Element {
         return (
             <MuiThemeProvider >
-                <Flexbox flexDirection="column" style={{ overflowY: "auto" }}>
+                <Flexbox flexDirection="column" style={{ overflowY: "auto" }} width="400px">
                     {
                         (this.state.showSignin) ?
                             <SigninBox onLogingIn={this.onLogingIn} /> :
@@ -114,7 +115,9 @@ export class AuthenBox extends React.Component<IComponentProps, IComponentNameSt
                     }
                     <br />
                     {
-                        <Facebook onSocialLogin={this.onFacebookLogin} onClicked={this.onSigning} />
+                        <Flexbox justifyContent="center">
+                            <Facebook onSocialLogin={this.onFacebookLogin} onClicked={this.onSigning} label="Login with Facebook" />
+                        </Flexbox>
                     }
                     <br />
                     {
