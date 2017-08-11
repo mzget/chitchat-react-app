@@ -13,7 +13,6 @@ interface ITypingBox {
     team_name: string;
     onSubmit: () => void;
     onNameChange: (e, text) => void;
-    onCreateNewPress: () => void;
 }
 
 export const FindTeamView = (props: ITypingBox) => {

@@ -24,7 +24,6 @@ const SubmitButton = (props: ITypingBox) => (
 
 interface ITypingBox {
     onCreateTeam: () => void;
-    onFindTeam: () => void;
     team_name: string;
     onNameChange: (e, text) => void;
 }

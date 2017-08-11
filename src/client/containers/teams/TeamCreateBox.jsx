@@ -9,11 +9,17 @@ import { TeamCreateView } from "./TeamCreateView";
 import { FindTeamView } from "./FindTeamView";
 import { FindTeamListBox } from "./FindTeamListBox";
 import * as TeamRx from "../../redux/team/teamRx";
+var TeamBoxState;
+(function (TeamBoxState) {
+    TeamBoxState[TeamBoxState["idle"] = 0] = "idle";
+    TeamBoxState[TeamBoxState["find"] = 1] = "find";
+    TeamBoxState[TeamBoxState["create"] = 2] = "create";
+})(TeamBoxState || (TeamBoxState = {}));
 class TeamCreateBox extends React.Component {
     componentWillMount() {
         this.state = {
             team_name: "",
-            is_FindTeam: false
+            teambox_state: TeamBoxState.idle
         };
         this.onNameChange = this.onNameChange.bind(this);
         this.onSubmitTeam = this.onSubmitTeam.bind(this);
@@ -34,8 +40,8 @@ class TeamCreateBox extends React.Component {
             this.props.onError("Empty team name!");
         }
     }
-    onToggleView() {
-        this.setState(previous => (Object.assign({}, previous, { is_FindTeam: !previous.is_FindTeam })));
+    onToggleView(state) {
+        this.setState(previous => (Object.assign({}, previous, { teambox_state: state })));
     }
     onFindTeamPress() {
         if (this.state.team_name.length > 0) {
@@ -50,21 +56,28 @@ class TeamCreateBox extends React.Component {
         console.log("request to join team", team);
         this.props.dispatch(TeamRx.joinTeam(team.name));
     }
+    getView(boxState) {
+        if (boxState == TeamBoxState.find) {
+            return (<div>
+                    <FindTeamView onSubmit={this.onFindTeamPress} onNameChange={this.onNameChange} team_name={this.state.team_name}/>
+                    <FindTeamListBox findingTeams={this.props.teamReducer.findingTeams} onSelectTeam={this.onSelectTeam}/>
+                </div>);
+        }
+        else if (boxState == TeamBoxState.create) {
+            return <TeamCreateView team_name={this.state.team_name} onNameChange={this.onNameChange} onCreateTeam={this.onSubmitTeam}/>;
+        }
+    }
     render() {
         return (<div>
                 <List>
-                    <ListItem leftAvatar={<Avatar icon={<FontIcon className="material-icons">group </FontIcon>} backgroundColor={indigo500}/>} onClick={this.onToggleView}>
+                    <ListItem leftAvatar={<Avatar icon={<FontIcon className="material-icons">group </FontIcon>} backgroundColor={indigo500}/>} onClick={() => this.onToggleView(TeamBoxState.find)}>
                         Join an existing team
     </ListItem>
-                    <ListItem leftAvatar={<Avatar icon={<FontIcon className="material-icons">group_add</FontIcon>} backgroundColor={indigo500}/>} onClick={this.onToggleView}>
+                    <ListItem leftAvatar={<Avatar icon={<FontIcon className="material-icons">group_add</FontIcon>} backgroundColor={indigo500}/>} onClick={() => this.onToggleView(TeamBoxState.create)}>
                         Create a new team
     </ListItem>
                 </List>
-                {(!this.state.is_FindTeam) ?
-            <TeamCreateView team_name={this.state.team_name} onNameChange={this.onNameChange} onCreateTeam={this.onSubmitTeam} onFindTeam={this.onToggleView}/>
-            :
-                <FindTeamView onSubmit={this.onFindTeamPress} onNameChange={this.onNameChange} onCreateNewPress={this.onToggleView} team_name={this.state.team_name}/>}
-                <FindTeamListBox findingTeams={this.props.teamReducer.findingTeams} onSelectTeam={this.onSelectTeam}/>
+                {this.getView(this.state.teambox_state)}
             </div>);
     }
 }
