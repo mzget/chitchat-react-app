@@ -30,7 +30,7 @@ class VideoCall extends React.Component {
     }
     onTitlePressed() {
         let { history, teamReducer } = this.props;
-        history.replace(`/chatslist/${teamReducer.team.name}`);
+        history.replace(`/team/${teamReducer.team._id}`);
     }
     render() {
         let { team } = this.props.teamReducer;

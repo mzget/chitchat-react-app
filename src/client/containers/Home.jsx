@@ -41,10 +41,6 @@ class Home extends React.Component {
         this.subHeaderHeight = (warning_bar) ? warning_bar.clientHeight : 0;
         if (!shallowEqual(authReducer, this.props.authReducer)) {
             switch (authReducer.state) {
-                case AuthRx.AUTH_USER_SUCCESS: {
-                    AppActions.saveSession();
-                    break;
-                }
                 case AuthRx.AUTH_USER_FAILURE: {
                     this.alertTitle = AuthRx.AUTH_USER_FAILURE;
                     this.alertMessage = authReducer.error;
@@ -62,7 +58,7 @@ class Home extends React.Component {
         }
         if (!shallowEqual(userReducer.user, this.props.userReducer.user)) {
             if (userReducer.user) {
-                this.props.history.replace(`/team/${authReducer.user}`);
+                this.props.history.replace(`/teams`);
             }
         }
         if (alertReducer.error) {
