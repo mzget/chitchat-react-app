@@ -7,12 +7,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { createAction } from "redux-actions";
-import store from "../configureStore";
 import { SimpleStorageFactory } from "../../chitchat/chats/dataAccessLayer/";
 const appSession = SimpleStorageFactory.getObject("app");
-export function saveSession() {
+export function saveSession(token) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield appSession.save("sessionToken", store.getState().authReducer.token);
+        yield appSession.save("sessionToken", token);
     });
 }
 export function clearSession() {

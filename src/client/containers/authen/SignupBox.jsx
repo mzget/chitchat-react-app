@@ -43,7 +43,7 @@ export class SignupBox extends React.Component {
         }
     }
     render() {
-        return (<span>
+        return (<div>
                 <SignupForm email={this.state.email} onEmailChange={(e, text) => {
             this.setState(previous => (Object.assign({}, previous, { email: text })));
         }} password={this.state.password} onPasswordChange={(e, text) => {
@@ -55,6 +55,6 @@ export class SignupBox extends React.Component {
         }} lastname={this.state.lastname} onLastnameChange={(e, text) => {
             this.setState(previous => (Object.assign({}, previous, { lastname: text })));
         }} onSubmit={this.onSubmitForm}/>
-            </span>);
+            </div>);
     }
 }

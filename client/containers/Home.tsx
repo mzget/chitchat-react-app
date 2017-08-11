@@ -64,10 +64,6 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
 
         if (!shallowEqual(authReducer, this.props.authReducer)) {
             switch (authReducer.state) {
-                case AuthRx.AUTH_USER_SUCCESS: {
-                    AppActions.saveSession();
-                    break;
-                }
                 case AuthRx.AUTH_USER_FAILURE: {
                     this.alertTitle = AuthRx.AUTH_USER_FAILURE;
                     this.alertMessage = authReducer.error;
@@ -86,7 +82,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
 
         if (!shallowEqual(userReducer.user, this.props.userReducer.user)) {
             if (userReducer.user) {
-                this.props.history.replace(`/team/${authReducer.user}`);
+                this.props.history.replace(`/teams`);
             }
         }
 

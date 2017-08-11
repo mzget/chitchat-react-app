@@ -26,6 +26,9 @@ export const alertReducer = (state = new AlertInitState(), action) => {
         case authRx.AUTH_USER_FAILURE: {
             return state.set("error", JSON.stringify(action.payload));
         }
+        case authRx.AUTH_SOCIAL_FAILURE: {
+            return state.set("error", action.payload);
+        }
         case authRx.TOKEN_AUTH_USER_FAILURE: {
             return state;
         }

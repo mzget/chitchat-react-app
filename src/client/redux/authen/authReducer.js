@@ -12,28 +12,42 @@ export const authReducer = (state = new AuthenInitState(), action) => {
         case authRx.SIGN_UP_SUCCESS:
             return state.set("state", authRx.SIGN_UP_SUCCESS);
         case authRx.AUTH_USER: {
-            return state.set("user", action.payload.email);
+            return state.set("user", action.payload.email).set("isFetching", true);
         }
         case authRx.AUTH_USER_SUCCESS: {
-            return state.set("state", authRx.AUTH_USER_SUCCESS)
-                .set("token", action.payload);
+            return state.set("token", action.payload).set("isFetching", false);
+            ;
         }
         case authRx.AUTH_USER_FAILURE: {
             return state.set("state", authRx.AUTH_USER_FAILURE)
                 .set("token", null)
-                .set("user", null);
+                .set("user", null).set("isFetching", false);
+            ;
+        }
+        case authRx.AUTH_SOCIAL: {
+            return state.set("user", action.payload.email).set("isFetching", true);
+        }
+        case authRx.AUTH_SOCIAL_FAILURE: {
+            return state.set("state", authRx.AUTH_SOCIAL_FAILURE)
+                .set("token", null)
+                .set("user", null).set("isFetching", false);
+        }
+        case authRx.AUTH_SOCIAL_SUCCESS: {
+            return state.set("token", action.payload).set("isFetching", false);
         }
         case AppActions.GET_SESSION_TOKEN_SUCCESS: {
             return state.set("token", action.payload)
                 .set("state", AppActions.GET_SESSION_TOKEN_SUCCESS);
         }
+        case authRx.TOKEN_AUTH_USER: return state.set("isFetching", true);
         case authRx.TOKEN_AUTH_USER_SUCCESS: {
-            return state.set("state", authRx.TOKEN_AUTH_USER_SUCCESS)
-                .set("user", action.payload.email);
+            return state.set("user", action.payload.email).set("isFetching", false);
         }
         case authRx.TOKEN_AUTH_USER_FAILURE: {
-            return state.set("token", null)
-                .set("state", authRx.TOKEN_AUTH_USER_FAILURE);
+            return state.set("token", null).set("isFetching", false);
+        }
+        case authRx.AUTH_FETCHING: {
+            return state.set("isFetching", true);
         }
         case authRx.LOG_OUT_SUCCESS: {
             return state.set("state", authRx.LOG_OUT_SUCCESS)

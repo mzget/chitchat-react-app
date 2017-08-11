@@ -12,6 +12,6 @@ export const ToolbarEnhancer = compose(connect(mapStateToProps), withHandlers({
         props.history.goBack();
     },
     onPressTitle: (props) => (e) => {
-        props.history.replace(`/chatslist/${props.teamReducer.team.name}`);
+        props.history.replace(`/team/${props.teamReducer.team._id}`);
     }
 }));

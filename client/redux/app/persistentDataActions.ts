@@ -1,12 +1,10 @@
 ﻿import { createAction } from "redux-actions";
 
-import store from "../configureStore";
-
 import { SimpleStorageFactory } from "../../chitchat/chats/dataAccessLayer/";
 const appSession = SimpleStorageFactory.getObject("app");
 
-export async function saveSession() {
-    await appSession.save("sessionToken", store.getState().authReducer.token);
+export async function saveSession(token: string) {
+    await appSession.save("sessionToken", token);
 }
 
 export async function clearSession() {
