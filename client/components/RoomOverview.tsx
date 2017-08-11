@@ -1,8 +1,9 @@
 import * as React from "react";
 import Flexbox from "flexbox-react";
 import { Avatar } from 'material-ui';
+import Subheader from 'material-ui/Subheader';
+import { darkBlack } from 'material-ui/styles/colors';
 
-import { EditGroupMember } from "./EditGroupMember";
 import { Room, RoomType } from "../chitchat/chats/models/Room";
 
 export const RoomHeader = ({ room }) => (
@@ -25,13 +26,13 @@ export const RoomHeader = ({ room }) => (
 export const RoomOverview = ({ room }) => (
     <Flexbox flexDirection="column">
         <Flexbox flexDirection="row">
-            <p style={{ margin: 5 }}>TYPE : {RoomType[room.type].toUpperCase()}</p>
+            <Subheader style={{ marginLeft: 5, color: darkBlack }}>TYPE : {RoomType[room.type].toUpperCase()}</Subheader>
         </Flexbox>
         <Flexbox flexDirection="row">
-            <p style={{ margin: 5 }}>DESCRIPTION : {room.description}</p>
+            <Subheader style={{ marginLeft: 5, color: darkBlack }}>DESCRIPTION : {room.description}</Subheader>
         </Flexbox>
         <Flexbox flexDirection="row">
-            <p style={{ margin: 5 }}>MEMBERS {(!!room.members) ? room.members.length : 0}</p>
+            <Subheader style={{ marginLeft: 5, color: darkBlack }}>MEMBERS {(!!room.members) ? room.members.length : 0}</Subheader>
         </Flexbox>
     </Flexbox>
 );
