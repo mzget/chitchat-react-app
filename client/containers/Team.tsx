@@ -73,7 +73,9 @@ class Team extends React.Component<IComponentProps, any> {
                             </Flexbox>
                             <Divider />
                             <TeamListBox teams={this.props.teamReducer.teams} onSelectTeam={this.onSelectTeam} />
-                            <TeamsBox onError={this.props.onError} />
+                            <Flexbox style={{ justifyContent: "center", alignContent: "center" }}>
+                                <TeamsBox onError={this.props.onError} />
+                            </Flexbox>
                         </Flexbox>
                         <Flexbox flexGrow={1} />
                     </Flexbox>
