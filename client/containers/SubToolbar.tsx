@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as Colors from "material-ui/styles/colors";
 import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import Flexbox from "flexbox-react";
 import Subheader from 'material-ui/Subheader';

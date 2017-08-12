@@ -16,10 +16,10 @@ const styles = {
 const SubmitButton = (props) => (<RaisedButton primary={true} label="Sign in" onClick={props.onSubmit} style={styles.button}> </RaisedButton>);
 export const SigninForm = (props) => {
     return (<MuiThemeProvider>
-            <Flexbox flexDirection="column" alignItems='center'>
+            <Flexbox flexDirection="column">
                 <div>
-                    <h3>Sign-in</h3>
-                    <p>Enter your email address and password</p>
+                    <h3 style={{ fontFamily: "Roboto", fontSize: 16 }}>Sign-in</h3>
+                    <p style={{ fontFamily: "Roboto", fontSize: 14 }}> Enter your email address and password</p>
                 </div>
                 <span style={styles.span}/>
                 <TextField hintText="Type email address here." value={props.username} onChange={props.onUsername} onKeyDown={(e) => {

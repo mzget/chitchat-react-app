@@ -8,15 +8,6 @@ import * as AppActions from "../redux/app/persistentDataActions";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { AuthenBox } from "./authen/AuthenBox";
 class Home extends React.Component {
-    constructor() {
-        super(...arguments);
-        this.clientWidth = document.documentElement.clientWidth;
-        this.clientHeight = document.documentElement.clientHeight;
-        this.headerHeight = 56;
-        this.subHeaderHeight = null;
-        this.bodyHeight = null;
-        this.footerHeight = 24;
-    }
     onForgotAccount() {
         this.props.history.push("/forgotaccount");
     }
@@ -25,10 +16,6 @@ class Home extends React.Component {
         this.state = {
             alert: false
         };
-        this.headerHeight = 56;
-        this.footerHeight = 24;
-        this.clientHeight = document.documentElement.clientHeight;
-        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight + this.footerHeight));
         this.props.dispatch(AppActions.getSession());
         this.onForgotAccount = this.onForgotAccount.bind(this);
     }
@@ -38,7 +25,6 @@ class Home extends React.Component {
         let warning_bar = document.getElementById("warning_bar");
         let app_body = document.getElementById("app_body");
         let app_footer = document.getElementById("app_footer");
-        this.subHeaderHeight = (warning_bar) ? warning_bar.clientHeight : 0;
         if (!shallowEqual(authReducer, this.props.authReducer)) {
             switch (authReducer.state) {
                 case AuthRx.AUTH_USER_FAILURE: {
@@ -66,11 +52,11 @@ class Home extends React.Component {
         }
     }
     render() {
-        return (<div style={{ overflow: "hidden" }}>
-                <div id={"toolbar"} style={{ height: this.headerHeight }}>
+        return (<div style={{ overflow: "hidden", height: "100vh" }}>
+                <div id={"toolbar"}>
                     <SimpleToolbar title={"ChitChat team communication."}/>
                 </div>
-                <div id={"app_body"} style={{ backgroundColor: Colors.blueGrey50, height: this.bodyHeight }}>
+                <Flexbox flexDirection="column" style={{ overflow: "auto", height: "calc(100vh - 56px)", backgroundColor: Colors.blueGrey50 }}>
                     <Flexbox flexDirection="row">
                         <Flexbox flexGrow={1}/>
                         <Flexbox flexDirection="column" alignItems="center">
@@ -79,12 +65,11 @@ class Home extends React.Component {
                         </Flexbox>
                         <Flexbox flexGrow={1}/>
                     </Flexbox>
-                </div>
-                <div id={"app_footer"} style={{ backgroundColor: Colors.blueGrey50 }}>
-                    <Flexbox alignItems="center" justifyContent="center">
-                        <p>Powered by S-Talk Communication API.</p>
+                    <Flexbox flexGrow={1}/>
+                    <Flexbox element="footer" alignItems="center" justifyContent="center">
+                        <p style={{ fontFamily: "Roboto", fontSize: 14 }}>Powered by S-Talk Communication API.</p>
                     </Flexbox>
-                </div>
+                </Flexbox>
             </div>);
     }
 }

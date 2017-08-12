@@ -22,12 +22,6 @@ interface IComponentNameState {
 }
 
 class Home extends React.Component<IComponentProps, IComponentNameState> {
-    clientWidth = document.documentElement.clientWidth;
-    clientHeight = document.documentElement.clientHeight;
-    headerHeight = 56;
-    subHeaderHeight = null;
-    bodyHeight = null;
-    footerHeight = 24;
     alertTitle: string;
     alertMessage: string;
 
@@ -41,10 +35,6 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
         this.state = {
             alert: false
         };
-        this.headerHeight = 56;
-        this.footerHeight = 24;
-        this.clientHeight = document.documentElement.clientHeight;
-        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight + this.footerHeight));
 
         this.props.dispatch(AppActions.getSession());
 
@@ -59,8 +49,6 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
         let warning_bar = document.getElementById("warning_bar");
         let app_body = document.getElementById("app_body");
         let app_footer = document.getElementById("app_footer");
-
-        this.subHeaderHeight = (warning_bar) ? warning_bar.clientHeight : 0;
 
         if (!shallowEqual(authReducer, this.props.authReducer)) {
             switch (authReducer.state) {
@@ -93,12 +81,12 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
 
     public render(): JSX.Element {
         return (
-            <div style={{ overflow: "hidden" }}>
-                <div id={"toolbar"} style={{ height: this.headerHeight }}>
+            <div style={{ overflow: "hidden", height: "100vh" }}>
+                <div id={"toolbar"}>
                     <SimpleToolbar title={"ChitChat team communication."} />
                 </div>
-                <div id={"app_body"} style={{ backgroundColor: Colors.blueGrey50, height: this.bodyHeight }}>
-                    <Flexbox flexDirection="row">
+                <Flexbox flexDirection="column" style={{ overflow: "auto", height: "calc(100vh - 56px)", backgroundColor: Colors.blueGrey50 }}>
+                    <Flexbox flexDirection="row" >
                         <Flexbox flexGrow={1} />
                         <Flexbox flexDirection="column" alignItems="center">
                             <AuthenBox {...this.props} onError={this.props.onError} />
@@ -106,12 +94,11 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
                         </Flexbox>
                         <Flexbox flexGrow={1} />
                     </Flexbox>
-                </div>
-                <div id={"app_footer"} style={{ backgroundColor: Colors.blueGrey50 }}>
-                    <Flexbox alignItems="center" justifyContent="center">
-                        <p>Powered by S-Talk Communication API.</p>
+                    <Flexbox flexGrow={1} />
+                    <Flexbox element="footer" alignItems="center" justifyContent="center" >
+                        <p style={{ fontFamily: "Roboto", fontSize: 14 }}>Powered by S-Talk Communication API.</p>
                     </Flexbox>
-                </div>
+                </Flexbox>
             </div>
         );
     }

@@ -3,8 +3,8 @@ import { SimpleToolbar } from "../components/SimpleToolbar";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 
-import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
 import Subheader from 'material-ui/Subheader';
@@ -42,7 +42,7 @@ export class ForgotAccount extends React.Component<IComponentProps, any> {
                     <Flexbox flexGrow={1} />
 
                     <Flexbox element="footer" justifyContent="center">
-                        <span>Powered by Stalk realtime communication API.</span>
+                        <p style={{ fontFamily: "Roboto", fontSize: 14 }}>Powered by S-Talk Communication API.</p>
                     </Flexbox>
                 </Flexbox>
             </MuiThemeProvider >
