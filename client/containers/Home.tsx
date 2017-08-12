@@ -100,16 +100,16 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
                 <div id={"app_body"} style={{ backgroundColor: Colors.blueGrey50, height: this.bodyHeight }}>
                     <Flexbox flexDirection="row">
                         <Flexbox flexGrow={1} />
-                        <Flexbox flexDirection="column" >
+                        <Flexbox flexDirection="column" alignItems="center">
                             <AuthenBox {...this.props} onError={this.props.onError} />
-                            <a onClick={this.onForgotAccount}>Forgotten account</a>
+                            <a style={{ fontFamily: "Roboto", fontSize: 14, color: Colors.blue700 }} onClick={this.onForgotAccount}>Forgotten account</a>
                         </Flexbox>
                         <Flexbox flexGrow={1} />
                     </Flexbox>
                 </div>
                 <div id={"app_footer"} style={{ backgroundColor: Colors.blueGrey50 }}>
                     <Flexbox alignItems="center" justifyContent="center">
-                        <span>Powered by S-Talk Communication API.</span>
+                        <p>Powered by S-Talk Communication API.</p>
                     </Flexbox>
                 </div>
             </div>

@@ -3,6 +3,7 @@ import Flexbox from "flexbox-react";
 import { shallowEqual } from "recompose";
 import { RaisedButton } from "material-ui";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import * as Colors from "material-ui/styles/colors";
 import { SigninBox } from "./SigninBox";
 import { SignupBox } from "./SignupBox";
 import { Facebook } from "../../components/social_login/SocialButtons";
@@ -86,11 +87,11 @@ export class AuthenBox extends React.Component {
                     <br />
                     {(this.state.showSignin) ?
             (<Flexbox justifyContent="center" alignItems="center">
-                                <p>New to chitchat?</p>
+                                <p style={{ fontFamily: "Roboto", fontSize: 14, color: Colors.darkBlack }}>New to chitchat?</p>
                                 <RaisedButton primary={true} label="Sign up now" onClick={this.onSignupPressed} style={{ margin: 8 }}> </RaisedButton>
                             </Flexbox>) :
             (<Flexbox justifyContent="center" alignItems="center">
-                                <p>Already have account?</p>
+                                <p style={{ fontFamily: "Roboto", fontSize: 14, color: Colors.darkBlack }}>Already have account?</p>
                                 <RaisedButton primary={true} label="Sign in" onClick={this.onSigninPressed} style={{ margin: 8 }}> </RaisedButton>
                             </Flexbox>)}
                 </Flexbox>
