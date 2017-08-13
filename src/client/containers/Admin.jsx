@@ -18,6 +18,7 @@ import * as adminRx from "../redux/admin/adminRx";
 import * as groupRx from "../redux/group/groupRx";
 import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
 import { UserRole } from "../chitchat/chats/models/UserRole";
+import { WithDialog } from "./toolsbox/DialogBoxEnhancer";
 var BoxState;
 (function (BoxState) {
     BoxState[BoxState["idle"] = 0] = "idle";
@@ -168,3 +169,4 @@ class Admin extends React.Component {
 const mapstateToProps = (state) => (Object.assign({}, state));
 export var AdminPage = connect(mapstateToProps)(Admin);
 AdminPage = withRouter(AdminPage);
+export const AdminWithDialogEnhance = WithDialog(AdminPage);

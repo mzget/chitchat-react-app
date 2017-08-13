@@ -24,6 +24,7 @@ import * as groupRx from "../redux/group/groupRx";
 import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
 import { Room, RoomType, RoomStatus } from "../chitchat/chats/models/Room";
 import { UserRole } from "../chitchat/chats/models/UserRole";
+import { WithDialog } from "./toolsbox/DialogBoxEnhancer";
 
 enum BoxState {
     idle = 0, isCreateGroup = 1, isManageTeam, isManageMember, isManageRole, groupView, roleView
@@ -210,3 +211,5 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
 const mapstateToProps = (state) => ({ ...state });
 export var AdminPage = connect(mapstateToProps)(Admin);
 AdminPage = withRouter<any>(AdminPage);
+
+export const AdminWithDialogEnhance = WithDialog(AdminPage);

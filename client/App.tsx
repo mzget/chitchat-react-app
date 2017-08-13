@@ -36,7 +36,7 @@ import { TeamPageEnhanced } from "./containers/TeamPageEnhanced";
 import { m_ProfilePageEnhanced } from "./containers/m_ProfilePageEnhanced";
 import { MainPageWithDialogBox } from "./containers/Main";
 import { M_MainPageEnhanced } from "./containers/m_Main";
-import { AdminPageEnhanced } from "./containers/AdminPageEnhanced";
+import { AdminWithDialogEnhance } from "./containers/Admin";
 import { VideoCallEnhance } from "./containers/VideoCall";
 
 import { SMALL_TABLET } from "./chitchat/consts/Breakpoints";
@@ -74,7 +74,7 @@ class App extends React.Component<any, any> {
                             <Route path="/team/:filter" component={(this.clientWidth < SMALL_TABLET) ? M_MainPageEnhanced : MainPageWithDialogBox} />
                             <Route path="/chatroom/chat/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ChatPageEnhanced : MainPageWithDialogBox} />
                             <Route path="/chatroom/settings/:room_id/:edit" component={(this.clientWidth < SMALL_TABLET) ? ChatRoomSettingsEnhanced : MainPageWithDialogBox} />
-                            <Route path="/admin/:menu?/:id?" component={AdminPageEnhanced} />
+                            <Route path="/admin/:menu?/:id?" component={AdminWithDialogEnhance} />
                             <Route path="/videocall/:id" component={VideoCallEnhance} />
                             <Route component={NoMatch} />
                         </Switch>
