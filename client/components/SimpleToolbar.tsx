@@ -2,6 +2,8 @@ import * as React from "react";
 import IconMenu from "material-ui/IconMenu";
 import IconButton from "material-ui/IconButton";
 import NavigationExpandMoreIcon from "material-ui/svg-icons/navigation/expand-more";
+import NavigationChevronLeft from "material-ui/svg-icons/navigation/chevron-left";
+import ActionHome from 'material-ui/svg-icons/action/home';
 import MenuItem from "material-ui/MenuItem";
 import DropDownMenu from "material-ui/DropDownMenu";
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from "material-ui/Toolbar";
@@ -25,8 +27,8 @@ export const SimpleToolbar = (props: IComponentProps) => (
             <ToolbarGroup firstChild={true}>
                 {
                     (props.onBackPressed)
-                        ? <IconButton iconClassName="material-icons" onClick={props.onBackPressed}>
-                            chevron_left
+                        ? <IconButton onClick={props.onBackPressed} >
+                            <NavigationChevronLeft color={Colors.darkWhite} />
                         </IconButton>
                         : <span style={{ margin: 8 }} />
                 }

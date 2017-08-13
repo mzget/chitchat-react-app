@@ -2,6 +2,7 @@ import * as React from "react";
 import IconMenu from "material-ui/IconMenu";
 import IconButton from "material-ui/IconButton";
 import NavigationExpandMoreIcon from "material-ui/svg-icons/navigation/expand-more";
+import NavigationChevronLeft from "material-ui/svg-icons/navigation/chevron-left";
 import MenuItem from "material-ui/MenuItem";
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from "material-ui/Toolbar";
 import * as Colors from "material-ui/styles/colors";
@@ -11,8 +12,8 @@ export const SimpleToolbar = (props) => (<MuiThemeProvider muiTheme={defaultMuiT
         <Toolbar>
             <ToolbarGroup firstChild={true}>
                 {(props.onBackPressed)
-    ? <IconButton iconClassName="material-icons" onClick={props.onBackPressed}>
-                            chevron_left
+    ? <IconButton onClick={props.onBackPressed}>
+                            <NavigationChevronLeft color={Colors.darkWhite}/>
                         </IconButton>
     : <span style={{ margin: 8 }}/>}
                 <MenuItem primaryText={props.title} style={{ color: Colors.white }} onClick={props.onPressTitle}/>
