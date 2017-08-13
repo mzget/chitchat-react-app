@@ -8,10 +8,9 @@ import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
 import { AppBody } from "./AppBody";
 import { RightNav } from "./RightNav";
 import { SubToolbarEnhance } from "./SubToolbar";
+import { WithDialog } from "./toolsbox/DialogBoxEnhancer";
 import { MainPageEnhancer } from "./Enhancers/MainPageEnhancer";
-import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
 import { WebToolbarEnhanced, listener } from "./MainPageToolbar";
-import { DialogBox } from "../components/DialogBox";
 import { ChatTabsEnhanced } from "./toolsbox/ChatTabsEnhance";
 import { small_width, large_body_width, LARGE_TABLET, xsmall_width } from '../chitchat/consts/Breakpoints';
 import { defaultMuiTheme } from "../utils/";
@@ -62,8 +61,4 @@ export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chat
 const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer, chatroomReducer, history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
     return (<Main userReducer={userReducer} teamReducer={teamReducer} authReducer={authReducer} groupReducer={groupReducer} chatroomReducer={chatroomReducer} match={match} history={history} onError={onError} fetch_orgGroups={fetch_orgGroups} fetch_privateGroups={fetch_privateGroups}/>);
 });
-export var MainPageWithDialogBox = DialogBoxEnhancer(({ title, message, open, handleClose, onError, history, match }) => <div>
-        <MainPageEnhanced onError={onError} history={history} match={match}/>
-        <DialogBox title={title} message={message} open={open} handleClose={handleClose}/>
-    </div>);
-MainPageWithDialogBox = withRouter(MainPageWithDialogBox);
+export const MainPageWithDialog = WithDialog(withRouter(MainPageEnhanced));

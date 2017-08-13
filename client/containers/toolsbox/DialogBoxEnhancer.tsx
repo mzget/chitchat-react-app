@@ -37,7 +37,7 @@ export const DialogBoxEnhancer = compose(
     pure
 ) as ComponentEnhancer<{ title, message, open, handleClose, onError: (error: string) => void }, any>;
 
-export function WithDialog(WrappedComponent) {
+export function WithDialog(WrappedComponent: React.ComponentClass<{ onError }>) {
     class DialogHOC extends React.Component<{ alertReducer, dispatch }, { message, open, title }> {
         constructor(props) {
             super(props);

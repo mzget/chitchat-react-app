@@ -1,7 +1,7 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { shallowEqual } from "recompose";
+import { shallowEqual, compose } from "recompose";
 import Flexbox from 'flexbox-react';
 import * as immutable from "immutable";
 
@@ -17,10 +17,9 @@ import { SubToolbarEnhance } from "./SubToolbar";
 
 import { ContactBox } from "./chatlist/ContactBox";
 
+import { WithDialog } from "./toolsbox/DialogBoxEnhancer";
 import { MainPageEnhancer } from "./Enhancers/MainPageEnhancer";
-import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
 import { WebToolbarEnhanced, listener } from "./MainPageToolbar";
-import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
 import { ChatTabsEnhanced } from "./toolsbox/ChatTabsEnhance";
 
 import { small_width, large_body_width, LARGE_TABLET, xsmall_width } from '../chitchat/consts/Breakpoints';
@@ -113,11 +112,4 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
     );
 });
 
-export var MainPageWithDialogBox = DialogBoxEnhancer(({ title, message, open, handleClose, onError, history, match }: any) =>
-    <div>
-        <MainPageEnhanced onError={onError} history={history} match={match} />
-        <DialogBox title={title} message={message} open={open} handleClose={handleClose} />
-    </div>
-);
-
-MainPageWithDialogBox = withRouter(MainPageWithDialogBox);
+export const MainPageWithDialog = WithDialog(withRouter<any>(MainPageEnhanced));

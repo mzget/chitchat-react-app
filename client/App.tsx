@@ -34,7 +34,7 @@ import { ChatPageEnhanced } from "./containers/ChatPageEnhanced";
 import { ChatRoomSettingsEnhanced } from "./containers/ChatRoomSettingsPage";
 import { TeamPageEnhanced } from "./containers/TeamPageEnhanced";
 import { m_ProfilePageEnhanced } from "./containers/m_ProfilePageEnhanced";
-import { MainPageWithDialogBox } from "./containers/Main";
+import { MainPageWithDialog } from "./containers/Main";
 import { M_MainPageEnhanced } from "./containers/m_Main";
 import { AdminWithDialogEnhance } from "./containers/Admin";
 import { VideoCallEnhance } from "./containers/VideoCall";
@@ -69,11 +69,11 @@ class App extends React.Component<any, any> {
                         <Switch>
                             <Route path="/" exact component={HomePageWithDialogBox} />
                             <Route path="/forgotaccount" component={ForgotAccount} />
-                            <Route path="/profile/:filter/:user" component={(this.clientWidth < SMALL_TABLET) ? m_ProfilePageEnhanced : MainPageWithDialogBox} />
+                            <Route path="/profile/:filter/:user" component={(this.clientWidth < SMALL_TABLET) ? m_ProfilePageEnhanced : MainPageWithDialog} />
                             <Route path="/teams" component={TeamPageEnhanced} />
-                            <Route path="/team/:filter" component={(this.clientWidth < SMALL_TABLET) ? M_MainPageEnhanced : MainPageWithDialogBox} />
-                            <Route path="/chatroom/chat/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ChatPageEnhanced : MainPageWithDialogBox} />
-                            <Route path="/chatroom/settings/:room_id/:edit" component={(this.clientWidth < SMALL_TABLET) ? ChatRoomSettingsEnhanced : MainPageWithDialogBox} />
+                            <Route path="/team/:filter" component={(this.clientWidth < SMALL_TABLET) ? M_MainPageEnhanced : MainPageWithDialog} />
+                            <Route path="/chatroom/chat/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ChatPageEnhanced : MainPageWithDialog} />
+                            <Route path="/chatroom/settings/:room_id/:edit" component={(this.clientWidth < SMALL_TABLET) ? ChatRoomSettingsEnhanced : MainPageWithDialog} />
                             <Route path="/admin/:menu?/:id?" component={AdminWithDialogEnhance} />
                             <Route path="/videocall/:id" component={VideoCallEnhance} />
                             <Route component={NoMatch} />
