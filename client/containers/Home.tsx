@@ -1,11 +1,13 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import { shallowEqual } from "recompose";
 import Flexbox from "flexbox-react";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import Subheader from "material-ui/Subheader";
+import { Divider } from 'material-ui';
 
 import { IComponentProps } from "../utils/IComponentProps";
 
@@ -15,6 +17,7 @@ import * as AppActions from "../redux/app/persistentDataActions";
 
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { AuthenBox } from "./authen/AuthenBox";
+import { WithDialog } from "./toolsbox/DialogBoxEnhancer";
 
 
 interface IComponentNameState {
@@ -81,25 +84,27 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
 
     public render(): JSX.Element {
         return (
-            <div style={{ overflow: "hidden", height: "100vh" }}>
-                <div id={"toolbar"}>
+            <Flexbox flexDirection="column" height="100vh" >
+                <div id={"app_bar"} style={{ width: "100%" }}>
                     <SimpleToolbar title={"ChitChat team communication."} />
                 </div>
-                <Flexbox flexDirection="column" style={{ overflow: "auto", height: "calc(100vh - 56px)", backgroundColor: Colors.blueGrey50 }}>
+                <div style={{ overflowY: "auto", height: "100%", backgroundColor: Colors.blueGrey50 }} >
                     <Flexbox flexDirection="row" >
                         <Flexbox flexGrow={1} />
                         <Flexbox flexDirection="column" alignItems="center">
                             <AuthenBox {...this.props} onError={this.props.onError} />
-                            <a style={{ fontFamily: "Roboto", fontSize: 14, color: Colors.blue700 }} onClick={this.onForgotAccount}>Forgotten account</a>
+                            <span style={{ height: 10 }} />
+                            <a style={{ fontFamily: "Roboto", fontSize: 14, color: Colors.blue700, margin: 5 }} onClick={this.onForgotAccount}>Forgotten account</a>
+                            <span style={{ height: 10 }} />
                         </Flexbox>
                         <Flexbox flexGrow={1} />
                     </Flexbox>
-                    <Flexbox flexGrow={1} />
-                    <Flexbox element="footer" alignItems="center" justifyContent="center" >
+                    <Divider inset={true} />
+                    <Flexbox element="footer" alignItems="center" justifyContent="center" height="150px">
                         <p style={{ fontFamily: "Roboto", fontSize: 14 }}>Powered by S-Talk Communication API.</p>
                     </Flexbox>
-                </Flexbox>
-            </div>
+                </div>
+            </Flexbox>
         );
     }
 }
@@ -109,3 +114,5 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
  */
 const mapStateToProps = (state) => ({ ...state });
 export const HomeWithStore = connect(mapStateToProps)(Home) as React.ComponentClass<{ onError, history }>;
+
+export const HomeWithDialogEnhance = WithDialog(withRouter<any>(HomeWithStore));
