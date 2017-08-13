@@ -1,6 +1,6 @@
 import * as  React from "react";
 import { connect } from "react-redux";
-import { withProps, withState, withHandlers, compose, lifecycle, shallowEqual, ComponentEnhancer } from "recompose";
+import { withState, withHandlers, compose, lifecycle, shallowEqual, ComponentEnhancer } from "recompose";
 
 import { ChitChatAccount } from "../../chitchat/chats/models/User";
 

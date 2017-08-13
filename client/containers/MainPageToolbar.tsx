@@ -1,11 +1,10 @@
 import * as React from "react";
-import * as authRx from "../redux/authen/authRx";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { ToolbarEnhancer } from "./toolsbox/ToolbarEnhancer";
 import { ProfileEnhanced } from "./profile/ProfileBox";
 
+import * as authRx from "../redux/authen/authRx";
 
-const menus = ["menu", "log out"];
 export function listener(props, id, value) {
     let { authReducer } = props;
     switch (id) {
@@ -18,20 +17,22 @@ export function listener(props, id, value) {
         default:
             break;
     }
-}
+};
 
-export const WebToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onPressTitle, onMenuSelect, listener, history }: any) =>
+export const WebToolbarEnhanced = ToolbarEnhancer((
+    { teamname, onPressTitle, onMenuSelect, menus, listener, history }: any) =>
     <SimpleToolbar
-        title={(teamReducer.team) ? teamReducer.team.name.toUpperCase() : ""}
+        title={(teamname) ? teamname.toUpperCase() : ""}
         onPressTitle={onPressTitle}
         menus={menus}
         onSelectedMenuItem={onMenuSelect}
         groupItem={<ProfileEnhanced />} />
 );
 
-export const MobileToolbarEnhanced = ToolbarEnhancer(({ teamReducer, authReducer, onMenuSelect, listener, history }: any) =>
+export const MobileToolbarEnhanced = ToolbarEnhancer((
+    { teamname, onMenuSelect, menus, listener, history }: any) =>
     <SimpleToolbar
-        title={(teamReducer.team) ? teamReducer.team.name.toUpperCase() : ""}
+        title={(teamname) ? teamname.toUpperCase() : ""}
         menus={menus}
         onSelectedMenuItem={onMenuSelect} />
 );

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { withProps, withState, withHandlers, compose, lifecycle, shallowEqual } from "recompose";
+import { withState, withHandlers, compose, lifecycle, shallowEqual } from "recompose";
 
 import { ProfileDetail } from "./ProfileDetail";
 import * as userRx from "../../redux/user/userRx";

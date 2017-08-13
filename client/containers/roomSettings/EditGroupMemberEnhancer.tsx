@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { withProps, withState, withHandlers, compose, lifecycle, ComponentEnhancer } from "recompose";
+import { withState, withHandlers, compose, lifecycle, ComponentEnhancer } from "recompose";
 
 import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
 import * as editGroupRxActions from "../../redux/group/editGroupRxActions";
