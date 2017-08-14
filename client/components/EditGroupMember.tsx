@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import Flexbox from "flexbox-react";
 import { withRouter } from "react-router-dom";
-import { withProps, withState, withHandlers, compose, lifecycle, ComponentEnhancer } from "recompose";
+import { withState, withHandlers, compose, lifecycle, ComponentEnhancer } from "recompose";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Subheader from "material-ui/Subheader";

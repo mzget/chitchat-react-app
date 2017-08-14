@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import Flexbox from 'flexbox-react';
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import Divider from "material-ui/Divider";
 import * as teamRx from "../redux/team/teamRx";
@@ -33,30 +32,28 @@ class Team extends React.Component {
         }
     }
     render() {
-        return (<MuiThemeProvider>
-                <Flexbox flexDirection="column" minHeight="100vh" style={{ backgroundColor: Colors.blueGrey50 }}>
-                    <Flexbox element="header">
-                        <div style={{ width: "100%" }}>
-                            <SimpleToolbar title={this.toolbar} menus={["logout"]} onSelectedMenuItem={this.onToolbarMenuItem}/>
-                        </div>
-                    </Flexbox>
-                    <Flexbox flexDirection="row">
-                        <Flexbox flexGrow={1}/>
-                        <Flexbox flexDirection="column" justifyContent="center" flexGrow={1}>
-                            <Flexbox style={{ justifyContent: "center", alignContent: "center" }}>
-                                <p>Start with a team</p>
-                            </Flexbox>
-                            <Divider />
-                            <TeamListBox teams={this.props.teamReducer.teams} onSelectTeam={this.onSelectTeam}/>
-                            <Flexbox style={{ justifyContent: "center", alignContent: "center" }}>
-                                <TeamsBox onError={this.props.onError}/>
-                            </Flexbox>
+        return (<Flexbox flexDirection="column" minHeight="100vh" style={{ backgroundColor: Colors.blueGrey50 }}>
+                <Flexbox element="header">
+                    <div style={{ width: "100%" }}>
+                        <SimpleToolbar title={this.toolbar} menus={["logout"]} onSelectedMenuItem={this.onToolbarMenuItem}/>
+                    </div>
+                </Flexbox>
+                <Flexbox flexDirection="row">
+                    <Flexbox flexGrow={1}/>
+                    <Flexbox flexDirection="column" justifyContent="center" flexGrow={1}>
+                        <Flexbox style={{ justifyContent: "center", alignContent: "center" }}>
+                            <p>Start with a team</p>
                         </Flexbox>
-                        <Flexbox flexGrow={1}/>
+                        <Divider />
+                        <TeamListBox teams={this.props.teamReducer.teams} onSelectTeam={this.onSelectTeam}/>
+                        <Flexbox style={{ justifyContent: "center", alignContent: "center" }}>
+                            <TeamsBox onError={this.props.onError}/>
+                        </Flexbox>
                     </Flexbox>
                     <Flexbox flexGrow={1}/>
                 </Flexbox>
-            </MuiThemeProvider>);
+                <Flexbox flexGrow={1}/>
+            </Flexbox>);
     }
 }
 function mapStateToProps(state) {

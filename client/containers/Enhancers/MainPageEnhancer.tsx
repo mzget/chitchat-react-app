@@ -15,6 +15,7 @@ import { IComponentProps } from "../../utils/IComponentProps";
 const mapStateToProps = (state) => ({ ...state });
 export const MainPageEnhancer = compose(
     connect(mapStateToProps),
+    withState("teamname", "setTeamName", ({ teamReducer }) => (!!teamReducer.team) ? teamReducer.team.name : ""),
     lifecycle<IComponentProps, any>({
         componentWillReceiveProps(nextProps: IComponentProps) {
             let { userReducer, chatroomReducer, teamReducer } = nextProps;
@@ -44,4 +45,4 @@ export const MainPageEnhancer = compose(
             props.dispatch(privateGroupRxActions.getPrivateGroup(props.teamReducer.team._id));
         }
     })
-) as ComponentEnhancer<{ fetch_orgGroups, fetch_privateGroups, history }, any>;
+) as ComponentEnhancer<{ fetch_orgGroups, fetch_privateGroups }, any>;
