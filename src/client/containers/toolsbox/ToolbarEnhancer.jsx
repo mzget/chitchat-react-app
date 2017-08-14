@@ -1,7 +1,6 @@
 import { connect } from "react-redux";
 import { compose, withHandlers } from "recompose";
 const mapStateToProps = (state) => ({
-    chatroomReducer: state.chatroomReducer,
     teamReducer: state.teamReducer
 });
 export const ToolbarEnhancer = compose(connect(mapStateToProps), withHandlers({

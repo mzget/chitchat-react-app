@@ -35,6 +35,11 @@ const ProfileDetailEnhancer = compose(connect(mapStateToProps), withState("user"
         }
     }
 }), withHandlers({
+    onUserNameChange: (props) => (event, newValue) => {
+        let user = props.user;
+        user["username"] = newValue;
+        props.updateUser(prev => user);
+    },
     onFirstNameChange: (props) => (event, newValue) => {
         let user = props.user;
         user["firstname"] = newValue;
@@ -68,4 +73,4 @@ const ProfileDetailEnhancer = compose(connect(mapStateToProps), withState("user"
         }
     }
 }));
-export const ProfileDetailEnhanced = ProfileDetailEnhancer(({ user, teamProfile, alert, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange }) => <ProfileDetail user={user} teamProfile={teamProfile} onFirstNameChange={onFirstNameChange} onLastNameChange={onLastNameChange} onTelNumberChange={onTelNumberChange} onFileReaderChange={onFileReaderChange} onSubmit={onSubmit}/>);
+export const ProfileDetailEnhanced = ProfileDetailEnhancer(({ user, teamProfile, alert, onUserNameChange, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange }) => <ProfileDetail user={user} teamProfile={teamProfile} onUserNameChange={onUserNameChange} onFirstNameChange={onFirstNameChange} onLastNameChange={onLastNameChange} onTelNumberChange={onTelNumberChange} onFileReaderChange={onFileReaderChange} onSubmit={onSubmit}/>);

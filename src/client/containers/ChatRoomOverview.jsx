@@ -13,14 +13,14 @@ class ChatRoomOverView extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         let { match, chatroomReducer } = nextProps;
-        if (!!chatroomReducer.room) {
-            this.room = chatroomReducer.room;
+        if (!!chatroomReducer.get("room")) {
+            this.room = chatroomReducer.get("room");
         }
         if (!shallowEqual(match, this.props.match)) {
-            if (!chatroomReducer.room)
+            if (!chatroomReducer.get("room"))
                 this.room = chatroomActions.getRoom(match.params.room_id);
         }
-        if (!shallowEqual(chatroomReducer.chatrooms, this.props.chatroomReducer.chatrooms)) {
+        if (!shallowEqual(chatroomReducer.get("chatrooms"), this.props.chatroomReducer.get("chatrooms"))) {
             this.room = chatroomActions.getRoom(match.params.room_id);
         }
     }
@@ -37,6 +37,8 @@ class ChatRoomOverView extends React.Component {
             </MuiThemeProvider>);
     }
 }
-const mapStateToProps = (state) => ({ chatroomReducer: state.chatroomReducer });
+const mapStateToProps = (state) => ({
+    chatroomReducer: state.chatroomReducer
+});
 export var ChatRoomOverviewEnhanced = connect(mapStateToProps)(ChatRoomOverView);
 ChatRoomOverviewEnhanced = withRouter(ChatRoomOverviewEnhanced);

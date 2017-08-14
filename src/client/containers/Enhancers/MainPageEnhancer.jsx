@@ -1,11 +1,11 @@
 import { connect } from "react-redux";
-import { shallowEqual, compose, withHandlers, lifecycle } from "recompose";
+import { shallowEqual, compose, withHandlers, withState, lifecycle } from "recompose";
 import * as groupRx from "../../redux/group/groupRx";
 import * as privateGroupRxActions from "../../redux/group/privateGroupRxActions";
 import { GET_PERSISTEND_CHATROOM_SUCCESS } from "../../chitchat/chats/redux/chatroom/chatroomActions";
 import { FETCH_PRIVATE_CHATROOM_SUCCESS, CREATE_PRIVATE_CHATROOM_SUCCESS } from "../../chitchat/chats/redux/chatroom/chatroomRxEpic";
 const mapStateToProps = (state) => (Object.assign({}, state));
-export const MainPageEnhancer = compose(connect(mapStateToProps), lifecycle({
+export const MainPageEnhancer = compose(connect(mapStateToProps), withState("teamname", "setTeamName", ({ teamReducer }) => (!!teamReducer.team) ? teamReducer.team.name : ""), lifecycle({
     componentWillReceiveProps(nextProps) {
         let { userReducer, chatroomReducer, teamReducer } = nextProps;
         if (!userReducer.user) {

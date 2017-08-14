@@ -6,11 +6,12 @@
     "target": "es2015",
     "module": "esnext",
     "moduleResolution": "node",
+    "removeComments": true,
+    "strictNullChecks": true,
     "rootDirs": [
       "client"
     ],
-    "outDir": "src",
-    "removeComments": true
+    "outDir": "src"
   },
   "exclude": [
     "node_modules"

@@ -2,7 +2,7 @@ import * as React from "react";
 import Flexbox from "flexbox-react";
 import { Card, CardTitle } from "material-ui";
 import { gql, graphql } from 'react-apollo';
-import { compose, pure, withHandlers, withProps } from "recompose";
+import { compose, pure, withHandlers } from "recompose";
 import { TeamRoleListItem } from "../../components/TeamRoleListItem";
 import { LinearProgressSimple } from "../../components/LinearProgressSimple";
 const TeamRole = ({ data: { teamRoles, loading, error }, onSelectItem }) => (<div>
@@ -20,7 +20,7 @@ const getTeamRoles = gql `
 `;
 const withData = graphql(getTeamRoles);
 const TeamRoleWithData = compose(withData, pure)(TeamRole);
-const TeamRoleEnhancer = compose(withProps({}), withHandlers({
+const TeamRoleEnhancer = compose(withHandlers({
     onSelectItem: (props) => (item) => {
         props.history.push(`/admin/role/${item.name}`);
     }

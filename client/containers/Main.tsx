@@ -1,7 +1,7 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { shallowEqual } from "recompose";
+import { shallowEqual, compose } from "recompose";
 import Flexbox from 'flexbox-react';
 import * as immutable from "immutable";
 
@@ -17,14 +17,12 @@ import { SubToolbarEnhance } from "./SubToolbar";
 
 import { ContactBox } from "./chatlist/ContactBox";
 
+import { WithDialog } from "./toolsbox/DialogBoxEnhancer";
 import { MainPageEnhancer } from "./Enhancers/MainPageEnhancer";
-import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
 import { WebToolbarEnhanced, listener } from "./MainPageToolbar";
-import { DialogBox, IDialoxBoxProps } from "../components/DialogBox";
 import { ChatTabsEnhanced } from "./toolsbox/ChatTabsEnhance";
 
 import { small_width, large_body_width, LARGE_TABLET, xsmall_width } from '../chitchat/consts/Breakpoints';
-import { defaultMuiTheme } from "../utils/";
 
 const styles = {
     chatTabs: {
@@ -33,12 +31,20 @@ const styles = {
     }
 }
 
-export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chatroomReducer, match, history, onError, fetch_orgGroups, fetch_privateGroups }) => (
-    <MuiThemeProvider muiTheme={defaultMuiTheme}>
+export const Main = ({ teamname, userReducer, authReducer, groupReducer, chatroomReducer, match, history, onError, fetch_orgGroups, fetch_privateGroups }) => {
+    const _teamname = (teamname) ? teamname.toUpperCase() : "";
+    const menus = ["Menu", `Sign out of ${_teamname}`];
+
+    return (
         <Flexbox flexDirection="column" height="100vh">
             <Flexbox element="header" maxHeight="56px">
                 <div id={"app_bar"} style={{ width: "100%", position: 'fixed', zIndex: 99 }}>
-                    <WebToolbarEnhanced history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener} />
+                    <WebToolbarEnhanced
+                        teamname={teamname}
+                        history={history}
+                        authReducer={authReducer}
+                        menus={menus}
+                        listener={listener} />
                 </div>
             </Flexbox>
             <Flexbox flexDirection="row" justifyContent="center" flexGrow={1} height="calc(100vh - 56px)"
@@ -92,15 +98,15 @@ export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chat
                 <Flexbox flexGrow={1} />
             </Flexbox>
         </Flexbox>
-    </MuiThemeProvider >
-);
+    )
+};
 
-const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer, chatroomReducer,
-    history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
+const MainPageEnhanced = MainPageEnhancer(({ teamname, teamReducer, groupReducer, authReducer, userReducer, chatroomReducer,
+    history, match, onError, fetch_orgGroups, fetch_privateGroups }: any) => {
     return (
         <Main
+            teamname={teamname}
             userReducer={userReducer}
-            teamReducer={teamReducer}
             authReducer={authReducer}
             groupReducer={groupReducer}
             chatroomReducer={chatroomReducer}
@@ -113,11 +119,4 @@ const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authRedu
     );
 });
 
-export var MainPageWithDialogBox = DialogBoxEnhancer(({ title, message, open, handleClose, onError, history, match }: any) =>
-    <div>
-        <MainPageEnhanced onError={onError} history={history} match={match} />
-        <DialogBox title={title} message={message} open={open} handleClose={handleClose} />
-    </div>
-);
-
-MainPageWithDialogBox = withRouter(MainPageWithDialogBox);
+export const MainPageWithDialog = WithDialog(withRouter<any>(MainPageEnhanced));

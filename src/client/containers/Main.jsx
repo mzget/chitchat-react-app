@@ -1,31 +1,30 @@
 import * as React from "react";
 import { withRouter } from "react-router-dom";
 import Flexbox from 'flexbox-react';
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import { ConnectGroupListEnhancer } from "./group/ConnectGroupListEnhancer";
 import { ChatLogsBoxEnhancer } from "./chatlog/ChatLogsBox";
 import { AppBody } from "./AppBody";
 import { RightNav } from "./RightNav";
 import { SubToolbarEnhance } from "./SubToolbar";
+import { WithDialog } from "./toolsbox/DialogBoxEnhancer";
 import { MainPageEnhancer } from "./Enhancers/MainPageEnhancer";
-import { DialogBoxEnhancer } from "./toolsbox/DialogBoxEnhancer";
 import { WebToolbarEnhanced, listener } from "./MainPageToolbar";
-import { DialogBox } from "../components/DialogBox";
 import { ChatTabsEnhanced } from "./toolsbox/ChatTabsEnhance";
 import { small_width, large_body_width, LARGE_TABLET, xsmall_width } from '../chitchat/consts/Breakpoints';
-import { defaultMuiTheme } from "../utils/";
 const styles = {
     chatTabs: {
         height: "calc(100vh - (56px + 60px))",
         overflowY: "auto"
     }
 };
-export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chatroomReducer, match, history, onError, fetch_orgGroups, fetch_privateGroups }) => (<MuiThemeProvider muiTheme={defaultMuiTheme}>
-        <Flexbox flexDirection="column" height="100vh">
+export const Main = ({ teamname, userReducer, authReducer, groupReducer, chatroomReducer, match, history, onError, fetch_orgGroups, fetch_privateGroups }) => {
+    const _teamname = (teamname) ? teamname.toUpperCase() : "";
+    const menus = ["Menu", `Sign out of ${_teamname}`];
+    return (<Flexbox flexDirection="column" height="100vh">
             <Flexbox element="header" maxHeight="56px">
                 <div id={"app_bar"} style={{ width: "100%", position: 'fixed', zIndex: 99 }}>
-                    <WebToolbarEnhanced history={history} teamReducer={teamReducer} authReducer={authReducer} listener={listener}/>
+                    <WebToolbarEnhanced teamname={teamname} history={history} authReducer={authReducer} menus={menus} listener={listener}/>
                 </div>
             </Flexbox>
             <Flexbox flexDirection="row" justifyContent="center" flexGrow={1} height="calc(100vh - 56px)" style={{ backgroundColor: Colors.blueGrey50, marginTop: "56px" }}>
@@ -57,13 +56,9 @@ export const Main = ({ userReducer, teamReducer, authReducer, groupReducer, chat
                 </Flexbox>
                 <Flexbox flexGrow={1}/>
             </Flexbox>
-        </Flexbox>
-    </MuiThemeProvider>);
-const MainPageEnhanced = MainPageEnhancer(({ teamReducer, groupReducer, authReducer, userReducer, chatroomReducer, history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
-    return (<Main userReducer={userReducer} teamReducer={teamReducer} authReducer={authReducer} groupReducer={groupReducer} chatroomReducer={chatroomReducer} match={match} history={history} onError={onError} fetch_orgGroups={fetch_orgGroups} fetch_privateGroups={fetch_privateGroups}/>);
+        </Flexbox>);
+};
+const MainPageEnhanced = MainPageEnhancer(({ teamname, teamReducer, groupReducer, authReducer, userReducer, chatroomReducer, history, match, onError, fetch_orgGroups, fetch_privateGroups }) => {
+    return (<Main teamname={teamname} userReducer={userReducer} authReducer={authReducer} groupReducer={groupReducer} chatroomReducer={chatroomReducer} match={match} history={history} onError={onError} fetch_orgGroups={fetch_orgGroups} fetch_privateGroups={fetch_privateGroups}/>);
 });
-export var MainPageWithDialogBox = DialogBoxEnhancer(({ title, message, open, handleClose, onError, history, match }) => <div>
-        <MainPageEnhanced onError={onError} history={history} match={match}/>
-        <DialogBox title={title} message={message} open={open} handleClose={handleClose}/>
-    </div>);
-MainPageWithDialogBox = withRouter(MainPageWithDialogBox);
+export const MainPageWithDialog = WithDialog(withRouter(MainPageEnhanced));
