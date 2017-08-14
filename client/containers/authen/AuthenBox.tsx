@@ -2,7 +2,6 @@ import * as React from "react";
 import Flexbox from "flexbox-react";
 import { shallowEqual } from "recompose";
 import { RaisedButton, TextField } from "material-ui";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 
 import { SigninBox } from "./SigninBox";
@@ -107,33 +106,34 @@ export class AuthenBox extends React.Component<IComponentProps, IComponentNameSt
 
     public render(): JSX.Element {
         return (
-            <MuiThemeProvider >
-                <Flexbox flexDirection="column" style={{ overflowY: "auto" }} width="400px">
-                    {
-                        (this.state.showSignin) ?
-                            <SigninBox onLogingIn={this.onLogingIn} /> :
-                            <SignupBox {...this.props} onError={this.props.onError} />
-                    }
-                    <br />
-                    {
+            <Flexbox flexDirection="column" maxWidth="400px">
+                {
+                    (this.state.showSignin) ?
+                        <SigninBox onLogingIn={this.onLogingIn} /> :
+                        <SignupBox {...this.props} onError={this.props.onError} />
+                }
+                <br />
+                {
+                    (this.state.showSignin) ?
                         <Flexbox justifyContent="center">
                             <Facebook onSocialLogin={this.onFacebookLogin} onClicked={this.onSigning} label="Login with Facebook" />
                         </Flexbox>
-                    }
-                    <br />
-                    {
-                        (this.state.showSignin) ?
-                            (<Flexbox justifyContent="center" alignItems="center">
-                                <p style={{ fontFamily: "Roboto", fontSize: 14, color: Colors.darkBlack }}>New to chitchat?</p>
-                                <RaisedButton primary={true} label="Sign up now" onClick={this.onSignupPressed} style={{ margin: 8 }}> </RaisedButton>
-                            </Flexbox>) :
-                            (<Flexbox justifyContent="center" alignItems="center">
-                                <p style={{ fontFamily: "Roboto", fontSize: 14, color: Colors.darkBlack }}>Already have account?</p>
-                                <RaisedButton primary={true} label="Sign in" onClick={this.onSigninPressed} style={{ margin: 8 }}> </RaisedButton>
-                            </Flexbox>)
-                    }
-                </Flexbox>
-            </MuiThemeProvider>
+                        :
+                        null
+                }
+                <br />
+                {
+                    (this.state.showSignin) ?
+                        (<Flexbox justifyContent="center" alignItems="center">
+                            <p style={{ fontFamily: "Roboto", fontSize: 14, color: Colors.darkBlack }}>New to chitchat?</p>
+                            <RaisedButton primary={true} label="Sign up now" onClick={this.onSignupPressed} style={{ margin: 8 }}> </RaisedButton>
+                        </Flexbox>) :
+                        (<Flexbox justifyContent="center" alignItems="center">
+                            <p style={{ fontFamily: "Roboto", fontSize: 14, color: Colors.darkBlack }}>Already have account?</p>
+                            <RaisedButton primary={true} label="Sign in" onClick={this.onSigninPressed} style={{ margin: 8 }}> </RaisedButton>
+                        </Flexbox>)
+                }
+            </Flexbox>
         );
     }
 }

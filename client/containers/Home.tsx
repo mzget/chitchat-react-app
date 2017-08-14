@@ -85,25 +85,36 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
     public render(): JSX.Element {
         return (
             <Flexbox flexDirection="column" height="100vh" >
-                <div id={"app_bar"} style={{ width: "100%" }}>
+                <div id={"app_bar"}  >
                     <SimpleToolbar title={"ChitChat team communication."} />
                 </div>
-                <div style={{ overflowY: "auto", height: "100%", backgroundColor: Colors.blueGrey50 }} >
-                    <Flexbox flexDirection="row" >
+                <Flexbox flexDirection="column" height="100%" style={{ overflowY: "auto", backgroundColor: Colors.blueGrey50 }}>
+                    <Flexbox flexDirection="row" flexGrow={1} style={{ overflowY: "auto" }}>
                         <Flexbox flexGrow={1} />
-                        <Flexbox flexDirection="column" alignItems="center">
+                        <Flexbox flexDirection="column" alignItems="center" height="100%">
                             <AuthenBox {...this.props} onError={this.props.onError} />
-                            <span style={{ height: 10 }} />
-                            <a style={{ fontFamily: "Roboto", fontSize: 14, color: Colors.blue700, margin: 5 }} onClick={this.onForgotAccount}>Forgotten account</a>
-                            <span style={{ height: 10 }} />
+                            <br />
+                            <a style={{ fontFamily: "Roboto", fontSize: 14, margin: 5, color: Colors.lightBlue900 }} onClick={this.onForgotAccount}>Forgotten account</a>
+                            <br />
                         </Flexbox>
                         <Flexbox flexGrow={1} />
                     </Flexbox>
                     <Divider inset={true} />
-                    <Flexbox element="footer" alignItems="center" justifyContent="center" height="150px">
-                        <p style={{ fontFamily: "Roboto", fontSize: 14 }}>Powered by S-Talk Communication API.</p>
+                    <Flexbox element="footer" flexDirection="column" alignItems="center" >
+                        <Flexbox width="100%">
+                            <span style={{ width: 10 }} />
+                            <p style={{ fontFamily: "Roboto", fontSize: 12 }}>Download app</p>
+                            <span style={{ width: 10 }} />
+                            <p style={{ fontFamily: "Roboto", fontSize: 12 }}>Guides</p>
+                            <span style={{ width: 10 }} />
+                            <p style={{ fontFamily: "Roboto", fontSize: 12 }}>Developer</p>
+                            <Flexbox flexGrow={1} />
+                            <p style={{ fontFamily: "Roboto", fontSize: 12 }}>Powered by S-Talk Communication API.</p>
+                            <span style={{ width: 10 }} />
+                            <p style={{ fontFamily: "Roboto", fontSize: 12, marginRight: 10 }}>Copyright (c)2017 AhooStudio.co.th</p>
+                        </Flexbox>
                     </Flexbox>
-                </div>
+                </Flexbox>
             </Flexbox>
         );
     }

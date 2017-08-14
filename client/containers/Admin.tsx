@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { shallowEqual } from "recompose";
 import Flexbox from "flexbox-react";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import Subheader from "material-ui/Subheader";
 
@@ -182,28 +181,26 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     public render(): JSX.Element {
         let { teamReducer } = this.props;
         return (
-            <MuiThemeProvider>
-                <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50, overflowY: "hidden" }} height="100vh">
-                    <div style={{ position: "relative", height: "56px" }}>
-                        <div style={{ position: "fixed", width: "100%", zIndex: 1 }} >
-                            <SimpleToolbar
-                                title={(!!teamReducer.team) ? this.props.teamReducer.team.name.toUpperCase() : ""}
-                                onBackPressed={this.onBackPressed}
-                                onPressTitle={this.onTitlePressed} />
-                        </div>
+            <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50, overflowY: "hidden" }} height="100vh">
+                <div style={{ position: "relative", height: "56px" }}>
+                    <div style={{ position: "fixed", width: "100%", zIndex: 1 }} >
+                        <SimpleToolbar
+                            title={(!!teamReducer.team) ? this.props.teamReducer.team.name.toUpperCase() : ""}
+                            onBackPressed={this.onBackPressed}
+                            onPressTitle={this.onTitlePressed} />
                     </div>
-                    <Flexbox flexDirection="row" height="calc(100vh - 56px)">
-                        <Flexbox minWidth="400px" justifyContent="center">
-                            <MenuListview menus={this.menus} onSelectItem={this.onAdminMenuSelected} />
-                        </Flexbox>
-                        <Flexbox flexGrow={1} justifyContent="center">
-                            {
-                                this.getAdminPanel()
-                            }
-                        </Flexbox>
+                </div>
+                <Flexbox flexDirection="row" height="calc(100vh - 56px)">
+                    <Flexbox minWidth="400px" justifyContent="center">
+                        <MenuListview menus={this.menus} onSelectItem={this.onAdminMenuSelected} />
+                    </Flexbox>
+                    <Flexbox flexGrow={1} justifyContent="center">
+                        {
+                            this.getAdminPanel()
+                        }
                     </Flexbox>
                 </Flexbox>
-            </MuiThemeProvider >
+            </Flexbox>
         );
     }
 }

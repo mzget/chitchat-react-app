@@ -4,7 +4,7 @@ import { ChatLogRecord } from "../chitchat/chats/redux/chatlogs/";
 import { ChatRoomRecoder } from "../chitchat/chats/redux/chatroom";
 
 export interface IComponentProps {
-    onError?: (error: string) => void;
+    onError: (error: string) => void;
     location: Location;
     adminReducer;
     authReducer;
