@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { SimpleToolbar } from "../components/SimpleToolbar";
+import Flexbox from 'flexbox-react';
 import * as Colors from "material-ui/styles/colors";
-
 import FlatButton from 'material-ui/FlatButton';
 import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
 import Subheader from 'material-ui/Subheader';
 
-import Flexbox from 'flexbox-react';
+import { SimpleToolbar } from "../components/SimpleToolbar";
+import { ChitChatFooter } from "../components/ChitChatFooter";
 import { IComponentProps } from "../utils/IComponentProps";
 
 export class ForgotAccount extends React.Component<IComponentProps, any> {
@@ -40,7 +40,7 @@ export class ForgotAccount extends React.Component<IComponentProps, any> {
                 <Flexbox flexGrow={1} />
 
                 <Flexbox element="footer" justifyContent="center">
-                    <p style={{ fontFamily: "Roboto", fontSize: 14 }}>Powered by S-Talk Communication API.</p>
+                    <ChitChatFooter />
                 </Flexbox>
             </Flexbox>
         );
