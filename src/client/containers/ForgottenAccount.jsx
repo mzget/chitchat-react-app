@@ -1,12 +1,13 @@
 import * as React from 'react';
-import { SimpleToolbar } from "../components/SimpleToolbar";
+import Flexbox from 'flexbox-react';
 import * as Colors from "material-ui/styles/colors";
 import FlatButton from 'material-ui/FlatButton';
 import { Card, CardActions, CardText } from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
 import Subheader from 'material-ui/Subheader';
-import Flexbox from 'flexbox-react';
+import { SimpleToolbar } from "../components/SimpleToolbar";
+import { ChitChatFooter } from "../components/ChitChatFooter";
 export class ForgotAccount extends React.Component {
     onBack() {
         this.props.history.replace("/");
@@ -33,7 +34,7 @@ export class ForgotAccount extends React.Component {
                 <Flexbox flexGrow={1}/>
 
                 <Flexbox element="footer" justifyContent="center">
-                    <p style={{ fontFamily: "Roboto", fontSize: 14 }}>Powered by S-Talk Communication API.</p>
+                    <ChitChatFooter />
                 </Flexbox>
             </Flexbox>);
     }

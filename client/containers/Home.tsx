@@ -1,6 +1,6 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { shallowEqual } from "recompose";
 import Flexbox from "flexbox-react";
 
@@ -18,6 +18,7 @@ import * as AppActions from "../redux/app/persistentDataActions";
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { AuthenBox } from "./authen/AuthenBox";
 import { WithDialog } from "./toolsbox/DialogBoxEnhancer";
+import { ChitChatFooter } from "../components/ChitChatFooter";
 
 
 interface IComponentNameState {
@@ -94,25 +95,16 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
                         <Flexbox flexDirection="column" alignItems="center" height="100%">
                             <AuthenBox {...this.props} onError={this.props.onError} />
                             <br />
-                            <a style={{ fontFamily: "Roboto", fontSize: 14, margin: 5, color: Colors.lightBlue900 }} onClick={this.onForgotAccount}>Forgotten account</a>
+                            <Link to="/forgotaccount" >
+                                <p style={{ fontFamily: "Roboto", fontSize: 14, color: Colors.lightBlue900 }}>Forgotten account</p>
+                            </Link>
                             <br />
                         </Flexbox>
                         <Flexbox flexGrow={1} />
                     </Flexbox>
                     <Divider inset={true} />
                     <Flexbox element="footer" flexDirection="column" alignItems="center" >
-                        <Flexbox width="100%">
-                            <span style={{ width: 10 }} />
-                            <p style={{ fontFamily: "Roboto", fontSize: 12 }}>Download app</p>
-                            <span style={{ width: 10 }} />
-                            <p style={{ fontFamily: "Roboto", fontSize: 12 }}>Guides</p>
-                            <span style={{ width: 10 }} />
-                            <p style={{ fontFamily: "Roboto", fontSize: 12 }}>Developer</p>
-                            <Flexbox flexGrow={1} />
-                            <p style={{ fontFamily: "Roboto", fontSize: 12 }}>Powered by S-Talk Communication API.</p>
-                            <span style={{ width: 10 }} />
-                            <p style={{ fontFamily: "Roboto", fontSize: 12, marginRight: 10 }}>Copyright (c)2017 AhooStudio.co.th</p>
-                        </Flexbox>
+                        <ChitChatFooter />
                     </Flexbox>
                 </Flexbox>
             </Flexbox>
