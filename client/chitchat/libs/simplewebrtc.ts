@@ -34,7 +34,8 @@ function SimpleWebRTC(opts) {
             muted: true
         }
     };
-    var item, connection;
+    var item;
+    var connection;
 
     // We also allow a 'logger' option. It can be any object that implements
     // log, warn, and error methods.
@@ -74,6 +75,7 @@ function SimpleWebRTC(opts) {
     }
 
     connection.on('connect', function () {
+        console.log("connection connect", connection.getSessionid());
         self.emit('connectionReady', connection.getSessionid());
         self.sessionReady = true;
         self.testReadiness();
@@ -116,6 +118,7 @@ function SimpleWebRTC(opts) {
     });
 
     connection.on('remove', function (room) {
+        console.log("connection remove", room);
         if (room.id !== self.connection.getSessionid()) {
             self.webrtc.removePeers(room.id, room.type);
         }
@@ -161,11 +164,13 @@ function SimpleWebRTC(opts) {
     }
 
     connection.on('stunservers', function (args) {
+        console.log("connection stunservers", args);
         // resets/overrides the config
         self.webrtc.config.peerConnectionConfig.iceServers = args;
         self.emit('stunservers', args);
     });
     connection.on('turnservers', function (args) {
+        console.log("connection turnservers", args);
         // appends to the config
         self.webrtc.config.peerConnectionConfig.iceServers = self.webrtc.config.peerConnectionConfig.iceServers.concat(args);
         self.emit('turnservers', args);

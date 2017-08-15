@@ -134,11 +134,13 @@ class WebRtc extends React.Component {
             });
             let room = chatroom.getRoom(room_id);
             let targets = new Array();
-            room.members.map(value => {
-                if (value._id !== user._id) {
-                    targets.push(value._id);
-                }
-            });
+            if (!!room) {
+                room.members.map(value => {
+                    if (value._id !== user._id) {
+                        targets.push(value._id);
+                    }
+                });
+            }
             this.props.dispatch(calling.videoCall_Epic({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
         }
     }
