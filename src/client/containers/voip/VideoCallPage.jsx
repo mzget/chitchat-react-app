@@ -5,7 +5,7 @@ import { shallowEqual } from "recompose";
 import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
-import { RaisedButton, FontIcon } from "material-ui";
+import { RaisedButton, FontIcon, Slider, Paper } from "material-ui";
 import { SimpleToolbar } from "../../components/SimpleToolbar";
 import { WebRtcPage } from "../webrtc/";
 class VideoCall extends React.Component {
@@ -14,6 +14,7 @@ class VideoCall extends React.Component {
         this.state = {
             isMuteVoice: false,
             isPauseVideo: false,
+            micVol: 100,
         };
         this.onBackPressed = this.onBackPressed.bind(this);
         this.onTitlePressed = this.onTitlePressed.bind(this);
@@ -71,6 +72,23 @@ class VideoCall extends React.Component {
                     this.webrtc.pauseVideo();
                     this.setState({ isPauseVideo: true });
                 }}/>}
+                            <Paper style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            minHeight: '36px'
+        }}>
+                                <div>{`Mic volume (${this.state.micVol}%)`}</div>
+                                <Slider min={0} max={100} step={1} defaultValue={100} sliderStyle={{
+            margin: 0,
+        }} style={{
+            width: '50%',
+            maxWidth: '200px',
+        }} onChange={(e, newValue) => {
+            this.setState({ micVol: newValue });
+            this.webrtc.webrtc.emit('changeLocalVolume', newValue / 100);
+        }}/>
+                            </Paper>
                         </Flexbox>
                         <Flexbox flexGrow={1} justifyContent="center">
                             <WebRtcPage getWebRtc={this.getWebRtc} onError={this.props.onError}/>

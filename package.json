@@ -45,6 +45,7 @@
     "isomorphic-fetch": "^2.2.1",
     "localforage": "^1.5.0",
     "material-ui": "^0.18.7",
+    "mediastream-gain": "^1.0.1",
     "pomelo-protobuf": "^0.4.0",
     "pomelo-protocol": "^0.1.6",
     "ramda": "^0.24.1",

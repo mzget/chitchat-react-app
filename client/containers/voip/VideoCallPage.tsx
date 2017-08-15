@@ -6,8 +6,7 @@ import Flexbox from "flexbox-react";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
-import Subheader from "material-ui/Subheader";
-import { RaisedButton, FontIcon } from "material-ui";
+import { RaisedButton, FontIcon, Slider, Paper } from "material-ui";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 
@@ -25,6 +24,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.state = {
             isMuteVoice: false,
             isPauseVideo: false,
+            micVol: 100,
         }
 
         this.onBackPressed = this.onBackPressed.bind(this);
@@ -105,6 +105,27 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                             this.setState({ isPauseVideo: true });
                                         }} />
                             }
+                            <Paper style={{
+                                display: 'flex',
+                                justifyContent: 'space-around',
+                                alignItems: 'center',
+                                minHeight: '36px'
+                            }}>
+                                <div>{`Mic volume (${this.state.micVol}%)`}</div>
+                                <Slider min={0} max={100} step={1}
+                                    defaultValue={100}
+                                    sliderStyle={{
+                                        margin: 0,
+                                    }}
+                                    style={{
+                                        width: '50%',
+                                        maxWidth: '200px',
+                                    }}
+                                    onChange={(e, newValue) => {
+                                        this.setState({ micVol: newValue });
+                                        this.webrtc.webrtc.emit('changeLocalVolume', newValue / 100);
+                                    }} />
+                            </Paper>
                         </Flexbox>
                         <Flexbox flexGrow={1} justifyContent="center">
                             <WebRtcPage getWebRtc={this.getWebRtc} onError={this.props.onError} />
