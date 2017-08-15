@@ -1,9 +1,9 @@
-var WebRTC = require('./webrtc');
+import WebRTC from './webrtc';
+import SocketIoConnection from './socketioconnection';
 var WildEmitter = require('wildemitter');
 var webrtcSupport = require('webrtcsupport');
 var attachMediaStream = require('attachmediastream');
 var mockconsole = require('mockconsole');
-var SocketIoConnection = require('./socketioconnection');
 function SimpleWebRTC(opts) {
     var self = this;
     var options = opts || {};
@@ -374,4 +374,4 @@ SimpleWebRTC.prototype.sendFile = function () {
         return this.emit('error', new Error('DataChannelNotSupported'));
     }
 };
-module.exports = SimpleWebRTC;
+export default SimpleWebRTC;

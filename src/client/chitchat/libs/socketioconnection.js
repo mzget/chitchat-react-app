@@ -16,4 +16,4 @@ class SocketIoConnection {
         return this.connection.disconnect();
     }
 }
-module.exports = SocketIoConnection;
+export default SocketIoConnection;

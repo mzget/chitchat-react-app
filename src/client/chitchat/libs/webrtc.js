@@ -118,4 +118,4 @@ WebRTC.prototype.sendDirectlyToAll = function (channel, message, payload) {
         }
     });
 };
-module.exports = WebRTC;
+export default WebRTC;

@@ -7,7 +7,7 @@ import Flexbox from "flexbox-react";
 import { signalingServer } from "../../Chitchat";
 import * as chatroom from "../../chitchat/chats/redux/chatroom/";
 import * as calling from "../../chitchat/calling/";
-const SimpleWebRTC = require('../../chitchat/libs/simplewebrtc');
+import SimpleWebRTC from '../../chitchat/libs/simplewebrtc';
 class WebRtc extends React.Component {
     constructor(props) {
         super(props);
