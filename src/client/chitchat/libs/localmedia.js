@@ -3,8 +3,7 @@ var hark = require('hark');
 var getScreenMedia = require('getscreenmedia');
 var WildEmitter = require('wildemitter');
 var mockconsole = require('mockconsole');
-var AudioCtx = require('./audioCtx');
-var MicGainController = require('mediastream-gain');
+var MicGainController = require('./mediastream-gain');
 function isAllTracksEnded(stream) {
     var isAllTracksEnded = true;
     stream.getTracks().forEach(function (t) {
@@ -62,10 +61,16 @@ LocalMedia.prototype.start = function (mediaConstraints, cb) {
         if (constraints.audio && self.config.detectSpeakingEvents) {
             self._setupAudioMonitor(stream, self.config.harkOptions);
         }
-        self.localStreams.push(stream);
         self.gainController = new MicGainController(stream);
+        self.localStreams.push(self.gainController.stream);
         self.on('changeLocalVolume', (vol) => {
             if (!!self.gainController) {
+                if (vol == 0) {
+                    self.mute();
+                }
+                else {
+                    self.unmute();
+                }
                 self.gainController.setGain(vol);
             }
         });

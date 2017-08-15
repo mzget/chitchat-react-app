@@ -55,6 +55,7 @@ class VideoCall extends React.Component {
                             {this.state.isMuteVoice ?
             <RaisedButton secondary icon={<FontIcon className="material-icons">mic_off</FontIcon>} onClick={() => {
                 this.webrtc.unmute();
+                this.webrtc.webrtc.emit('changeLocalVolume', this.state.micVol / 100);
                 this.setState({ isMuteVoice: false });
             }}/>
             :
@@ -85,7 +86,7 @@ class VideoCall extends React.Component {
             width: '50%',
             maxWidth: '200px',
         }} onChange={(e, newValue) => {
-            this.setState({ micVol: newValue });
+            this.setState({ micVol: newValue, isMuteVoice: newValue == 0 });
             this.webrtc.webrtc.emit('changeLocalVolume', newValue / 100);
         }}/>
                             </Paper>

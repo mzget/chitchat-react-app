@@ -3,8 +3,7 @@ var hark = require('hark');
 var getScreenMedia = require('getscreenmedia');
 var WildEmitter = require('wildemitter');
 var mockconsole = require('mockconsole');
-var AudioCtx = require('./audioCtx');
-var MicGainController = require('mediastream-gain');
+var MicGainController = require('./mediastream-gain');
 
 function isAllTracksEnded(stream) {
     var isAllTracksEnded = true;
@@ -61,20 +60,6 @@ function LocalMedia(opts) {
 
     this._audioMonitors = [];
     this.on('localStreamStopped', this._stopAudioMonitor.bind(this));
-    // this.on('changeLocalVolume', (vol) => {
-    //     this.localStreams.forEach(function (stream) {
-    //         // stream.getAudioTracks().forEach(function (track) {
-    //         const ctx = AudioCtx.default.getInstance();
-    //         let gainNode = ctx.createGain();
-    //         let source = ctx.createMediaStreamSource(stream);
-    //         source.connect(gainNode);
-    //         gainNode.connect(ctx.destination);
-    //         gainNode.gain.value = vol;
-    //         console.warn('changeLocalVolume', vol);
-    //         // });
-    //     });
-    // });
-
 }
 
 util.inherits(LocalMedia, WildEmitter);
@@ -90,11 +75,18 @@ LocalMedia.prototype.start = function (mediaConstraints, cb) {
         if (constraints.audio && self.config.detectSpeakingEvents) {
             self._setupAudioMonitor(stream, self.config.harkOptions);
         }
-        self.localStreams.push(stream);
+
         self.gainController = new MicGainController(stream);
+        self.localStreams.push(self.gainController.stream);
 
         self.on('changeLocalVolume', (vol) => {
             if (!!self.gainController) {
+                if (vol == 0) {
+                    self.mute();
+                }
+                else {
+                    self.unmute();
+                }
                 self.gainController.setGain(vol);
             }
         });
