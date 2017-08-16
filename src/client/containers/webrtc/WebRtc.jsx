@@ -70,6 +70,7 @@ class WebRtc extends React.Component {
         });
     }
     addVideo(video, peer) {
+        console.log("addVideo", video, peer);
         let remotes = ReactDOM.findDOMNode(this.refs.remotes);
         if (remotes) {
             let container = document.createElement('div');
@@ -112,6 +113,7 @@ class WebRtc extends React.Component {
         }
     }
     removeVideo(video, peer) {
+        console.log("removeVideo", video, peer);
         let remotes = ReactDOM.findDOMNode(this.refs.remotes);
         let el = document.getElementById(peer ? 'container_' + this.webrtc.getDomId(peer) : 'localScreenContainer');
         if (remotes && el) {

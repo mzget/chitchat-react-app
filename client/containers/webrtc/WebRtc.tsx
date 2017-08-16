@@ -97,6 +97,8 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
     }
 
     addVideo(video, peer) {
+        console.log("addVideo", video, peer);
+
         //  console.log(this.refs.remotes);
         let remotes = ReactDOM.findDOMNode(this.refs.remotes);
         // console.log(remotes);
@@ -147,12 +149,15 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
     }
 
     removeVideo(video, peer) {
+        console.log("removeVideo", video, peer);
+
         let remotes = ReactDOM.findDOMNode(this.refs.remotes);
         let el = document.getElementById(peer ? 'container_' + this.webrtc.getDomId(peer) : 'localScreenContainer');
         if (remotes && el) {
             remotes.removeChild(el);
         }
     }
+
     readyToCall() {
         let self = this;
         let { match, userReducer: { user }, stalkReducer } = this.props;
