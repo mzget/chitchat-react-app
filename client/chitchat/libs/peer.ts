@@ -289,4 +289,4 @@ Peer.prototype.sendFile = function (file) {
     };
     return sender;
 };
-module.exports = Peer;
+export default Peer;

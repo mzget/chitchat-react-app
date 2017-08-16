@@ -2,7 +2,7 @@ var util = require('util');
 var webrtcSupport = require('webrtcsupport');
 var mockconsole = require('mockconsole');
 var localMedia = require('./localmedia');
-var Peer = require('./peer');
+import Peer from './peer';
 function WebRTC(opts) {
     var self = this;
     var options = opts || {};
