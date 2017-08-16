@@ -361,11 +361,9 @@ class SimpleWebRTC extends WildEmitter {
             console.log('join CB', err, roomDescription);
             if (err) {
                 self.emit('error', err);
-            } else {
-                var id,
-                    client,
-                    type,
-                    peer;
+            }
+            else {
+                let id, client, type, peer;
                 for (id in roomDescription.clients) {
                     client = roomDescription.clients[id];
                     for (type in client) {
