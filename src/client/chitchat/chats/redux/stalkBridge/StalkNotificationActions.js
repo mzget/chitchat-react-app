@@ -29,13 +29,15 @@ export const notify = (messageImp) => {
     if (messageImp.type === MessageType[MessageType.Text]) {
         CryptoHelper.decryptionText(messageImp).then((decoded) => {
             message.body = decoded.body;
-            NotiAPI.NotificationFactory.getInstance().nativeNotifyAPI(message);
+            if (global["userAgent"] == REACTJS)
+                NotiAPI.NotificationFactory.getInstance().nativeNotifyAPI(message);
             getStore().dispatch(stalkNotiNewMessage(message));
         });
     }
     else {
         message.body = `Sent you ${messageImp.type.toLowerCase()}`;
-        NotiAPI.NotificationFactory.getInstance().nativeNotifyAPI(message);
+        if (global["userAgent"] == REACTJS)
+            NotiAPI.NotificationFactory.getInstance().nativeNotifyAPI(message);
         getStore().dispatch(stalkNotiNewMessage(message));
     }
 };
