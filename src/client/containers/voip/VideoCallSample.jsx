@@ -5,6 +5,7 @@ import { withRouter } from "react-router-dom";
 import { shallowEqual } from "recompose";
 import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
+import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
 import { WebRtc } from "../../chitchat/react-webrtc/WebRTC";
 import * as Peer from "../../chitchat/react-webrtc/Peer";
 import { SimpleToolbar } from "../../components/SimpleToolbar";
@@ -125,5 +126,6 @@ const mapStateToProps = (state) => ({
     teamReducer: state.teamReducer,
     stalkReducer: state.stalkReducer
 });
-export var VideoCallComp = connect(mapStateToProps)(VideoCall);
-VideoCallComp = withRouter(VideoCallComp);
+export var VideoCallSample = WithDialog(VideoCall);
+VideoCallSample = connect(mapStateToProps)(VideoCall);
+VideoCallSample = withRouter(VideoCallSample);

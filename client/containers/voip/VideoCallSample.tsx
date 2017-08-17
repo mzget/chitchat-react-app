@@ -6,6 +6,7 @@ import { shallowEqual } from "recompose";
 import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
 import { RaisedButton, FontIcon, Slider, Paper } from "material-ui";
+import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
 
 import { WebRtc } from "../../chitchat/react-webrtc/WebRTC";
 import * as Peer from "../../chitchat/react-webrtc/Peer";
@@ -201,5 +202,6 @@ const mapStateToProps = (state) => ({
     teamReducer: state.teamReducer,
     stalkReducer: state.stalkReducer
 });
-export var VideoCallComp = connect(mapStateToProps)(VideoCall) as React.ComponentClass<{ onError }>;
-VideoCallComp = withRouter<any>(VideoCallComp);
+export var VideoCallSample = WithDialog(VideoCall);
+VideoCallSample = connect(mapStateToProps)(VideoCall) as React.ComponentClass<{ onError }>;
+VideoCallSample = withRouter<any>(VideoCallSample);
