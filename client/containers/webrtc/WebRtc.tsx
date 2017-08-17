@@ -104,29 +104,15 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
             }
         });
         if (this.webrtc.config.detectSpeakingEvents) {
-            let localContainer = ReactDOM.findDOMNode(this.refs.localContainer);
-            var vol = document.createElement('meter');
-            // vol.className = 'volume';
-            vol.style.position = 'absolute';
-            vol.style.left = '15%';
-            vol.style.width = '70%';
-            vol.style.bottom = '2px';
-            vol.style.height = '5px';
-            // vol.id = 'localVolume';
-            vol.min = -45;
-            vol.max = -20;
-            vol.low = -40;
-            vol.high = -25;
-            localContainer.appendChild(vol);
-            const self = this;
             this.webrtc.on('volumeChange', function (volume, treshold) {
-                self.showVolume(vol, volume);
+                self.showVolume(document.getElementById('localVolume'), volume);
             });
         }
         // remote p2p/ice failure
         this.webrtc.on('connectivityError', function (peer) {
             console.warn("connectivityError", peer);
-            let connstate = document.querySelector('#container_' + self.webrtc.getDomId(peer) + ' .connectionstate');
+            let connstate = document.getElementById('peer_connstate_' + this.webrtc.getDomId(peer));
+            // let connstate = document.querySelector('#container_' + self.webrtc.getDomId(peer) + ' .connectionstate');
             console.log('remote fail', connstate);
             if (connstate) {
                 connstate.innerText = 'Connection failed.';
@@ -143,7 +129,7 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
             const peerId = this.webrtc.getDomId(peer);
             if (peer && peer.pc) {
                 peer.pc.on('iceConnectionStateChange', function (event) {
-                    let connstate = document.getElementById('connstate_' + peerId);
+                    let connstate = document.getElementById('peer_connstate_' + peerId);
                     if (!connstate) return;
                     switch (peer.pc.iceConnectionState) {
                         case 'checking':
@@ -207,7 +193,7 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
                                     bottom: '10px',
                                 }} />
                         </div>
-                        <div id={`connstate_${peerId}`}></div>
+                        <div id={`peer_connstate_${peerId}`}></div>
                     </div>
                 </MuiThemeProvider>,
                 remotes,
@@ -298,6 +284,28 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
                             id="localVideo"
                             ref="localVideo" >
                         </video>
+                        {
+                            (
+                                !!this.webrtc
+                                &&
+                                Array.isArray(this.webrtc.webrtc.unControllMic)
+                                &&
+                                this.webrtc.webrtc.unControllMic.length > 0
+                            )
+                                ?
+                                <meter
+                                    id="localVolume"
+                                    style={{
+                                        position: 'absolute',
+                                        left: '15%',
+                                        width: '70%',
+                                        bottom: '2px',
+                                        height: '5px'
+                                    }}
+                                    min={-45} max={-20} low={-40} high={-25} />
+                                :
+                                null
+                        }
                     </div>
                     {/* <video style={{ width: "150px" }}
                         className="remotes"

@@ -22,7 +22,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         super(props);
 
         this.state = {
-            isMuteVoice: false,
+            isMuteAudio: false,
             isPauseVideo: false,
             micVol: 100,
         }
@@ -61,6 +61,17 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 
     render(): JSX.Element {
         let { team } = this.props.teamReducer;
+
+        let disabledAudioOption = true;
+        let disabledVideoOption = true;
+        if (!!this.webrtc && Array.isArray(this.webrtc.webrtc.localStreams) && this.webrtc.webrtc.localStreams.length > 0) {
+            if (this.webrtc.webrtc.localStreams[0].getAudioTracks().length > 0) {
+                disabledAudioOption = false;
+            }
+            if (this.webrtc.webrtc.localStreams[0].getVideoTracks().length > 0) {
+                disabledVideoOption = false;
+            }
+        }
         return (
             <MuiThemeProvider>
                 <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
@@ -75,25 +86,28 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                     <Flexbox flexDirection="row" height="calc(100vh - 56px)">
                         <Flexbox flexDirection="column" minWidth="400px">
                             {
-                                this.state.isMuteVoice ?
+                                this.state.isMuteAudio ?
                                     <RaisedButton secondary
+                                        disabled={disabledAudioOption}
                                         icon={<FontIcon className="material-icons">mic_off</FontIcon>}
                                         onClick={() => {
                                             this.webrtc.unmute();
                                             this.webrtc.webrtc.emit('changeLocalVolume', this.state.micVol / 100);
-                                            this.setState({ isMuteVoice: false });
+                                            this.setState({ isMuteAudio: false });
                                         }} />
                                     :
                                     <RaisedButton
+                                        disabled={disabledAudioOption}
                                         icon={<FontIcon className="material-icons">mic</FontIcon>}
                                         onClick={() => {
                                             this.webrtc.mute();
-                                            this.setState({ isMuteVoice: true });
+                                            this.setState({ isMuteAudio: true });
                                         }} />
                             }
                             {
                                 this.state.isPauseVideo ?
                                     <RaisedButton secondary
+                                        disabled={disabledVideoOption}
                                         icon={<FontIcon className="material-icons">videocam_off</FontIcon>}
                                         onClick={() => {
                                             this.webrtc.resumeVideo();
@@ -101,6 +115,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                         }} />
                                     :
                                     <RaisedButton
+                                        disabled={disabledVideoOption}
                                         icon={<FontIcon className="material-icons">videocam</FontIcon>}
                                         onClick={() => {
                                             this.webrtc.pauseVideo();
@@ -115,6 +130,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                             }}>
                                 <div>{`Mic volume (${this.state.micVol}%)`}</div>
                                 <Slider min={0} max={100} step={1}
+                                    disabled={disabledAudioOption}
                                     defaultValue={100}
                                     sliderStyle={{
                                         margin: 0,

@@ -76,26 +76,13 @@ class WebRtc extends React.Component {
             }
         });
         if (this.webrtc.config.detectSpeakingEvents) {
-            let localContainer = ReactDOM.findDOMNode(this.refs.localContainer);
-            var vol = document.createElement('meter');
-            vol.style.position = 'absolute';
-            vol.style.left = '15%';
-            vol.style.width = '70%';
-            vol.style.bottom = '2px';
-            vol.style.height = '5px';
-            vol.min = -45;
-            vol.max = -20;
-            vol.low = -40;
-            vol.high = -25;
-            localContainer.appendChild(vol);
-            const self = this;
             this.webrtc.on('volumeChange', function (volume, treshold) {
-                self.showVolume(vol, volume);
+                self.showVolume(document.getElementById('localVolume'), volume);
             });
         }
         this.webrtc.on('connectivityError', function (peer) {
             console.warn("connectivityError", peer);
-            let connstate = document.querySelector('#container_' + self.webrtc.getDomId(peer) + ' .connectionstate');
+            let connstate = document.getElementById('peer_connstate_' + this.webrtc.getDomId(peer));
             console.log('remote fail', connstate);
             if (connstate) {
                 connstate.innerText = 'Connection failed.';
@@ -110,7 +97,7 @@ class WebRtc extends React.Component {
             const peerId = this.webrtc.getDomId(peer);
             if (peer && peer.pc) {
                 peer.pc.on('iceConnectionStateChange', function (event) {
-                    let connstate = document.getElementById('connstate_' + peerId);
+                    let connstate = document.getElementById('peer_connstate_' + peerId);
                     if (!connstate)
                         return;
                     switch (peer.pc.iceConnectionState) {
@@ -164,7 +151,7 @@ class WebRtc extends React.Component {
                 bottom: '10px',
             }}/>
                         </div>
-                        <div id={`connstate_${peerId}`}></div>
+                        <div id={`peer_connstate_${peerId}`}></div>
                     </div>
                 </MuiThemeProvider>, remotes, () => {
                 document.getElementById(peerId).srcObject = peer.stream;
@@ -241,6 +228,21 @@ class WebRtc extends React.Component {
                     <div ref="localContainer" style={{ position: 'relative', width: '200px', height: '150px' }}>
                         <video style={{ height: "150px", width: '100%' }} className="local" id="localVideo" ref="localVideo">
                         </video>
+                        {(!!this.webrtc
+            &&
+                Array.isArray(this.webrtc.webrtc.unControllMic)
+            &&
+                this.webrtc.webrtc.unControllMic.length > 0)
+            ?
+                <meter id="localVolume" style={{
+                    position: 'absolute',
+                    left: '15%',
+                    width: '70%',
+                    bottom: '2px',
+                    height: '5px'
+                }} min={-45} max={-20} low={-40} high={-25}/>
+            :
+                null}
                     </div>
                     
                 </Flexbox>
