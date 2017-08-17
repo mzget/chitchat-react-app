@@ -109,6 +109,7 @@ export class WebRtc {
             sendHandler: this.send.bind(this)
         };
         let peer = new Peer.Peer(parents);
+        peer.logError = logError;
         this.peers[options.id] = peer;
         return peer;
     }
@@ -131,9 +132,10 @@ export class WebRtc {
     }
     leave(socketId) {
         console.log('leave', socketId);
-        const pc = this.peers[socketId].pc;
-        const viewIndex = pc.viewIndex;
-        pc.close();
+        const peer = this.peers[socketId];
+        if (peer) {
+            peer.pc.close();
+        }
         this.myEmitter.emit(Peer.PEER_STREAM_REMOVED);
         delete this.peers[socketId];
     }

@@ -16,10 +16,6 @@ const twilioIceServers = [
 const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
 const RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.msRTCPeerConnection;
 
-function logError(error) {
-    console.log("logError", error);
-}
-
 export const CANDIDATE = "candidate";
 export const PEER_STREAM_ADDED = "peerStreamAdded";
 export const PEER_STREAM_REMOVED = "peerStreamRemoved";
@@ -38,7 +34,10 @@ export class Peer {
     pcPeers;
     browserPrefix;
     nick;
-    send_event: (messageType: string, payload: any, optional: { to: string }) => void;
+    send_event: (messageType: string, payload?: any, optional?: { to: string }) => void;
+    logError = (error) => {
+        console.log(error);
+    };
 
     /**
      * reture PeerConnection
@@ -78,6 +77,13 @@ export class Peer {
             if (event.target.iceConnectionState === 'connected') {
                 self.createDataChannel();
             }
+            else if (event.target.iceConnectionState == "failed") {
+                // currently, in chrome only the initiator goes to failed
+                // so we need to signal this to the peer
+
+                self.parentsEmitter.emit('iceFailed', self);
+                self.send_event(CONNECTIVITY_ERROR);
+            }
         };
         this.pc.onsignalingstatechange = function (event) {
             console.log('onsignalingstatechange', event.target.signalingState);
@@ -96,6 +102,7 @@ export class Peer {
     }
 
     getStats() {
+        let self = this;
         const peer = this.pcPeers[Object.keys(this.pcPeers)[0]];
         const pc = peer.pc as RTCPeerConnection;
 
@@ -104,7 +111,7 @@ export class Peer {
 
             pc.getStats(track, (report) => {
                 console.log('getStats report', report);
-            }, logError);
+            }, self.logError);
         }
     }
 
@@ -118,8 +125,9 @@ export class Peer {
                 console.log('setLocalDescription', self.pc.localDescription);
                 // socket.emit('message', { to: socketId, 'sdp': pc.localDescription });
                 self.send_event(OFFER, self.pc.localDescription, { to: self.id });
-            }, logError);
-        }, logError);
+            }, self.logError);
+        },
+            self.logError);
     }
 
     createDataChannel() {
@@ -169,9 +177,9 @@ export class Peer {
                             console.log('setLocalDescription', self.pc.localDescription);
                             // socket.emit('exchange', { 'to': fromId, 'sdp': pc.localDescription });
                             self.send_event(OFFER, self.pc.localDescription, { to: message.from });
-                        }, logError);
-                    }, logError);
-            }, logError);
+                        }, self.logError);
+                    }, self.logError);
+            }, self.logError);
         }
         else if (message.type === ANSWER) {
             if (!this.nick)

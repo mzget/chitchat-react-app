@@ -3,9 +3,6 @@ const twilioIceServers = [
 ];
 const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
 const RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.msRTCPeerConnection;
-function logError(error) {
-    console.log("logError", error);
-}
 export const CANDIDATE = "candidate";
 export const PEER_STREAM_ADDED = "peerStreamAdded";
 export const PEER_STREAM_REMOVED = "peerStreamRemoved";
@@ -16,6 +13,9 @@ export const ANSWER = "answer";
 export const OFFER = "offer";
 export class Peer {
     constructor(parents) {
+        this.logError = (error) => {
+            console.log(error);
+        };
         this.id = parents.peer_id;
         this.pcPeers = parents.pcPeers;
         this.parentsEmitter = parents.emitter;
@@ -40,6 +40,10 @@ export class Peer {
             if (event.target.iceConnectionState === 'connected') {
                 self.createDataChannel();
             }
+            else if (event.target.iceConnectionState == "failed") {
+                self.parentsEmitter.emit('iceFailed', self);
+                self.send_event(CONNECTIVITY_ERROR);
+            }
         };
         this.pc.onsignalingstatechange = function (event) {
             console.log('onsignalingstatechange', event.target.signalingState);
@@ -55,13 +59,14 @@ export class Peer {
         this.pc.addStream(parents.stream);
     }
     getStats() {
+        let self = this;
         const peer = this.pcPeers[Object.keys(this.pcPeers)[0]];
         const pc = peer.pc;
         if (pc.getRemoteStreams()[0] && pc.getRemoteStreams()[0].getAudioTracks()[0]) {
             const track = pc.getRemoteStreams()[0].getAudioTracks()[0];
             pc.getStats(track, (report) => {
                 console.log('getStats report', report);
-            }, logError);
+            }, self.logError);
         }
     }
     createOffer() {
@@ -71,8 +76,8 @@ export class Peer {
             self.pc.setLocalDescription(desc, function () {
                 console.log('setLocalDescription', self.pc.localDescription);
                 self.send_event(OFFER, self.pc.localDescription, { to: self.id });
-            }, logError);
-        }, logError);
+            }, self.logError);
+        }, self.logError);
     }
     createDataChannel() {
         let self = this;
@@ -110,9 +115,9 @@ export class Peer {
                         self.pc.setLocalDescription(desc, function () {
                             console.log('setLocalDescription', self.pc.localDescription);
                             self.send_event(OFFER, self.pc.localDescription, { to: message.from });
-                        }, logError);
-                    }, logError);
-            }, logError);
+                        }, self.logError);
+                    }, self.logError);
+            }, self.logError);
         }
         else if (message.type === ANSWER) {
             if (!this.nick)
