@@ -51,11 +51,22 @@ class WebRtc extends React.Component {
             console.log("leftRoom", roomName);
         });
         this.webrtc.on("createdPeer", peer => {
-            console.log("createdPeer", peer);
+            if (!peer.stream) {
+                const peerId = self.webrtc.getDomId(peer);
+                ReactDOM.render(<MuiThemeProvider>
+                        <div className='videoContainer' id={`container_${peerId}`}>
+                            <div style={{ width: '640px', height: '480px', background: 'black' }}>
+                            </div>
+                        </div>
+                    </MuiThemeProvider>, ReactDOM.findDOMNode(self.refs.remotes));
+            }
         });
         this.webrtc.on('videoAdded', this.addVideo);
         this.webrtc.on('videoRemoved', this.removeVideo);
         this.webrtc.on('readyToCall', this.readyToCall);
+        this.webrtc.on('localMediaError', (err) => {
+            console.warn('Fail to start local media: ', err);
+        });
         this.webrtc.on('iceFailed', function (peer) {
             console.warn("iceFailed", peer);
             let connstate = document.querySelector('#container_' + self.webrtc.getDomId(peer) + ' .connectionstate');
@@ -93,6 +104,7 @@ class WebRtc extends React.Component {
     }
     addVideo(video, peer) {
         console.log("addVideo", video, peer);
+        const self = this;
         let remotes = ReactDOM.findDOMNode(this.refs.remotes);
         if (remotes) {
             const peerId = this.webrtc.getDomId(peer);
@@ -122,7 +134,6 @@ class WebRtc extends React.Component {
                     }
                 });
             }
-            const self = this;
             this.webrtc.on('remoteVolumeChange', function (peer, volume) {
                 if (volume !== null) {
                     self.showVolume(document.getElementById(`remoteVolume_${peerId}`), volume);

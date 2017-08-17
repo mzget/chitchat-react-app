@@ -1,4 +1,4 @@
-export default class AudioCtx {
+class AudioCtx {
     static getInstance() {
         if (AudioCtx.instance == null || AudioCtx.instance == undefined) {
             AudioCtx.instance = new (window.AudioContext || window.webkitAudioContext)();
@@ -6,3 +6,4 @@ export default class AudioCtx {
         return AudioCtx.instance;
     }
 }
+export default AudioCtx;

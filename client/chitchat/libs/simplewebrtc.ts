@@ -274,7 +274,11 @@ class SimpleWebRTC extends WildEmitter {
         if (this.sessionReady) {
             if (!this.config.media.video && !this.config.media.audio) {
                 self.emit('readyToCall', self.connection.getSessionid());
-            } else if (this.webrtc.localStreams.length > 0) {
+            }
+            else if (this.webrtc.localStreams.length > 0) {
+                self.emit('readyToCall', self.connection.getSessionid());
+            }
+            else { //without media
                 self.emit('readyToCall', self.connection.getSessionid());
             }
         }
@@ -362,6 +366,10 @@ class SimpleWebRTC extends WildEmitter {
             if (err) {
                 self.emit('error', err);
             }
+            else if (Object.keys(roomDescription.clients).length === 0) {
+                // alert("roomDescription clients empty");
+                self.emit('error', "roomDescription clients empty");
+            }
             else {
                 let id, client, type, peer;
                 for (id in roomDescription.clients) {
@@ -394,6 +402,7 @@ class SimpleWebRTC extends WildEmitter {
         this.webrtc.start(this.config.media, function (err, stream) {
             if (err) {
                 self.emit('localMediaError', err);
+                self.config.localVideoEl.style.background = 'black';
             } else {
                 attachMediaStream(stream, self.getLocalVideoContainer(), self.config.localVideo);
             }

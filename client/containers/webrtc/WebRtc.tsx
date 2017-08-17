@@ -74,11 +74,25 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
             console.log("leftRoom", roomName);
         });
         this.webrtc.on("createdPeer", peer => {
-            console.log("createdPeer", peer);
+            if (!peer.stream) {
+                const peerId = self.webrtc.getDomId(peer);
+                ReactDOM.render(
+                    <MuiThemeProvider>
+                        <div className='videoContainer' id={`container_${peerId}`}>
+                            <div style={{ width: '640px', height: '480px', background: 'black' }}>
+                            </div>
+                        </div>
+                    </MuiThemeProvider>,
+                    ReactDOM.findDOMNode(self.refs.remotes),
+                );
+            }
         });
         this.webrtc.on('videoAdded', this.addVideo);
         this.webrtc.on('videoRemoved', this.removeVideo);
         this.webrtc.on('readyToCall', this.readyToCall);
+        this.webrtc.on('localMediaError', (err) => {
+            console.warn('Fail to start local media: ', err);
+        });
         // local p2p/ice failure
         this.webrtc.on('iceFailed', function (peer) {
             console.warn("iceFailed", peer);
@@ -123,103 +137,36 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
 
     addVideo(video, peer) {
         console.log("addVideo", video, peer);
-
-        //  console.log(this.refs.remotes);
+        const self = this;
         let remotes = ReactDOM.findDOMNode(this.refs.remotes);
-        // console.log(remotes);
         if (remotes) {
-            // let container = document.createElement('div');
-            // let videoWrapper = document.createElement('div');
-            // videoWrapper.style.width = '640px';
-            // videoWrapper.style.height = '480px';
-            // videoWrapper.style.position = 'relative';
-            // videoWrapper.appendChild(video);
-            // container.className = 'videoContainer';
-            // container.id = 'container_' + this.webrtc.getDomId(peer);
-
-            // if (this.webrtc.config.enableDataChannels) {
-            //     var vol = document.createElement('meter');
-            //     // vol.className = 'volume';
-            //     vol.style.position = 'absolute';
-            //     vol.style.left = '15%';
-            //     vol.style.width = '70%';
-            //     vol.style.bottom = '2px';
-            //     vol.style.height = '5px';
-            //     // vol.id = 'remoteVolume_' + this.webrtc.getDomId(peer);
-            //     vol.min = -45;
-            //     vol.max = -20;
-            //     vol.low = -40;
-            //     vol.high = -25;
-            //     videoWrapper.appendChild(vol);
-
-            //     const self = this;
-            //     this.webrtc.on('remoteVolumeChange', function (peer, volume) {
-            //         if (volume !== null) {
-            //             self.showVolume(vol, volume);
-            //         }
-            //     });
-            // }
-
-            // slider.style.display = 'initial';
-            // let input = slider.getElementsByTagName('input')[0];
-            // input.onChange = (e) => {
-            //     console.warn(e.target.value);
-            //     // video.volume = volume;
-            // }
-            // videoWrapper.appendChild(slider);
-
-            // suppress contextmenu
-            // video.oncontextmenu = function () {
-            //     return false;
-            // };
-            // container.appendChild(videoWrapper);
-            // remotes.appendChild(container);
-
-            // show the ice connection state
             const peerId = this.webrtc.getDomId(peer);
             if (peer && peer.pc) {
-                // let connstate = document.createElement('div');
-                // connstate.className = 'connectionstate';
-                // container.appendChild(connstate);
-
                 peer.pc.on('iceConnectionStateChange', function (event) {
                     let connstate = document.getElementById('connstate_' + peerId);
                     if (!connstate) return;
                     switch (peer.pc.iceConnectionState) {
                         case 'checking':
                             connstate.innerText = 'Connecting to peer...';
-                            // connstate = 'Connecting to peer...';
                             break;
                         case 'connected':
                             connstate.innerText = 'connected...';
-                            // connstate = 'connected...';
                             break;
                         case 'completed': // on caller side
                             connstate.innerText = 'Connection established.';
-                            // connstate = 'Connection established.';
                             break;
                         case 'disconnected':
                             connstate.innerText = 'Disconnected.';
-                            // connstate = 'Disconnected.';
                             break;
                         case 'failed':
                             break;
                         case 'closed':
                             connstate.innerText = 'Connection closed.';
-                            // connstate = 'Connection closed.';
                             break;
                     }
                 });
             }
-            // let container = document.createElement('div');
-            // remotes.appendChild(container);
 
-            // input.onChange = (e) => {
-            //     console.warn(e.target.value);
-            //     // video.volume = volume;
-            // }
-
-            const self = this;
             this.webrtc.on('remoteVolumeChange', function (peer, volume) {
                 if (volume !== null) {
                     self.showVolume(document.getElementById(`remoteVolume_${peerId}`), volume);
