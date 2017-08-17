@@ -11,7 +11,7 @@ import * as React from "react";
 import * as ReactDOM from 'react-dom';
 
 import Flexbox from "flexbox-react";
-import SimpleWebRTC from 'simplewebrtc';
+import SimpleWebRTC from '../../chitchat/libs/simplewebrtc';
 
 import { signalingServer } from "../../Chitchat";
 

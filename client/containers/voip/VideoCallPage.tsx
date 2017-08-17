@@ -11,7 +11,7 @@ import { RaisedButton, FontIcon, Slider, Paper } from "material-ui";
 import { IComponentProps } from "../../utils/IComponentProps";
 
 import { SimpleToolbar } from "../../components/SimpleToolbar";
-import { WebRtcPage } from "../webrtc/";
+import { WebRtcPage } from "./";
 
 interface IComponentNameState {
 }
