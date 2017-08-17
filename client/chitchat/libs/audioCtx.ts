@@ -1,4 +1,4 @@
-export default class AudioCtx {
+class AudioCtx {
     private static instance: AudioCtx;
     public static getInstance(): AudioCtx {
         if (AudioCtx.instance == null || AudioCtx.instance == undefined) {
@@ -8,3 +8,5 @@ export default class AudioCtx {
         return AudioCtx.instance;
     }
 }
+
+export default AudioCtx;

@@ -3,14 +3,10 @@ var hark = require('hark');
 var getScreenMedia = require('getscreenmedia');
 var WildEmitter = require('wildemitter');
 var mockconsole = require('mockconsole');
-var MicGainController = require('./mediastream-gain');
+import MicGainController from './mediastream-gain';
 
 function isAllTracksEnded(stream) {
-    var isAllTracksEnded = true;
-    stream.getTracks().forEach(function (t) {
-        isAllTracksEnded = t.readyState === 'ended' && isAllTracksEnded;
-    });
-    return isAllTracksEnded;
+    return stream.getTracks().every(track => track.readyState === 'ended');
 }
 
 function shouldWorkAroundFirefoxStopStream() {
@@ -52,7 +48,8 @@ function LocalMedia(opts) {
 
     this.localStreams = [];
     this.localScreens = [];
-    this.gainController = null;
+    this.unControllMic = [];
+    // this.gainController = null;
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         this._logerror('Your browser does not support local media capture.');
@@ -72,22 +69,27 @@ LocalMedia.prototype.start = function (mediaConstraints, cb) {
     this.emit('localStreamRequested', constraints);
 
     navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
+        let controllableMic = new MicGainController(stream);
+
+        stream.addTrack(controllableMic.outputMic);
+        self.unControllMic.push(stream.getAudioTracks()[0]);
+        stream.removeTrack(stream.getAudioTracks()[0]);
+
+        self.localStreams.push(stream);
+
         if (constraints.audio && self.config.detectSpeakingEvents) {
             self._setupAudioMonitor(stream, self.config.harkOptions);
         }
 
-        self.gainController = new MicGainController(stream);
-        self.localStreams.push(self.gainController.stream);
-
         self.on('changeLocalVolume', (vol) => {
-            if (!!self.gainController) {
+            if (!!controllableMic) {
                 if (vol == 0) {
                     self.mute();
                 }
                 else {
                     self.unmute();
                 }
-                self.gainController.setGain(vol);
+                controllableMic.setGain(vol);
             }
         });
 
@@ -295,6 +297,7 @@ LocalMedia.prototype._removeStream = function (stream) {
             this.emit('localScreenStopped', stream);
         }
     }
+    this.unControllMic.map(each => each.stop());
 };
 
 LocalMedia.prototype._setupAudioMonitor = function (stream, harkOptions) {
@@ -337,4 +340,4 @@ LocalMedia.prototype._stopAudioMonitor = function (stream) {
     }
 };
 
-module.exports = LocalMedia;
+export default LocalMedia;

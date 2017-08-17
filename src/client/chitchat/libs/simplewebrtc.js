@@ -16,6 +16,9 @@ class SimpleWebRTC extends WildEmitter {
                 else if (this.webrtc.localStreams.length > 0) {
                     self.emit('readyToCall', self.connection.getSessionid());
                 }
+                else {
+                    self.emit('readyToCall', self.connection.getSessionid());
+                }
             }
         };
         this.handlePeerStreamAdded = function (peer) {
@@ -87,6 +90,9 @@ class SimpleWebRTC extends WildEmitter {
                 if (err) {
                     self.emit('error', err);
                 }
+                else if (Object.keys(roomDescription.clients).length === 0) {
+                    self.emit('error', "roomDescription clients empty");
+                }
                 else {
                     let id, client, type, peer;
                     for (id in roomDescription.clients) {
@@ -118,6 +124,7 @@ class SimpleWebRTC extends WildEmitter {
             this.webrtc.start(this.config.media, function (err, stream) {
                 if (err) {
                     self.emit('localMediaError', err);
+                    self.config.localVideoEl.style.background = 'black';
                 }
                 else {
                     attachMediaStream(stream, self.getLocalVideoContainer(), self.config.localVideo);
