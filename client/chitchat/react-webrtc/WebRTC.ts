@@ -14,25 +14,11 @@ export class WebRtc {
     socket = io.connect('https://chitchats.ga:8888', { 'force new connection': true }); //{ transports: ['websocket'] }
     myEmitter = new events.EventEmitter();
     localStream;
+    roomName: string;
 
     constructor() {
         let self = this;
         this.exchange = this.exchange.bind(this);
-
-        self.myEmitter.on(Peer.PEER_STREAM_ADDED, (stream) => {
-
-        });
-        self.myEmitter.on(Peer.PEER_STREAM_REMOVED, (peer) => {
-            let videoEl = peer.videoEl;
-            if (videoEl)
-                self.myEmitter.emit('videoRemoved', videoEl, peer);
-        });
-        self.myEmitter.on(Peer.CONNECTIVITY_ERROR, (peer) => {
-        });
-        self.myEmitter.on(Peer.MUTE, (data) => {
-        });
-        self.myEmitter.on(Peer.UNMUTE, (data) => {
-        });
 
         self.socket.on('connect', function (data) {
             console.log("SOCKET connect", self.socket.id);
@@ -48,10 +34,12 @@ export class WebRtc {
         });
         self.socket.on('leave', function (socketId) {
             console.log("SOCKET leave", socketId);
+
             self.leave(socketId);
         });
         self.socket.on('remove', function (room) {
             console.log("SOCKET remove", room, self.socket.id);
+
             if (room.id !== self.socket.id) {
                 //@ Web
                 // self.webrtc.removePeers(room.id, room.type);
@@ -105,42 +93,48 @@ export class WebRtc {
     join(roomname) {
         let self = this;
         this.socket.emit('join', roomname, function (err, roomDescription) {
-            console.log('join', err, roomDescription);
+            console.log('join', roomDescription);
             if (err) {
                 self.myEmitter.emit('error', err);
             }
             else {
                 let id, client, type, peer;
-                for (id in roomDescription.clients) {
-                    client = roomDescription.clients[id];
-                    for (type in client) {
-                        if (client[type]) {
-                            peer = self.createPeer({
-                                id: id,
-                                type: type,
-                                offer: true
-                            });
-                            self.myEmitter.emit('createdPeer', peer.pc);
+                let clients = roomDescription.clients;
+                for (id in clients) {
+                    console.log("id", id);
+                    if (clients.hasOwnProperty(id)) {
+                        client = clients[id];
+                        for (type in client) {
+                            if (client[type]) {
+                                peer = self.createPeer({
+                                    id: id,
+                                    type: type,
+                                    offer: true
+                                });
+                                self.myEmitter.emit('createdPeer', peer);
+                            }
                         }
                     }
                 }
             }
 
+            self.roomName = roomname;
             self.myEmitter.emit('joinedRoom', roomname);
         });
     }
 
-    createPeer(options) {
+    createPeer(options: { id, type, offer }) {
         let self = this;
 
         let parents = {
-            socket_id: this.socket.id,
+            peer_id: options.id,
+            offer: options.offer,
             stream: this.localStream,
             pcPeers: this.peers,
             emitter: this.myEmitter,
             sendHandler: this.send.bind(this)
         };
-        let peer = new Peer.Peer(parents, options);
+        let peer = new Peer.Peer(parents);
         this.peers[options.id] = peer;
         return peer;
     }
@@ -162,7 +156,7 @@ export class WebRtc {
                     // sharemyscreen: message.roomType === 'screen' && !message.broadcaster,
                     // broadcaster: message.roomType === 'screen' && !message.broadcaster ? self.connection.getSessionid() : null
                 });
-                self.myEmitter.emit('createdPeer', peer.pc);
+                self.myEmitter.emit('createdPeer', peer);
             }
 
             peer.handleMessage(message);
@@ -187,8 +181,21 @@ export class WebRtc {
         const viewIndex = pc.viewIndex;
         pc.close();
 
-        this.myEmitter.emit(Peer.PEER_STREAM_REMOVED, pc);
+        this.myEmitter.emit(Peer.PEER_STREAM_REMOVED);
 
         delete this.peers[socketId];
     }
+
+
+    leaveRoom() {
+        if (this.roomName) {
+            this.socket.emit('leave');
+            this.roomName = "";
+        }
+    };
+
+    disconnect() {
+        this.socket.disconnect();
+        delete this.socket;
+    };
 }

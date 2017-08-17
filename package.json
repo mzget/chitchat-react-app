@@ -72,7 +72,8 @@
     "stalk-js": "0.0.3-f21",
     "typeface-roboto": "0.0.35",
     "valid-url": "^1.0.9",
-    "validate.js": "^0.11.1"
+    "validate.js": "^0.11.1",
+    "webrtc-adapter": "^4.2.2"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -61,7 +61,9 @@ const getView = (props) => {
             }
         }}/>
                             </Flexbox>) : (<Flexbox flexDirection="row" alignItems={"center"}>
-                                    <FontIcon className="material-icons" style={{ marginRight: 24, fontSize: 48, cursor: 'pointer' }} color={Colors.lightGreen500} onClick={props.onVideoCall}>video_call</FontIcon>
+                                    <FontIcon className="material-icons" style={{ marginRight: 24, fontSize: 48, cursor: 'pointer' }} color={Colors.lightGreen500} onClick={props.onVideoCall}>
+                                        video_call
+                                        </FontIcon>
                                 </Flexbox>)}
                 </Flexbox>
             </div>);

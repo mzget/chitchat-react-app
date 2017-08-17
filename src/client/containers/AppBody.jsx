@@ -1,10 +1,16 @@
 import * as React from "react";
+import Flexbox from "flexbox-react";
+import FontIcon from 'material-ui/FontIcon';
+import * as Colors from "material-ui/styles/colors";
 import { ChatPage } from "./Chat";
 import { Post } from "./Post";
 import { ProfileDetailEnhanced } from "./profile/ProfileDetailEnhancer";
 import { AddMembersEnhanced } from "./roomSettings/AddMembers";
 import { GroupDetailEnhanced } from "./roomSettings/GroupDetailEnhancer";
 ;
+const onVideoCall = ({ history }) => {
+    history.push(`/videocall/exe`);
+};
 const getview = (props) => {
     let { match, history, onError, userReducer } = props;
     if (match.params.filter == "user") {
@@ -25,7 +31,12 @@ const getview = (props) => {
         }
     }
     else {
-        return <Post />;
+        return (<Flexbox flexDirection="row" alignItems={"center"}>
+                <Post />
+                <FontIcon className="material-icons" style={{ marginRight: 24, fontSize: 48, cursor: 'pointer' }} color={Colors.lightGreen500} onClick={() => onVideoCall({ history })}>
+                    video_call
+                    </FontIcon>
+            </Flexbox>);
     }
 };
 export const AppBody = (props) => (<div>   {getview(props)}

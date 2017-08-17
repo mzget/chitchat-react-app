@@ -50,9 +50,6 @@ class WebRtc extends React.Component {
         this.webrtc.on("leftRoom", (roomName) => {
             console.log("leftRoom", roomName);
         });
-        this.webrtc.on("createdPeer", peer => {
-            console.log("createdPeer", peer);
-        });
         this.webrtc.on('videoAdded', this.addVideo);
         this.webrtc.on('videoRemoved', this.removeVideo);
         this.webrtc.on('readyToCall', this.readyToCall);
@@ -92,15 +89,16 @@ class WebRtc extends React.Component {
         });
     }
     addVideo(video, peer) {
-        console.log("addVideo", video, peer);
         let remotes = ReactDOM.findDOMNode(this.refs.remotes);
         if (remotes) {
             const peerId = this.webrtc.getDomId(peer);
             if (peer && peer.pc) {
+                console.log("videoCall peer", peer);
                 peer.pc.on('iceConnectionStateChange', function (event) {
                     let connstate = document.getElementById('connstate_' + peerId);
                     if (!connstate)
                         return;
+                    console.log("WTF", peer.pc.iceConnectionState);
                     switch (peer.pc.iceConnectionState) {
                         case 'checking':
                             connstate.innerText = 'Connecting to peer...';
@@ -164,7 +162,6 @@ class WebRtc extends React.Component {
         }
     }
     removeVideo(video, peer) {
-        console.log("removeVideo", video, peer);
         let remotes = ReactDOM.findDOMNode(this.refs.remotes);
         let el = document.getElementById(peer ? 'container_' + this.webrtc.getDomId(peer) : 'localScreenContainer');
         if (remotes && el) {
