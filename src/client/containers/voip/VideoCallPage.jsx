@@ -6,7 +6,7 @@ import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
 import { RaisedButton, FontIcon, Slider, Paper } from "material-ui";
 import { SimpleToolbar } from "../../components/SimpleToolbar";
-import { WebRtcPage } from "../webrtc/";
+import { WebRtcPage } from "./";
 class VideoCall extends React.Component {
     constructor(props) {
         super(props);
