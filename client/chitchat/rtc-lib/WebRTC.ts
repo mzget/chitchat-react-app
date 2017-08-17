@@ -1,0 +1,194 @@
+const RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription || window.msRTCSessionDescription;
+navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia || navigator.msGetUserMedia;
+
+import * as io from 'socket.io-client';
+import * as events from "events";
+import * as Peer from "./Peer";
+
+function logError(error) {
+    console.log("logError", error);
+}
+
+export class WebRtc {
+    peers = {};
+    socket = io.connect('https://chitchats.ga:8888', { 'force new connection': true }); //{ transports: ['websocket'] }
+    myEmitter = new events.EventEmitter();
+    localStream;
+
+    constructor() {
+        let self = this;
+        this.exchange = this.exchange.bind(this);
+
+        self.myEmitter.on(Peer.PEER_STREAM_ADDED, (stream) => {
+
+        });
+        self.myEmitter.on(Peer.PEER_STREAM_REMOVED, (peer) => {
+            let videoEl = peer.videoEl;
+            if (videoEl)
+                self.myEmitter.emit('videoRemoved', videoEl, peer);
+        });
+        self.myEmitter.on(Peer.CONNECTIVITY_ERROR, (peer) => {
+        });
+        self.myEmitter.on(Peer.MUTE, (data) => {
+        });
+        self.myEmitter.on(Peer.UNMUTE, (data) => {
+        });
+
+        self.socket.on('connect', function (data) {
+            console.log("SOCKET connect", self.socket.id);
+            self.myEmitter.emit('connectionReady', self.socket.id);
+
+            self.getLocalStream(function (stream) {
+                self.localStream = stream;
+                self.myEmitter.emit("readyToCall", stream);
+            });
+        });
+        self.socket.on('message', function (data) {
+            self.exchange(data);
+        });
+        self.socket.on('leave', function (socketId) {
+            console.log("SOCKET leave", socketId);
+            self.leave(socketId);
+        });
+        self.socket.on('remove', function (room) {
+            console.log("SOCKET remove", room, self.socket.id);
+            if (room.id !== self.socket.id) {
+                //@ Web
+                // self.webrtc.removePeers(room.id, room.type);
+                //@ Mobile
+                self.leave(room.id);
+            }
+        });
+        self.socket.on('disconnect', (data) => {
+            console.log("SOCKET disconnect", data);
+        });
+        self.socket.on('reconnect', (data) => {
+            console.log("SOCKET reconnect", data);
+        });
+        self.socket.on('reconnectAttempt', (data) => {
+            console.log("SOCKET reconnectAttempt", data);
+        });
+        self.socket.on('error', (data) => {
+            console.log("SOCKET error", data);
+        });
+        self.socket.on('*', function (data) {
+            console.log("SOCKET ***", data);
+        });
+    }
+
+    // send via signalling channel
+    send(messageType: string, payload?, optional?: { to: string }) {
+        let self = this;
+        let message = {
+            to: optional.to,
+            // sid: self.sid,
+            // broadcaster: this.broadcaster,
+            // roomType: self.type,
+            type: messageType,
+            payload: payload,
+            // prefix: webrtcSupport.prefix
+        };
+        self.socket.emit('message', message);
+    };
+
+    getLocalStream(callback: (stream) => void) {
+        let self = this;
+        navigator.getUserMedia({ "audio": true, "video": true }, function (stream) {
+            self.localStream = stream;
+            // selfView.src = URL.createObjectURL(stream);
+            // selfView.muted = true;
+
+            callback(stream);
+        }, logError);
+    }
+
+    join(roomname) {
+        let self = this;
+        this.socket.emit('join', roomname, function (err, roomDescription) {
+            console.log('join', err, roomDescription);
+            if (err) {
+                self.myEmitter.emit('error', err);
+            }
+            else {
+                let id, client, type, peer;
+                for (id in roomDescription.clients) {
+                    client = roomDescription.clients[id];
+                    for (type in client) {
+                        if (client[type]) {
+                            peer = self.createPeer({
+                                id: id,
+                                type: type,
+                                offer: true
+                            });
+                            self.myEmitter.emit('createdPeer', peer.pc);
+                        }
+                    }
+                }
+            }
+
+            self.myEmitter.emit('joinedRoom', roomname);
+        });
+    }
+
+    createPeer(options) {
+        let self = this;
+
+        let parents = {
+            socket_id: this.socket.id,
+            stream: this.localStream,
+            pcPeers: this.peers,
+            emitter: this.myEmitter,
+            sendHandler: this.send.bind(this)
+        };
+        let peer = new Peer.Peer(parents, options);
+        this.peers[options.id] = peer;
+        return peer;
+    }
+
+    exchange(message) {
+        let self = this;
+        const fromId = message.from;
+        const roomType = message.roomType;
+        let peer = this.peers[fromId];
+
+        if (message.type === 'offer') {
+            if (!peer) {
+                peer = self.createPeer({
+                    id: message.from,
+                    // sid: message.sid,
+                    type: message.roomType,
+                    offer: false,
+                    // enableDataChannels: self.config.enableDataChannels && message.roomType !== 'screen',
+                    // sharemyscreen: message.roomType === 'screen' && !message.broadcaster,
+                    // broadcaster: message.roomType === 'screen' && !message.broadcaster ? self.connection.getSessionid() : null
+                });
+                self.myEmitter.emit('createdPeer', peer.pc);
+            }
+
+            peer.handleMessage(message);
+        }
+        // else if (peers.length) {
+        //     peers.forEach(function (peer) {
+        //         if (message.sid) {
+        //             if (peer.sid === message.sid) {
+        //                 peer.handleMessage(message);
+        //             }
+        //         } else {
+        //             peer.handleMessage(message);
+        //         }
+        //     });
+        // }
+    }
+
+    leave(socketId) {
+        console.log('leave', socketId);
+
+        const pc = this.peers[socketId].pc;
+        const viewIndex = pc.viewIndex;
+        pc.close();
+
+        this.myEmitter.emit(Peer.PEER_STREAM_REMOVED, pc);
+
+        delete this.peers[socketId];
+    }
+}

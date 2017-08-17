@@ -87,7 +87,6 @@ export class DataListener implements ServerListener, ChatEvents.IChatServerEvent
     //#region User.
 
     onUserLogin(dataEvent) {
-        console.log("user loged In", JSON.stringify(dataEvent));
         this.dataManager.onUserLogin(dataEvent);
     }
     onUserLogout(dataEvent) {
