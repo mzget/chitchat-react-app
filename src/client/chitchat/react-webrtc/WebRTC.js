@@ -3,7 +3,8 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || 
 import * as io from 'socket.io-client';
 import * as events from "events";
 import * as Peer from "./Peer";
-function logError(error) {
+import { PeerManager } from "./PeerManager";
+export function logError(error) {
     console.log("logError", error);
 }
 export class WebRTC {
@@ -14,6 +15,7 @@ export class WebRTC {
         this.signalingSocket = io.connect(configs.signalingUrl, configs.socketOptions);
         this.exchange = this.exchange.bind(this);
         this.onDisconnect = this.onDisconnect.bind(this);
+        this.peerManager = new PeerManager(this);
         self.signalingSocket.on('connect', function (data) {
             console.log("SOCKET connect", self.signalingSocket.id);
             self.webrtcEvents.emit(WebRTC.CONNECTION_READY, self.signalingSocket.id);
@@ -80,7 +82,7 @@ export class WebRTC {
                         client = clients[id];
                         for (type in client) {
                             if (client[type]) {
-                                peer = self.createPeer({
+                                peer = self.peerManager.createPeer({
                                     id: id,
                                     type: type,
                                     offer: true
@@ -95,21 +97,6 @@ export class WebRTC {
             self.webrtcEvents.emit('joinedRoom', roomname);
         });
     }
-    createPeer(options) {
-        let self = this;
-        let parents = {
-            peer_id: options.id,
-            offer: options.offer,
-            stream: this.localStream,
-            pcPeers: this.peers,
-            emitter: this.webrtcEvents,
-            sendHandler: this.send.bind(this)
-        };
-        let peer = new Peer.Peer(parents);
-        peer.logError = logError;
-        this.peers[options.id] = peer;
-        return peer;
-    }
     exchange(message) {
         let self = this;
         const fromId = message.from;
@@ -117,7 +104,7 @@ export class WebRTC {
         let peer = this.peers[fromId];
         if (message.type === 'offer') {
             if (!peer) {
-                peer = self.createPeer({
+                peer = self.peerManager.createPeer({
                     id: message.from,
                     type: message.roomType,
                     offer: false,

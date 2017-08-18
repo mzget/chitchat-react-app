@@ -4,8 +4,9 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || 
 import * as io from 'socket.io-client';
 import * as events from "events";
 import * as Peer from "./Peer";
+import { PeerManager } from "./PeerManager";
 
-function logError(error) {
+export function logError(error) {
     console.log("logError", error);
 }
 
@@ -15,6 +16,7 @@ export class WebRTC {
     webrtcEvents = new events.EventEmitter();
     localStream;
     roomName: string;
+    peerManager: PeerManager;
 
     static CONNECTION_READY = "connectionReady";
 
@@ -25,6 +27,8 @@ export class WebRTC {
 
         this.exchange = this.exchange.bind(this);
         this.onDisconnect = this.onDisconnect.bind(this);
+
+        this.peerManager = new PeerManager(this);
 
         self.signalingSocket.on('connect', function (data) {
             console.log("SOCKET connect", self.signalingSocket.id);
@@ -104,7 +108,7 @@ export class WebRTC {
                         client = clients[id];
                         for (type in client) {
                             if (client[type]) {
-                                peer = self.createPeer({
+                                peer = self.peerManager.createPeer({
                                     id: id,
                                     type: type,
                                     offer: true
@@ -121,23 +125,6 @@ export class WebRTC {
         });
     }
 
-    createPeer(options: { id, type, offer }) {
-        let self = this;
-
-        let parents = {
-            peer_id: options.id,
-            offer: options.offer,
-            stream: this.localStream,
-            pcPeers: this.peers,
-            emitter: this.webrtcEvents,
-            sendHandler: this.send.bind(this)
-        };
-        let peer = new Peer.Peer(parents);
-        peer.logError = logError;
-        this.peers[options.id] = peer;
-        return peer;
-    }
-
     exchange(message) {
         let self = this;
         const fromId = message.from;
@@ -146,7 +133,7 @@ export class WebRTC {
 
         if (message.type === 'offer') {
             if (!peer) {
-                peer = self.createPeer({
+                peer = self.peerManager.createPeer({
                     id: message.from,
                     // sid: message.sid,
                     type: message.roomType,

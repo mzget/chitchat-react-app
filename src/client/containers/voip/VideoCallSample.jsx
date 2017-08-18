@@ -27,7 +27,8 @@ class VideoCall extends React.Component {
             isPauseVideo: false,
             micVol: 100,
             selfViewSrc: null,
-            remoteSrc: null
+            remoteSrc: null,
+            peerStat: ""
         };
         let rtcConfig = {
             signalingUrl: signalingServer,
@@ -36,13 +37,13 @@ class VideoCall extends React.Component {
         this.webrtc = new WebRTC(rtcConfig);
         this.onBackPressed = this.onBackPressed.bind(this);
         this.onTitlePressed = this.onTitlePressed.bind(this);
-        this.addVideo = this.addVideo.bind(this);
+        this.peerAdded = this.peerAdded.bind(this);
         this.removeVideo = this.removeVideo.bind(this);
         this.readyToCall = this.readyToCall.bind(this);
         this.connectionReady = this.connectionReady.bind(this);
         this.disconnect = this.disconnect.bind(this);
         this.webrtc.webrtcEvents.on(WebRTC.CONNECTION_READY, this.connectionReady);
-        this.webrtc.webrtcEvents.on(Peer.PEER_STREAM_ADDED, this.addVideo);
+        this.webrtc.webrtcEvents.on(Peer.PEER_STREAM_ADDED, this.peerAdded);
         this.webrtc.webrtcEvents.on(Peer.PEER_STREAM_REMOVED, this.removeVideo);
         this.webrtc.webrtcEvents.on(Peer.CONNECTIVITY_ERROR, (peer) => {
             console.log(Peer.CONNECTIVITY_ERROR, peer);
@@ -69,14 +70,39 @@ class VideoCall extends React.Component {
     componentWillUnmount() {
         this.disconnect();
     }
-    addVideo(stream) {
-        console.log("addvideo", stream);
+    peerAdded(peer) {
+        console.log("peerAdded", peer);
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
-        remotesView.src = URL.createObjectURL(stream);
+        remotesView.src = URL.createObjectURL(peer.stream);
         remotesView.muted = true;
         remotesView.autoplay = true;
         remotesView.mirror = false;
-        this.setState({ remoteSrc: stream });
+        if (peer && peer.pc) {
+            let peerStat = "";
+            peer.pc.on('iceConnectionStateChange', function (event) {
+                switch (peer.pc.iceConnectionState) {
+                    case 'checking':
+                        peerStat = 'Connecting to peer...';
+                        break;
+                    case 'connected':
+                        peerStat = 'connected...';
+                        break;
+                    case 'completed':
+                        peerStat = 'Connection established.';
+                        break;
+                    case 'disconnected':
+                        peerStat = 'Disconnected.';
+                        break;
+                    case 'failed':
+                        break;
+                    case 'closed':
+                        peerStat = 'Connection closed.';
+                        break;
+                }
+                this.setState({ peerStat: peerStat });
+            });
+        }
+        this.setState({ remoteSrc: peer.stream });
     }
     removeVideo() {
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
@@ -132,7 +158,7 @@ class VideoCall extends React.Component {
                         </video>
                     </div>
                 </Flexbox>
-                <video style={{ width: "100%" }} className="remotes" id="remoteVideos" ref="remotes">
+                <video style={{ width: "100%", height: "300px" }} className="remotes" id="remoteVideos" ref="remotes">
                 </video>
             </Flexbox>);
     }

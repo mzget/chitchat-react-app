@@ -25,6 +25,7 @@ export class Peer {
     pcPeers;
     browserPrefix;
     nick;
+    stream: any;
     send_event: (messageType: string, payload?: any, optional?: { to: string }) => void;
     logError = (error) => {
         console.log(error);
@@ -79,14 +80,14 @@ export class Peer {
         this.pc.onsignalingstatechange = function (event) {
             console.log('onsignalingstatechange', event.target.signalingState);
         };
-        this.pc.onaddstream = function (event) {
-            console.log('onaddstream', event.stream);
+        this.pc.onaddstream = function (peer) {
+            console.log('onaddstream', peer.stream);
 
-            self.parentsEmitter.emit(PEER_STREAM_ADDED, event.stream);
+            self.parentsEmitter.emit(PEER_STREAM_ADDED, peer);
         };
-        this.pc.onremovestream = function (event) {
-            console.log('onremovestream', event.stream);
-            self.parentsEmitter.emit(PEER_STREAM_REMOVED, event.stream);
+        this.pc.onremovestream = function (peer) {
+            console.log('onremovestream', peer.stream);
+            self.parentsEmitter.emit(PEER_STREAM_REMOVED, peer.stream);
         };
 
         this.pc.addStream(parents.stream);
