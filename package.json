@@ -1,8 +1,8 @@
 {
   "name": "chitchat-react-app",
-  "version": "0.2.7",
+  "version": "0.2.8-beta",
   "private": true,
-  "homepage": "/chitchat",
+  "homepage": "/",
   "devDependencies": {
     "@types/async": "^2.0.41",
     "@types/crypto-js": "^3.1.32",
