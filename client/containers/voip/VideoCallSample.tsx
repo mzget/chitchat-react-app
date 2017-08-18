@@ -118,6 +118,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 
     readyToCall(stream) {
         let self = this;
+        let { match } = this.props;
 
         let selfView = getEl(ReactDOM.findDOMNode(this.refs.localVideo));
         // let video = document.createElement('video');
@@ -131,7 +132,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 
         this.setState({ selfViewSrc: stream });
 
-        this.webrtc.join("exe");
+        this.webrtc.join(match.params.id);
     }
 
     componentWillMount() {

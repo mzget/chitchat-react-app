@@ -1,6 +1,3 @@
-const twilioIceServers = [
-    { url: 'stun:global.stun.twilio.com:3478?transport=udp' }
-];
 const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
 const RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.msRTCPeerConnection;
 export const CANDIDATE = "candidate";

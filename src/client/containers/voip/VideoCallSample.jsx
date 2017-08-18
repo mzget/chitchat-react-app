@@ -88,6 +88,7 @@ class VideoCall extends React.Component {
     }
     readyToCall(stream) {
         let self = this;
+        let { match } = this.props;
         let selfView = getEl(ReactDOM.findDOMNode(this.refs.localVideo));
         if (!selfView)
             return;
@@ -96,7 +97,7 @@ class VideoCall extends React.Component {
         selfView.autoplay = true;
         selfView.mirror = false;
         this.setState({ selfViewSrc: stream });
-        this.webrtc.join("exe");
+        this.webrtc.join(match.params.id);
     }
     componentWillMount() {
         if (!this.props.teamReducer.team) {
