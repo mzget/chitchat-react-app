@@ -9,18 +9,17 @@ Compatible with Chrome and Firefox.
 import * as React from "react";
 import * as ReactDOM from 'react-dom';
 import { connect } from "react-redux";
-import { shallowEqual } from "recompose";
+import { shallowEqual, compose } from "recompose";
 import { withRouter } from "react-router-dom";
+import Flexbox from "flexbox-react";
 import Slider from 'material-ui/Slider';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-
-import Flexbox from "flexbox-react";
 
 import { signalingServer } from "../../Chitchat";
 import * as utils from "../../utils/";
 import * as chatroom from "../../chitchat/chats/redux/chatroom/";
 import * as calling from "../../chitchat/calling/";
-import SimpleWebRTC from '../../chitchat/libs/simplewebrtc';
+import { WebRTC } from '../../chitchat/react-webrtc/WebRTC';
 
 class WebRtc extends React.Component<utils.IComponentProps, any> {
     webrtc: any;
@@ -54,17 +53,22 @@ class WebRtc extends React.Component<utils.IComponentProps, any> {
         let self = this;
         let { stalkReducer } = this.props;
 
-        this.webrtc = new SimpleWebRTC({
-            localVideoEl: ReactDOM.findDOMNode(this.refs.localVideo),
-            remoteVideosEl: "",
-            autoRequestMedia: true,
-            enableDataChannels: true,
-            // adjustPeerVolume: true,
-            url: signalingServer,
-            socketio: { 'force new connection': true },
-            debug: false,
-            detectSpeakingEvents: true,
-        });
+        // this.webrtc = new SimpleWebRTC({
+        //     localVideoEl: ReactDOM.findDOMNode(this.refs.localVideo),
+        //     remoteVideosEl: "",
+        //     autoRequestMedia: true,
+        //     enableDataChannels: true,
+        //     // adjustPeerVolume: true,
+        //     url: signalingServer,
+        //     socketio: { 'force new connection': true },
+        //     debug: false,
+        //     detectSpeakingEvents: true,
+        // });
+        let rtcConfig = {
+            signalingUrl: signalingServer,
+            socketOptions: { 'force new connection': true }
+        }
+        this.webrtc = new WebRTC(rtcConfig);
         this.props.getWebRtc(this.webrtc);
 
         this.webrtc.on('connectionReady', function (sessionId) {
@@ -339,5 +343,8 @@ const mapStateToProps = (state) => ({
     alertReducer: state.alertReducer,
     stalkReducer: state.stalkReducer
 });
-export var WebRtcPage = connect(mapStateToProps)(WebRtc) as React.ComponentClass<any>;
-WebRtcPage = withRouter(WebRtcPage);
+const enhance = compose(
+    withRouter,
+    connect(mapStateToProps)
+);
+export const WebRtcPage = enhance(WebRtc);

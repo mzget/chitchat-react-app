@@ -8,7 +8,8 @@ import * as Colors from "material-ui/styles/colors";
 import { RaisedButton, FontIcon, Slider, Paper } from "material-ui";
 import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
 
-import { WebRtc } from "../../chitchat/react-webrtc/WebRTC";
+import { signalingServer } from "../../Chitchat";
+import { WebRTC } from "../../chitchat/react-webrtc/WebRTC";
 import * as Peer from "../../chitchat/react-webrtc/Peer";
 
 import { IComponentProps } from "../../utils/IComponentProps";
@@ -28,7 +29,7 @@ function getEl(idOrEl) {
 };
 
 class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
-    webrtc = new WebRtc();
+    webrtc: WebRTC;
     remotesView;
     selfView;
 
@@ -43,6 +44,12 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
             remoteSrc: null
         }
 
+        let rtcConfig = {
+            signalingUrl: signalingServer,
+            socketOptions: { 'force new connection': true }
+        }
+        this.webrtc = new WebRTC(rtcConfig);
+
         this.onBackPressed = this.onBackPressed.bind(this);
         this.onTitlePressed = this.onTitlePressed.bind(this);
 
@@ -52,8 +59,8 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.connectionReady = this.connectionReady.bind(this);
         this.disconnect = this.disconnect.bind(this);
 
-        this.webrtc.webrtcEvents.on(WebRtc.CONNECTION_READY, this.connectionReady);
-        this.webrtc.webrtcEvents.on(WebRtc.READY_TO_CALL, this.readyToCall);
+        this.webrtc.webrtcEvents.on(WebRTC.CONNECTION_READY, this.connectionReady);
+        this.webrtc.webrtcEvents.on(WebRTC.READY_TO_CALL, this.readyToCall);
         this.webrtc.webrtcEvents.on(Peer.PEER_STREAM_ADDED, this.addVideo);
         this.webrtc.webrtcEvents.on(Peer.PEER_STREAM_REMOVED, this.removeVideo);
         this.webrtc.webrtcEvents.on(Peer.CONNECTIVITY_ERROR, (peer) => {
@@ -72,7 +79,8 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 
     connectionReady(socker_id) {
         let self = this;
-        this.webrtc.getLocalStream(function (stream) {
+        let requestMedia = { video: true, audio: true };
+        this.webrtc.getLocalStream(requestMedia, function (stream) {
             self.readyToCall(stream);
         });
     }
@@ -125,32 +133,6 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.setState({ selfViewSrc: stream });
 
         this.webrtc.join("exe");
-
-        // let { match, userReducer: { user }, stalkReducer } = this.props;
-        // let incommingCall = stalkReducer.get("incommingCall");
-        // if (!!incommingCall) {
-        //     this.webrtc.join(incommingCall.room_id, () => {
-        //         self.props.dispatch(calling.onCalling(incommingCall.room_id));
-        //     });
-        // }
-        // else {
-        //     let room_id = match.params.id;
-        //     this.webrtc.join(room_id, () => {
-        //         self.props.dispatch(calling.onCalling(room_id));
-        //     });
-
-        // let room = chatroom.getRoom(room_id);
-        // let targets = new Array<string>();
-        // if (!!room) {
-        //     room.members.map(value => {
-        //         if (value._id !== user._id) {
-        //             targets.push(value._id);
-        //         }
-        //     });
-        // }
-
-        //     this.props.dispatch(calling.videoCall_Epic({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
-        // }
     }
 
     componentWillMount() {

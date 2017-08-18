@@ -15,7 +15,7 @@ import { WithDialog } from "./toolsbox/DialogBoxEnhancer";
 
 
 const onVideoCall = ({ history, roomName }) => {
-    history.push(`/videocall/${roomName}`);
+    history.push(`/groupcall/${roomName}`);
 };
 const enhance = compose(
     WithDialog,

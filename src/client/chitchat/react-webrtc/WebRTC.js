@@ -6,16 +6,16 @@ import * as Peer from "./Peer";
 function logError(error) {
     console.log("logError", error);
 }
-export class WebRtc {
-    constructor() {
+export class WebRTC {
+    constructor(configs) {
         this.peers = {};
-        this.signalingSocket = io.connect('https://chitchats.ga:8888', { 'force new connection': true });
         this.webrtcEvents = new events.EventEmitter();
         let self = this;
+        this.signalingSocket = io.connect(configs.signalingUrl, configs.socketOptions);
         this.exchange = this.exchange.bind(this);
         self.signalingSocket.on('connect', function (data) {
             console.log("SOCKET connect", self.signalingSocket.id);
-            self.webrtcEvents.emit(WebRtc.CONNECTION_READY, self.signalingSocket.id);
+            self.webrtcEvents.emit(WebRTC.CONNECTION_READY, self.signalingSocket.id);
         });
         self.signalingSocket.on('message', function (data) {
             self.exchange(data);
@@ -56,9 +56,9 @@ export class WebRtc {
         self.signalingSocket.emit('message', message);
     }
     ;
-    getLocalStream(callback) {
+    getLocalStream(requestMedia, callback) {
         let self = this;
-        navigator.getUserMedia({ "audio": true, "video": true }, function (stream) {
+        navigator.getUserMedia(requestMedia, function (stream) {
             self.localStream = stream;
             callback(stream);
         }, logError);
@@ -149,5 +149,5 @@ export class WebRtc {
     }
     ;
 }
-WebRtc.CONNECTION_READY = "connectionReady";
-WebRtc.READY_TO_CALL = "readyToCall";
+WebRTC.CONNECTION_READY = "connectionReady";
+WebRTC.READY_TO_CALL = "readyToCall";

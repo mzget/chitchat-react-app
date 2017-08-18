@@ -1,15 +1,16 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { shallowEqual } from "recompose";
+import { shallowEqual, compose } from "recompose";
 import Flexbox from "flexbox-react";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import { RaisedButton, FontIcon, Slider, Paper } from "material-ui";
 
-import { IComponentProps } from "../../utils/IComponentProps";
 
+import { IComponentProps } from "../../utils/IComponentProps";
+import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
 import { SimpleToolbar } from "../../components/SimpleToolbar";
 import { WebRtcPage } from "./";
 
@@ -161,5 +162,9 @@ const mapStateToProps = (state) => ({
     teamReducer: state.teamReducer,
     stalkReducer: state.stalkReducer
 });
-export var VideoCallPage = connect(mapStateToProps)(VideoCall) as React.ComponentClass<{ onError }>;
-VideoCallPage = withRouter<any>(VideoCallPage);
+const enhance = compose(
+    withRouter,
+    WithDialog,
+    connect(mapStateToProps)
+);
+export const VideoCallPage = enhance(VideoCall);

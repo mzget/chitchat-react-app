@@ -12,7 +12,7 @@ import { AddMembersEnhanced } from "./roomSettings/AddMembers";
 import { GroupDetailEnhanced } from "./roomSettings/GroupDetailEnhancer";
 import { WithDialog } from "./toolsbox/DialogBoxEnhancer";
 const onVideoCall = ({ history, roomName }) => {
-    history.push(`/videocall/${roomName}`);
+    history.push(`/groupcall/${roomName}`);
 };
 const enhance = compose(WithDialog, withRouter, withState('roomName', 'setRoomName', ""));
 var VideoCallCreateRoomSample = enhance(({ roomName, setRoomName, history, onError }) => (<div>

@@ -6,7 +6,8 @@ import { shallowEqual, compose } from "recompose";
 import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
 import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
-import { WebRtc } from "../../chitchat/react-webrtc/WebRTC";
+import { signalingServer } from "../../Chitchat";
+import { WebRTC } from "../../chitchat/react-webrtc/WebRTC";
 import * as Peer from "../../chitchat/react-webrtc/Peer";
 import { SimpleToolbar } from "../../components/SimpleToolbar";
 function getEl(idOrEl) {
@@ -21,7 +22,6 @@ function getEl(idOrEl) {
 class VideoCall extends React.Component {
     constructor(props) {
         super(props);
-        this.webrtc = new WebRtc();
         this.state = {
             isMuteVoice: false,
             isPauseVideo: false,
@@ -29,6 +29,11 @@ class VideoCall extends React.Component {
             selfViewSrc: null,
             remoteSrc: null
         };
+        let rtcConfig = {
+            signalingUrl: signalingServer,
+            socketOptions: { 'force new connection': true }
+        };
+        this.webrtc = new WebRTC(rtcConfig);
         this.onBackPressed = this.onBackPressed.bind(this);
         this.onTitlePressed = this.onTitlePressed.bind(this);
         this.addVideo = this.addVideo.bind(this);
@@ -36,8 +41,8 @@ class VideoCall extends React.Component {
         this.readyToCall = this.readyToCall.bind(this);
         this.connectionReady = this.connectionReady.bind(this);
         this.disconnect = this.disconnect.bind(this);
-        this.webrtc.webrtcEvents.on(WebRtc.CONNECTION_READY, this.connectionReady);
-        this.webrtc.webrtcEvents.on(WebRtc.READY_TO_CALL, this.readyToCall);
+        this.webrtc.webrtcEvents.on(WebRTC.CONNECTION_READY, this.connectionReady);
+        this.webrtc.webrtcEvents.on(WebRTC.READY_TO_CALL, this.readyToCall);
         this.webrtc.webrtcEvents.on(Peer.PEER_STREAM_ADDED, this.addVideo);
         this.webrtc.webrtcEvents.on(Peer.PEER_STREAM_REMOVED, this.removeVideo);
         this.webrtc.webrtcEvents.on(Peer.CONNECTIVITY_ERROR, (peer) => {
@@ -55,7 +60,8 @@ class VideoCall extends React.Component {
     }
     connectionReady(socker_id) {
         let self = this;
-        this.webrtc.getLocalStream(function (stream) {
+        let requestMedia = { video: true, audio: true };
+        this.webrtc.getLocalStream(requestMedia, function (stream) {
             self.readyToCall(stream);
         });
     }
