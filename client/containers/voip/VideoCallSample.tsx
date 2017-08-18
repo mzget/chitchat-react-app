@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { shallowEqual } from "recompose";
+import { shallowEqual, compose } from "recompose";
 import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
 import { RaisedButton, FontIcon, Slider, Paper } from "material-ui";
@@ -202,6 +202,9 @@ const mapStateToProps = (state) => ({
     teamReducer: state.teamReducer,
     stalkReducer: state.stalkReducer
 });
-export var VideoCallSample = WithDialog(VideoCall);
-VideoCallSample = connect(mapStateToProps)(VideoCall) as React.ComponentClass<{ onError }>;
-VideoCallSample = withRouter<any>(VideoCallSample);
+const enhance = compose(
+    WithDialog,
+    withRouter,
+    connect(mapStateToProps)
+);
+export const VideoCallSample = enhance(VideoCall);
