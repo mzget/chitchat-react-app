@@ -49,23 +49,32 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.addVideo = this.addVideo.bind(this);
         this.removeVideo = this.removeVideo.bind(this);
         this.readyToCall = this.readyToCall.bind(this);
+        this.connectionReady = this.connectionReady.bind(this);
         this.disconnect = this.disconnect.bind(this);
 
-        this.webrtc.myEmitter.on("readyToCall", this.readyToCall);
-        this.webrtc.myEmitter.on(Peer.PEER_STREAM_ADDED, this.addVideo);
-        this.webrtc.myEmitter.on(Peer.PEER_STREAM_REMOVED, this.removeVideo);
-        this.webrtc.myEmitter.on(Peer.CONNECTIVITY_ERROR, (peer) => {
+        this.webrtc.webrtcEvents.on(WebRtc.CONNECTION_READY, this.connectionReady);
+        this.webrtc.webrtcEvents.on(WebRtc.READY_TO_CALL, this.readyToCall);
+        this.webrtc.webrtcEvents.on(Peer.PEER_STREAM_ADDED, this.addVideo);
+        this.webrtc.webrtcEvents.on(Peer.PEER_STREAM_REMOVED, this.removeVideo);
+        this.webrtc.webrtcEvents.on(Peer.CONNECTIVITY_ERROR, (peer) => {
             console.log(Peer.CONNECTIVITY_ERROR, peer);
         });
-        this.webrtc.myEmitter.on(Peer.MUTE, (data) => {
+        this.webrtc.webrtcEvents.on(Peer.MUTE, (data) => {
             console.log(Peer.MUTE, data);
         });
-        this.webrtc.myEmitter.on(Peer.UNMUTE, (data) => {
+        this.webrtc.webrtcEvents.on(Peer.UNMUTE, (data) => {
             console.log(Peer.UNMUTE, data);
         });
-        this.webrtc.myEmitter.on("error", (err) => console.log("joinRoom fail", err));
-        this.webrtc.myEmitter.on("createdPeer", (peer) => console.log("createdPeer", peer));
-        this.webrtc.myEmitter.on("joinedRoom", (roomName) => console.log("joinedRoom", roomName));
+        this.webrtc.webrtcEvents.on("error", (err) => console.log("joinRoom fail", err));
+        this.webrtc.webrtcEvents.on("createdPeer", (peer) => console.log("createdPeer", peer));
+        this.webrtc.webrtcEvents.on("joinedRoom", (roomName) => console.log("joinedRoom", roomName));
+    }
+
+    connectionReady(socker_id) {
+        let self = this;
+        this.webrtc.getLocalStream(function (stream) {
+            self.readyToCall(stream);
+        });
     }
 
     componentDidMount() {
@@ -77,13 +86,15 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     addVideo(stream) {
+        console.log("addvideo", stream);
+
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
         remotesView.src = URL.createObjectURL(stream);
         remotesView.muted = true;
         remotesView.autoplay = true;
         remotesView.mirror = false;
 
-        // this.setState({ remoteSrc: stream });
+        this.setState({ remoteSrc: stream });
     }
     removeVideo() {
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
@@ -111,7 +122,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         selfView.autoplay = true;
         selfView.mirror = false;
 
-        // this.setState({ selfViewSrc: stream });
+        this.setState({ selfViewSrc: stream });
 
         this.webrtc.join("exe");
 

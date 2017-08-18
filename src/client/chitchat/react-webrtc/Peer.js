@@ -42,7 +42,7 @@ export class Peer {
             }
             else if (event.target.iceConnectionState == "failed") {
                 self.parentsEmitter.emit('iceFailed', self);
-                self.send_event(CONNECTIVITY_ERROR);
+                self.send_event(CONNECTIVITY_ERROR, null, { to: self.id });
             }
         };
         this.pc.onsignalingstatechange = function (event) {

@@ -82,7 +82,7 @@ export class Peer {
                 // so we need to signal this to the peer
 
                 self.parentsEmitter.emit('iceFailed', self);
-                self.send_event(CONNECTIVITY_ERROR);
+                self.send_event(CONNECTIVITY_ERROR, null, { to: self.id });
             }
         };
         this.pc.onsignalingstatechange = function (event) {

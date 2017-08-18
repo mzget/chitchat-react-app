@@ -9,44 +9,40 @@ function logError(error) {
 export class WebRtc {
     constructor() {
         this.peers = {};
-        this.socket = io.connect('https://chitchats.ga:8888', { 'force new connection': true });
-        this.myEmitter = new events.EventEmitter();
+        this.signalingSocket = io.connect('https://chitchats.ga:8888', { 'force new connection': true });
+        this.webrtcEvents = new events.EventEmitter();
         let self = this;
         this.exchange = this.exchange.bind(this);
-        self.socket.on('connect', function (data) {
-            console.log("SOCKET connect", self.socket.id);
-            self.myEmitter.emit('connectionReady', self.socket.id);
-            self.getLocalStream(function (stream) {
-                self.localStream = stream;
-                self.myEmitter.emit("readyToCall", stream);
-            });
+        self.signalingSocket.on('connect', function (data) {
+            console.log("SOCKET connect", self.signalingSocket.id);
+            self.webrtcEvents.emit(WebRtc.CONNECTION_READY, self.signalingSocket.id);
         });
-        self.socket.on('message', function (data) {
+        self.signalingSocket.on('message', function (data) {
             self.exchange(data);
         });
-        self.socket.on('leave', function (socketId) {
+        self.signalingSocket.on('leave', function (socketId) {
             console.log("SOCKET leave", socketId);
             self.leave(socketId);
         });
-        self.socket.on('remove', function (room) {
-            console.log("SOCKET remove", room, self.socket.id);
-            if (room.id !== self.socket.id) {
+        self.signalingSocket.on('remove', function (room) {
+            console.log("SOCKET remove", room, self.signalingSocket.id);
+            if (room.id !== self.signalingSocket.id) {
                 self.leave(room.id);
             }
         });
-        self.socket.on('disconnect', (data) => {
+        self.signalingSocket.on('disconnect', (data) => {
             console.log("SOCKET disconnect", data);
         });
-        self.socket.on('reconnect', (data) => {
+        self.signalingSocket.on('reconnect', (data) => {
             console.log("SOCKET reconnect", data);
         });
-        self.socket.on('reconnectAttempt', (data) => {
+        self.signalingSocket.on('reconnectAttempt', (data) => {
             console.log("SOCKET reconnectAttempt", data);
         });
-        self.socket.on('error', (data) => {
+        self.signalingSocket.on('error', (data) => {
             console.log("SOCKET error", data);
         });
-        self.socket.on('*', function (data) {
+        self.signalingSocket.on('*', function (data) {
             console.log("SOCKET ***", data);
         });
     }
@@ -57,7 +53,7 @@ export class WebRtc {
             type: messageType,
             payload: payload,
         };
-        self.socket.emit('message', message);
+        self.signalingSocket.emit('message', message);
     }
     ;
     getLocalStream(callback) {
@@ -69,10 +65,10 @@ export class WebRtc {
     }
     join(roomname) {
         let self = this;
-        this.socket.emit('join', roomname, function (err, roomDescription) {
+        this.signalingSocket.emit('join', roomname, function (err, roomDescription) {
             console.log('join', roomDescription);
             if (err) {
-                self.myEmitter.emit('error', err);
+                self.webrtcEvents.emit('error', err);
             }
             else {
                 let id, client, type, peer;
@@ -88,14 +84,14 @@ export class WebRtc {
                                     type: type,
                                     offer: true
                                 });
-                                self.myEmitter.emit('createdPeer', peer);
+                                self.webrtcEvents.emit('createdPeer', peer);
                             }
                         }
                     }
                 }
             }
             self.roomName = roomname;
-            self.myEmitter.emit('joinedRoom', roomname);
+            self.webrtcEvents.emit('joinedRoom', roomname);
         });
     }
     createPeer(options) {
@@ -105,7 +101,7 @@ export class WebRtc {
             offer: options.offer,
             stream: this.localStream,
             pcPeers: this.peers,
-            emitter: this.myEmitter,
+            emitter: this.webrtcEvents,
             sendHandler: this.send.bind(this)
         };
         let peer = new Peer.Peer(parents);
@@ -125,7 +121,7 @@ export class WebRtc {
                     type: message.roomType,
                     offer: false,
                 });
-                self.myEmitter.emit('createdPeer', peer);
+                self.webrtcEvents.emit('createdPeer', peer);
             }
             peer.handleMessage(message);
         }
@@ -136,19 +132,22 @@ export class WebRtc {
         if (peer) {
             peer.pc.close();
         }
-        this.myEmitter.emit(Peer.PEER_STREAM_REMOVED);
+        this.webrtcEvents.emit(Peer.PEER_STREAM_REMOVED);
         delete this.peers[socketId];
     }
     leaveRoom() {
         if (this.roomName) {
-            this.socket.emit('leave');
+            this.signalingSocket.emit('leave');
             this.roomName = "";
         }
     }
     ;
     disconnect() {
-        this.socket.disconnect();
-        delete this.socket;
+        this.signalingSocket.disconnect();
+        delete this.peers;
+        delete this.signalingSocket;
     }
     ;
 }
+WebRtc.CONNECTION_READY = "connectionReady";
+WebRtc.READY_TO_CALL = "readyToCall";
