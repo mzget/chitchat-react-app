@@ -11,7 +11,7 @@ import * as adminRx from "./admin/adminRx";
 import * as groupRx from "./group/groupRx";
 import * as privateGroupRxActions from "./group/privateGroupRxActions";
 import * as editGroupRxActions from "./group/editGroupRxActions";
-import * as chitchatRxActions from "../actions/chitchatRxActions";
+import { stalkInitChatlog_Epic, getTeamsInfo_Epic } from "../actions/";
 
 export const rootEpic = combineEpics(
     // @Admin
@@ -28,10 +28,13 @@ export const rootEpic = combineEpics(
     userRx.getTeamProfileEpic,
     userRx.uploadUserAvatar_Epic,
     userRx.updateUserInfo_Epic,
+    userRx.saveDeviceToken_Epic,
 
     ///@ Signup user.
     authRx.signupUserEpic,
     authRx.authUser_Epic,
+    authRx.authSocial_Epic,
+    authRx.SignupSocial_Epic,
     authRx.tokenAuthUserEpic,
     authRx.logoutUser_Epic,
 
@@ -66,7 +69,6 @@ export const rootEpic = combineEpics(
     chatroom.updateMessagesRead_Epic,
     /// @message rx.
     // messageRxEpic.fetchOlderMessageCount_Epic,
-    calling.videoCall_Epic,
     calling.hangupVideoCall_Epic,
 
     ///@chatlogs
@@ -75,6 +77,6 @@ export const rootEpic = combineEpics(
     // chatlogRxActions.stalkInitChatlogs_Epic
     chatlogRxActions.removeRoomAccess_Epic,
 
-    chitchatRxActions.stalkInitChatlog_Epic,
-    chitchatRxActions.getTeamsInfo_Epic
+    stalkInitChatlog_Epic,
+    getTeamsInfo_Epic
 );

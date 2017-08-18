@@ -24,7 +24,7 @@ const epicMiddleware = createEpicMiddleware(rootRxEpic.rootEpic);
 
 let middlewares = [thunk, epicMiddleware, rootReducer.apolloMiddleWare] as Array<any>;
 
-let createStoreWithMiddleware = null;
+let createStoreWithMiddleware: any = null;
 
 if (process.env.NODE_ENV === `development`) {
     // const { logger } = require(`redux-logger`);
@@ -36,6 +36,7 @@ if (process.env.NODE_ENV === `development`) {
 }
 else {
     console.log = function () { };
+    console.warn = function () { };
     createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 }
 

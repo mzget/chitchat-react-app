@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as Colors from "material-ui/styles/colors";
 import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import Flexbox from "flexbox-react";
 import Subheader from 'material-ui/Subheader';
@@ -84,10 +83,12 @@ const getView = (props: ISubToolbar) => {
                                 <Flexbox flexDirection="row" alignItems={"center"}>
                                     <FontIcon
                                         className="material-icons"
-                                        style={{ marginRight: 24, fontSize: 48 }}
+                                        style={{ marginRight: 24, fontSize: 48, cursor: 'pointer' }}
                                         color={Colors.lightGreen500}
                                         onClick={props.onVideoCall}
-                                    >video_call</FontIcon>
+                                    >
+                                        video_call
+                                        </FontIcon>
                                 </Flexbox>
                             )
                     }

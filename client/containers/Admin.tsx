@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { shallowEqual } from "recompose";
 import Flexbox from "flexbox-react";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import Subheader from "material-ui/Subheader";
 
@@ -24,6 +23,7 @@ import * as groupRx from "../redux/group/groupRx";
 import * as privateGroupRxActions from "../redux/group/privateGroupRxActions";
 import { Room, RoomType, RoomStatus } from "../chitchat/chats/models/Room";
 import { UserRole } from "../chitchat/chats/models/UserRole";
+import { WithDialog } from "./toolsbox/DialogBoxEnhancer";
 
 enum BoxState {
     idle = 0, isCreateGroup = 1, isManageTeam, isManageMember, isManageRole, groupView, roleView
@@ -135,7 +135,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
             this.props.history.push("/admin/teamrole");
         }
         else if (key == this.developerIssue) {
-            window.open("https://github.com/mzget/chitchat-ionic-reference-implementation/issues", '_blank');
+            window.open("https://github.com/mzget/chitchat-react-app/issues", '_blank');
         }
     }
 
@@ -150,7 +150,7 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     }
     onTitlePressed() {
         let { history, teamReducer } = this.props;
-        history.replace(`/chatslist/${teamReducer.team.name}`);
+        history.replace(`/team/${teamReducer.team._id}`);
     }
 
     getAdminPanel() {
@@ -179,33 +179,34 @@ class Admin extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     public render(): JSX.Element {
+        let { teamReducer } = this.props;
         return (
-            <MuiThemeProvider>
-                <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
-                    <div style={{ position: "relative", height: "56px" }}>
-                        <div style={{ position: "fixed", width: "100%", zIndex: 1 }} >
-                            <SimpleToolbar
-                                title={this.props.teamReducer.team.name.toUpperCase()}
-                                onBackPressed={this.onBackPressed}
-                                onPressTitle={this.onTitlePressed} />
-                        </div>
+            <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50, overflowY: "hidden" }} height="100vh">
+                <div style={{ position: "relative", height: "56px" }}>
+                    <div style={{ position: "fixed", width: "100%", zIndex: 1 }} >
+                        <SimpleToolbar
+                            title={(!!teamReducer.team) ? this.props.teamReducer.team.name.toUpperCase() : ""}
+                            onBackPressed={this.onBackPressed}
+                            onPressTitle={this.onTitlePressed} />
                     </div>
-                    <Flexbox flexDirection="row" height="calc(100vh - 56px)">
-                        <Flexbox minWidth="400px" justifyContent="center">
-                            <MenuListview menus={this.menus} onSelectItem={this.onAdminMenuSelected} />
-                        </Flexbox>
-                        <Flexbox flexGrow={1} justifyContent="center">
-                            {
-                                this.getAdminPanel()
-                            }
-                        </Flexbox>
+                </div>
+                <Flexbox flexDirection="row" height="calc(100vh - 56px)">
+                    <Flexbox minWidth="400px" justifyContent="center">
+                        <MenuListview menus={this.menus} onSelectItem={this.onAdminMenuSelected} />
+                    </Flexbox>
+                    <Flexbox flexGrow={1} justifyContent="center">
+                        {
+                            this.getAdminPanel()
+                        }
                     </Flexbox>
                 </Flexbox>
-            </MuiThemeProvider >
+            </Flexbox>
         );
     }
 }
 
 const mapstateToProps = (state) => ({ ...state });
-export var AdminPage = connect(mapstateToProps)(Admin) as React.ComponentClass<any>;
-AdminPage = withRouter(AdminPage);
+export var AdminPage = connect(mapstateToProps)(Admin);
+AdminPage = withRouter<any>(AdminPage);
+
+export const AdminWithDialogEnhance = WithDialog(AdminPage);

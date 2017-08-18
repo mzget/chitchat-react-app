@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import * as Immutable from "immutable";
-import { withProps, withState, withHandlers, compose, lifecycle, shallowEqual } from "recompose";
+import { withState, withHandlers, compose, lifecycle, shallowEqual } from "recompose";
 import { GroupDetail } from "./GroupDetail";
 import * as editGroupRxActions from "../../redux/group/editGroupRxActions";
 import * as groupRx from "../../redux/group/groupRx";
@@ -117,11 +117,8 @@ const GroupDetailEnhancer = compose(
     })
 );
 
-export let GroupDetailEnhanced = GroupDetailEnhancer(({
-  group, image, group_name, group_description,
-    onGroupNameChange, onGroupDescriptionChange, onFileReaderChange,
-    onSubmit, onError, onFinished, history, match
- }: IEnhanceProps) =>
+export let GroupDetailEnhanced = GroupDetailEnhancer((
+    { group, image, group_name, group_description, onGroupNameChange, onGroupDescriptionChange, onFileReaderChange, onSubmit, onError, onFinished, history, match }: any) =>
     <GroupDetail
         image={image}
         group_name={group_name}

@@ -1,14 +1,16 @@
 import { History } from "history";
 import { StalkRecord } from "../chitchat/chats/redux/stalkBridge/";
+import { ChatLogRecord } from "../chitchat/chats/redux/chatlogs/";
+import { ChatRoomRecoder } from "../chitchat/chats/redux/chatroom";
 
 export interface IComponentProps {
-    onError?: (error: string) => void;
+    onError: (error: string) => void;
     location: Location;
     adminReducer;
     authReducer;
     userReducer: IUserReducer;
-    chatroomReducer;
-    chatlogReducer;
+    chatroomReducer: ChatRoomRecoder;
+    chatlogReducer: ChatLogRecord;
     stalkReducer: StalkRecord;
     teamReducer;
     groupReducer;
@@ -18,7 +20,6 @@ export interface IComponentProps {
     history: History;
     staticContext;
 }
-
 
 export class IUserReducer {
     isFetching: boolean;

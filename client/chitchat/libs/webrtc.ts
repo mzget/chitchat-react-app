@@ -1,27 +1,27 @@
 var util = require('util');
 var webrtcSupport = require('webrtcsupport');
 var mockconsole = require('mockconsole');
-var localMedia = require('localmedia');
-var Peer = require('./peer');
+import localMedia from './localmedia';
+import Peer from './peer';
 
 function WebRTC(opts) {
     var self = this;
     var options = opts || {};
     var config = this.config = {
-            debug: false,
-            // makes the entire PC config overridable
-            peerConnectionConfig: {
-                iceServers: [{'urls': 'stun:stun.l.google.com:19302'}]
-            },
-            peerConnectionConstraints: {
-                optional: []
-            },
-            receiveMedia: {
-                offerToReceiveAudio: 1,
-                offerToReceiveVideo: 1
-            },
-            enableDataChannels: true
-        };
+        debug: false,
+        // makes the entire PC config overridable
+        peerConnectionConfig: {
+            iceServers: [{ 'urls': 'stun:stun.l.google.com:19302' }]
+        },
+        peerConnectionConstraints: {
+            optional: []
+        },
+        receiveMedia: {
+            offerToReceiveAudio: 1,
+            offerToReceiveVideo: 1
+        },
+        enableDataChannels: true
+    };
     var item;
 
     // We also allow a 'logger' option. It can be any object that implements
@@ -35,8 +35,8 @@ function WebRTC(opts) {
         if (opts.debug) {
             return opts.logger || console;
         } else {
-        // or we'll use your logger which should have its own logic
-        // for output. Or we'll return the no-op.
+            // or we'll use your logger which should have its own logic
+            // for output. Or we'll return the no-op.
             return opts.logger || mockconsole;
         }
     }();
@@ -66,7 +66,7 @@ function WebRTC(opts) {
                 if (peer.enableDataChannels) {
                     var dc = peer.getDataChannel('hark');
                     if (dc.readyState != 'open') return;
-                    dc.send(JSON.stringify({type: 'speaking'}));
+                    dc.send(JSON.stringify({ type: 'speaking' }));
                 }
             });
         }
@@ -78,7 +78,7 @@ function WebRTC(opts) {
                 if (peer.enableDataChannels) {
                     var dc = peer.getDataChannel('hark');
                     if (dc.readyState != 'open') return;
-                    dc.send(JSON.stringify({type: 'stoppedSpeaking'}));
+                    dc.send(JSON.stringify({ type: 'stoppedSpeaking' }));
                 }
             });
         }
@@ -90,7 +90,7 @@ function WebRTC(opts) {
                 if (peer.enableDataChannels) {
                     var dc = peer.getDataChannel('hark');
                     if (dc.readyState != 'open') return;
-                    dc.send(JSON.stringify({type: 'volume', volume: volume }));
+                    dc.send(JSON.stringify({ type: 'volume', volume: volume }));
                 }
             });
         }
@@ -153,4 +153,4 @@ WebRTC.prototype.sendDirectlyToAll = function (channel, message, payload) {
     });
 };
 
-module.exports = WebRTC;
+export default WebRTC;

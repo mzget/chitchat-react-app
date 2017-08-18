@@ -4,7 +4,7 @@ import { Paper, Card, CardTitle } from "material-ui";
 import { darkWhite } from "material-ui/styles/colors";
 
 import { MemberList } from "./MemberList";
-const Styles = require("../styles/generalStyles");
+const Styles = require("../../styles/generalStyles");
 const PageBox = Styles.generalStyles.pageBox;
 
 export const TeamsList = (props: { onSelectMember, members }) => (
@@ -13,7 +13,7 @@ export const TeamsList = (props: { onSelectMember, members }) => (
             <Card>
                 <CardTitle title="Team Lists" />
             </Card>
-            <div style={PageBox}>
+            <div style={{ overflowY: "auto" }}>
                 <MemberList onSelected={props.onSelectMember} items={props.members} />
             </div>
         </Flexbox>

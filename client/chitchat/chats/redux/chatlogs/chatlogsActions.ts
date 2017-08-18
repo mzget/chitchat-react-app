@@ -25,10 +25,9 @@ export const STALK_CHATLOG_MAP_CHANGED = "STALK_CHATLOG_MAP_CHANGED";
 export const STALK_CHATLOG_CONTACT_COMPLETE = "STALK_CHATLOG_CONTACT_COMPLETE";
 
 const listenerImp = (newMsg) => {
-    let dataManager = BackendFactory.getInstance().dataManager;
     let chatsLogComp = BackendFactory.getInstance().chatLogComp;
 
-    if (!dataManager.isMySelf(newMsg.sender)) {
+    if (newMsg.sender != authReducer().user) {
         chatsLogComp.increaseChatsLogCount(1);
 
         let unread: IUnread = new Unread();
@@ -90,19 +89,20 @@ function getUnreadMessages() {
     let { _id } = authReducer().user;
     let { roomAccess, state } = getStore().getState().chatlogReducer;
 
-    chatsLogComp.getUnreadMessages(_id, roomAccess, function done(err, unreadLogs) {
-        if (!!unreadLogs) {
-            chatsLogComp.setUnreadMessageMap(unreadLogs);
+    if (roomAccess && roomAccess.length > 0) {
+        chatsLogComp.getUnreadMessages(_id, roomAccess, function done(err, unreadLogs) {
+            if (!!unreadLogs) {
+                chatsLogComp.setUnreadMessageMap(unreadLogs);
 
-            calculateUnreadCount();
+                calculateUnreadCount();
 
-            getUnreadMessageComplete();
-        }
-
-        if (roomAccess.length == 0) {
-            getChatsLog();
-        }
-    });
+                getUnreadMessageComplete();
+            }
+        });
+    }
+    else {
+        getChatsLog();
+    }
 }
 
 function calculateUnreadCount() {
@@ -133,10 +133,11 @@ function getUnreadMessageMap() {
 function getChatsLog() {
     let chatsLogComp = BackendFactory.getInstance().chatLogComp;
     let chatsLog = chatsLogComp.getChatsLog();
+    let logCount = chatsLogComp.getChatsLogCount();
 
     getStore().dispatch({
         type: STALK_GET_CHATSLOG_COMPLETE,
-        payload: chatsLog
+        payload: { chatsLog, logCount }
     });
 }
 
@@ -151,9 +152,10 @@ async function onUnreadMessageMapChanged(unread: IUnread) {
     }
 
     let chatsLog = chatsLogComp.getChatsLog();
+    let logCount = chatsLogComp.getChatsLogCount();
     getStore().dispatch({
         type: STALK_CHATLOG_MAP_CHANGED,
-        payload: chatsLog
+        payload: { chatsLog, logCount }
     });
 }
 

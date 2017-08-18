@@ -6,6 +6,7 @@ import {
     UPDATE_USER_INFO_FAILURE
 } from "../user/userRx";
 import * as authRx from "../authen/authRx";
+import * as teamRx from "../team/teamRx";
 import { UPDATE_LAST_ACCESS_ROOM_FAILURE } from "../../chitchat/chats/redux/chatlogs/chatlogRxActions";
 import * as editGroupActions from "../group/editGroupRxActions";
 import * as adminRx from "../admin/adminRx";
@@ -39,6 +40,9 @@ export const alertReducer = (state = new AlertInitState(), action: ReduxActions.
         case authRx.AUTH_USER_FAILURE: {
             return state.set("error", JSON.stringify(action.payload));
         }
+        case authRx.AUTH_SOCIAL_FAILURE: {
+            return state.set("error", action.payload);
+        }
         case authRx.TOKEN_AUTH_USER_FAILURE: {
             return state;
         }
@@ -64,6 +68,16 @@ export const alertReducer = (state = new AlertInitState(), action: ReduxActions.
         /**calling actions */
         case calling.VIDEO_CALL_FAILURE: {
             return state.set("error", JSON.stringify(action.payload));
+        }
+
+        case teamRx.CREATE_TEAM_FAILURE: {
+            return state.set("error", JSON.stringify(action.payload.message));
+        }
+        case teamRx.JOIN_TEAM_FAILURE: {
+            return state.set("error", JSON.stringify(action.payload.message));
+        }
+        case teamRx.GET_TEAMS_INFO_FAILURE: {
+            return state.set("error", JSON.stringify(action.payload.message));
         }
 
         case CLEAR_ALERT:

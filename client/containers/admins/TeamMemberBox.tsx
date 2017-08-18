@@ -20,9 +20,6 @@ import { ITeamMember } from "../../chitchat/chats/models/ITeamMember";
 import { IOrgChart } from "../../chitchat/chats/models/OrgChart";
 import { UserRole } from "../../chitchat/chats/models/UserRole";
 
-const Styles = require("../../styles/generalStyles");
-const PageBox = Styles.generalStyles.pageBox;
-
 interface ICompProps extends IComponentProps {
     teamRole: string;
 }
@@ -147,9 +144,7 @@ export class TeamMemberBox extends React.Component<ICompProps, IComponentState> 
                         this.setState(prev => ({ ...prev, teamRoleValue: value }));
                     }}
                 />
-                : <TeamsList
-                    onSelectMember={this.onSelectMember}
-                    members={this.props.teamReducer.members} />
+                : <TeamsList onSelectMember={this.onSelectMember} members={this.props.teamReducer.members} />
         );
     }
 }

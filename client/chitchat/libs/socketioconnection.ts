@@ -1,4 +1,5 @@
 const io = require('socket.io-client');
+
 class SocketIoConnection {
     connection;
 
@@ -22,4 +23,4 @@ class SocketIoConnection {
     }
 }
 
-module.exports = SocketIoConnection;
+export default SocketIoConnection;

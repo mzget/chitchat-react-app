@@ -4,8 +4,8 @@ const { Observable } = Rx;
 const { ajax, fromPromise } = Observable;
 
 import Store from "../configureStore";
+import { BackendFactory } from "../../chitchat/chats/BackendFactory";
 import * as authService from "../../chitchat/chats/services/authService";
-
 import * as AppActions from "../app/persistentDataActions";
 import * as stalkBridgeActions from "../../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 
@@ -48,6 +48,7 @@ export const authUser_Epic = action$ =>
         .mergeMap(response => Rx.Observable.from(response.json()))
         .map((result: any) => {
             if (result.success) {
+                AppActions.saveSession(result.result);
                 return authUserSuccess(result.result);
             }
             else {
@@ -58,8 +59,56 @@ export const authUser_Epic = action$ =>
         .catch(error =>
             Rx.Observable.of(authUserFailure((error.message))));
 
+export const AUTH_FETCHING = "AUTH_FETCHING";
+export const authFetching = createAction(AUTH_FETCHING);
 
-const TOKEN_AUTH_USER = "TOKEN_AUTH_USER";
+export const AUTH_SOCIAL = "AUTH_SOCIAL";
+export const AUTH_SOCIAL_FAILURE = "AUTH_SOCIAL_FAILURE";
+export const AUTH_SOCIAL_SUCCESS = "AUTH_SOCIAL_SUCCESS";
+export const authSocial = createAction(AUTH_SOCIAL, ({ email, social_type }) => ({ email, social_type }));
+export const authSocial_Failure = createAction(AUTH_SOCIAL_FAILURE, error => error);
+export const authSocial_Success = createAction(AUTH_SOCIAL_SUCCESS, payload => payload);
+export const authSocial_Epic = (action$) =>
+    action$.ofType(AUTH_SOCIAL)
+        .mergeMap(action => Rx.Observable.fromPromise(authService.authWithSocial(action.payload)))
+        .mergeMap(response => Rx.Observable.from(response.json()))
+        .map((result: any) => {
+            if (result.success) {
+                AppActions.saveSession(result.result);
+                return authSocial_Success(result.result);
+            }
+            else {
+                return authSocial_Failure(result.message);
+            }
+        })
+        .takeUntil(action$.ofType(AUTH_USER_CANCELLED))
+        .catch(error => Rx.Observable.of(authSocial_Failure((error.message))));
+
+const SIGNUP_SOCIAL = "SIGNUP_SOCIAL";
+const SIGNUP_SOCIAL_FAILURE = "SIGNUP_SOCIAL_FAILURE";
+const SIGNUP_SOCIAL_SUCCESS = "SIGNUP_SOCIAL_SUCCESS";
+const SIGNUP_SOCIAL_CANCELLED = "SIGNUP_SOCIAL_CANCELLED";
+export const signupSocial = createAction(SIGNUP_SOCIAL, user => user);
+export const signupSocial_Failure = createAction(SIGNUP_SOCIAL_FAILURE, error => error);
+export const signupSocial_Success = createAction(SIGNUP_SOCIAL_SUCCESS, payload => payload);
+const signupSocial_Cancelled = createAction(SIGNUP_SOCIAL_CANCELLED);
+export const SignupSocial_Epic = (action$) => {
+    return action$.filter(action => action.type === SIGNUP_SOCIAL)
+        .mergeMap(action => Rx.Observable.fromPromise(authService.signup(action.payload)))
+        .mergeMap(response => Rx.Observable.from(response.json()))
+        .map((result: any) => {
+            if (result.success) {
+                return signupSocial_Success(result.result);
+            }
+            else {
+                return signupSocial_Failure(result.message);
+            }
+        })
+        .takeUntil(action$.ofType(SIGNUP_SOCIAL_CANCELLED))
+        .catch(error => Rx.Observable.of(signupSocial_Failure((error.message))));
+}
+
+export const TOKEN_AUTH_USER = "TOKEN_AUTH_USER";
 export const TOKEN_AUTH_USER_SUCCESS = "TOKEN_AUTH_USER_SUCCESS";
 export const TOKEN_AUTH_USER_FAILURE = "TOKEN_AUTH_USER_FAILURE";
 const TOKEN_AUTH_USER_CANCELLED = "TOKEN_AUTH_USER_CANCELLED";
@@ -87,7 +136,6 @@ const LOG_OUT = "LOG_OUT";
 export const LOG_OUT_SUCCESS = "LOG_OUT_SUCCESS";
 const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
 const LOG_OUT_CANCELLED = "LOG_OUT_CANCELLED";
-
 export const logout = createAction(LOG_OUT, payload => payload);
 const logoutSuccess = createAction(LOG_OUT_SUCCESS, payload => payload);
 const logoutFailure = createAction(LOG_OUT_FAILURE, payload => payload);
@@ -97,8 +145,10 @@ export const logoutUser_Epic = action$ => action$.ofType(LOG_OUT)
     .mergeMap(response => Rx.Observable.fromPromise(response.json()))
     .map(result => {
         if (result.success) {
-            AppActions.removeSession();
+            AppActions.clearSession();
+            BackendFactory.getInstance().dataManager.messageDAL.clearData((err) => console.warn(err));
             stalkBridgeActions.stalkLogout();
+
             return logoutSuccess(result.result);
         }
         else {

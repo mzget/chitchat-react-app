@@ -122,7 +122,7 @@ export function checkOlderMessages() {
             chatroomService.getOlderMessagesCount(room._id, res.toString(), false)
                 .then(response => response.json())
                 .then((result: any) => {
-                    console.log("getOlderMessagesCount", result);
+                    console.log("getEarlyMessagesCount", result);
                     if (result.success && result.result > 0) {
                         //               console.log("onOlderMessageReady is true ! Show load earlier message on top view.");
                         dispatch(onEarlyMessageReady(true));
@@ -132,19 +132,25 @@ export function checkOlderMessages() {
                         dispatch(onEarlyMessageReady(false));
                     }
                 }).catch(err => {
-                    console.warn("getOlderMessagesCount fail", err);
+                    console.warn("getEarlyMessagesCount fail", err);
                     dispatch(onEarlyMessageReady(false));
                 });
         });
     };
 }
 
+export const LOAD_EARLY_MESSAGE = "LOAD_EARLY_MESSAGE";
 export const LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
+const loadEarlyMessage = createAction(LOAD_EARLY_MESSAGE, payload => payload);
 const loadEarlyMessage_success = (payload) => ({ type: LOAD_EARLY_MESSAGE_SUCCESS, payload });
 export function loadEarlyMessageChunk(room_id: string) {
     return dispatch => {
-        ChatRoomComponent.getInstance().getOlderMessageChunk(room_id).then(docs => {
+        dispatch(loadEarlyMessage(room_id));
+
+        let chatroom = ChatRoomComponent.getInstance();
+        chatroom.getOlderMessageChunk(room_id).then(docs => {
             dispatch(loadEarlyMessage_success(docs));
+
             // @check older message again.
             dispatch(checkOlderMessages());
 
@@ -169,8 +175,11 @@ export function getNewerMessageFromNet() {
         dispatch(getNewerMessage());
 
         let token = authReducer().chitchat_token;
-        ChatRoomComponent.getInstance().getNewerMessageRecord(token, (results, room_id: string) => {
-            dispatch(getNewerMessage_success(results));
+        let chatroom = ChatRoomComponent.getInstance();
+        chatroom.getNewerMessageRecord(token, (results, room_id: string) => {
+            chatroom.decryptMessage(results).then(messages => {
+                dispatch(getNewerMessage_success(messages));
+            });
 
             //# update messages read.
             if (results.length > 0) {
@@ -202,26 +211,25 @@ export function sendMessage(message: IMessage) {
 
         if (message.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption === true) {
             const secure = SecureServiceFactory.getService();
-            secure.encryption(message.body)
-                .then(result => {
-                    message.body = result;
+            secure.encryption(message.body).then(result => {
+                message.body = result;
 
-                    let backendFactory = BackendFactory.getInstance();
-                    let chatApi = backendFactory.getServer().getChatRoomAPI();
-                    chatApi.pushByUids({ data: message } as any).then((result: any) => {
-                        if (result.code !== 200) {
-                            dispatch(sendMessageResponse(result, null));
-                        }
-                        else {
-                            dispatch(sendMessageResponse(null, result));
-                        }
-                    }).catch(err => {
-                        dispatch(sendMessageResponse(err, null));
-                    });
+                let backendFactory = BackendFactory.getInstance();
+                let chatApi = backendFactory.getServer().getChatRoomAPI();
+                chatApi.pushByUids({ data: message } as any).then((result: any) => {
+                    if (result.code !== 200) {
+                        dispatch(sendMessageResponse(result, null));
+                    }
+                    else {
+                        dispatch(sendMessageResponse(null, result));
+                    }
                 }).catch(err => {
-                    console.error(err);
-                    dispatch(send_message_failure(err));
+                    dispatch(sendMessageResponse(err, null));
                 });
+            }).catch(err => {
+                console.error(err);
+                dispatch(send_message_failure(err));
+            });
         }
         else {
             let backendFactory = BackendFactory.getInstance();
@@ -378,12 +386,12 @@ export const createChatRoom = (myUser, contactUser) => {
         let owner = {} as IMember;
         owner._id = myUser._id;
         owner.user_role = (myUser.role) ? myUser.role : "user";
-        owner.username = myUser.username;
+        owner.username = `${myUser.firstname} ${myUser.lastname}`;
 
         let contact = {} as IMember;
         contact._id = contactUser._id;
         contact.user_role = (contactUser.role) ? contactUser.role : "user";
-        contact.username = contactUser.username;
+        contact.username = `${contactUser.firstname} ${contactUser.lastname}`;
 
         let members = { owner, contact };
 

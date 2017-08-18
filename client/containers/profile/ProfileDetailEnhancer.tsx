@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { withProps, withState, withHandlers, compose, lifecycle, shallowEqual } from "recompose";
+import { withState, withHandlers, compose, lifecycle, shallowEqual } from "recompose";
 
 import { ProfileDetail } from "./ProfileDetail";
 import * as userRx from "../../redux/user/userRx";
@@ -8,6 +8,8 @@ import * as userRx from "../../redux/user/userRx";
 import { ChitChatAccount } from "../../chitchat/chats/models/User";
 import { ITeamProfile } from "../../chitchat/chats/models/TeamProfile";
 import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
+import { IComponentProps } from "../../utils/IComponentProps";
+
 const config = () => ChitChatFactory.getInstance().config;
 
 interface IEnhanceProps {
@@ -35,7 +37,7 @@ const ProfileDetailEnhancer = compose(
     withState("user", "updateUser", ({ user }) => user),
     withState("imageFile", "setImageFile", null),
     lifecycle({
-        componentWillReceiveProps(nextProps) {
+        componentWillReceiveProps(nextProps: IComponentProps) {
             let { userReducer, alertReducer } = nextProps;
 
             if (userReducer.state == userRx.UPLOAD_USER_AVATAR_SUCCESS) {
@@ -60,6 +62,12 @@ const ProfileDetailEnhancer = compose(
         }
     }),
     withHandlers({
+        onUserNameChange: (props: IEnhanceProps) => (event, newValue) => {
+            let user = props.user;
+            user["username"] = newValue;
+
+            props.updateUser(prev => user);
+        },
         onFirstNameChange: (props: IEnhanceProps) => (event, newValue) => {
             let user = props.user;
             user["firstname"] = newValue;
@@ -102,12 +110,11 @@ const ProfileDetailEnhancer = compose(
 
 export const ProfileDetailEnhanced = ProfileDetailEnhancer(({
     user, teamProfile, alert,
-    onFirstNameChange, onLastNameChange,
-    onTelNumberChange, onSubmit,
-    onFileReaderChange }: any) =>
+    onUserNameChange, onFirstNameChange, onLastNameChange, onTelNumberChange, onSubmit, onFileReaderChange }: any) =>
     <ProfileDetail
         user={user}
         teamProfile={teamProfile}
+        onUserNameChange={onUserNameChange}
         onFirstNameChange={onFirstNameChange}
         onLastNameChange={onLastNameChange}
         onTelNumberChange={onTelNumberChange}

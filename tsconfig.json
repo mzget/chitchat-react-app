@@ -4,8 +4,10 @@
     "watch": true,
     "jsx": "preserve",
     "target": "es2015",
-    "module": "es2015",
+    "module": "esnext",
     "moduleResolution": "node",
+    "removeComments": true,
+    "strictNullChecks": true,
     "rootDirs": [
       "client"
     ],

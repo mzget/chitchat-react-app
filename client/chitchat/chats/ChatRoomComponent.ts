@@ -6,16 +6,13 @@
 
 import * as async from "async";
 import * as Rx from "rxjs";
+import { Stalk, ChatEvents, ServerImplemented } from "stalk-js";
 
 import { BackendFactory } from "./BackendFactory";
 import { DataManager } from "./DataManager";
 import { DataListener } from "./DataListener";
-import { Stalk, ChatEvents, ServerImplemented } from "stalk-js";
 import * as CryptoHelper from "./utils/CryptoHelper";
 import * as chatroomService from "./services/chatroomService";
-
-import { ISecureService } from "./secure/ISecureService";
-import { SecureServiceFactory } from "./secure/secureServiceFactory";
 
 import { Room, IMember, MessageImp } from "./models/";
 import { RoomAccessData, MessageType, IMessage } from "../shared/";
@@ -28,13 +25,18 @@ const getStore = () => ChitChatFactory.getInstance().store;
 import { ServerEventListener } from "./ServerEventListener";
 
 export const ON_MESSAGE_CHANGE = "ON_MESSAGE_CHANGE";
+export function getStickerPath(message: IMessage) {
+    let sticker_id = parseInt(message.body);
+    message["src"] = imagesPath[sticker_id].img;
+
+    return message as MessageImp;
+}
 
 export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
     private static instance: ChatRoomComponent;
     public static getInstance() {
         return ChatRoomComponent.instance;
     }
-
     public static createInstance() {
         if (!ChatRoomComponent.instance) {
             ChatRoomComponent.instance = new ChatRoomComponent();
@@ -42,6 +44,8 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
 
         return ChatRoomComponent.instance;
     }
+    private dataManager: DataManager;
+    private dataListener: DataListener;
 
     public chatroomDelegate: (eventName: string, data: MessageImp | Array<MessageImp>) => void;
     public outsideRoomDelegete: (eventName: string, data: any) => void;
@@ -52,20 +56,14 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
     public setRoomId(rid: string): void {
         this.roomId = rid;
     }
-    private secure: ISecureService;
-    private dataManager: DataManager;
-    private dataListener: DataListener;
-
     private updateMessageQueue = new Array<MessageImp>();
 
     constructor() {
         console.log("ChatRoomComponent: constructor");
 
-        this.secure = SecureServiceFactory.getService();
-
         this.dataManager = BackendFactory.getInstance().dataManager;
-        this.dataListener = BackendFactory.getInstance().dataListener;
 
+        this.dataListener = BackendFactory.getInstance().dataListener;
         this.dataListener.addOnChatListener(this.onChat.bind(this));
 
         const source = Rx.Observable.timer(1000, 1000);
@@ -78,43 +76,83 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         });
     }
 
+    async save(room_id: string, messages: IMessage[]) {
+        let results = await this.dataManager.messageDAL.saveData(room_id, messages);
+        return results;
+    }
+    async get(room_id: string) {
+        let results = await this.dataManager.messageDAL.getData(room_id);
+        return results;
+    }
+
     private saveMessages = (chatMessages: Array<MessageImp>, message: MessageImp) => {
         let self = this;
         chatMessages.push(message);
 
-        self.dataManager.messageDAL.saveData(self.roomId, chatMessages)
-            .then(chats => {
-                if (!!self.chatroomDelegate) {
-                    self.chatroomDelegate(ChatEvents.ON_CHAT, message);
-                    self.chatroomDelegate(ON_MESSAGE_CHANGE, chatMessages);
-                }
-            });
+        self.save(self.roomId, chatMessages).then(chats => {
+            if (!!self.chatroomDelegate) {
+                self.chatroomDelegate(ChatEvents.ON_CHAT, message);
+                self.chatroomDelegate(ON_MESSAGE_CHANGE, chatMessages);
+            }
+        });
     };
 
     public saveToPersisted(message: MessageImp) {
         let self = this;
-        this.dataManager.messageDAL.getData(this.roomId)
-            .then((chats: Array<IMessage>) => {
-                let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
+        this.get(this.roomId).then((chats: Array<IMessage>) => {
+            let chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
 
-                if (message.type === MessageType[MessageType.Text]) {
-                    CryptoHelper.decryptionText(message)
-                        .then(decoded => {
-                            self.saveMessages(chatMessages, message);
-                        })
-                        .catch(err => self.saveMessages(chatMessages, message));
-                }
-                else if (message.type === MessageType[MessageType.Sticker]) {
-                    let sticker_id = parseInt(message.body);
-                    message.src = imagesPath[sticker_id].img;
-                    self.saveMessages(chatMessages, message);
-                }
-                else {
-                    self.saveMessages(chatMessages, message);
-                }
-            }).catch(err => {
-                console.warn("Cannot get persistend message of room", err);
-            });
+            if (message.type === MessageType[MessageType.Text]) {
+                CryptoHelper.decryptionText(message)
+                    .then(decoded => {
+                        self.saveMessages(chatMessages, message);
+                    })
+                    .catch(err => self.saveMessages(chatMessages, message));
+            }
+            else if (message.type === MessageType[MessageType.Sticker]) {
+                let _message = getStickerPath(message);
+                self.saveMessages(chatMessages, _message);
+            }
+            else {
+                self.saveMessages(chatMessages, message);
+            }
+        }).catch(err => {
+            console.warn("Cannot get persistend message of room", err);
+        });
+    }
+
+    public async decryptMessage(messages: IMessage[]) {
+        let self = this;
+        let results = new Array<IMessage>();
+        return new Promise<Array<IMessage>>((resolve, reject) => {
+            if (messages.length > 0) {
+                Rx.Observable.from(messages)
+                    .mergeMap(async (message) => {
+                        if (message.type === MessageType[MessageType.Text]) {
+                            return await CryptoHelper.decryptionText(message as MessageImp);
+                        }
+                        else if (message.type === MessageType[MessageType.Sticker]) {
+                            let _message = getStickerPath(message);
+                            return await _message;
+                        }
+                        else {
+                            return message;
+                        }
+                    }).subscribe(value => {
+                        results.push(value);
+                    }, (err) => {
+                        console.warn("decryptMessage", err);
+                        resolve(results);
+                    }, () => {
+                        console.log("decryptMessage complete");
+                        let sortResult = results.sort(self.compareMessage);
+                        resolve(sortResult);
+                    });
+            }
+            else {
+                resolve(messages);
+            }
+        });
     }
 
     onChat(message: MessageImp) {
@@ -138,7 +176,7 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
 
     private async messageReadTick(messageQueue: Array<MessageImp>, room_id: string) {
         let chatMessages = Object.create(null) as Array<any>;
-        let chats = await this.dataManager.messageDAL.getData(room_id);
+        let chats = await this.get(room_id);
         chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array<MessageImp>();
 
         messageQueue.forEach(message => {
@@ -151,7 +189,7 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
             });
         });
 
-        let results = await this.dataManager.messageDAL.saveData(room_id, chatMessages);
+        let results = await this.save(room_id, chatMessages);
         if (!!this.chatroomDelegate) {
             this.chatroomDelegate(ON_MESSAGE_CHANGE, results);
         }
@@ -161,60 +199,12 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         this.updateMessageQueue.push(message as MessageImp);
     }
 
-    onGetMessagesReaders(dataEvent) {
-        console.log("onGetMessagesReaders", dataEvent);
-
-        let self = this;
-        interface Ireaders {
-            _id: string;
-            readers: Array<string>;
-        }
-        let myMessagesArr: Array<Ireaders> = JSON.parse(JSON.stringify(dataEvent.data));
-
-        self.chatMessages.forEach((originalMsg, id, arr) => {
-            if (BackendFactory.getInstance().dataManager.isMySelf(originalMsg.sender)) {
-                myMessagesArr.some((myMsg, index, array) => {
-                    if (originalMsg._id === myMsg._id) {
-                        originalMsg.readers = myMsg.readers;
-                        return true;
-                    }
-                });
-            }
-        });
-
-        self.dataManager.messageDAL.saveData(self.roomId, self.chatMessages);
-    }
-
     public async getPersistentMessage(rid: string) {
         let self = this;
-        let messages = await self.dataManager.messageDAL.getData(rid);
+        let messages = await self.get(rid) as Array<IMessage>;
 
         if (messages && messages.length > 0) {
-            let p = new Promise((resolve: (data: Array<IMessage>) => void, reject) => {
-                let chats = messages.slice(0) as Array<IMessage>;
-                async.forEach(chats, function iterator(chat, result) {
-                    if (chat.type === MessageType[MessageType.Text]) {
-                        if (getConfig().appConfig.encryption === true) {
-                            self.secure.decryption(chat.body).then(function (res) {
-                                chat.body = res;
-
-                                result(null);
-                            }).catch(err => result(null));
-                        }
-                        else {
-                            result(null);
-                        }
-                    }
-                    else {
-                        result(null);
-                    }
-                }, (err) => {
-                    self.dataManager.messageDAL.saveData(rid, chats);
-                    resolve(chats);
-                });
-            });
-
-            return await p;
+            return messages;
         }
         else {
             console.log("chatMessages is empty!");
@@ -239,26 +229,27 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
             });
         };
 
-        const saveMergedMessage = async (histories: Array<IMessage>) => {
+        const saveMergedMessage = async (decryptedChats: Array<IMessage>) => {
             let _results = new Array();
             if (messages && messages.length > 0) {
-                _results = messages.concat(histories);
+                _results = messages.concat(decryptedChats);
             }
             else {
-                _results = histories.slice();
+                _results = decryptedChats.slice();
             }
             // Save persistent chats log here.
-            let results = await self.dataManager.messageDAL.saveData(self.roomId, _results) as Array<IMessage>;
+            let results = await self.save(self.roomId, _results) as Array<IMessage>;
 
             callback(_results, this.roomId);
         };
 
         const getNewerMessage = async () => {
             let histories = await self.getNewerMessageFromNet(lastMessageTime, sessionToken) as Array<IMessage>;
-            saveMergedMessage(histories);
+            let decryptedChats = await self.decryptMessage(histories);
+            saveMergedMessage(decryptedChats);
         };
 
-        let messages: IMessage[] = await self.dataManager.messageDAL.getData(this.roomId);
+        let messages = await self.get(this.roomId) as IMessage[];
         if (messages && messages.length > 0) {
             if (messages[messages.length - 1] != null) {
                 lastMessageTime = messages[messages.length - 1].createTime;
@@ -281,63 +272,22 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
 
         let response = await chatroomService.getChatHistory(self.roomId, lastMessageTime, sessionToken);
         let value = await response.json();
-
-        return new Promise((resolve, reject) => {
-            if (value.success) {
-                let histories = new Array<IMessage>();
-                histories = value.result;
-                if (histories.length > 0) {
-                    async.forEach(histories, function (chat, cb) {
-                        if (chat.type === MessageType[MessageType.Text]) {
-                            if (getConfig().appConfig.encryption === true) {
-                                self.secure.decryption(chat.body).then(function (res) {
-                                    chat.body = res;
-                                    cb(null);
-                                }).catch(err => {
-                                    cb(null);
-                                });
-                            }
-                            else {
-                                cb(null);
-                            }
-                        }
-                        else {
-                            cb(null);
-                        }
-                    }, function done(err) {
-                        if (!!err) {
-                            console.error("get newer message error", err);
-                            reject(err);
-                        }
-                        else {
-                            resolve(histories);
-                        }
-                    });
-                }
-                else {
-                    console.log("Have no newer message.");
-                    resolve(histories);
-                }
-            }
-            else {
-                console.warn("WTF god only know.", value.message);
-                reject(value.message);
-            }
-        });
+        if (value.success) {
+            let histories = new Array<IMessage>();
+            histories = value.result;
+            return histories;
+        }
+        else {
+            console.log("WTF god only know.", value.message);
+            throw new Error(value.message);
+        }
     }
 
     public async getOlderMessageChunk(room_id: string) {
         let self = this;
 
-        async function waitForRoomMessages() {
-            let messages = await self.dataManager.messageDAL.getData(room_id) as IMessage[];
-
-            return messages;
-        }
-
         async function saveRoomMessages(merged: Array<IMessage>) {
-            let value = await self.dataManager.messageDAL.saveData(room_id, merged);
-
+            let value = await self.save(room_id, merged);
             return value as Array<IMessage>;
         }
 
@@ -354,11 +304,12 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
              */
             if (result.success && result.result.length > 0) {
                 let earlyMessages = result.result as Array<IMessage>;
-                let persistMessages = await waitForRoomMessages();
+                let decryptedChats = await self.decryptMessage(earlyMessages);
+                let persistMessages = await self.get(room_id) as IMessage[];
 
                 if (!!persistMessages && persistMessages.length > 0) {
                     let mergedMessageArray = new Array<IMessage>();
-                    mergedMessageArray = earlyMessages.concat(persistMessages);
+                    mergedMessageArray = decryptedChats.concat(persistMessages);
 
                     let resultsArray = new Array<IMessage>();
                     let results = await new Promise((resolve: (data: Array<IMessage>) => void, rejected) => {
@@ -386,7 +337,7 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
                     return await saveRoomMessages(results);
                 }
                 else {
-                    let merged = earlyMessages.sort(self.compareMessage);
+                    let merged = decryptedChats.sort(self.compareMessage);
                     return await saveRoomMessages(merged);
                 }
             }
@@ -404,7 +355,7 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
 
         async function waitRoomMessage() {
             let topEdgeMessageTime = new Date();
-            let messages = await self.dataManager.messageDAL.getData(self.roomId) as IMessage[];
+            let messages = await self.get(self.roomId) as IMessage[];
 
             if (!!messages && messages.length > 0) {
                 if (!!messages[0].createTime) {
@@ -435,21 +386,6 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         return 0;
     }
 
-    public updateReadMessages() {
-        let self = this;
-        let backendFactory = BackendFactory.getInstance();
-        async.map(self.chatMessages, function itorator(message, resultCb) {
-            if (!backendFactory.dataManager.isMySelf(message.sender)) {
-                let chatroomApi = backendFactory.getServer().getChatRoomAPI();
-                chatroomApi.updateMessageReader(message._id, message.rid);
-            }
-
-            resultCb(null, null);
-        }, function done(err) {
-            // done.
-        });
-    }
-
     public async updateWhoReadMyMessages() {
         let self = this;
 
@@ -459,16 +395,8 @@ export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
         chatroomApi.getMessagesReaders(res.toString());
     }
 
-    public getMemberProfile(member: IMember, callback: (err, res) => void) {
-        let server = BackendFactory.getInstance().getServer();
-
-        if (server) {
-            server.getMemberProfile(member._id, callback);
-        }
-    }
-
     public async getMessages() {
-        let messages = await this.dataManager.messageDAL.getData(this.roomId);
+        let messages = await this.get(this.roomId) as Array<IMessage>;
         return messages;
     }
 

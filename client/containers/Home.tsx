@@ -1,11 +1,13 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux";
+import { withRouter, Link } from "react-router-dom";
 import { shallowEqual } from "recompose";
 import Flexbox from "flexbox-react";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import Subheader from "material-ui/Subheader";
+import { Divider } from 'material-ui';
 
 import { IComponentProps } from "../utils/IComponentProps";
 
@@ -15,6 +17,8 @@ import * as AppActions from "../redux/app/persistentDataActions";
 
 import { SimpleToolbar } from "../components/SimpleToolbar";
 import { AuthenBox } from "./authen/AuthenBox";
+import { WithDialog } from "./toolsbox/DialogBoxEnhancer";
+import { ChitChatFooter } from "../components/ChitChatFooter";
 
 
 interface IComponentNameState {
@@ -22,12 +26,6 @@ interface IComponentNameState {
 }
 
 class Home extends React.Component<IComponentProps, IComponentNameState> {
-    clientWidth = document.documentElement.clientWidth;
-    clientHeight = document.documentElement.clientHeight;
-    headerHeight = 56;
-    subHeaderHeight = null;
-    bodyHeight = null;
-    footerHeight = 24;
     alertTitle: string;
     alertMessage: string;
 
@@ -36,15 +34,11 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillMount() {
-        console.log("Home", global.userAgent, this.props);
+        console.log("Home", global["userAgent"]);
 
         this.state = {
             alert: false
         };
-        this.headerHeight = 56;
-        this.footerHeight = 24;
-        this.clientHeight = document.documentElement.clientHeight;
-        this.bodyHeight = (this.clientHeight - (this.headerHeight + this.subHeaderHeight + this.footerHeight));
 
         this.props.dispatch(AppActions.getSession());
 
@@ -60,14 +54,8 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
         let app_body = document.getElementById("app_body");
         let app_footer = document.getElementById("app_footer");
 
-        this.subHeaderHeight = (warning_bar) ? warning_bar.clientHeight : 0;
-
         if (!shallowEqual(authReducer, this.props.authReducer)) {
             switch (authReducer.state) {
-                case AuthRx.AUTH_USER_SUCCESS: {
-                    AppActions.saveSession();
-                    break;
-                }
                 case AuthRx.AUTH_USER_FAILURE: {
                     this.alertTitle = AuthRx.AUTH_USER_FAILURE;
                     this.alertMessage = authReducer.error;
@@ -86,7 +74,7 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
 
         if (!shallowEqual(userReducer.user, this.props.userReducer.user)) {
             if (userReducer.user) {
-                this.props.history.replace(`/team/${authReducer.user}`);
+                this.props.history.replace(`/teams`);
             }
         }
 
@@ -97,26 +85,29 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
 
     public render(): JSX.Element {
         return (
-            <div style={{ overflow: "hidden" }}>
-                <div id={"toolbar"} style={{ height: this.headerHeight }}>
+            <Flexbox flexDirection="column" height="100vh" >
+                <div id={"app_bar"}  >
                     <SimpleToolbar title={"ChitChat team communication."} />
                 </div>
-                <div id={"app_body"} style={{ backgroundColor: Colors.blueGrey50, height: this.bodyHeight }}>
-                    <Flexbox flexDirection="row">
+                <Flexbox flexDirection="column" height="100%" style={{ overflowY: "auto", backgroundColor: Colors.blueGrey50 }}>
+                    <Flexbox flexDirection="row" flexGrow={1} style={{ overflowY: "auto" }}>
                         <Flexbox flexGrow={1} />
-                        <Flexbox flexDirection="column" >
+                        <Flexbox flexDirection="column" alignItems="center" height="100%">
                             <AuthenBox {...this.props} onError={this.props.onError} />
-                            <a onClick={this.onForgotAccount}>Forgotten account</a>
+                            <br />
+                            <Link to="/forgotaccount" >
+                                <p style={{ fontFamily: "Roboto", fontSize: 14, color: Colors.lightBlue900 }}>Forgotten account</p>
+                            </Link>
+                            <br />
                         </Flexbox>
                         <Flexbox flexGrow={1} />
                     </Flexbox>
-                </div>
-                <div id={"app_footer"} style={{ backgroundColor: Colors.blueGrey50 }}>
-                    <Flexbox alignItems="center" justifyContent="center">
-                        <span>Powered by Stalk realtime communication API.</span>
+                    <Divider inset={true} />
+                    <Flexbox element="footer" flexDirection="column" alignItems="center" >
+                        <ChitChatFooter />
                     </Flexbox>
-                </div>
-            </div>
+                </Flexbox>
+            </Flexbox>
         );
     }
 }
@@ -126,3 +117,5 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
  */
 const mapStateToProps = (state) => ({ ...state });
 export const HomeWithStore = connect(mapStateToProps)(Home) as React.ComponentClass<{ onError, history }>;
+
+export const HomeWithDialogEnhance = WithDialog(withRouter<any>(HomeWithStore));

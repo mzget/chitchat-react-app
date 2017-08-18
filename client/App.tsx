@@ -1,12 +1,8 @@
 import * as React from "react";
 import { Provider } from "react-redux";
-import {
-    BrowserRouter as Router,
-    Route,
-    Link,
-    Switch
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { ApolloProvider } from 'react-apollo';
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 /**
  * ### configureStore
  *  ```configureStore``` will connect the ```reducers```,
@@ -30,43 +26,66 @@ Store.subscribe(() => {
 
 import { ReapopNotiBoxWithState } from "./components/NotificationSystem";
 import { StalkNotiDialog } from "./containers/stalk/StalkNotiDialog";
+import { StalkCompEnhancer } from "./containers/stalk/StalkComponent";
+import { FetchingDialogEnhance } from "./containers/toolsbox/FetchingDialog";
 
-import { HomePageWithDialogBox } from "./containers/HomeEnhanced";
+import { HomeWithDialogEnhance } from "./containers/Home";
 import { ForgotAccount } from "./containers/ForgottenAccount";
 import { ChatPageEnhanced } from "./containers/ChatPageEnhanced";
 import { ChatRoomSettingsEnhanced } from "./containers/ChatRoomSettingsPage";
 import { TeamPageEnhanced } from "./containers/TeamPageEnhanced";
-import { ProfilePageEnhanced } from "./containers/ProfilePageEnhanced";
-import { MainPageWithDialogBox } from "./containers/Main";
+import { m_ProfilePageEnhanced } from "./containers/m_ProfilePageEnhanced";
+import { MainPageWithDialog } from "./containers/Main";
 import { M_MainPageEnhanced } from "./containers/m_Main";
-import { AdminPageEnhanced } from "./containers/AdminPageEnhanced";
-import { VideoCallEnhance } from "./containers/VideoCall";
+import { AdminWithDialogEnhance } from "./containers/Admin";
+import { VideoCallSample } from "./containers/voip/VideoCallSample";
 
-import { MEDIUM_WINDOW } from "./chitchat/consts/Breakpoints";
+import { SMALL_TABLET } from "./chitchat/consts/Breakpoints";
+import { defaultMuiTheme } from "./utils/";
+
+const NoMatch = ({ location }) => (
+    <div>
+        <h3>No match for <code>{location.pathname}</code></h3>
+    </div>
+);
 
 class App extends React.Component<any, any> {
     clientWidth = document.documentElement.clientWidth;
 
     render() {
-        return (
-            <ApolloProvider store={Store} client={apolloClient}>
-                <Router>
-                    <div id="app">
-                        <ReapopNotiBoxWithState />
-                        <StalkNotiDialog />
+        // <Switch>
+        //     <Route path="/" exact component={Home} />
+        //     <Redirect from="/old-match" to="/will-match" />
+        //     <Route path="/will-match" component={WillMatch} />
+        //     <Route component={NoMatch} />
+        // </Switch>
 
-                        <Route path="/" exact component={HomePageWithDialogBox} />
-                        <Route path="/forgotaccount" component={ForgotAccount} />
-                        <Route path="/team/:filter" component={TeamPageEnhanced} />
-                        <Route path="/profile/:filter/:user" component={(this.clientWidth < MEDIUM_WINDOW) ? ProfilePageEnhanced : MainPageWithDialogBox} />
-                        <Route path="/chatslist/:filter" component={(this.clientWidth < MEDIUM_WINDOW) ? M_MainPageEnhanced : MainPageWithDialogBox} />
-                        <Route path="/chatroom/chat/:room_id" component={(this.clientWidth < MEDIUM_WINDOW) ? ChatPageEnhanced : MainPageWithDialogBox} />
-                        <Route path="/chatroom/settings/:room_id/:edit" component={(this.clientWidth < MEDIUM_WINDOW) ? ChatRoomSettingsEnhanced : MainPageWithDialogBox} />
-                        <Route path="/admin/:menu?/:id?" component={AdminPageEnhanced} />
-                        <Route path="/videocall/:id" component={VideoCallEnhance} />
-                    </div>
-                </Router>
-            </ApolloProvider>
+        return (
+            <MuiThemeProvider muiTheme={defaultMuiTheme}>
+                <ApolloProvider store={Store} client={apolloClient}>
+                    <Router>
+                        <div id="app">
+                            <ReapopNotiBoxWithState />
+                            <StalkNotiDialog />
+                            <StalkCompEnhancer />
+                            <FetchingDialogEnhance />
+
+                            <Switch>
+                                <Route path="/" exact component={HomeWithDialogEnhance} />
+                                <Route path="/forgotaccount" component={ForgotAccount} />
+                                <Route path="/profile/:filter/:user" component={(this.clientWidth < SMALL_TABLET) ? m_ProfilePageEnhanced : MainPageWithDialog} />
+                                <Route path="/teams" component={TeamPageEnhanced} />
+                                <Route path="/team/:filter" component={(this.clientWidth < SMALL_TABLET) ? M_MainPageEnhanced : MainPageWithDialog} />
+                                <Route path="/chatroom/chat/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ChatPageEnhanced : MainPageWithDialog} />
+                                <Route path="/chatroom/settings/:room_id/:edit" component={(this.clientWidth < SMALL_TABLET) ? ChatRoomSettingsEnhanced : MainPageWithDialog} />
+                                <Route path="/admin/:menu?/:id?" component={AdminWithDialogEnhance} />
+                                <Route path="/videocall/:id" component={VideoCallSample} />
+                                <Route component={NoMatch} />
+                            </Switch>
+                        </div>
+                    </Router>
+                </ApolloProvider>
+            </MuiThemeProvider >
         );
     }
 }

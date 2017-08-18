@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Flex, Box } from "reflexbox";
 import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
@@ -13,11 +12,8 @@ import * as FileReaderInput from "react-file-reader-input";
 
 import { ChitChatAccount } from "../../chitchat/chats/models/User";
 import { ITeamProfile } from "../../chitchat/chats/models/TeamProfile";
-import { Button, Row, Col, Panel, FormGroup, FormControl, FieldGroup, ControlLabel } from "react-bootstrap";
 import { Card, CardActions, CardHeader, CardText, CardTitle } from "material-ui";
-const Styles = require("../../styles/generalStyles");
-const PageBox = Styles.generalStyles.pageBox;
-const PaddingZero = Styles.generalStyles.paddingZero;
+const Styles = require("../../../styles/generalStyles");
 
 const styles = {
     span: {
@@ -31,7 +27,9 @@ const styles = {
     },
     label: {
         marginLeft: 5,
-        marginTop: 10
+        marginTop: 10,
+        color: Colors.darkBlack,
+        fontsize: 16
     },
     textBox: {
         marginRight: 5,
@@ -42,6 +40,7 @@ const styles = {
 interface IProfileDetailProps {
     user: ChitChatAccount;
     teamProfile: ITeamProfile;
+    onUserNameChange: (event, newValue) => void;
     onFirstNameChange: (event, newValue) => void;
     onLastNameChange: (event, newValue) => void;
     onTelNumberChange: (event, newValue) => void;
@@ -55,77 +54,88 @@ const getDetailHeight = () => {
 
 export const ProfileDetail = (props: IProfileDetailProps) => (
     <MuiThemeProvider>
-        <Flexbox style={{ backgroundColor: Colors.blueGrey50 }} flexDirection="column" minHeight="calc(100vh - 56px)" id="ProfileDetail">
-            <Flexbox flexDirection="column" alignItems="center" flexGrow={1}>
-                <Subheader>Edit your profile</Subheader>
-                <FileReaderInput
-                    as="url"
-                    id="file-input"
-                    onChange={(props.onFileReaderChange) ? props.onFileReaderChange : () => { }} >
-                    <Avatar
-                        src={props.user.avatar}
-                        size={96}
-                        style={styles.avatar}
-                    />
-                </FileReaderInput>
-                <span style={styles.spanGap} />
-                <Flexbox flexDirection="column" style={{ backgroundColor: Colors.darkWhite, margin: 5 }} >
-                    <Flexbox flexDirection="row"  >
-                        <p style={styles.label} > First Name :</p>
-                        <Flexbox flexGrow={1} />
-                        <TextField style={styles.textBox}
-                            hintText="first_name"
-                            errorText="This field is required"
-                            value={props.user.firstname}
-                            onChange={props.onFirstNameChange} />
+        <Flexbox style={{ backgroundColor: Colors.blueGrey50 }} flexDirection="column" height="calc(100vh - 56px)" width="100%" >
+            <div id="ProfileDetail" style={{ overflowY: "auto" }}>
+                <Flexbox flexDirection="column" alignItems="center" flexGrow={1}>
+                    <Subheader>Edit your profile</Subheader>
+                    <FileReaderInput
+                        as="url"
+                        id="file-input"
+                        onChange={(props.onFileReaderChange) ? props.onFileReaderChange : () => { }} >
+                        <Avatar
+                            src={props.user.avatar}
+                            size={96}
+                            style={styles.avatar}
+                        />
+                    </FileReaderInput>
+                    <span style={styles.spanGap} />
+                    <Flexbox flexDirection="column" justifyContent="center" alignItems="center" style={{ backgroundColor: Colors.darkWhite, margin: 5 }} width="100%" >
+                        <Flexbox flexDirection="row"  >
+                            <Subheader style={styles.label} > Username :</Subheader>
+                            <TextField style={styles.textBox}
+                                hintText="username"
+                                errorText={(!!props.user.username) ? "" : "This field is required"}
+                                value={props.user.username}
+                                onChange={props.onUserNameChange}
+                                fullWidth={true} />
+                        </Flexbox>
+                        <Flexbox flexDirection="row"  >
+                            <Subheader style={styles.label} > First Name :</Subheader>
+                            <TextField style={styles.textBox}
+                                hintText="first_name"
+                                errorText={(!!props.user.firstname) ? "" : "This field is required"}
+                                value={props.user.firstname}
+                                onChange={props.onFirstNameChange}
+                                fullWidth={true} />
+                        </Flexbox>
+                        <Flexbox flexDirection="row" >
+                            <Subheader style={styles.label}>Last Name :</Subheader>
+                            <TextField style={styles.textBox}
+                                hintText="last_name"
+                                errorText={(!!props.user.lastname) ? "" : "This field is required"}
+                                value={props.user.lastname}
+                                onChange={props.onLastNameChange}
+                                fullWidth={true} />
+                        </Flexbox>
+                        <Flexbox flexDirection="row" >
+                            <Subheader style={styles.label}>Tel :</Subheader>
+                            <TextField style={styles.textBox}
+                                hintText="tel"
+                                value={(props.user.tel) ? props.user.tel : ""}
+                                onChange={props.onTelNumberChange}
+                                fullWidth={true} />
+                        </Flexbox>
+                        <Flexbox flexDirection="row" >
+                            <Subheader style={styles.label}>Email :</Subheader>
+                            <TextField style={styles.textBox}
+                                hintText="email"
+                                value={props.user.email}
+                                disabled={true}
+                                fullWidth={true} />
+                        </Flexbox>
+                        <Flexbox flexDirection="row" >
+                            <Subheader style={styles.label}>User Role :</Subheader>
+                            <TextField style={styles.textBox}
+                                hintText="user_role"
+                                value={props.teamProfile.team_role}
+                                disabled={true}
+                                fullWidth={true} />
+                        </Flexbox>
+                        <Flexbox flexDirection="row" >
+                            <Subheader style={styles.label}>User Status :</Subheader>
+                            <TextField style={styles.textBox}
+                                hintText="user_status"
+                                value={props.user.status}
+                                disabled={true}
+                                fullWidth={true} />
+                        </Flexbox>
                     </Flexbox>
-                    <Flexbox flexDirection="row" >
-                        <p style={styles.label}>Last Name :</p>
-                        <Flexbox flexGrow={1} />
-                        <TextField style={styles.textBox}
-                            hintText="last_name"
-                            errorText="This field is required"
-                            value={props.user.lastname}
-                            onChange={props.onLastNameChange} />
-                    </Flexbox>
-                    <Flexbox flexDirection="row" >
-                        <p style={styles.label}>Tel :</p>
-                        <Flexbox flexGrow={1} />
-                        <TextField style={styles.textBox}
-                            hintText="tel"
-                            value={(props.user.tel) ? props.user.tel : ""}
-                            onChange={props.onTelNumberChange} />
-                    </Flexbox>
-                    <Flexbox flexDirection="row" >
-                        <p style={styles.label}>Email :</p>
-                        <Flexbox flexGrow={1} />
-                        <TextField style={styles.textBox}
-                            hintText="email"
-                            value={props.user.email}
-                            disabled={true} />
-                    </Flexbox>
-                    <Flexbox flexDirection="row" >
-                        <p style={styles.label}>User Role :</p>
-                        <Flexbox flexGrow={1} />
-                        <TextField style={styles.textBox}
-                            hintText="user_role"
-                            value={props.teamProfile.team_role}
-                            disabled={true} />
-                    </Flexbox>
-                    <Flexbox flexDirection="row" >
-                        <p style={styles.label}>User Status :</p>
-                        <Flexbox flexGrow={1} />
-                        <TextField style={styles.textBox}
-                            hintText="user_status"
-                            value={props.user.status}
-                            disabled={true} />
-                    </Flexbox>
+                    <span style={styles.spanGap} />
                 </Flexbox>
-                <span style={styles.spanGap} />
-            </Flexbox>
-            <Flexbox justifyContent="flex-end">
-                <RaisedButton primary={true} label="submit" onClick={props.onSubmit} style={{ margin: "2%" }}></RaisedButton>
-            </Flexbox>
+                <Flexbox justifyContent="flex-end">
+                    <RaisedButton primary={true} label="submit" onClick={props.onSubmit} style={{ margin: "2%" }}></RaisedButton>
+                </Flexbox>
+            </div>
         </Flexbox>
     </MuiThemeProvider >
 );

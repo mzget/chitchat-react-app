@@ -8,6 +8,7 @@ import { Store } from "redux";
 import { createAction } from "redux-actions";
 const { ajax, fromPromise } = Rx.Observable;
 
+import { FileResult } from "./";
 import { ChatRoomComponent } from "../../ChatRoomComponent";
 import { ChitChatFactory } from "../../ChitChatFactory";
 import { checkOlderMessages, getNewerMessageFromNet, GET_NEWER_MESSAGE_SUCCESS } from "./chatroomActions";
@@ -126,12 +127,13 @@ export const updateMessagesRead_Epic = (action$) => {
 export const CHATROOM_UPLOAD_FILE = "CHATROOM_UPLOAD_FILE";
 export const CHATROOM_UPLOAD_FILE_SUCCESS = "CHATROOM_UPLOAD_FILE_SUCCESS";
 export const CHATROOM_UPLOAD_FILE_FAILURE = "CHATROOM_UPLOAD_FILE_FAILURE";
-export const CHATROOM_UPLOAD_FILE_CANCELLED = "CHATROOM_UPLOAD_FILE_CANCELLED";
+const CHATROOM_UPLOAD_FILE_CANCELLED = "CHATROOM_UPLOAD_FILE_CANCELLED";
+
 
 export const uploadFile = (progressEvent: ProgressEvent, file) => ({
     type: CHATROOM_UPLOAD_FILE, payload: { data: progressEvent, file: file }
 });
-const uploadFileSuccess = (result) => ({ type: CHATROOM_UPLOAD_FILE_SUCCESS, payload: result.result });
+const uploadFileSuccess = (result: FileResult) => ({ type: CHATROOM_UPLOAD_FILE_SUCCESS, payload: result });
 const uploadFileFailure = (error) => ({ type: CHATROOM_UPLOAD_FILE_FAILURE, payload: error });
 export const uploadFileCanceled = () => ({ type: CHATROOM_UPLOAD_FILE_CANCELLED });
 
@@ -148,7 +150,7 @@ export const uploadFileEpic = action$ => (
                 headers: {}
             });
         })
-        .map(json => uploadFileSuccess(json.response))
+        .map(json => uploadFileSuccess(json.response.result))
         .takeUntil(action$.ofType(CHATROOM_UPLOAD_FILE_CANCELLED))
         .catch(error => Rx.Observable.of(uploadFileFailure(error.xhr.response)))
 );

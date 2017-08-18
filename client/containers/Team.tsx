@@ -2,8 +2,8 @@ import * as React from "react";
 import { connect } from "react-redux";
 import Flexbox from 'flexbox-react';
 
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
+import Divider from "material-ui/Divider";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
@@ -13,9 +13,8 @@ import * as authRx from "../redux/authen/authRx";
 
 import { DialogBox } from "../components/DialogBox";
 import { TeamListBox } from "./teams/TeamListBox";
-import { TeamCreateBox } from "./teams/TeamCreateBox";
+import { TeamsBox } from "./teams/TeamCreateBox";
 import { SimpleToolbar } from "../components/SimpleToolbar";
-import { StalkCompEnhancer } from "./stalk/StalkComponent";
 
 import * as StalkBridgeActions from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 import { ITeam } from "../chitchat/chats/models/ITeam";
@@ -38,22 +37,16 @@ class Team extends React.Component<IComponentProps, any> {
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let { location, userReducer, authReducer, teamReducer
-        } = nextProps;
+        let { location, userReducer, authReducer, teamReducer } = nextProps;
 
-        if (teamReducer.error) {
-            this.props.onError(teamReducer.error);
-        }
-
-        if (!userReducer.user ||
-            authReducer.state == authRx.LOG_OUT_SUCCESS) {
+        if (!userReducer.user || authReducer.state == authRx.LOG_OUT_SUCCESS) {
             this.props.history.replace("/");
         }
     }
 
     onSelectTeam(team: ITeam) {
         this.props.dispatch(teamRx.selectTeam(team));
-        this.props.history.push(`/chatslist/${team.name}`);
+        this.props.history.push(`/team/${team._id}`);
     }
 
     onToolbarMenuItem(id, value) {
@@ -64,27 +57,28 @@ class Team extends React.Component<IComponentProps, any> {
 
     public render(): JSX.Element {
         return (
-            <MuiThemeProvider>
-                <Flexbox flexDirection="column" minHeight="100vh" style={{ backgroundColor: Colors.blueGrey50 }}>
-                    <Flexbox element="header" >
-                        <div style={{ width: "100%" }}>
-                            <SimpleToolbar title={this.toolbar} menus={["logout"]} onSelectedMenuItem={this.onToolbarMenuItem} />
-                        </div>
-                    </Flexbox>
-                    <Flexbox flexDirection="row">
-                        <Flexbox flexGrow={1} />
-                        <Flexbox flexDirection="column" justifyContent="center" flexGrow={1} >
-                            <TeamListBox teams={this.props.teamReducer.teams} onSelectTeam={this.onSelectTeam} />
-                            <TeamCreateBox {...this.props} />
+            <Flexbox flexDirection="column" minHeight="100vh" style={{ backgroundColor: Colors.blueGrey50 }}>
+                <Flexbox element="header" >
+                    <div style={{ width: "100%" }}>
+                        <SimpleToolbar title={this.toolbar} menus={["logout"]} onSelectedMenuItem={this.onToolbarMenuItem} />
+                    </div>
+                </Flexbox>
+                <Flexbox flexDirection="row">
+                    <Flexbox flexGrow={1} />
+                    <Flexbox flexDirection="column" justifyContent="center" flexGrow={1} >
+                        <Flexbox style={{ justifyContent: "center", alignContent: "center" }}>
+                            <p>Start with a team</p>
                         </Flexbox>
-                        <Flexbox flexGrow={1} />
+                        <Divider />
+                        <TeamListBox teams={this.props.teamReducer.teams} onSelectTeam={this.onSelectTeam} />
+                        <Flexbox style={{ justifyContent: "center", alignContent: "center" }}>
+                            <TeamsBox onError={this.props.onError} />
+                        </Flexbox>
                     </Flexbox>
                     <Flexbox flexGrow={1} />
-                    <Flexbox element="footer">
-                        <StalkCompEnhancer />
-                    </Flexbox>
                 </Flexbox>
-            </MuiThemeProvider>
+                <Flexbox flexGrow={1} />
+            </Flexbox>
         );
     }
 }
@@ -92,5 +86,11 @@ class Team extends React.Component<IComponentProps, any> {
 /**
  * ## Redux boilerplate
  */
-function mapStateToProps(state) { return { ...state }; }
+function mapStateToProps(state) {
+    return {
+        userReducer: state.userReducer,
+        authReducer: state.authReducer,
+        teamReducer: state.teamReducer
+    };
+}
 export const TeamPage = connect(mapStateToProps)(Team) as React.ComponentClass<any>;

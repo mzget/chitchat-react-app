@@ -43,6 +43,8 @@ export class SignupBox extends React.Component<IComponentNameProps, IComponentNa
                         CryptoHelper.hashComputation(this.state.password).then((hash: string) => {
                             this.setState(previous => ({ ...previous, password: hash, confirmPassword: "" }), () => {
                                 this.props.dispatch(AuthRx.signup(this.state));
+
+                                this.setState(prev => ({ ...prev, password: "", confirmPassword: "" }))
                             });
                         });
                     }
@@ -51,7 +53,7 @@ export class SignupBox extends React.Component<IComponentNameProps, IComponentNa
                     }
                 }
                 else {
-                    console.warn(JSON.stringify(result));
+                    this.props.onError(JSON.stringify(result));
                 }
             });
         }
@@ -62,7 +64,7 @@ export class SignupBox extends React.Component<IComponentNameProps, IComponentNa
 
     public render(): JSX.Element {
         return (
-            <span>
+            <div>
                 <SignupForm
                     email={this.state.email} onEmailChange={(e, text) => {
                         this.setState(previous => ({ ...previous, email: text }));
@@ -81,7 +83,7 @@ export class SignupBox extends React.Component<IComponentNameProps, IComponentNa
                     }}
                     onSubmit={this.onSubmitForm}
                 />
-            </span>
+            </div>
         );
     }
 }

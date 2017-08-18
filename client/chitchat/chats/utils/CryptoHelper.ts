@@ -12,10 +12,14 @@ export const decryptionText = async (message: MessageImp) => {
 
     if (message.type === MessageType[MessageType.Text]) {
         if (getConfig().appConfig.encryption === true) {
-            let result = await secure.decryption(message.body);
-
-            message.body = result;
-            return message;
+            try {
+                let result = await secure.decryption(message.body);
+                message.body = result;
+                return message;
+            }
+            catch (ex) {
+                return message;
+            }
         }
         else {
             return message;

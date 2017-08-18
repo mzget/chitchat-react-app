@@ -18,9 +18,20 @@ import * as Models from "../../models/"
 
 import * as immutable from "immutable";
 
+export type FileResult = {
+    destination: string;
+    encoding: string;
+    fieldname: string;
+    filename: string;
+    mimetype: string;
+    originalname: string;
+    path: string;
+    size: number;
+};
 // Define our record defaults
 const chatroomDefaults = {
     isFetching: false,
+    uploading: false,
     state: null,
     room: null,
     chatTargets: null,
@@ -36,10 +47,11 @@ const chatroomDefaults = {
 // Define our record types with a typescript interface 
 interface IChatroom {
     isFetching: boolean;
+    uploading: boolean;
     state: string;
     room: Models.Room;
     chatTargets: Array<string>;
-    responseFile: any;
+    responseFile: FileResult;
     messages: Array<Models.MessageImp>;
     earlyMessageReady: any;
     uploadingFile: any;
@@ -87,16 +99,16 @@ export const chatroomReducer = (state = chatRoomRecoder, action) => {
         }
 
         case chatroomRxActions.CHATROOM_UPLOAD_FILE: {
-            return state.set("state", chatroomRxActions.CHATROOM_UPLOAD_FILE)
+            return state.set("uploading", true)
                 .set("uploadingFile", action.payload.data.target.result)
                 .set("fileInfo", action.payload.file); // action.payload.form['file']
         }
         case chatroomRxActions.CHATROOM_UPLOAD_FILE_FAILURE: {
-            return state.set("state", chatroomRxActions.CHATROOM_UPLOAD_FILE_FAILURE)
+            return state.set("uploading", false)
                 .set("error", JSON.stringify(action.payload.message));
         }
         case chatroomRxActions.CHATROOM_UPLOAD_FILE_SUCCESS: {
-            return state.set("state", chatroomRxActions.CHATROOM_UPLOAD_FILE_SUCCESS)
+            return state.set("uploading", false)
                 .set("responseFile", action.payload);
         }
 

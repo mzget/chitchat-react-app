@@ -4,11 +4,11 @@
  *  RoomDAL.ts
  */
 
-import { IRoomDAL } from "./IRoomDAL";
+import { SimpleStoreInterface } from "./SimpleStoreInterface";
 
 import * as localForage from "localforage";
 
-export class RoomDAL implements IRoomDAL {
+export class RoomDAL implements SimpleStoreInterface {
     private store: LocalForage;
     constructor() {
         this.store = localForage.createInstance({

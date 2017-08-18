@@ -2,7 +2,7 @@ import * as React from "react";
 import Flexbox from "flexbox-react";
 import { Card, CardTitle, RaisedButton } from "material-ui";
 import { gql, graphql } from 'react-apollo';
-import { compose, pure, withHandlers, withProps } from "recompose";
+import { compose, pure, withHandlers } from "recompose";
 
 import { TeamRoleListItem } from "../../components/TeamRoleListItem";
 import { LinearProgressSimple } from "../../components/LinearProgressSimple";
@@ -34,7 +34,6 @@ const TeamRoleWithData = compose(
 )(TeamRole) as React.ComponentClass<{ onSelectItem }>;
 
 const TeamRoleEnhancer = compose(
-    withProps({}),
     withHandlers({
         onSelectItem: (props: any) => (item) => {
             props.history.push(`/admin/role/${item.name}`);

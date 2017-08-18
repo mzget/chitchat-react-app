@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { compose, withHandlers, ComponentEnhancer } from "recompose";
 
 const mapStateToProps = (state) => ({
-    chatroomReducer: state.chatroomReducer,
     teamReducer: state.teamReducer
 });
 
@@ -17,7 +16,7 @@ export const ToolbarEnhancer = compose(
             props.history.goBack();
         },
         onPressTitle: (props: any) => (e) => {
-            props.history.replace(`/chatslist/${props.teamReducer.team.name}`);
+            props.history.replace(`/team/${props.teamReducer.team._id}`);
         }
     })
-) as ComponentEnhancer<{ onMenuSelect, onBackPressed, listener: (props, id, value) => void, history }, any>;
+) as ComponentEnhancer<{ onMenuSelect, onBackPressed, onPressTitle, listener: (props, id, value) => void, history }, any>;

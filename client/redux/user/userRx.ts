@@ -6,15 +6,20 @@ const { ajax } = Rx.Observable;
 
 import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
 const config = () => ChitChatFactory.getInstance().config;
+
+import { SimpleStorageFactory } from "../../chitchat/chats/dataAccessLayer";
+const appStorage = SimpleStorageFactory.getObject("app");
+
 import * as UserService from "../../chitchat/chats/services/UserService";
 import { ChitChatAccount } from "../../chitchat/chats/models/User";
 import * as StalkBridgeActions from "../../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
-import { AUTH_USER_SUCCESS, TOKEN_AUTH_USER_SUCCESS } from "../authen/authRx";
+import { AUTH_USER_SUCCESS, AUTH_SOCIAL_SUCCESS, TOKEN_AUTH_USER_SUCCESS } from "../authen/authRx";
 
 import Store from "../configureStore";
 
 export const onAuth_Epic = action$ =>
-    action$.filter(action => (action.type === AUTH_USER_SUCCESS || action.type === TOKEN_AUTH_USER_SUCCESS))
+    action$.filter(action =>
+        (action.type === AUTH_USER_SUCCESS || action.type == AUTH_SOCIAL_SUCCESS || action.type === TOKEN_AUTH_USER_SUCCESS))
         .map(response => fetchUser(Store.getState().authReducer.user));
 
 const FETCH_USER = "FETCH_USER";
@@ -29,13 +34,13 @@ const fetchUserRejected = payload => ({ type: FETCH_USER_FAILURE, payload });
 export const fetchUser_Epic = action$ =>
     action$.ofType(FETCH_USER)
         .mergeMap(action => UserService.fetchUser(action.payload)
-            .map(response => fetchUserFulfilled(response.xhr.response))
+            .map(response => fetchUserFulfilled(response.xhr.response.result))
             .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
             .catch(error => Rx.Observable.of(fetchUserRejected(error.xhr.response)))
             ._do(x => {
                 if (x.type == FETCH_USER_SUCCESS) {
-                    if (x.payload.result && x.payload.result.length > 0) {
-                        let user = x.payload.result[0];
+                    if (x.payload && x.payload.length > 0) {
+                        let user = x.payload[0];
 
                         let stalkReducer = Store.getState().stalkReducer;
                         if (stalkReducer.state !== StalkBridgeActions.STALK_INIT) {
@@ -187,3 +192,18 @@ export const suggestUser_Epic = action$ =>
 
 export const USERRX_EMPTY_STATE = "USERRX_EMPTY_STATE";
 export const emptyState = createAction(USERRX_EMPTY_STATE);
+
+const saveDeviceToken_Success = createAction("SAVE_DEVICE_TOKEN_SUCCESS", payload => payload);
+const saveDeviceToken_Failure = createAction("SAVE_DEVICE_TOKEN_FAILURE", error => error);
+export const saveDeviceToken_Epic = (action$) => (
+    action$.filter(action => action.type == FETCH_USER_SUCCESS)
+        .mergeMap(action => appStorage.get("deviceToken"))
+        .mergeMap((deviceToken: string) => {
+            let { user } = Store.getState().userReducer;
+            return UserService.saveDevice(deviceToken, user._id);
+        })
+        .map(x => saveDeviceToken_Success(x.xhr.response))
+        .catch(error => {
+            return Rx.Observable.of(saveDeviceToken_Failure(error.xhr.response))
+        })
+);

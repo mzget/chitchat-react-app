@@ -18,10 +18,6 @@ export const getSessionToken = () => {
     const backendFactory = BackendFactory.getInstance();
     return getStore().getState().stalkReducer.stalkToken;
 };
-export const getRoomDAL = () => {
-    const backendFactory = BackendFactory.getInstance();
-    return backendFactory.dataManager.roomDAL;
-};
 const onGetContactProfileFail = (contact_id: string) => { };
 
 export const STALK_INIT = "STALK_INIT";
@@ -44,7 +40,7 @@ export function stalkLogin(user: any) {
     backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
     backendFactory.stalkInit().then(socket => {
         backendFactory.handshake(user._id).then((connector) => {
-            backendFactory.checkIn(user).then((value) => {
+            backendFactory.checkIn(user).then((value: any) => {
                 console.log("Joined stalk-service success", value);
                 let result: { success: boolean, token: any } = JSON.parse(JSON.stringify(value.data));
                 if (result.success) {
@@ -52,6 +48,7 @@ export function stalkLogin(user: any) {
                         server.listenSocketEvents();
                         backendFactory.getServerListener();
                         backendFactory.subscriptions();
+                        StalkNotificationAction.initNativeNotiAPI();
                         StalkNotificationAction.regisNotifyNewMessageEvent();
                         stalkPushInit();
                         stalkCallingInit();

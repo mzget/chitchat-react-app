@@ -16,7 +16,6 @@ export type AppStore = {
     appState: string;
 };
 
-
 export class ChitChatFactory {
     private static instance: ChitChatFactory;
     public static getInstance(): ChitChatFactory {
@@ -28,6 +27,8 @@ export class ChitChatFactory {
 
             return ChitChatFactory.instance;
         }
+        else
+            return ChitChatFactory.instance;
     }
 
     store;

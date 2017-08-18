@@ -34,7 +34,7 @@ export const getTeamsInfo_Epic = (action$) => (
                 return getTeamsInfo(userReducer.user.teams);
             }
             else {
-                return { type: "" };
+                return { type: "WAIT_FOR_USER_TEAMS" };
             }
         })
 );

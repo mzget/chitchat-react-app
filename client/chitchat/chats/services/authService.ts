@@ -1,4 +1,3 @@
-import "isomorphic-fetch";
 import { ChitChatFactory } from "../ChitChatFactory";
 import { withToken, chitchat_headers } from "../utils/chitchatServiceUtils";
 
@@ -8,6 +7,17 @@ export function auth(user: { email: string, password: string }) {
     return fetch(`${getConfig().api.auth}`, {
         method: "POST",
         body: JSON.stringify({ email: user.email, password: user.password }),
+        headers: chitchat_headers()
+    });
+}
+
+export function authWithSocial(user: { email: string, social_type: string }) {
+    return fetch(`${getConfig().api.auth}/social`, {
+        method: "POST",
+        body: JSON.stringify({
+            email: user.email,
+            social_type: user.social_type
+        }),
         headers: chitchat_headers()
     });
 }
