@@ -3,7 +3,7 @@ import Flexbox from "flexbox-react";
 import FontIcon from 'material-ui/FontIcon';
 import * as Colors from "material-ui/styles/colors";
 import TextField from 'material-ui/TextField';
-import { withState, shallowEqual } from "recompose";
+import { withState, shallowEqual, compose } from "recompose";
 import { withRouter } from "react-router-dom";
 
 import { ChatPage } from "./Chat";
@@ -11,14 +11,20 @@ import { Post } from "./Post";
 import { ProfileDetailEnhanced } from "./profile/ProfileDetailEnhancer";
 import { AddMembersEnhanced } from "./roomSettings/AddMembers";
 import { GroupDetailEnhanced } from "./roomSettings/GroupDetailEnhancer";
+import { WithDialog } from "./toolsbox/DialogBoxEnhancer";
 
 
 const onVideoCall = ({ history, roomName }) => {
     history.push(`/videocall/${roomName}`);
 };
-const enhance = withState('roomName', 'setRoomName', "");
-var VideoCallCreateRoomSample = enhance(({ roomName, setRoomName, history }) => (
+const enhance = compose(
+    WithDialog,
+    withRouter,
+    withState('roomName', 'setRoomName', "")
+);
+var VideoCallCreateRoomSample = enhance(({ roomName, setRoomName, history, onError }) => (
     <div>
+        <p> Videocall room experiment.</p>
         <TextField
             id="text-field-controlled"
             hintText="Enter videocall room name"
@@ -29,13 +35,14 @@ var VideoCallCreateRoomSample = enhance(({ roomName, setRoomName, history }) => 
             className="material-icons"
             style={{ marginRight: 24, fontSize: 48, cursor: 'pointer' }}
             color={Colors.lightGreen500}
-            onClick={() => (roomName.length > 0) ? onVideoCall({ history, roomName }) : console.log("Room name is missing")}
+            onClick={() => (roomName.length > 0) ?
+                onVideoCall({ history, roomName }) :
+                onError("Room name is missing")}
         >
             video_call
     </FontIcon>
     </div>
-));
-VideoCallCreateRoomSample = withRouter<any>(VideoCallCreateRoomSample);
+)) as React.ComponentClass<any>;
 
 interface IAppBody { match, history, onError, userReducer };
 
