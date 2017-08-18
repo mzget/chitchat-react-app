@@ -60,7 +60,6 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.disconnect = this.disconnect.bind(this);
 
         this.webrtc.webrtcEvents.on(WebRTC.CONNECTION_READY, this.connectionReady);
-        this.webrtc.webrtcEvents.on(WebRTC.READY_TO_CALL, this.readyToCall);
         this.webrtc.webrtcEvents.on(Peer.PEER_STREAM_ADDED, this.addVideo);
         this.webrtc.webrtcEvents.on(Peer.PEER_STREAM_REMOVED, this.removeVideo);
         this.webrtc.webrtcEvents.on(Peer.CONNECTIVITY_ERROR, (peer) => {

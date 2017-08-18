@@ -17,7 +17,6 @@ export class WebRTC {
     roomName: string;
 
     static CONNECTION_READY = "connectionReady";
-    static READY_TO_CALL = "readyToCall";
 
     constructor(configs: { signalingUrl, socketOptions }) {
         let self = this;
@@ -25,6 +24,7 @@ export class WebRTC {
         this.signalingSocket = io.connect(configs.signalingUrl, configs.socketOptions);
 
         this.exchange = this.exchange.bind(this);
+        this.onDisconnect = this.onDisconnect.bind(this);
 
         self.signalingSocket.on('connect', function (data) {
             console.log("SOCKET connect", self.signalingSocket.id);
@@ -48,9 +48,7 @@ export class WebRTC {
                 self.leave(room.id);
             }
         });
-        self.signalingSocket.on('disconnect', (data) => {
-            console.log("SOCKET disconnect", data);
-        });
+        self.signalingSocket.on('disconnect', this.onDisconnect);
         self.signalingSocket.on('reconnect', (data) => {
             console.log("SOCKET reconnect", data);
         });
@@ -67,6 +65,8 @@ export class WebRTC {
 
     // send via signalling channel
     send(messageType: string, payload?, optional?: { to: string }) {
+        if (!this.signalingSocket) return;
+
         let self = this;
         let message = {
             to: optional.to,
@@ -198,4 +198,8 @@ export class WebRTC {
         delete this.peers;
         delete this.signalingSocket;
     };
+
+    onDisconnect(data) {
+        console.log("SOCKET disconnect", data);
+    }
 }
