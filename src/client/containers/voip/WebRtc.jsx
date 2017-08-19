@@ -10,14 +10,12 @@ import { signalingServer } from "../../Chitchat";
 import * as chatroom from "../../chitchat/chats/redux/chatroom/";
 import * as calling from "../../chitchat/calling/";
 import { WebRTC } from '../../chitchat/react-webrtc/WebRTC';
-import * as Peer from "../../chitchat/react-webrtc/Peer";
 class WebRtc extends React.Component {
     constructor(props) {
         super(props);
-        this.peerAdded = this.peerAdded.bind(this);
+        this.addVideo = this.addVideo.bind(this);
         this.removeVideo = this.removeVideo.bind(this);
         this.readyToCall = this.readyToCall.bind(this);
-        this.connectionReady = this.connectionReady.bind(this);
         this.disconnect = this.disconnect.bind(this);
     }
     componentWillUnmount() {
@@ -41,8 +39,13 @@ class WebRtc extends React.Component {
         };
         this.webrtc = new WebRTC(rtcConfig);
         this.props.getWebRtc(this.webrtc);
-        this.webrtc.webrtcEvents.on(WebRTC.CONNECTION_READY, this.connectionReady);
-        this.webrtc.webrtcEvents.on("createdPeer", peer => {
+        this.webrtc.on('connectionReady', function (sessionId) {
+            console.log("connectionReady", sessionId);
+        });
+        this.webrtc.on("leftRoom", (roomName) => {
+            console.log("leftRoom", roomName);
+        });
+        this.webrtc.on("createdPeer", peer => {
             if (!peer.stream) {
                 const peerId = self.webrtc.getDomId(peer);
                 ReactDOM.render(<MuiThemeProvider>
@@ -53,7 +56,7 @@ class WebRtc extends React.Component {
                     </MuiThemeProvider>, ReactDOM.findDOMNode(self.refs.remotes));
             }
         });
-        this.webrtc.webrtcEvents.on(Peer.PEER_STREAM_ADDED, this.peerAdded);
+        this.webrtc.on('videoAdded', this.addVideo);
         this.webrtc.on('videoRemoved', this.removeVideo);
         this.webrtc.on('readyToCall', this.readyToCall);
         this.webrtc.on('localMediaError', (err) => {
@@ -81,15 +84,8 @@ class WebRtc extends React.Component {
             }
         });
     }
-    connectionReady(socker_id) {
-        let self = this;
-        let requestMedia = { video: true, audio: true };
-        this.webrtc.getLocalStream(requestMedia, function (stream) {
-            self.readyToCall(stream);
-        });
-    }
-    peerAdded(peer) {
-        console.log("peerAdded", peer);
+    addVideo(video, peer) {
+        console.log("addVideo", video, peer);
         const self = this;
         let remotes = ReactDOM.findDOMNode(this.refs.remotes);
         if (remotes) {
@@ -168,7 +164,7 @@ class WebRtc extends React.Component {
             ReactDOM.unmountComponentAtNode(el);
         }
     }
-    readyToCall(stream) {
+    readyToCall() {
         let self = this;
         let { match, userReducer: { user }, stalkReducer } = this.props;
         let incommingCall = stalkReducer.get("incommingCall");
