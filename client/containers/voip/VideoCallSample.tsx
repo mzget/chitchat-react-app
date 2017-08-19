@@ -17,6 +17,13 @@ import { IComponentProps } from "../../utils/IComponentProps";
 import { SimpleToolbar } from "../../components/SimpleToolbar";
 
 interface IComponentNameState {
+    remoteSrc;
+    selfViewSrc;
+    isMuteVoice;
+    isPauseVideo;
+    remoteVolume;
+    micVol;
+    peerStat;
 }
 
 
@@ -209,7 +216,9 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 
         let disabledAudioOption = true;
         // let disabledVideoOption = true;
-        if (!!this.state.selfViewSrc && !!this.webrtc.micController && this.webrtc.micController.support) {
+        if (!!this.state.selfViewSrc &&
+            !!this.webrtc.userMedia.micController &&
+            this.webrtc.userMedia.micController.support) {
             if (this.state.selfViewSrc.getAudioTracks().length > 0) {
                 disabledAudioOption = false;
             }
@@ -245,7 +254,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                             }}
                             onChange={(e, newValue) => {
                                 this.setState({ micVol: newValue });
-                                this.webrtc.micController.setVolume(newValue / 100);
+                                this.webrtc.userMedia.micController.setVolume(newValue / 100);
                             }} />
                         <div>{`Mic volume (${this.state.micVol}%)`}</div>
                     </div>

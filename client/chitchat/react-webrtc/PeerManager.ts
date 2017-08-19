@@ -15,7 +15,7 @@ export class PeerManager {
             peer_id: options.id,
             offer: options.offer,
             pcPeers: this.peers,
-            stream: webrtc.localStream,
+            stream: webrtc.userMedia.getLocalStream(),
             emitter: webrtc.webrtcEvents,
             sendHandler: webrtc.send
         };

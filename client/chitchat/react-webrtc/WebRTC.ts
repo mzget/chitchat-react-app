@@ -22,7 +22,6 @@ export interface WebRtcConfig {
 export class WebRTC {
     signalingSocket: SocketIOClient.Socket;  //{ transports: ['websocket'] }
     webrtcEvents = new events.EventEmitter();
-    localStream: MediaStream;
     roomName: string;
     peerManager: PeerManager;
     userMedia: UserMedia;
@@ -117,7 +116,7 @@ export class WebRTC {
         self.signalingSocket.emit('message', message);
     };
 
-    join(roomname) {
+    join(roomname: string) {
         let self = this;
         this.signalingSocket.emit('join', roomname, function (err, roomDescription) {
             console.log('join', roomDescription);

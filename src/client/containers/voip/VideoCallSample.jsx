@@ -166,7 +166,9 @@ class VideoCall extends React.Component {
     render() {
         let { team } = this.props.teamReducer;
         let disabledAudioOption = true;
-        if (!!this.state.selfViewSrc && !!this.webrtc.micController && this.webrtc.micController.support) {
+        if (!!this.state.selfViewSrc &&
+            !!this.webrtc.userMedia.micController &&
+            this.webrtc.userMedia.micController.support) {
             if (this.state.selfViewSrc.getAudioTracks().length > 0) {
                 disabledAudioOption = false;
             }
@@ -185,7 +187,7 @@ class VideoCall extends React.Component {
             margin: 0,
         }} onChange={(e, newValue) => {
             this.setState({ micVol: newValue });
-            this.webrtc.micController.setVolume(newValue / 100);
+            this.webrtc.userMedia.micController.setVolume(newValue / 100);
         }}/>
                         <div>{`Mic volume (${this.state.micVol}%)`}</div>
                     </div>
