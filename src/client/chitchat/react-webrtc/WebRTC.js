@@ -148,6 +148,8 @@ export class WebRTC {
     ;
     onDisconnect(data) {
         console.log("SOCKET disconnect", data);
+        let tracks = this.localStream.getTracks();
+        tracks.forEach(each => each.stop());
     }
 }
 WebRTC.CONNECTION_READY = "connectionReady";

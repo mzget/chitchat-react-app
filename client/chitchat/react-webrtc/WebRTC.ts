@@ -210,5 +210,8 @@ export class WebRTC {
 
     onDisconnect(data) {
         console.log("SOCKET disconnect", data);
+        // stop local stream
+        let tracks = this.localStream.getTracks();
+        tracks.forEach(each => each.stop());
     }
 }
