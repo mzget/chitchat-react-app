@@ -9,17 +9,17 @@ export const UNMUTE = "unmute";
 export const ANSWER = "answer";
 export const OFFER = "offer";
 export class Peer {
-    constructor(parents) {
+    constructor(config) {
         this.logError = (error) => {
             console.log(error);
         };
-        this.id = parents.peer_id;
-        this.pcPeers = parents.pcPeers;
-        this.parentsEmitter = parents.emitter;
-        this.send_event = parents.sendHandler;
+        this.id = config.peer_id;
+        this.pcPeers = config.pcPeers;
+        this.parentsEmitter = config.emitter;
+        this.send_event = config.sendHandler;
         this.pc = new RTCPeerConnection(configuration);
         let self = this;
-        const isOffer = parents.offer;
+        const isOffer = config.offer;
         this.pc.onicecandidate = function (event) {
             if (event.candidate) {
                 self.send_event(CANDIDATE, event.candidate, { to: self.id });
@@ -53,7 +53,7 @@ export class Peer {
             console.log('onremovestream', peer.stream);
             self.parentsEmitter.emit(PEER_STREAM_REMOVED, peer.stream);
         };
-        this.pc.addStream(parents.stream);
+        this.pc.addStream(config.stream);
     }
     getStats() {
         let self = this;

@@ -37,14 +37,14 @@ export class Peer {
      * @param stream 
      * @param options 
      */
-    constructor(parents: { peer_id, stream, pcPeers, emitter, sendHandler, offer }) {
-        this.id = parents.peer_id;
-        this.pcPeers = parents.pcPeers;
-        this.parentsEmitter = parents.emitter;
-        this.send_event = parents.sendHandler;
+    constructor(config: { peer_id, stream, pcPeers, emitter, sendHandler, offer }) {
+        this.id = config.peer_id;
+        this.pcPeers = config.pcPeers;
+        this.parentsEmitter = config.emitter;
+        this.send_event = config.sendHandler;
         this.pc = new RTCPeerConnection(configuration);
         let self = this;
-        const isOffer = parents.offer;
+        const isOffer = config.offer;
 
         this.pc.onicecandidate = function (event) {
             if (event.candidate) {
@@ -90,7 +90,7 @@ export class Peer {
             self.parentsEmitter.emit(PEER_STREAM_REMOVED, peer.stream);
         };
 
-        this.pc.addStream(parents.stream);
+        this.pc.addStream(config.stream);
     }
 
     getStats() {

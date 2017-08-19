@@ -2,36 +2,42 @@ const RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessi
 navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia || navigator.msGetUserMedia;
 import * as io from 'socket.io-client';
 import * as events from "events";
-import * as Peer from "./Peer";
 import { PeerManager } from "./PeerManager";
 export function logError(error) {
     console.log("logError", error);
 }
 export class WebRTC {
     constructor(configs) {
-        this.peers = {};
         this.webrtcEvents = new events.EventEmitter();
+        this.debug = false;
         let self = this;
+        self.debug = configs.debug;
         this.signalingSocket = io.connect(configs.signalingUrl, configs.socketOptions);
         this.exchange = this.exchange.bind(this);
+        this.send = this.send.bind(this);
         this.onDisconnect = this.onDisconnect.bind(this);
-        this.peerManager = new PeerManager(this);
+        this.peerManager = new PeerManager();
         self.signalingSocket.on('connect', function (data) {
-            console.log("SOCKET connect", self.signalingSocket.id);
+            if (self.debug)
+                console.log("SOCKET connect", self.signalingSocket.id);
             self.webrtcEvents.emit(WebRTC.CONNECTION_READY, self.signalingSocket.id);
         });
         self.signalingSocket.on('message', function (data) {
+            if (self.debug)
+                console.log("SOCKET message ", data.type, data.from);
             self.exchange(data);
         });
-        self.signalingSocket.on('leave', function (socketId) {
-            console.log("SOCKET leave", socketId);
-            self.leave(socketId);
-        });
         self.signalingSocket.on('remove', function (room) {
-            console.log("SOCKET remove", room, self.signalingSocket.id);
+            if (self.debug)
+                console.log("SOCKET remove", room, self.signalingSocket.id);
             if (room.id !== self.signalingSocket.id) {
-                self.leave(room.id);
+                self.peerManager.removePeers(room.id, self);
             }
+        });
+        self.signalingSocket.on('leave', function (socketId) {
+            if (self.debug)
+                console.log("SOCKET leave", socketId);
+            self.peerManager.removePeers(socketId, self);
         });
         self.signalingSocket.on('disconnect', this.onDisconnect);
         self.signalingSocket.on('reconnect', (data) => {
@@ -48,9 +54,9 @@ export class WebRTC {
         });
     }
     send(messageType, payload, optional) {
-        if (!this.signalingSocket)
-            return;
         let self = this;
+        if (!self.signalingSocket)
+            return;
         let message = {
             to: optional.to,
             type: messageType,
@@ -71,7 +77,7 @@ export class WebRTC {
         this.signalingSocket.emit('join', roomname, function (err, roomDescription) {
             console.log('join', roomDescription);
             if (err) {
-                self.webrtcEvents.emit('error', err);
+                self.webrtcEvents.emit(WebRTC.JOIN_ROOM_ERROR, err);
             }
             else {
                 let id, client, type, peer;
@@ -86,42 +92,33 @@ export class WebRTC {
                                     id: id,
                                     type: type,
                                     offer: true
-                                });
-                                self.webrtcEvents.emit('createdPeer', peer);
+                                }, self);
+                                self.webrtcEvents.emit(WebRTC.CREATED_PEER, peer);
                             }
                         }
                     }
                 }
             }
             self.roomName = roomname;
-            self.webrtcEvents.emit('joinedRoom', roomname);
+            self.webrtcEvents.emit(WebRTC.JOINED_ROOM, roomname);
         });
     }
     exchange(message) {
         let self = this;
         const fromId = message.from;
         const roomType = message.roomType;
-        let peer = this.peers[fromId];
+        let peer = this.peerManager.getPeers(fromId);
         if (message.type === 'offer') {
             if (!peer) {
                 peer = self.peerManager.createPeer({
                     id: message.from,
                     type: message.roomType,
                     offer: false,
-                });
-                self.webrtcEvents.emit('createdPeer', peer);
+                }, self);
+                self.webrtcEvents.emit(WebRTC.CREATED_PEER, peer);
             }
             peer.handleMessage(message);
         }
-    }
-    leave(socketId) {
-        console.log('leave', socketId);
-        const peer = this.peers[socketId];
-        if (peer) {
-            peer.pc.close();
-        }
-        this.webrtcEvents.emit(Peer.PEER_STREAM_REMOVED);
-        delete this.peers[socketId];
     }
     leaveRoom() {
         if (this.roomName) {
@@ -132,7 +129,7 @@ export class WebRTC {
     ;
     disconnect() {
         this.signalingSocket.disconnect();
-        delete this.peers;
+        delete this.peerManager;
         delete this.signalingSocket;
     }
     ;
@@ -141,3 +138,6 @@ export class WebRTC {
     }
 }
 WebRTC.CONNECTION_READY = "connectionReady";
+WebRTC.CREATED_PEER = "createdPeer";
+WebRTC.JOINED_ROOM = "joinedRoom";
+WebRTC.JOIN_ROOM_ERROR = "joinRoomError";

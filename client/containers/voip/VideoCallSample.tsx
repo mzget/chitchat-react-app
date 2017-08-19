@@ -47,7 +47,8 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 
         let rtcConfig = {
             signalingUrl: signalingServer,
-            socketOptions: { 'force new connection': true }
+            socketOptions: { 'force new connection': true },
+            debug: true
         }
         this.webrtc = new WebRTC(rtcConfig);
 
@@ -72,9 +73,9 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.webrtc.webrtcEvents.on(Peer.UNMUTE, (data) => {
             console.log(Peer.UNMUTE, data);
         });
-        this.webrtc.webrtcEvents.on("error", (err) => console.log("joinRoom fail", err));
-        this.webrtc.webrtcEvents.on("createdPeer", (peer) => console.log("createdPeer", peer));
-        this.webrtc.webrtcEvents.on("joinedRoom", (roomName) => console.log("joinedRoom", roomName));
+        this.webrtc.webrtcEvents.on(WebRTC.JOIN_ROOM_ERROR, (err) => console.log("joinRoom fail", err));
+        this.webrtc.webrtcEvents.on(WebRTC.CREATED_PEER, (peer) => console.log("createdPeer", peer));
+        this.webrtc.webrtcEvents.on(WebRTC.JOINED_ROOM, (roomName) => console.log("joinedRoom", roomName));
     }
 
     connectionReady(socker_id) {
@@ -98,9 +99,6 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
         remotesView.src = URL.createObjectURL(peer.stream);
-        remotesView.muted = true;
-        remotesView.autoplay = true;
-        remotesView.mirror = false;
 
         if (peer && peer.pc) {
             let peerStat = "";
@@ -135,7 +133,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
         remotesView.disable = true;
 
-        // this.setState({ remoteSrc: null });
+        this.setState({ remoteSrc: null });
     }
     disconnect() {
         this.webrtc.leaveRoom();
@@ -154,9 +152,6 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         // el.appendChild(video);
         if (!selfView) return;
         selfView.src = URL.createObjectURL(stream);
-        selfView.muted = true;
-        selfView.autoplay = true;
-        selfView.mirror = false;
 
         this.setState({ selfViewSrc: stream });
 
@@ -198,20 +193,25 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                             onPressTitle={this.onTitlePressed} />
                     </div>
                 </div>
-                <Flexbox flexDirection="row" height="150px" justifyContent={"flex-start"}>
+                <Flexbox flexDirection="row" height="100%" justifyContent={"flex-start"}>
                     <div ref="localContainer" style={{ position: 'relative', width: '200px', height: '150px' }}>
-                        <video style={{ height: "150px", width: '100%' }}
+                        <video
+                            style={{ height: "150px", width: '100%' }}
                             className="local"
                             id="localVideo"
-                            ref="localVideo" >
+                            ref="localVideo"
+                            autoPlay={true}
+                            muted={true} >
                         </video>
                     </div>
+                    <video style={{ width: "100%", height: "300px" }}
+                        className="remotes"
+                        id="remoteVideos"
+                        ref="remotes"
+                        autoPlay={true}
+                        muted={true}>
+                    </video>
                 </Flexbox>
-                <video style={{ width: "100%", height: "300px" }}
-                    className="remotes"
-                    id="remoteVideos"
-                    ref="remotes">
-                </video>
             </Flexbox>
         );
     }
