@@ -1,5 +1,4 @@
 const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
-const RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.msRTCPeerConnection;
 export const CANDIDATE = "candidate";
 export const PEER_STREAM_ADDED = "peerStreamAdded";
 export const PEER_STREAM_REMOVED = "peerStreamRemoved";
@@ -10,6 +9,8 @@ export const ANSWER = "answer";
 export const OFFER = "offer";
 export class Peer {
     constructor(config) {
+        this.enableDataChannels = true;
+        this.channels = {};
         this.logError = (error) => {
             console.log(error);
         };
@@ -76,26 +77,6 @@ export class Peer {
             }, self.logError);
         }, self.logError);
     }
-    createDataChannel() {
-        let self = this;
-        if (this.pc.textDataChannel) {
-            return;
-        }
-        const dataChannel = this.pc.createDataChannel("text");
-        dataChannel.onerror = function (error) {
-            console.log("dataChannel.onerror", error);
-        };
-        dataChannel.onmessage = function (event) {
-            console.log("dataChannel.onmessage:", event.data);
-        };
-        dataChannel.onopen = function () {
-            console.log('dataChannel.onopen');
-        };
-        dataChannel.onclose = function () {
-            console.log("dataChannel.onclose");
-        };
-        this.pc.textDataChannel = dataChannel;
-    }
     handleMessage(message) {
         let self = this;
         console.log('getting', message.type, message);
@@ -145,4 +126,44 @@ export class Peer {
         }
     }
     ;
+    sendDirectly(channel, messageType, payload) {
+        let message = {
+            type: messageType,
+            payload: payload
+        };
+        console.log('sending via datachannel', channel, messageType, message);
+        let dc = this.getDataChannel(channel);
+        if (dc.readyState != 'open')
+            return false;
+        dc.send(JSON.stringify(message));
+        return true;
+    }
+    ;
+    getDataChannel(name) {
+        let channel = this.channels[name];
+        if (channel)
+            return channel;
+        return this.createDataChannel(name);
+    }
+    createDataChannel(name) {
+        let self = this;
+        let dataConstraint = null;
+        if (this.channels[name]) {
+            return;
+        }
+        let channel = this.channels[name] = this.pc.createDataChannel(name, dataConstraint);
+        channel.onerror = function (error) {
+            console.log("dataChannel.onerror", error);
+        };
+        channel.onmessage = function (event) {
+            console.log("dataChannel.onmessage:", event.data);
+        };
+        channel.onopen = function () {
+            console.log('dataChannel.onopen');
+        };
+        channel.onclose = function () {
+            console.log("dataChannel.onclose");
+        };
+        return channel;
+    }
 }

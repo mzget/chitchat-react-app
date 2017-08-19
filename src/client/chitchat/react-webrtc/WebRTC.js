@@ -1,4 +1,3 @@
-const RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription || window.msRTCSessionDescription;
 import * as io from 'socket.io-client';
 import * as events from "events";
 import { PeerManager } from "./PeerManager";
@@ -133,8 +132,10 @@ export class WebRTC {
     ;
     disconnect() {
         this.signalingSocket.disconnect();
+        this.userMedia.stopLocalStream();
         delete this.peerManager;
         delete this.signalingSocket;
+        delete this.userMedia;
     }
     ;
     onDisconnect(data) {

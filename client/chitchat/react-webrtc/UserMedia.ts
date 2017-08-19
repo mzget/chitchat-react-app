@@ -50,7 +50,7 @@ export class UserMedia {
         // this.stopScreenShare();
     }
 
-    stopStream() {
+    private stopStream() {
         let self = this;
 
         let tracks = this.localStream.getTracks();

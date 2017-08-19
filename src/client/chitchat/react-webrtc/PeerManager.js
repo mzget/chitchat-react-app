@@ -32,4 +32,18 @@ export class PeerManager {
         this.peers.delete(sessionId);
     }
     ;
+    sendToAll(message, payload) {
+        this.peers.forEach(function (peer) {
+            peer.send_event(message, payload, { to: peer.id });
+        });
+    }
+    ;
+    sendDirectlyToAll(channel, message, payload) {
+        this.peers.forEach(function (peer) {
+            if (peer.enableDataChannels) {
+                peer.sendDirectly(channel, message, payload);
+            }
+        });
+    }
+    ;
 }

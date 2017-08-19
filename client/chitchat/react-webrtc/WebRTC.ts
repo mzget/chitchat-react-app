@@ -1,4 +1,5 @@
-const RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription || window.msRTCSessionDescription;
+// const RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription || window.msRTCSessionDescription;
+// const RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.msRTCPeerConnection;
 
 import * as io from 'socket.io-client';
 import * as events from "events";
@@ -100,7 +101,7 @@ export class WebRTC {
     }
 
     // send via signalling channel
-    send(messageType: string, payload?, optional?: { to: string }) {
+    send(messageType: string, payload, optional: { to: string }) {
         let self = this;
         if (!self.signalingSocket) return;
 
@@ -193,8 +194,11 @@ export class WebRTC {
 
     disconnect() {
         this.signalingSocket.disconnect();
+        this.userMedia.stopLocalStream();
+
         delete this.peerManager;
         delete this.signalingSocket;
+        delete this.userMedia;
     };
 
     onDisconnect(data) {

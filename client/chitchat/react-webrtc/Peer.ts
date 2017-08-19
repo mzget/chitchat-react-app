@@ -1,11 +1,11 @@
 import EventEmitter = require("events");
+import adapter from 'webrtc-adapter';
 
 // const twilioIceServers = [
 //     { url: 'stun:global.stun.twilio.com:3478?transport=udp' }
 // ];
 // configuration.iceServers = twilioIceServers;
 const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
-const RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.msRTCPeerConnection;
 
 export const CANDIDATE = "candidate";
 export const PEER_STREAM_ADDED = "peerStreamAdded";
@@ -22,10 +22,13 @@ export class Peer {
     parentsEmitter: EventEmitter;
     id: string;
     pc: RTCPeerConnection;
+    enableDataChannels: boolean = true;
+    channels = {};
     pcPeers;
-    browserPrefix;
+    browserPrefix: string;
     nick;
-    stream: any;
+    stream: MediaStream;
+
     send_event: (messageType: string, payload?: any, optional?: { to: string }) => void;
     logError = (error) => {
         console.log(error);
@@ -122,33 +125,6 @@ export class Peer {
             self.logError);
     }
 
-    createDataChannel() {
-        let self = this;
-
-        if (this.pc.textDataChannel) {
-            return;
-        }
-        const dataChannel = this.pc.createDataChannel("text");
-
-        dataChannel.onerror = function (error) {
-            console.log("dataChannel.onerror", error);
-        };
-
-        dataChannel.onmessage = function (event) {
-            console.log("dataChannel.onmessage:", event.data);
-        };
-
-        dataChannel.onopen = function () {
-            console.log('dataChannel.onopen');
-        };
-
-        dataChannel.onclose = function () {
-            console.log("dataChannel.onclose");
-        };
-
-        this.pc.textDataChannel = dataChannel;
-    }
-
     handleMessage(message) {
         let self = this;
         console.log('getting', message.type, message);
@@ -203,4 +179,60 @@ export class Peer {
             });
         }
     };
+
+
+    // send via data channel
+    // returns true when message was sent and false if channel is not open
+    sendDirectly(channel, messageType, payload) {
+        let message = {
+            type: messageType,
+            payload: payload
+        };
+        console.log('sending via datachannel', channel, messageType, message);
+
+        let dc = this.getDataChannel(channel);
+        if (dc.readyState != 'open')
+            return false;
+        dc.send(JSON.stringify(message));
+        return true;
+    };
+
+    getDataChannel(name) {
+        // if (!webrtcSupport.supportDataChannel)
+        //     return this.emit('error', new Error('createDataChannel not supported'));
+        let channel = this.channels[name];
+        if (channel)
+            return channel;
+        // if we don't have one by this label, create it
+        return this.createDataChannel(name);
+    }
+
+    createDataChannel(name) {
+        let self = this;
+        let dataConstraint = null;
+
+        if (this.channels[name]) {
+            return;
+        }
+
+        let channel = this.channels[name] = this.pc.createDataChannel(name, dataConstraint);
+
+        channel.onerror = function (error) {
+            console.log("dataChannel.onerror", error);
+        };
+
+        channel.onmessage = function (event) {
+            console.log("dataChannel.onmessage:", event.data);
+        };
+
+        channel.onopen = function () {
+            console.log('dataChannel.onopen');
+        };
+
+        channel.onclose = function () {
+            console.log("dataChannel.onclose");
+        };
+
+        return channel;
+    }
 }

@@ -38,4 +38,28 @@ export class PeerManager {
         }
         this.peers.delete(sessionId);
     };
+
+    /**
+     * sends message to all 
+     * use signalling message.
+     * 
+     * @param {any} message 
+     * @param {any} payload 
+     * @memberof PeerManager
+     */
+    sendToAll(message, payload) {
+        this.peers.forEach(function (peer) {
+            peer.send_event(message, payload, { to: peer.id });
+        });
+    };
+
+    // sends message to all using a datachannel
+    // only sends to anyone who has an open datachannel
+    sendDirectlyToAll(channel, message, payload) {
+        this.peers.forEach(function (peer) {
+            if (peer.enableDataChannels) {
+                peer.sendDirectly(channel, message, payload);
+            }
+        });
+    };
 }
