@@ -1,5 +1,8 @@
 const RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription || window.msRTCSessionDescription;
-navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia || navigator.msGetUserMedia;
+navigator.getUserMedia = navigator.getUserMedia ||
+    navigator.mozGetUserMedia ||
+    navigator.webkitGetUserMedia ||
+    navigator.msGetUserMedia;
 
 import * as io from 'socket.io-client';
 import * as events from "events";
@@ -9,11 +12,20 @@ import { PeerManager } from "./PeerManager";
 export function logError(error) {
     console.log("logError", error);
 }
-
+export function hasGetUserMedia() {
+    return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia || navigator.msGetUserMedia);
+}
+export interface WebRtcConfig {
+    signalingUrl: string;
+    socketOptions: any;
+    debug: boolean;
+    detectSpeakingEvents: boolean;
+}
 export class WebRTC {
     signalingSocket: SocketIOClient.Socket;  //{ transports: ['websocket'] }
     webrtcEvents = new events.EventEmitter();
-    localStream;
+    localStream: MediaStream;
     roomName: string;
     peerManager: PeerManager;
     debug: boolean = false;
@@ -22,10 +34,20 @@ export class WebRTC {
     static CREATED_PEER = "createdPeer";
     static JOINED_ROOM = "joinedRoom"
     static JOIN_ROOM_ERROR = "joinRoomError";
+    static NOT_SUPPORT_MEDIA = "NOT_SUPPORT_MEDIA";
 
-    constructor(configs: { signalingUrl: string, socketOptions: any, debug: boolean }) {
+    constructor(configs: WebRtcConfig) {
         let self = this;
         self.debug = configs.debug;
+
+        if (!hasGetUserMedia()) {
+            alert('getUserMedia() is not supported in your browser');
+
+            logError('Your browser does not support local media capture.');
+
+            self.webrtcEvents.emit(WebRTC.NOT_SUPPORT_MEDIA);
+            return;
+        }
 
         this.signalingSocket = io.connect(configs.signalingUrl, configs.socketOptions);
 
@@ -96,10 +118,10 @@ export class WebRTC {
         self.signalingSocket.emit('message', message);
     };
 
-    getLocalStream(requestMedia: { video: boolean, audio: boolean }, callback: (stream) => void) {
+    getLocalStream(requestMedia: MediaStreamConstraints, callback: (stream: MediaStream) => void) {
         let self = this;
         navigator.getUserMedia(requestMedia, function (stream) {
-            self.localStream = stream;
+            self.localStream = stream as MediaStream;
             callback(stream);
         }, logError);
     }

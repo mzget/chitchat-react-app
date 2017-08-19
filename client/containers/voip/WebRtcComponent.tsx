@@ -35,6 +35,7 @@ class WebRtcComponent extends React.Component<MyCompProps, any> {
         this.removeVideo = this.removeVideo.bind(this);
         this.readyToCall = this.readyToCall.bind(this);
         this.connectionReady = this.connectionReady.bind(this);
+        this.onPeerCreated = this.onPeerCreated.bind(this);
 
         this.disconnect = this.disconnect.bind(this);
     }
@@ -54,7 +55,7 @@ class WebRtcComponent extends React.Component<MyCompProps, any> {
         }
     }
 
-    componentDidMount() {
+    componentWillMount() {
         let self = this;
         let { stalkReducer } = this.props;
 
@@ -71,34 +72,22 @@ class WebRtcComponent extends React.Component<MyCompProps, any> {
         // });
         let rtcConfig = {
             signalingUrl: signalingServer,
-            socketOptions: { 'force new connection': true }
+            socketOptions: { 'force new connection': true },
+            debug: true
         }
         this.webrtc = new WebRTC(rtcConfig);
         this.props.getWebRtc(this.webrtc);
 
         this.webrtc.webrtcEvents.on(WebRTC.CONNECTION_READY, this.connectionReady);
-        this.webrtc.webrtcEvents.on("createdPeer", peer => {
-            if (!peer.stream) {
-                const peerId = self.webrtc.getDomId(peer);
-                ReactDOM.render(
-                    <MuiThemeProvider>
-                        <div className='videoContainer' id={`container_${peerId}`}>
-                            <div style={{ width: '640px', height: '480px', background: 'black' }}>
-                            </div>
-                        </div>
-                    </MuiThemeProvider>,
-                    ReactDOM.findDOMNode(self.refs.remotes),
-                );
-            }
-        });
+        this.webrtc.webrtcEvents.on(WebRTC.CREATED_PEER, this.onPeerCreated);
         this.webrtc.webrtcEvents.on(Peer.PEER_STREAM_ADDED, this.peerAdded);
-        this.webrtc.on('videoRemoved', this.removeVideo);
-        this.webrtc.on('readyToCall', this.readyToCall);
-        this.webrtc.on('localMediaError', (err) => {
+        this.webrtc.webrtcEvents.on('videoRemoved', this.removeVideo);
+        this.webrtc.webrtcEvents.on('readyToCall', this.readyToCall);
+        this.webrtc.webrtcEvents.on('localMediaError', (err) => {
             console.warn('Fail to start local media: ', err);
         });
         // local p2p/ice failure
-        this.webrtc.on('iceFailed', function (peer) {
+        this.webrtc.webrtcEvents.on('iceFailed', function (peer) {
             console.warn("iceFailed", peer);
             let connstate = document.querySelector('#container_' + self.webrtc.getDomId(peer) + ' .connectionstate');
             console.log('local fail', connstate);
@@ -107,13 +96,13 @@ class WebRtcComponent extends React.Component<MyCompProps, any> {
                 // fileinput.disabled = 'disabled';
             }
         });
-        if (this.webrtc.config.detectSpeakingEvents) {
-            this.webrtc.on('volumeChange', function (volume, treshold) {
+        if (this.webrtc.detectSpeakingEvents) {
+            this.webrtc.webrtcEvents.on('volumeChange', function (volume, treshold) {
                 self.showVolume(document.getElementById('localVolume'), volume);
             });
         }
         // remote p2p/ice failure
-        this.webrtc.on('connectivityError', function (peer) {
+        this.webrtc.webrtcEvents.on('connectivityError', function (peer) {
             console.warn("connectivityError", peer);
             let connstate = document.getElementById('peer_connstate_' + this.webrtc.getDomId(peer));
             // let connstate = document.querySelector('#container_' + self.webrtc.getDomId(peer) + ' .connectionstate');
@@ -125,6 +114,10 @@ class WebRtcComponent extends React.Component<MyCompProps, any> {
         });
     }
 
+
+    componentDidMount() {
+    }
+
     connectionReady(socker_id) {
         let self = this;
         let requestMedia = { video: true, audio: true };
@@ -133,13 +126,29 @@ class WebRtcComponent extends React.Component<MyCompProps, any> {
         });
     }
 
+    onPeerCreated(peer) {
+        let self = this;
+        if (!peer.stream) {
+            const peerId = peer.id;
+            ReactDOM.render(
+                <MuiThemeProvider>
+                    <div className='videoContainer' id={`container_${peerId}`}>
+                        <div style={{ width: '640px', height: '480px', background: 'black' }}>
+                        </div>
+                    </div>
+                </MuiThemeProvider>,
+                ReactDOM.findDOMNode(self.refs.remotes),
+            );
+        }
+    }
+
     peerAdded(peer) {
         console.log("peerAdded", peer);
 
         const self = this;
         let remotes = ReactDOM.findDOMNode(this.refs.remotes);
         if (remotes) {
-            const peerId = this.webrtc.getDomId(peer);
+            const peerId = peer.id;
             if (peer && peer.pc) {
                 peer.pc.on('iceConnectionStateChange', function (event) {
                     let connstate = document.getElementById('peer_connstate_' + peerId);

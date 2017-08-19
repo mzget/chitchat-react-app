@@ -61,7 +61,25 @@ class VideoCall extends React.Component {
     }
     connectionReady(socker_id) {
         let self = this;
-        let requestMedia = { video: true, audio: true };
+        let hdConstraints = {
+            video: {
+                mandatory: {
+                    minWidth: 1280,
+                    minHeight: 720
+                }
+            }
+        };
+        let vgaConstraints = {
+            video: {
+                mandatory: {
+                    maxWidth: 640,
+                    maxHeight: 360
+                }
+            }
+        };
+        let requestMedia = {
+            video: vgaConstraints.video, audio: true
+        };
         this.webrtc.getLocalStream(requestMedia, function (stream) {
             self.readyToCall(stream);
         });
