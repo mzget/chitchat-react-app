@@ -42,7 +42,8 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
             micVol: 100,
             selfViewSrc: null,
             remoteSrc: null,
-            peerStat: ""
+            peerStat: "",
+            remoteVolume: 100,
         }
 
         let rtcConfig = {
@@ -100,7 +101,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         let requestMedia = {
             video: vgaConstraints.video, audio: true
         } as MediaStreamConstraints;
-        this.webrtc.startLocalStream(requestMedia).then(function (stream) {
+        this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
             self.readyToCall(stream);
         }).catch(err => {
             console.error("LocalStream Fail", err.message);
@@ -120,6 +121,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
         remotesView.src = URL.createObjectURL(peer.stream);
+        remotesView.volume = 1;
 
         if (peer && peer.pc) {
             let peerStat = "";
@@ -148,7 +150,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
             });
         }
 
-        this.setState({ remoteSrc: peer.stream });
+        this.setState({ remoteSrc: peer.stream, remoteVolume: 100 });
     }
     removeVideo() {
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
@@ -204,6 +206,17 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 
     render(): JSX.Element {
         let { team } = this.props.teamReducer;
+
+        let disabledAudioOption = true;
+        // let disabledVideoOption = true;
+        if (!!this.state.selfViewSrc && !!this.webrtc.micController && this.webrtc.micController.support) {
+            if (this.state.selfViewSrc.getAudioTracks().length > 0) {
+                disabledAudioOption = false;
+            }
+            // if (this.state.selfViewSrc.getVideoTracks().length > 0) {
+            //     disabledVideoOption = false;
+            // }
+        }
         return (
             <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
                 <div style={{ position: "relative", height: "56px" }}>
@@ -224,14 +237,59 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                             autoPlay={true}
                             muted={true} >
                         </video>
+                        <Slider min={0} max={100} step={1}
+                            disabled={disabledAudioOption}
+                            defaultValue={100}
+                            sliderStyle={{
+                                margin: 0,
+                            }}
+                            onChange={(e, newValue) => {
+                                this.setState({ micVol: newValue });
+                                this.webrtc.micController.setVolume(newValue / 100);
+                            }} />
+                        <div>{`Mic volume (${this.state.micVol}%)`}</div>
                     </div>
-                    <video style={{ width: "100%", height: "300px" }}
-                        className="remotes"
-                        id="remoteVideos"
-                        ref="remotes"
-                        autoPlay={true}
-                        muted={true}>
-                    </video>
+                    <div style={{ width: "100%", height: "300px", position: "relative", textAlign: "center" }}>
+                        <video
+                            //style={{ width: "100%", height: "300px" }}
+                            style={{ height: "300px", display: this.state.remoteSrc ? "initial" : "none" }}
+                            className="remotes"
+                            id="remoteVideos"
+                            ref="remotes"
+                            autoPlay={true} />
+                        {
+                            this.state.remoteSrc ?
+                                <div style={{
+                                    position: "absolute",
+                                    width: "50px",
+                                    height: "40%",
+                                    left: "350px",
+                                    bottom: "10px",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                }}>
+                                    <Slider axis='y' min={0} max={100} step={1}
+                                        value={this.state.remoteVolume}
+                                        onChange={(e, newValue) => {
+                                            this.setState({ remoteVolume: newValue });
+                                            getEl(ReactDOM.findDOMNode(this.refs.remotes)).volume = newValue / 100;
+                                        }}
+                                        sliderStyle={{
+                                            margin: 0,
+                                        }}
+                                        style={{
+                                            height: "80%",
+                                            marginBottom: "10px",
+                                        }} />
+                                    <div>
+                                        {`${this.state.remoteVolume}%`}
+                                    </div>
+                                </div>
+                                :
+                                null
+                        }
+                    </div>
                 </Flexbox>
             </Flexbox>
         );

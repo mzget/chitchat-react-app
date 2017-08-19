@@ -3,11 +3,14 @@ navigator.getUserMedia = navigator.getUserMedia ||
     navigator.webkitGetUserMedia ||
     navigator.msGetUserMedia;
 
+import { MicController } from '../libs/MicController';
+
 export class UserMedia {
     private localStream: MediaStream;
     public getLocalStream() {
         return this.localStream;
     }
+    micController: MicController;
 
     constructor() {
 
@@ -18,6 +21,7 @@ export class UserMedia {
         return new Promise((resolve: (stream: MediaStream) => void, reject) => {
             navigator.getUserMedia(mediaConstraints, function (stream) {
                 self.localStream = stream as MediaStream;
+                self.micController = new MicController(stream);
 
                 resolve(self.localStream);
             }, err => reject(err));
@@ -36,5 +40,6 @@ export class UserMedia {
         tracks.forEach(function (track) {
             track.stop();
         });
+        this.micController.removeAudioStream();
     }
 }

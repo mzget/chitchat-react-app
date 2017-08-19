@@ -185,13 +185,6 @@ export class WebRTC {
         // }
     }
 
-    async startLocalStream(mediaConstraints: MediaStreamConstraints) {
-        return this.userMedia.startLocalStream(mediaConstraints);
-    }
-    async stopLocalStream() {
-        return this.userMedia.stopLocalStream();
-    }
-
     leaveRoom() {
         if (this.roomName) {
             this.signalingSocket.emit('leave');
@@ -207,6 +200,7 @@ export class WebRTC {
 
     onDisconnect(data) {
         console.log("SOCKET disconnect", data);
-        this.stopLocalStream();
+
+        this.userMedia.stopLocalStream();
     }
 }
