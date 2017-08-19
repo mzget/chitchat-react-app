@@ -1,3 +1,3 @@
-export * from "./WebRtc";
+export * from "./WebRtcComponent";
 export * from "./VideoCallPage";
 export * from "./VideoCallSample";

@@ -155,16 +155,11 @@ export class ChatsLogComponent {
                     let others = roomInfo.members.filter((value) => value._id != authReducer().user._id);
                     if (others.length > 0) {
                         let contact = others[0];
-                        let avatar = null;
+                        let avatar;
                         if (!contact.avatar) {
-                            try {
-                                let user = yield chatlogActionsHelper.getContactProfile(contact._id);
+                            let user = yield chatlogActionsHelper.getContactProfile(contact._id);
+                            if (!!user)
                                 avatar = user.avatar;
-                            }
-                            catch (err) {
-                                if (err)
-                                    console.warn("getContactProfile fail", err);
-                            }
                         }
                         roomInfo.name = (contact.username) ? contact.username : "EMPTY ROOM";
                         roomInfo.image = (contact.avatar) ? contact.avatar : avatar;
@@ -258,20 +253,14 @@ export class ChatsLogComponent {
     }
     organizeChatLogMap(unread, roomInfo, done) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!roomInfo)
+                return;
             let self = this;
             let log = new ChatLog(roomInfo);
             log.setNotiCount(unread.count);
             if (!!unread.message) {
                 log.setLastMessageTime(unread.message.createTime.toString());
-                let contact = null;
-                try {
-                    contact = yield chatlogActionsHelper.getContactProfile(unread.message.sender);
-                }
-                catch (err) {
-                    if (err)
-                        console.warn("get sender contact fail", err);
-                }
-                let sender = (!!contact) ? contact.username : "";
+                let sender = (!!unread.message) ? unread.message.user.username : "";
                 if (unread.message.body != null) {
                     let displayMsg = unread.message.body;
                     switch (`${unread.message.type}`) {
@@ -353,7 +342,6 @@ export class ChatsLogComponent {
                 });
             }
             else {
-                console.log("organize chats log of room: ", roomInfo.name);
                 this.organizeChatLogMap(unread, roomInfo, () => {
                     resolve();
                 });

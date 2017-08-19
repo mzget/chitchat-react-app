@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import * as Rx from "rxjs/Rx";
+import * as Rx from "@reactivex/rxjs";
 const { ajax } = Rx.Observable;
 import { BackendFactory } from "../../BackendFactory";
 import { Unread } from "../../ChatslogComponent";

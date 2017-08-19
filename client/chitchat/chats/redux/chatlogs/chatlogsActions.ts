@@ -4,11 +4,11 @@
  * This is pure function action for redux app.
  */
 
-import * as Rx from "rxjs/Rx";
+import * as Rx from "@reactivex/rxjs";
 const { ajax } = Rx.Observable;
 
 import { BackendFactory } from "../../BackendFactory";
-import { ChatsLogComponent, IUnread, Unread } from "../../ChatslogComponent";
+import { ChatsLogComponent, Unread } from "../../ChatslogComponent";
 import { RoomAccessData, StalkAccount } from "../../../shared/stalk";
 import { Room } from "../../models/Room";
 import ChatLog from "../../models/chatLog";
@@ -30,7 +30,7 @@ const listenerImp = (newMsg) => {
     if (newMsg.sender != authReducer().user) {
         chatsLogComp.increaseChatsLogCount(1);
 
-        let unread: IUnread = new Unread();
+        let unread = new Unread();
         unread.message = newMsg;
         unread.rid = newMsg.rid;
         let count = (!!chatsLogComp.getUnreadItem(newMsg.rid)) ? chatsLogComp.getUnreadItem(newMsg.rid).count : 0;
@@ -141,7 +141,7 @@ function getChatsLog() {
     });
 }
 
-async function onUnreadMessageMapChanged(unread: IUnread) {
+async function onUnreadMessageMapChanged(unread: Unread) {
     let chatsLogComp = BackendFactory.getInstance().chatLogComp;
 
     let { chatrooms }: { chatrooms: Array<Room> } = getStore().getState().chatroomReducer;
