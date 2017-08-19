@@ -6,6 +6,7 @@ navigator.getUserMedia = navigator.getUserMedia ||
 import * as io from 'socket.io-client';
 import * as events from "events";
 import { PeerManager } from "./PeerManager";
+import { MicController } from '../libs/MicController';
 export function logError(error) {
     console.log("logError", error);
 }
@@ -81,6 +82,7 @@ export class WebRTC {
     getLocalStream(requestMedia, callback) {
         let self = this;
         navigator.getUserMedia(requestMedia, function (stream) {
+            self.micController = new MicController(stream);
             self.localStream = stream;
             callback(stream);
         }, logError);
@@ -148,8 +150,11 @@ export class WebRTC {
     ;
     onDisconnect(data) {
         console.log("SOCKET disconnect", data);
-        let tracks = this.localStream.getTracks();
-        tracks.forEach(each => each.stop());
+        if (!!this.localStream) {
+            let tracks = this.localStream.getTracks();
+            tracks.forEach(each => each.stop());
+            this.micController.removeAudioStream();
+        }
     }
 }
 WebRTC.CONNECTION_READY = "connectionReady";

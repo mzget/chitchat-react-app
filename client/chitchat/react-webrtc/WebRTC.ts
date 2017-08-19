@@ -8,6 +8,7 @@ import * as io from 'socket.io-client';
 import * as events from "events";
 import * as Peer from "./Peer";
 import { PeerManager } from "./PeerManager";
+import { MicController } from '../libs/MicController';
 
 export function logError(error) {
     console.log("logError", error);
@@ -29,6 +30,7 @@ export class WebRTC {
     roomName: string;
     peerManager: PeerManager;
     debug: boolean = false;
+    micController: MicController;
 
     static CONNECTION_READY = "connectionReady";
     static CREATED_PEER = "createdPeer";
@@ -121,6 +123,7 @@ export class WebRTC {
     getLocalStream(requestMedia: MediaStreamConstraints, callback: (stream: MediaStream) => void) {
         let self = this;
         navigator.getUserMedia(requestMedia, function (stream) {
+            self.micController = new MicController(stream);
             self.localStream = stream as MediaStream;
             callback(stream);
         }, logError);
@@ -211,7 +214,11 @@ export class WebRTC {
     onDisconnect(data) {
         console.log("SOCKET disconnect", data);
         // stop local stream
-        let tracks = this.localStream.getTracks();
-        tracks.forEach(each => each.stop());
+        if (!!this.localStream) {
+            let tracks = this.localStream.getTracks();
+            tracks.forEach(each => each.stop());
+
+            this.micController.removeAudioStream();
+        }
     }
 }

@@ -5,6 +5,7 @@ import { withRouter } from "react-router-dom";
 import { shallowEqual, compose } from "recompose";
 import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
+import { Slider } from "material-ui";
 import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
 import { signalingServer } from "../../Chitchat";
 import { WebRTC } from "../../chitchat/react-webrtc/WebRTC";
@@ -28,7 +29,8 @@ class VideoCall extends React.Component {
             micVol: 100,
             selfViewSrc: null,
             remoteSrc: null,
-            peerStat: ""
+            peerStat: "",
+            remoteVolume: 100,
         };
         let rtcConfig = {
             signalingUrl: signalingServer,
@@ -93,6 +95,7 @@ class VideoCall extends React.Component {
         console.log("peerAdded", peer);
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
         remotesView.src = URL.createObjectURL(peer.stream);
+        remotesView.volume = 1;
         if (peer && peer.pc) {
             let peerStat = "";
             peer.pc.on('iceConnectionStateChange', function (event) {
@@ -118,7 +121,7 @@ class VideoCall extends React.Component {
                 this.setState({ peerStat: peerStat });
             });
         }
-        this.setState({ remoteSrc: peer.stream });
+        this.setState({ remoteSrc: peer.stream, remoteVolume: 100 });
     }
     removeVideo() {
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
@@ -160,6 +163,12 @@ class VideoCall extends React.Component {
     }
     render() {
         let { team } = this.props.teamReducer;
+        let disabledAudioOption = true;
+        if (!!this.state.selfViewSrc && !!this.webrtc.micController && this.webrtc.micController.support) {
+            if (this.state.selfViewSrc.getAudioTracks().length > 0) {
+                disabledAudioOption = false;
+            }
+        }
         return (<Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
                 <div style={{ position: "relative", height: "56px" }}>
                     <div style={{ position: "fixed", width: "100%", zIndex: 1 }}>
@@ -170,9 +179,43 @@ class VideoCall extends React.Component {
                     <div ref="localContainer" style={{ position: 'relative', width: '200px', height: '150px' }}>
                         <video style={{ height: "150px", width: '100%' }} className="local" id="localVideo" ref="localVideo" autoPlay={true} muted={true}>
                         </video>
+                        <Slider min={0} max={100} step={1} disabled={disabledAudioOption} defaultValue={100} sliderStyle={{
+            margin: 0,
+        }} onChange={(e, newValue) => {
+            this.setState({ micVol: newValue });
+            this.webrtc.micController.setVolume(newValue / 100);
+        }}/>
+                        <div>{`Mic volume (${this.state.micVol}%)`}</div>
                     </div>
-                    <video style={{ width: "100%", height: "300px" }} className="remotes" id="remoteVideos" ref="remotes" autoPlay={true} muted={true}>
-                    </video>
+                    <div style={{ width: "100%", height: "300px", position: "relative", textAlign: "center" }}>
+                        <video style={{ height: "300px", display: this.state.remoteSrc ? "initial" : "none" }} className="remotes" id="remoteVideos" ref="remotes" autoPlay={true}/>
+                        {this.state.remoteSrc ?
+            <div style={{
+                position: "absolute",
+                width: "50px",
+                height: "40%",
+                left: "350px",
+                bottom: "10px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+            }}>
+                                    <Slider axis='y' min={0} max={100} step={1} value={this.state.remoteVolume} onChange={(e, newValue) => {
+                this.setState({ remoteVolume: newValue });
+                getEl(ReactDOM.findDOMNode(this.refs.remotes)).volume = newValue / 100;
+            }} sliderStyle={{
+                margin: 0,
+            }} style={{
+                height: "80%",
+                marginBottom: "10px",
+            }}/>
+                                    <div>
+                                        {`${this.state.remoteVolume}%`}
+                                    </div>
+                                </div>
+            :
+                null}
+                    </div>
                 </Flexbox>
             </Flexbox>);
     }
