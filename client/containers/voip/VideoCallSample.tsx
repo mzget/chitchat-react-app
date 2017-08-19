@@ -100,8 +100,10 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         let requestMedia = {
             video: vgaConstraints.video, audio: true
         } as MediaStreamConstraints;
-        this.webrtc.getLocalStream(requestMedia, function (stream) {
+        this.webrtc.startLocalStream(requestMedia).then(function (stream) {
             self.readyToCall(stream);
+        }).catch(err => {
+            console.error("LocalStream Fail", err.message);
         });
     }
 

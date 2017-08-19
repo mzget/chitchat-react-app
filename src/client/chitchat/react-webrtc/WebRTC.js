@@ -1,11 +1,16 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription || window.msRTCSessionDescription;
-navigator.getUserMedia = navigator.getUserMedia ||
-    navigator.mozGetUserMedia ||
-    navigator.webkitGetUserMedia ||
-    navigator.msGetUserMedia;
 import * as io from 'socket.io-client';
 import * as events from "events";
 import { PeerManager } from "./PeerManager";
+import { UserMedia } from "./UserMedia";
 export function logError(error) {
     console.log("logError", error);
 }
@@ -30,6 +35,7 @@ export class WebRTC {
         this.send = this.send.bind(this);
         this.onDisconnect = this.onDisconnect.bind(this);
         this.peerManager = new PeerManager();
+        this.userMedia = new UserMedia();
         self.signalingSocket.on('connect', function (data) {
             if (self.debug)
                 console.log("SOCKET connect", self.signalingSocket.id);
@@ -78,13 +84,6 @@ export class WebRTC {
         self.signalingSocket.emit('message', message);
     }
     ;
-    getLocalStream(requestMedia, callback) {
-        let self = this;
-        navigator.getUserMedia(requestMedia, function (stream) {
-            self.localStream = stream;
-            callback(stream);
-        }, logError);
-    }
     join(roomname) {
         let self = this;
         this.signalingSocket.emit('join', roomname, function (err, roomDescription) {
@@ -133,6 +132,16 @@ export class WebRTC {
             peer.handleMessage(message);
         }
     }
+    startLocalStream(mediaConstraints) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.userMedia.startLocalStream(mediaConstraints);
+        });
+    }
+    stopLocalStream() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.userMedia.stopLocalStream();
+        });
+    }
     leaveRoom() {
         if (this.roomName) {
             this.signalingSocket.emit('leave');
@@ -148,6 +157,7 @@ export class WebRTC {
     ;
     onDisconnect(data) {
         console.log("SOCKET disconnect", data);
+        this.stopLocalStream();
     }
 }
 WebRTC.CONNECTION_READY = "connectionReady";

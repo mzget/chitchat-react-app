@@ -1,13 +1,10 @@
 const RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription || window.msRTCSessionDescription;
-navigator.getUserMedia = navigator.getUserMedia ||
-    navigator.mozGetUserMedia ||
-    navigator.webkitGetUserMedia ||
-    navigator.msGetUserMedia;
 
 import * as io from 'socket.io-client';
 import * as events from "events";
 import * as Peer from "./Peer";
 import { PeerManager } from "./PeerManager";
+import { UserMedia } from "./UserMedia";
 
 export function logError(error) {
     console.log("logError", error);
@@ -28,6 +25,7 @@ export class WebRTC {
     localStream: MediaStream;
     roomName: string;
     peerManager: PeerManager;
+    userMedia: UserMedia;
     debug: boolean = false;
 
     static CONNECTION_READY = "connectionReady";
@@ -56,6 +54,7 @@ export class WebRTC {
         this.onDisconnect = this.onDisconnect.bind(this);
 
         this.peerManager = new PeerManager();
+        this.userMedia = new UserMedia();
 
         self.signalingSocket.on('connect', function (data) {
             if (self.debug)
@@ -117,14 +116,6 @@ export class WebRTC {
         };
         self.signalingSocket.emit('message', message);
     };
-
-    getLocalStream(requestMedia: MediaStreamConstraints, callback: (stream: MediaStream) => void) {
-        let self = this;
-        navigator.getUserMedia(requestMedia, function (stream) {
-            self.localStream = stream as MediaStream;
-            callback(stream);
-        }, logError);
-    }
 
     join(roomname) {
         let self = this;
@@ -194,6 +185,12 @@ export class WebRTC {
         // }
     }
 
+    async startLocalStream(mediaConstraints: MediaStreamConstraints) {
+        return this.userMedia.startLocalStream(mediaConstraints);
+    }
+    async stopLocalStream() {
+        return this.userMedia.stopLocalStream();
+    }
 
     leaveRoom() {
         if (this.roomName) {
@@ -210,5 +207,6 @@ export class WebRTC {
 
     onDisconnect(data) {
         console.log("SOCKET disconnect", data);
+        this.stopLocalStream();
     }
 }
