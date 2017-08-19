@@ -8,6 +8,7 @@ export class PeerManager {
 
     constructor(webrtc) {
         this.webrtc = webrtc;
+        this.peers = new Map();
     }
 
     createPeer(options: { id, type, offer }) {

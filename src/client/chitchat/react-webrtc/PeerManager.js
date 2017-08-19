@@ -3,6 +3,7 @@ import { logError } from "./WebRTC";
 export class PeerManager {
     constructor(webrtc) {
         this.webrtc = webrtc;
+        this.peers = new Map();
     }
     createPeer(options) {
         let self = this;

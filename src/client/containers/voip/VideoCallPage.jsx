@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { shallowEqual, compose } from "recompose";
 import Flexbox from "flexbox-react";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import { RaisedButton, FontIcon, Slider, Paper } from "material-ui";
 import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
@@ -55,16 +54,15 @@ class VideoCall extends React.Component {
                 disabledVideoOption = false;
             }
         }
-        return (<MuiThemeProvider>
-                <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
-                    <div style={{ position: "relative", height: "56px" }}>
-                        <div style={{ position: "fixed", width: "100%", zIndex: 1 }}>
-                            <SimpleToolbar title={(!!team) ? team.name.toUpperCase() : ""} onBackPressed={this.onBackPressed} onPressTitle={this.onTitlePressed}/>
-                        </div>
+        return (<Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
+                <div style={{ position: "relative", height: "56px" }}>
+                    <div style={{ position: "fixed", width: "100%", zIndex: 1 }}>
+                        <SimpleToolbar title={(!!team) ? team.name.toUpperCase() : ""} onBackPressed={this.onBackPressed} onPressTitle={this.onTitlePressed}/>
                     </div>
-                    <Flexbox flexDirection="row" height="calc(100vh - 56px)">
-                        <Flexbox flexDirection="column" minWidth="400px">
-                            {this.state.isMuteAudio ?
+                </div>
+                <Flexbox flexDirection="row" height="calc(100vh - 56px)">
+                    <Flexbox flexDirection="column" minWidth="400px">
+                        {this.state.isMuteAudio ?
             <RaisedButton secondary disabled={disabledAudioOption} icon={<FontIcon className="material-icons">mic_off</FontIcon>} onClick={() => {
                 this.webrtc.unmute();
                 this.webrtc.webrtc.emit('changeLocalVolume', this.state.micVol / 100);
@@ -75,7 +73,7 @@ class VideoCall extends React.Component {
                     this.webrtc.mute();
                     this.setState({ isMuteAudio: true });
                 }}/>}
-                            {this.state.isPauseVideo ?
+                        {this.state.isPauseVideo ?
             <RaisedButton secondary disabled={disabledVideoOption} icon={<FontIcon className="material-icons">videocam_off</FontIcon>} onClick={() => {
                 this.webrtc.resumeVideo();
                 this.setState({ isPauseVideo: false });
@@ -85,14 +83,14 @@ class VideoCall extends React.Component {
                     this.webrtc.pauseVideo();
                     this.setState({ isPauseVideo: true });
                 }}/>}
-                            <Paper style={{
+                        <Paper style={{
             display: 'flex',
             justifyContent: 'space-around',
             alignItems: 'center',
             minHeight: '36px'
         }}>
-                                <div>{`Mic volume (${this.state.micVol}%)`}</div>
-                                <Slider min={0} max={100} step={1} disabled={disabledAudioOption} defaultValue={100} sliderStyle={{
+                            <div>{`Mic volume (${this.state.micVol}%)`}</div>
+                            <Slider min={0} max={100} step={1} disabled={disabledAudioOption} defaultValue={100} sliderStyle={{
             margin: 0,
         }} style={{
             width: '50%',
@@ -101,14 +99,13 @@ class VideoCall extends React.Component {
             this.setState({ micVol: newValue, isMuteVoice: newValue == 0 });
             this.webrtc.webrtc.emit('changeLocalVolume', newValue / 100);
         }}/>
-                            </Paper>
-                        </Flexbox>
-                        <Flexbox flexGrow={1} justifyContent="center">
-                            <WebRtcPage getWebRtc={this.getWebRtc} onError={this.props.onError}/>
-                        </Flexbox>
+                        </Paper>
+                    </Flexbox>
+                    <Flexbox flexGrow={1} justifyContent="center">
+                        <WebRtcPage getWebRtc={this.getWebRtc} onError={this.props.onError}/>
                     </Flexbox>
                 </Flexbox>
-            </MuiThemeProvider>);
+            </Flexbox>);
     }
 }
 const mapStateToProps = (state) => ({

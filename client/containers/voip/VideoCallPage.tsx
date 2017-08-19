@@ -74,84 +74,82 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
             }
         }
         return (
-            <MuiThemeProvider>
-                <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
-                    <div style={{ position: "relative", height: "56px" }}>
-                        <div style={{ position: "fixed", width: "100%", zIndex: 1 }} >
-                            <SimpleToolbar
-                                title={(!!team) ? team.name.toUpperCase() : ""}
-                                onBackPressed={this.onBackPressed}
-                                onPressTitle={this.onTitlePressed} />
-                        </div>
+            <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
+                <div style={{ position: "relative", height: "56px" }}>
+                    <div style={{ position: "fixed", width: "100%", zIndex: 1 }} >
+                        <SimpleToolbar
+                            title={(!!team) ? team.name.toUpperCase() : ""}
+                            onBackPressed={this.onBackPressed}
+                            onPressTitle={this.onTitlePressed} />
                     </div>
-                    <Flexbox flexDirection="row" height="calc(100vh - 56px)">
-                        <Flexbox flexDirection="column" minWidth="400px">
-                            {
-                                this.state.isMuteAudio ?
-                                    <RaisedButton secondary
-                                        disabled={disabledAudioOption}
-                                        icon={<FontIcon className="material-icons">mic_off</FontIcon>}
-                                        onClick={() => {
-                                            this.webrtc.unmute();
-                                            this.webrtc.webrtc.emit('changeLocalVolume', this.state.micVol / 100);
-                                            this.setState({ isMuteAudio: false });
-                                        }} />
-                                    :
-                                    <RaisedButton
-                                        disabled={disabledAudioOption}
-                                        icon={<FontIcon className="material-icons">mic</FontIcon>}
-                                        onClick={() => {
-                                            this.webrtc.mute();
-                                            this.setState({ isMuteAudio: true });
-                                        }} />
-                            }
-                            {
-                                this.state.isPauseVideo ?
-                                    <RaisedButton secondary
-                                        disabled={disabledVideoOption}
-                                        icon={<FontIcon className="material-icons">videocam_off</FontIcon>}
-                                        onClick={() => {
-                                            this.webrtc.resumeVideo();
-                                            this.setState({ isPauseVideo: false });
-                                        }} />
-                                    :
-                                    <RaisedButton
-                                        disabled={disabledVideoOption}
-                                        icon={<FontIcon className="material-icons">videocam</FontIcon>}
-                                        onClick={() => {
-                                            this.webrtc.pauseVideo();
-                                            this.setState({ isPauseVideo: true });
-                                        }} />
-                            }
-                            <Paper style={{
-                                display: 'flex',
-                                justifyContent: 'space-around',
-                                alignItems: 'center',
-                                minHeight: '36px'
-                            }}>
-                                <div>{`Mic volume (${this.state.micVol}%)`}</div>
-                                <Slider min={0} max={100} step={1}
+                </div>
+                <Flexbox flexDirection="row" height="calc(100vh - 56px)">
+                    <Flexbox flexDirection="column" minWidth="400px">
+                        {
+                            this.state.isMuteAudio ?
+                                <RaisedButton secondary
                                     disabled={disabledAudioOption}
-                                    defaultValue={100}
-                                    sliderStyle={{
-                                        margin: 0,
-                                    }}
-                                    style={{
-                                        width: '50%',
-                                        maxWidth: '200px',
-                                    }}
-                                    onChange={(e, newValue) => {
-                                        this.setState({ micVol: newValue, isMuteVoice: newValue == 0 });
-                                        this.webrtc.webrtc.emit('changeLocalVolume', newValue / 100);
+                                    icon={<FontIcon className="material-icons">mic_off</FontIcon>}
+                                    onClick={() => {
+                                        this.webrtc.unmute();
+                                        this.webrtc.webrtc.emit('changeLocalVolume', this.state.micVol / 100);
+                                        this.setState({ isMuteAudio: false });
                                     }} />
-                            </Paper>
-                        </Flexbox>
-                        <Flexbox flexGrow={1} justifyContent="center">
-                            <WebRtcPage getWebRtc={this.getWebRtc} onError={this.props.onError} />
-                        </Flexbox>
+                                :
+                                <RaisedButton
+                                    disabled={disabledAudioOption}
+                                    icon={<FontIcon className="material-icons">mic</FontIcon>}
+                                    onClick={() => {
+                                        this.webrtc.mute();
+                                        this.setState({ isMuteAudio: true });
+                                    }} />
+                        }
+                        {
+                            this.state.isPauseVideo ?
+                                <RaisedButton secondary
+                                    disabled={disabledVideoOption}
+                                    icon={<FontIcon className="material-icons">videocam_off</FontIcon>}
+                                    onClick={() => {
+                                        this.webrtc.resumeVideo();
+                                        this.setState({ isPauseVideo: false });
+                                    }} />
+                                :
+                                <RaisedButton
+                                    disabled={disabledVideoOption}
+                                    icon={<FontIcon className="material-icons">videocam</FontIcon>}
+                                    onClick={() => {
+                                        this.webrtc.pauseVideo();
+                                        this.setState({ isPauseVideo: true });
+                                    }} />
+                        }
+                        <Paper style={{
+                            display: 'flex',
+                            justifyContent: 'space-around',
+                            alignItems: 'center',
+                            minHeight: '36px'
+                        }}>
+                            <div>{`Mic volume (${this.state.micVol}%)`}</div>
+                            <Slider min={0} max={100} step={1}
+                                disabled={disabledAudioOption}
+                                defaultValue={100}
+                                sliderStyle={{
+                                    margin: 0,
+                                }}
+                                style={{
+                                    width: '50%',
+                                    maxWidth: '200px',
+                                }}
+                                onChange={(e, newValue) => {
+                                    this.setState({ micVol: newValue, isMuteVoice: newValue == 0 });
+                                    this.webrtc.webrtc.emit('changeLocalVolume', newValue / 100);
+                                }} />
+                        </Paper>
+                    </Flexbox>
+                    <Flexbox flexGrow={1} justifyContent="center">
+                        <WebRtcPage getWebRtc={this.getWebRtc} onError={this.props.onError} />
                     </Flexbox>
                 </Flexbox>
-            </MuiThemeProvider >
+            </Flexbox>
         );
     }
 }

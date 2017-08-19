@@ -45,10 +45,14 @@ const getview = (props) => {
         }
     }
     else {
-        return (<Flexbox flexDirection="column" alignItems={"center"}>
-                <Post />
-                <br />
-                <VideoCallCreateRoomSample />
+        return (<Flexbox flexDirection="column" alignItems={"center"} height="calc(100vh - 56px)">
+                <Flexbox>
+                    <VideoCallCreateRoomSample />
+                </Flexbox>
+                <Flexbox flexGrow={1}/>
+                <Flexbox>
+                    <Post />
+                </Flexbox>
             </Flexbox>);
     }
 };
