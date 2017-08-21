@@ -118,7 +118,8 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
             self.readyToCall(stream);
         }).catch(err => {
-            console.error("LocalStream Fail", err.message);
+            console.error("LocalStream Fail", err);
+            self.props.onError("LocalStream Fail: " + err);
         });
     }
 
