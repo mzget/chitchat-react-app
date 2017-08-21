@@ -31,8 +31,8 @@ export class Peer {
                 self.createOffer();
             }
         };
-        this.pc.oniceconnectionstatechange = function (event) {
-            console.log('oniceconnectionstatechange', event.target.iceConnectionState);
+        this.pc.oniceconnectionstatechange = function (pc, event) {
+            console.log('oniceconnectionstatechange', event, pc.iceConnectionState);
             if (event.target.iceConnectionState === 'completed') {
             }
             if (event.target.iceConnectionState === 'connected') {
@@ -67,6 +67,12 @@ export class Peer {
             }, self.logError);
         }
     }
+    onSetSessionDescriptionError(error) {
+        console.log('Failed to set session description: ' + error.toString());
+    }
+    onCreateSessionDescriptionError(error) {
+        console.log('Failed to create session description: ' + error.toString());
+    }
     createOffer() {
         let self = this;
         this.pc.createOffer(function (desc) {
@@ -74,8 +80,18 @@ export class Peer {
             self.pc.setLocalDescription(desc, function () {
                 console.log('setLocalDescription', self.pc.localDescription);
                 self.send_event(OFFER, self.pc.localDescription, { to: self.id });
-            }, self.logError);
-        }, self.logError);
+            }, self.onSetSessionDescriptionError);
+        }, self.onCreateSessionDescriptionError);
+    }
+    createAnswer(message) {
+        let self = this;
+        self.pc.createAnswer(function (desc) {
+            console.log('createAnswer', desc);
+            self.pc.setLocalDescription(desc, function () {
+                console.log('setLocalDescription', self.pc.localDescription);
+                self.send_event(OFFER, self.pc.localDescription, { to: message.from });
+            }, self.onSetSessionDescriptionError);
+        }, self.onCreateSessionDescriptionError);
     }
     handleMessage(message) {
         let self = this;
@@ -87,25 +103,23 @@ export class Peer {
                 this.nick = message.payload.nick;
             delete message.payload.nick;
             self.pc.setRemoteDescription(new RTCSessionDescription(message.payload), function () {
-                if (self.pc.remoteDescription.type == OFFER)
-                    self.pc.createAnswer(function (desc) {
-                        console.log('createAnswer', desc);
-                        self.pc.setLocalDescription(desc, function () {
-                            console.log('setLocalDescription', self.pc.localDescription);
-                            self.send_event(OFFER, self.pc.localDescription, { to: message.from });
-                        }, self.logError);
-                    }, self.logError);
-            }, self.logError);
+                console.log("setRemoteDescription complete");
+                if (self.pc.remoteDescription.type == OFFER) {
+                    self.createAnswer(message);
+                }
+            }, self.onSetSessionDescriptionError);
         }
         else if (message.type === ANSWER) {
-            if (!this.nick)
-                this.nick = message.payload.nick;
-            delete message.payload.nick;
-            this.pc.handleAnswer(message.payload);
         }
         else if (message.type === 'candidate') {
             console.log('exchange candidate', message);
-            self.pc.addIceCandidate(new RTCIceCandidate(message.candidate));
+            function onAddIceCandidateSuccess() {
+                console.log('addIceCandidate success');
+            }
+            function onAddIceCandidateError(pc, error) {
+                console.log('failed to add ICE Candidate: ' + error.toString());
+            }
+            self.pc.addIceCandidate(new RTCIceCandidate(message.candidate), onAddIceCandidateSuccess, onAddIceCandidateError);
         }
         else if (message.type === 'connectivityError') {
             this.parentsEmitter.emit(CONNECTIVITY_ERROR, self);

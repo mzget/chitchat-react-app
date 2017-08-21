@@ -19,7 +19,13 @@ export class UserMedia {
             return new Promise((resolve, reject) => {
                 navigator.mediaDevices.getUserMedia(mediaConstraints).then(function (stream) {
                     let videoTracks = stream.getVideoTracks();
-                    console.log('Using video device: ' + videoTracks[0].label);
+                    let audioTracks = stream.getAudioTracks();
+                    if (videoTracks.length > 0) {
+                        console.log('Using video device: ' + videoTracks[0].label);
+                    }
+                    if (audioTracks.length > 0) {
+                        console.log('Using audio device: ' + audioTracks[0].label);
+                    }
                     stream.oninactive = function () {
                         console.log('Stream inactive');
                     };
