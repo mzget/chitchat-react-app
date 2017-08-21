@@ -1,14 +1,18 @@
-import { PeerConnections } from "../stalk-js-webrtc/IWebRTC";
 import * as Peer from "./Peer";
-import { logError } from "./WebRTC";
+import { WebRTC, logError } from "./WebRTC";
+
 export class PeerManager {
-    constructor(options) {
-        this.debug = false;
+    peers: Map<string, Peer.Peer>;
+    debug: boolean = false;
+
+    constructor(options: { debug: boolean }) {
         this.peers = new Map();
         this.debug = options.debug;
     }
-    createPeer(options, webrtc) {
+
+    createPeer(options: { id, type, offer }, webrtc: WebRTC) {
         let self = this;
+
         let config = {
             peer_id: options.id,
             offer: options.offer,
@@ -21,33 +25,44 @@ export class PeerManager {
         let peer = new Peer.Peer(config);
         peer.logError = logError;
         this.peers.set(options.id, peer);
+
         return peer;
     }
+
     getPeers(sessionId) {
         return this.peers.get(sessionId);
-    }
-    ;
-    removePeers(sessionId, webrtc) {
+    };
+
+    removePeers(sessionId, webrtc: WebRTC) {
         let peer = this.getPeers(sessionId);
         if (peer) {
             peer.pc.close();
-            webrtc.webrtcEvents.emit(PeerConnections.PEER_STREAM_REMOVED, peer.stream);
+            webrtc.webrtcEvents.emit(Peer.PEER_STREAM_REMOVED, peer.stream);
         }
         this.peers.delete(sessionId);
-    }
-    ;
+    };
+
+    /**
+     * sends message to all 
+     * use signalling message.
+     * 
+     * @param {any} message 
+     * @param {any} payload 
+     * @memberof PeerManager
+     */
     sendToAll(message, payload) {
         this.peers.forEach(function (peer) {
             peer.send_event(message, payload, { to: peer.id });
         });
-    }
-    ;
+    };
+
+    // sends message to all using a datachannel
+    // only sends to anyone who has an open datachannel
     sendDirectlyToAll(channel, message, payload) {
         this.peers.forEach(function (peer) {
             if (peer.enableDataChannels) {
                 peer.sendDirectly(channel, message, payload);
             }
         });
-    }
-    ;
+    };
 }

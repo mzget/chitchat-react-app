@@ -1,13 +1,6 @@
 import { RTCPeerConnection, RTCIceCandidate, RTCSessionDescription, } from 'react-native-webrtc';
+import { PeerConnections } from "../stalk-js-webrtc/IWebRTC";
 const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
-export const CANDIDATE = "candidate";
-export const PEER_STREAM_ADDED = "peerStreamAdded";
-export const PEER_STREAM_REMOVED = "peerStreamRemoved";
-export const CONNECTIVITY_ERROR = "connectivityError";
-export const MUTE = "mute";
-export const UNMUTE = "unmute";
-export const ANSWER = "answer";
-export const OFFER = "offer";
 export class Peer {
     constructor(parents) {
         this.id = parents.peer_id;
@@ -19,7 +12,7 @@ export class Peer {
         const isOffer = parents.offer;
         this.pc.onicecandidate = function (event) {
             if (event.candidate) {
-                self.send_event(CANDIDATE, event.candidate, { to: self.id });
+                self.send_event(PeerConnections.CANDIDATE, event.candidate, { to: self.id });
             }
         };
         this.pc.onnegotiationneeded = function () {
@@ -30,28 +23,25 @@ export class Peer {
         this.pc.oniceconnectionstatechange = function (event) {
             console.log('oniceconnectionstatechange', event.target.iceConnectionState);
             if (event.target.iceConnectionState === 'completed') {
-                setTimeout(() => {
-                    self.getStats();
-                }, 1000);
             }
             if (event.target.iceConnectionState === 'connected') {
                 self.createDataChannel();
             }
             else if (event.target.iceConnectionState == "failed") {
                 self.parentsEmitter.emit('iceFailed', self);
-                self.send_event(CONNECTIVITY_ERROR, null, { to: self.id });
+                self.send_event(PeerConnections.CONNECTIVITY_ERROR, null, { to: self.id });
             }
         };
         this.pc.onsignalingstatechange = function (event) {
             console.log('onsignalingstatechange', event.target.signalingState);
         };
-        this.pc.onaddstream = function (event) {
-            console.log('onaddstream', event.stream);
-            self.parentsEmitter.emit(PEER_STREAM_ADDED, event.stream);
+        this.pc.onaddstream = function (peer) {
+            console.log('onaddstream', peer.stream);
+            self.parentsEmitter.emit(PeerConnections.PEER_STREAM_ADDED, peer);
         };
-        this.pc.onremovestream = function (event) {
-            console.log('onremovestream', event.stream);
-            self.parentsEmitter.emit(PEER_STREAM_REMOVED, event.stream);
+        this.pc.onremovestream = function (peer) {
+            console.log('onremovestream', peer.stream);
+            self.parentsEmitter.emit(PeerConnections.PEER_STREAM_REMOVED, peer.stream);
         };
         this.pc.addStream(parents.stream);
     }
@@ -67,16 +57,53 @@ export class Peer {
             }, self.logError);
         }
     }
+    onSetSessionDescriptionError(error) {
+        console.log('Failed to set session description: ' + error.toString());
+    }
+    onCreateSessionDescriptionError(error) {
+        console.log('Failed to create session description: ' + error.toString());
+    }
     createOffer() {
         let self = this;
         this.pc.createOffer(function (desc) {
             console.log('createOffer', desc);
             self.pc.setLocalDescription(desc, function () {
                 console.log('setLocalDescription', self.pc.localDescription);
-                self.send_event(OFFER, self.pc.localDescription, { to: self.id });
-            }, self.logError);
-        }, self.logError);
+                self.send_event(PeerConnections.OFFER, self.pc.localDescription, { to: self.id });
+            }, self.onSetSessionDescriptionError);
+        }, self.onCreateSessionDescriptionError);
     }
+    createAnswer(message) {
+        let self = this;
+        self.pc.createAnswer(function (desc) {
+            console.log('createAnswer', desc);
+            self.pc.setLocalDescription(desc, function () {
+                console.log('setLocalDescription', self.pc.localDescription);
+                self.send_event(PeerConnections.OFFER, self.pc.localDescription, { to: message.from });
+            }, self.onSetSessionDescriptionError);
+        }, self.onCreateSessionDescriptionError);
+    }
+    handleMessage(message) {
+        let self = this;
+        console.log('getting', message.type, message);
+        if (message.prefix)
+            this.browserPrefix = message.prefix;
+        if (message.type === PeerConnections.OFFER) {
+            if (!this.nick)
+                this.nick = message.payload.nick;
+            delete message.payload.nick;
+            self.pc.setRemoteDescription(new RTCSessionDescription(message.payload), function () {
+                if (self.pc.remoteDescription.type == PeerConnections.OFFER) {
+                    self.createAnswer(message);
+                }
+            }, self.onSetSessionDescriptionError);
+        }
+        else if (message.type === 'candidate') {
+            console.log('exchange candidate');
+            self.pc.addIceCandidate(new RTCIceCandidate(message.candidate));
+        }
+    }
+    ;
     createDataChannel() {
         if (this.pc.textDataChannel) {
             return;
@@ -89,13 +116,13 @@ export class Peer {
             console.log("dataChannel.onmessage:", event.data);
             let message = event.data;
             if (message.type === 'connectivityError') {
-                this.parentsEmitter.emit(CONNECTIVITY_ERROR, self);
+                this.parentsEmitter.emit(PeerConnections.CONNECTIVITY_ERROR, self);
             }
             else if (message.type === 'mute') {
-                this.parentsEmitter.emit(MUTE, { id: message.from, name: message.payload.name });
+                this.parentsEmitter.emit(PeerConnections.MUTE, { id: message.from, name: message.payload.name });
             }
             else if (message.type === 'unmute') {
-                this.parentsEmitter.emit(UNMUTE, { id: message.from, name: message.payload.name });
+                this.parentsEmitter.emit(PeerConnections.UNMUTE, { id: message.from, name: message.payload.name });
             }
             else if (message.type === 'endOfCandidates') {
                 var mLines = this.pc.pc.transceivers || [];
@@ -114,30 +141,4 @@ export class Peer {
         };
         this.pc.textDataChannel = dataChannel;
     }
-    handleMessage(message) {
-        let self = this;
-        console.log('getting', message.type, message);
-        if (message.prefix)
-            this.browserPrefix = message.prefix;
-        if (message.type === OFFER) {
-            if (!this.nick)
-                this.nick = message.payload.nick;
-            delete message.payload.nick;
-            self.pc.setRemoteDescription(new RTCSessionDescription(message.payload), function () {
-                if (self.pc.remoteDescription.type == OFFER)
-                    self.pc.createAnswer(function (desc) {
-                        console.log('createAnswer');
-                        self.pc.setLocalDescription(desc, function () {
-                            console.log('setLocalDescription');
-                            self.send_event(OFFER, self.pc.localDescription, { to: message.from });
-                        }, self.logError);
-                    }, self.logError);
-            }, self.logError);
-        }
-        else {
-            console.log('exchange candidate', message);
-            self.pc.addIceCandidate(new RTCIceCandidate(message.candidate));
-        }
-    }
-    ;
 }

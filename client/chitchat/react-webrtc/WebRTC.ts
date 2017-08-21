@@ -73,9 +73,6 @@ export class WebRTC {
                 console.log("SOCKET remove", room, self.signalingSocket.id);
 
             if (room.id !== self.signalingSocket.id) {
-                //@ Web
-                // self.webrtc.removePeers(room.id, room.type);
-                //@ Mobile
                 self.peerManager.removePeers(room.id, self);
             }
         });

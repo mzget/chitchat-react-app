@@ -1,12 +1,5 @@
+import { PeerConnections } from "../stalk-js-webrtc/IWebRTC";
 const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
-export const CANDIDATE = "candidate";
-export const PEER_STREAM_ADDED = "peerStreamAdded";
-export const PEER_STREAM_REMOVED = "peerStreamRemoved";
-export const CONNECTIVITY_ERROR = "connectivityError";
-export const MUTE = "mute";
-export const UNMUTE = "unmute";
-export const ANSWER = "answer";
-export const OFFER = "offer";
 export class Peer {
     constructor(config) {
         this.enableDataChannels = true;
@@ -23,7 +16,7 @@ export class Peer {
         const isOffer = config.offer;
         this.pc.onicecandidate = function (event) {
             if (event.candidate) {
-                self.send_event(CANDIDATE, event.candidate, { to: self.id });
+                self.send_event(PeerConnections.CANDIDATE, event.candidate, { to: self.id });
             }
         };
         this.pc.onnegotiationneeded = function () {
@@ -40,7 +33,7 @@ export class Peer {
             }
             else if (event.target.iceConnectionState == "failed") {
                 self.parentsEmitter.emit('iceFailed', self);
-                self.send_event(CONNECTIVITY_ERROR, null, { to: self.id });
+                self.send_event(PeerConnections.CONNECTIVITY_ERROR, null, { to: self.id });
             }
         };
         this.pc.onsignalingstatechange = function (event) {
@@ -48,11 +41,11 @@ export class Peer {
         };
         this.pc.onaddstream = function (peer) {
             console.log('onaddstream', peer.stream);
-            self.parentsEmitter.emit(PEER_STREAM_ADDED, peer);
+            self.parentsEmitter.emit(PeerConnections.PEER_STREAM_ADDED, peer);
         };
         this.pc.onremovestream = function (peer) {
             console.log('onremovestream', peer.stream);
-            self.parentsEmitter.emit(PEER_STREAM_REMOVED, peer.stream);
+            self.parentsEmitter.emit(PeerConnections.PEER_STREAM_REMOVED, peer.stream);
         };
         this.pc.addStream(config.stream);
     }
@@ -79,7 +72,7 @@ export class Peer {
             console.log('createOffer', desc);
             self.pc.setLocalDescription(desc, function () {
                 console.log('setLocalDescription', self.pc.localDescription);
-                self.send_event(OFFER, self.pc.localDescription, { to: self.id });
+                self.send_event(PeerConnections.OFFER, self.pc.localDescription, { to: self.id });
             }, self.onSetSessionDescriptionError);
         }, self.onCreateSessionDescriptionError);
     }
@@ -89,7 +82,7 @@ export class Peer {
             console.log('createAnswer', desc);
             self.pc.setLocalDescription(desc, function () {
                 console.log('setLocalDescription', self.pc.localDescription);
-                self.send_event(OFFER, self.pc.localDescription, { to: message.from });
+                self.send_event(PeerConnections.OFFER, self.pc.localDescription, { to: message.from });
             }, self.onSetSessionDescriptionError);
         }, self.onCreateSessionDescriptionError);
     }
@@ -98,20 +91,20 @@ export class Peer {
         console.log('getting', message.type, message);
         if (message.prefix)
             this.browserPrefix = message.prefix;
-        if (message.type === OFFER) {
+        if (message.type === PeerConnections.OFFER) {
             if (!this.nick)
                 this.nick = message.payload.nick;
             delete message.payload.nick;
             self.pc.setRemoteDescription(new RTCSessionDescription(message.payload), function () {
                 console.log("setRemoteDescription complete");
-                if (self.pc.remoteDescription.type == OFFER) {
+                if (self.pc.remoteDescription.type == PeerConnections.OFFER) {
                     self.createAnswer(message);
                 }
             }, self.onSetSessionDescriptionError);
         }
-        else if (message.type === ANSWER) {
+        else if (message.type === PeerConnections.ANSWER) {
         }
-        else if (message.type === 'candidate') {
+        else if (message.type === PeerConnections.CANDIDATE) {
             console.log('exchange candidate');
             function onAddIceCandidateSuccess() {
                 console.log('addIceCandidate success');
@@ -121,14 +114,14 @@ export class Peer {
             }
             self.pc.addIceCandidate(new RTCIceCandidate(message.candidate), onAddIceCandidateSuccess, onAddIceCandidateError);
         }
-        else if (message.type === 'connectivityError') {
-            this.parentsEmitter.emit(CONNECTIVITY_ERROR, self);
+        else if (message.type === PeerConnections.CONNECTIVITY_ERROR) {
+            this.parentsEmitter.emit(PeerConnections.CONNECTIVITY_ERROR, self);
         }
-        else if (message.type === 'mute') {
-            this.parentsEmitter.emit(MUTE, { id: message.from, name: message.payload.name });
+        else if (message.type === PeerConnections.MUTE) {
+            this.parentsEmitter.emit(PeerConnections.MUTE, { id: message.from, name: message.payload.name });
         }
-        else if (message.type === 'unmute') {
-            this.parentsEmitter.emit(UNMUTE, { id: message.from, name: message.payload.name });
+        else if (message.type === PeerConnections.UNMUTE) {
+            this.parentsEmitter.emit(PeerConnections.UNMUTE, { id: message.from, name: message.payload.name });
         }
         else if (message.type === 'endOfCandidates') {
             var mLines = this.pc.pc.transceivers || [];

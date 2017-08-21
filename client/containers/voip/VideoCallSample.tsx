@@ -10,8 +10,7 @@ import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
 import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
 
 import { signalingServer } from "../../Chitchat";
-import { WebRTC } from "../../chitchat/react-webrtc/WebRTC";
-import * as Peer from "../../chitchat/react-webrtc/Peer";
+import { WebRtcFactory, STALKWEBRTC, IWebRTC, WebRtcConfig, PeerConnections } from "../../chitchat/stalk-js-webrtc/index";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 
@@ -38,9 +37,44 @@ function getEl(idOrEl) {
 };
 
 class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
-    webrtc: WebRTC;
+    webrtc: IWebRTC;
     remotesView;
     selfView;
+
+    async startWebRtc() {
+        let rtcConfig = {
+            signalingUrl: signalingServer,
+            socketOptions: { 'force new connection': true },
+            debug: true
+        } as WebRtcConfig;
+        this.webrtc = await WebRtcFactory.getObject(rtcConfig);
+
+        this.onBackPressed = this.onBackPressed.bind(this);
+        this.onTitlePressed = this.onTitlePressed.bind(this);
+
+        this.peerAdded = this.peerAdded.bind(this);
+        this.removeVideo = this.removeVideo.bind(this);
+        this.readyToCall = this.readyToCall.bind(this);
+        this.connectionReady = this.connectionReady.bind(this);
+        this.disconnect = this.disconnect.bind(this);
+
+        this.webrtc.webrtcEvents.on(STALKWEBRTC.CONNECTION_READY, this.connectionReady);
+        this.webrtc.webrtcEvents.on(STALKWEBRTC.JOIN_ROOM_ERROR, (err) => console.log("joinRoom fail", err));
+        this.webrtc.webrtcEvents.on(STALKWEBRTC.CREATED_PEER, (peer) => console.log("createdPeer", peer.id));
+        this.webrtc.webrtcEvents.on(STALKWEBRTC.JOINED_ROOM, (roomName) => console.log("joinedRoom", roomName));
+
+        this.webrtc.webrtcEvents.on(PeerConnections.PEER_STREAM_ADDED, this.peerAdded);
+        this.webrtc.webrtcEvents.on(PeerConnections.PEER_STREAM_REMOVED, this.removeVideo);
+        this.webrtc.webrtcEvents.on(PeerConnections.CONNECTIVITY_ERROR, (peer) => {
+            console.log(PeerConnections.CONNECTIVITY_ERROR, peer);
+        });
+        this.webrtc.webrtcEvents.on(PeerConnections.MUTE, (data) => {
+            console.log(PeerConnections.MUTE, data);
+        });
+        this.webrtc.webrtcEvents.on(PeerConnections.UNMUTE, (data) => {
+            console.log(PeerConnections.UNMUTE, data);
+        });
+    }
 
     constructor(props) {
         super(props);
@@ -56,37 +90,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
             isHoverPeer: false,
         }
 
-        let rtcConfig = {
-            signalingUrl: signalingServer,
-            socketOptions: { 'force new connection': true },
-            debug: true
-        }
-        this.webrtc = new WebRTC(rtcConfig);
-
-        this.onBackPressed = this.onBackPressed.bind(this);
-        this.onTitlePressed = this.onTitlePressed.bind(this);
-
-        this.peerAdded = this.peerAdded.bind(this);
-        this.removeVideo = this.removeVideo.bind(this);
-        this.readyToCall = this.readyToCall.bind(this);
-        this.connectionReady = this.connectionReady.bind(this);
-        this.disconnect = this.disconnect.bind(this);
-
-        this.webrtc.webrtcEvents.on(WebRTC.CONNECTION_READY, this.connectionReady);
-        this.webrtc.webrtcEvents.on(Peer.PEER_STREAM_ADDED, this.peerAdded);
-        this.webrtc.webrtcEvents.on(Peer.PEER_STREAM_REMOVED, this.removeVideo);
-        this.webrtc.webrtcEvents.on(Peer.CONNECTIVITY_ERROR, (peer) => {
-            console.log(Peer.CONNECTIVITY_ERROR, peer);
-        });
-        this.webrtc.webrtcEvents.on(Peer.MUTE, (data) => {
-            console.log(Peer.MUTE, data);
-        });
-        this.webrtc.webrtcEvents.on(Peer.UNMUTE, (data) => {
-            console.log(Peer.UNMUTE, data);
-        });
-        this.webrtc.webrtcEvents.on(WebRTC.JOIN_ROOM_ERROR, (err) => console.log("joinRoom fail", err));
-        this.webrtc.webrtcEvents.on(WebRTC.CREATED_PEER, (peer) => console.log("createdPeer", peer));
-        this.webrtc.webrtcEvents.on(WebRTC.JOINED_ROOM, (roomName) => console.log("joinedRoom", roomName));
+        this.startWebRtc();
     }
 
     connectionReady(socker_id) {
@@ -116,14 +120,6 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         }).catch(err => {
             console.error("LocalStream Fail", err.message);
         });
-    }
-
-    componentDidMount() {
-
-    }
-
-    componentWillUnmount() {
-        this.disconnect();
     }
 
     peerAdded(peer) {
@@ -195,6 +191,10 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         if (!this.props.teamReducer.team) {
             this.props.history.replace("/");
         }
+    }
+
+    componentWillUnmount() {
+        this.disconnect();
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {

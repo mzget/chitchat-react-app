@@ -1,8 +1,8 @@
 import adapter from 'webrtc-adapter';
-
+import { AbstractMediaStreamModule } from "../stalk-js-webrtc/index";
 import { MicController } from '../libs/MicController';
 
-export class UserMedia {
+export class UserMedia implements AbstractMediaStreamModule.IUserMedia {
     debug: boolean = false;
     private localStream: MediaStream;
     public getLocalStream() {
@@ -69,7 +69,7 @@ export class UserMedia {
         // this.stopScreenShare();
     }
 
-    private stopStream() {
+    stopStream() {
         let self = this;
 
         if (!!this.localStream) {
