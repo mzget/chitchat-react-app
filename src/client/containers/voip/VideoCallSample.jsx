@@ -29,6 +29,30 @@ function getEl(idOrEl) {
 }
 ;
 class VideoCall extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isMuteVoice: false,
+            isPauseVideo: false,
+            micVol: 100,
+            selfViewSrc: null,
+            remoteSrc: null,
+            peerStat: "",
+            remoteVolume: 100,
+            isHoverPeer: false,
+            localStreamStatus: ""
+        };
+        this.onBackPressed = this.onBackPressed.bind(this);
+        this.onTitlePressed = this.onTitlePressed.bind(this);
+        this.startWebRtc();
+    }
+    onBackPressed() {
+        this.props.history.goBack();
+    }
+    onTitlePressed() {
+        let { history, teamReducer } = this.props;
+        history.replace(`/team/${teamReducer.team._id}`);
+    }
     startWebRtc() {
         return __awaiter(this, void 0, void 0, function* () {
             let rtcConfig = {
@@ -37,13 +61,10 @@ class VideoCall extends React.Component {
                 debug: true
             };
             this.webrtc = yield WebRtcFactory.getObject(rtcConfig);
-            this.onBackPressed = this.onBackPressed.bind(this);
-            this.onTitlePressed = this.onTitlePressed.bind(this);
             this.peerAdded = this.peerAdded.bind(this);
             this.removeVideo = this.removeVideo.bind(this);
             this.readyToCall = this.readyToCall.bind(this);
             this.connectionReady = this.connectionReady.bind(this);
-            this.disconnect = this.disconnect.bind(this);
             this.webrtc.webrtcEvents.on(STALKWEBRTC.CONNECTION_READY, this.connectionReady);
             this.webrtc.webrtcEvents.on(STALKWEBRTC.JOIN_ROOM_ERROR, (err) => console.log("joinRoom fail", err));
             this.webrtc.webrtcEvents.on(STALKWEBRTC.CREATED_PEER, (peer) => console.log("createdPeer", peer.id));
@@ -60,20 +81,6 @@ class VideoCall extends React.Component {
                 console.log(PeerConnections.UNMUTE, data);
             });
         });
-    }
-    constructor(props) {
-        super(props);
-        this.state = {
-            isMuteVoice: false,
-            isPauseVideo: false,
-            micVol: 100,
-            selfViewSrc: null,
-            remoteSrc: null,
-            peerStat: "",
-            remoteVolume: 100,
-            isHoverPeer: false,
-        };
-        this.startWebRtc();
     }
     connectionReady(socker_id) {
         let self = this;
@@ -100,6 +107,7 @@ class VideoCall extends React.Component {
             self.readyToCall(stream);
         }).catch(err => {
             console.error("LocalStream Fail", err);
+            self.setState(prev => (Object.assign({}, prev, { localStreamStatus: err })));
             self.props.onError("LocalStream Fail: " + err);
         });
     }
@@ -140,10 +148,6 @@ class VideoCall extends React.Component {
         remotesView.disable = true;
         this.setState({ remoteSrc: null });
     }
-    disconnect() {
-        this.webrtc.leaveRoom();
-        this.webrtc.disconnect();
-    }
     readyToCall(stream) {
         let self = this;
         let { match } = this.props;
@@ -151,7 +155,9 @@ class VideoCall extends React.Component {
         if (!selfView)
             return;
         selfView.src = URL.createObjectURL(stream);
-        this.setState({ selfViewSrc: stream });
+        this.selfAudioName = this.webrtc.userMedia.getAudioTrackName();
+        this.selfVideoName = this.webrtc.userMedia.getVideoTrackName();
+        this.setState({ selfViewSrc: stream, localStreamStatus: "ready" });
         this.webrtc.join(match.params.id);
     }
     componentWillMount() {
@@ -160,7 +166,8 @@ class VideoCall extends React.Component {
         }
     }
     componentWillUnmount() {
-        this.disconnect();
+        this.webrtc.leaveRoom();
+        this.webrtc.disconnect();
     }
     componentWillReceiveProps(nextProps) {
         let prevInline = this.props.stalkReducer.get("inline");
@@ -168,13 +175,6 @@ class VideoCall extends React.Component {
         if (!nextInline && !shallowEqual(nextInline, prevInline)) {
             this.onBackPressed();
         }
-    }
-    onBackPressed() {
-        this.props.history.goBack();
-    }
-    onTitlePressed() {
-        let { history, teamReducer } = this.props;
-        history.replace(`/team/${teamReducer.team._id}`);
     }
     render() {
         let { team } = this.props.teamReducer;
@@ -197,7 +197,7 @@ class VideoCall extends React.Component {
                     </div>
                 </div>
                 <Flexbox flexDirection="row" height="100%" justifyContent={"flex-start"}>
-                    <div ref="localContainer" style={{ position: 'relative', width: '200px', height: '150px' }}>
+                    <div ref="localContainer" style={{ position: 'relative', width: '200px', height: '100%' }}>
                         <video style={{ height: "150px", width: '100%' }} className="local" id="localVideo" ref="localVideo" autoPlay={true} muted={true}>
                         </video>
                         <Slider min={0} max={100} step={1} disabled={disabledAudioOption} defaultValue={100} sliderStyle={{
@@ -228,6 +228,9 @@ class VideoCall extends React.Component {
                     this.webrtc.userMedia.setVideoEnabled(false);
                     this.setState({ isPauseVideo: true });
                 }}/>}
+                        <p style={{ fontSize: 12 }}>UserMedia: {this.state.localStreamStatus}</p>
+                        <p style={{ fontSize: 12 }}>AudioTrack: {this.selfAudioName}</p>
+                        <p style={{ fontSize: 12 }}>VideoTrack: {this.selfVideoName}</p>
                     </div>
                     <div style={{ width: "100%", height: "300px", textAlign: "center" }}>
                         <div onMouseOver={() => { this.setState({ isHoverPeer: true }); }} onMouseLeave={() => { this.setState({ isHoverPeer: false }); }} style={{ display: "inline-block", height: "300px", position: "relative" }}>

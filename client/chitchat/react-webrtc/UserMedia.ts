@@ -8,6 +8,25 @@ export class UserMedia implements AbstractMediaStreamModule.IUserMedia {
     public getLocalStream() {
         return this.localStream;
     }
+    public getVideoTrackName() {
+        let videoTracks = this.localStream.getVideoTracks();
+        if (videoTracks.length > 0) {
+            // console.log('Using video device: ' + videoTracks[0].label);
+            return videoTracks[0].label;
+        }
+
+        return "";
+    }
+    public getAudioTrackName() {
+        let audioTracks = this.localStream.getAudioTracks();
+        if (audioTracks.length > 0) {
+            // console.log('Using audio device: ' + audioTracks[0].label);
+            return audioTracks[0].label;
+        }
+
+        return "";
+    }
+
     micController: MicController;
 
     constructor(options: { debug: boolean }) {
@@ -18,24 +37,19 @@ export class UserMedia implements AbstractMediaStreamModule.IUserMedia {
         let self = this;
         return new Promise((resolve: (stream: MediaStream) => void, reject) => {
             navigator.mediaDevices.getUserMedia(mediaConstraints).then(function (stream) {
-                let videoTracks = stream.getVideoTracks();
-                let audioTracks = stream.getAudioTracks();
-                if (videoTracks.length > 0) {
-                    console.log('Using video device: ' + videoTracks[0].label);
-                }
-                if (audioTracks.length > 0) {
-                    console.log('Using audio device: ' + audioTracks[0].label);
-                }
-
                 stream.oninactive = function () {
-                    console.log('Stream inactive');
+                    if (self.debug)
+                        console.log('Stream inactive');
                 };
                 stream.onactive = () => {
-                    console.log('Local Stream active');
+                    if (self.debug)
+                        console.log('Local Stream active');
                 };
 
+                if (stream.getAudioTracks().length > 0) {
+                    self.micController = new MicController(stream);
+                }
                 self.localStream = stream as MediaStream;
-                self.micController = new MicController(stream);
 
                 resolve(self.localStream);
             }, error => {
@@ -69,7 +83,7 @@ export class UserMedia implements AbstractMediaStreamModule.IUserMedia {
         // this.stopScreenShare();
     }
 
-    stopStream() {
+    private stopStream() {
         let self = this;
 
         if (!!this.localStream) {
@@ -77,6 +91,9 @@ export class UserMedia implements AbstractMediaStreamModule.IUserMedia {
             tracks.forEach(function (track) {
                 track.stop();
             });
+        }
+
+        if (!!this.micController) {
             this.micController.removeAudioStream();
         }
     }

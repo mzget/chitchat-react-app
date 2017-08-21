@@ -40,11 +40,12 @@ export namespace AbstractMediaStreamModule {
         debug: boolean;
         micController: AudioController;
         getLocalStream(): MediaStream;
+        getVideoTrackName(): string;
+        getAudioTrackName(): string;
 
         startLocalStream(mediaContraints: MediaStreamConstraints, isFront?: false): Promise<MediaStream>;
         setVideoEnabled(enable: boolean);
         stopLocalStream();
-        stopStream();
     }
 
     export interface AudioController {

@@ -15,27 +15,37 @@ export class UserMedia {
     getLocalStream() {
         return this.localStream;
     }
+    getVideoTrackName() {
+        let videoTracks = this.localStream.getVideoTracks();
+        if (videoTracks.length > 0) {
+            return videoTracks[0].label;
+        }
+        return "";
+    }
+    getAudioTrackName() {
+        let audioTracks = this.localStream.getAudioTracks();
+        if (audioTracks.length > 0) {
+            return audioTracks[0].label;
+        }
+        return "";
+    }
     startLocalStream(mediaConstraints) {
         return __awaiter(this, void 0, void 0, function* () {
             let self = this;
             return new Promise((resolve, reject) => {
                 navigator.mediaDevices.getUserMedia(mediaConstraints).then(function (stream) {
-                    let videoTracks = stream.getVideoTracks();
-                    let audioTracks = stream.getAudioTracks();
-                    if (videoTracks.length > 0) {
-                        console.log('Using video device: ' + videoTracks[0].label);
-                    }
-                    if (audioTracks.length > 0) {
-                        console.log('Using audio device: ' + audioTracks[0].label);
-                    }
                     stream.oninactive = function () {
-                        console.log('Stream inactive');
+                        if (self.debug)
+                            console.log('Stream inactive');
                     };
                     stream.onactive = () => {
-                        console.log('Local Stream active');
+                        if (self.debug)
+                            console.log('Local Stream active');
                     };
+                    if (stream.getAudioTracks().length > 0) {
+                        self.micController = new MicController(stream);
+                    }
                     self.localStream = stream;
-                    self.micController = new MicController(stream);
                     resolve(self.localStream);
                 }, error => {
                     if (error.name === 'ConstraintNotSatisfiedError') {
@@ -73,6 +83,8 @@ export class UserMedia {
             tracks.forEach(function (track) {
                 track.stop();
             });
+        }
+        if (!!this.micController) {
             this.micController.removeAudioStream();
         }
     }

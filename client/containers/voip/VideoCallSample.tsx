@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import { shallowEqual, compose } from "recompose";
 import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
-import { RaisedButton, FontIcon, Slider, Paper } from "material-ui";
+import { RaisedButton, FontIcon, Slider, Paper, Subheader } from "material-ui";
 import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
 import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
 
@@ -25,6 +25,7 @@ interface IComponentNameState {
     micVol;
     peerStat;
     isHoverPeer;
+    localStreamStatus: string;
 }
 
 
@@ -40,6 +41,38 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
     webrtc: IWebRTC;
     remotesView;
     selfView;
+    selfAudioName: string;
+    selfVideoName: string;
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isMuteVoice: false,
+            isPauseVideo: false,
+            micVol: 100,
+            selfViewSrc: null,
+            remoteSrc: null,
+            peerStat: "",
+            remoteVolume: 100,
+            isHoverPeer: false,
+            localStreamStatus: ""
+        }
+
+        this.onBackPressed = this.onBackPressed.bind(this);
+        this.onTitlePressed = this.onTitlePressed.bind(this);
+
+        this.startWebRtc();
+    }
+
+    onBackPressed() {
+        // Jump to main menu.
+        this.props.history.goBack();
+    }
+    onTitlePressed() {
+        let { history, teamReducer } = this.props;
+        history.replace(`/team/${teamReducer.team._id}`);
+    }
 
     async startWebRtc() {
         let rtcConfig = {
@@ -49,14 +82,10 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         } as WebRtcConfig;
         this.webrtc = await WebRtcFactory.getObject(rtcConfig);
 
-        this.onBackPressed = this.onBackPressed.bind(this);
-        this.onTitlePressed = this.onTitlePressed.bind(this);
-
         this.peerAdded = this.peerAdded.bind(this);
         this.removeVideo = this.removeVideo.bind(this);
         this.readyToCall = this.readyToCall.bind(this);
         this.connectionReady = this.connectionReady.bind(this);
-        this.disconnect = this.disconnect.bind(this);
 
         this.webrtc.webrtcEvents.on(STALKWEBRTC.CONNECTION_READY, this.connectionReady);
         this.webrtc.webrtcEvents.on(STALKWEBRTC.JOIN_ROOM_ERROR, (err) => console.log("joinRoom fail", err));
@@ -74,23 +103,6 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.webrtc.webrtcEvents.on(PeerConnections.UNMUTE, (data) => {
             console.log(PeerConnections.UNMUTE, data);
         });
-    }
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            isMuteVoice: false,
-            isPauseVideo: false,
-            micVol: 100,
-            selfViewSrc: null,
-            remoteSrc: null,
-            peerStat: "",
-            remoteVolume: 100,
-            isHoverPeer: false,
-        }
-
-        this.startWebRtc();
     }
 
     connectionReady(socker_id) {
@@ -115,10 +127,13 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         let requestMedia = {
             video: vgaConstraints.video, audio: true
         } as MediaStreamConstraints;
+
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
             self.readyToCall(stream);
         }).catch(err => {
             console.error("LocalStream Fail", err);
+
+            self.setState(prev => ({ ...prev, localStreamStatus: err }));
             self.props.onError("LocalStream Fail: " + err);
         });
     }
@@ -165,12 +180,6 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 
         this.setState({ remoteSrc: null });
     }
-    disconnect() {
-        this.webrtc.leaveRoom();
-        this.webrtc.disconnect();
-        // this.webrtc.stopLocalVideo();
-        // this.props.dispatch(calling.onVideoCallEnded());
-    }
 
     readyToCall(stream: MediaStream) {
         let self = this;
@@ -183,7 +192,9 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         if (!selfView) return;
         selfView.src = URL.createObjectURL(stream);
 
-        this.setState({ selfViewSrc: stream });
+        this.selfAudioName = this.webrtc.userMedia.getAudioTrackName();
+        this.selfVideoName = this.webrtc.userMedia.getVideoTrackName();
+        this.setState({ selfViewSrc: stream, localStreamStatus: "ready" });
 
         this.webrtc.join(match.params.id);
     }
@@ -195,7 +206,10 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillUnmount() {
-        this.disconnect();
+        this.webrtc.leaveRoom();
+        this.webrtc.disconnect();
+        // this.webrtc.stopLocalVideo();
+        // this.props.dispatch(calling.onVideoCallEnded());
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
@@ -206,14 +220,6 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         }
     }
 
-    onBackPressed() {
-        // Jump to main menu.
-        this.props.history.goBack();
-    }
-    onTitlePressed() {
-        let { history, teamReducer } = this.props;
-        history.replace(`/team/${teamReducer.team._id}`);
-    }
 
     render(): JSX.Element {
         let { team } = this.props.teamReducer;
@@ -242,7 +248,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                     </div>
                 </div>
                 <Flexbox flexDirection="row" height="100%" justifyContent={"flex-start"}>
-                    <div ref="localContainer" style={{ position: 'relative', width: '200px', height: '150px' }}>
+                    <div ref="localContainer" style={{ position: 'relative', width: '200px', height: '100%' }}>
                         <video
                             style={{ height: "150px", width: '100%' }}
                             className="local"
@@ -302,6 +308,9 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                         this.setState({ isPauseVideo: true });
                                     }} />
                         }
+                        <p style={{ fontSize: 12 }}>UserMedia: {this.state.localStreamStatus}</p>
+                        <p style={{ fontSize: 12 }}>AudioTrack: {this.selfAudioName}</p>
+                        <p style={{ fontSize: 12 }}>VideoTrack: {this.selfVideoName}</p>
                     </div>
                     <div style={{ width: "100%", height: "300px", textAlign: "center" }}>
                         <div
