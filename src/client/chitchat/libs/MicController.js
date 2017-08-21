@@ -37,6 +37,6 @@ export class MicController {
         this.setVolume(1);
     }
     removeAudioStream() {
-        this.audioSource.stop();
+        !!this.audioSource && this.audioSource.stop();
     }
 }

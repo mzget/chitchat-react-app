@@ -53,6 +53,6 @@ export class MicController {
     }
 
     removeAudioStream() {
-        this.audioSource.stop();
+        !!this.audioSource && this.audioSource.stop();
     }
 }

@@ -61,10 +61,12 @@ export class UserMedia {
     private stopStream() {
         let self = this;
 
-        let tracks = this.localStream.getTracks();
-        tracks.forEach(function (track) {
-            track.stop();
-        });
-        this.micController.removeAudioStream();
+        if (!!this.localStream) {
+            let tracks = this.localStream.getTracks();
+            tracks.forEach(function (track) {
+                track.stop();
+            });
+            this.micController.removeAudioStream();
+        }
     }
 }
