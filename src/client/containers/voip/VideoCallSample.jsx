@@ -168,11 +168,15 @@ class VideoCall extends React.Component {
     render() {
         let { team } = this.props.teamReducer;
         let disabledAudioOption = true;
+        let disabledVideoOption = true;
         if (!!this.state.selfViewSrc &&
             !!this.webrtc.userMedia.micController &&
             this.webrtc.userMedia.micController.support) {
             if (this.state.selfViewSrc.getAudioTracks().length > 0) {
                 disabledAudioOption = false;
+            }
+            if (this.state.selfViewSrc.getVideoTracks().length > 0) {
+                disabledVideoOption = false;
             }
         }
         return (<Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
@@ -202,6 +206,16 @@ class VideoCall extends React.Component {
                 <RaisedButton disabled={disabledAudioOption} icon={<FontIcon className="material-icons">mic</FontIcon>} onClick={() => {
                     this.webrtc.userMedia.micController.mute();
                     this.setState({ isMuteVoice: true });
+                }}/>}
+                        {this.state.isPauseVideo ?
+            <RaisedButton secondary disabled={disabledVideoOption} icon={<FontIcon className="material-icons">videocam_off</FontIcon>} onClick={() => {
+                this.webrtc.userMedia.setVideoEnabled(true);
+                this.setState({ isPauseVideo: false });
+            }}/>
+            :
+                <RaisedButton disabled={disabledVideoOption} icon={<FontIcon className="material-icons">videocam</FontIcon>} onClick={() => {
+                    this.webrtc.userMedia.setVideoEnabled(false);
+                    this.setState({ isPauseVideo: true });
                 }}/>}
                     </div>
                     <div style={{ width: "100%", height: "300px", textAlign: "center" }}>
