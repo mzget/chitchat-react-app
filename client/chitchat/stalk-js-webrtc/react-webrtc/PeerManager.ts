@@ -1,4 +1,4 @@
-import { AbstractPeerConnection } from "../stalk-js-webrtc/IWebRTC";
+import { AbstractPeerConnection } from "../IWebRTC";
 import * as Peer from "./Peer";
 import { WebRTC, logError } from "./WebRTC";
 

@@ -12,7 +12,7 @@ export class WebRtcFactory {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("userAgent", global["userAgent"]);
             if (!!global["userAgent"] && global["userAgent"] === REACTJS) {
-                const { WebRTC } = yield import("../react-webrtc/WebRTC");
+                const { WebRTC } = yield import("./react-webrtc/WebRTC");
                 return new WebRTC(options);
             }
             else if (!!global["userAgent"] && global["userAgent"] === REACT_NATIVE) {
