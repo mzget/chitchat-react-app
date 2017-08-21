@@ -167,13 +167,13 @@ export class Peer {
             // @ No need this.
         }
         else if (message.type === 'candidate') {
-            console.log('exchange candidate', message);
+            console.log('exchange candidate');
 
             function onAddIceCandidateSuccess() {
                 console.log('addIceCandidate success');
             }
 
-            function onAddIceCandidateError(pc, error) {
+            function onAddIceCandidateError(error) {
                 console.log('failed to add ICE Candidate: ' + error.toString());
             }
             self.pc.addIceCandidate(new RTCIceCandidate(message.candidate), onAddIceCandidateSuccess, onAddIceCandidateError);
