@@ -63,7 +63,7 @@ export class Peer {
         }
 
         this.pc.oniceconnectionstatechange = function (event) {
-            console.log('oniceconnectionstatechange', event.target);
+            console.log('oniceconnectionstatechange', event.target.iceConnectionState);
             if (event.target.iceConnectionState === 'completed') {
                 // setTimeout(() => {
                 //     self.getStats();

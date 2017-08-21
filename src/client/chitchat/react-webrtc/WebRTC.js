@@ -25,8 +25,8 @@ export class WebRTC {
         this.exchange = this.exchange.bind(this);
         this.send = this.send.bind(this);
         this.onDisconnect = this.onDisconnect.bind(this);
-        this.peerManager = new PeerManager();
-        this.userMedia = new UserMedia();
+        this.peerManager = new PeerManager({ debug: self.debug });
+        this.userMedia = new UserMedia({ debug: self.debug });
         self.signalingSocket.on('connect', function (data) {
             if (self.debug)
                 console.log("SOCKET connect", self.signalingSocket.id);

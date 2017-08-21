@@ -8,10 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { MicController } from '../libs/MicController';
 export class UserMedia {
+    constructor(options) {
+        this.debug = false;
+        this.debug = options.debug;
+    }
     getLocalStream() {
         return this.localStream;
-    }
-    constructor() {
     }
     startLocalStream(mediaConstraints) {
         return __awaiter(this, void 0, void 0, function* () {

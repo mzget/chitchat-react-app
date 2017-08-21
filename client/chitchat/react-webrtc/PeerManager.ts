@@ -3,9 +3,11 @@ import { WebRTC, logError } from "./WebRTC";
 
 export class PeerManager {
     peers: Map<string, Peer.Peer>;
+    debug: boolean = false;
 
-    constructor() {
+    constructor(options: { debug: boolean }) {
         this.peers = new Map();
+        this.debug = options.debug;
     }
 
     createPeer(options: { id, type, offer }, webrtc: WebRTC) {
@@ -17,7 +19,8 @@ export class PeerManager {
             pcPeers: this.peers,
             stream: webrtc.userMedia.getLocalStream(),
             emitter: webrtc.webrtcEvents,
-            sendHandler: webrtc.send
+            sendHandler: webrtc.send,
+            debug: self.debug
         };
         let peer = new Peer.Peer(config);
         peer.logError = logError;

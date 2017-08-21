@@ -3,14 +3,15 @@ import adapter from 'webrtc-adapter';
 import { MicController } from '../libs/MicController';
 
 export class UserMedia {
+    debug: boolean = false;
     private localStream: MediaStream;
     public getLocalStream() {
         return this.localStream;
     }
     micController: MicController;
 
-    constructor() {
-
+    constructor(options: { debug: boolean }) {
+        this.debug = options.debug;
     }
 
     async  startLocalStream(mediaConstraints: MediaStreamConstraints) {
