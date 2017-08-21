@@ -53,6 +53,17 @@ export class UserMedia {
         });
     }
 
+    setVideoEnabled(enabled: boolean) {
+        if (!!this.localStream) {
+            let videoTracks = this.localStream.getVideoTracks();
+            if (!!videoTracks && videoTracks.length > 0) {
+                videoTracks.forEach(function (track) {
+                    track.enabled = !!enabled;
+                });
+            }
+        }
+    }
+
     stopLocalStream() {
         this.stopStream();
         // this.stopScreenShare();

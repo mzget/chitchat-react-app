@@ -218,16 +218,16 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         let { team } = this.props.teamReducer;
 
         let disabledAudioOption = true;
-        // let disabledVideoOption = true;
+        let disabledVideoOption = true;
         if (!!this.state.selfViewSrc &&
             !!this.webrtc.userMedia.micController &&
             this.webrtc.userMedia.micController.support) {
             if (this.state.selfViewSrc.getAudioTracks().length > 0) {
                 disabledAudioOption = false;
             }
-            // if (this.state.selfViewSrc.getVideoTracks().length > 0) {
-            //     disabledVideoOption = false;
-            // }
+            if (this.state.selfViewSrc.getVideoTracks().length > 0) {
+                disabledVideoOption = false;
+            }
         }
 
         return (
@@ -281,6 +281,24 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                         this.webrtc.userMedia.micController.mute();
                                         this.setState({ isMuteVoice: true });
                                         //this.webrtc.mute();
+                                    }} />
+                        }
+                        {
+                            this.state.isPauseVideo ?
+                                <RaisedButton secondary
+                                    disabled={disabledVideoOption}
+                                    icon={<FontIcon className="material-icons">videocam_off</FontIcon>}
+                                    onClick={() => {
+                                        this.webrtc.userMedia.setVideoEnabled(true);
+                                        this.setState({ isPauseVideo: false });
+                                    }} />
+                                :
+                                <RaisedButton
+                                    disabled={disabledVideoOption}
+                                    icon={<FontIcon className="material-icons">videocam</FontIcon>}
+                                    onClick={() => {
+                                        this.webrtc.userMedia.setVideoEnabled(false);
+                                        this.setState({ isPauseVideo: true });
                                     }} />
                         }
                     </div>
