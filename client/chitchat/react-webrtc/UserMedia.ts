@@ -1,8 +1,8 @@
 import adapter from 'webrtc-adapter';
-import { AbstractMediaStreamModule } from "../stalk-js-webrtc/index";
+import { AbstractMediaStream } from "../stalk-js-webrtc/index";
 import { MicController } from '../libs/MicController';
 
-export class UserMedia implements AbstractMediaStreamModule.IUserMedia {
+export class UserMedia implements AbstractMediaStream.IUserMedia {
     debug: boolean = false;
     private localStream: MediaStream;
     public getLocalStream() {

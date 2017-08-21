@@ -1,19 +1,38 @@
-export var STALKWEBRTC;
-(function (STALKWEBRTC) {
-    STALKWEBRTC.CONNECTION_READY = "connectionReady";
-    STALKWEBRTC.CREATED_PEER = "createdPeer";
-    STALKWEBRTC.JOINED_ROOM = "joinedRoom";
-    STALKWEBRTC.JOIN_ROOM_ERROR = "joinRoomError";
-    STALKWEBRTC.NOT_SUPPORT_MEDIA = "NOT_SUPPORT_MEDIA";
-})(STALKWEBRTC = STALKWEBRTC || (STALKWEBRTC = {}));
-export var PeerConnections;
-(function (PeerConnections) {
-    PeerConnections.CANDIDATE = "candidate";
-    PeerConnections.PEER_STREAM_ADDED = "peerStreamAdded";
-    PeerConnections.PEER_STREAM_REMOVED = "peerStreamRemoved";
-    PeerConnections.CONNECTIVITY_ERROR = "connectivityError";
-    PeerConnections.MUTE = "mute";
-    PeerConnections.UNMUTE = "unmute";
-    PeerConnections.ANSWER = "answer";
-    PeerConnections.OFFER = "offer";
-})(PeerConnections = PeerConnections || (PeerConnections = {}));
+export var AbstractWEBRTC;
+(function (AbstractWEBRTC) {
+    AbstractWEBRTC.CONNECTION_READY = "connectionReady";
+    AbstractWEBRTC.CREATED_PEER = "createdPeer";
+    AbstractWEBRTC.JOINED_ROOM = "joinedRoom";
+    AbstractWEBRTC.JOIN_ROOM_ERROR = "joinRoomError";
+    AbstractWEBRTC.NOT_SUPPORT_MEDIA = "NOT_SUPPORT_MEDIA";
+})(AbstractWEBRTC = AbstractWEBRTC || (AbstractWEBRTC = {}));
+export var AbstractPeerConnection;
+(function (AbstractPeerConnection) {
+    AbstractPeerConnection.CANDIDATE = "candidate";
+    AbstractPeerConnection.PEER_STREAM_ADDED = "peerStreamAdded";
+    AbstractPeerConnection.PEER_STREAM_REMOVED = "peerStreamRemoved";
+    AbstractPeerConnection.CONNECTIVITY_ERROR = "connectivityError";
+    AbstractPeerConnection.MUTE = "mute";
+    AbstractPeerConnection.UNMUTE = "unmute";
+    AbstractPeerConnection.ANSWER = "answer";
+    AbstractPeerConnection.OFFER = "offer";
+})(AbstractPeerConnection = AbstractPeerConnection || (AbstractPeerConnection = {}));
+export var AbstractMediaStream;
+(function (AbstractMediaStream) {
+    AbstractMediaStream.hdConstraints = {
+        video: {
+            mandatory: {
+                minWidth: 1280,
+                minHeight: 720
+            }
+        }
+    };
+    AbstractMediaStream.vgaConstraints = {
+        video: {
+            mandatory: {
+                maxWidth: 640,
+                maxHeight: 360
+            }
+        }
+    };
+})(AbstractMediaStream = AbstractMediaStream || (AbstractMediaStream = {}));

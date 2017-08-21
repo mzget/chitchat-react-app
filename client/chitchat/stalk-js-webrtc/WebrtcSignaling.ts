@@ -4,9 +4,9 @@
  * Copyright 2017 Ahoo Studio.co.th.
  */
 
-import { IWebRTC, STALKWEBRTC } from "./index";
+import { AbstractWEBRTC } from "./index";
 
-export function withExchange(webrtcObject: IWebRTC) {
+export function withExchange(webrtcObject: AbstractWEBRTC.IWebRTC) {
     return function exchange(message) {
         let self = webrtcObject;
         const fromId = message.from;
@@ -24,7 +24,7 @@ export function withExchange(webrtcObject: IWebRTC) {
                     // sharemyscreen: message.roomType === 'screen' && !message.broadcaster,
                     // broadcaster: message.roomType === 'screen' && !message.broadcaster ? self.connection.getSessionid() : null
                 }, self);
-                self.webrtcEvents.emit(STALKWEBRTC.CREATED_PEER, peer);
+                self.webrtcEvents.emit(AbstractWEBRTC.CREATED_PEER, peer);
             }
 
             peer.handleMessage(message);

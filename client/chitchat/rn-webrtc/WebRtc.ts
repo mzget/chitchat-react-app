@@ -11,7 +11,7 @@ import {
     getUserMedia,
 } from 'react-native-webrtc';
 
-import { WebRtcConfig, IWebRTC, STALKWEBRTC } from "../stalk-js-webrtc/index";
+import { WebRtcConfig, IWebRTC, AbstractWEBRTC } from "../stalk-js-webrtc/index";
 import * as Peer from "./Peer";
 import { PeerManager } from "./PeerManager";
 import { UserMedia } from "./UserMedia";
@@ -47,7 +47,7 @@ export class WebRTC implements IWebRTC {
             if (self.debug)
                 console.log("SOCKET connect", self.signalingSocket.id);
 
-            self.webrtcEvents.emit(STALKWEBRTC.CONNECTION_READY, self.signalingSocket.id);
+            self.webrtcEvents.emit(AbstractWEBRTC.CONNECTION_READY, self.signalingSocket.id);
         });
         self.signalingSocket.on('message', function (data) {
             if (self.debug)
@@ -104,7 +104,7 @@ export class WebRTC implements IWebRTC {
         this.signalingSocket.emit('join', roomname, function (err, roomDescription) {
             console.log('join', roomDescription);
             if (err) {
-                self.webrtcEvents.emit(STALKWEBRTC.JOIN_ROOM_ERROR, err);
+                self.webrtcEvents.emit(AbstractWEBRTC.JOIN_ROOM_ERROR, err);
             }
             else {
                 let id, client, type, peer;
@@ -120,7 +120,7 @@ export class WebRTC implements IWebRTC {
                                     type: type,
                                     offer: true
                                 }, self);
-                                self.webrtcEvents.emit(STALKWEBRTC.CREATED_PEER, peer);
+                                self.webrtcEvents.emit(AbstractWEBRTC.CREATED_PEER, peer);
                             }
                         }
                     }
@@ -128,7 +128,7 @@ export class WebRTC implements IWebRTC {
             }
 
             self.roomName = roomname;
-            self.webrtcEvents.emit(STALKWEBRTC.JOINED_ROOM, roomname);
+            self.webrtcEvents.emit(AbstractWEBRTC.JOINED_ROOM, roomname);
         });
     }
 

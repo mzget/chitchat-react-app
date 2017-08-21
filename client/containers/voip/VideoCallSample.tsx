@@ -10,7 +10,7 @@ import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
 import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
 
 import { signalingServer } from "../../Chitchat";
-import { WebRtcFactory, STALKWEBRTC, IWebRTC, WebRtcConfig, PeerConnections } from "../../chitchat/stalk-js-webrtc/index";
+import { WebRtcFactory, AbstractWEBRTC, IWebRTC, WebRtcConfig, AbstractPeerConnection, AbstractMediaStream } from "../../chitchat/stalk-js-webrtc/index";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 
@@ -78,7 +78,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         let rtcConfig = {
             signalingUrl: signalingServer,
             socketOptions: { 'force new connection': true },
-            debug: true
+            debug: true,
         } as WebRtcConfig;
         this.webrtc = await WebRtcFactory.getObject(rtcConfig);
 
@@ -87,45 +87,30 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.readyToCall = this.readyToCall.bind(this);
         this.connectionReady = this.connectionReady.bind(this);
 
-        this.webrtc.webrtcEvents.on(STALKWEBRTC.CONNECTION_READY, this.connectionReady);
-        this.webrtc.webrtcEvents.on(STALKWEBRTC.JOIN_ROOM_ERROR, (err) => console.log("joinRoom fail", err));
-        this.webrtc.webrtcEvents.on(STALKWEBRTC.CREATED_PEER, (peer) => console.log("createdPeer", peer.id));
-        this.webrtc.webrtcEvents.on(STALKWEBRTC.JOINED_ROOM, (roomName) => console.log("joinedRoom", roomName));
+        this.webrtc.webrtcEvents.on(AbstractWEBRTC.CONNECTION_READY, this.connectionReady);
+        this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOIN_ROOM_ERROR, (err) => console.log("joinRoom fail", err));
+        this.webrtc.webrtcEvents.on(AbstractWEBRTC.CREATED_PEER, (peer) => console.log("createdPeer", peer.id));
+        this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOINED_ROOM, (roomName) => console.log("joinedRoom", roomName));
 
-        this.webrtc.webrtcEvents.on(PeerConnections.PEER_STREAM_ADDED, this.peerAdded);
-        this.webrtc.webrtcEvents.on(PeerConnections.PEER_STREAM_REMOVED, this.removeVideo);
-        this.webrtc.webrtcEvents.on(PeerConnections.CONNECTIVITY_ERROR, (peer) => {
-            console.log(PeerConnections.CONNECTIVITY_ERROR, peer);
+        this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_ADDED, this.peerAdded);
+        this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_REMOVED, this.removeVideo);
+        this.webrtc.webrtcEvents.on(AbstractPeerConnection.CONNECTIVITY_ERROR, (peer) => {
+            console.log(AbstractPeerConnection.CONNECTIVITY_ERROR, peer);
         });
-        this.webrtc.webrtcEvents.on(PeerConnections.MUTE, (data) => {
-            console.log(PeerConnections.MUTE, data);
+        this.webrtc.webrtcEvents.on(AbstractPeerConnection.MUTE, (data) => {
+            console.log(AbstractPeerConnection.MUTE, data);
         });
-        this.webrtc.webrtcEvents.on(PeerConnections.UNMUTE, (data) => {
-            console.log(PeerConnections.UNMUTE, data);
+        this.webrtc.webrtcEvents.on(AbstractPeerConnection.UNMUTE, (data) => {
+            console.log(AbstractPeerConnection.UNMUTE, data);
         });
     }
 
     connectionReady(socker_id) {
         let self = this;
 
-        let hdConstraints = {
-            video: {
-                mandatory: {
-                    minWidth: 1280,
-                    minHeight: 720
-                }
-            } as MediaTrackConstraints
-        };
-        let vgaConstraints = {
-            video: {
-                mandatory: {
-                    maxWidth: 640,
-                    maxHeight: 360
-                }
-            } as MediaTrackConstraints
-        };
         let requestMedia = {
-            video: vgaConstraints.video, audio: true
+            video: AbstractMediaStream.hdConstraints.video,
+            audio: false
         } as MediaStreamConstraints;
 
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {

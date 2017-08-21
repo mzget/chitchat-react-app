@@ -1,8 +1,8 @@
 import AudioCtx from './audioCtx';
-import { AbstractMediaStreamModule } from "../stalk-js-webrtc/IWebRTC";
+import { AbstractMediaStream } from "../stalk-js-webrtc/IWebRTC";
 
 // implement from mediastream-gain lib
-export class MicController implements AbstractMediaStreamModule.AudioController {
+export class MicController implements AbstractMediaStream.AudioController {
     support;
     volume;
     gainFilter;

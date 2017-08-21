@@ -1,4 +1,4 @@
-import { PeerConnections } from "../stalk-js-webrtc/IWebRTC";
+import { AbstractPeerConnection } from "../stalk-js-webrtc/IWebRTC";
 import * as Peer from "./Peer";
 import { logError } from "./WebRTC";
 export class PeerManager {
@@ -31,7 +31,7 @@ export class PeerManager {
         let peer = this.getPeers(sessionId);
         if (peer) {
             peer.pc.close();
-            webrtc.webrtcEvents.emit(PeerConnections.PEER_STREAM_REMOVED, peer.stream);
+            webrtc.webrtcEvents.emit(AbstractPeerConnection.PEER_STREAM_REMOVED, peer.stream);
         }
         this.peers.delete(sessionId);
     }

@@ -1,4 +1,4 @@
-import { STALKWEBRTC } from "./index";
+import { AbstractWEBRTC } from "./index";
 export function withExchange(webrtcObject) {
     return function exchange(message) {
         let self = webrtcObject;
@@ -12,7 +12,7 @@ export function withExchange(webrtcObject) {
                     type: message.roomType,
                     offer: false,
                 }, self);
-                self.webrtcEvents.emit(STALKWEBRTC.CREATED_PEER, peer);
+                self.webrtcEvents.emit(AbstractWEBRTC.CREATED_PEER, peer);
             }
             peer.handleMessage(message);
         }

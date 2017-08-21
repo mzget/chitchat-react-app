@@ -10,7 +10,7 @@ import {
     getUserMedia,
 } from 'react-native-webrtc';
 
-import { PeerConnections } from "../stalk-js-webrtc/IWebRTC";
+import { AbstractPeerConnection } from "../stalk-js-webrtc/IWebRTC";
 
 const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
 
@@ -45,7 +45,7 @@ export class Peer {
         this.pc.onicecandidate = function (event) {
             if (event.candidate) {
                 // socket.emit('exchange', { 'to': socketId, 'candidate': event.candidate });
-                self.send_event(PeerConnections.CANDIDATE, event.candidate, { to: self.id });
+                self.send_event(AbstractPeerConnection.CANDIDATE, event.candidate, { to: self.id });
             }
         };
 
@@ -70,7 +70,7 @@ export class Peer {
                 // so we need to signal this to the peer
 
                 self.parentsEmitter.emit('iceFailed', self);
-                self.send_event(PeerConnections.CONNECTIVITY_ERROR, null, { to: self.id });
+                self.send_event(AbstractPeerConnection.CONNECTIVITY_ERROR, null, { to: self.id });
             }
         };
         this.pc.onsignalingstatechange = function (event) {
@@ -78,11 +78,11 @@ export class Peer {
         };
         this.pc.onaddstream = function (peer) {
             console.log('onaddstream', peer.stream);
-            self.parentsEmitter.emit(PeerConnections.PEER_STREAM_ADDED, peer);
+            self.parentsEmitter.emit(AbstractPeerConnection.PEER_STREAM_ADDED, peer);
         };
         this.pc.onremovestream = function (peer) {
             console.log('onremovestream', peer.stream);
-            self.parentsEmitter.emit(PeerConnections.PEER_STREAM_REMOVED, peer.stream);
+            self.parentsEmitter.emit(AbstractPeerConnection.PEER_STREAM_REMOVED, peer.stream);
         };
 
         this.pc.addStream(parents.stream);
@@ -118,7 +118,7 @@ export class Peer {
             self.pc.setLocalDescription(desc, function () {
                 console.log('setLocalDescription', self.pc.localDescription);
                 // socket.emit('message', { to: socketId, 'sdp': pc.localDescription });
-                self.send_event(PeerConnections.OFFER, self.pc.localDescription, { to: self.id });
+                self.send_event(AbstractPeerConnection.OFFER, self.pc.localDescription, { to: self.id });
             },
                 self.onSetSessionDescriptionError);
         },
@@ -132,7 +132,7 @@ export class Peer {
             self.pc.setLocalDescription(desc, function () {
                 console.log('setLocalDescription', self.pc.localDescription);
                 // socket.emit('exchange', { 'to': fromId, 'sdp': pc.localDescription });
-                self.send_event(PeerConnections.OFFER, self.pc.localDescription, { to: message.from });
+                self.send_event(AbstractPeerConnection.OFFER, self.pc.localDescription, { to: message.from });
             }, self.onSetSessionDescriptionError);
         }, self.onCreateSessionDescriptionError);
     }
@@ -144,13 +144,13 @@ export class Peer {
         if (message.prefix)
             this.browserPrefix = message.prefix;
 
-        if (message.type === PeerConnections.OFFER) {
+        if (message.type === AbstractPeerConnection.OFFER) {
             if (!this.nick)
                 this.nick = message.payload.nick;
             delete message.payload.nick;
 
             self.pc.setRemoteDescription(new RTCSessionDescription(message.payload), function () {
-                if (self.pc.remoteDescription.type == PeerConnections.OFFER) {
+                if (self.pc.remoteDescription.type == AbstractPeerConnection.OFFER) {
                     self.createAnswer(message);
                 }
             }, self.onSetSessionDescriptionError);
@@ -176,13 +176,13 @@ export class Peer {
             let message = event.data;
 
             if (message.type === 'connectivityError') {
-                this.parentsEmitter.emit(PeerConnections.CONNECTIVITY_ERROR, self);
+                this.parentsEmitter.emit(AbstractPeerConnection.CONNECTIVITY_ERROR, self);
             }
             else if (message.type === 'mute') {
-                this.parentsEmitter.emit(PeerConnections.MUTE, { id: message.from, name: message.payload.name });
+                this.parentsEmitter.emit(AbstractPeerConnection.MUTE, { id: message.from, name: message.payload.name });
             }
             else if (message.type === 'unmute') {
-                this.parentsEmitter.emit(PeerConnections.UNMUTE, { id: message.from, name: message.payload.name });
+                this.parentsEmitter.emit(AbstractPeerConnection.UNMUTE, { id: message.from, name: message.payload.name });
             }
             else if (message.type === 'endOfCandidates') {
                 // Edge requires an end-of-candidates. Since only Edge will have mLines or tracks on the

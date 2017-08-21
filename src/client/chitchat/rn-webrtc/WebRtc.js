@@ -1,6 +1,6 @@
 import * as events from 'events';
 import * as io from 'socket.io-client';
-import { STALKWEBRTC } from "../stalk-js-webrtc/index";
+import { AbstractWEBRTC } from "../stalk-js-webrtc/index";
 import { PeerManager } from "./PeerManager";
 import { UserMedia } from "./UserMedia";
 import { withExchange } from "../stalk-js-webrtc/WebrtcSignaling";
@@ -21,7 +21,7 @@ export class WebRTC {
         self.signalingSocket.on('connect', function (data) {
             if (self.debug)
                 console.log("SOCKET connect", self.signalingSocket.id);
-            self.webrtcEvents.emit(STALKWEBRTC.CONNECTION_READY, self.signalingSocket.id);
+            self.webrtcEvents.emit(AbstractWEBRTC.CONNECTION_READY, self.signalingSocket.id);
         });
         self.signalingSocket.on('message', function (data) {
             if (self.debug)
@@ -69,7 +69,7 @@ export class WebRTC {
         this.signalingSocket.emit('join', roomname, function (err, roomDescription) {
             console.log('join', roomDescription);
             if (err) {
-                self.webrtcEvents.emit(STALKWEBRTC.JOIN_ROOM_ERROR, err);
+                self.webrtcEvents.emit(AbstractWEBRTC.JOIN_ROOM_ERROR, err);
             }
             else {
                 let id, client, type, peer;
@@ -85,14 +85,14 @@ export class WebRTC {
                                     type: type,
                                     offer: true
                                 }, self);
-                                self.webrtcEvents.emit(STALKWEBRTC.CREATED_PEER, peer);
+                                self.webrtcEvents.emit(AbstractWEBRTC.CREATED_PEER, peer);
                             }
                         }
                     }
                 }
             }
             self.roomName = roomname;
-            self.webrtcEvents.emit(STALKWEBRTC.JOINED_ROOM, roomname);
+            self.webrtcEvents.emit(AbstractWEBRTC.JOINED_ROOM, roomname);
         });
     }
     leaveRoom() {

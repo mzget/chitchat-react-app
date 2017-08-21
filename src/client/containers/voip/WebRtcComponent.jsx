@@ -17,7 +17,7 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { signalingServer } from "../../Chitchat";
 import * as chatroom from "../../chitchat/chats/redux/chatroom/";
 import * as calling from "../../chitchat/calling/";
-import { PeerConnections, STALKWEBRTC, WebRtcFactory } from '../../chitchat/stalk-js-webrtc/index';
+import { AbstractPeerConnection, AbstractWEBRTC, WebRtcFactory } from '../../chitchat/stalk-js-webrtc/index';
 class WebRtcComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -50,10 +50,10 @@ class WebRtcComponent extends React.Component {
             };
             this.webrtc = yield WebRtcFactory.getObject(rtcConfig);
             this.props.getWebRtc(this.webrtc);
-            this.webrtc.webrtcEvents.on(STALKWEBRTC.CONNECTION_READY, this.connectionReady);
-            this.webrtc.webrtcEvents.on(STALKWEBRTC.CREATED_PEER, this.onPeerCreated);
-            this.webrtc.webrtcEvents.on(PeerConnections.PEER_STREAM_ADDED, this.peerAdded);
-            this.webrtc.webrtcEvents.on(PeerConnections.PEER_STREAM_REMOVED, this.removeVideo);
+            this.webrtc.webrtcEvents.on(AbstractWEBRTC.CONNECTION_READY, this.connectionReady);
+            this.webrtc.webrtcEvents.on(AbstractWEBRTC.CREATED_PEER, this.onPeerCreated);
+            this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_ADDED, this.peerAdded);
+            this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_REMOVED, this.removeVideo);
             this.webrtc.webrtcEvents.on('readyToCall', this.readyToCall);
             this.webrtc.webrtcEvents.on('iceFailed', function (peer) {
                 console.warn("iceFailed", peer);
@@ -68,7 +68,7 @@ class WebRtcComponent extends React.Component {
                     self.showVolume(document.getElementById('localVolume'), volume);
                 });
             }
-            this.webrtc.webrtcEvents.on(PeerConnections.CONNECTIVITY_ERROR, function (peer) {
+            this.webrtc.webrtcEvents.on(AbstractPeerConnection.CONNECTIVITY_ERROR, function (peer) {
                 console.warn("connectivityError", peer);
                 let connstate = document.getElementById('peer_connstate_' + this.webrtc.getDomId(peer));
                 console.log('remote fail', connstate);
