@@ -31,3 +31,22 @@ export function withExchange(webrtcObject: AbstractWEBRTC.IWebRTC) {
         }
     }
 }
+
+// send via signalling channel
+export function withSendMessage(webrtcObject: AbstractWEBRTC.IWebRTC) {
+    return function send(messageType: string, payload, optional: { to: string }) {
+        let self = webrtcObject;
+        if (!self.signalingSocket) return;
+
+        let message = {
+            to: optional.to,
+            // sid: self.sid,
+            // broadcaster: this.broadcaster,
+            // roomType: self.type,
+            type: messageType,
+            payload: payload,
+            // prefix: webrtcSupport.prefix
+        };
+        self.signalingSocket.emit('message', message);
+    };
+}

@@ -3,6 +3,8 @@
 
 import * as io from 'socket.io-client';
 import * as events from "events";
+
+import { AbstractWEBRTC, withExchange, withSendMessage } from "../stalk-js-webrtc";
 import * as Peer from "./Peer";
 import { PeerManager } from "./PeerManager";
 import { UserMedia } from "./UserMedia";
@@ -14,13 +16,8 @@ export function hasGetUserMedia() {
     return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
         navigator.mozGetUserMedia || navigator.msGetUserMedia);
 }
-export interface WebRtcConfig {
-    signalingUrl: string;
-    socketOptions: any;
-    debug: boolean;
-    detectSpeakingEvents: boolean;
-}
-export class WebRTC {
+
+export class WebRTC implements AbstractWEBRTC.IWebRTC {
     signalingSocket: SocketIOClient.Socket;  //{ transports: ['websocket'] }
     webrtcEvents = new events.EventEmitter();
     roomName: string;
@@ -28,13 +25,7 @@ export class WebRTC {
     userMedia: UserMedia;
     debug: boolean = false;
 
-    static CONNECTION_READY = "connectionReady";
-    static CREATED_PEER = "createdPeer";
-    static JOINED_ROOM = "joinedRoom"
-    static JOIN_ROOM_ERROR = "joinRoomError";
-    static NOT_SUPPORT_MEDIA = "NOT_SUPPORT_MEDIA";
-
-    constructor(configs: WebRtcConfig) {
+    constructor(configs: AbstractWEBRTC.WebRtcConfig) {
         let self = this;
         self.debug = configs.debug;
 
@@ -43,13 +34,12 @@ export class WebRTC {
 
             logError('Your browser does not support local media capture.');
 
-            self.webrtcEvents.emit(WebRTC.NOT_SUPPORT_MEDIA);
+            self.webrtcEvents.emit(AbstractWEBRTC.NOT_SUPPORT_MEDIA);
             return;
         }
 
         this.signalingSocket = io.connect(configs.signalingUrl, configs.socketOptions);
 
-        this.exchange = this.exchange.bind(this);
         this.send = this.send.bind(this);
         this.onDisconnect = this.onDisconnect.bind(this);
 
@@ -60,13 +50,13 @@ export class WebRTC {
             if (self.debug)
                 console.log("SOCKET connect", self.signalingSocket.id);
 
-            self.webrtcEvents.emit(WebRTC.CONNECTION_READY, self.signalingSocket.id);
+            self.webrtcEvents.emit(AbstractWEBRTC.CONNECTION_READY, self.signalingSocket.id);
         });
         self.signalingSocket.on('message', function (data) {
             if (self.debug)
                 console.log("SOCKET message ", data.type, data.from);
 
-            self.exchange(data);
+            withExchange(self)(data);
         });
         self.signalingSocket.on('remove', function (room) {
             if (self.debug)
@@ -99,19 +89,7 @@ export class WebRTC {
 
     // send via signalling channel
     send(messageType: string, payload, optional: { to: string }) {
-        let self = this;
-        if (!self.signalingSocket) return;
-
-        let message = {
-            to: optional.to,
-            // sid: self.sid,
-            // broadcaster: this.broadcaster,
-            // roomType: self.type,
-            type: messageType,
-            payload: payload,
-            // prefix: webrtcSupport.prefix
-        };
-        self.signalingSocket.emit('message', message);
+        withSendMessage(this)(messageType, payload, optional);
     };
 
     join(roomname: string) {
@@ -119,7 +97,7 @@ export class WebRTC {
         this.signalingSocket.emit('join', roomname, function (err, roomDescription) {
             console.log('join', roomDescription);
             if (err) {
-                self.webrtcEvents.emit(WebRTC.JOIN_ROOM_ERROR, err);
+                self.webrtcEvents.emit(AbstractWEBRTC.JOIN_ROOM_ERROR, err);
             }
             else {
                 let id, client, type, peer;
@@ -135,7 +113,7 @@ export class WebRTC {
                                     type: type,
                                     offer: true
                                 }, self);
-                                self.webrtcEvents.emit(WebRTC.CREATED_PEER, peer);
+                                self.webrtcEvents.emit(AbstractWEBRTC.CREATED_PEER, peer);
                             }
                         }
                     }
@@ -143,43 +121,8 @@ export class WebRTC {
             }
 
             self.roomName = roomname;
-            self.webrtcEvents.emit(WebRTC.JOINED_ROOM, roomname);
+            self.webrtcEvents.emit(AbstractWEBRTC.JOINED_ROOM, roomname);
         });
-    }
-
-    exchange(message) {
-        let self = this;
-        const fromId = message.from;
-        const roomType = message.roomType;
-        let peer = this.peerManager.getPeers(fromId);
-
-        if (message.type === 'offer') {
-            if (!peer) {
-                peer = self.peerManager.createPeer({
-                    id: message.from,
-                    // sid: message.sid,
-                    type: message.roomType,
-                    offer: false,
-                    // enableDataChannels: self.config.enableDataChannels && message.roomType !== 'screen',
-                    // sharemyscreen: message.roomType === 'screen' && !message.broadcaster,
-                    // broadcaster: message.roomType === 'screen' && !message.broadcaster ? self.connection.getSessionid() : null
-                }, self);
-                self.webrtcEvents.emit(WebRTC.CREATED_PEER, peer);
-            }
-
-            peer.handleMessage(message);
-        }
-        // else if (peers.length) {
-        //     peers.forEach(function (peer) {
-        //         if (message.sid) {
-        //             if (peer.sid === message.sid) {
-        //                 peer.handleMessage(message);
-        //             }
-        //         } else {
-        //             peer.handleMessage(message);
-        //         }
-        //     });
-        // }
     }
 
     leaveRoom() {
