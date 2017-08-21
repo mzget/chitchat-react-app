@@ -53,15 +53,27 @@ export class UserMedia {
             });
         });
     }
+    setVideoEnabled(enabled) {
+        if (!!this.localStream) {
+            let videoTracks = this.localStream.getVideoTracks();
+            if (!!videoTracks && videoTracks.length > 0) {
+                videoTracks.forEach(function (track) {
+                    track.enabled = !!enabled;
+                });
+            }
+        }
+    }
     stopLocalStream() {
         this.stopStream();
     }
     stopStream() {
         let self = this;
-        let tracks = this.localStream.getTracks();
-        tracks.forEach(function (track) {
-            track.stop();
-        });
-        this.micController.removeAudioStream();
+        if (!!this.localStream) {
+            let tracks = this.localStream.getTracks();
+            tracks.forEach(function (track) {
+                track.stop();
+            });
+            this.micController.removeAudioStream();
+        }
     }
 }

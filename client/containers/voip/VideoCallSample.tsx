@@ -7,6 +7,7 @@ import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
 import { RaisedButton, FontIcon, Slider, Paper } from "material-ui";
 import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
+import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
 
 import { signalingServer } from "../../Chitchat";
 import { WebRTC } from "../../chitchat/react-webrtc/WebRTC";
@@ -24,6 +25,7 @@ interface IComponentNameState {
     remoteVolume;
     micVol;
     peerStat;
+    isHoverPeer;
 }
 
 
@@ -51,6 +53,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
             remoteSrc: null,
             peerStat: "",
             remoteVolume: 100,
+            isHoverPeer: false,
         }
 
         let rtcConfig = {
@@ -215,17 +218,18 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         let { team } = this.props.teamReducer;
 
         let disabledAudioOption = true;
-        // let disabledVideoOption = true;
+        let disabledVideoOption = true;
         if (!!this.state.selfViewSrc &&
             !!this.webrtc.userMedia.micController &&
             this.webrtc.userMedia.micController.support) {
             if (this.state.selfViewSrc.getAudioTracks().length > 0) {
                 disabledAudioOption = false;
             }
-            // if (this.state.selfViewSrc.getVideoTracks().length > 0) {
-            //     disabledVideoOption = false;
-            // }
+            if (this.state.selfViewSrc.getVideoTracks().length > 0) {
+                disabledVideoOption = false;
+            }
         }
+
         return (
             <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
                 <div style={{ position: "relative", height: "56px" }}>
@@ -253,54 +257,120 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                 margin: 0,
                             }}
                             onChange={(e, newValue) => {
-                                this.setState({ micVol: newValue });
+                                this.setState({ micVol: newValue, isMuteVoice: newValue == 0 });
                                 this.webrtc.userMedia.micController.setVolume(newValue / 100);
                             }} />
                         <div>{`Mic volume (${this.state.micVol}%)`}</div>
-                    </div>
-                    <div style={{ width: "100%", height: "300px", position: "relative", textAlign: "center" }}>
-                        <video
-                            //style={{ width: "100%", height: "300px" }}
-                            style={{ height: "300px", display: this.state.remoteSrc ? "initial" : "none" }}
-                            className="remotes"
-                            id="remoteVideos"
-                            ref="remotes"
-                            autoPlay={true} />
                         {
-                            this.state.remoteSrc ?
-                                <div style={{
-                                    position: "absolute",
-                                    width: "50px",
-                                    height: "40%",
-                                    left: "350px",
-                                    bottom: "10px",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "center",
-                                }}>
-                                    <Slider axis='y' min={0} max={100} step={1}
-                                        value={this.state.remoteVolume}
-                                        onChange={(e, newValue) => {
-                                            this.setState({ remoteVolume: newValue });
-                                            getEl(ReactDOM.findDOMNode(this.refs.remotes)).volume = newValue / 100;
-                                        }}
-                                        sliderStyle={{
-                                            margin: 0,
-                                        }}
-                                        style={{
-                                            height: "80%",
-                                            marginBottom: "10px",
-                                        }} />
-                                    <div>
-                                        {`${this.state.remoteVolume}%`}
-                                    </div>
-                                </div>
+                            this.state.isMuteVoice ?
+                                <RaisedButton secondary
+                                    disabled={disabledAudioOption}
+                                    icon={<FontIcon className="material-icons">mic_off</FontIcon>}
+                                    onClick={() => {
+                                        this.webrtc.userMedia.micController.unMute();
+                                        this.webrtc.userMedia.micController.setVolume(this.state.micVol / 100);
+                                        this.setState({ isMuteVoice: false });
+                                        /* this.webrtc.unmute();
+                                        this.webrtc.webrtc.emit('changeLocalVolume', this.state.micVol / 100); */
+                                    }} />
                                 :
-                                null
+                                <RaisedButton
+                                    disabled={disabledAudioOption}
+                                    icon={<FontIcon className="material-icons">mic</FontIcon>}
+                                    onClick={() => {
+                                        this.webrtc.userMedia.micController.mute();
+                                        this.setState({ isMuteVoice: true });
+                                        //this.webrtc.mute();
+                                    }} />
+                        }
+                        {
+                            this.state.isPauseVideo ?
+                                <RaisedButton secondary
+                                    disabled={disabledVideoOption}
+                                    icon={<FontIcon className="material-icons">videocam_off</FontIcon>}
+                                    onClick={() => {
+                                        this.webrtc.userMedia.setVideoEnabled(true);
+                                        this.setState({ isPauseVideo: false });
+                                    }} />
+                                :
+                                <RaisedButton
+                                    disabled={disabledVideoOption}
+                                    icon={<FontIcon className="material-icons">videocam</FontIcon>}
+                                    onClick={() => {
+                                        this.webrtc.userMedia.setVideoEnabled(false);
+                                        this.setState({ isPauseVideo: true });
+                                    }} />
                         }
                     </div>
+                    <div style={{ width: "100%", height: "300px", textAlign: "center" }}>
+                        <div
+                            onMouseOver={() => { this.setState({ isHoverPeer: true }) }}
+                            onMouseLeave={() => { this.setState({ isHoverPeer: false }) }}
+                            style={{ display: "inline-block", height: "300px", position: "relative" }}>
+                            <video
+                                style={{ height: "300px", display: this.state.remoteSrc ? "initial" : "none" }}
+                                className="remotes"
+                                id="remoteVideos"
+                                ref="remotes"
+                                autoPlay={true} />
+                            {
+                                this.state.isHoverPeer ?
+                                    [
+                                        <div style={{
+                                            position: "absolute",
+                                            bottom: 0,
+                                            width: "100%",
+                                            height: "30%",
+                                            backgroundPosition: "bottom",
+                                            backgroundImage: "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAADGCAYAAAAT+OqFAAAAdklEQVQoz42QQQ7AIAgEF/T/D+kbq/RWAlnQyyazA4aoAB4FsBSA/bFjuF1EOL7VbrIrBuusmrt4ZZORfb6ehbWdnRHEIiITaEUKa5EJqUakRSaEYBJSCY2dEstQY7AuxahwXFrvZmWl2rh4JZ07z9dLtesfNj5q0FU3A5ObbwAAAABJRU5ErkJggg==)",
+                                            "filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#3d3d3d', GradientType=0 )"
+                                        }}>
+                                        </div>,
+                                        <div id="remoteController"
+                                            style={{
+                                                position: "absolute",
+                                                width: "100%",
+                                                height: "15%",
+                                                bottom: 0,
+                                                display: this.state.remoteSrc ? "flex" : "none",
+                                                alignItems: "center",
+                                                padding: "0 5px",
+                                            }}>
+                                            <div style={{ color: "#fff", width: "41px" }}>
+                                                {`${this.state.remoteVolume}%`}
+                                            </div>
+                                            <MuiThemeProvider
+                                                muiTheme={getMuiTheme({
+                                                    slider: {
+                                                        trackColor: 'rgba(255,255,255,0.5)',
+                                                        selectionColor: '#fff',
+                                                        rippleColor: 'rgba(255,255,255,0.5)'
+                                                    }
+                                                })}>
+                                                <Slider min={0} max={100} step={1}
+                                                    value={this.state.remoteVolume}
+                                                    onChange={(e, newValue) => {
+                                                        this.setState({ remoteVolume: newValue });
+                                                        getEl(ReactDOM.findDOMNode(this.refs.remotes)).volume = newValue / 100;
+                                                    }}
+                                                    sliderStyle={{
+                                                        margin: 0,
+                                                    }}
+                                                    style={{
+                                                        width: "30%",
+                                                        margin: "0 5px",
+                                                    }} />
+                                            </MuiThemeProvider>
+                                        </div>
+                                    ]
+                                    :
+                                    null
+                            }
+                        </div>
+
+                    </div>
                 </Flexbox>
-            </Flexbox>
+            </Flexbox >
         );
     }
 }
