@@ -22,7 +22,7 @@ export namespace AbstractWEBRTC {
         signalingSocket: SocketIOClient.Socket;
         webrtcEvents: events.EventEmitter;
         roomName: string;
-        peerManager;
+        peerManager: AbstractPeerConnection.IPCEstabished;
         userMedia: AbstractMediaStream.IUserMedia;
         debug: boolean;
 
@@ -47,6 +47,11 @@ export namespace AbstractPeerConnection {
 
     export interface IPCEstabished {
         createPeer(options, webrtc);
+        getPeers(session_id?: string);
+        removePeers(session_id: string, webrtc);
+
+        sendToAll(message, payload);
+        sendDirectlyToAll(channel: string, message, payload);
     }
 }
 

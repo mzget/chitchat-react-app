@@ -83,7 +83,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
             audio: false
         } as MediaStreamConstraints;
 
-        this.webrtc.peerManager.peers;
+        this.webrtc.peerManager.getPeers(;
 
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
             self.readyToCall(stream);

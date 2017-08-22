@@ -24,7 +24,12 @@ export class PeerManager {
         return peer;
     }
     getPeers(sessionId) {
-        return this.peers.get(sessionId);
+        if (sessionId) {
+            return this.peers.get(sessionId);
+        }
+        else {
+            return this.peers;
+        }
     }
     ;
     removePeers(sessionId, webrtc) {
