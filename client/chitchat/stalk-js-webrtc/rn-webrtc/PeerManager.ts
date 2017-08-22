@@ -2,7 +2,7 @@ import { AbstractPeerConnection } from "../index";
 import * as Peer from "./Peer";
 import { WebRTC, logError } from "./WebRTC";
 
-export class PeerManager {
+export class PeerManager implements AbstractPeerConnection.IPCEstabished {
     peers: Map<string, Peer.Peer>;
     debug: boolean = false;
 
@@ -30,12 +30,17 @@ export class PeerManager {
         return peer;
     }
 
-    getPeers(sessionId) {
-        return this.peers.get(sessionId);
+    getPeers(sessionId: string) {
+        if (sessionId) {
+            return this.peers.get(sessionId);
+        }
+        else {
+            return this.peers;
+        }
     };
 
     removePeers(sessionId, webrtc: WebRTC) {
-        let peer = this.getPeers(sessionId);
+        let peer = this.getPeers(sessionId) as Peer.Peer;
         if (peer) {
             peer.pc.close();
             webrtc.webrtcEvents.emit(AbstractPeerConnection.PEER_STREAM_REMOVED, peer.stream);

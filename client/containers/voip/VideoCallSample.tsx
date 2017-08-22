@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import { shallowEqual, compose } from "recompose";
 import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
-import { RaisedButton, FontIcon, Slider, Paper, Subheader, FlatButton } from "material-ui";
+import { TextField, RaisedButton, FontIcon, Slider, Paper, Subheader, FlatButton } from "material-ui";
 import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
 import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
 
@@ -62,6 +62,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.onBackPressed = this.onBackPressed.bind(this);
         this.onTitlePressed = this.onTitlePressed.bind(this);
 
+        this.sendMessageSample = this.sendMessageSample.bind(this);
         this.changeMediaContraint = this.changeMediaContraint.bind(this);
         this.startWebRtc();
     }
@@ -227,6 +228,9 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         }
     }
 
+    sendMessageSample() {
+        this.webrtc.peerManager.sendDirectlyToAll("message", "bobo", "test");
+    }
 
     render(): JSX.Element {
         let { team } = this.props.teamReducer;
@@ -390,6 +394,12 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                         </div>
 
                     </div>
+                    <TextField
+                        id="text-field-controlled"
+                        value={"test"}
+                        onChange={() => { }}
+                        onKeyUp={(event) => { if (event.keyCode == 13) this.sendMessageSample(); }}
+                    />
                 </Flexbox>
             </Flexbox >
         );
