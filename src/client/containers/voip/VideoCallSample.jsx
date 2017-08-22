@@ -63,7 +63,8 @@ class VideoCall extends React.Component {
         let peers = this.webrtc.peerManager.getPeers();
         peers.forEach((peer) => peer.removeStream(this.webrtc.userMedia.getLocalStream()));
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
-            self.readyToCall(stream);
+            self.onStreamReady(stream);
+            peers.forEach(peer => peer.addStream(stream));
         }).catch(err => {
             console.error("LocalStream Fail", err);
             self.setState(prev => (Object.assign({}, prev, { localStreamStatus: err })));
@@ -80,7 +81,7 @@ class VideoCall extends React.Component {
             this.webrtc = (yield WebRtcFactory.getObject(rtcConfig));
             this.peerAdded = this.peerAdded.bind(this);
             this.removeVideo = this.removeVideo.bind(this);
-            this.readyToCall = this.readyToCall.bind(this);
+            this.onStreamReady = this.onStreamReady.bind(this);
             this.connectionReady = this.connectionReady.bind(this);
             this.webrtc.webrtcEvents.on(AbstractWEBRTC.CONNECTION_READY, this.connectionReady);
             this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOIN_ROOM_ERROR, (err) => console.log("joinRoom fail", err));
@@ -106,7 +107,9 @@ class VideoCall extends React.Component {
             audio: true
         };
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
-            self.readyToCall(stream);
+            self.onStreamReady(stream);
+            let { match } = self.props;
+            self.webrtc.join(match.params.id);
         }).catch(err => {
             console.error("LocalStream Fail", err);
             self.setState(prev => (Object.assign({}, prev, { localStreamStatus: err })));
@@ -150,9 +153,7 @@ class VideoCall extends React.Component {
         remotesView.disable = true;
         this.setState({ remoteSrc: null });
     }
-    readyToCall(stream) {
-        let self = this;
-        let { match } = this.props;
+    onStreamReady(stream) {
         let selfView = getEl(ReactDOM.findDOMNode(this.refs.localVideo));
         if (!selfView)
             return;
@@ -160,7 +161,6 @@ class VideoCall extends React.Component {
         this.selfAudioName = this.webrtc.userMedia.getAudioTrackName();
         this.selfVideoName = this.webrtc.userMedia.getVideoTrackName();
         this.setState({ selfViewSrc: stream, localStreamStatus: "ready" });
-        this.webrtc.join(match.params.id);
     }
     componentWillMount() {
         if (!this.props.teamReducer.team) {

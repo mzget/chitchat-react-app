@@ -88,7 +88,8 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
             peer.removeStream(this.webrtc.userMedia.getLocalStream()));
 
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
-            self.readyToCall(stream);
+            self.onStreamReady(stream);
+            peers.forEach(peer => peer.addStream(stream));
         }).catch(err => {
             console.error("LocalStream Fail", err);
 
@@ -107,7 +108,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 
         this.peerAdded = this.peerAdded.bind(this);
         this.removeVideo = this.removeVideo.bind(this);
-        this.readyToCall = this.readyToCall.bind(this);
+        this.onStreamReady = this.onStreamReady.bind(this);
         this.connectionReady = this.connectionReady.bind(this);
 
         this.webrtc.webrtcEvents.on(AbstractWEBRTC.CONNECTION_READY, this.connectionReady);
@@ -137,7 +138,10 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         } as MediaStreamConstraints;
 
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
-            self.readyToCall(stream);
+            self.onStreamReady(stream);
+
+            let { match } = self.props;
+            self.webrtc.join(match.params.id);
         }).catch(err => {
             console.error("LocalStream Fail", err);
 
@@ -189,10 +193,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.setState({ remoteSrc: null });
     }
 
-    readyToCall(stream: MediaStream) {
-        let self = this;
-        let { match } = this.props;
-
+    onStreamReady(stream: MediaStream) {
         let selfView = getEl(ReactDOM.findDOMNode(this.refs.localVideo));
         // let video = document.createElement('video');
         // video.oncontextmenu = function () { return false; };
@@ -203,8 +204,6 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.selfAudioName = this.webrtc.userMedia.getAudioTrackName();
         this.selfVideoName = this.webrtc.userMedia.getVideoTrackName();
         this.setState({ selfViewSrc: stream, localStreamStatus: "ready" });
-
-        this.webrtc.join(match.params.id);
     }
 
     componentWillMount() {

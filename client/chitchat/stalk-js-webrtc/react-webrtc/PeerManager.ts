@@ -30,7 +30,7 @@ export class PeerManager implements AbstractPeerConnection.IPCEstabished {
         return peer;
     }
 
-    getPeers(sessionId: string) {
+    getPeers(sessionId?: string) {
         if (sessionId) {
             return this.peers.get(sessionId);
         }
