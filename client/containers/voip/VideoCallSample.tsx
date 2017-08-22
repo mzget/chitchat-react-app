@@ -10,7 +10,7 @@ import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
 import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
 
 import { signalingServer } from "../../Chitchat";
-import { WebRtcFactory, AbstractWEBRTC, IWebRTC, WebRtcConfig, AbstractPeerConnection, AbstractMediaStream } from "../../chitchat/stalk-js-webrtc/index";
+import { AbstractWEBRTC, AbstractPeerConnection, AbstractMediaStream, WebRtcFactory } from "../../chitchat/stalk-js-webrtc/index";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 
@@ -38,7 +38,7 @@ function getEl(idOrEl) {
 };
 
 class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
-    webrtc: IWebRTC;
+    webrtc: AbstractWEBRTC.IWebRTC;
     remotesView;
     selfView;
     selfAudioName: string;
@@ -79,8 +79,8 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
             signalingUrl: signalingServer,
             socketOptions: { 'force new connection': true },
             debug: true,
-        } as WebRtcConfig;
-        this.webrtc = await WebRtcFactory.getObject(rtcConfig);
+        } as AbstractWEBRTC.WebRtcConfig;
+        this.webrtc = await WebRtcFactory.getObject(rtcConfig) as AbstractWEBRTC.IWebRTC;
 
         this.peerAdded = this.peerAdded.bind(this);
         this.removeVideo = this.removeVideo.bind(this);

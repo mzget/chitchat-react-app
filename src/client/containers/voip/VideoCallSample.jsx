@@ -17,7 +17,7 @@ import { RaisedButton, FontIcon, Slider } from "material-ui";
 import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
 import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
 import { signalingServer } from "../../Chitchat";
-import { WebRtcFactory, AbstractWEBRTC, AbstractPeerConnection, AbstractMediaStream } from "../../chitchat/stalk-js-webrtc/index";
+import { AbstractWEBRTC, AbstractPeerConnection, AbstractMediaStream, WebRtcFactory } from "../../chitchat/stalk-js-webrtc/index";
 import { SimpleToolbar } from "../../components/SimpleToolbar";
 function getEl(idOrEl) {
     if (typeof idOrEl === 'string') {
@@ -60,7 +60,7 @@ class VideoCall extends React.Component {
                 socketOptions: { 'force new connection': true },
                 debug: true,
             };
-            this.webrtc = yield WebRtcFactory.getObject(rtcConfig);
+            this.webrtc = (yield WebRtcFactory.getObject(rtcConfig));
             this.peerAdded = this.peerAdded.bind(this);
             this.removeVideo = this.removeVideo.bind(this);
             this.readyToCall = this.readyToCall.bind(this);
