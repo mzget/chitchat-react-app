@@ -1,46 +1,38 @@
+import { Platform } from 'react-native';
 import * as events from 'events';
 import * as io from 'socket.io-client';
-import { AbstractWEBRTC } from "../stalk-js-webrtc/index";
-import { PeerManager } from "./PeerManager";
-import { UserMedia } from "./UserMedia";
-import { withExchange } from "../stalk-js-webrtc/WebrtcSignaling";
-export function logError(error) {
+import { MediaStreamTrack, getUserMedia, } from 'react-native-webrtc';
+import * as Peer from "./Peer";
+function logError(error) {
     console.log("logError", error);
 }
-export class WebRTC {
-    constructor(configs) {
-        this.debug = false;
+export class WebRtc {
+    constructor() {
+        this.peers = {};
         let self = this;
-        self.debug = configs.debug;
-        this.signalingSocket = io.connect(configs.signalingUrl, configs.socketOptions);
+        this.signalingSocket = io.connect('https://chitchats.ga:8888', { transports: ['websocket'], 'force new connection': true });
         this.webrtcEvents = new events.EventEmitter();
-        this.send = this.send.bind(this);
-        this.onDisconnect = this.onDisconnect.bind(this);
-        this.peerManager = new PeerManager({ debug: self.debug });
-        this.userMedia = new UserMedia({ debug: self.debug });
+        this.exchange = this.exchange.bind(this);
         self.signalingSocket.on('connect', function (data) {
-            if (self.debug)
-                console.log("SOCKET connect", self.signalingSocket.id);
-            self.webrtcEvents.emit(AbstractWEBRTC.CONNECTION_READY, self.signalingSocket.id);
+            console.log("SOCKET connect", self.signalingSocket.id, data);
+            self.webrtcEvents.emit(WebRtc.CONNECTION_READY, self.signalingSocket.id);
         });
         self.signalingSocket.on('message', function (data) {
-            if (self.debug)
-                console.log("SOCKET message ", data.type, data.from);
-            withExchange(self)(data);
-        });
-        self.signalingSocket.on('remove', function (room) {
-            if (self.debug)
-                console.log("SOCKET remove", room, self.signalingSocket.id);
-            if (room.id !== self.signalingSocket.id) {
-                self.peerManager.removePeers(room.id, self);
-            }
+            self.exchange(data);
         });
         self.signalingSocket.on('leave', function (socketId) {
-            if (self.debug)
-                console.log("SOCKET leave", socketId);
-            self.peerManager.removePeers(socketId, self);
+            console.log("SOCKET leave", socketId);
+            self.leave(socketId);
         });
-        self.signalingSocket.on('disconnect', this.onDisconnect);
+        self.signalingSocket.on('remove', function (room) {
+            console.log("SOCKET remove", room, self.signalingSocket.id);
+            if (room.id !== self.signalingSocket.id) {
+                self.leave(room.id);
+            }
+        });
+        self.signalingSocket.on('disconnect', (data) => {
+            console.log("SOCKET disconnect", data);
+        });
         self.signalingSocket.on('reconnect', (data) => {
             console.log("SOCKET reconnect", data);
         });
@@ -64,12 +56,42 @@ export class WebRTC {
         self.signalingSocket.emit('message', message);
     }
     ;
+    getLocalStream(isFront, callback) {
+        let self = this;
+        let videoSourceId;
+        if (Platform.OS === 'ios') {
+            MediaStreamTrack.getSources(sourceInfos => {
+                for (var i = 0; i < sourceInfos.length; i++) {
+                    const sourceInfo = sourceInfos[i];
+                    if (sourceInfo.kind == "video" && sourceInfo.facing == (isFront ? "front" : "back")) {
+                        videoSourceId = sourceInfo.id;
+                    }
+                }
+            });
+        }
+        getUserMedia({
+            audio: true,
+            video: {
+                mandatory: {
+                    minWidth: 640,
+                    minHeight: 360,
+                    minFrameRate: 30,
+                },
+                facingMode: (isFront ? "user" : "environment"),
+                optional: (videoSourceId ? [{ sourceId: videoSourceId }] : []),
+            }
+        }, function (stream) {
+            console.log('getUserMedia success');
+            self.localStream = stream;
+            callback(stream);
+        }, (err) => console.log("logError", err));
+    }
     join(roomname) {
         let self = this;
         this.signalingSocket.emit('join', roomname, function (err, roomDescription) {
             console.log('join', roomDescription);
             if (err) {
-                self.webrtcEvents.emit(AbstractWEBRTC.JOIN_ROOM_ERROR, err);
+                self.webrtcEvents.emit('error', err);
             }
             else {
                 let id, client, type, peer;
@@ -80,20 +102,60 @@ export class WebRTC {
                         client = clients[id];
                         for (type in client) {
                             if (client[type]) {
-                                peer = self.peerManager.createPeer({
+                                peer = self.createPeer({
                                     id: id,
                                     type: type,
                                     offer: true
-                                }, self);
-                                self.webrtcEvents.emit(AbstractWEBRTC.CREATED_PEER, peer);
+                                });
+                                self.webrtcEvents.emit('createdPeer', peer);
                             }
                         }
                     }
                 }
             }
             self.roomName = roomname;
-            self.webrtcEvents.emit(AbstractWEBRTC.JOINED_ROOM, roomname);
+            self.webrtcEvents.emit('joinedRoom', roomname);
         });
+    }
+    createPeer(options) {
+        let self = this;
+        let parents = {
+            peer_id: options.id,
+            offer: options.offer,
+            stream: this.localStream,
+            pcPeers: this.peers,
+            emitter: this.webrtcEvents,
+            sendHandler: this.send.bind(this)
+        };
+        let peer = new Peer.Peer(parents);
+        peer.logError = logError;
+        this.peers[options.id] = peer;
+        return peer;
+    }
+    exchange(message) {
+        let self = this;
+        const fromId = message.from;
+        const roomType = message.roomType;
+        let peer = this.peers[fromId];
+        if (message.type === 'offer') {
+            if (!peer) {
+                peer = self.createPeer({
+                    id: message.from,
+                    type: message.roomType,
+                    offer: false,
+                });
+                self.webrtcEvents.emit('createdPeer', peer);
+            }
+            peer.handleMessage(message);
+        }
+    }
+    leave(socketId) {
+        const peer = this.peers[socketId];
+        if (peer) {
+            peer.pc.close();
+        }
+        this.webrtcEvents.emit(Peer.PEER_STREAM_REMOVED);
+        delete this.peers[socketId];
     }
     leaveRoom() {
         if (this.roomName) {
@@ -104,14 +166,10 @@ export class WebRTC {
     ;
     disconnect() {
         this.signalingSocket.disconnect();
-        this.userMedia.stopLocalStream();
-        delete this.peerManager;
         delete this.signalingSocket;
-        delete this.userMedia;
+        delete this.peers;
     }
     ;
-    onDisconnect(data) {
-        console.log("SOCKET disconnect", data);
-        this.userMedia.stopLocalStream();
-    }
 }
+WebRtc.CONNECTION_READY = "connectionReady";
+WebRtc.READY_TO_CALL = "readyToCall";

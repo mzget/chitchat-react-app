@@ -1,5 +1,5 @@
-import { RTCPeerConnection, RTCIceCandidate, RTCSessionDescription, } from 'react-native-webrtc';
 const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
+const RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.msRTCPeerConnection;
 export const CANDIDATE = "candidate";
 export const PEER_STREAM_ADDED = "peerStreamAdded";
 export const PEER_STREAM_REMOVED = "peerStreamRemoved";
@@ -9,14 +9,17 @@ export const UNMUTE = "unmute";
 export const ANSWER = "answer";
 export const OFFER = "offer";
 export class Peer {
-    constructor(parents) {
-        this.id = parents.peer_id;
-        this.pcPeers = parents.pcPeers;
-        this.parentsEmitter = parents.emitter;
-        this.send_event = parents.sendHandler;
+    constructor(config) {
+        this.logError = (error) => {
+            console.log(error);
+        };
+        this.id = config.peer_id;
+        this.pcPeers = config.pcPeers;
+        this.parentsEmitter = config.emitter;
+        this.send_event = config.sendHandler;
         this.pc = new RTCPeerConnection(configuration);
         let self = this;
-        const isOffer = parents.offer;
+        const isOffer = config.offer;
         this.pc.onicecandidate = function (event) {
             if (event.candidate) {
                 self.send_event(CANDIDATE, event.candidate, { to: self.id });
@@ -30,9 +33,6 @@ export class Peer {
         this.pc.oniceconnectionstatechange = function (event) {
             console.log('oniceconnectionstatechange', event.target.iceConnectionState);
             if (event.target.iceConnectionState === 'completed') {
-                setTimeout(() => {
-                    self.getStats();
-                }, 1000);
             }
             if (event.target.iceConnectionState === 'connected') {
                 self.createDataChannel();
@@ -45,15 +45,15 @@ export class Peer {
         this.pc.onsignalingstatechange = function (event) {
             console.log('onsignalingstatechange', event.target.signalingState);
         };
-        this.pc.onaddstream = function (event) {
-            console.log('onaddstream', event.stream);
-            self.parentsEmitter.emit(PEER_STREAM_ADDED, event.stream);
+        this.pc.onaddstream = function (peer) {
+            console.log('onaddstream', peer.stream);
+            self.parentsEmitter.emit(PEER_STREAM_ADDED, peer);
         };
-        this.pc.onremovestream = function (event) {
-            console.log('onremovestream', event.stream);
-            self.parentsEmitter.emit(PEER_STREAM_REMOVED, event.stream);
+        this.pc.onremovestream = function (peer) {
+            console.log('onremovestream', peer.stream);
+            self.parentsEmitter.emit(PEER_STREAM_REMOVED, peer.stream);
         };
-        this.pc.addStream(parents.stream);
+        this.pc.addStream(config.stream);
     }
     getStats() {
         let self = this;
@@ -61,8 +61,7 @@ export class Peer {
         const pc = peer.pc;
         if (pc.getRemoteStreams()[0] && pc.getRemoteStreams()[0].getAudioTracks()[0]) {
             const track = pc.getRemoteStreams()[0].getAudioTracks()[0];
-            console.log('track', track);
-            pc.getStats(track, function (report) {
+            pc.getStats(track, (report) => {
                 console.log('getStats report', report);
             }, self.logError);
         }
@@ -78,6 +77,7 @@ export class Peer {
         }, self.logError);
     }
     createDataChannel() {
+        let self = this;
         if (this.pc.textDataChannel) {
             return;
         }
@@ -87,24 +87,6 @@ export class Peer {
         };
         dataChannel.onmessage = function (event) {
             console.log("dataChannel.onmessage:", event.data);
-            let message = event.data;
-            if (message.type === 'connectivityError') {
-                this.parentsEmitter.emit(CONNECTIVITY_ERROR, self);
-            }
-            else if (message.type === 'mute') {
-                this.parentsEmitter.emit(MUTE, { id: message.from, name: message.payload.name });
-            }
-            else if (message.type === 'unmute') {
-                this.parentsEmitter.emit(UNMUTE, { id: message.from, name: message.payload.name });
-            }
-            else if (message.type === 'endOfCandidates') {
-                var mLines = this.pc.pc.transceivers || [];
-                mLines.forEach(function (mLine) {
-                    if (mLine.iceTransport) {
-                        mLine.iceTransport.addRemoteCandidate({});
-                    }
-                });
-            }
         };
         dataChannel.onopen = function () {
             console.log('dataChannel.onopen');
@@ -126,17 +108,40 @@ export class Peer {
             self.pc.setRemoteDescription(new RTCSessionDescription(message.payload), function () {
                 if (self.pc.remoteDescription.type == OFFER)
                     self.pc.createAnswer(function (desc) {
-                        console.log('createAnswer');
+                        console.log('createAnswer', desc);
                         self.pc.setLocalDescription(desc, function () {
-                            console.log('setLocalDescription');
+                            console.log('setLocalDescription', self.pc.localDescription);
                             self.send_event(OFFER, self.pc.localDescription, { to: message.from });
                         }, self.logError);
                     }, self.logError);
             }, self.logError);
         }
-        else {
+        else if (message.type === ANSWER) {
+            if (!this.nick)
+                this.nick = message.payload.nick;
+            delete message.payload.nick;
+            this.pc.handleAnswer(message.payload);
+        }
+        else if (message.type === 'candidate') {
             console.log('exchange candidate', message);
             self.pc.addIceCandidate(new RTCIceCandidate(message.candidate));
+        }
+        else if (message.type === 'connectivityError') {
+            this.parentsEmitter.emit(CONNECTIVITY_ERROR, self);
+        }
+        else if (message.type === 'mute') {
+            this.parentsEmitter.emit(MUTE, { id: message.from, name: message.payload.name });
+        }
+        else if (message.type === 'unmute') {
+            this.parentsEmitter.emit(UNMUTE, { id: message.from, name: message.payload.name });
+        }
+        else if (message.type === 'endOfCandidates') {
+            var mLines = this.pc.pc.transceivers || [];
+            mLines.forEach(function (mLine) {
+                if (mLine.iceTransport) {
+                    mLine.iceTransport.addRemoteCandidate({});
+                }
+            });
         }
     }
     ;
