@@ -1,4 +1,5 @@
 import { AbstractPeerConnection } from "../IWebRTC";
+import { getImage } from '../libs/VideoToBlurImage';
 const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
 export class Peer {
     constructor(config) {
@@ -192,6 +193,20 @@ export class Peer {
         console.log('Receive channel state is: ' + readyState);
     }
     onReceiveMessageCallback(event) {
-        console.log('Received Message', event.data);
+        console.log('Receive Message', event.data);
+        const data = JSON.parse(event.data);
+        let remoteVideoElement = document.getElementById('remoteVideos');
+        let remoteAudioElement = document.getElementById('remoteAudio');
+        if (data.type === AbstractPeerConnection.UNPAUSE) {
+            remoteAudioElement.src = '';
+            remoteVideoElement.srcObject = null;
+            remoteVideoElement.src = URL.createObjectURL(this.pc.getRemoteStreams()[0]);
+        }
+        else if (data.type === AbstractPeerConnection.PAUSE) {
+            remoteAudioElement.src = URL.createObjectURL(this.pc.getRemoteStreams()[0]);
+            getImage(remoteVideoElement).then((res) => {
+                remoteVideoElement.srcObject = res;
+            });
+        }
     }
 }

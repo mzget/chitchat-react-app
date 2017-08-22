@@ -13,7 +13,7 @@ import { withRouter } from "react-router-dom";
 import { shallowEqual, compose } from "recompose";
 import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
-import { TextField, RaisedButton, FontIcon, Slider, FlatButton } from "material-ui";
+import { RaisedButton, FontIcon, Slider, FlatButton } from "material-ui";
 import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
 import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
 import { signalingServer } from "../../Chitchat";
@@ -44,8 +44,8 @@ class VideoCall extends React.Component {
         };
         this.onBackPressed = this.onBackPressed.bind(this);
         this.onTitlePressed = this.onTitlePressed.bind(this);
-        this.sendMessageSample = this.sendMessageSample.bind(this);
         this.changeMediaContraint = this.changeMediaContraint.bind(this);
+        this.sendMessage = this.sendMessage.bind(this);
         this.startWebRtc();
     }
     onBackPressed() {
@@ -180,8 +180,11 @@ class VideoCall extends React.Component {
             this.onBackPressed();
         }
     }
-    sendMessageSample() {
-        this.webrtc.peerManager.sendDirectlyToAll("message", "bobo", "test");
+    sendMessage(message) {
+        this.webrtc.peerManager.sendDirectlyToAll("message", message, {
+            _id: this.webrtc.signalingSocket.id,
+            stream_id: this.state.selfViewSrc._id,
+        });
     }
     render() {
         let { team } = this.props.teamReducer;
@@ -216,22 +219,23 @@ class VideoCall extends React.Component {
                         <div>{`Mic volume (${this.state.micVol}%)`}</div>
                         {this.state.isMuteVoice ?
             <RaisedButton secondary disabled={disabledAudioOption} icon={<FontIcon className="material-icons">mic_off</FontIcon>} onClick={() => {
-                this.webrtc.userMedia.audioController.unMute();
                 this.webrtc.userMedia.audioController.setVolume(this.state.micVol / 100);
                 this.setState({ isMuteVoice: false });
             }}/>
             :
                 <RaisedButton disabled={disabledAudioOption} icon={<FontIcon className="material-icons">mic</FontIcon>} onClick={() => {
-                    this.webrtc.userMedia.audioController.mute();
+                    this.webrtc.userMedia.audioController.setVolume(0);
                     this.setState({ isMuteVoice: true });
                 }}/>}
                         {this.state.isPauseVideo ?
             <RaisedButton secondary disabled={disabledVideoOption} icon={<FontIcon className="material-icons">videocam_off</FontIcon>} onClick={() => {
+                this.sendMessage(AbstractPeerConnection.UNPAUSE);
                 this.webrtc.userMedia.videoController.setVideoEnabled(true);
                 this.setState({ isPauseVideo: false });
             }}/>
             :
                 <RaisedButton disabled={disabledVideoOption} icon={<FontIcon className="material-icons">videocam</FontIcon>} onClick={() => {
+                    this.sendMessage(AbstractPeerConnection.PAUSE);
                     this.webrtc.userMedia.videoController.setVideoEnabled(false);
                     this.setState({ isPauseVideo: true });
                 }}/>}
@@ -246,9 +250,10 @@ class VideoCall extends React.Component {
                     <div style={{ width: "100%", height: "300px", textAlign: "center" }}>
                         <div onMouseOver={() => { this.setState({ isHoverPeer: true }); }} onMouseLeave={() => { this.setState({ isHoverPeer: false }); }} style={{ display: "inline-block", height: "300px", position: "relative" }}>
                             <video style={{ height: "300px", display: this.state.remoteSrc ? "initial" : "none" }} className="remotes" id="remoteVideos" ref="remotes" autoPlay={true}/>
+                            <audio id="remoteAudio" style={{ display: "none" }} autoPlay={true}/>
                             {this.state.isHoverPeer ?
             [
-                <div style={{
+                <div key="0" style={{
                     position: "absolute",
                     bottom: 0,
                     width: "100%",
@@ -258,7 +263,7 @@ class VideoCall extends React.Component {
                     "filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#3d3d3d', GradientType=0 )"
                 }}>
                                         </div>,
-                <div id="remoteController" style={{
+                <div id="remoteController" key="1" style={{
                     position: "absolute",
                     width: "100%",
                     height: "15%",
@@ -294,8 +299,6 @@ class VideoCall extends React.Component {
                         </div>
 
                     </div>
-                    <TextField id="text-field-controlled" value={"test"} onChange={() => { }} onKeyUp={(event) => { if (event.keyCode == 13)
-            this.sendMessageSample(); }}/>
                 </Flexbox>
             </Flexbox>);
     }

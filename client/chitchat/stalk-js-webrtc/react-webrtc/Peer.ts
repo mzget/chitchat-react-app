@@ -2,6 +2,7 @@ import EventEmitter = require("events");
 import adapter from 'webrtc-adapter';
 
 import { AbstractPeerConnection } from "../IWebRTC";
+import { getImage } from '../libs/VideoToBlurImage';
 
 // const twilioIceServers = [
 //     { url: 'stun:global.stun.twilio.com:3478?transport=udp' }
@@ -269,6 +270,20 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
     }
 
     onReceiveMessageCallback(event) {
-        console.log('Received Message', event.data);
+        console.log('Receive Message', event.data);
+        const data = JSON.parse(event.data);
+        let remoteVideoElement: HTMLVideoElement = document.getElementById('remoteVideos');
+        let remoteAudioElement: HTMLVideoElement = document.getElementById('remoteAudio');
+        if (data.type === AbstractPeerConnection.UNPAUSE) {
+            remoteAudioElement.src = '';
+            remoteVideoElement.srcObject = null;
+            remoteVideoElement.src = URL.createObjectURL(this.pc.getRemoteStreams()[0]);
+        }
+        else if (data.type === AbstractPeerConnection.PAUSE) {
+            remoteAudioElement.src = URL.createObjectURL(this.pc.getRemoteStreams()[0]);
+            getImage(remoteVideoElement).then((res: MediaStream) => {
+                remoteVideoElement.srcObject = res;
+            });
+        }
     }
 }

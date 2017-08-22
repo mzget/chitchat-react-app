@@ -41,6 +41,8 @@ export namespace AbstractPeerConnection {
     export const CONNECTIVITY_ERROR = "connectivityError";
     export const MUTE = "mute";
     export const UNMUTE = "unmute";
+    export const PAUSE = "pause"; // for video
+    export const UNPAUSE = "unpause"; // for video
 
     export const ANSWER = "answer";
     export const OFFER = "offer";

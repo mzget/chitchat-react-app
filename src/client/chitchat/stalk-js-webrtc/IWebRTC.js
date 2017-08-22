@@ -14,6 +14,8 @@ export var AbstractPeerConnection;
     AbstractPeerConnection.CONNECTIVITY_ERROR = "connectivityError";
     AbstractPeerConnection.MUTE = "mute";
     AbstractPeerConnection.UNMUTE = "unmute";
+    AbstractPeerConnection.PAUSE = "pause";
+    AbstractPeerConnection.UNPAUSE = "unpause";
     AbstractPeerConnection.ANSWER = "answer";
     AbstractPeerConnection.OFFER = "offer";
 })(AbstractPeerConnection = AbstractPeerConnection || (AbstractPeerConnection = {}));

@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import { shallowEqual, compose } from "recompose";
 import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
-import { TextField, RaisedButton, FontIcon, Slider, Paper, Subheader, FlatButton } from "material-ui";
+import { RaisedButton, FontIcon, Slider, Paper, Subheader, FlatButton } from "material-ui";
 import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
 import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
 
@@ -62,8 +62,8 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.onBackPressed = this.onBackPressed.bind(this);
         this.onTitlePressed = this.onTitlePressed.bind(this);
 
-        this.sendMessageSample = this.sendMessageSample.bind(this);
         this.changeMediaContraint = this.changeMediaContraint.bind(this);
+        this.sendMessage = this.sendMessage.bind(this);
         this.startWebRtc();
     }
 
@@ -228,8 +228,11 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         }
     }
 
-    sendMessageSample() {
-        this.webrtc.peerManager.sendDirectlyToAll("message", "bobo", "test");
+    sendMessage(message) {
+        this.webrtc.peerManager.sendDirectlyToAll("message", message, {
+            _id: this.webrtc.signalingSocket.id,
+            stream_id: this.state.selfViewSrc._id,
+        });
     }
 
     render(): JSX.Element {
@@ -285,20 +288,16 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                     disabled={disabledAudioOption}
                                     icon={<FontIcon className="material-icons">mic_off</FontIcon>}
                                     onClick={() => {
-                                        this.webrtc.userMedia.audioController.unMute();
                                         this.webrtc.userMedia.audioController.setVolume(this.state.micVol / 100);
                                         this.setState({ isMuteVoice: false });
-                                        /* this.webrtc.unmute();
-                                        this.webrtc.webrtc.emit('changeLocalVolume', this.state.micVol / 100); */
                                     }} />
                                 :
                                 <RaisedButton
                                     disabled={disabledAudioOption}
                                     icon={<FontIcon className="material-icons">mic</FontIcon>}
                                     onClick={() => {
-                                        this.webrtc.userMedia.audioController.mute();
+                                        this.webrtc.userMedia.audioController.setVolume(0);
                                         this.setState({ isMuteVoice: true });
-                                        //this.webrtc.mute();
                                     }} />
                         }
                         {
@@ -307,6 +306,9 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                     disabled={disabledVideoOption}
                                     icon={<FontIcon className="material-icons">videocam_off</FontIcon>}
                                     onClick={() => {
+                                        // send to peer
+                                        this.sendMessage(AbstractPeerConnection.UNPAUSE);
+
                                         this.webrtc.userMedia.videoController.setVideoEnabled(true);
                                         this.setState({ isPauseVideo: false });
                                     }} />
@@ -315,6 +317,9 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                     disabled={disabledVideoOption}
                                     icon={<FontIcon className="material-icons">videocam</FontIcon>}
                                     onClick={() => {
+                                        // send to peer
+                                        this.sendMessage(AbstractPeerConnection.PAUSE);
+
                                         this.webrtc.userMedia.videoController.setVideoEnabled(false);
                                         this.setState({ isPauseVideo: true });
                                     }} />
@@ -338,20 +343,22 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                 id="remoteVideos"
                                 ref="remotes"
                                 autoPlay={true} />
+                            <audio id="remoteAudio" style={{ display: "none" }} autoPlay={true} />
                             {
                                 this.state.isHoverPeer ?
                                     [
-                                        <div style={{
-                                            position: "absolute",
-                                            bottom: 0,
-                                            width: "100%",
-                                            height: "30%",
-                                            backgroundPosition: "bottom",
-                                            backgroundImage: "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAADGCAYAAAAT+OqFAAAAdklEQVQoz42QQQ7AIAgEF/T/D+kbq/RWAlnQyyazA4aoAB4FsBSA/bFjuF1EOL7VbrIrBuusmrt4ZZORfb6ehbWdnRHEIiITaEUKa5EJqUakRSaEYBJSCY2dEstQY7AuxahwXFrvZmWl2rh4JZ07z9dLtesfNj5q0FU3A5ObbwAAAABJRU5ErkJggg==)",
-                                            "filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#3d3d3d', GradientType=0 )"
-                                        }}>
+                                        <div key="0"
+                                            style={{
+                                                position: "absolute",
+                                                bottom: 0,
+                                                width: "100%",
+                                                height: "30%",
+                                                backgroundPosition: "bottom",
+                                                backgroundImage: "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAADGCAYAAAAT+OqFAAAAdklEQVQoz42QQQ7AIAgEF/T/D+kbq/RWAlnQyyazA4aoAB4FsBSA/bFjuF1EOL7VbrIrBuusmrt4ZZORfb6ehbWdnRHEIiITaEUKa5EJqUakRSaEYBJSCY2dEstQY7AuxahwXFrvZmWl2rh4JZ07z9dLtesfNj5q0FU3A5ObbwAAAABJRU5ErkJggg==)",
+                                                "filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#3d3d3d', GradientType=0 )"
+                                            }}>
                                         </div>,
-                                        <div id="remoteController"
+                                        <div id="remoteController" key="1"
                                             style={{
                                                 position: "absolute",
                                                 width: "100%",
@@ -394,12 +401,6 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                         </div>
 
                     </div>
-                    <TextField
-                        id="text-field-controlled"
-                        value={"test"}
-                        onChange={() => { }}
-                        onKeyUp={(event) => { if (event.keyCode == 13) this.sendMessageSample(); }}
-                    />
                 </Flexbox>
             </Flexbox >
         );
