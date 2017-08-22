@@ -57,6 +57,7 @@ export namespace AbstractPeerConnection {
     export interface IPCHandler {
         id: string;
         pc: RTCPeerConnection;
+        channels: any;
         addStream(stream: MediaStream);
         removeStream(stream: MediaStream);
         handleMessage(message);

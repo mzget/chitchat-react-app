@@ -15,6 +15,7 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
     id: string;
     pc: RTCPeerConnection;
     enableDataChannels: boolean = true;
+    receiveChannel;
     channels = {};
     pcPeers;
     browserPrefix: string;
@@ -63,6 +64,7 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
             }
             if (event.target.iceConnectionState === 'connected') {
                 self.createDataChannel("message");
+                self.pc.ondatachannel = self.receiveChannelCallback.bind(self);
             }
             else if (event.target.iceConnectionState == "failed") {
                 // currently, in chrome only the initiator goes to failed
@@ -251,5 +253,22 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
         };
 
         return channel;
+    }
+
+    receiveChannelCallback(event) {
+        console.log('Receive Channel', event.channel.label);
+        this.receiveChannel = event.channel;
+        this.receiveChannel.onmessage = this.onReceiveMessageCallback.bind(this);
+        this.receiveChannel.onopen = this.onReceiveChannelStateChange.bind(this);
+        this.receiveChannel.onclose = this.onReceiveChannelStateChange.bind(this);
+    }
+
+    onReceiveChannelStateChange() {
+        let readyState = this.receiveChannel.readyState;
+        console.log('Receive channel state is: ' + readyState);
+    }
+
+    onReceiveMessageCallback(event) {
+        console.log('Received Message', event.data);
     }
 }
