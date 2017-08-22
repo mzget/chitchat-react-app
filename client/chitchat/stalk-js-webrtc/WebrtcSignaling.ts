@@ -29,6 +29,9 @@ export function withExchange(webrtcObject: AbstractWEBRTC.IWebRTC) {
 
             peer.handleMessage(message);
         }
+        else {
+            peer.handleMessage(message);
+        }
     }
 }
 
