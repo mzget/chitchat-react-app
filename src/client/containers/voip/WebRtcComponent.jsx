@@ -24,12 +24,8 @@ class WebRtcComponent extends React.Component {
         this.peerAdded = this.peerAdded.bind(this);
         this.removeVideo = this.removeVideo.bind(this);
         this.readyToCall = this.readyToCall.bind(this);
-        this.connectionReady = this.connectionReady.bind(this);
         this.onPeerCreated = this.onPeerCreated.bind(this);
-        this.disconnect = this.disconnect.bind(this);
-    }
-    componentWillUnmount() {
-        this.disconnect();
+        this.startWebRtc();
     }
     componentWillReceiveProps(nextProps) {
         let { alertReducer: { error } } = nextProps;
@@ -76,38 +72,6 @@ class WebRtcComponent extends React.Component {
                     connstate.innerText = 'Connection failed.';
                 }
             });
-        });
-    }
-    componentWillMount() {
-        let self = this;
-        let { stalkReducer } = this.props;
-        this.startWebRtc();
-    }
-    connectionReady(socker_id) {
-        let self = this;
-        let hdConstraints = {
-            video: {
-                mandatory: {
-                    minWidth: 1280,
-                    minHeight: 720
-                }
-            }
-        };
-        let vgaConstraints = {
-            video: {
-                mandatory: {
-                    maxWidth: 640,
-                    maxHeight: 360
-                }
-            }
-        };
-        let requestMedia = {
-            video: vgaConstraints.video, audio: true
-        };
-        this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
-            self.readyToCall(stream);
-        }).catch(err => {
-            self.props.onError("LocalStream Fail: " + err.message);
         });
     }
     onPeerCreated(peer) {
@@ -227,24 +191,6 @@ class WebRtcComponent extends React.Component {
             }
             this.props.dispatch(calling.videoCall_Epic({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
         }
-    }
-    disconnect() {
-        this.webrtc.leaveRoom();
-        this.webrtc.disconnect();
-        this.webrtc.stopLocalVideo();
-        this.props.dispatch(calling.onVideoCallEnded());
-        let { match, userReducer: { user }, stalkReducer } = this.props;
-        let room_id = match.params.id;
-        let room = chatroom.getRoom(room_id);
-        let targets = new Array();
-        if (!!room && room.members.length > 0) {
-            room.members.map(value => {
-                if (value._id !== user._id) {
-                    targets.push(value._id);
-                }
-            });
-        }
-        this.props.dispatch(calling.hangupCallRequest({ target_ids: targets, user_id: user._id }));
     }
     showVolume(el, volume) {
         if (!el)

@@ -19,13 +19,13 @@ import { signalingServer } from "../../Chitchat";
 import * as utils from "../../utils/";
 import * as chatroom from "../../chitchat/chats/redux/chatroom/";
 import * as calling from "../../chitchat/calling/";
-import { AbstractPeerConnection, AbstractWEBRTC, IWebRTC, WebRtcConfig, WebRtcFactory } from '../../chitchat/stalk-js-webrtc/index';
+import { AbstractPeerConnection, AbstractWEBRTC, AbstractMediaStream, WebRtcFactory } from '../../chitchat/stalk-js-webrtc/index';
 
 interface MyCompProps extends utils.IComponentProps {
     getWebRtc
 }
 class WebRtcComponent extends React.Component<MyCompProps, any> {
-    webrtc: any;
+    webrtc: AbstractWEBRTC.IWebRTC;
 
     constructor(props) {
         super(props);
@@ -33,14 +33,9 @@ class WebRtcComponent extends React.Component<MyCompProps, any> {
         this.peerAdded = this.peerAdded.bind(this);
         this.removeVideo = this.removeVideo.bind(this);
         this.readyToCall = this.readyToCall.bind(this);
-        this.connectionReady = this.connectionReady.bind(this);
         this.onPeerCreated = this.onPeerCreated.bind(this);
 
-        this.disconnect = this.disconnect.bind(this);
-    }
-
-    componentWillUnmount() {
-        this.disconnect();
+        this.startWebRtc();
     }
 
     componentWillReceiveProps(nextProps: utils.IComponentProps) {
@@ -97,43 +92,6 @@ class WebRtcComponent extends React.Component<MyCompProps, any> {
                 connstate.innerText = 'Connection failed.';
                 // fileinput.disabled = 'disabled';
             }
-        });
-    }
-
-    componentWillMount() {
-        let self = this;
-        let { stalkReducer } = this.props;
-
-        this.startWebRtc();
-    }
-
-    connectionReady(socker_id) {
-        let self = this;
-
-        let hdConstraints = {
-            video: {
-                mandatory: {
-                    minWidth: 1280,
-                    minHeight: 720
-                }
-            } as MediaTrackConstraints
-        };
-        let vgaConstraints = {
-            video: {
-                mandatory: {
-                    maxWidth: 640,
-                    maxHeight: 360
-                }
-            } as MediaTrackConstraints
-        };
-        let requestMedia = {
-            video: vgaConstraints.video, audio: true
-        } as MediaStreamConstraints;
-
-        this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
-            self.readyToCall(stream);
-        }).catch(err => {
-            self.props.onError("LocalStream Fail: " + err.message);
         });
     }
 
@@ -279,25 +237,6 @@ class WebRtcComponent extends React.Component<MyCompProps, any> {
 
             this.props.dispatch(calling.videoCall_Epic({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
         }
-    }
-    disconnect() {
-        this.webrtc.leaveRoom();
-        this.webrtc.disconnect();
-        this.webrtc.stopLocalVideo();
-        this.props.dispatch(calling.onVideoCallEnded());
-
-        let { match, userReducer: { user }, stalkReducer } = this.props;
-        let room_id = match.params.id;
-        let room = chatroom.getRoom(room_id);
-        let targets = new Array<string>();
-        if (!!room && room.members.length > 0) {
-            room.members.map(value => {
-                if (value._id !== user._id) {
-                    targets.push(value._id);
-                }
-            });
-        }
-        this.props.dispatch(calling.hangupCallRequest({ target_ids: targets, user_id: user._id }));
     }
 
     showVolume(el, volume) {
