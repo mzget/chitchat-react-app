@@ -62,6 +62,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.onBackPressed = this.onBackPressed.bind(this);
         this.onTitlePressed = this.onTitlePressed.bind(this);
 
+        this.changeMediaContraint = this.changeMediaContraint.bind(this);
         this.startWebRtc();
     }
 
@@ -72,6 +73,26 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
     onTitlePressed() {
         let { history, teamReducer } = this.props;
         history.replace(`/team/${teamReducer.team._id}`);
+    }
+
+    changeMediaContraint(media: MediaStreamConstraints) {
+        let self = this;
+
+        let requestMedia = {
+            video: media.video,
+            audio: false
+        } as MediaStreamConstraints;
+
+        this.webrtc.peerManager.peers;
+
+        this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
+            self.readyToCall(stream);
+        }).catch(err => {
+            console.error("LocalStream Fail", err);
+
+            self.setState(prev => ({ ...prev, localStreamStatus: err }));
+            self.props.onError("LocalStream Fail: " + err);
+        });
     }
 
     async startWebRtc() {
@@ -293,6 +314,11 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                         this.setState({ isPauseVideo: true });
                                     }} />
                         }
+                        <a onClick={() => this.changeMediaContraint(AbstractMediaStream.fullHdConstraints)}>FullHD</a>
+                        <a onClick={() => this.changeMediaContraint(AbstractMediaStream.hdConstraints)}>HD</a>
+                        <a onClick={() => this.changeMediaContraint(AbstractMediaStream.vgaConstraints)}>VGA</a>
+                        <a onClick={() => this.changeMediaContraint(AbstractMediaStream.qvgaConstraints)}>QVGA</a>
+
                         <p style={{ fontSize: 12 }}>UserMedia: {this.state.localStreamStatus}</p>
                         <p style={{ fontSize: 12 }}>AudioTrack: {this.selfAudioName}</p>
                         <p style={{ fontSize: 12 }}>VideoTrack: {this.selfVideoName}</p>

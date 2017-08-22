@@ -97,7 +97,7 @@ class VideoCall extends React.Component {
             maxWidth: '200px',
         }} onChange={(e, newValue) => {
             this.setState({ micVol: newValue, isMuteVoice: newValue == 0 });
-            this.webrtc.webrtc.emit('changeLocalVolume', newValue / 100);
+            this.webrtc.emit('changeLocalVolume', newValue / 100);
         }}/>
                         </Paper>
                     </Flexbox>

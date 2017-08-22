@@ -44,20 +44,25 @@ export namespace AbstractPeerConnection {
 
     export const ANSWER = "answer";
     export const OFFER = "offer";
+
+    export interface IPCEstabished {
+        createPeer(options, webrtc);
+    }
 }
 
 export namespace AbstractMediaStream {
     export const fullHdConstraints = {
         video: { width: { exact: 1920 }, height: { exact: 1080 } }
-    };
+    } as MediaStreamConstraints;
+
     export const hdConstraints = {
         video: {
             mandatory: {
                 minWidth: 1280,
                 minHeight: 720
             }
-        } as MediaTrackConstraints
-    };
+        }
+    } as MediaStreamConstraints;
 
     export const vgaConstraints = {
         video: {
@@ -65,11 +70,12 @@ export namespace AbstractMediaStream {
                 maxWidth: 640,
                 maxHeight: 360
             }
-        } as MediaTrackConstraints
-    };
+        }
+    } as MediaStreamConstraints;
+
     export const qvgaConstraints = {
         video: { width: { exact: 320 }, height: { exact: 240 } }
-    };
+    } as MediaStreamConstraints;
 
     export interface IUserMedia {
         debug: boolean;

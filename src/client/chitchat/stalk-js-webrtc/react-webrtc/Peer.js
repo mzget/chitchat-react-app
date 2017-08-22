@@ -49,6 +49,12 @@ export class Peer {
         };
         this.pc.addStream(config.stream);
     }
+    removeStream(stream) {
+        this.pc.removeStream(stream);
+    }
+    addStream(stream) {
+        this.pc.addStream(stream);
+    }
     getStats() {
         let self = this;
         const peer = this.pcPeers[Object.keys(this.pcPeers)[0]];
