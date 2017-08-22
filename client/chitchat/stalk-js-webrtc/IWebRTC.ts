@@ -47,6 +47,9 @@ export namespace AbstractPeerConnection {
 }
 
 export namespace AbstractMediaStream {
+    export const fullHdConstraints = {
+        video: { width: { exact: 1920 }, height: { exact: 1080 } }
+    };
     export const hdConstraints = {
         video: {
             mandatory: {
@@ -64,6 +67,10 @@ export namespace AbstractMediaStream {
             }
         } as MediaTrackConstraints
     };
+    export const qvgaConstraints = {
+        video: { width: { exact: 320 }, height: { exact: 240 } }
+    };
+
     export interface IUserMedia {
         debug: boolean;
         micController: AudioController;

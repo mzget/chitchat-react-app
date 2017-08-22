@@ -19,6 +19,9 @@ export var AbstractPeerConnection;
 })(AbstractPeerConnection = AbstractPeerConnection || (AbstractPeerConnection = {}));
 export var AbstractMediaStream;
 (function (AbstractMediaStream) {
+    AbstractMediaStream.fullHdConstraints = {
+        video: { width: { exact: 1920 }, height: { exact: 1080 } }
+    };
     AbstractMediaStream.hdConstraints = {
         video: {
             mandatory: {
@@ -34,5 +37,8 @@ export var AbstractMediaStream;
                 maxHeight: 360
             }
         }
+    };
+    AbstractMediaStream.qvgaConstraints = {
+        video: { width: { exact: 320 }, height: { exact: 240 } }
     };
 })(AbstractMediaStream = AbstractMediaStream || (AbstractMediaStream = {}));

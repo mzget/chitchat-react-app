@@ -13,13 +13,35 @@ import {
     MediaStreamTrack,
     getUserMedia,
 } from 'react-native-webrtc';
+import { AbstractMediaStream } from "../index";
 
-export class UserMedia {
+
+export class UserMedia implements AbstractMediaStream.IUserMedia {
     debug: boolean = false;
     private localStream: MediaStream;
     public getLocalStream() {
         return this.localStream;
     }
+    public getVideoTrackName() {
+        let videoTracks = this.localStream.getVideoTracks();
+        if (videoTracks.length > 0) {
+            // console.log('Using video device: ' + videoTracks[0].label);
+            return videoTracks[0].label;
+        }
+
+        return "";
+    }
+    public getAudioTrackName() {
+        let audioTracks = this.localStream.getAudioTracks();
+        if (audioTracks.length > 0) {
+            // console.log('Using audio device: ' + audioTracks[0].label);
+            return audioTracks[0].label;
+        }
+
+        return "";
+    }
+
+    micController;
 
     constructor(options: { debug: boolean }) {
         this.debug = options.debug;
@@ -65,13 +87,18 @@ export class UserMedia {
             }
         }
 
-        defaultMediaConstraints = {
-            ...mediaConstraints,
-            video: {
-                facingMode: (isFront ? "user" : "environment"),
-                optional: (videoSourceId ? [{ sourceId: videoSourceId }] : [])
-            }
-        };
+        if (mediaConstraints.video != false) {
+            defaultMediaConstraints = {
+                ...mediaConstraints,
+                video: {
+                    facingMode: (isFront ? "user" : "environment"),
+                    optional: (videoSourceId ? [{ sourceId: videoSourceId }] : [])
+                }
+            };
+        }
+        else {
+            defaultMediaConstraints = { ...mediaConstraints };
+        }
 
         return new Promise((resolve: (stream: MediaStream) => void, reject) => {
             getUserMedia(defaultMediaConstraints, function (stream) {
@@ -97,6 +124,7 @@ export class UserMedia {
 
                 resolve(self.localStream);
             }, error => {
+                console.warn(error);
                 if (error.name === 'ConstraintNotSatisfiedError') {
                     reject('The resolution  is not supported by your device.');
                 } else if (error.name === 'PermissionDeniedError') {
@@ -109,6 +137,17 @@ export class UserMedia {
                 }
             });
         });
+    }
+
+    setVideoEnabled(enabled: boolean) {
+        if (!!this.localStream) {
+            let videoTracks = this.localStream.getVideoTracks();
+            if (!!videoTracks && videoTracks.length > 0) {
+                videoTracks.forEach(function (track) {
+                    track.enabled = !!enabled;
+                });
+            }
+        }
     }
 
     stopLocalStream() {

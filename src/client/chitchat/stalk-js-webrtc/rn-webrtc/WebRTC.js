@@ -1,64 +1,36 @@
-import { Platform } from 'react-native';
 import * as events from 'events';
 import * as io from 'socket.io-client';
-import {
-    RTCPeerConnection,
-    RTCMediaStream,
-    RTCIceCandidate,
-    RTCSessionDescription,
-    RTCView,
-    MediaStreamTrack,
-    getUserMedia,
-} from 'react-native-webrtc';
-
 import { AbstractWEBRTC } from "../index";
 import { withExchange, withSendMessage } from "../WebrtcSignaling";
-import * as Peer from "./Peer";
 import { PeerManager } from "./PeerManager";
 import { UserMedia } from "./UserMedia";
-
 export function logError(error) {
     console.log("logError", error);
 }
-
-export class WebRTC implements AbstractWEBRTC.IWebRTC {
-    signalingSocket: SocketIOClient.Socket; //{ transports: ['websocket'] }
-    webrtcEvents: events.EventEmitter;
-    roomName: string;
-    peerManager: PeerManager;
-    userMedia: UserMedia;
-    debug: boolean = false;
-
-    constructor(configs: AbstractWEBRTC.WebRtcConfig) {
+export class WebRTC {
+    constructor(configs) {
+        this.debug = false;
         let self = this;
         self.debug = configs.debug;
-
         this.signalingSocket = io.connect(configs.signalingUrl, configs.socketOptions);
-        // this.signalingSocket = io.connect('https://chitchats.ga:8888', { transports: ['websocket'], 'force new connection': true });
-
         this.webrtcEvents = new events.EventEmitter();
         this.send = this.send.bind(this);
         this.onDisconnect = this.onDisconnect.bind(this);
-
         this.peerManager = new PeerManager({ debug: self.debug });
         this.userMedia = new UserMedia({ debug: self.debug });
-
         self.signalingSocket.on('connect', function (data) {
             if (self.debug)
                 console.log("SOCKET connect", self.signalingSocket.id);
-
             self.webrtcEvents.emit(AbstractWEBRTC.CONNECTION_READY, self.signalingSocket.id);
         });
         self.signalingSocket.on('message', function (data) {
             if (self.debug)
                 console.log("SOCKET message ", data.type, data.from);
-
             withExchange(self)(data);
         });
         self.signalingSocket.on('remove', function (room) {
             if (self.debug)
                 console.log("SOCKET remove", room, self.signalingSocket.id);
-
             if (room.id !== self.signalingSocket.id) {
                 self.peerManager.removePeers(room.id, self);
             }
@@ -66,7 +38,6 @@ export class WebRTC implements AbstractWEBRTC.IWebRTC {
         self.signalingSocket.on('leave', function (socketId) {
             if (self.debug)
                 console.log("SOCKET leave", socketId);
-
             self.peerManager.removePeers(socketId, self);
         });
         self.signalingSocket.on('disconnect', this.onDisconnect);
@@ -83,13 +54,11 @@ export class WebRTC implements AbstractWEBRTC.IWebRTC {
             console.log("SOCKET ***", data);
         });
     }
-
-    // send via signalling channel
-    send(messageType: string, payload?, optional?: { to: string }) {
+    send(messageType, payload, optional) {
         withSendMessage(this)(messageType, payload, optional);
-    };
-
-    join(roomname: string) {
+    }
+    ;
+    join(roomname) {
         let self = this;
         this.signalingSocket.emit('join', roomname, function (err, roomDescription) {
             console.log('join', roomDescription);
@@ -116,31 +85,27 @@ export class WebRTC implements AbstractWEBRTC.IWebRTC {
                     }
                 }
             }
-
             self.roomName = roomname;
             self.webrtcEvents.emit(AbstractWEBRTC.JOINED_ROOM, roomname);
         });
     }
-
     leaveRoom() {
         if (this.roomName) {
             this.signalingSocket.emit('leave');
             this.roomName = "";
         }
-    };
-
+    }
+    ;
     disconnect() {
         this.signalingSocket.disconnect();
         this.userMedia.stopLocalStream();
-
         delete this.peerManager;
         delete this.signalingSocket;
         delete this.userMedia;
-    };
-
+    }
+    ;
     onDisconnect(data) {
         console.log("SOCKET disconnect", data);
-
         this.userMedia.stopLocalStream();
     }
 }
