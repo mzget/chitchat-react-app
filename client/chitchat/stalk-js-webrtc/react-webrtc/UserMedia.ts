@@ -1,6 +1,6 @@
 import adapter from 'webrtc-adapter';
 import { AbstractMediaStream } from "../index";
-import { MicController } from '../libs/MicController';
+import { AudioController } from '../libs/AudioController';
 
 export class UserMedia implements AbstractMediaStream.IUserMedia {
     debug: boolean = false;
@@ -21,13 +21,14 @@ export class UserMedia implements AbstractMediaStream.IUserMedia {
         let audioTracks = this.localStream.getAudioTracks();
         if (audioTracks.length > 0) {
             // console.log('Using audio device: ' + audioTracks[0].label);
-            return audioTracks[0].label;
+            // return audioTracks[0].label;
+            return this.audioController.audioSource.label;
         }
 
         return "";
     }
 
-    micController: MicController;
+    audioController: AudioController;
 
     constructor(options: { debug: boolean }) {
         this.debug = options.debug;
@@ -47,7 +48,7 @@ export class UserMedia implements AbstractMediaStream.IUserMedia {
                 };
 
                 if (stream.getAudioTracks().length > 0) {
-                    self.micController = new MicController(stream);
+                    self.audioController = new AudioController(stream);
                 }
                 self.localStream = stream as MediaStream;
 
@@ -93,8 +94,8 @@ export class UserMedia implements AbstractMediaStream.IUserMedia {
             });
         }
 
-        if (!!this.micController) {
-            this.micController.removeAudioStream();
+        if (!!this.audioController) {
+            this.audioController.removeAudioStream();
         }
     }
 }

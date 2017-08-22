@@ -131,7 +131,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 
         let requestMedia = {
             video: AbstractMediaStream.hdConstraints.video,
-            audio: false
+            audio: true
         } as MediaStreamConstraints;
 
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
@@ -212,8 +212,10 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillUnmount() {
-        this.webrtc.leaveRoom();
-        this.webrtc.disconnect();
+        if (!!this.webrtc) {
+            this.webrtc.leaveRoom();
+            this.webrtc.disconnect();
+        }
         // this.webrtc.stopLocalVideo();
         // this.props.dispatch(calling.onVideoCallEnded());
     }
@@ -232,10 +234,10 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 
         let disabledAudioOption = true;
         let disabledVideoOption = true;
-        if (!!this.state.selfViewSrc &&
-            !!this.webrtc.userMedia.micController &&
-            this.webrtc.userMedia.micController.support) {
-            if (this.state.selfViewSrc.getAudioTracks().length > 0) {
+        if (!!this.state.selfViewSrc) {
+            if (this.state.selfViewSrc.getAudioTracks().length > 0 &&
+                !!this.webrtc.userMedia.audioController &&
+                this.webrtc.userMedia.audioController.support) {
                 disabledAudioOption = false;
             }
             if (this.state.selfViewSrc.getVideoTracks().length > 0) {
@@ -271,7 +273,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                             }}
                             onChange={(e, newValue) => {
                                 this.setState({ micVol: newValue, isMuteVoice: newValue == 0 });
-                                this.webrtc.userMedia.micController.setVolume(newValue / 100);
+                                this.webrtc.userMedia.audioController.setVolume(newValue / 100);
                             }} />
                         <div>{`Mic volume (${this.state.micVol}%)`}</div>
                         {
@@ -280,8 +282,8 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                     disabled={disabledAudioOption}
                                     icon={<FontIcon className="material-icons">mic_off</FontIcon>}
                                     onClick={() => {
-                                        this.webrtc.userMedia.micController.unMute();
-                                        this.webrtc.userMedia.micController.setVolume(this.state.micVol / 100);
+                                        this.webrtc.userMedia.audioController.unMute();
+                                        this.webrtc.userMedia.audioController.setVolume(this.state.micVol / 100);
                                         this.setState({ isMuteVoice: false });
                                         /* this.webrtc.unmute();
                                         this.webrtc.webrtc.emit('changeLocalVolume', this.state.micVol / 100); */
@@ -291,7 +293,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                     disabled={disabledAudioOption}
                                     icon={<FontIcon className="material-icons">mic</FontIcon>}
                                     onClick={() => {
-                                        this.webrtc.userMedia.micController.mute();
+                                        this.webrtc.userMedia.audioController.mute();
                                         this.setState({ isMuteVoice: true });
                                         //this.webrtc.mute();
                                     }} />

@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { MicController } from '../libs/MicController';
+import { AudioController } from '../libs/AudioController';
 export class UserMedia {
     constructor(options) {
         this.debug = false;
@@ -25,7 +25,7 @@ export class UserMedia {
     getAudioTrackName() {
         let audioTracks = this.localStream.getAudioTracks();
         if (audioTracks.length > 0) {
-            return audioTracks[0].label;
+            return this.audioController.audioSource.label;
         }
         return "";
     }
@@ -43,7 +43,7 @@ export class UserMedia {
                             console.log('Local Stream active');
                     };
                     if (stream.getAudioTracks().length > 0) {
-                        self.micController = new MicController(stream);
+                        self.audioController = new AudioController(stream);
                     }
                     self.localStream = stream;
                     resolve(self.localStream);
@@ -84,8 +84,8 @@ export class UserMedia {
                 track.stop();
             });
         }
-        if (!!this.micController) {
-            this.micController.removeAudioStream();
+        if (!!this.audioController) {
+            this.audioController.removeAudioStream();
         }
     }
 }
