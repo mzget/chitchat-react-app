@@ -14,11 +14,13 @@ import { AbstractPeerConnection } from "../index";
 
 const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
 
-export class Peer {
+export class Peer implements AbstractPeerConnection.IPCHandler {
     type: string;
     parentsEmitter: events.EventEmitter;
     id: string;
     pc: RTCPeerConnection;
+    receiveChannel;
+    channels = {};
     pcPeers;
     browserPrefix;
     nick;
@@ -86,6 +88,14 @@ export class Peer {
         };
 
         this.pc.addStream(parents.stream);
+    }
+
+    removeStream(stream: MediaStream) {
+        this.pc.removeStream(stream);
+    }
+
+    addStream(stream: MediaStream) {
+        this.pc.addStream(stream);
     }
 
     getStats() {

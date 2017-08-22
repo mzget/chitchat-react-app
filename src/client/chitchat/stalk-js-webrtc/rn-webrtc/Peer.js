@@ -3,6 +3,7 @@ import { AbstractPeerConnection } from "../index";
 const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
 export class Peer {
     constructor(parents) {
+        this.channels = {};
         this.id = parents.peer_id;
         this.pcPeers = parents.pcPeers;
         this.parentsEmitter = parents.emitter;
@@ -44,6 +45,12 @@ export class Peer {
             self.parentsEmitter.emit(AbstractPeerConnection.PEER_STREAM_REMOVED, peer.stream);
         };
         this.pc.addStream(parents.stream);
+    }
+    removeStream(stream) {
+        this.pc.removeStream(stream);
+    }
+    addStream(stream) {
+        this.pc.addStream(stream);
     }
     getStats() {
         let self = this;
