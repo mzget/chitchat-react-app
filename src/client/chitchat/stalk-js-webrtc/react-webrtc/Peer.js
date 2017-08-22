@@ -29,7 +29,7 @@ export class Peer {
             if (event.target.iceConnectionState === 'completed') {
             }
             if (event.target.iceConnectionState === 'connected') {
-                self.createDataChannel();
+                self.createDataChannel("message");
             }
             else if (event.target.iceConnectionState == "failed") {
                 self.parentsEmitter.emit('iceFailed', self);

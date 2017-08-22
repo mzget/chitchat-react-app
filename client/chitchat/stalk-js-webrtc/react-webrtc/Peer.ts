@@ -62,7 +62,7 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
                 // }, 1000);
             }
             if (event.target.iceConnectionState === 'connected') {
-                self.createDataChannel();
+                self.createDataChannel("message");
             }
             else if (event.target.iceConnectionState == "failed") {
                 // currently, in chrome only the initiator goes to failed

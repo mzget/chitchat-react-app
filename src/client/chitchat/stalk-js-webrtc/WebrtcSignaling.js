@@ -16,9 +16,6 @@ export function withExchange(webrtcObject) {
             }
             peer.handleMessage(message);
         }
-        else {
-            peer.handleMessage(message);
-        }
     };
 }
 export function withSendMessage(webrtcObject) {
