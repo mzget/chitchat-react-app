@@ -1,5 +1,4 @@
 import * as Rx from "rxjs";
-import * as fetch from "isomorphic-fetch";
 
 import { ChitChatFactory } from "../ChitChatFactory";
 import { withToken, chitchat_headers } from "../utils/chitchatServiceUtils";

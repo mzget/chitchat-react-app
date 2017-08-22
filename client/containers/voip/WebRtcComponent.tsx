@@ -19,14 +19,13 @@ import { signalingServer } from "../../Chitchat";
 import * as utils from "../../utils/";
 import * as chatroom from "../../chitchat/chats/redux/chatroom/";
 import * as calling from "../../chitchat/calling/";
-import { WebRTC } from '../../chitchat/react-webrtc/WebRTC';
-import * as Peer from "../../chitchat/react-webrtc/Peer";
+import { AbstractPeerConnection, AbstractWEBRTC, AbstractMediaStream, WebRtcFactory } from '../../chitchat/stalk-js-webrtc/index';
 
 interface MyCompProps extends utils.IComponentProps {
     getWebRtc
 }
 class WebRtcComponent extends React.Component<MyCompProps, any> {
-    webrtc: any;
+    webrtc: AbstractWEBRTC.IWebRTC;
 
     constructor(props) {
         super(props);
@@ -34,14 +33,9 @@ class WebRtcComponent extends React.Component<MyCompProps, any> {
         this.peerAdded = this.peerAdded.bind(this);
         this.removeVideo = this.removeVideo.bind(this);
         this.readyToCall = this.readyToCall.bind(this);
-        this.connectionReady = this.connectionReady.bind(this);
         this.onPeerCreated = this.onPeerCreated.bind(this);
 
-        this.disconnect = this.disconnect.bind(this);
-    }
-
-    componentWillUnmount() {
-        this.disconnect();
+        this.startWebRtc();
     }
 
     componentWillReceiveProps(nextProps: utils.IComponentProps) {
@@ -55,37 +49,24 @@ class WebRtcComponent extends React.Component<MyCompProps, any> {
         }
     }
 
-    componentWillMount() {
+    async startWebRtc() {
         let self = this;
-        let { stalkReducer } = this.props;
 
-        // this.webrtc = new SimpleWebRTC({
-        //     localVideoEl: ReactDOM.findDOMNode(this.refs.localVideo),
-        //     remoteVideosEl: "",
-        //     autoRequestMedia: true,
-        //     enableDataChannels: true,
-        //     // adjustPeerVolume: true,
-        //     url: signalingServer,
-        //     socketio: { 'force new connection': true },
-        //     debug: false,
-        //     detectSpeakingEvents: true,
-        // });
         let rtcConfig = {
             signalingUrl: signalingServer,
             socketOptions: { 'force new connection': true },
             debug: true
-        }
-        this.webrtc = new WebRTC(rtcConfig);
+        } as WebRtcConfig;
+
+        this.webrtc = await WebRtcFactory.getObject(rtcConfig);
+
         this.props.getWebRtc(this.webrtc);
 
-        this.webrtc.webrtcEvents.on(WebRTC.CONNECTION_READY, this.connectionReady);
-        this.webrtc.webrtcEvents.on(WebRTC.CREATED_PEER, this.onPeerCreated);
-        this.webrtc.webrtcEvents.on(Peer.PEER_STREAM_ADDED, this.peerAdded);
-        this.webrtc.webrtcEvents.on('videoRemoved', this.removeVideo);
+        this.webrtc.webrtcEvents.on(AbstractWEBRTC.CONNECTION_READY, this.connectionReady);
+        this.webrtc.webrtcEvents.on(AbstractWEBRTC.CREATED_PEER, this.onPeerCreated);
+        this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_ADDED, this.peerAdded);
+        this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_REMOVED, this.removeVideo);
         this.webrtc.webrtcEvents.on('readyToCall', this.readyToCall);
-        this.webrtc.webrtcEvents.on('localMediaError', (err) => {
-            console.warn('Fail to start local media: ', err);
-        });
         // local p2p/ice failure
         this.webrtc.webrtcEvents.on('iceFailed', function (peer) {
             console.warn("iceFailed", peer);
@@ -102,7 +83,7 @@ class WebRtcComponent extends React.Component<MyCompProps, any> {
             });
         }
         // remote p2p/ice failure
-        this.webrtc.webrtcEvents.on('connectivityError', function (peer) {
+        this.webrtc.webrtcEvents.on(AbstractPeerConnection.CONNECTIVITY_ERROR, function (peer) {
             console.warn("connectivityError", peer);
             let connstate = document.getElementById('peer_connstate_' + this.webrtc.getDomId(peer));
             // let connstate = document.querySelector('#container_' + self.webrtc.getDomId(peer) + ' .connectionstate');
@@ -111,18 +92,6 @@ class WebRtcComponent extends React.Component<MyCompProps, any> {
                 connstate.innerText = 'Connection failed.';
                 // fileinput.disabled = 'disabled';
             }
-        });
-    }
-
-
-    componentDidMount() {
-    }
-
-    connectionReady(socker_id) {
-        let self = this;
-        let requestMedia = { video: true, audio: true };
-        this.webrtc.getLocalStream(requestMedia, function (stream) {
-            self.readyToCall(stream);
         });
     }
 
@@ -268,25 +237,6 @@ class WebRtcComponent extends React.Component<MyCompProps, any> {
 
             this.props.dispatch(calling.videoCall_Epic({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
         }
-    }
-    disconnect() {
-        this.webrtc.leaveRoom();
-        this.webrtc.disconnect();
-        this.webrtc.stopLocalVideo();
-        this.props.dispatch(calling.onVideoCallEnded());
-
-        let { match, userReducer: { user }, stalkReducer } = this.props;
-        let room_id = match.params.id;
-        let room = chatroom.getRoom(room_id);
-        let targets = new Array<string>();
-        if (!!room && room.members.length > 0) {
-            room.members.map(value => {
-                if (value._id !== user._id) {
-                    targets.push(value._id);
-                }
-            });
-        }
-        this.props.dispatch(calling.hangupCallRequest({ target_ids: targets, user_id: user._id }));
     }
 
     showVolume(el, volume) {

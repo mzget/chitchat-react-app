@@ -1,3 +1,11 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import * as React from "react";
 import * as ReactDOM from 'react-dom';
 import { connect } from "react-redux";
@@ -9,20 +17,15 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { signalingServer } from "../../Chitchat";
 import * as chatroom from "../../chitchat/chats/redux/chatroom/";
 import * as calling from "../../chitchat/calling/";
-import { WebRTC } from '../../chitchat/react-webrtc/WebRTC';
-import * as Peer from "../../chitchat/react-webrtc/Peer";
+import { AbstractPeerConnection, AbstractWEBRTC, WebRtcFactory } from '../../chitchat/stalk-js-webrtc/index';
 class WebRtcComponent extends React.Component {
     constructor(props) {
         super(props);
         this.peerAdded = this.peerAdded.bind(this);
         this.removeVideo = this.removeVideo.bind(this);
         this.readyToCall = this.readyToCall.bind(this);
-        this.connectionReady = this.connectionReady.bind(this);
         this.onPeerCreated = this.onPeerCreated.bind(this);
-        this.disconnect = this.disconnect.bind(this);
-    }
-    componentWillUnmount() {
-        this.disconnect();
+        this.startWebRtc();
     }
     componentWillReceiveProps(nextProps) {
         let { alertReducer: { error } } = nextProps;
@@ -33,53 +36,42 @@ class WebRtcComponent extends React.Component {
             this.props.history.goBack();
         }
     }
-    componentWillMount() {
-        let self = this;
-        let { stalkReducer } = this.props;
-        let rtcConfig = {
-            signalingUrl: signalingServer,
-            socketOptions: { 'force new connection': true },
-            debug: true
-        };
-        this.webrtc = new WebRTC(rtcConfig);
-        this.props.getWebRtc(this.webrtc);
-        this.webrtc.webrtcEvents.on(WebRTC.CONNECTION_READY, this.connectionReady);
-        this.webrtc.webrtcEvents.on(WebRTC.CREATED_PEER, this.onPeerCreated);
-        this.webrtc.webrtcEvents.on(Peer.PEER_STREAM_ADDED, this.peerAdded);
-        this.webrtc.webrtcEvents.on('videoRemoved', this.removeVideo);
-        this.webrtc.webrtcEvents.on('readyToCall', this.readyToCall);
-        this.webrtc.webrtcEvents.on('localMediaError', (err) => {
-            console.warn('Fail to start local media: ', err);
-        });
-        this.webrtc.webrtcEvents.on('iceFailed', function (peer) {
-            console.warn("iceFailed", peer);
-            let connstate = document.querySelector('#container_' + self.webrtc.getDomId(peer) + ' .connectionstate');
-            console.log('local fail', connstate);
-            if (connstate) {
-                connstate.innerText = 'Connection failed.';
-            }
-        });
-        if (this.webrtc.detectSpeakingEvents) {
-            this.webrtc.webrtcEvents.on('volumeChange', function (volume, treshold) {
-                self.showVolume(document.getElementById('localVolume'), volume);
+    startWebRtc() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let self = this;
+            let rtcConfig = {
+                signalingUrl: signalingServer,
+                socketOptions: { 'force new connection': true },
+                debug: true
+            };
+            this.webrtc = yield WebRtcFactory.getObject(rtcConfig);
+            this.props.getWebRtc(this.webrtc);
+            this.webrtc.webrtcEvents.on(AbstractWEBRTC.CONNECTION_READY, this.connectionReady);
+            this.webrtc.webrtcEvents.on(AbstractWEBRTC.CREATED_PEER, this.onPeerCreated);
+            this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_ADDED, this.peerAdded);
+            this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_REMOVED, this.removeVideo);
+            this.webrtc.webrtcEvents.on('readyToCall', this.readyToCall);
+            this.webrtc.webrtcEvents.on('iceFailed', function (peer) {
+                console.warn("iceFailed", peer);
+                let connstate = document.querySelector('#container_' + self.webrtc.getDomId(peer) + ' .connectionstate');
+                console.log('local fail', connstate);
+                if (connstate) {
+                    connstate.innerText = 'Connection failed.';
+                }
             });
-        }
-        this.webrtc.webrtcEvents.on('connectivityError', function (peer) {
-            console.warn("connectivityError", peer);
-            let connstate = document.getElementById('peer_connstate_' + this.webrtc.getDomId(peer));
-            console.log('remote fail', connstate);
-            if (connstate) {
-                connstate.innerText = 'Connection failed.';
+            if (this.webrtc.detectSpeakingEvents) {
+                this.webrtc.webrtcEvents.on('volumeChange', function (volume, treshold) {
+                    self.showVolume(document.getElementById('localVolume'), volume);
+                });
             }
-        });
-    }
-    componentDidMount() {
-    }
-    connectionReady(socker_id) {
-        let self = this;
-        let requestMedia = { video: true, audio: true };
-        this.webrtc.getLocalStream(requestMedia, function (stream) {
-            self.readyToCall(stream);
+            this.webrtc.webrtcEvents.on(AbstractPeerConnection.CONNECTIVITY_ERROR, function (peer) {
+                console.warn("connectivityError", peer);
+                let connstate = document.getElementById('peer_connstate_' + this.webrtc.getDomId(peer));
+                console.log('remote fail', connstate);
+                if (connstate) {
+                    connstate.innerText = 'Connection failed.';
+                }
+            });
         });
     }
     onPeerCreated(peer) {
@@ -199,24 +191,6 @@ class WebRtcComponent extends React.Component {
             }
             this.props.dispatch(calling.videoCall_Epic({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
         }
-    }
-    disconnect() {
-        this.webrtc.leaveRoom();
-        this.webrtc.disconnect();
-        this.webrtc.stopLocalVideo();
-        this.props.dispatch(calling.onVideoCallEnded());
-        let { match, userReducer: { user }, stalkReducer } = this.props;
-        let room_id = match.params.id;
-        let room = chatroom.getRoom(room_id);
-        let targets = new Array();
-        if (!!room && room.members.length > 0) {
-            room.members.map(value => {
-                if (value._id !== user._id) {
-                    targets.push(value._id);
-                }
-            });
-        }
-        this.props.dispatch(calling.hangupCallRequest({ target_ids: targets, user_id: user._id }));
     }
     showVolume(el, volume) {
         if (!el)
