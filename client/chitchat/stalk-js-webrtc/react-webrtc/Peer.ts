@@ -213,6 +213,7 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
         let dc = this.getDataChannel(channel);
         if (dc.readyState != 'open')
             return false;
+
         dc.send(JSON.stringify(message));
         return true;
     };
