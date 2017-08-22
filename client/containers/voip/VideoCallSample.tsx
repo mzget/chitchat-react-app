@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import { shallowEqual, compose } from "recompose";
 import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
-import { RaisedButton, FontIcon, Slider, Paper, Subheader } from "material-ui";
+import { RaisedButton, FontIcon, Slider, Paper, Subheader, FlatButton } from "material-ui";
 import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
 import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
 
@@ -80,7 +80,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 
         let requestMedia = {
             video: media.video,
-            audio: false
+            audio: true
         } as MediaStreamConstraints;
 
         let peers = this.webrtc.peerManager.getPeers() as Map<string, AbstractPeerConnection.IPCHandler>;
@@ -133,7 +133,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         let self = this;
 
         let requestMedia = {
-            video: AbstractMediaStream.hdConstraints.video,
+            video: AbstractMediaStream.vgaConstraints.video,
             audio: true
         } as MediaStreamConstraints;
 
@@ -317,10 +317,9 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                         this.setState({ isPauseVideo: true });
                                     }} />
                         }
-                        <a onClick={() => this.changeMediaContraint(AbstractMediaStream.fullHdConstraints)}>FullHD</a>
-                        <a onClick={() => this.changeMediaContraint(AbstractMediaStream.hdConstraints)}>HD</a>
-                        <a onClick={() => this.changeMediaContraint(AbstractMediaStream.vgaConstraints)}>VGA</a>
-                        <a onClick={() => this.changeMediaContraint(AbstractMediaStream.qvgaConstraints)}>QVGA</a>
+                        <FlatButton label="HD" primary={true} onClick={() => this.changeMediaContraint(AbstractMediaStream.hdConstraints)} />
+                        <FlatButton label="VGA" primary={true} onClick={() => this.changeMediaContraint(AbstractMediaStream.vgaConstraints)} />
+                        <FlatButton label="QVGA" primary={true} onClick={() => this.changeMediaContraint(AbstractMediaStream.qvgaConstraints)} />
 
                         <p style={{ fontSize: 12 }}>UserMedia: {this.state.localStreamStatus}</p>
                         <p style={{ fontSize: 12 }}>AudioTrack: {this.selfAudioName}</p>
