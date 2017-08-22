@@ -66,7 +66,7 @@ export namespace AbstractMediaStream {
     };
     export interface IUserMedia {
         debug: boolean;
-        micController: AudioController;
+        audioController: AudioController;
         getLocalStream(): MediaStream;
         getVideoTrackName(): string;
         getAudioTrackName(): string;
@@ -81,7 +81,7 @@ export namespace AbstractMediaStream {
         support: boolean;
         mute();
         unMute();
-        setVolume(volumn: number);
+        setVolume(volume: number);
         getVolume();
         removeAudioStream();
     }

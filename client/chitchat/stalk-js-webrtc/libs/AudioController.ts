@@ -1,11 +1,24 @@
 import AudioCtx from './audioCtx';
-export class MicController {
+import { AbstractMediaStream } from "../IWebRTC";
+
+// implement from mediastream-gain lib
+export class AudioController implements AbstractMediaStream.AudioController {
+    support;
+    volume;
+    gainFilter;
+    audioSource;
+
     constructor(stream) {
-        this.support = (!!(AudioContext && AudioContext.prototype.createMediaStreamSource)
+        // webrtcsupport lib
+        this.support = (
+            !!(AudioContext && AudioContext.prototype.createMediaStreamSource)
             &&
-                !!(MediaStream && MediaStream.prototype.removeTrack));
+            !!(MediaStream && MediaStream.prototype.removeTrack)
+        );
         this.volume = 1;
+
         if (this.support) {
+            // var context = this.context = AudioCtx.getInstance();
             let context = AudioCtx.getInstance();
             let microphone = context.createMediaStreamSource(stream);
             this.gainFilter = context.createGain();
@@ -18,24 +31,28 @@ export class MicController {
             stream.removeTrack(this.audioSource);
         }
         else {
-            console.log("Not support adjust local microphone volume");
+            console.log("Browser doesn't support adjust local microphone volume");
         }
     }
+
     setVolume(volume) {
-        if (!this.support)
-            return;
+        if (!this.support) return;
         this.gainFilter.gain.value = volume;
         this.volume = volume;
     }
+
     getVolume() {
         return this.volume;
     }
+
     mute() {
         this.setVolume(0);
     }
+
     unMute() {
         this.setVolume(1);
     }
+
     removeAudioStream() {
         !!this.audioSource && this.audioSource.stop();
     }

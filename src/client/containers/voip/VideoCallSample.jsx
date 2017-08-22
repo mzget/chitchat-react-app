@@ -86,7 +86,7 @@ class VideoCall extends React.Component {
         let self = this;
         let requestMedia = {
             video: AbstractMediaStream.hdConstraints.video,
-            audio: false
+            audio: true
         };
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
             self.readyToCall(stream);
@@ -151,8 +151,10 @@ class VideoCall extends React.Component {
         }
     }
     componentWillUnmount() {
-        this.webrtc.leaveRoom();
-        this.webrtc.disconnect();
+        if (!!this.webrtc) {
+            this.webrtc.leaveRoom();
+            this.webrtc.disconnect();
+        }
     }
     componentWillReceiveProps(nextProps) {
         let prevInline = this.props.stalkReducer.get("inline");
@@ -165,10 +167,10 @@ class VideoCall extends React.Component {
         let { team } = this.props.teamReducer;
         let disabledAudioOption = true;
         let disabledVideoOption = true;
-        if (!!this.state.selfViewSrc &&
-            !!this.webrtc.userMedia.micController &&
-            this.webrtc.userMedia.micController.support) {
-            if (this.state.selfViewSrc.getAudioTracks().length > 0) {
+        if (!!this.state.selfViewSrc) {
+            if (this.state.selfViewSrc.getAudioTracks().length > 0 &&
+                !!this.webrtc.userMedia.audioController &&
+                this.webrtc.userMedia.audioController.support) {
                 disabledAudioOption = false;
             }
             if (this.state.selfViewSrc.getVideoTracks().length > 0) {
@@ -189,18 +191,18 @@ class VideoCall extends React.Component {
             margin: 0,
         }} onChange={(e, newValue) => {
             this.setState({ micVol: newValue, isMuteVoice: newValue == 0 });
-            this.webrtc.userMedia.micController.setVolume(newValue / 100);
+            this.webrtc.userMedia.audioController.setVolume(newValue / 100);
         }}/>
                         <div>{`Mic volume (${this.state.micVol}%)`}</div>
                         {this.state.isMuteVoice ?
             <RaisedButton secondary disabled={disabledAudioOption} icon={<FontIcon className="material-icons">mic_off</FontIcon>} onClick={() => {
-                this.webrtc.userMedia.micController.unMute();
-                this.webrtc.userMedia.micController.setVolume(this.state.micVol / 100);
+                this.webrtc.userMedia.audioController.unMute();
+                this.webrtc.userMedia.audioController.setVolume(this.state.micVol / 100);
                 this.setState({ isMuteVoice: false });
             }}/>
             :
                 <RaisedButton disabled={disabledAudioOption} icon={<FontIcon className="material-icons">mic</FontIcon>} onClick={() => {
-                    this.webrtc.userMedia.micController.mute();
+                    this.webrtc.userMedia.audioController.mute();
                     this.setState({ isMuteVoice: true });
                 }}/>}
                         {this.state.isPauseVideo ?
