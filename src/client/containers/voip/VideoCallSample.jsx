@@ -223,12 +223,12 @@ class VideoCall extends React.Component {
                 }}/>}
                         {this.state.isPauseVideo ?
             <RaisedButton secondary disabled={disabledVideoOption} icon={<FontIcon className="material-icons">videocam_off</FontIcon>} onClick={() => {
-                this.webrtc.userMedia.setVideoEnabled(true);
+                this.webrtc.userMedia.videoController.setVideoEnabled(true);
                 this.setState({ isPauseVideo: false });
             }}/>
             :
                 <RaisedButton disabled={disabledVideoOption} icon={<FontIcon className="material-icons">videocam</FontIcon>} onClick={() => {
-                    this.webrtc.userMedia.setVideoEnabled(false);
+                    this.webrtc.userMedia.videoController.setVideoEnabled(false);
                     this.setState({ isPauseVideo: true });
                 }}/>}
                         <FlatButton label="HD" primary={true} onClick={() => this.changeMediaContraint(AbstractMediaStream.hdConstraints)}/>

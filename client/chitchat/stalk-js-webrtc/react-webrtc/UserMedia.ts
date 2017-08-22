@@ -1,6 +1,7 @@
 import adapter from 'webrtc-adapter';
 import { AbstractMediaStream } from "../index";
 import { AudioController } from '../libs/AudioController';
+import { VideoController } from '../libs/VideoController';
 
 export class UserMedia implements AbstractMediaStream.IUserMedia {
     debug: boolean = false;
@@ -29,6 +30,7 @@ export class UserMedia implements AbstractMediaStream.IUserMedia {
     }
 
     audioController: AudioController;
+    videoController: VideoController;
 
     constructor(options: { debug: boolean }) {
         this.debug = options.debug;
@@ -50,6 +52,9 @@ export class UserMedia implements AbstractMediaStream.IUserMedia {
                 if (stream.getAudioTracks().length > 0) {
                     self.audioController = new AudioController(stream);
                 }
+                if (stream.getVideoTracks().length > 0) {
+                    self.videoController = new VideoController(stream);
+                }
                 self.localStream = stream as MediaStream;
 
                 resolve(self.localStream);
@@ -66,17 +71,6 @@ export class UserMedia implements AbstractMediaStream.IUserMedia {
                 }
             });
         });
-    }
-
-    setVideoEnabled(enabled: boolean) {
-        if (!!this.localStream) {
-            let videoTracks = this.localStream.getVideoTracks();
-            if (!!videoTracks && videoTracks.length > 0) {
-                videoTracks.forEach(function (track) {
-                    track.enabled = !!enabled;
-                });
-            }
-        }
     }
 
     stopLocalStream() {

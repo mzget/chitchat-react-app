@@ -7,6 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { AudioController } from '../libs/AudioController';
+import { VideoController } from '../libs/VideoController';
 export class UserMedia {
     constructor(options) {
         this.debug = false;
@@ -45,6 +46,9 @@ export class UserMedia {
                     if (stream.getAudioTracks().length > 0) {
                         self.audioController = new AudioController(stream);
                     }
+                    if (stream.getVideoTracks().length > 0) {
+                        self.videoController = new VideoController(stream);
+                    }
                     self.localStream = stream;
                     resolve(self.localStream);
                 }, error => {
@@ -62,16 +66,6 @@ export class UserMedia {
                 });
             });
         });
-    }
-    setVideoEnabled(enabled) {
-        if (!!this.localStream) {
-            let videoTracks = this.localStream.getVideoTracks();
-            if (!!videoTracks && videoTracks.length > 0) {
-                videoTracks.forEach(function (track) {
-                    track.enabled = !!enabled;
-                });
-            }
-        }
     }
     stopLocalStream() {
         this.stopStream();

@@ -97,22 +97,31 @@ export namespace AbstractMediaStream {
     export interface IUserMedia {
         debug: boolean;
         audioController: AudioController;
+        videoController: VideoController;
         getLocalStream(): MediaStream;
         getVideoTrackName(): string;
         getAudioTrackName(): string;
 
         startLocalStream(mediaContraints: MediaStreamConstraints, isFront?: false): Promise<MediaStream>;
-        setVideoEnabled(enable: boolean);
         stopLocalStream();
     }
 
     export interface AudioController {
         //@ about mic-gainController in browser.
         support: boolean;
+        volume: number;
+        audioSource: AudioTrack;
         mute();
         unMute();
         setVolume(volume: number);
         getVolume();
         removeAudioStream();
+    }
+
+    export interface VideoController {
+        //@ about video stream in browser.
+        localStream: MediaStream;
+        videoSource: VideoTrack;
+        setVideoEnabled(enabled: boolean);
     }
 }   

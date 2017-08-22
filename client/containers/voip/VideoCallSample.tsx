@@ -303,7 +303,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                     disabled={disabledVideoOption}
                                     icon={<FontIcon className="material-icons">videocam_off</FontIcon>}
                                     onClick={() => {
-                                        this.webrtc.userMedia.setVideoEnabled(true);
+                                        this.webrtc.userMedia.videoController.setVideoEnabled(true);
                                         this.setState({ isPauseVideo: false });
                                     }} />
                                 :
@@ -311,7 +311,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                     disabled={disabledVideoOption}
                                     icon={<FontIcon className="material-icons">videocam</FontIcon>}
                                     onClick={() => {
-                                        this.webrtc.userMedia.setVideoEnabled(false);
+                                        this.webrtc.userMedia.videoController.setVideoEnabled(false);
                                         this.setState({ isPauseVideo: true });
                                     }} />
                         }
