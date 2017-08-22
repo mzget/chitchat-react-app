@@ -84,8 +84,6 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         } as MediaStreamConstraints;
 
         let peers = this.webrtc.peerManager.getPeers() as Map<string, AbstractPeerConnection.IPCHandler>;
-        peers.forEach((peer) =>
-            peer.removeStream(this.webrtc.userMedia.getLocalStream()));
 
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
             self.onStreamReady(stream);

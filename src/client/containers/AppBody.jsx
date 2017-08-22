@@ -17,7 +17,16 @@ const onVideoCall = ({ history, roomName }) => {
 const enhance = compose(WithDialog, withRouter, withState('roomName', 'setRoomName', ""));
 var VideoCallCreateRoomSample = enhance(({ roomName, setRoomName, history, onError }) => (<div>
         <p> Videocall room experiment.</p>
-        <TextField id="text-field-controlled" hintText="Enter videocall room name" value={roomName} onChange={(event) => setRoomName(event.target.value)}/>
+        <TextField id="text-field-controlled" hintText="Enter videocall room name" value={roomName} onChange={(event) => setRoomName(event.target.value)} onKeyUp={(event) => {
+    if (event.keyCode === 13) {
+        if (roomName.length > 0) {
+            onVideoCall({ history, roomName });
+        }
+        else {
+            onError("Room name is missing");
+        }
+    }
+}}/>
         <FontIcon className="material-icons" style={{ marginRight: 24, fontSize: 48, cursor: 'pointer' }} color={Colors.lightGreen500} onClick={() => (roomName.length > 0) ?
     onVideoCall({ history, roomName }) :
     onError("Room name is missing")}>

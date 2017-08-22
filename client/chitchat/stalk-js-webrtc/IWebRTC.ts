@@ -86,7 +86,12 @@ export namespace AbstractMediaStream {
     } as MediaStreamConstraints;
 
     export const qvgaConstraints = {
-        video: { width: { exact: 320 }, height: { exact: 240 } }
+        video: {
+            mandatory: {
+                maxWidth: 320,
+                maxHeight: 240
+            }
+        }
     } as MediaStreamConstraints;
 
     export interface IUserMedia {

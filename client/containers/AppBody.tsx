@@ -30,6 +30,16 @@ var VideoCallCreateRoomSample = enhance(({ roomName, setRoomName, history, onErr
             hintText="Enter videocall room name"
             value={roomName}
             onChange={(event) => setRoomName(event.target.value)}
+            onKeyUp={(event) => {
+                if (event.keyCode === 13) {
+                    if (roomName.length > 0) {
+                        onVideoCall({ history, roomName })
+                    }
+                    else {
+                        onError("Room name is missing")
+                    }
+                }
+            }}
         />
         <FontIcon
             className="material-icons"

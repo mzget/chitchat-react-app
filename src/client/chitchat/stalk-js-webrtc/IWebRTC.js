@@ -39,6 +39,11 @@ export var AbstractMediaStream;
         }
     };
     AbstractMediaStream.qvgaConstraints = {
-        video: { width: { exact: 320 }, height: { exact: 240 } }
+        video: {
+            mandatory: {
+                maxWidth: 320,
+                maxHeight: 240
+            }
+        }
     };
 })(AbstractMediaStream = AbstractMediaStream || (AbstractMediaStream = {}));
