@@ -60,7 +60,8 @@ class VideoCall extends React.Component {
             video: media.video,
             audio: false
         };
-        this.webrtc.peerManager.getPeers();
+        let peers = this.webrtc.peerManager.getPeers();
+        peers.forEach((peer) => peer.removeStream(this.webrtc.userMedia.getLocalStream()));
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
             self.readyToCall(stream);
         }).catch(err => {

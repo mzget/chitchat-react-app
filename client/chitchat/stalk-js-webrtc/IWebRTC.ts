@@ -46,12 +46,19 @@ export namespace AbstractPeerConnection {
     export const OFFER = "offer";
 
     export interface IPCEstabished {
-        createPeer(options, webrtc);
-        getPeers(session_id?: string);
+        createPeer(options, webrtc): AbstractPeerConnection.IPCHandler;
+        getPeers(session_id?: string): AbstractPeerConnection.IPCHandler | Map<string, AbstractPeerConnection.IPCHandler>;
         removePeers(session_id: string, webrtc);
 
         sendToAll(message, payload);
         sendDirectlyToAll(channel: string, message, payload);
+    }
+
+    export interface IPCHandler {
+        id: string;
+        pc: RTCPeerConnection;
+        addStream(stream: MediaStream);
+        removeStream(stream: MediaStream);
     }
 }
 

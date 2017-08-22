@@ -40,7 +40,7 @@ export class PeerManager implements AbstractPeerConnection.IPCEstabished {
     };
 
     removePeers(sessionId, webrtc: WebRTC) {
-        let peer = this.getPeers(sessionId);
+        let peer = this.getPeers(sessionId) as Peer.Peer;
         if (peer) {
             peer.pc.close();
             webrtc.webrtcEvents.emit(AbstractPeerConnection.PEER_STREAM_REMOVED, peer.stream);

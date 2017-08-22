@@ -9,7 +9,7 @@ import { AbstractPeerConnection } from "../IWebRTC";
 // configuration.iceServers = twilioIceServers;
 const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
 
-export class Peer {
+export class Peer implements AbstractPeerConnection.IPCHandler {
     type: string;
     parentsEmitter: EventEmitter;
     id: string;
@@ -197,7 +197,6 @@ export class Peer {
             });
         }
     };
-
 
     // send via data channel
     // returns true when message was sent and false if channel is not open
