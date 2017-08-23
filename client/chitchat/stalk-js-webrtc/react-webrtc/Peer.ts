@@ -3,6 +3,7 @@ import adapter from 'webrtc-adapter';
 
 import { AbstractPeerConnection } from "../IWebRTC";
 import { getImage } from '../libs/VideoToBlurImage';
+import { createStreamByText } from '..//libs/StreamHelper';
 
 // const twilioIceServers = [
 //     { url: 'stun:global.stun.twilio.com:3478?transport=udp' }
@@ -87,7 +88,9 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
             self.parentsEmitter.emit(AbstractPeerConnection.PEER_STREAM_REMOVED, peer.stream);
         };
 
-        this.pc.addStream(config.stream);
+        if (!!config.stream) {
+            this.pc.addStream(config.stream);
+        }
     }
 
     removeStream(stream: MediaStream) {
@@ -285,6 +288,10 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
             getImage(remoteVideoElement).then((res: MediaStream) => {
                 remoteVideoElement.srcObject = res;
             });
+        }
+        else if (data.type === AbstractPeerConnection.DUMMY_VIDEO) {
+            let canvasStream = createStreamByText("NO CAMERA");
+            if (!!canvasStream) remoteVideoElement.src = URL.createObjectURL(canvasStream);
         }
     }
 }

@@ -1,5 +1,6 @@
 import { AbstractPeerConnection } from "../IWebRTC";
 import { getImage } from '../libs/VideoToBlurImage';
+import { createStreamByText } from '..//libs/StreamHelper';
 const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
 export class Peer {
     constructor(config) {
@@ -49,7 +50,9 @@ export class Peer {
             console.log('onremovestream', peer.stream);
             self.parentsEmitter.emit(AbstractPeerConnection.PEER_STREAM_REMOVED, peer.stream);
         };
-        this.pc.addStream(config.stream);
+        if (!!config.stream) {
+            this.pc.addStream(config.stream);
+        }
     }
     removeStream(stream) {
         this.pc.removeStream(stream);
@@ -207,6 +210,11 @@ export class Peer {
             getImage(remoteVideoElement).then((res) => {
                 remoteVideoElement.srcObject = res;
             });
+        }
+        else if (data.type === AbstractPeerConnection.DUMMY_VIDEO) {
+            let canvasStream = createStreamByText("NO CAMERA");
+            if (!!canvasStream)
+                remoteVideoElement.src = URL.createObjectURL(canvasStream);
         }
     }
 }
