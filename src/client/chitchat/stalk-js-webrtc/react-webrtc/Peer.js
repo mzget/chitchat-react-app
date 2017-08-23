@@ -1,6 +1,6 @@
 import { AbstractPeerConnection } from "../IWebRTC";
 import { getImage } from '../libs/VideoToBlurImage';
-const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
+const configuration = { "iceServers": [{ "urls": "stun:stun.l.google.com:19302" }] };
 export class Peer {
     constructor(config) {
         this.enableDataChannels = true;
