@@ -2,10 +2,13 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { shallowEqual, compose } from "recompose";
+import Flexbox from "flexbox-react";
+import * as Colors from "material-ui/styles/colors";
 import * as chatroom from "../../chitchat/chats/redux/chatroom/";
 import * as calling from "../../chitchat/calling/";
 import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
-import { VideoCallSample } from "./";
+import { SimpleToolbar } from "../../components/SimpleToolbar";
+import { WebRtcPage } from "./";
 class VideoCall extends React.Component {
     constructor(props) {
         super(props);
@@ -51,8 +54,38 @@ class VideoCall extends React.Component {
         let { history, teamReducer } = this.props;
         history.replace(`/team/${teamReducer.team._id}`);
     }
+    onJoinedRoom(roomname) {
+        let self = this;
+        let { match, userReducer: { user }, stalkReducer } = this.props;
+        let incommingCall = stalkReducer.get("incommingCall");
+        if (!!incommingCall) {
+            self.props.dispatch(calling.onCalling(incommingCall.room_id));
+        }
+        else {
+            let room_id = match.params.id;
+            self.props.dispatch(calling.onCalling(room_id));
+            let room = chatroom.getRoom(room_id);
+            let targets = new Array();
+            if (!!room) {
+                room.members.map(value => {
+                    if (value._id !== user._id) {
+                        targets.push(value._id);
+                    }
+                });
+            }
+            this.props.dispatch(calling.videoCall_Epic({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
+        }
+    }
     render() {
-        return (<VideoCallSample />);
+        let { team } = this.props.teamReducer;
+        return (<Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
+                <div style={{ position: "relative", height: "56px" }}>
+                    <div style={{ position: "fixed", width: "100%", zIndex: 1 }}>
+                        <SimpleToolbar title={(!!team) ? team.name.toUpperCase() : ""} onBackPressed={this.onBackPressed} onPressTitle={this.onTitlePressed}/>
+                    </div>
+                </div>
+                <WebRtcPage onJoinedRoom={this.onJoinedRoom.bind(this)} onError={this.props.onError}/>
+            </Flexbox>);
     }
 }
 const mapStateToProps = (state) => ({
