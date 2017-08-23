@@ -11,7 +11,11 @@ import { createStreamByText } from '..//libs/StreamHelper';
 // configuration.iceServers = twilioIceServers;
 const configuration = { "iceServers": [{ "urls": "stun:stun.l.google.com:19302" }] };
 
+export interface PeerConstructor {
+    peer_id; stream; pcPeers; emitter; sendHandler; offer; debug;
+}
 export class Peer implements AbstractPeerConnection.IPCHandler {
+    debug: boolean;
     type: string;
     parentsEmitter: EventEmitter;
     id: string;
@@ -35,7 +39,12 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
      * @param stream 
      * @param options 
      */
-    constructor(config: { peer_id, stream, pcPeers, emitter, sendHandler, offer }) {
+    constructor(config: PeerConstructor) {
+        if (!config.stream) {
+            throw new Error("Missing stream!!!");
+        }
+
+        this.debug = config.debug;
         this.id = config.peer_id;
         this.pcPeers = config.pcPeers;
         this.parentsEmitter = config.emitter;
@@ -58,7 +67,9 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
         }
 
         this.pc.oniceconnectionstatechange = function (event) {
-            console.log('oniceconnectionstatechange', event.target.iceConnectionState);
+            if (self.debug)
+                console.log('oniceconnectionstatechange', event.target.iceConnectionState);
+
             if (event.target.iceConnectionState === 'completed') {
                 // setTimeout(() => {
                 //     self.getStats();
@@ -69,28 +80,28 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
                 self.pc.ondatachannel = self.receiveChannelCallback.bind(self);
             }
             else if (event.target.iceConnectionState == "failed") {
-                // currently, in chrome only the initiator goes to failed
-                // so we need to signal this to the peer
-
-                self.parentsEmitter.emit('iceFailed', self);
+                self.parentsEmitter.emit(AbstractPeerConnection.ON_ICE_CONNECTION_FAILED, self);
                 self.send_event(AbstractPeerConnection.CONNECTIVITY_ERROR, null, { to: self.id });
             }
         };
         this.pc.onsignalingstatechange = function (event) {
-            console.log('onsignalingstatechange', event.target.signalingState);
+            if (self.debug)
+                console.log('onsignalingstatechange', event.target.signalingState);
         };
         this.pc.onaddstream = function (peer) {
-            console.log('onaddstream', peer.stream);
+            if (self.debug)
+                console.log('onaddstream');
+
             self.parentsEmitter.emit(AbstractPeerConnection.PEER_STREAM_ADDED, peer);
         };
         this.pc.onremovestream = function (peer) {
-            console.log('onremovestream', peer.stream);
+            if (self.debug)
+                console.log('onremovestream');
+
             self.parentsEmitter.emit(AbstractPeerConnection.PEER_STREAM_REMOVED, peer.stream);
         };
 
-        if (!!config.stream) {
-            this.pc.addStream(config.stream);
-        }
+        this.pc.addStream(config.stream);
     }
 
     removeStream(stream: MediaStream) {
@@ -116,21 +127,23 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
     }
 
     onSetSessionDescriptionError(error) {
-        console.log('Failed to set session description: ' + error.toString());
+        console.warn('Failed to set session description: ' + error.toString());
     }
     onCreateSessionDescriptionError(error) {
-        console.log('Failed to create session description: ' + error.toString());
+        console.warn('Failed to create session description: ' + error.toString());
     }
 
     createOffer() {
         let self = this;
 
         this.pc.createOffer(function (desc) {
-            console.log('createOffer', desc);
+            if (self.debug)
+                console.log('createOffer', desc);
 
             self.pc.setLocalDescription(desc, function () {
-                console.log('setLocalDescription', self.pc.localDescription);
-                // socket.emit('message', { to: socketId, 'sdp': pc.localDescription });
+                if (self.debug)
+                    console.log('setLocalDescription', self.pc.localDescription);
+
                 self.send_event(AbstractPeerConnection.OFFER, self.pc.localDescription, { to: self.id });
             }, self.onSetSessionDescriptionError);
         },
@@ -139,11 +152,13 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
     createAnswer(message) {
         let self = this;
         self.pc.createAnswer(function (desc) {
-            console.log('createAnswer', desc);
+            if (self.debug)
+                console.log('createAnswer', desc);
 
             self.pc.setLocalDescription(desc, function () {
-                console.log('setLocalDescription', self.pc.localDescription);
-                // socket.emit('exchange', { 'to': fromId, 'sdp': pc.localDescription });
+                if (self.debug)
+                    console.log('setLocalDescription', self.pc.localDescription);
+
                 self.send_event(AbstractPeerConnection.OFFER, self.pc.localDescription, { to: message.from });
             }, self.onSetSessionDescriptionError);
         }, self.onCreateSessionDescriptionError);
@@ -151,7 +166,8 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
 
     handleMessage(message) {
         let self = this;
-        console.log('getting', message.type, message);
+        if (self.debug)
+            console.log('handleMessage', message.type, message);
 
         if (message.prefix)
             this.browserPrefix = message.prefix;
@@ -161,7 +177,8 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
             delete message.payload.nick;
 
             self.pc.setRemoteDescription(new RTCSessionDescription(message.payload), function () {
-                console.log("setRemoteDescription complete");
+                if (self.debug)
+                    console.log("setRemoteDescription complete");
 
                 if (self.pc.remoteDescription.type == AbstractPeerConnection.OFFER) {
                     self.createAnswer(message);
@@ -172,14 +189,16 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
             // @ No need this.
         }
         else if (message.type === AbstractPeerConnection.CANDIDATE) {
-            console.log('exchange candidate');
+            if (self.debug)
+                console.log('exchange candidate');
 
             function onAddIceCandidateSuccess() {
-                console.log('addIceCandidate success');
+                if (self.debug)
+                    console.log('addIceCandidate success');
             }
 
             function onAddIceCandidateError(error) {
-                console.log('failed to add ICE Candidate: ' + error.toString());
+                console.warn('failed to add ICE Candidate: ' + error.toString());
             }
             self.pc.addIceCandidate(new RTCIceCandidate(message.candidate), onAddIceCandidateSuccess, onAddIceCandidateError);
         }

@@ -111,7 +111,8 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
         this.onStreamReady = this.onStreamReady.bind(this);
         this.connectionReady = this.connectionReady.bind(this);
 
-        this.webrtc.webrtcEvents.on(AbstractWEBRTC.CONNECTION_READY, this.connectionReady);
+        this.webrtc.webrtcEvents.on(AbstractWEBRTC.ON_CONNECTION_READY, this.connectionReady);
+        this.webrtc.webrtcEvents.on(AbstractWEBRTC.ON_CONNECTION_CLOSE, (data) => { console.log("signallin close", data) });
         this.webrtc.webrtcEvents.on(AbstractWEBRTC.CREATED_PEER, (peer) => console.log("createdPeer", peer.id));
         this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOINED_ROOM, (roomname: string) =>
             (this.props.onJoinedRoom) ? this.props.onJoinedRoom(roomname) : console.log("joined", roomname));

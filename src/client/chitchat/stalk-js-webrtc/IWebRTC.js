@@ -1,6 +1,7 @@
 export var AbstractWEBRTC;
 (function (AbstractWEBRTC) {
-    AbstractWEBRTC.CONNECTION_READY = "connectionReady";
+    AbstractWEBRTC.ON_CONNECTION_READY = "connectionReady";
+    AbstractWEBRTC.ON_CONNECTION_CLOSE = "ON_CONNECTION_CLOSE";
     AbstractWEBRTC.CREATED_PEER = "createdPeer";
     AbstractWEBRTC.JOINED_ROOM = "joinedRoom";
     AbstractWEBRTC.JOIN_ROOM_ERROR = "joinRoomError";
@@ -12,6 +13,7 @@ export var AbstractPeerConnection;
     AbstractPeerConnection.PEER_STREAM_ADDED = "peerStreamAdded";
     AbstractPeerConnection.PEER_STREAM_REMOVED = "peerStreamRemoved";
     AbstractPeerConnection.CONNECTIVITY_ERROR = "connectivityError";
+    AbstractPeerConnection.ON_ICE_CONNECTION_FAILED = "iceFailed";
     AbstractPeerConnection.MUTE = "mute";
     AbstractPeerConnection.UNMUTE = "unmute";
     AbstractPeerConnection.PAUSE = "pause";

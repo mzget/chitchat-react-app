@@ -1,5 +1,5 @@
 import { AbstractPeerConnection } from "../IWebRTC";
-import * as Peer from "./Peer";
+import { Peer } from "./Peer";
 import { logError } from "./WebRTC";
 export class PeerManager {
     constructor(options) {
@@ -18,13 +18,13 @@ export class PeerManager {
             sendHandler: webrtc.send,
             debug: self.debug
         };
-        let peer = new Peer.Peer(config);
+        let peer = new Peer(config);
         peer.logError = logError;
         this.peers.set(options.id, peer);
         return peer;
     }
     getPeers(sessionId) {
-        if (sessionId) {
+        if (!!sessionId) {
             return this.peers.get(sessionId);
         }
         else {

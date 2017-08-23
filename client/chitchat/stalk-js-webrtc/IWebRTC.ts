@@ -6,11 +6,13 @@
 import * as events from 'events';
 
 export namespace AbstractWEBRTC {
-    export const CONNECTION_READY = "connectionReady";
+    export const ON_CONNECTION_READY = "connectionReady";
+    export const ON_CONNECTION_CLOSE = "ON_CONNECTION_CLOSE";
     export const CREATED_PEER = "createdPeer";
     export const JOINED_ROOM = "joinedRoom"
     export const JOIN_ROOM_ERROR = "joinRoomError";
     export const NOT_SUPPORT_MEDIA = "NOT_SUPPORT_MEDIA";
+
     export interface WebRtcConfig {
         signalingUrl: string;
         socketOptions: any;
@@ -39,6 +41,7 @@ export namespace AbstractPeerConnection {
     export const PEER_STREAM_ADDED = "peerStreamAdded";
     export const PEER_STREAM_REMOVED = "peerStreamRemoved";
     export const CONNECTIVITY_ERROR = "connectivityError";
+    export const ON_ICE_CONNECTION_FAILED = "iceFailed";
     export const MUTE = "mute";
     export const UNMUTE = "unmute";
     export const PAUSE = "pause"; // for video

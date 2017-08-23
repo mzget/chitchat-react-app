@@ -30,7 +30,7 @@ export class WebRTC {
         self.signalingSocket.on('connect', function (data) {
             if (self.debug)
                 console.log("SOCKET connect", self.signalingSocket.id);
-            self.webrtcEvents.emit(AbstractWEBRTC.CONNECTION_READY, self.signalingSocket.id);
+            self.webrtcEvents.emit(AbstractWEBRTC.ON_CONNECTION_READY, self.signalingSocket.id);
         });
         self.signalingSocket.on('message', function (data) {
             if (self.debug)
@@ -70,7 +70,8 @@ export class WebRTC {
     join(roomname) {
         let self = this;
         this.signalingSocket.emit('join', roomname, function (err, roomDescription) {
-            console.log('join', roomDescription);
+            if (self.debug)
+                console.log('join', roomDescription);
             if (err) {
                 self.webrtcEvents.emit(AbstractWEBRTC.JOIN_ROOM_ERROR, err);
             }
@@ -78,7 +79,6 @@ export class WebRTC {
                 let id, client, type, peer;
                 let clients = roomDescription.clients;
                 for (id in clients) {
-                    console.log("id", id);
                     if (clients.hasOwnProperty(id)) {
                         client = clients[id];
                         for (type in client) {
@@ -114,7 +114,9 @@ export class WebRTC {
     }
     ;
     onDisconnect(data) {
-        console.log("SOCKET disconnect", data);
+        if (this.debug)
+            console.log("SOCKET disconnect", data);
         this.userMedia.stopLocalStream();
+        this.webrtcEvents.emit(AbstractWEBRTC.ON_CONNECTION_CLOSE, data);
     }
 }
