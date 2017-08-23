@@ -98,17 +98,6 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
         this.startWebRtc();
     }
 
-    componentWillReceiveProps(nextProps: utils.IComponentProps) {
-        let { alertReducer: { error } } = nextProps;
-
-        if (!shallowEqual(this.props.alertReducer.error, error) && !!error) {
-            this.props.onError(error);
-        }
-        if (!error && this.props.alertReducer.error) {
-            this.props.history.goBack();
-        }
-    }
-
     async startWebRtc() {
         let rtcConfig = {
             signalingUrl: signalingServer,
@@ -191,11 +180,11 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
     }
 
     peerAdded(peer) {
-        console.log("peerAdded", peer);
-
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
-        remotesView.src = URL.createObjectURL(peer.stream);
-        remotesView.volume = 1;
+        if (!!remotesView) {
+            remotesView.src = URL.createObjectURL(peer.stream);
+            remotesView.volume = 1;
+        }
 
         if (peer && peer.pc) {
             let peerStat = "";
@@ -238,6 +227,13 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
         if (volume < -45) volume = -45; // -45 to -20 is
         if (volume > -20) volume = -20; // a good range
         el.value = volume;
+    }
+
+    componentWillUnmount() {
+        if (!!this.webrtc) {
+            this.webrtc.leaveRoom();
+            this.webrtc.disconnect();
+        }
     }
 
     render(): JSX.Element {
@@ -399,11 +395,5 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
     }
 }
 
-const mapStateToProps = (state) => ({
-    alertReducer: state.alertReducer
-});
-const enhance = compose(
-    withRouter,
-    connect(mapStateToProps)
-);
+const enhance = compose(withRouter, connect());
 export const WebRtcPage = enhance(WebRtcComponent) as React.ComponentClass<{ onJoinedRoom, onError }>;

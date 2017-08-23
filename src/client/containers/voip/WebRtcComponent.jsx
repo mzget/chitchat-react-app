@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from "react";
 import * as ReactDOM from 'react-dom';
 import { connect } from "react-redux";
-import { shallowEqual, compose } from "recompose";
+import { compose } from "recompose";
 import { withRouter } from "react-router-dom";
 import Flexbox from "flexbox-react";
 import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
@@ -64,15 +64,6 @@ class WebRtcComponent extends React.Component {
         this.changeMediaContraint = this.changeMediaContraint.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
         this.startWebRtc();
-    }
-    componentWillReceiveProps(nextProps) {
-        let { alertReducer: { error } } = nextProps;
-        if (!shallowEqual(this.props.alertReducer.error, error) && !!error) {
-            this.props.onError(error);
-        }
-        if (!error && this.props.alertReducer.error) {
-            this.props.history.goBack();
-        }
     }
     startWebRtc() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -141,10 +132,11 @@ class WebRtcComponent extends React.Component {
         }
     }
     peerAdded(peer) {
-        console.log("peerAdded", peer);
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
-        remotesView.src = URL.createObjectURL(peer.stream);
-        remotesView.volume = 1;
+        if (!!remotesView) {
+            remotesView.src = URL.createObjectURL(peer.stream);
+            remotesView.volume = 1;
+        }
         if (peer && peer.pc) {
             let peerStat = "";
             peer.pc.on('iceConnectionStateChange', function (event) {
@@ -185,6 +177,12 @@ class WebRtcComponent extends React.Component {
         if (volume > -20)
             volume = -20;
         el.value = volume;
+    }
+    componentWillUnmount() {
+        if (!!this.webrtc) {
+            this.webrtc.leaveRoom();
+            this.webrtc.disconnect();
+        }
     }
     render() {
         let disabledAudioOption = true;
@@ -295,8 +293,5 @@ class WebRtcComponent extends React.Component {
             </Flexbox>);
     }
 }
-const mapStateToProps = (state) => ({
-    alertReducer: state.alertReducer
-});
-const enhance = compose(withRouter, connect(mapStateToProps));
+const enhance = compose(withRouter, connect());
 export const WebRtcPage = enhance(WebRtcComponent);
