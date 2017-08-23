@@ -16,6 +16,7 @@ export var AbstractPeerConnection;
     AbstractPeerConnection.UNMUTE = "unmute";
     AbstractPeerConnection.PAUSE = "pause";
     AbstractPeerConnection.UNPAUSE = "unpause";
+    AbstractPeerConnection.DUMMY_VIDEO = "dummy_video";
     AbstractPeerConnection.ANSWER = "answer";
     AbstractPeerConnection.OFFER = "offer";
 })(AbstractPeerConnection = AbstractPeerConnection || (AbstractPeerConnection = {}));

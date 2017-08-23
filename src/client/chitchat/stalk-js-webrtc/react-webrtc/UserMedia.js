@@ -16,7 +16,12 @@ export class UserMedia {
     getLocalStream() {
         return this.localStream;
     }
+    setLocalStream(stream) {
+        this.localStream = stream;
+    }
     getVideoTrackName() {
+        if (!this.localStream)
+            return "";
         let videoTracks = this.localStream.getVideoTracks();
         if (videoTracks.length > 0) {
             return videoTracks[0].label;
@@ -24,6 +29,8 @@ export class UserMedia {
         return "";
     }
     getAudioTrackName() {
+        if (!this.localStream)
+            return "";
         let audioTracks = this.localStream.getAudioTracks();
         if (audioTracks.length > 0) {
             return this.audioController.audioSource.label;

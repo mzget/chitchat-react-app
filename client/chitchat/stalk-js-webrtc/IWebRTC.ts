@@ -43,6 +43,7 @@ export namespace AbstractPeerConnection {
     export const UNMUTE = "unmute";
     export const PAUSE = "pause"; // for video
     export const UNPAUSE = "unpause"; // for video
+    export const DUMMY_VIDEO = "dummy_video"; // for video
 
     export const ANSWER = "answer";
     export const OFFER = "offer";
@@ -103,6 +104,7 @@ export namespace AbstractMediaStream {
         audioController: AudioController;
         videoController: VideoController;
         getLocalStream(): MediaStream;
+        setLocalStream(stream: MediaStream);
         getVideoTrackName(): string;
         getAudioTrackName(): string;
 

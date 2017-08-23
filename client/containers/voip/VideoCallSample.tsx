@@ -11,14 +11,15 @@ import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
 
 import { signalingServer } from "../../Chitchat";
 import { AbstractWEBRTC, AbstractPeerConnection, AbstractMediaStream, WebRtcFactory } from "../../chitchat/stalk-js-webrtc/index";
+import { createStreamByText, createDummyStream } from '../../chitchat/stalk-js-webrtc/libs/StreamHelper';
 
 import { IComponentProps } from "../../utils/IComponentProps";
 
 import { SimpleToolbar } from "../../components/SimpleToolbar";
 
 interface IComponentNameState {
-    remoteSrc;
     selfViewSrc;
+    remoteSrc;
     isMuteVoice;
     isPauseVideo;
     remoteVolume;
@@ -135,7 +136,8 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
             audio: true
         } as MediaStreamConstraints;
 
-        this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
+        // have both video and audio
+        this.webrtc.userMedia.startLocalStream(requestMedia).then(stream => {
             self.onStreamReady(stream);
 
             let { match } = self.props;
@@ -143,8 +145,52 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         }).catch(err => {
             console.error("LocalStream Fail", err);
 
-            self.setState(prev => ({ ...prev, localStreamStatus: err }));
-            self.props.onError("LocalStream Fail: " + err);
+            // only mic
+            if (err == "getUserMedia error: DevicesNotFoundError") {
+                self.webrtc.userMedia.startLocalStream({ ...requestMedia, video: false }).then(stream => {
+                    self.onStreamReady(stream);
+
+                    let { match } = self.props;
+                    self.webrtc.join(match.params.id);
+                }).catch(err => {
+                    console.error("LocalStream Fail", err);
+
+                    // only video
+                    if (err == "getUserMedia error: DevicesNotFoundError") {
+                        self.webrtc.userMedia.startLocalStream({ ...requestMedia, audio: false }).then(stream => {
+                            self.onStreamReady(stream);
+
+                            let { match } = self.props;
+                            self.webrtc.join(match.params.id);
+                        }).catch(err => {
+                            console.error("LocalStream Fail", err);
+
+                            if (err == "getUserMedia error: DevicesNotFoundError") {
+                                // join room without media
+                                let dummyStream = createDummyStream();
+                                self.webrtc.userMedia.setLocalStream(dummyStream);
+
+                                self.onStreamReady(null);
+
+                                let { match } = self.props;
+                                self.webrtc.join(match.params.id);
+                            }
+                            else {
+                                self.setState(prev => ({ ...prev, localStreamStatus: err }));
+                                self.props.onError("LocalStream Fail: " + err);
+                            }
+                        });
+                    }
+                    else {
+                        self.setState(prev => ({ ...prev, localStreamStatus: err }));
+                        self.props.onError("LocalStream Fail: " + err);
+                    }
+                });
+            }
+            else {
+                self.setState(prev => ({ ...prev, localStreamStatus: err }));
+                self.props.onError("LocalStream Fail: " + err);
+            }
         });
     }
 
@@ -152,7 +198,19 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         console.log("peerAdded", peer);
 
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
-        remotesView.src = URL.createObjectURL(peer.stream);
+        if (!remotesView) return;
+
+        if (!!peer.stream && peer.stream.getAudioTracks().length > 0) {
+            remotesView.src = URL.createObjectURL(peer.stream);
+        }
+
+        if (this.state.selfViewSrc == null) {
+            const self = this;
+            setTimeout(function () {
+                self.sendMessage(AbstractPeerConnection.DUMMY_VIDEO);
+            }, 350);
+        }
+
         remotesView.volume = 1;
 
         if (peer && peer.pc) {
@@ -186,18 +244,24 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
     }
     removeVideo() {
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
-        remotesView.disable = true;
+        if (!!remotesView) remotesView.disable = true;
 
         this.setState({ remoteSrc: null });
     }
 
-    onStreamReady(stream: MediaStream) {
+    onStreamReady(stream: MediaStream | null) {
         let selfView = getEl(ReactDOM.findDOMNode(this.refs.localVideo));
         // let video = document.createElement('video');
         // video.oncontextmenu = function () { return false; };
         // el.appendChild(video);
         if (!selfView) return;
-        selfView.src = URL.createObjectURL(stream);
+        if (!!stream && stream.getVideoTracks().length > 0) {
+            selfView.src = URL.createObjectURL(stream);
+        }
+        else if (!stream || stream.getVideoTracks().length == 0) {
+            let canvasStream = createStreamByText("NO CAMERA");
+            if (!!selfView && !!canvasStream) selfView.src = URL.createObjectURL(canvasStream);
+        }
 
         this.selfAudioName = this.webrtc.userMedia.getAudioTrackName();
         this.selfVideoName = this.webrtc.userMedia.getVideoTrackName();
@@ -230,7 +294,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
     sendMessage(message) {
         this.webrtc.peerManager.sendDirectlyToAll("message", message, {
             _id: this.webrtc.signalingSocket.id,
-            stream_id: this.state.selfViewSrc._id,
+            stream_id: !!this.state.selfViewSrc ? this.state.selfViewSrc._id : null,
         });
     }
 
@@ -263,7 +327,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                 <Flexbox flexDirection="row" height="100%" justifyContent={"flex-start"}>
                     <div ref="localContainer" style={{ position: 'relative', width: '200px', height: '100%' }}>
                         <video
-                            style={{ height: "150px", width: '100%' }}
+                            style={{ background: "#000", height: "150px", width: '100%' }}
                             className="local"
                             id="localVideo"
                             ref="localVideo"
@@ -337,7 +401,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                             onMouseLeave={() => { this.setState({ isHoverPeer: false }) }}
                             style={{ display: "inline-block", height: "300px", position: "relative" }}>
                             <video
-                                style={{ height: "300px", display: this.state.remoteSrc ? "initial" : "none" }}
+                                style={{ background: "#000", height: "300px", display: this.state.remoteSrc ? "initial" : "none" }}
                                 className="remotes"
                                 id="remoteVideos"
                                 ref="remotes"
@@ -354,7 +418,6 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                                 height: "30%",
                                                 backgroundPosition: "bottom",
                                                 backgroundImage: "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAADGCAYAAAAT+OqFAAAAdklEQVQoz42QQQ7AIAgEF/T/D+kbq/RWAlnQyyazA4aoAB4FsBSA/bFjuF1EOL7VbrIrBuusmrt4ZZORfb6ehbWdnRHEIiITaEUKa5EJqUakRSaEYBJSCY2dEstQY7AuxahwXFrvZmWl2rh4JZ07z9dLtesfNj5q0FU3A5ObbwAAAABJRU5ErkJggg==)",
-                                                "filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#3d3d3d', GradientType=0 )"
                                             }}>
                                         </div>,
                                         <div id="remoteController" key="1"
@@ -382,7 +445,11 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                                     value={this.state.remoteVolume}
                                                     onChange={(e, newValue) => {
                                                         this.setState({ remoteVolume: newValue });
-                                                        getEl(ReactDOM.findDOMNode(this.refs.remotes)).volume = newValue / 100;
+                                                        if (this.state.isPauseVideo) {
+                                                            getEl('remoteAudio').volume = newValue / 100;
+                                                        }
+                                                        else
+                                                            getEl(ReactDOM.findDOMNode(this.refs.remotes)).volume = newValue / 100;
                                                     }}
                                                     sliderStyle={{
                                                         margin: 0,
