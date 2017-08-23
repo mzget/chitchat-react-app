@@ -109,6 +109,7 @@ class VideoCall extends React.Component {
         };
         this.webrtc.userMedia.startLocalStream(requestMedia).then(stream => {
             self.onStreamReady(stream);
+            console.warn("bobobobobob", stream.getTracks());
             let { match } = self.props;
             self.webrtc.join(match.params.id);
         }).catch(err => {
@@ -234,6 +235,13 @@ class VideoCall extends React.Component {
             this.onBackPressed();
         }
     }
+    setElementsVolume(elements, volume) {
+        if (Array.isArray(elements) && elements.length > 0) {
+            elements.forEach(each => {
+                each.volume = volume;
+            });
+        }
+    }
     sendMessage(message) {
         this.webrtc.peerManager.sendDirectlyToAll("message", message, {
             _id: this.webrtc.signalingSocket.id,
@@ -337,11 +345,10 @@ class VideoCall extends React.Component {
                 })}>
                                                 <Slider min={0} max={100} step={1} value={this.state.remoteVolume} onChange={(e, newValue) => {
                     this.setState({ remoteVolume: newValue });
-                    if (this.state.isPauseVideo) {
-                        getEl('remoteAudio').volume = newValue / 100;
-                    }
-                    else
-                        getEl(ReactDOM.findDOMNode(this.refs.remotes)).volume = newValue / 100;
+                    this.setElementsVolume([
+                        getEl('remoteAudio'),
+                        getEl(ReactDOM.findDOMNode(this.refs.remotes))
+                    ], newValue / 100);
                 }} sliderStyle={{
                     margin: 0,
                 }} style={{

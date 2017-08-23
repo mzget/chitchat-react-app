@@ -139,6 +139,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         // have both video and audio
         this.webrtc.userMedia.startLocalStream(requestMedia).then(stream => {
             self.onStreamReady(stream);
+            console.warn("bobobobobob", stream.getTracks());
 
             let { match } = self.props;
             self.webrtc.join(match.params.id);
@@ -288,6 +289,19 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         let nextInline = nextProps.stalkReducer.get("inline");
         if (!nextInline && !shallowEqual(nextInline, prevInline)) {
             this.onBackPressed();
+        }
+    }
+
+    /**
+     * Set volume to html elements
+     * @param elements array of element which are <video>, <audio> only
+     * @param volume must be 0-1
+     */
+    setElementsVolume(elements: Array<HTMLVideoElement | HTMLAudioElement>, volume: number) {
+        if (Array.isArray(elements) && elements.length > 0) {
+            elements.forEach(each => {
+                each.volume = volume;
+            });
         }
     }
 
@@ -445,11 +459,10 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                                     value={this.state.remoteVolume}
                                                     onChange={(e, newValue) => {
                                                         this.setState({ remoteVolume: newValue });
-                                                        if (this.state.isPauseVideo) {
-                                                            getEl('remoteAudio').volume = newValue / 100;
-                                                        }
-                                                        else
-                                                            getEl(ReactDOM.findDOMNode(this.refs.remotes)).volume = newValue / 100;
+                                                        this.setElementsVolume([
+                                                            getEl('remoteAudio'),
+                                                            getEl(ReactDOM.findDOMNode(this.refs.remotes))
+                                                        ], newValue / 100);
                                                     }}
                                                     sliderStyle={{
                                                         margin: 0,
