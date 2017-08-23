@@ -3,7 +3,7 @@
  *
  * ChatRoomComponent for handle some business logic of chat room.
  */
-import * as Rx from "@reactivex/rxjs";
+import * as Rx from "rxjs/Rx";
 import * as async from "async";
 import { ServerImplemented } from "stalk-js";
 import { ChitChatFactory } from "./ChitChatFactory";

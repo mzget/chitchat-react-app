@@ -1,4 +1,7 @@
-import * as firebase from "firebase";
+// import * as firebase from "firebase";
+import * as firebase from 'firebase/app';
+import 'firebase/messaging';
+
 
 import { SimpleStorageFactory } from "./chitchat/chats/dataAccessLayer/";
 const appStorage = SimpleStorageFactory.getObject("app");
