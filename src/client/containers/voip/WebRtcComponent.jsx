@@ -12,19 +12,57 @@ import { connect } from "react-redux";
 import { shallowEqual, compose } from "recompose";
 import { withRouter } from "react-router-dom";
 import Flexbox from "flexbox-react";
-import Slider from 'material-ui/Slider';
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
+import { RaisedButton, FontIcon, Slider, FlatButton } from "material-ui";
 import { signalingServer } from "../../Chitchat";
-import * as chatroom from "../../chitchat/chats/redux/chatroom/";
-import * as calling from "../../chitchat/calling/";
-import { AbstractPeerConnection, AbstractWEBRTC, WebRtcFactory } from '../../chitchat/stalk-js-webrtc/index';
+import { AbstractPeerConnection, AbstractWEBRTC, AbstractMediaStream, WebRtcFactory } from '../../chitchat/stalk-js-webrtc/index';
+function getEl(idOrEl) {
+    if (typeof idOrEl === 'string') {
+        return document.getElementById(idOrEl);
+    }
+    else {
+        return idOrEl;
+    }
+}
+;
 class WebRtcComponent extends React.Component {
+    sendMessage(message) {
+        this.webrtc.peerManager.sendDirectlyToAll("message", message, {
+            _id: this.webrtc.signalingSocket.id,
+            stream_id: this.state.selfViewSrc._id,
+        });
+    }
+    changeMediaContraint(media) {
+        let self = this;
+        let requestMedia = {
+            video: media.video,
+            audio: true
+        };
+        let peers = this.webrtc.peerManager.getPeers();
+        this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
+            self.onStreamReady(stream);
+            peers.forEach(peer => peer.addStream(stream));
+        }).catch(err => {
+            console.error("LocalStream Fail", err);
+            self.setState(prev => (Object.assign({}, prev, { localStreamStatus: err })));
+            self.props.onError("LocalStream Fail: " + err);
+        });
+    }
     constructor(props) {
         super(props);
-        this.peerAdded = this.peerAdded.bind(this);
-        this.removeVideo = this.removeVideo.bind(this);
-        this.readyToCall = this.readyToCall.bind(this);
-        this.onPeerCreated = this.onPeerCreated.bind(this);
+        this.state = {
+            isMuteVoice: false,
+            isPauseVideo: false,
+            micVol: 100,
+            selfViewSrc: null,
+            remoteSrc: null,
+            peerStat: "",
+            remoteVolume: 100,
+            isHoverPeer: false,
+            localStreamStatus: ""
+        };
+        this.changeMediaContraint = this.changeMediaContraint.bind(this);
+        this.sendMessage = this.sendMessage.bind(this);
         this.startWebRtc();
     }
     componentWillReceiveProps(nextProps) {
@@ -38,41 +76,57 @@ class WebRtcComponent extends React.Component {
     }
     startWebRtc() {
         return __awaiter(this, void 0, void 0, function* () {
-            let self = this;
             let rtcConfig = {
                 signalingUrl: signalingServer,
                 socketOptions: { 'force new connection': true },
-                debug: true
+                debug: true,
             };
-            this.webrtc = yield WebRtcFactory.getObject(rtcConfig);
-            this.props.getWebRtc(this.webrtc);
+            this.webrtc = (yield WebRtcFactory.getObject(rtcConfig));
+            this.peerAdded = this.peerAdded.bind(this);
+            this.removeVideo = this.removeVideo.bind(this);
+            this.onStreamReady = this.onStreamReady.bind(this);
+            this.connectionReady = this.connectionReady.bind(this);
             this.webrtc.webrtcEvents.on(AbstractWEBRTC.CONNECTION_READY, this.connectionReady);
-            this.webrtc.webrtcEvents.on(AbstractWEBRTC.CREATED_PEER, this.onPeerCreated);
+            this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOIN_ROOM_ERROR, (err) => console.log("joinRoom fail", err));
+            this.webrtc.webrtcEvents.on(AbstractWEBRTC.CREATED_PEER, (peer) => console.log("createdPeer", peer.id));
+            this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOINED_ROOM, (roomname) => (this.props.onJoinedRoom) ? this.props.onJoinedRoom(roomname) : console.log("joined", roomname));
             this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_ADDED, this.peerAdded);
             this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_REMOVED, this.removeVideo);
-            this.webrtc.webrtcEvents.on('readyToCall', this.readyToCall);
-            this.webrtc.webrtcEvents.on('iceFailed', function (peer) {
-                console.warn("iceFailed", peer);
-                let connstate = document.querySelector('#container_' + self.webrtc.getDomId(peer) + ' .connectionstate');
-                console.log('local fail', connstate);
-                if (connstate) {
-                    connstate.innerText = 'Connection failed.';
-                }
+            this.webrtc.webrtcEvents.on(AbstractPeerConnection.CONNECTIVITY_ERROR, (peer) => {
+                console.log(AbstractPeerConnection.CONNECTIVITY_ERROR, peer);
             });
-            if (this.webrtc.detectSpeakingEvents) {
-                this.webrtc.webrtcEvents.on('volumeChange', function (volume, treshold) {
-                    self.showVolume(document.getElementById('localVolume'), volume);
-                });
-            }
-            this.webrtc.webrtcEvents.on(AbstractPeerConnection.CONNECTIVITY_ERROR, function (peer) {
-                console.warn("connectivityError", peer);
-                let connstate = document.getElementById('peer_connstate_' + this.webrtc.getDomId(peer));
-                console.log('remote fail', connstate);
-                if (connstate) {
-                    connstate.innerText = 'Connection failed.';
-                }
+            this.webrtc.webrtcEvents.on(AbstractPeerConnection.MUTE, (data) => {
+                console.log(AbstractPeerConnection.MUTE, data);
+            });
+            this.webrtc.webrtcEvents.on(AbstractPeerConnection.UNMUTE, (data) => {
+                console.log(AbstractPeerConnection.UNMUTE, data);
             });
         });
+    }
+    connectionReady(socker_id) {
+        let self = this;
+        let requestMedia = {
+            video: AbstractMediaStream.vgaConstraints.video,
+            audio: true
+        };
+        this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
+            self.onStreamReady(stream);
+            let { match } = self.props;
+            self.webrtc.join(match.params.id);
+        }).catch(err => {
+            console.error("LocalStream Fail", err);
+            self.setState(prev => (Object.assign({}, prev, { localStreamStatus: err })));
+            self.props.onError("LocalStream Fail: " + err);
+        });
+    }
+    onStreamReady(stream) {
+        let selfView = getEl(ReactDOM.findDOMNode(this.refs.localVideo));
+        if (!selfView)
+            return;
+        selfView.src = URL.createObjectURL(stream);
+        this.selfAudioName = this.webrtc.userMedia.getAudioTrackName();
+        this.selfVideoName = this.webrtc.userMedia.getVideoTrackName();
+        this.setState({ selfViewSrc: stream, localStreamStatus: "ready" });
     }
     onPeerCreated(peer) {
         let self = this;
@@ -88,109 +142,40 @@ class WebRtcComponent extends React.Component {
     }
     peerAdded(peer) {
         console.log("peerAdded", peer);
-        const self = this;
-        let remotes = ReactDOM.findDOMNode(this.refs.remotes);
-        if (remotes) {
-            const peerId = peer.id;
-            if (peer && peer.pc) {
-                peer.pc.on('iceConnectionStateChange', function (event) {
-                    let connstate = document.getElementById('peer_connstate_' + peerId);
-                    if (!connstate)
-                        return;
-                    switch (peer.pc.iceConnectionState) {
-                        case 'checking':
-                            connstate.innerText = 'Connecting to peer...';
-                            break;
-                        case 'connected':
-                            connstate.innerText = 'connected...';
-                            break;
-                        case 'completed':
-                            connstate.innerText = 'Connection established.';
-                            break;
-                        case 'disconnected':
-                            connstate.innerText = 'Disconnected.';
-                            break;
-                        case 'failed':
-                            break;
-                        case 'closed':
-                            connstate.innerText = 'Connection closed.';
-                            break;
-                    }
-                });
-            }
-            this.webrtc.on('remoteVolumeChange', function (peer, volume) {
-                if (volume !== null) {
-                    self.showVolume(document.getElementById(`remoteVolume_${peerId}`), volume);
+        let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
+        remotesView.src = URL.createObjectURL(peer.stream);
+        remotesView.volume = 1;
+        if (peer && peer.pc) {
+            let peerStat = "";
+            peer.pc.on('iceConnectionStateChange', function (event) {
+                switch (peer.pc.iceConnectionState) {
+                    case 'checking':
+                        peerStat = 'Connecting to peer...';
+                        break;
+                    case 'connected':
+                        peerStat = 'connected...';
+                        break;
+                    case 'completed':
+                        peerStat = 'Connection established.';
+                        break;
+                    case 'disconnected':
+                        peerStat = 'Disconnected.';
+                        break;
+                    case 'failed':
+                        break;
+                    case 'closed':
+                        peerStat = 'Connection closed.';
+                        break;
                 }
-            });
-            ReactDOM.render(<MuiThemeProvider>
-                    <div className='videoContainer' id={`container_${peerId}`}>
-                        <div style={{ width: '640px', height: '480px', position: 'relative' }}>
-                            <video onContextMenu={() => false} autoPlay id={peerId} onLoadStart={(e) => { e.target.volume = 0; }}/>
-                            {this.webrtc.config.enableDataChannels ?
-                <meter id={`remoteVolume_${peerId}`} style={{
-                    position: 'absolute',
-                    left: '15%',
-                    width: '70%',
-                    bottom: '2px',
-                    height: '5px'
-                }} min={-45} max={-20} low={-40} high={-25}/>
-                :
-                    null}
-                            <Slider axis='y' min={0} max={100} step={1} defaultValue={100} onChange={(e, newValue) => {
-                peer.videoEl.volume = newValue / 100;
-            }} sliderStyle={{
-                margin: 0,
-            }} style={{
-                position: 'absolute',
-                height: '30%',
-                left: '5px',
-                bottom: '10px',
-            }}/>
-                        </div>
-                        <div id={`peer_connstate_${peerId}`}></div>
-                    </div>
-                </MuiThemeProvider>, remotes, () => {
-                document.getElementById(peerId).srcObject = peer.stream;
+                this.setState({ peerStat: peerStat });
             });
         }
-        else {
-            console.warn("can't find remotes dom!");
-        }
+        this.setState({ remoteSrc: peer.stream, remoteVolume: 100 });
     }
-    removeVideo(video, peer) {
-        console.log("removeVideo", video, peer);
-        let remotes = ReactDOM.findDOMNode(this.refs.remotes);
-        let el = document.getElementById(peer ? 'container_' + this.webrtc.getDomId(peer) : 'localScreenContainer');
-        if (remotes && el) {
-            ReactDOM.unmountComponentAtNode(el);
-        }
-    }
-    readyToCall(stream) {
-        let self = this;
-        let { match, userReducer: { user }, stalkReducer } = this.props;
-        let incommingCall = stalkReducer.get("incommingCall");
-        if (!!incommingCall) {
-            this.webrtc.joinRoom(incommingCall.room_id, () => {
-                self.props.dispatch(calling.onCalling(incommingCall.room_id));
-            });
-        }
-        else {
-            let room_id = match.params.id;
-            this.webrtc.joinRoom(room_id, () => {
-                self.props.dispatch(calling.onCalling(room_id));
-            });
-            let room = chatroom.getRoom(room_id);
-            let targets = new Array();
-            if (!!room) {
-                room.members.map(value => {
-                    if (value._id !== user._id) {
-                        targets.push(value._id);
-                    }
-                });
-            }
-            this.props.dispatch(calling.videoCall_Epic({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
-        }
+    removeVideo() {
+        let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
+        remotesView.disable = true;
+        this.setState({ remoteSrc: null });
     }
     showVolume(el, volume) {
         if (!el)
@@ -202,39 +187,116 @@ class WebRtcComponent extends React.Component {
         el.value = volume;
     }
     render() {
-        return (<Flexbox flexDirection="column" justifyContent={"flex-start"}>
-                <Flexbox flexDirection="row" height="150px" justifyContent={"flex-start"}>
-                    <div ref="localContainer" style={{ position: 'relative', width: '200px', height: '150px' }}>
-                        <video style={{ height: "150px", width: '100%' }} className="local" id="localVideo" ref="localVideo">
-                        </video>
-                        {(!!this.webrtc
-            &&
-                Array.isArray(this.webrtc.webrtc.unControllMic)
-            &&
-                this.webrtc.webrtc.unControllMic.length > 0)
-            ?
-                <meter id="localVolume" style={{
-                    position: 'absolute',
-                    left: '15%',
-                    width: '70%',
-                    bottom: '2px',
-                    height: '5px'
-                }} min={-45} max={-20} low={-40} high={-25}/>
+        let disabledAudioOption = true;
+        let disabledVideoOption = true;
+        if (!!this.state.selfViewSrc) {
+            if (this.state.selfViewSrc.getAudioTracks().length > 0 &&
+                !!this.webrtc.userMedia.audioController &&
+                this.webrtc.userMedia.audioController.support) {
+                disabledAudioOption = false;
+            }
+            if (this.state.selfViewSrc.getVideoTracks().length > 0) {
+                disabledVideoOption = false;
+            }
+        }
+        return (<Flexbox flexDirection="row" height="100%" justifyContent={"flex-start"}>
+                <div ref="localContainer" style={{ position: 'relative', width: '200px', height: '100%' }}>
+                    <video style={{ height: "150px", width: '100%' }} className="local" id="localVideo" ref="localVideo" autoPlay={true} muted={true}>
+                    </video>
+                    <Slider min={0} max={100} step={1} disabled={disabledAudioOption} defaultValue={100} sliderStyle={{
+            margin: 0,
+        }} onChange={(e, newValue) => {
+            this.setState({ micVol: newValue, isMuteVoice: newValue == 0 });
+            this.webrtc.userMedia.audioController.setVolume(newValue / 100);
+        }}/>
+                    <div>{`Mic volume (${this.state.micVol}%)`}</div>
+                    {this.state.isMuteVoice ?
+            <RaisedButton secondary disabled={disabledAudioOption} icon={<FontIcon className="material-icons">mic_off</FontIcon>} onClick={() => {
+                this.webrtc.userMedia.audioController.setVolume(this.state.micVol / 100);
+                this.setState({ isMuteVoice: false });
+            }}/>
+            :
+                <RaisedButton disabled={disabledAudioOption} icon={<FontIcon className="material-icons">mic</FontIcon>} onClick={() => {
+                    this.webrtc.userMedia.audioController.setVolume(0);
+                    this.setState({ isMuteVoice: true });
+                }}/>}
+                    {this.state.isPauseVideo ?
+            <RaisedButton secondary disabled={disabledVideoOption} icon={<FontIcon className="material-icons">videocam_off</FontIcon>} onClick={() => {
+                this.sendMessage(AbstractPeerConnection.UNPAUSE);
+                this.webrtc.userMedia.videoController.setVideoEnabled(true);
+                this.setState({ isPauseVideo: false });
+            }}/>
+            :
+                <RaisedButton disabled={disabledVideoOption} icon={<FontIcon className="material-icons">videocam</FontIcon>} onClick={() => {
+                    this.sendMessage(AbstractPeerConnection.PAUSE);
+                    this.webrtc.userMedia.videoController.setVideoEnabled(false);
+                    this.setState({ isPauseVideo: true });
+                }}/>}
+                    <FlatButton label="HD" primary={true} onClick={() => this.changeMediaContraint(AbstractMediaStream.hdConstraints)}/>
+                    <FlatButton label="VGA" primary={true} onClick={() => this.changeMediaContraint(AbstractMediaStream.vgaConstraints)}/>
+                    <FlatButton label="QVGA" primary={true} onClick={() => this.changeMediaContraint(AbstractMediaStream.qvgaConstraints)}/>
+
+                    <p style={{ fontSize: 12 }}>UserMedia: {this.state.localStreamStatus}</p>
+                    <p style={{ fontSize: 12 }}>AudioTrack: {this.selfAudioName}</p>
+                    <p style={{ fontSize: 12 }}>VideoTrack: {this.selfVideoName}</p>
+                </div>
+                <div style={{ width: "100%", height: "300px", textAlign: "center" }}>
+                    <div onMouseOver={() => { this.setState({ isHoverPeer: true }); }} onMouseLeave={() => { this.setState({ isHoverPeer: false }); }} style={{ display: "inline-block", height: "300px", position: "relative" }}>
+                        <video style={{ height: "300px", display: this.state.remoteSrc ? "initial" : "none" }} className="remotes" id="remoteVideos" ref="remotes" autoPlay={true}/>
+                        <audio id="remoteAudio" style={{ display: "none" }} autoPlay={true}/>
+                        {this.state.isHoverPeer ?
+            [
+                <div key="0" style={{
+                    position: "absolute",
+                    bottom: 0,
+                    width: "100%",
+                    height: "30%",
+                    backgroundPosition: "bottom",
+                    backgroundImage: "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAADGCAYAAAAT+OqFAAAAdklEQVQoz42QQQ7AIAgEF/T/D+kbq/RWAlnQyyazA4aoAB4FsBSA/bFjuF1EOL7VbrIrBuusmrt4ZZORfb6ehbWdnRHEIiITaEUKa5EJqUakRSaEYBJSCY2dEstQY7AuxahwXFrvZmWl2rh4JZ07z9dLtesfNj5q0FU3A5ObbwAAAABJRU5ErkJggg==)",
+                    "filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#3d3d3d', GradientType=0 )"
+                }}>
+                                    </div>,
+                <div id="remoteController" key="1" style={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "15%",
+                    bottom: 0,
+                    display: this.state.remoteSrc ? "flex" : "none",
+                    alignItems: "center",
+                    padding: "0 5px",
+                }}>
+                                        <div style={{ color: "#fff", width: "41px" }}>
+                                            {`${this.state.remoteVolume}%`}
+                                        </div>
+                                        <MuiThemeProvider muiTheme={getMuiTheme({
+                    slider: {
+                        trackColor: 'rgba(255,255,255,0.5)',
+                        selectionColor: '#fff',
+                        rippleColor: 'rgba(255,255,255,0.5)'
+                    }
+                })}>
+                                            <Slider min={0} max={100} step={1} value={this.state.remoteVolume} onChange={(e, newValue) => {
+                    this.setState({ remoteVolume: newValue });
+                    getEl(ReactDOM.findDOMNode(this.refs.remotes)).volume = newValue / 100;
+                }} sliderStyle={{
+                    margin: 0,
+                }} style={{
+                    width: "30%",
+                    margin: "0 5px",
+                }}/>
+                                        </MuiThemeProvider>
+                                    </div>
+            ]
             :
                 null}
                     </div>
-                    
-                </Flexbox>
-                <div style={{ width: "100%" }} className="remotes" id="remoteVideos" ref="remotes">
+
                 </div>
-                
             </Flexbox>);
     }
 }
 const mapStateToProps = (state) => ({
-    userReducer: state.userReducer,
-    alertReducer: state.alertReducer,
-    stalkReducer: state.stalkReducer
+    alertReducer: state.alertReducer
 });
 const enhance = compose(withRouter, connect(mapStateToProps));
 export const WebRtcPage = enhance(WebRtcComponent);
