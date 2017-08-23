@@ -142,12 +142,6 @@ export class Peer {
         else if (message.type === AbstractPeerConnection.CONNECTIVITY_ERROR) {
             this.parentsEmitter.emit(AbstractPeerConnection.CONNECTIVITY_ERROR, self);
         }
-        else if (message.type === AbstractPeerConnection.MUTE) {
-            this.parentsEmitter.emit(AbstractPeerConnection.MUTE, { id: message.from, name: message.payload.name });
-        }
-        else if (message.type === AbstractPeerConnection.UNMUTE) {
-            this.parentsEmitter.emit(AbstractPeerConnection.UNMUTE, { id: message.from, name: message.payload.name });
-        }
         else if (message.type === 'endOfCandidates') {
             var mLines = this.pc.pc.transceivers || [];
             mLines.forEach(function (mLine) {

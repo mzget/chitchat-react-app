@@ -14,7 +14,7 @@ const configuration = { "iceServers": [{ "urls": "stun:stun.l.google.com:19302" 
 export interface PeerConstructor {
     peer_id; stream; pcPeers; emitter; sendHandler; offer; debug;
 }
-export class Peer implements AbstractPeerConnection.IPCHandler {
+export class Peer implements AbstractPeerConnection.IPC_Handler {
     debug: boolean;
     type: string;
     parentsEmitter: EventEmitter;
@@ -205,12 +205,6 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
         else if (message.type === AbstractPeerConnection.CONNECTIVITY_ERROR) {
             this.parentsEmitter.emit(AbstractPeerConnection.CONNECTIVITY_ERROR, self);
         }
-        else if (message.type === AbstractPeerConnection.MUTE) {
-            this.parentsEmitter.emit(AbstractPeerConnection.MUTE, { id: message.from, name: message.payload.name });
-        }
-        else if (message.type === AbstractPeerConnection.UNMUTE) {
-            this.parentsEmitter.emit(AbstractPeerConnection.UNMUTE, { id: message.from, name: message.payload.name });
-        }
         else if (message.type === 'endOfCandidates') {
             // Edge requires an end-of-candidates. Since only Edge will have mLines or tracks on the
             // shim this will only be called in Edge.
@@ -250,7 +244,7 @@ export class Peer implements AbstractPeerConnection.IPCHandler {
         return this.createDataChannel(name);
     }
 
-    createDataChannel(name) {
+    private createDataChannel(name) {
         let self = this;
         let dataConstraint = null;
 

@@ -65,7 +65,7 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
             audio: true
         } as MediaStreamConstraints;
 
-        let peers = this.webrtc.peerManager.getPeers() as Map<string, AbstractPeerConnection.IPCHandler>;
+        let peers = this.webrtc.peerManager.getPeers() as Map<string, AbstractPeerConnection.IPC_Handler>;
 
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
             self.onStreamReady(stream);
@@ -112,7 +112,7 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
         this.connectionReady = this.connectionReady.bind(this);
 
         this.webrtc.webrtcEvents.on(AbstractWEBRTC.ON_CONNECTION_READY, this.connectionReady);
-        this.webrtc.webrtcEvents.on(AbstractWEBRTC.ON_CONNECTION_CLOSE, (data) => { console.log("signallin close", data) });
+        this.webrtc.webrtcEvents.on(AbstractWEBRTC.ON_CONNECTION_CLOSE, (data) => { console.log("signalling close", data) });
         this.webrtc.webrtcEvents.on(AbstractWEBRTC.CREATED_PEER, (peer) => console.log("createdPeer", peer.id));
         this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOINED_ROOM, (roomname: string) =>
             (this.props.onJoinedRoom) ? this.props.onJoinedRoom(roomname) : console.log("joined", roomname));
@@ -121,12 +121,6 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
         this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_REMOVED, this.removeVideo);
         this.webrtc.webrtcEvents.on(AbstractPeerConnection.CONNECTIVITY_ERROR, (peer) => {
             console.log(AbstractPeerConnection.CONNECTIVITY_ERROR, peer);
-        });
-        this.webrtc.webrtcEvents.on(AbstractPeerConnection.MUTE, (data) => {
-            console.log(AbstractPeerConnection.MUTE, data);
-        });
-        this.webrtc.webrtcEvents.on(AbstractPeerConnection.UNMUTE, (data) => {
-            console.log(AbstractPeerConnection.UNMUTE, data);
         });
     }
 

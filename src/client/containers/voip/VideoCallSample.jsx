@@ -94,12 +94,6 @@ class VideoCall extends React.Component {
             this.webrtc.webrtcEvents.on(AbstractPeerConnection.CONNECTIVITY_ERROR, (peer) => {
                 console.log(AbstractPeerConnection.CONNECTIVITY_ERROR, peer);
             });
-            this.webrtc.webrtcEvents.on(AbstractPeerConnection.MUTE, (data) => {
-                console.log(AbstractPeerConnection.MUTE, data);
-            });
-            this.webrtc.webrtcEvents.on(AbstractPeerConnection.UNMUTE, (data) => {
-                console.log(AbstractPeerConnection.UNMUTE, data);
-            });
         });
     }
     connectionReady(socker_id) {

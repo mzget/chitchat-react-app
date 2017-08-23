@@ -85,7 +85,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
             audio: true
         } as MediaStreamConstraints;
 
-        let peers = this.webrtc.peerManager.getPeers() as Map<string, AbstractPeerConnection.IPCHandler>;
+        let peers = this.webrtc.peerManager.getPeers() as Map<string, AbstractPeerConnection.IPC_Handler>;
 
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
             self.onStreamReady(stream);
@@ -120,12 +120,6 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_REMOVED, this.removeVideo);
         this.webrtc.webrtcEvents.on(AbstractPeerConnection.CONNECTIVITY_ERROR, (peer) => {
             console.log(AbstractPeerConnection.CONNECTIVITY_ERROR, peer);
-        });
-        this.webrtc.webrtcEvents.on(AbstractPeerConnection.MUTE, (data) => {
-            console.log(AbstractPeerConnection.MUTE, data);
-        });
-        this.webrtc.webrtcEvents.on(AbstractPeerConnection.UNMUTE, (data) => {
-            console.log(AbstractPeerConnection.UNMUTE, data);
         });
     }
 

@@ -24,7 +24,7 @@ export namespace AbstractWEBRTC {
         signalingSocket: SocketIOClient.Socket;
         webrtcEvents: events.EventEmitter;
         roomName: string;
-        peerManager: AbstractPeerConnection.IPCEstabished;
+        peerManager: AbstractPeerConnection.IPC_Estabished;
         userMedia: AbstractMediaStream.IUserMedia;
         debug: boolean;
 
@@ -37,30 +37,29 @@ export namespace AbstractWEBRTC {
 }
 
 export namespace AbstractPeerConnection {
-    export const CANDIDATE = "candidate";
     export const PEER_STREAM_ADDED = "peerStreamAdded";
     export const PEER_STREAM_REMOVED = "peerStreamRemoved";
     export const CONNECTIVITY_ERROR = "connectivityError";
     export const ON_ICE_CONNECTION_FAILED = "iceFailed";
-    export const MUTE = "mute";
-    export const UNMUTE = "unmute";
+
     export const PAUSE = "pause"; // for video
     export const UNPAUSE = "unpause"; // for video
     export const DUMMY_VIDEO = "dummy_video"; // for video
 
     export const ANSWER = "answer";
     export const OFFER = "offer";
+    export const CANDIDATE = "candidate";
 
-    export interface IPCEstabished {
-        createPeer(options, webrtc): AbstractPeerConnection.IPCHandler;
-        getPeers(session_id?: string): AbstractPeerConnection.IPCHandler | Map<string, AbstractPeerConnection.IPCHandler>;
+    export interface IPC_Estabished {
+        createPeer(options, webrtc): AbstractPeerConnection.IPC_Handler;
+        getPeers(session_id?: string): AbstractPeerConnection.IPC_Handler | Map<string, AbstractPeerConnection.IPC_Handler>;
         removePeers(session_id: string, webrtc);
 
         sendToAll(message, payload);
         sendDirectlyToAll(channel: string, message, payload);
     }
 
-    export interface IPCHandler {
+    export interface IPC_Handler {
         id: string;
         pc: RTCPeerConnection;
         channels: any;
