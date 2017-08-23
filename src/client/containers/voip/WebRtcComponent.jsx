@@ -70,7 +70,7 @@ class WebRtcComponent extends React.Component {
             let rtcConfig = {
                 signalingUrl: signalingServer,
                 socketOptions: { 'force new connection': true },
-                debug: true,
+                debug: false,
             };
             this.webrtc = (yield WebRtcFactory.getObject(rtcConfig));
             this.peerAdded = this.peerAdded.bind(this);

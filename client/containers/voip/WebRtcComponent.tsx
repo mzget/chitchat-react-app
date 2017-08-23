@@ -102,7 +102,7 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
         let rtcConfig = {
             signalingUrl: signalingServer,
             socketOptions: { 'force new connection': true },
-            debug: true,
+            debug: false,
         } as AbstractWEBRTC.WebRtcConfig;
         this.webrtc = await WebRtcFactory.getObject(rtcConfig) as AbstractWEBRTC.IWebRTC;
 
