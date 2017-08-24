@@ -1,5 +1,10 @@
+/**
+ * React webrtc interface.
+ *
+ * Copyright 2017 Ahoo Studio.co.th.
+ */
 import { AbstractPeerConnection } from "../IWebRTC";
-import { Peer, PeerConstructor } from "./Peer";
+import { Peer } from "./Peer";
 import { WebRTC, logError } from "./WebRTC";
 
 export class PeerManager implements AbstractPeerConnection.IPC_Estabished {
@@ -22,7 +27,7 @@ export class PeerManager implements AbstractPeerConnection.IPC_Estabished {
             emitter: webrtc.webrtcEvents,
             sendHandler: webrtc.send,
             debug: self.debug
-        } as PeerConstructor;
+        } as AbstractPeerConnection.PeerConstructor;
         let peer = new Peer(config);
         peer.logError = logError;
         this.peers.set(options.id, peer);

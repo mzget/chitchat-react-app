@@ -24,8 +24,6 @@ export class WebRTC {
             self.webrtcEvents.emit(AbstractWEBRTC.ON_CONNECTION_READY, self.signalingSocket.id);
         });
         self.signalingSocket.on('message', function (data) {
-            if (self.debug)
-                console.log("SOCKET message ", data.type, data.from);
             withExchange(self)(data);
         });
         self.signalingSocket.on('remove', function (room) {

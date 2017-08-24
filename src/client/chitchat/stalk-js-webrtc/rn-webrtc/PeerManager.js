@@ -1,11 +1,12 @@
 import { AbstractPeerConnection } from "../index";
-import * as Peer from "./Peer";
+import { Peer } from "./Peer";
 import { logError } from "./WebRTC";
 export class PeerManager {
     constructor(options) {
         this.debug = false;
         this.peers = new Map();
         this.debug = options.debug;
+        this.createPeer = this.createPeer.bind(this);
     }
     createPeer(options, webrtc) {
         let self = this;
@@ -18,7 +19,7 @@ export class PeerManager {
             sendHandler: webrtc.send,
             debug: self.debug
         };
-        let peer = new Peer.Peer(config);
+        let peer = new Peer(config);
         peer.logError = logError;
         this.peers.set(options.id, peer);
         return peer;

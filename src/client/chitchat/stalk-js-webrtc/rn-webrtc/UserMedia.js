@@ -16,6 +16,9 @@ export class UserMedia {
     getLocalStream() {
         return this.localStream;
     }
+    setLocalStream(stream) {
+        this.localStream = stream;
+    }
     getVideoTrackName() {
         let videoTracks = this.localStream.getVideoTracks();
         if (videoTracks.length > 0) {
@@ -65,10 +68,7 @@ export class UserMedia {
                 }
             }
             if (mediaConstraints.video != false) {
-                defaultMediaConstraints = Object.assign({}, mediaConstraints, { video: {
-                        facingMode: (isFront ? "user" : "environment"),
-                        optional: (videoSourceId ? [{ sourceId: videoSourceId }] : [])
-                    } });
+                defaultMediaConstraints = Object.assign({}, mediaConstraints, { facingMode: (isFront ? "user" : "environment"), optional: (videoSourceId ? [{ sourceId: videoSourceId }] : []) });
             }
             else {
                 defaultMediaConstraints = Object.assign({}, mediaConstraints);
@@ -124,6 +124,8 @@ export class UserMedia {
     }
     stopStream() {
         let self = this;
+        if (!self.localStream)
+            return;
         let tracks = this.localStream.getTracks();
         tracks.forEach(function (track) {
             track.stop();

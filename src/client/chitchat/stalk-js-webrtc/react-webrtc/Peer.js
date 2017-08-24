@@ -40,7 +40,7 @@ export class Peer {
                 self.pc.ondatachannel = self.receiveChannelCallback.bind(self);
             }
             else if (event.target.iceConnectionState == "failed") {
-                self.parentsEmitter.emit(AbstractPeerConnection.ON_ICE_CONNECTION_FAILED, self);
+                self.parentsEmitter.emit(AbstractPeerConnection.ON_ICE_CONNECTION_FAILED, self.pc);
                 self.send_event(AbstractPeerConnection.CONNECTIVITY_ERROR, null, { to: self.id });
             }
         };
@@ -130,6 +130,8 @@ export class Peer {
         else if (message.type === AbstractPeerConnection.CANDIDATE) {
             if (self.debug)
                 console.log('exchange candidate');
+            if (!message.candidate)
+                return;
             function onAddIceCandidateSuccess() {
                 if (self.debug)
                     console.log('addIceCandidate success');
@@ -140,7 +142,7 @@ export class Peer {
             self.pc.addIceCandidate(new RTCIceCandidate(message.candidate), onAddIceCandidateSuccess, onAddIceCandidateError);
         }
         else if (message.type === AbstractPeerConnection.CONNECTIVITY_ERROR) {
-            this.parentsEmitter.emit(AbstractPeerConnection.CONNECTIVITY_ERROR, self);
+            this.parentsEmitter.emit(AbstractPeerConnection.CONNECTIVITY_ERROR, self.pc);
         }
         else if (message.type === 'endOfCandidates') {
             var mLines = this.pc.pc.transceivers || [];
