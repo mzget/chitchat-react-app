@@ -85,7 +85,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
             audio: true
         } as MediaStreamConstraints;
 
-        let peers = this.webrtc.peerManager.getPeers() as Map<string, AbstractPeerConnection.IPCHandler>;
+        let peers = this.webrtc.peerManager.getPeers() as Map<string, AbstractPeerConnection.IPC_Handler>;
 
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
             self.onStreamReady(stream);
@@ -102,7 +102,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         let rtcConfig = {
             signalingUrl: signalingServer,
             socketOptions: { 'force new connection': true },
-            debug: true,
+            debug: false,
         } as AbstractWEBRTC.WebRtcConfig;
         this.webrtc = await WebRtcFactory.getObject(rtcConfig) as AbstractWEBRTC.IWebRTC;
 
@@ -111,7 +111,8 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.onStreamReady = this.onStreamReady.bind(this);
         this.connectionReady = this.connectionReady.bind(this);
 
-        this.webrtc.webrtcEvents.on(AbstractWEBRTC.CONNECTION_READY, this.connectionReady);
+        this.webrtc.webrtcEvents.on(AbstractWEBRTC.ON_CONNECTION_READY, this.connectionReady);
+        this.webrtc.webrtcEvents.on(AbstractWEBRTC.ON_CONNECTION_CLOSE, (data) => { console.log("signalling close", data) });
         this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOIN_ROOM_ERROR, (err) => console.log("joinRoom fail", err));
         this.webrtc.webrtcEvents.on(AbstractWEBRTC.CREATED_PEER, (peer) => console.log("createdPeer", peer.id));
         this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOINED_ROOM, (roomname: string) => console.log("joined", roomname));
@@ -119,12 +120,6 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_REMOVED, this.removeVideo);
         this.webrtc.webrtcEvents.on(AbstractPeerConnection.CONNECTIVITY_ERROR, (peer) => {
             console.log(AbstractPeerConnection.CONNECTIVITY_ERROR, peer);
-        });
-        this.webrtc.webrtcEvents.on(AbstractPeerConnection.MUTE, (data) => {
-            console.log(AbstractPeerConnection.MUTE, data);
-        });
-        this.webrtc.webrtcEvents.on(AbstractPeerConnection.UNMUTE, (data) => {
-            console.log(AbstractPeerConnection.UNMUTE, data);
         });
     }
 

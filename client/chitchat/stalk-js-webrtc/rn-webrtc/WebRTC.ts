@@ -47,7 +47,7 @@ export class WebRTC implements AbstractWEBRTC.IWebRTC {
             if (self.debug)
                 console.log("SOCKET connect", self.signalingSocket.id);
 
-            self.webrtcEvents.emit(AbstractWEBRTC.CONNECTION_READY, self.signalingSocket.id);
+            self.webrtcEvents.emit(AbstractWEBRTC.ON_CONNECTION_READY, self.signalingSocket.id);
         });
         self.signalingSocket.on('message', function (data) {
             if (self.debug)

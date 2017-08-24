@@ -2,7 +2,7 @@ import { AbstractPeerConnection } from "../index";
 import * as Peer from "./Peer";
 import { WebRTC, logError } from "./WebRTC";
 
-export class PeerManager implements AbstractPeerConnection.IPCEstabished {
+export class PeerManager implements AbstractPeerConnection.IPC_Estabished {
     peers: Map<string, Peer.Peer>;
     debug: boolean = false;
 

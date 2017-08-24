@@ -47,6 +47,15 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         if (!nextInline && !shallowEqual(nextInline, prevInline)) {
             this.onBackPressed();
         }
+
+        let { alertReducer: { error } } = nextProps;
+
+        if (!shallowEqual(this.props.alertReducer.error, error) && !!error) {
+            this.props.onError(error);
+        }
+        if (!error && this.props.alertReducer.error) {
+            this.props.history.goBack();
+        }
     }
 
     componentWillUnmount() {

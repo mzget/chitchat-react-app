@@ -14,7 +14,7 @@ import { AbstractPeerConnection } from "../index";
 
 const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
 
-export class Peer implements AbstractPeerConnection.IPCHandler {
+export class Peer implements AbstractPeerConnection.IPC_Handler {
     type: string;
     parentsEmitter: events.EventEmitter;
     id: string;

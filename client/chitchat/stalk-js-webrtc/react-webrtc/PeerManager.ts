@@ -1,9 +1,9 @@
 import { AbstractPeerConnection } from "../IWebRTC";
-import * as Peer from "./Peer";
+import { Peer, PeerConstructor } from "./Peer";
 import { WebRTC, logError } from "./WebRTC";
 
-export class PeerManager implements AbstractPeerConnection.IPCEstabished {
-    peers: Map<string, Peer.Peer>;
+export class PeerManager implements AbstractPeerConnection.IPC_Estabished {
+    peers: Map<string, Peer>;
     debug: boolean = false;
 
     constructor(options: { debug: boolean }) {
@@ -22,8 +22,8 @@ export class PeerManager implements AbstractPeerConnection.IPCEstabished {
             emitter: webrtc.webrtcEvents,
             sendHandler: webrtc.send,
             debug: self.debug
-        };
-        let peer = new Peer.Peer(config);
+        } as PeerConstructor;
+        let peer = new Peer(config);
         peer.logError = logError;
         this.peers.set(options.id, peer);
 
@@ -31,8 +31,8 @@ export class PeerManager implements AbstractPeerConnection.IPCEstabished {
     }
 
     getPeers(sessionId?: string) {
-        if (sessionId) {
-            return this.peers.get(sessionId);
+        if (!!sessionId) {
+            return this.peers.get(sessionId) as Peer;
         }
         else {
             return this.peers;
@@ -40,7 +40,7 @@ export class PeerManager implements AbstractPeerConnection.IPCEstabished {
     };
 
     removePeers(sessionId, webrtc: WebRTC) {
-        let peer = this.getPeers(sessionId) as Peer.Peer;
+        let peer = this.getPeers(sessionId) as Peer;
         if (peer) {
             peer.pc.close();
             webrtc.webrtcEvents.emit(AbstractPeerConnection.PEER_STREAM_REMOVED, peer.stream);

@@ -1,6 +1,7 @@
 export var AbstractWEBRTC;
 (function (AbstractWEBRTC) {
-    AbstractWEBRTC.CONNECTION_READY = "connectionReady";
+    AbstractWEBRTC.ON_CONNECTION_READY = "connectionReady";
+    AbstractWEBRTC.ON_CONNECTION_CLOSE = "ON_CONNECTION_CLOSE";
     AbstractWEBRTC.CREATED_PEER = "createdPeer";
     AbstractWEBRTC.JOINED_ROOM = "joinedRoom";
     AbstractWEBRTC.JOIN_ROOM_ERROR = "joinRoomError";
@@ -8,17 +9,16 @@ export var AbstractWEBRTC;
 })(AbstractWEBRTC = AbstractWEBRTC || (AbstractWEBRTC = {}));
 export var AbstractPeerConnection;
 (function (AbstractPeerConnection) {
-    AbstractPeerConnection.CANDIDATE = "candidate";
     AbstractPeerConnection.PEER_STREAM_ADDED = "peerStreamAdded";
     AbstractPeerConnection.PEER_STREAM_REMOVED = "peerStreamRemoved";
     AbstractPeerConnection.CONNECTIVITY_ERROR = "connectivityError";
-    AbstractPeerConnection.MUTE = "mute";
-    AbstractPeerConnection.UNMUTE = "unmute";
+    AbstractPeerConnection.ON_ICE_CONNECTION_FAILED = "iceFailed";
     AbstractPeerConnection.PAUSE = "pause";
     AbstractPeerConnection.UNPAUSE = "unpause";
     AbstractPeerConnection.DUMMY_VIDEO = "dummy_video";
     AbstractPeerConnection.ANSWER = "answer";
     AbstractPeerConnection.OFFER = "offer";
+    AbstractPeerConnection.CANDIDATE = "candidate";
 })(AbstractPeerConnection = AbstractPeerConnection || (AbstractPeerConnection = {}));
 export var AbstractMediaStream;
 (function (AbstractMediaStream) {

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from "react";
 import * as ReactDOM from 'react-dom';
 import { connect } from "react-redux";
-import { shallowEqual, compose } from "recompose";
+import { compose } from "recompose";
 import { withRouter } from "react-router-dom";
 import Flexbox from "flexbox-react";
 import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
@@ -65,41 +65,27 @@ class WebRtcComponent extends React.Component {
         this.sendMessage = this.sendMessage.bind(this);
         this.startWebRtc();
     }
-    componentWillReceiveProps(nextProps) {
-        let { alertReducer: { error } } = nextProps;
-        if (!shallowEqual(this.props.alertReducer.error, error) && !!error) {
-            this.props.onError(error);
-        }
-        if (!error && this.props.alertReducer.error) {
-            this.props.history.goBack();
-        }
-    }
     startWebRtc() {
         return __awaiter(this, void 0, void 0, function* () {
             let rtcConfig = {
                 signalingUrl: signalingServer,
                 socketOptions: { 'force new connection': true },
-                debug: true,
+                debug: false,
             };
             this.webrtc = (yield WebRtcFactory.getObject(rtcConfig));
             this.peerAdded = this.peerAdded.bind(this);
             this.removeVideo = this.removeVideo.bind(this);
             this.onStreamReady = this.onStreamReady.bind(this);
             this.connectionReady = this.connectionReady.bind(this);
-            this.webrtc.webrtcEvents.on(AbstractWEBRTC.CONNECTION_READY, this.connectionReady);
-            this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOIN_ROOM_ERROR, (err) => console.log("joinRoom fail", err));
+            this.webrtc.webrtcEvents.on(AbstractWEBRTC.ON_CONNECTION_READY, this.connectionReady);
+            this.webrtc.webrtcEvents.on(AbstractWEBRTC.ON_CONNECTION_CLOSE, (data) => { console.log("signalling close", data); });
             this.webrtc.webrtcEvents.on(AbstractWEBRTC.CREATED_PEER, (peer) => console.log("createdPeer", peer.id));
             this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOINED_ROOM, (roomname) => (this.props.onJoinedRoom) ? this.props.onJoinedRoom(roomname) : console.log("joined", roomname));
+            this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOIN_ROOM_ERROR, (err) => console.log("joinRoom fail", err));
             this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_ADDED, this.peerAdded);
             this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_REMOVED, this.removeVideo);
             this.webrtc.webrtcEvents.on(AbstractPeerConnection.CONNECTIVITY_ERROR, (peer) => {
                 console.log(AbstractPeerConnection.CONNECTIVITY_ERROR, peer);
-            });
-            this.webrtc.webrtcEvents.on(AbstractPeerConnection.MUTE, (data) => {
-                console.log(AbstractPeerConnection.MUTE, data);
-            });
-            this.webrtc.webrtcEvents.on(AbstractPeerConnection.UNMUTE, (data) => {
-                console.log(AbstractPeerConnection.UNMUTE, data);
             });
         });
     }
@@ -123,7 +109,7 @@ class WebRtcComponent extends React.Component {
         let selfView = getEl(ReactDOM.findDOMNode(this.refs.localVideo));
         if (!selfView)
             return;
-        selfView.src = URL.createObjectURL(stream);
+        selfView.srcObject = stream;
         this.selfAudioName = this.webrtc.userMedia.getAudioTrackName();
         this.selfVideoName = this.webrtc.userMedia.getVideoTrackName();
         this.setState({ selfViewSrc: stream, localStreamStatus: "ready" });
@@ -141,10 +127,11 @@ class WebRtcComponent extends React.Component {
         }
     }
     peerAdded(peer) {
-        console.log("peerAdded", peer);
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
-        remotesView.src = URL.createObjectURL(peer.stream);
-        remotesView.volume = 1;
+        if (!!remotesView) {
+            remotesView.srcObject = peer.stream;
+            remotesView.volume = 1;
+        }
         if (peer && peer.pc) {
             let peerStat = "";
             peer.pc.on('iceConnectionStateChange', function (event) {
@@ -185,6 +172,12 @@ class WebRtcComponent extends React.Component {
         if (volume > -20)
             volume = -20;
         el.value = volume;
+    }
+    componentWillUnmount() {
+        if (!!this.webrtc) {
+            this.webrtc.leaveRoom();
+            this.webrtc.disconnect();
+        }
     }
     render() {
         let disabledAudioOption = true;
@@ -295,8 +288,5 @@ class WebRtcComponent extends React.Component {
             </Flexbox>);
     }
 }
-const mapStateToProps = (state) => ({
-    alertReducer: state.alertReducer
-});
-const enhance = compose(withRouter, connect(mapStateToProps));
+const enhance = compose(withRouter, connect());
 export const WebRtcPage = enhance(WebRtcComponent);

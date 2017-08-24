@@ -11,7 +11,7 @@ export function withExchange(webrtcObject: AbstractWEBRTC.IWebRTC) {
         let self = webrtcObject;
         const fromId = message.from;
         const roomType = message.roomType;
-        let peer = self.peerManager.getPeers(fromId) as AbstractPeerConnection.IPCHandler;
+        let peer = self.peerManager.getPeers(fromId) as AbstractPeerConnection.IPC_Handler;
 
         if (message.type === 'offer') {
             if (!peer) {

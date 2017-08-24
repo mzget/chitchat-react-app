@@ -1,4 +1,4 @@
-import * as Rx from "@reactivex/rxjs";
+import * as Rx from "rxjs/Rx";
 
 import { ChitChatFactory } from "../";
 import { withToken, chitchat_headers } from "../utils/chitchatServiceUtils";
