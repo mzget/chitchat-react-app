@@ -139,7 +139,6 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         // have both video and audio
         this.webrtc.userMedia.startLocalStream(requestMedia).then(stream => {
             self.onStreamReady(stream);
-            console.warn("bobobobobob", stream.getTracks());
 
             let { match } = self.props;
             self.webrtc.join(match.params.id);
@@ -199,10 +198,19 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         console.log("peerAdded", peer);
 
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
+        let remotesAudio = getEl('remoteAudio');
         if (!remotesView) return;
 
-        if (!!peer.stream && peer.stream.getAudioTracks().length > 0) {
-            remotesView.src = URL.createObjectURL(peer.stream);
+        if (!!peer.stream) {
+            let videoTracks = peer.stream.getVideoTracks();
+            if (videoTracks.length > 0) {
+                remotesView.src = URL.createObjectURL(peer.stream);
+            }
+            else {
+                let canvasStream = createStreamByText("NO CAMERA");
+                if (!!canvasStream) remotesView.src = URL.createObjectURL(canvasStream);
+                remotesAudio.src = URL.createObjectURL(peer.stream);
+            }
         }
 
         if (this.state.selfViewSrc == null) {
