@@ -1,5 +1,4 @@
 import EventEmitter = require("events");
-import adapter from 'webrtc-adapter';
 
 import { AbstractPeerConnection } from "../IWebRTC";
 import { getImage } from '../libs/VideoToBlurImage';
@@ -11,9 +10,6 @@ import { createStreamByText } from '..//libs/StreamHelper';
 // configuration.iceServers = twilioIceServers;
 const configuration = { "iceServers": [{ "urls": "stun:stun.l.google.com:19302" }] };
 
-export interface PeerConstructor {
-    peer_id; stream; pcPeers; emitter; sendHandler; offer; debug;
-}
 export class Peer implements AbstractPeerConnection.IPC_Handler {
     debug: boolean;
     type: string;
@@ -26,7 +22,6 @@ export class Peer implements AbstractPeerConnection.IPC_Handler {
     pcPeers;
     browserPrefix: string;
     nick;
-    stream: MediaStream;
 
     send_event: (messageType: string, payload?: any, optional?: { to: string }) => void;
     logError = (error) => {
@@ -39,7 +34,7 @@ export class Peer implements AbstractPeerConnection.IPC_Handler {
      * @param stream 
      * @param options 
      */
-    constructor(config: PeerConstructor) {
+    constructor(config: AbstractPeerConnection.PeerConstructor) {
         if (!config.stream) {
             throw new Error("Missing stream!!!");
         }
@@ -80,7 +75,7 @@ export class Peer implements AbstractPeerConnection.IPC_Handler {
                 self.pc.ondatachannel = self.receiveChannelCallback.bind(self);
             }
             else if (event.target.iceConnectionState == "failed") {
-                self.parentsEmitter.emit(AbstractPeerConnection.ON_ICE_CONNECTION_FAILED, self);
+                self.parentsEmitter.emit(AbstractPeerConnection.ON_ICE_CONNECTION_FAILED, self.pc);
                 self.send_event(AbstractPeerConnection.CONNECTIVITY_ERROR, null, { to: self.id });
             }
         };
@@ -191,6 +186,7 @@ export class Peer implements AbstractPeerConnection.IPC_Handler {
         else if (message.type === AbstractPeerConnection.CANDIDATE) {
             if (self.debug)
                 console.log('exchange candidate');
+            if (!message.candidate) return;
 
             function onAddIceCandidateSuccess() {
                 if (self.debug)
@@ -203,7 +199,7 @@ export class Peer implements AbstractPeerConnection.IPC_Handler {
             self.pc.addIceCandidate(new RTCIceCandidate(message.candidate), onAddIceCandidateSuccess, onAddIceCandidateError);
         }
         else if (message.type === AbstractPeerConnection.CONNECTIVITY_ERROR) {
-            this.parentsEmitter.emit(AbstractPeerConnection.CONNECTIVITY_ERROR, self);
+            this.parentsEmitter.emit(AbstractPeerConnection.CONNECTIVITY_ERROR, self.pc);
         }
         else if (message.type === 'endOfCandidates') {
             // Edge requires an end-of-candidates. Since only Edge will have mLines or tracks on the

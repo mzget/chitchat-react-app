@@ -1,3 +1,9 @@
+/**
+ * React-Native webrtc interface.
+ *
+ * Copyright 2017 Ahoo Studio.co.th.
+ */
+
 import { Platform } from 'react-native';
 import * as events from 'events';
 import * as io from 'socket.io-client';
@@ -50,9 +56,6 @@ export class WebRTC implements AbstractWEBRTC.IWebRTC {
             self.webrtcEvents.emit(AbstractWEBRTC.ON_CONNECTION_READY, self.signalingSocket.id);
         });
         self.signalingSocket.on('message', function (data) {
-            if (self.debug)
-                console.log("SOCKET message ", data.type, data.from);
-
             withExchange(self)(data);
         });
         self.signalingSocket.on('remove', function (room) {

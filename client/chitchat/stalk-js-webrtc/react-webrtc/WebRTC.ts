@@ -1,6 +1,6 @@
 // const RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription || window.msRTCSessionDescription;
 // const RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.msRTCPeerConnection;
-
+import 'webrtc-adapter';
 import * as io from 'socket.io-client';
 import * as events from "events";
 

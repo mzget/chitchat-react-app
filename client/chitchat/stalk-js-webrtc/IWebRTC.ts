@@ -67,6 +67,9 @@ export namespace AbstractPeerConnection {
         removeStream(stream: MediaStream);
         handleMessage(message);
     }
+    export interface PeerConstructor {
+        peer_id; stream; pcPeers; emitter; sendHandler; offer; debug;
+    }
 }
 
 export namespace AbstractMediaStream {

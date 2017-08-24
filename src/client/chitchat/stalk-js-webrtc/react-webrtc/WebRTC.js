@@ -1,3 +1,4 @@
+import 'webrtc-adapter';
 import * as io from 'socket.io-client';
 import * as events from "events";
 import { AbstractWEBRTC, withExchange, withSendMessage } from "../";

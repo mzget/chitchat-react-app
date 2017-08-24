@@ -22,6 +22,9 @@ export class UserMedia implements AbstractMediaStream.IUserMedia {
     public getLocalStream() {
         return this.localStream;
     }
+    public setLocalStream(stream: MediaStream) {
+        this.localStream = stream;
+    }
     public getVideoTrackName() {
         let videoTracks = this.localStream.getVideoTracks();
         if (videoTracks.length > 0) {
@@ -42,12 +45,14 @@ export class UserMedia implements AbstractMediaStream.IUserMedia {
     }
 
     micController;
+    audioController: AbstractMediaStream.AudioController;
+    videoController: AbstractMediaStream.VideoController;
 
     constructor(options: { debug: boolean }) {
         this.debug = options.debug;
     }
 
-    async  startLocalStream(mediaConstraints: MediaStreamConstraints, isFront: boolean) {
+    async  startLocalStream(mediaConstraints: MediaStreamConstraints, isFront: boolean | undefined) {
         let self = this;
         let videoSourceId;
         let defaultMediaConstraints = {
@@ -90,10 +95,8 @@ export class UserMedia implements AbstractMediaStream.IUserMedia {
         if (mediaConstraints.video != false) {
             defaultMediaConstraints = {
                 ...mediaConstraints,
-                video: {
-                    facingMode: (isFront ? "user" : "environment"),
-                    optional: (videoSourceId ? [{ sourceId: videoSourceId }] : [])
-                }
+                facingMode: (isFront ? "user" : "environment"),
+                optional: (videoSourceId ? [{ sourceId: videoSourceId }] : [])
             };
         }
         else {
@@ -157,6 +160,7 @@ export class UserMedia implements AbstractMediaStream.IUserMedia {
 
     private stopStream() {
         let self = this;
+        if (!self.localStream) return;
 
         let tracks = this.localStream.getTracks();
         tracks.forEach(function (track) {
