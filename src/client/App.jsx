@@ -30,6 +30,7 @@ import { M_MainPageEnhanced } from "./containers/m_Main";
 import { AdminWithDialogEnhance } from "./containers/Admin";
 import { VideoCallSample } from "./containers/voip/VideoCallSample";
 import { VideoCallPage } from "./containers/voip/VideoCallPage";
+import { AudioCallPage } from "./containers/voip/AudioCallPage";
 import { SMALL_TABLET } from "./chitchat/consts/Breakpoints";
 import { defaultMuiTheme } from "./utils/";
 const NoMatch = ({ location }) => (<div>
@@ -61,6 +62,7 @@ class App extends React.Component {
                                 <Route path="/admin/:menu?/:id?" component={AdminWithDialogEnhance}/>
                                 <Route path="/groupcall/:id" component={VideoCallSample}/>
                                 <Route path="/videocall/:id" component={VideoCallPage}/>
+                                <Route path="/audiocall/:id" component={AudioCallPage}/>
                                 <Route component={NoMatch}/>
                             </Switch>
                         </div>

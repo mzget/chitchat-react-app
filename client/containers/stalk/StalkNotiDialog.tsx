@@ -58,6 +58,7 @@ class StalkNotiDialogModal extends React.Component<utils.IComponentProps, any> {
         this.handleClose(() => {
             let { room_id } = self.props.stalkReducer.get("incommingCall");
             self.props.history.push(`/videocall/${room_id}`);
+            // self.props.history.push(`/audiocall/${room_id}`);
         });
     }
 
