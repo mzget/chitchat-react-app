@@ -34,8 +34,6 @@ export class WebRTC {
             self.webrtcEvents.emit(AbstractWEBRTC.ON_CONNECTION_READY, self.signalingSocket.id);
         });
         self.signalingSocket.on('message', function (data) {
-            if (self.debug)
-                console.log("SOCKET message ", data.type, data.from);
             withExchange(self)(data);
         });
         self.signalingSocket.on('remove', function (room) {
@@ -109,6 +107,7 @@ export class WebRTC {
     disconnect() {
         this.signalingSocket.disconnect();
         this.userMedia.stopLocalStream();
+        delete this.webrtcEvents;
         delete this.peerManager;
         delete this.signalingSocket;
         delete this.userMedia;

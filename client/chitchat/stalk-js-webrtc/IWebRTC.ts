@@ -63,6 +63,7 @@ export namespace AbstractPeerConnection {
         id: string;
         pc: RTCPeerConnection;
         channels: any;
+        initPeerConnection(stream: MediaStream);
         addStream(stream: MediaStream);
         removeStream(stream: MediaStream);
         handleMessage(message);

@@ -8,12 +8,8 @@ import { Platform } from 'react-native';
 import * as events from 'events';
 import {
     RTCPeerConnection,
-    RTCMediaStream,
     RTCIceCandidate,
     RTCSessionDescription,
-    RTCView,
-    MediaStreamTrack,
-    getUserMedia,
 } from 'react-native-webrtc';
 
 import { AbstractPeerConnection } from "../index";
