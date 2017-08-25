@@ -1,5 +1,5 @@
 import { CallingEvents } from "stalk-js";
-import { Observable } from "rxjs/Rx";
+import { Observable } from "rxjs/Observable";
 import { createAction } from "redux-actions";
 
 import { ChitChatFactory } from "../../chats/";

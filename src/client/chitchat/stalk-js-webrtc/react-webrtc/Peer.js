@@ -1,32 +1,22 @@
-import { AbstractPeerConnection } from "../IWebRTC";
+import { AbstractPeer, AbstractPeerConnection } from "../";
 import { getImage } from '../libs/VideoToBlurImage';
 import { createStreamByText } from '..//libs/StreamHelper';
 const configuration = { "iceServers": [{ "urls": "stun:stun.l.google.com:19302" }] };
-export class Peer {
+export class Peer extends AbstractPeer.BasePeer {
     constructor(config) {
-        this.enableDataChannels = true;
-        this.channels = {};
-        this.logError = (error) => {
-            console.log(error);
-        };
-        if (!config.stream) {
-            throw new Error("Missing stream!!!");
-        }
-        this.debug = config.debug;
-        this.id = config.peer_id;
-        this.pcPeers = config.pcPeers;
-        this.parentsEmitter = config.emitter;
-        this.send_event = config.sendHandler;
-        this.pc = new RTCPeerConnection(configuration);
+        super(config);
+        this.initPeerConnection(config.stream);
+    }
+    initPeerConnection(stream) {
         let self = this;
-        const isOffer = config.offer;
+        this.pc = new RTCPeerConnection(configuration);
         this.pc.onicecandidate = function (event) {
             if (event.candidate) {
                 self.send_event(AbstractPeerConnection.CANDIDATE, event.candidate, { to: self.id });
             }
         };
         this.pc.onnegotiationneeded = function () {
-            if (isOffer) {
+            if (self.offer) {
                 self.createOffer();
             }
         };
@@ -58,12 +48,6 @@ export class Peer {
                 console.log('onremovestream');
             self.parentsEmitter.emit(AbstractPeerConnection.PEER_STREAM_REMOVED, peer.stream);
         };
-        this.pc.addStream(config.stream);
-    }
-    removeStream(stream) {
-        this.pc.removeStream(stream);
-    }
-    addStream(stream) {
         this.pc.addStream(stream);
     }
     getStats() {
@@ -77,40 +61,10 @@ export class Peer {
             }, self.logError);
         }
     }
-    onSetSessionDescriptionError(error) {
-        console.warn('Failed to set session description: ' + error.toString());
-    }
-    onCreateSessionDescriptionError(error) {
-        console.warn('Failed to create session description: ' + error.toString());
-    }
-    createOffer() {
-        let self = this;
-        this.pc.createOffer(function (desc) {
-            if (self.debug)
-                console.log('createOffer', desc);
-            self.pc.setLocalDescription(desc, function () {
-                if (self.debug)
-                    console.log('setLocalDescription', self.pc.localDescription);
-                self.send_event(AbstractPeerConnection.OFFER, self.pc.localDescription, { to: self.id });
-            }, self.onSetSessionDescriptionError);
-        }, self.onCreateSessionDescriptionError);
-    }
-    createAnswer(message) {
-        let self = this;
-        self.pc.createAnswer(function (desc) {
-            if (self.debug)
-                console.log('createAnswer', desc);
-            self.pc.setLocalDescription(desc, function () {
-                if (self.debug)
-                    console.log('setLocalDescription', self.pc.localDescription);
-                self.send_event(AbstractPeerConnection.OFFER, self.pc.localDescription, { to: message.from });
-            }, self.onSetSessionDescriptionError);
-        }, self.onCreateSessionDescriptionError);
-    }
     handleMessage(message) {
         let self = this;
         if (self.debug)
-            console.log('handleMessage', message.type, message);
+            console.log('handleMessage', message.type);
         if (message.prefix)
             this.browserPrefix = message.prefix;
         if (message.type === AbstractPeerConnection.OFFER) {
@@ -128,8 +82,6 @@ export class Peer {
         else if (message.type === AbstractPeerConnection.ANSWER) {
         }
         else if (message.type === AbstractPeerConnection.CANDIDATE) {
-            if (self.debug)
-                console.log('exchange candidate');
             if (!message.candidate)
                 return;
             function onAddIceCandidateSuccess() {
@@ -145,7 +97,8 @@ export class Peer {
             this.parentsEmitter.emit(AbstractPeerConnection.CONNECTIVITY_ERROR, self.pc);
         }
         else if (message.type === 'endOfCandidates') {
-            var mLines = this.pc.pc.transceivers || [];
+            console.log(message.type);
+            let mLines = this.pc.pc.transceivers || [];
             mLines.forEach(function (mLine) {
                 if (mLine.iceTransport) {
                     mLine.iceTransport.addRemoteCandidate({});

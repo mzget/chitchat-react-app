@@ -9,9 +9,6 @@ import * as Peer from "./Peer";
 import { PeerManager } from "./PeerManager";
 import { UserMedia } from "./UserMedia";
 
-export function logError(error) {
-    console.log("logError", error);
-}
 export function hasGetUserMedia() {
     return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
         navigator.mozGetUserMedia || navigator.msGetUserMedia);
@@ -32,7 +29,7 @@ export class WebRTC implements AbstractWEBRTC.IWebRTC {
         if (!hasGetUserMedia()) {
             alert('getUserMedia() is not supported in your browser');
 
-            logError('Your browser does not support local media capture.');
+            console.warn('Your browser does not support local media capture.');
 
             self.webrtcEvents.emit(AbstractWEBRTC.NOT_SUPPORT_MEDIA);
             return;
@@ -53,9 +50,6 @@ export class WebRTC implements AbstractWEBRTC.IWebRTC {
             self.webrtcEvents.emit(AbstractWEBRTC.ON_CONNECTION_READY, self.signalingSocket.id);
         });
         self.signalingSocket.on('message', function (data) {
-            if (self.debug)
-                console.log("SOCKET message ", data.type, data.from);
-
             withExchange(self)(data);
         });
         self.signalingSocket.on('remove', function (room) {
@@ -137,6 +131,7 @@ export class WebRTC implements AbstractWEBRTC.IWebRTC {
         this.signalingSocket.disconnect();
         this.userMedia.stopLocalStream();
 
+        delete this.webrtcEvents;
         delete this.peerManager;
         delete this.signalingSocket;
         delete this.userMedia;

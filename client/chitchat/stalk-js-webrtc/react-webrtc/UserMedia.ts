@@ -1,4 +1,4 @@
-import adapter from 'webrtc-adapter';
+import 'webrtc-adapter';
 import { AbstractMediaStream } from "../index";
 import { AudioController } from '../libs/AudioController';
 import { VideoController } from '../libs/VideoController';

@@ -1,6 +1,5 @@
-import { AbstractPeerConnection } from "../IWebRTC";
+import { AbstractPeerConnection } from "../";
 import { Peer } from "./Peer";
-import { logError } from "./WebRTC";
 export class PeerManager {
     constructor(options) {
         this.debug = false;
@@ -19,7 +18,6 @@ export class PeerManager {
             debug: self.debug
         };
         let peer = new Peer(config);
-        peer.logError = logError;
         this.peers.set(options.id, peer);
         return peer;
     }
@@ -36,7 +34,7 @@ export class PeerManager {
         let peer = this.getPeers(sessionId);
         if (peer) {
             peer.pc.close();
-            webrtc.webrtcEvents.emit(AbstractPeerConnection.PEER_STREAM_REMOVED, peer.stream);
+            webrtc.webrtcEvents.emit(AbstractPeerConnection.PEER_STREAM_REMOVED, peer);
         }
         this.peers.delete(sessionId);
     }

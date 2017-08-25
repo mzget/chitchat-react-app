@@ -19,7 +19,7 @@ import { compose, pure, withHandlers } from "recompose";
 import { withRouter } from "react-router-dom";
 
 interface ISubToolbar {
-    history, match, onError, chatroomReducer, userReducer, onVideoCall
+    history, match, onError, chatroomReducer, userReducer, onVideoCall, onAudioCall,
 }
 
 const checkAdminPermission = (teamProfile: ITeamProfile) => {
@@ -89,6 +89,14 @@ const getView = (props: ISubToolbar) => {
                                     >
                                         video_call
                                         </FontIcon>
+                                    <FontIcon
+                                        className="material-icons"
+                                        style={{ marginRight: 24, fontSize: 36, cursor: 'pointer' }}
+                                        color={Colors.lightGreen500}
+                                        onClick={props.onAudioCall}
+                                    >
+                                        call
+                                        </FontIcon>
                                 </Flexbox>
                             )
                     }
@@ -115,13 +123,17 @@ const SubToolbarEnhancer = compose(
     withHandlers({
         onVideoCall: (props: ISubToolbar) => event => {
             props.history.push(`/videocall/${props.match.params.room_id}`);
-        }
+        },
+        onAudioCall: (props: ISubToolbar) => event => {
+            props.history.push(`/audiocall/${props.match.params.room_id}`);
+        },
     }),
     pure
 );
-export const SubToolbarEnhance = SubToolbarEnhancer(({ history, match, onError, chatroomReducer, userReducer, onVideoCall }) => (
+export const SubToolbarEnhance = SubToolbarEnhancer(({ history, match, onError, chatroomReducer, userReducer, onVideoCall, onAudioCall }) => (
     <SubToolbar
         onError={onError} onVideoCall={onVideoCall}
+        onAudioCall={onAudioCall}
         history={history} match={match}
         chatroomReducer={chatroomReducer} userReducer={userReducer} />
 )) as React.ComponentClass<{ onError }>;

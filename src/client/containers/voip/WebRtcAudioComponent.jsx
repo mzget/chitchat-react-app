@@ -7,15 +7,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as React from "react";
-import * as ReactDOM from 'react-dom';
 import { connect } from "react-redux";
 import { compose } from "recompose";
 import { withRouter } from "react-router-dom";
 import Flexbox from "flexbox-react";
 import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
-import { RaisedButton, FontIcon, Slider, FlatButton } from "material-ui";
+import { RaisedButton, FontIcon, Slider, Paper } from "material-ui";
+import Avatar from 'material-ui/Avatar';
 import { signalingServer } from "../../Chitchat";
-import { AbstractPeerConnection, AbstractWEBRTC, AbstractMediaStream, WebRtcFactory } from '../../chitchat/stalk-js-webrtc/index';
+import { AbstractPeerConnection, AbstractWEBRTC, WebRtcFactory } from '../../chitchat/stalk-js-webrtc/index';
 function getEl(idOrEl) {
     if (typeof idOrEl === 'string') {
         return document.getElementById(idOrEl);
@@ -25,45 +25,25 @@ function getEl(idOrEl) {
     }
 }
 ;
-class WebRtcComponent extends React.Component {
+class WebRtcAudioComponent extends React.Component {
     sendMessage(message) {
         this.webrtc.peerManager.sendDirectlyToAll("message", message, {
             _id: this.webrtc.signalingSocket.id,
             stream_id: this.state.selfViewSrc._id,
         });
     }
-    changeMediaContraint(media) {
-        let self = this;
-        let requestMedia = {
-            video: media.video,
-            audio: true
-        };
-        let peers = this.webrtc.peerManager.getPeers();
-        this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
-            self.onStreamReady(stream);
-            peers.forEach(peer => peer.addStream(stream));
-        }).catch(err => {
-            console.error("LocalStream Fail", err);
-            self.setState(prev => (Object.assign({}, prev, { localStreamStatus: err })));
-            self.props.onError("LocalStream Fail: " + err);
-        });
-    }
     constructor(props) {
         super(props);
         this.state = {
             isMuteVoice: false,
-            isPauseVideo: false,
             micVol: 100,
             selfViewSrc: null,
             remoteSrc: null,
-            peerIceState: "",
-            peerIceGatheringState: "",
-            peerSignalingState: "",
+            peerStat: "",
             remoteVolume: 100,
             isHoverPeer: false,
             localStreamStatus: ""
         };
-        this.changeMediaContraint = this.changeMediaContraint.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
         this.startWebRtc();
     }
@@ -72,11 +52,11 @@ class WebRtcComponent extends React.Component {
             let rtcConfig = {
                 signalingUrl: signalingServer,
                 socketOptions: { 'force new connection': true },
-                debug: true,
+                debug: false,
             };
             this.webrtc = (yield WebRtcFactory.getObject(rtcConfig));
             this.peerAdded = this.peerAdded.bind(this);
-            this.removeVideo = this.removeVideo.bind(this);
+            this.removeAudio = this.removeAudio.bind(this);
             this.onStreamReady = this.onStreamReady.bind(this);
             this.connectionReady = this.connectionReady.bind(this);
             this.webrtc.webrtcEvents.on(AbstractWEBRTC.ON_CONNECTION_READY, this.connectionReady);
@@ -85,7 +65,7 @@ class WebRtcComponent extends React.Component {
             this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOINED_ROOM, (roomname) => (this.props.onJoinedRoom) ? this.props.onJoinedRoom(roomname) : console.log("joined", roomname));
             this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOIN_ROOM_ERROR, (err) => console.log("joinRoom fail", err));
             this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_ADDED, this.peerAdded);
-            this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_REMOVED, this.removeVideo);
+            this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_REMOVED, this.removeAudio);
             this.webrtc.webrtcEvents.on(AbstractPeerConnection.CONNECTIVITY_ERROR, (peer) => {
                 console.log(AbstractPeerConnection.CONNECTIVITY_ERROR, peer);
             });
@@ -94,7 +74,6 @@ class WebRtcComponent extends React.Component {
     connectionReady(socker_id) {
         let self = this;
         let requestMedia = {
-            video: AbstractMediaStream.hdConstraints.video,
             audio: true
         };
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
@@ -108,49 +87,52 @@ class WebRtcComponent extends React.Component {
         });
     }
     onStreamReady(stream) {
-        let selfView = getEl(ReactDOM.findDOMNode(this.refs.localVideo));
-        if (!selfView)
+        if (!stream)
             return;
-        selfView.srcObject = stream;
         this.selfAudioName = this.webrtc.userMedia.getAudioTrackName();
-        this.selfVideoName = this.webrtc.userMedia.getVideoTrackName();
         this.setState({ selfViewSrc: stream, localStreamStatus: "ready" });
     }
     peerAdded(peer) {
-        let self = this;
-        let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
-        if (!!remotesView) {
-            remotesView.srcObject = peer.stream;
-            remotesView.volume = 1;
+        let remoteAudio = getEl("remoteAudio");
+        if (!!remoteAudio && peer.stream.getAudioTracks().length > 0) {
+            remoteAudio.srcObject = peer.stream;
         }
-        let events = peer.target;
-        events.oniceconnectionstatechange = (event) => {
-            let target = event.target;
-            self.setState(prev => (Object.assign({}, prev, { peerIceState: target.iceConnectionState })));
-        };
-        events.onicegatheringstatechange = (event) => {
-            let target = event.target;
-            self.setState(prev => (Object.assign({}, prev, { peerIceGatheringState: target.iceGatheringState })));
-        };
-        events.onsignalingstatechange = (event) => {
-            let target = event.target;
-            self.setState(prev => (Object.assign({}, prev, { peerSignalingState: target.signalingState })));
-        };
+        else {
+            console.error("peer doesn't have audio");
+        }
+        if (peer && peer.pc) {
+            let peerStat = "";
+            peer.pc.on('iceConnectionStateChange', function (event) {
+                switch (peer.pc.iceConnectionState) {
+                    case 'checking':
+                        peerStat = 'Connecting to peer...';
+                        break;
+                    case 'connected':
+                        peerStat = 'connected...';
+                        break;
+                    case 'completed':
+                        peerStat = 'Connection established.';
+                        break;
+                    case 'disconnected':
+                        peerStat = 'Disconnected.';
+                        break;
+                    case 'failed':
+                        break;
+                    case 'closed':
+                        peerStat = 'Connection closed.';
+                        break;
+                }
+                this.setState({ peerStat: peerStat });
+            });
+        }
         this.setState({ remoteSrc: peer.stream, remoteVolume: 100 });
     }
-    removeVideo() {
-        let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
-        remotesView.disable = true;
-        this.setState({ remoteSrc: null });
-    }
-    showVolume(el, volume) {
-        if (!el)
+    removeAudio() {
+        let remoteAudio = getEl("remoteAudio");
+        if (!remoteAudio)
             return;
-        if (volume < -45)
-            volume = -45;
-        if (volume > -20)
-            volume = -20;
-        el.value = volume;
+        delete remoteAudio.srcObject;
+        this.setState({ remoteSrc: null });
     }
     componentWillUnmount() {
         if (!!this.webrtc) {
@@ -160,21 +142,30 @@ class WebRtcComponent extends React.Component {
     }
     render() {
         let disabledAudioOption = true;
-        let disabledVideoOption = true;
         if (!!this.state.selfViewSrc) {
             if (this.state.selfViewSrc.getAudioTracks().length > 0 &&
                 !!this.webrtc.userMedia.audioController &&
                 this.webrtc.userMedia.audioController.support) {
                 disabledAudioOption = false;
             }
-            if (this.state.selfViewSrc.getVideoTracks().length > 0) {
-                disabledVideoOption = false;
-            }
         }
         return (<Flexbox flexDirection="row" height="100%" justifyContent={"flex-start"}>
                 <div ref="localContainer" style={{ position: 'relative', width: '200px', height: '100%' }}>
-                    <video style={{ height: "150px", width: '100%' }} className="local" id="localVideo" ref="localVideo" autoPlay={true} muted={true}>
-                    </video>
+                    {this.props.user ?
+            <Paper circle style={{
+                width: "125px",
+                height: "125px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+            }}>
+                                {this.props.user.avatar ?
+                <Avatar src={this.props.user.avatar} size={120}/>
+                :
+                    <Avatar size={120}>{this.props.user.username[0]}</Avatar>}
+                            </Paper>
+            :
+                <div>User Avatar</div>}
                     <Slider min={0} max={100} step={1} disabled={disabledAudioOption} defaultValue={100} sliderStyle={{
             margin: 0,
         }} onChange={(e, newValue) => {
@@ -192,29 +183,27 @@ class WebRtcComponent extends React.Component {
                     this.webrtc.userMedia.audioController.setVolume(0);
                     this.setState({ isMuteVoice: true });
                 }}/>}
-                    {this.state.isPauseVideo ?
-            <RaisedButton secondary disabled={disabledVideoOption} icon={<FontIcon className="material-icons">videocam_off</FontIcon>} onClick={() => {
-                this.sendMessage(AbstractPeerConnection.UNPAUSE);
-                this.webrtc.userMedia.videoController.setVideoEnabled(true);
-                this.setState({ isPauseVideo: false });
-            }}/>
-            :
-                <RaisedButton disabled={disabledVideoOption} icon={<FontIcon className="material-icons">videocam</FontIcon>} onClick={() => {
-                    this.sendMessage(AbstractPeerConnection.PAUSE);
-                    this.webrtc.userMedia.videoController.setVideoEnabled(false);
-                    this.setState({ isPauseVideo: true });
-                }}/>}
-                    <FlatButton label="HD" primary={true} onClick={() => this.changeMediaContraint(AbstractMediaStream.hdConstraints)}/>
-                    <FlatButton label="VGA" primary={true} onClick={() => this.changeMediaContraint(AbstractMediaStream.vgaConstraints)}/>
-                    <FlatButton label="QVGA" primary={true} onClick={() => this.changeMediaContraint(AbstractMediaStream.qvgaConstraints)}/>
 
-                    <p style={{ fontSize: 11 }}>UserMedia: {this.state.localStreamStatus}</p>
-                    <p style={{ fontSize: 11 }}>AudioTrack: {this.selfAudioName}</p>
-                    <p style={{ fontSize: 11 }}>VideoTrack: {this.selfVideoName}</p>
+                    <p style={{ fontSize: 12 }}>UserMedia: {this.state.localStreamStatus}</p>
+                    <p style={{ fontSize: 12 }}>AudioTrack: {this.selfAudioName}</p>
                 </div>
                 <div style={{ width: "100%", height: "300px", textAlign: "center" }}>
                     <div onMouseOver={() => { this.setState({ isHoverPeer: true }); }} onMouseLeave={() => { this.setState({ isHoverPeer: false }); }} style={{ display: "inline-block", height: "300px", position: "relative" }}>
-                        <video style={{ height: "300px", display: this.state.remoteSrc ? "initial" : "none" }} className="remotes" id="remoteVideos" ref="remotes" autoPlay={true}/>
+                        {this.props.remoteUser ?
+            <Paper style={{
+                width: "300px",
+                height: "300px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+            }}>
+                                    {this.props.remoteUser.avatar ?
+                <Avatar src={this.props.remoteUser.avatar} size={300} style={{ borderRadius: 0 }}/>
+                :
+                    <Avatar size={300} style={{ borderRadius: 0 }}>{this.props.remoteUser.username[0]}</Avatar>}
+                                </Paper>
+            :
+                <div>User Avatar</div>}
                         <audio id="remoteAudio" style={{ display: "none" }} autoPlay={true}/>
                         {this.state.isHoverPeer ?
             [
@@ -249,7 +238,7 @@ class WebRtcComponent extends React.Component {
                 })}>
                                             <Slider min={0} max={100} step={1} value={this.state.remoteVolume} onChange={(e, newValue) => {
                     this.setState({ remoteVolume: newValue });
-                    getEl(ReactDOM.findDOMNode(this.refs.remotes)).volume = newValue / 100;
+                    getEl('remoteAudio').volume = newValue / 100;
                 }} sliderStyle={{
                     margin: 0,
                 }} style={{
@@ -262,12 +251,10 @@ class WebRtcComponent extends React.Component {
             :
                 null}
                     </div>
-                    <p style={{ fontSize: 11 }}>iceConnectionState: {this.state.peerIceState}</p>
-                    <p style={{ fontSize: 11 }}>iceGatheringState: {this.state.peerIceGatheringState}</p>
-                    <p style={{ fontSize: 11 }}>signalingState: {this.state.peerSignalingState}</p>
+
                 </div>
             </Flexbox>);
     }
 }
 const enhance = compose(withRouter, connect());
-export const WebRtcPage = enhance(WebRtcComponent);
+export const WebRtcAudio = enhance(WebRtcAudioComponent);
