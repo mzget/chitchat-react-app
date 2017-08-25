@@ -3,9 +3,9 @@
  *
  * Copyright 2017 Ahoo Studio.co.th.
  */
-import { AbstractPeerConnection } from "../IWebRTC";
+import { AbstractPeerConnection } from "../";
 import { Peer } from "./Peer";
-import { WebRTC, logError } from "./WebRTC";
+import { WebRTC } from "./WebRTC";
 
 export class PeerManager implements AbstractPeerConnection.IPC_Estabished {
     peers: Map<string, Peer>;
@@ -29,7 +29,6 @@ export class PeerManager implements AbstractPeerConnection.IPC_Estabished {
             debug: self.debug
         } as AbstractPeerConnection.PeerConstructor;
         let peer = new Peer(config);
-        peer.logError = logError;
         this.peers.set(options.id, peer);
 
         return peer;
@@ -44,11 +43,11 @@ export class PeerManager implements AbstractPeerConnection.IPC_Estabished {
         }
     };
 
-    removePeers(sessionId, webrtc: WebRTC) {
+    removePeers(sessionId: string, webrtc: WebRTC) {
         let peer = this.getPeers(sessionId) as Peer;
         if (peer) {
             peer.pc.close();
-            webrtc.webrtcEvents.emit(AbstractPeerConnection.PEER_STREAM_REMOVED, peer.stream);
+            webrtc.webrtcEvents.emit(AbstractPeerConnection.PEER_STREAM_REMOVED, peer);
         }
         this.peers.delete(sessionId);
     };

@@ -39,7 +39,7 @@ export class Peer extends AbstractPeer.BasePeer {
             }
         }
 
-        this.pc.oniceconnectionstatechange = function (event) {
+        this.pc.oniceconnectionstatechange = function (event: Event | any) {
             if (self.debug)
                 console.log('oniceconnectionstatechange', event.target.iceConnectionState);
 
@@ -57,7 +57,7 @@ export class Peer extends AbstractPeer.BasePeer {
                 self.send_event(AbstractPeerConnection.CONNECTIVITY_ERROR, null, { to: self.id });
             }
         };
-        this.pc.onsignalingstatechange = function (event) {
+        this.pc.onsignalingstatechange = function (event: Event | any) {
             if (self.debug)
                 console.log('onsignalingstatechange', event.target.signalingState);
         };
@@ -135,7 +135,9 @@ export class Peer extends AbstractPeer.BasePeer {
         else if (message.type === 'endOfCandidates') {
             // Edge requires an end-of-candidates. Since only Edge will have mLines or tracks on the
             // shim this will only be called in Edge.
-            var mLines = this.pc.pc.transceivers || [];
+            console.log(message.type);
+
+            let mLines = this.pc.pc.transceivers || [];
             mLines.forEach(function (mLine) {
                 if (mLine.iceTransport) {
                     mLine.iceTransport.addRemoteCandidate({});

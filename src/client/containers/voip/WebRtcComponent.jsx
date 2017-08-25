@@ -56,7 +56,9 @@ class WebRtcComponent extends React.Component {
             micVol: 100,
             selfViewSrc: null,
             remoteSrc: null,
-            peerStat: "",
+            peerIceState: "",
+            peerIceGatheringState: "",
+            peerSignalingState: "",
             remoteVolume: 100,
             isHoverPeer: false,
             localStreamStatus: ""
@@ -70,7 +72,7 @@ class WebRtcComponent extends React.Component {
             let rtcConfig = {
                 signalingUrl: signalingServer,
                 socketOptions: { 'force new connection': true },
-                debug: false,
+                debug: true,
             };
             this.webrtc = (yield WebRtcFactory.getObject(rtcConfig));
             this.peerAdded = this.peerAdded.bind(this);
@@ -92,7 +94,7 @@ class WebRtcComponent extends React.Component {
     connectionReady(socker_id) {
         let self = this;
         let requestMedia = {
-            video: AbstractMediaStream.vgaConstraints.video,
+            video: AbstractMediaStream.hdConstraints.video,
             audio: true
         };
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
@@ -114,49 +116,26 @@ class WebRtcComponent extends React.Component {
         this.selfVideoName = this.webrtc.userMedia.getVideoTrackName();
         this.setState({ selfViewSrc: stream, localStreamStatus: "ready" });
     }
-    onPeerCreated(peer) {
-        let self = this;
-        if (!peer.stream) {
-            const peerId = peer.id;
-            ReactDOM.render(<MuiThemeProvider>
-                    <div className='videoContainer' id={`container_${peerId}`}>
-                        <div style={{ width: '640px', height: '480px', background: 'black' }}>
-                        </div>
-                    </div>
-                </MuiThemeProvider>, ReactDOM.findDOMNode(self.refs.remotes));
-        }
-    }
     peerAdded(peer) {
+        let self = this;
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
         if (!!remotesView) {
             remotesView.srcObject = peer.stream;
             remotesView.volume = 1;
         }
-        if (peer && peer.pc) {
-            let peerStat = "";
-            peer.pc.on('iceConnectionStateChange', function (event) {
-                switch (peer.pc.iceConnectionState) {
-                    case 'checking':
-                        peerStat = 'Connecting to peer...';
-                        break;
-                    case 'connected':
-                        peerStat = 'connected...';
-                        break;
-                    case 'completed':
-                        peerStat = 'Connection established.';
-                        break;
-                    case 'disconnected':
-                        peerStat = 'Disconnected.';
-                        break;
-                    case 'failed':
-                        break;
-                    case 'closed':
-                        peerStat = 'Connection closed.';
-                        break;
-                }
-                this.setState({ peerStat: peerStat });
-            });
-        }
+        let events = peer.target;
+        events.oniceconnectionstatechange = (event) => {
+            let target = event.target;
+            self.setState(prev => (Object.assign({}, prev, { peerIceState: target.iceConnectionState })));
+        };
+        events.onicegatheringstatechange = (event) => {
+            let target = event.target;
+            self.setState(prev => (Object.assign({}, prev, { peerIceGatheringState: target.iceGatheringState })));
+        };
+        events.onsignalingstatechange = (event) => {
+            let target = event.target;
+            self.setState(prev => (Object.assign({}, prev, { peerSignalingState: target.signalingState })));
+        };
         this.setState({ remoteSrc: peer.stream, remoteVolume: 100 });
     }
     removeVideo() {
@@ -229,9 +208,9 @@ class WebRtcComponent extends React.Component {
                     <FlatButton label="VGA" primary={true} onClick={() => this.changeMediaContraint(AbstractMediaStream.vgaConstraints)}/>
                     <FlatButton label="QVGA" primary={true} onClick={() => this.changeMediaContraint(AbstractMediaStream.qvgaConstraints)}/>
 
-                    <p style={{ fontSize: 12 }}>UserMedia: {this.state.localStreamStatus}</p>
-                    <p style={{ fontSize: 12 }}>AudioTrack: {this.selfAudioName}</p>
-                    <p style={{ fontSize: 12 }}>VideoTrack: {this.selfVideoName}</p>
+                    <p style={{ fontSize: 11 }}>UserMedia: {this.state.localStreamStatus}</p>
+                    <p style={{ fontSize: 11 }}>AudioTrack: {this.selfAudioName}</p>
+                    <p style={{ fontSize: 11 }}>VideoTrack: {this.selfVideoName}</p>
                 </div>
                 <div style={{ width: "100%", height: "300px", textAlign: "center" }}>
                     <div onMouseOver={() => { this.setState({ isHoverPeer: true }); }} onMouseLeave={() => { this.setState({ isHoverPeer: false }); }} style={{ display: "inline-block", height: "300px", position: "relative" }}>
@@ -283,7 +262,9 @@ class WebRtcComponent extends React.Component {
             :
                 null}
                     </div>
-
+                    <p style={{ fontSize: 11 }}>iceConnectionState: {this.state.peerIceState}</p>
+                    <p style={{ fontSize: 11 }}>iceGatheringState: {this.state.peerIceGatheringState}</p>
+                    <p style={{ fontSize: 11 }}>signalingState: {this.state.peerSignalingState}</p>
                 </div>
             </Flexbox>);
     }

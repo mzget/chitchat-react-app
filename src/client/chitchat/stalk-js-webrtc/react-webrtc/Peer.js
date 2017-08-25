@@ -97,7 +97,8 @@ export class Peer extends AbstractPeer.BasePeer {
             this.parentsEmitter.emit(AbstractPeerConnection.CONNECTIVITY_ERROR, self.pc);
         }
         else if (message.type === 'endOfCandidates') {
-            var mLines = this.pc.pc.transceivers || [];
+            console.log(message.type);
+            let mLines = this.pc.pc.transceivers || [];
             mLines.forEach(function (mLine) {
                 if (mLine.iceTransport) {
                     mLine.iceTransport.addRemoteCandidate({});

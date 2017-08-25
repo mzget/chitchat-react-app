@@ -1,11 +1,3 @@
-/*
-This is a Tutorial App with a simpleWebRTC React component.
-Compatible with Chrome and Firefox.
-
-1. To join a room uncomment the line 76 in readyToCall(){...} and provide a room name in joinRoom('change-this-roomname').
-2. The app by default uses the signal server from simplewebrtc.com. To use a custom Signal server such as the one in  https://github.com/andyet/signalmaster, provide your url link in the code (line 38) as shown in the example at https://simplewebrtc.com/notsosimple.html. 
-*/
-
 import * as React from "react";
 import * as ReactDOM from 'react-dom';
 import { connect } from "react-redux";
@@ -32,7 +24,9 @@ interface IComponentNameState {
     isPauseVideo;
     remoteVolume;
     micVol;
-    peerStat;
+    peerIceState;
+    peerIceGatheringState;
+    peerSignalingState;
     isHoverPeer;
     localStreamStatus: string;
 }
@@ -87,7 +81,9 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
             micVol: 100,
             selfViewSrc: null,
             remoteSrc: null,
-            peerStat: "",
+            peerIceState: "",
+            peerIceGatheringState: "",
+            peerSignalingState: "",
             remoteVolume: 100,
             isHoverPeer: false,
             localStreamStatus: ""
@@ -102,7 +98,7 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
         let rtcConfig = {
             signalingUrl: signalingServer,
             socketOptions: { 'force new connection': true },
-            debug: false,
+            debug: true,
         } as AbstractWEBRTC.WebRtcConfig;
         this.webrtc = await WebRtcFactory.getObject(rtcConfig) as AbstractWEBRTC.IWebRTC;
 
@@ -128,7 +124,7 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
         let self = this;
 
         let requestMedia = {
-            video: AbstractMediaStream.vgaConstraints.video,
+            video: AbstractMediaStream.hdConstraints.video,
             audio: true
         } as MediaStreamConstraints;
 
@@ -159,54 +155,29 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
         this.setState({ selfViewSrc: stream, localStreamStatus: "ready" });
     }
 
-    onPeerCreated(peer) {
+    peerAdded(peer: MediaStreamEvent) {
         let self = this;
-        if (!peer.stream) {
-            const peerId = peer.id;
-            ReactDOM.render(
-                <MuiThemeProvider>
-                    <div className='videoContainer' id={`container_${peerId}`}>
-                        <div style={{ width: '640px', height: '480px', background: 'black' }}>
-                        </div>
-                    </div>
-                </MuiThemeProvider>,
-                ReactDOM.findDOMNode(self.refs.remotes),
-            );
-        }
-    }
-
-    peerAdded(peer) {
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
         if (!!remotesView) {
             remotesView.srcObject = peer.stream;
             remotesView.volume = 1;
         }
 
-        if (peer && peer.pc) {
-            let peerStat = "";
-            peer.pc.on('iceConnectionStateChange', function (event) {
-                switch (peer.pc.iceConnectionState) {
-                    case 'checking':
-                        peerStat = 'Connecting to peer...';
-                        break;
-                    case 'connected':
-                        peerStat = 'connected...';
-                        break;
-                    case 'completed': // on caller side
-                        peerStat = 'Connection established.';
-                        break;
-                    case 'disconnected':
-                        peerStat = 'Disconnected.';
-                        break;
-                    case 'failed':
-                        break;
-                    case 'closed':
-                        peerStat = 'Connection closed.';
-                        break;
-                }
+        let events = peer.target as RTCPeerConnection;
+        events.oniceconnectionstatechange = (event) => {
+            let target = event.target as RTCPeerConnection;
 
-                this.setState({ peerStat: peerStat });
-            });
+            self.setState(prev => ({ ...prev, peerIceState: target.iceConnectionState }));
+        }
+        events.onicegatheringstatechange = (event) => {
+            let target = event.target as RTCPeerConnection;
+
+            self.setState(prev => ({ ...prev, peerIceGatheringState: target.iceGatheringState }));
+        }
+        events.onsignalingstatechange = (event) => {
+            let target = event.target as RTCPeerConnection;
+
+            self.setState(prev => ({ ...prev, peerSignalingState: target.signalingState }));
         }
 
         this.setState({ remoteSrc: peer.stream, remoteVolume: 100 });
@@ -314,9 +285,9 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
                     <FlatButton label="VGA" primary={true} onClick={() => this.changeMediaContraint(AbstractMediaStream.vgaConstraints)} />
                     <FlatButton label="QVGA" primary={true} onClick={() => this.changeMediaContraint(AbstractMediaStream.qvgaConstraints)} />
 
-                    <p style={{ fontSize: 12 }}>UserMedia: {this.state.localStreamStatus}</p>
-                    <p style={{ fontSize: 12 }}>AudioTrack: {this.selfAudioName}</p>
-                    <p style={{ fontSize: 12 }}>VideoTrack: {this.selfVideoName}</p>
+                    <p style={{ fontSize: 11 }}>UserMedia: {this.state.localStreamStatus}</p>
+                    <p style={{ fontSize: 11 }}>AudioTrack: {this.selfAudioName}</p>
+                    <p style={{ fontSize: 11 }}>VideoTrack: {this.selfVideoName}</p>
                 </div>
                 <div style={{ width: "100%", height: "300px", textAlign: "center" }}>
                     <div
@@ -384,7 +355,9 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
                                 null
                         }
                     </div>
-
+                    <p style={{ fontSize: 11 }}>iceConnectionState: {this.state.peerIceState}</p>
+                    <p style={{ fontSize: 11 }}>iceGatheringState: {this.state.peerIceGatheringState}</p>
+                    <p style={{ fontSize: 11 }}>signalingState: {this.state.peerSignalingState}</p>
                 </div>
             </Flexbox>
         );
