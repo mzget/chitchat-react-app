@@ -8,6 +8,9 @@ export class PeerStatus extends React.Component {
         };
         this.peerAdded = this.peerAdded.bind(this);
     }
+    componentWillUnmount() {
+        delete this.peerEvent;
+    }
     componentWillReceiveProps({ peer }) {
         if (!!peer && peer != this.props.peer) {
             this.peerAdded(peer);
@@ -15,16 +18,16 @@ export class PeerStatus extends React.Component {
     }
     peerAdded(peer) {
         let self = this;
-        let events = peer.target;
-        events.oniceconnectionstatechange = (event) => {
+        self.peerEvent = peer.target;
+        self.peerEvent.oniceconnectionstatechange = (event) => {
             let target = event.target;
             self.setState(prev => (Object.assign({}, prev, { peerIceState: target.iceConnectionState })));
         };
-        events.onicegatheringstatechange = (event) => {
+        self.peerEvent.onicegatheringstatechange = (event) => {
             let target = event.target;
             self.setState(prev => (Object.assign({}, prev, { peerIceGatheringState: target.iceGatheringState })));
         };
-        events.onsignalingstatechange = (event) => {
+        self.peerEvent.onsignalingstatechange = (event) => {
             let target = event.target;
             self.setState(prev => (Object.assign({}, prev, { peerSignalingState: target.signalingState })));
         };

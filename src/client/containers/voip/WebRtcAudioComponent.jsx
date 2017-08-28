@@ -14,6 +14,7 @@ import Flexbox from "flexbox-react";
 import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
 import { RaisedButton, FontIcon, Slider, Paper } from "material-ui";
 import Avatar from 'material-ui/Avatar';
+import { PeerStatus } from "./WithPeerStatus";
 import { signalingServer } from "../../Chitchat";
 import { AbstractPeerConnection, AbstractWEBRTC, WebRtcFactory } from '../../chitchat/stalk-js-webrtc/index';
 function getEl(idOrEl) {
@@ -39,7 +40,7 @@ class WebRtcAudioComponent extends React.Component {
             micVol: 100,
             selfViewSrc: null,
             remoteSrc: null,
-            peerStat: "",
+            peer: null,
             remoteVolume: 100,
             isHoverPeer: false,
             localStreamStatus: ""
@@ -100,32 +101,7 @@ class WebRtcAudioComponent extends React.Component {
         else {
             console.error("peer doesn't have audio");
         }
-        if (peer && peer.pc) {
-            let peerStat = "";
-            peer.pc.on('iceConnectionStateChange', function (event) {
-                switch (peer.pc.iceConnectionState) {
-                    case 'checking':
-                        peerStat = 'Connecting to peer...';
-                        break;
-                    case 'connected':
-                        peerStat = 'connected...';
-                        break;
-                    case 'completed':
-                        peerStat = 'Connection established.';
-                        break;
-                    case 'disconnected':
-                        peerStat = 'Disconnected.';
-                        break;
-                    case 'failed':
-                        break;
-                    case 'closed':
-                        peerStat = 'Connection closed.';
-                        break;
-                }
-                this.setState({ peerStat: peerStat });
-            });
-        }
-        this.setState({ remoteSrc: peer.stream, remoteVolume: 100 });
+        this.setState({ remoteSrc: peer.stream, remoteVolume: 100, peer: peer });
     }
     removeAudio() {
         let remoteAudio = getEl("remoteAudio");
@@ -251,7 +227,7 @@ class WebRtcAudioComponent extends React.Component {
             :
                 null}
                     </div>
-
+                    <PeerStatus peer={this.state.peer}/>
                 </div>
             </Flexbox>);
     }

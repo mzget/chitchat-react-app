@@ -16,6 +16,7 @@ import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
 import { RaisedButton, FontIcon, Slider, Paper, Subheader, FlatButton } from "material-ui";
 import Avatar from 'material-ui/Avatar';
 
+import { PeerStatus } from "./WithPeerStatus";
 import { signalingServer } from "../../Chitchat";
 import * as utils from "../../utils/";
 import * as chatroom from "../../chitchat/chats/redux/chatroom/";
@@ -34,7 +35,7 @@ interface IComponentNameState {
     isMuteVoice;
     remoteVolume;
     micVol;
-    peerStat;
+    peer;
     isHoverPeer;
     localStreamStatus: string;
 }
@@ -67,7 +68,7 @@ class WebRtcAudioComponent extends React.Component<MyCompProps, IComponentNameSt
             micVol: 100,
             selfViewSrc: null,
             remoteSrc: null,
-            peerStat: "",
+            peer: null,
             remoteVolume: 100,
             isHoverPeer: false,
             localStreamStatus: ""
@@ -133,41 +134,13 @@ class WebRtcAudioComponent extends React.Component<MyCompProps, IComponentNameSt
     peerAdded(peer) {
         let remoteAudio = getEl("remoteAudio");
         if (!!remoteAudio && peer.stream.getAudioTracks().length > 0) {
-            // remoteAudio.src = URL.createObjectURL(peer.stream);
             remoteAudio.srcObject = peer.stream;
         }
         else {
             console.error("peer doesn't have audio")
         }
 
-        if (peer && peer.pc) {
-            let peerStat = "";
-            peer.pc.on('iceConnectionStateChange', function (event) {
-                switch (peer.pc.iceConnectionState) {
-                    case 'checking':
-                        peerStat = 'Connecting to peer...';
-                        break;
-                    case 'connected':
-                        peerStat = 'connected...';
-                        break;
-                    case 'completed': // on caller side
-                        peerStat = 'Connection established.';
-                        break;
-                    case 'disconnected':
-                        peerStat = 'Disconnected.';
-                        break;
-                    case 'failed':
-                        break;
-                    case 'closed':
-                        peerStat = 'Connection closed.';
-                        break;
-                }
-
-                this.setState({ peerStat: peerStat });
-            });
-        }
-
-        this.setState({ remoteSrc: peer.stream, remoteVolume: 100 });
+        this.setState({ remoteSrc: peer.stream, remoteVolume: 100, peer: peer });
     }
 
     removeAudio() {
@@ -334,7 +307,7 @@ class WebRtcAudioComponent extends React.Component<MyCompProps, IComponentNameSt
                                 null
                         }
                     </div>
-
+                    <PeerStatus peer={this.state.peer} />
                 </div>
             </Flexbox>
         );

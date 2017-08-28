@@ -6,6 +6,8 @@ interface IPeerStatus {
     peerSignalingState: string;
 }
 export class PeerStatus extends React.Component<{ peer }, IPeerStatus> {
+    peerEvent: RTCPeerConnection;
+
     componentWillMount() {
         this.state = {
             peerIceState: "",
@@ -16,6 +18,10 @@ export class PeerStatus extends React.Component<{ peer }, IPeerStatus> {
         this.peerAdded = this.peerAdded.bind(this);
     }
 
+    componentWillUnmount() {
+        delete this.peerEvent;
+    }
+
     componentWillReceiveProps({ peer }) {
         if (!!peer && peer != this.props.peer) {
             this.peerAdded(peer);
@@ -24,18 +30,18 @@ export class PeerStatus extends React.Component<{ peer }, IPeerStatus> {
 
     peerAdded(peer) {
         let self = this;
-        let events = peer.target as RTCPeerConnection;
-        events.oniceconnectionstatechange = (event) => {
+        self.peerEvent = peer.target as RTCPeerConnection;
+        self.peerEvent.oniceconnectionstatechange = (event) => {
             let target = event.target as RTCPeerConnection;
 
             self.setState(prev => ({ ...prev, peerIceState: target.iceConnectionState }));
         }
-        events.onicegatheringstatechange = (event) => {
+        self.peerEvent.onicegatheringstatechange = (event) => {
             let target = event.target as RTCPeerConnection;
 
             self.setState(prev => ({ ...prev, peerIceGatheringState: target.iceGatheringState }));
         }
-        events.onsignalingstatechange = (event) => {
+        self.peerEvent.onsignalingstatechange = (event) => {
             let target = event.target as RTCPeerConnection;
 
             self.setState(prev => ({ ...prev, peerSignalingState: target.signalingState }));
