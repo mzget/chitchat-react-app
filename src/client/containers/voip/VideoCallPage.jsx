@@ -85,7 +85,7 @@ class VideoCall extends React.Component {
     }
     render() {
         let { team } = this.props.teamReducer;
-        return (<Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
+        return (<Flexbox flexDirection="column" height="100vh" style={{ backgroundColor: Colors.blueGrey50 }}>
                 <div style={{ position: "relative", height: "56px" }}>
                     <div style={{ position: "fixed", width: "100%", zIndex: 1 }}>
                         <SimpleToolbar title={(!!team) ? team.name.toUpperCase() : ""} onBackPressed={this.onBackPressed} onPressTitle={this.onTitlePressed}/>

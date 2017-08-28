@@ -114,7 +114,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         let { team } = this.props.teamReducer;
 
         return (
-            <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
+            <Flexbox flexDirection="column" height="100vh" style={{ backgroundColor: Colors.blueGrey50 }}>
                 <div style={{ position: "relative", height: "56px" }}>
                     <div style={{ position: "fixed", width: "100%", zIndex: 1 }} >
                         <SimpleToolbar

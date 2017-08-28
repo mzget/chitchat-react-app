@@ -219,7 +219,7 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
 
         return (
             <Flexbox flexDirection="row" height="100%" justifyContent={"flex-start"}>
-                <div ref="localContainer" style={{ position: 'relative', width: '200px', height: '100%' }}>
+                <div ref="localContainer" style={{ position: 'relative', width: '300px', height: '100%' }}>
                     <video
                         style={{ height: "150px", width: '100%' }}
                         className="local"
@@ -289,13 +289,13 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
                     <p style={{ fontSize: 11 }}>AudioTrack: {this.selfAudioName}</p>
                     <p style={{ fontSize: 11 }}>VideoTrack: {this.selfVideoName}</p>
                 </div>
-                <div style={{ width: "100%", height: "300px", textAlign: "center" }}>
+                <div style={{ width: "100%", height: "100%", textAlign: "center" }}>
                     <div
                         onMouseOver={() => { this.setState({ isHoverPeer: true }) }}
                         onMouseLeave={() => { this.setState({ isHoverPeer: false }) }}
                         style={{ display: "inline-block", height: "300px", position: "relative" }}>
                         <video
-                            style={{ height: "300px", display: this.state.remoteSrc ? "initial" : "none" }}
+                            style={{ height: "100%", display: this.state.remoteSrc ? "initial" : "none" }}
                             className="remotes"
                             id="remoteVideos"
                             ref="remotes"

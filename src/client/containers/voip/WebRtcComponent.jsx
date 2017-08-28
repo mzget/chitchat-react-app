@@ -172,7 +172,7 @@ class WebRtcComponent extends React.Component {
             }
         }
         return (<Flexbox flexDirection="row" height="100%" justifyContent={"flex-start"}>
-                <div ref="localContainer" style={{ position: 'relative', width: '200px', height: '100%' }}>
+                <div ref="localContainer" style={{ position: 'relative', width: '300px', height: '100%' }}>
                     <video style={{ height: "150px", width: '100%' }} className="local" id="localVideo" ref="localVideo" autoPlay={true} muted={true}>
                     </video>
                     <Slider min={0} max={100} step={1} disabled={disabledAudioOption} defaultValue={100} sliderStyle={{
@@ -212,9 +212,9 @@ class WebRtcComponent extends React.Component {
                     <p style={{ fontSize: 11 }}>AudioTrack: {this.selfAudioName}</p>
                     <p style={{ fontSize: 11 }}>VideoTrack: {this.selfVideoName}</p>
                 </div>
-                <div style={{ width: "100%", height: "300px", textAlign: "center" }}>
+                <div style={{ width: "100%", height: "100%", textAlign: "center" }}>
                     <div onMouseOver={() => { this.setState({ isHoverPeer: true }); }} onMouseLeave={() => { this.setState({ isHoverPeer: false }); }} style={{ display: "inline-block", height: "300px", position: "relative" }}>
-                        <video style={{ height: "300px", display: this.state.remoteSrc ? "initial" : "none" }} className="remotes" id="remoteVideos" ref="remotes" autoPlay={true}/>
+                        <video style={{ height: "100%", display: this.state.remoteSrc ? "initial" : "none" }} className="remotes" id="remoteVideos" ref="remotes" autoPlay={true}/>
                         <audio id="remoteAudio" style={{ display: "none" }} autoPlay={true}/>
                         {this.state.isHoverPeer ?
             [
