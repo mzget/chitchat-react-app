@@ -40,6 +40,8 @@ class WebRtcComponent extends React.Component {
             audio: true
         };
         let peers = this.webrtc.peerManager.getPeers();
+        this.webrtc.userMedia.stopLocalStream();
+        peers.forEach(peer => peer.removeStream(this.webrtc.userMedia.getLocalStream()));
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
             self.onStreamReady(stream);
             peers.forEach(peer => peer.addStream(stream));

@@ -9,6 +9,7 @@ import { RaisedButton, FontIcon, Slider, Paper, Subheader, FlatButton } from "ma
 import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
 import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
 
+import { PeerStatus } from "./WithPeerStatus";
 import { signalingServer } from "../../Chitchat";
 import { AbstractWEBRTC, AbstractPeerConnection, AbstractMediaStream, WebRtcFactory } from "../../chitchat/stalk-js-webrtc/index";
 import { createStreamByText, createDummyStream } from '../../chitchat/stalk-js-webrtc/libs/StreamHelper';
@@ -24,7 +25,7 @@ interface IComponentNameState {
     isPauseVideo;
     remoteVolume;
     micVol;
-    peerStat;
+    peer;
     isHoverPeer;
     localStreamStatus: string;
 }
@@ -54,7 +55,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
             micVol: 100,
             selfViewSrc: null,
             remoteSrc: null,
-            peerStat: "",
+            peer: null,
             remoteVolume: 100,
             isHoverPeer: false,
             localStreamStatus: ""
@@ -219,40 +220,13 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 
         remotesView.volume = 1;
 
-        if (peer && peer.pc) {
-            let peerStat = "";
-            peer.pc.on('iceConnectionStateChange', function (event) {
-                switch (peer.pc.iceConnectionState) {
-                    case 'checking':
-                        peerStat = 'Connecting to peer...';
-                        break;
-                    case 'connected':
-                        peerStat = 'connected...';
-                        break;
-                    case 'completed': // on caller side
-                        peerStat = 'Connection established.';
-                        break;
-                    case 'disconnected':
-                        peerStat = 'Disconnected.';
-                        break;
-                    case 'failed':
-                        break;
-                    case 'closed':
-                        peerStat = 'Connection closed.';
-                        break;
-                }
-
-                this.setState({ peerStat: peerStat });
-            });
-        }
-
-        this.setState({ remoteSrc: peer.stream, remoteVolume: 100 });
+        this.setState({ remoteSrc: peer.stream, remoteVolume: 100, peer: peer });
     }
     removeVideo() {
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
         if (!!remotesView) remotesView.disable = true;
 
-        this.setState({ remoteSrc: null });
+        this.setState({ remoteSrc: null, peer: null });
     }
 
     onStreamReady(stream: MediaStream | null) {
@@ -483,7 +457,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                                     null
                             }
                         </div>
-
+                        <PeerStatus peer={this.state.peer} />
                     </div>
                 </Flexbox>
             </Flexbox >
