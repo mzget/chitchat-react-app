@@ -17,18 +17,10 @@ function onCall_handler(dataEvent) {
 
     console.log(`onCall_handler :`, call);
 
-    switch (call.event) {
-        case CallingEvents.VideoCall:
-            callingActions.onVideoCall(call.payload);
-            break;
-        case CallingEvents.VoiceCall:
-            break;
-        case CallingEvents.HangupCall:
-            callingActions.onHangupCall(call.payload);
-            break;
-        case CallingEvents.TheLineIsBusy:
-            break;
-        default:
-            break;
+    if (call.event == CallingEvents.VideoCall || call.event == CallingEvents.VoiceCall) {
+        callingActions.onVOIPCall(call);
+    }
+    else if (call.event == CallingEvents.HangupCall) {
+        callingActions.onHangupCall(call.payload);
     }
 }

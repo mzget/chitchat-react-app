@@ -1,6 +1,6 @@
 {
   "name": "chitchat-react-app",
-  "version": "0.2.9-beta1",
+  "version": "0.2.9-beta2",
   "private": true,
   "homepage": "/",
   "devDependencies": {
@@ -33,7 +33,7 @@
     "redux-logger": "^3.0.6",
     "source-map-explorer": "^1.4.0",
     "ts-jest": "^20.0.10",
-    "tslint": "^5.6.0"
+    "tslint": "^5.7.0"
   },
   "dependencies": {
     "async": "^2.4.1",

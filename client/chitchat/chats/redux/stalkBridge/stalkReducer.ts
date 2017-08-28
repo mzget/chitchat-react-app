@@ -87,7 +87,7 @@ export function stalkReducer(state = initialState, action) {
             return state.set("state", StalkBridgeActions.STALK_ON_SOCKET_RECONNECT);
         }
 
-        case callingActions.ON_VIDEOCALL_INCOMMING: {
+        case callingActions.VOIP_CALL_INCOMMING: {
             return state.set("incommingCall", action.payload);
         }
         case callingActions.ON_VIDEOCALL_ENDED: {

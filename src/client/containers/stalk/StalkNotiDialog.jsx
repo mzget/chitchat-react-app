@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from "react-redux";
 import { shallowEqual } from "recompose";
 import { withRouter } from "react-router-dom";
+import { CallingEvents } from "stalk-js";
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -43,15 +44,22 @@ class StalkNotiDialogModal extends React.Component {
         let self = this;
         this.handleClose(() => {
             let { _id } = self.props.userReducer.user;
-            let { room_id, user_id } = self.props.stalkReducer.get("incommingCall");
+            let incommingCall = self.props.stalkReducer.get("incommingCall");
+            let { payload: { room_id, user_id }, event } = incommingCall;
             self.props.dispatch(calling.hangupCallRequest({ target_ids: [user_id], user_id: _id }));
         });
     }
     answerCall() {
         let self = this;
         this.handleClose(() => {
-            let { room_id } = self.props.stalkReducer.get("incommingCall");
-            self.props.history.push(`/videocall/${room_id}`);
+            let incommingCall = self.props.stalkReducer.get("incommingCall");
+            let { payload: { room_id, user_id }, event } = incommingCall;
+            if (event == CallingEvents.VideoCall) {
+                self.props.history.push(`/videocall/${room_id}`);
+            }
+            else if (event == CallingEvents.VoiceCall) {
+                self.props.history.push(`/audiocall/${room_id}`);
+            }
         });
     }
     render() {

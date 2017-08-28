@@ -44,7 +44,7 @@ export const alertReducer = (state = new AlertInitState(), action) => {
         case adminRx.CREATE_NEW_ORG_CHART_FAILURE: {
             return state.set("error", JSON.stringify(action.payload.message));
         }
-        case calling.VIDEO_CALL_FAILURE: {
+        case calling.CALLING_FAILURE: {
             return state.set("error", JSON.stringify(action.payload));
         }
         case teamRx.CREATE_TEAM_FAILURE: {
