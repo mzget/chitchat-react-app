@@ -63,6 +63,7 @@ class VideoCall extends React.Component {
             audio: true
         };
         let peers = this.webrtc.peerManager.getPeers();
+        peers.forEach(peer => peer.removeStream(this.webrtc.userMedia.getLocalStream()));
         this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
             self.onStreamReady(stream);
             peers.forEach(peer => peer.addStream(stream));
@@ -156,13 +157,13 @@ class VideoCall extends React.Component {
         if (!!peer.stream) {
             let videoTracks = peer.stream.getVideoTracks();
             if (videoTracks.length > 0) {
-                remotesView.src = URL.createObjectURL(peer.stream);
+                remotesView.srcObject = peer.stream;
             }
             else {
                 let canvasStream = createStreamByText("NO CAMERA");
                 if (!!canvasStream)
-                    remotesView.src = URL.createObjectURL(canvasStream);
-                remotesAudio.src = URL.createObjectURL(peer.stream);
+                    remotesView.srcObject = canvasStream;
+                remotesAudio.srcObject = peer.stream;
             }
         }
         if (this.state.selfViewSrc == null) {
@@ -210,12 +211,12 @@ class VideoCall extends React.Component {
         if (!selfView)
             return;
         if (!!stream && stream.getVideoTracks().length > 0) {
-            selfView.src = URL.createObjectURL(stream);
+            selfView.srcObject = stream;
         }
         else if (!stream || stream.getVideoTracks().length == 0) {
             let canvasStream = createStreamByText("NO CAMERA");
             if (!!selfView && !!canvasStream)
-                selfView.src = URL.createObjectURL(canvasStream);
+                selfView.srcObject = canvasStream;
         }
         this.selfAudioName = this.webrtc.userMedia.getAudioTrackName();
         this.selfVideoName = this.webrtc.userMedia.getVideoTrackName();

@@ -47,6 +47,8 @@ export namespace AbstractPeer {
             this.offer = config.offer;
         }
 
+        initPeerConnection(stream: MediaStream) { }
+
         removeStream(stream: MediaStream) {
             this.pc.removeStream(stream);
         }

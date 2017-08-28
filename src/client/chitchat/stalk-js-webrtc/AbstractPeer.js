@@ -18,6 +18,7 @@ export var AbstractPeer;
             this.send_event = config.sendHandler;
             this.offer = config.offer;
         }
+        initPeerConnection(stream) { }
         removeStream(stream) {
             this.pc.removeStream(stream);
         }
