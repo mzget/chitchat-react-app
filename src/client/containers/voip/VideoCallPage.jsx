@@ -67,7 +67,7 @@ class VideoCall extends React.Component {
         let { match, userReducer: { user }, stalkReducer } = this.props;
         let incommingCall = stalkReducer.get("incommingCall");
         if (!!incommingCall) {
-            self.props.dispatch(calling.onCalling(incommingCall.room_id));
+            self.props.dispatch(calling.onCalling(incommingCall.payload.room_id));
         }
         else {
             let room_id = match.params.id;

@@ -5,10 +5,10 @@ import { ChitChatFactory } from "../../chats/";
 const getStore = () => ChitChatFactory.getInstance().store as Store<any>;
 
 
-export const ON_VIDEOCALL_INCOMMING = "ON_VIDEOCALL_INCOMMING";
-const videoCallIncoming = createAction(ON_VIDEOCALL_INCOMMING, payload => payload);
-export function onVideoCall(payload: any) {
-    getStore().dispatch(videoCallIncoming(payload));
+export const VOIP_CALL_INCOMMING = "VOIP_CALL_INCOMMING";
+const voipCallIncoming = createAction(VOIP_CALL_INCOMMING, payload => payload);
+export function onVOIPCall(data: { event, payload }) {
+    getStore().dispatch(voipCallIncoming(data));
 }
 
 export function onHangupCall(payload: { user_id: string }) {
