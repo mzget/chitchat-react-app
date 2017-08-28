@@ -102,8 +102,10 @@ export class WebRTC {
     }
     ;
     disconnect() {
-        this.signalingSocket.disconnect();
-        this.userMedia.stopLocalStream();
+        if (this.signalingSocket)
+            this.signalingSocket.disconnect();
+        if (this.userMedia)
+            this.userMedia.stopLocalStream();
         delete this.webrtcEvents;
         delete this.peerManager;
         delete this.signalingSocket;
@@ -113,7 +115,11 @@ export class WebRTC {
     onDisconnect(data) {
         if (this.debug)
             console.log("SOCKET disconnect", data);
-        this.userMedia.stopLocalStream();
         this.webrtcEvents.emit(AbstractWEBRTC.ON_CONNECTION_CLOSE, data);
+        this.userMedia.stopLocalStream();
+        delete this.webrtcEvents;
+        delete this.peerManager;
+        delete this.signalingSocket;
+        delete this.userMedia;
     }
 }
