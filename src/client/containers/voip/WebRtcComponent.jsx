@@ -14,6 +14,7 @@ import { withRouter } from "react-router-dom";
 import Flexbox from "flexbox-react";
 import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
 import { RaisedButton, FontIcon, Slider, FlatButton } from "material-ui";
+import { PeerStatus } from "./WithPeerStatus";
 import { signalingServer } from "../../Chitchat";
 import { AbstractPeerConnection, AbstractWEBRTC, AbstractMediaStream, WebRtcFactory } from '../../chitchat/stalk-js-webrtc/index';
 function getEl(idOrEl) {
@@ -56,9 +57,7 @@ class WebRtcComponent extends React.Component {
             micVol: 100,
             selfViewSrc: null,
             remoteSrc: null,
-            peerIceState: "",
-            peerIceGatheringState: "",
-            peerSignalingState: "",
+            peer: null,
             remoteVolume: 100,
             isHoverPeer: false,
             localStreamStatus: ""
@@ -123,25 +122,12 @@ class WebRtcComponent extends React.Component {
             remotesView.srcObject = peer.stream;
             remotesView.volume = 1;
         }
-        let events = peer.target;
-        events.oniceconnectionstatechange = (event) => {
-            let target = event.target;
-            self.setState(prev => (Object.assign({}, prev, { peerIceState: target.iceConnectionState })));
-        };
-        events.onicegatheringstatechange = (event) => {
-            let target = event.target;
-            self.setState(prev => (Object.assign({}, prev, { peerIceGatheringState: target.iceGatheringState })));
-        };
-        events.onsignalingstatechange = (event) => {
-            let target = event.target;
-            self.setState(prev => (Object.assign({}, prev, { peerSignalingState: target.signalingState })));
-        };
-        this.setState({ remoteSrc: peer.stream, remoteVolume: 100 });
+        this.setState({ remoteSrc: peer.stream, remoteVolume: 100, peer: peer });
     }
     removeVideo() {
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
         remotesView.disable = true;
-        this.setState({ remoteSrc: null });
+        this.setState({ remoteSrc: null, peer: null });
     }
     showVolume(el, volume) {
         if (!el)
@@ -262,9 +248,7 @@ class WebRtcComponent extends React.Component {
             :
                 null}
                     </div>
-                    <p style={{ fontSize: 11 }}>iceConnectionState: {this.state.peerIceState}</p>
-                    <p style={{ fontSize: 11 }}>iceGatheringState: {this.state.peerIceGatheringState}</p>
-                    <p style={{ fontSize: 11 }}>signalingState: {this.state.peerSignalingState}</p>
+                    <PeerStatus peer={this.state.peer}/>
                 </div>
             </Flexbox>);
     }

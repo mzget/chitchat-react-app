@@ -7,6 +7,7 @@ import Flexbox from "flexbox-react";
 import { MuiThemeProvider, getMuiTheme } from "material-ui/styles";
 import { RaisedButton, FontIcon, Slider, Paper, Subheader, FlatButton } from "material-ui";
 
+import { PeerStatus } from "./WithPeerStatus";
 import { signalingServer } from "../../Chitchat";
 import * as utils from "../../utils/";
 import * as chatroom from "../../chitchat/chats/redux/chatroom/";
@@ -24,9 +25,7 @@ interface IComponentNameState {
     isPauseVideo;
     remoteVolume;
     micVol;
-    peerIceState;
-    peerIceGatheringState;
-    peerSignalingState;
+    peer;
     isHoverPeer;
     localStreamStatus: string;
 }
@@ -81,9 +80,7 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
             micVol: 100,
             selfViewSrc: null,
             remoteSrc: null,
-            peerIceState: "",
-            peerIceGatheringState: "",
-            peerSignalingState: "",
+            peer: null,
             remoteVolume: 100,
             isHoverPeer: false,
             localStreamStatus: ""
@@ -163,30 +160,13 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
             remotesView.volume = 1;
         }
 
-        let events = peer.target as RTCPeerConnection;
-        events.oniceconnectionstatechange = (event) => {
-            let target = event.target as RTCPeerConnection;
-
-            self.setState(prev => ({ ...prev, peerIceState: target.iceConnectionState }));
-        }
-        events.onicegatheringstatechange = (event) => {
-            let target = event.target as RTCPeerConnection;
-
-            self.setState(prev => ({ ...prev, peerIceGatheringState: target.iceGatheringState }));
-        }
-        events.onsignalingstatechange = (event) => {
-            let target = event.target as RTCPeerConnection;
-
-            self.setState(prev => ({ ...prev, peerSignalingState: target.signalingState }));
-        }
-
-        this.setState({ remoteSrc: peer.stream, remoteVolume: 100 });
+        this.setState({ remoteSrc: peer.stream, remoteVolume: 100, peer: peer });
     }
     removeVideo() {
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
         remotesView.disable = true;
 
-        this.setState({ remoteSrc: null });
+        this.setState({ remoteSrc: null, peer: null });
     }
 
     showVolume(el, volume) {
@@ -355,9 +335,7 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
                                 null
                         }
                     </div>
-                    <p style={{ fontSize: 11 }}>iceConnectionState: {this.state.peerIceState}</p>
-                    <p style={{ fontSize: 11 }}>iceGatheringState: {this.state.peerIceGatheringState}</p>
-                    <p style={{ fontSize: 11 }}>signalingState: {this.state.peerSignalingState}</p>
+                    <PeerStatus peer={this.state.peer} />
                 </div>
             </Flexbox>
         );
