@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { shallowEqual, compose } from "recompose";
 import Flexbox from "flexbox-react";
+import { CallingEvents } from "stalk-js";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
@@ -106,7 +107,12 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
                 });
             }
 
-            this.props.dispatch(calling.videoCall_Epic({ target_ids: targets, user_id: user._id, room_id: match.params.id }));
+            this.props.dispatch(calling.callling_Epic({
+                target_ids: targets,
+                user_id: user._id,
+                room_id: match.params.id,
+                calllingType: CallingEvents.VideoCall
+            }));
         }
     }
 

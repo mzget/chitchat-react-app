@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { shallowEqual, compose } from "recompose";
 import Flexbox from "flexbox-react";
+import { CallingEvents } from "stalk-js";
 import * as Colors from "material-ui/styles/colors";
 import * as chatroom from "../../chitchat/chats/redux/chatroom/";
 import * as calling from "../../chitchat/calling/";
@@ -79,7 +80,10 @@ class AudioCall extends React.Component {
                     }
                 });
             }
-            this.props.dispatch(calling.videoCall_Epic({ target_ids: targets, user_id: user._id, room_id: match.params.id, bobo: "bobo" }));
+            this.props.dispatch(calling.callling_Epic({
+                target_ids: targets, user_id: user._id, room_id: match.params.id,
+                calllingType: CallingEvents.VoiceCall
+            }));
         }
     }
     render() {
@@ -96,7 +100,7 @@ class AudioCall extends React.Component {
                 username: room.name,
             };
         }
-        return (<Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
+        return (<Flexbox flexDirection="column" height="100vh" style={{ backgroundColor: Colors.blueGrey50 }}>
                 <div style={{ position: "relative", height: "56px" }}>
                     <div style={{ position: "fixed", width: "100%", zIndex: 1 }}>
                         <SimpleToolbar title={(!!team) ? team.name.toUpperCase() : ""} onBackPressed={this.onBackPressed} onPressTitle={this.onTitlePressed}/>

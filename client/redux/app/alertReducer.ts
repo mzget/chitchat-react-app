@@ -66,7 +66,7 @@ export const alertReducer = (state = new AlertInitState(), action: ReduxActions.
         }
 
         /**calling actions */
-        case calling.VIDEO_CALL_FAILURE: {
+        case calling.CALLING_FAILURE: {
             return state.set("error", JSON.stringify(action.payload));
         }
 
