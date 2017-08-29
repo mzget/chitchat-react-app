@@ -122,7 +122,9 @@ export namespace AbstractMediaStream {
         //@ about mic-gainController in browser.
         support: boolean;
         volume: number;
+        gainFilter: GainNode;
         audioSource: AudioTrack;
+        microphone: AudioNode;
         mute();
         unMute();
         setVolume(volume: number);

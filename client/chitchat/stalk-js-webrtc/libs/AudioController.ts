@@ -7,6 +7,7 @@ export class AudioController implements AbstractMediaStream.AudioController {
     volume;
     gainFilter;
     audioSource;
+    microphone;
 
     constructor(stream) {
         // webrtcsupport lib
@@ -20,11 +21,11 @@ export class AudioController implements AbstractMediaStream.AudioController {
         if (this.support) {
             // var context = this.context = AudioCtx.getInstance();
             let context = AudioCtx.getInstance();
-            let microphone = context.createMediaStreamSource(stream);
+            this.microphone = context.createMediaStreamSource(stream);
             this.gainFilter = context.createGain();
             let destination = context.createMediaStreamDestination();
             let outputStream = destination.stream;
-            microphone.connect(this.gainFilter);
+            this.microphone.connect(this.gainFilter);
             this.gainFilter.connect(destination);
             stream.addTrack(outputStream.getAudioTracks()[0]);
             this.audioSource = stream.getAudioTracks()[0];
@@ -55,5 +56,7 @@ export class AudioController implements AbstractMediaStream.AudioController {
 
     removeAudioStream() {
         !!this.audioSource && this.audioSource.stop();
+        !!this.microphone && this.microphone.disconnect();
+        !!this.gainFilter && this.gainFilter.disconnect();
     }
 }

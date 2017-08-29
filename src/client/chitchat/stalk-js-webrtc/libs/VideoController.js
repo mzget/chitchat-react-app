@@ -9,8 +9,7 @@ export class VideoController {
             let localVideoElement = document.getElementById('localVideo');
             if (!!localVideoElement) {
                 if (enabled) {
-                    localVideoElement.srcObject = null;
-                    localVideoElement.src = URL.createObjectURL(this.localStream);
+                    localVideoElement.srcObject = this.localStream;
                 }
                 else {
                     getImage(localVideoElement).then((res) => {
