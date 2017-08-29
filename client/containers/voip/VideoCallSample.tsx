@@ -73,6 +73,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         // Jump to main menu.
         this.props.history.goBack();
     }
+
     onTitlePressed() {
         let { history, teamReducer } = this.props;
         history.replace(`/team/${teamReducer.team._id}`);
@@ -221,6 +222,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 
         this.setState({ remoteSrc: peer.stream, remoteVolume: 100, peer: peer });
     }
+
     removeVideo() {
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
         if (!!remotesView) remotesView.disable = true;
