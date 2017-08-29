@@ -149,8 +149,8 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
         if (!selfView) return;
         selfView.srcObject = stream;
 
-        this.selfAudioName = this.webrtc.userMedia.getAudioTrackName();
-        this.selfVideoName = this.webrtc.userMedia.getVideoTrackName();
+        this.selfAudioName = this.webrtc.userMedia.getAudioTrack().label;
+        this.selfVideoName = this.webrtc.userMedia.getVideoTrack().label;
         this.setState({ selfViewSrc: stream, localStreamStatus: "ready" });
     }
 

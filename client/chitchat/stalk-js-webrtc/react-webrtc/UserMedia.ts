@@ -12,26 +12,25 @@ export class UserMedia implements AbstractMediaStream.IUserMedia {
     public setLocalStream(stream) {
         this.localStream = stream;
     }
-    public getVideoTrackName() {
-        if (!this.localStream) return "";
-        let videoTracks = this.localStream.getVideoTracks();
-        if (videoTracks.length > 0) {
-            // console.log('Using video device: ' + videoTracks[0].label);
-            return videoTracks[0].label;
+    public getVideoTrack() {
+        if (!!this.localStream) {
+            let videoTracks = this.localStream.getVideoTracks();
+            if (videoTracks.length > 0) {
+                return videoTracks[0];
+            }
         }
 
-        return "";
+        return null;
     }
-    public getAudioTrackName() {
-        if (!this.localStream) return "";
-        let audioTracks = this.localStream.getAudioTracks();
-        if (audioTracks.length > 0) {
-            // console.log('Using audio device: ' + audioTracks[0].label);
-            // return audioTracks[0].label;
-            return this.audioController.audioSource.label;
+    public getAudioTrack() {
+        if (!!this.localStream) {
+            let audioTracks = this.localStream.getAudioTracks();
+            if (audioTracks.length > 0) {
+                return audioTracks[0];
+            }
         }
 
-        return "";
+        return null;
     }
 
     audioController: AudioController;
@@ -46,8 +45,12 @@ export class UserMedia implements AbstractMediaStream.IUserMedia {
         return new Promise((resolve: (stream: MediaStream) => void, reject) => {
             navigator.mediaDevices.getUserMedia(mediaConstraints).then(function (stream) {
                 stream.oninactive = function () {
-                    if (self.debug)
-                        console.log('Stream inactive');
+                    if (self.debug) {
+                        let tracks = self.localStream.getTracks();
+                        tracks.forEach(function (track) {
+                            console.log('Stream inactive', track);
+                        });
+                    }
                 };
                 stream.onactive = () => {
                     if (self.debug)

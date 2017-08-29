@@ -20,23 +20,23 @@ export class UserMedia {
     setLocalStream(stream) {
         this.localStream = stream;
     }
-    getVideoTrackName() {
-        if (!this.localStream)
-            return "";
-        let videoTracks = this.localStream.getVideoTracks();
-        if (videoTracks.length > 0) {
-            return videoTracks[0].label;
+    getVideoTrack() {
+        if (!!this.localStream) {
+            let videoTracks = this.localStream.getVideoTracks();
+            if (videoTracks.length > 0) {
+                return videoTracks[0];
+            }
         }
-        return "";
+        return null;
     }
-    getAudioTrackName() {
-        if (!this.localStream)
-            return "";
-        let audioTracks = this.localStream.getAudioTracks();
-        if (audioTracks.length > 0) {
-            return this.audioController.audioSource.label;
+    getAudioTrack() {
+        if (!!this.localStream) {
+            let audioTracks = this.localStream.getAudioTracks();
+            if (audioTracks.length > 0) {
+                return audioTracks[0];
+            }
         }
-        return "";
+        return null;
     }
     startLocalStream(mediaConstraints) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -44,8 +44,12 @@ export class UserMedia {
             return new Promise((resolve, reject) => {
                 navigator.mediaDevices.getUserMedia(mediaConstraints).then(function (stream) {
                     stream.oninactive = function () {
-                        if (self.debug)
-                            console.log('Stream inactive');
+                        if (self.debug) {
+                            let tracks = self.localStream.getTracks();
+                            tracks.forEach(function (track) {
+                                console.log('Stream inactive', track);
+                            });
+                        }
                     };
                     stream.onactive = () => {
                         if (self.debug)

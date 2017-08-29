@@ -127,7 +127,7 @@ class WebRtcAudioComponent extends React.Component<MyCompProps, IComponentNameSt
     onStreamReady(stream: MediaStream) {
         if (!stream) return;
 
-        this.selfAudioName = this.webrtc.userMedia.getAudioTrackName();
+        this.selfAudioName = this.webrtc.userMedia.getAudioTrack().label;
         this.setState({ selfViewSrc: stream, localStreamStatus: "ready" });
     }
 

@@ -21,6 +21,7 @@ export class Peer extends AbstractPeer.BasePeer {
         this.pc.onnegotiationneeded = function () {
             if (self.offer) {
                 self.createOffer();
+                self.offer = false;
             }
         };
         this.pc.oniceconnectionstatechange = function (event) {
@@ -41,8 +42,6 @@ export class Peer extends AbstractPeer.BasePeer {
         };
         this.pc.onicegatheringstatechange = (event) => {
             let target = event.target;
-            if (self.debug)
-                console.log("onicegatheringstatechange", target.iceGatheringState);
             self.pcEvent.emit("onicegatheringstatechange", target.iceGatheringState);
         };
         this.pc.onsignalingstatechange = function (event) {

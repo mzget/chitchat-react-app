@@ -124,8 +124,8 @@ export namespace AbstractMediaStream {
         videoController: VideoController;
         getLocalStream(): MediaStream;
         setLocalStream(stream: MediaStream);
-        getVideoTrackName(): string;
-        getAudioTrackName(): string;
+        getVideoTrack(): MediaStreamTrack | null;
+        getAudioTrack(): MediaStreamTrack | null;
 
         startLocalStream(mediaContraints: MediaStreamConstraints, isFront?: false): Promise<MediaStream>;
         stopLocalStream();

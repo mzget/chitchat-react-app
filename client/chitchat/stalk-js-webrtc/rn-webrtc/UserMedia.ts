@@ -25,7 +25,7 @@ export class UserMedia implements AbstractMediaStream.IUserMedia {
     public setLocalStream(stream: MediaStream) {
         this.localStream = stream;
     }
-    public getVideoTrackName() {
+    public getVideoTrack() {
         let videoTracks = this.localStream.getVideoTracks();
         if (videoTracks.length > 0) {
             // console.log('Using video device: ' + videoTracks[0].label);
@@ -34,7 +34,7 @@ export class UserMedia implements AbstractMediaStream.IUserMedia {
 
         return "";
     }
-    public getAudioTrackName() {
+    public getAudioTrack() {
         let audioTracks = this.localStream.getAudioTracks();
         if (audioTracks.length > 0) {
             // console.log('Using audio device: ' + audioTracks[0].label);
