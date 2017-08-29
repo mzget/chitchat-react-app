@@ -35,20 +35,28 @@ class WebRtcComponent extends React.Component {
     }
     changeMediaContraint(media) {
         let self = this;
-        let requestMedia = {
-            video: media.video,
-            audio: true
-        };
         let peers = this.webrtc.peerManager.getPeers();
-        this.webrtc.userMedia.stopLocalStream();
-        peers.forEach(peer => peer.removeStream(this.webrtc.userMedia.getLocalStream()));
-        this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
-            self.onStreamReady(stream);
-            peers.forEach(peer => peer.addStream(stream));
-        }).catch(err => {
-            console.error("LocalStream Fail", err);
-            self.setState(prev => (Object.assign({}, prev, { localStreamStatus: err })));
-            self.props.onError("LocalStream Fail: " + err);
+        self.webrtc.userMedia.stopLocalStream();
+        peers.forEach(peer => {
+            peer.offer = true;
+            peer.removeStream(self.webrtc.userMedia.getLocalStream());
+        });
+        process.nextTick(() => {
+            let requestMedia = {
+                video: media.video,
+                audio: true
+            };
+            self.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
+                self.onStreamReady(stream);
+                peers.forEach(peer => {
+                    peer.offer = true;
+                    peer.addStream(stream);
+                });
+            }).catch(err => {
+                console.error("LocalStream Fail", err);
+                self.setState(prev => (Object.assign({}, prev, { localStreamStatus: err })));
+                self.props.onError("LocalStream Fail: " + err);
+            });
         });
     }
     constructor(props) {
@@ -113,8 +121,10 @@ class WebRtcComponent extends React.Component {
         if (!selfView)
             return;
         selfView.srcObject = stream;
-        this.selfAudioName = this.webrtc.userMedia.getAudioTrack().label;
-        this.selfVideoName = this.webrtc.userMedia.getVideoTrack().label;
+        let video = this.webrtc.userMedia.getVideoTrack();
+        let audio = this.webrtc.userMedia.getAudioTrack();
+        this.selfAudioName = audio.label;
+        this.selfVideoName = video.label;
         this.setState({ selfViewSrc: stream, localStreamStatus: "ready" });
     }
     peerAdded(peer) {

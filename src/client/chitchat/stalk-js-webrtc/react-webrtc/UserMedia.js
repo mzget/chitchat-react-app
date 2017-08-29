@@ -45,10 +45,7 @@ export class UserMedia {
                 navigator.mediaDevices.getUserMedia(mediaConstraints).then(function (stream) {
                     stream.oninactive = function () {
                         if (self.debug) {
-                            let tracks = self.localStream.getTracks();
-                            tracks.forEach(function (track) {
-                                console.log('Stream inactive', track);
-                            });
+                            console.log('Stream inactive');
                         }
                     };
                     stream.onactive = () => {

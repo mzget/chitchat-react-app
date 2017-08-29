@@ -53,23 +53,30 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
     changeMediaContraint(media: MediaStreamConstraints) {
         let self = this;
 
-        let requestMedia = {
-            video: media.video,
-            audio: true
-        } as MediaStreamConstraints;
-
         let peers = this.webrtc.peerManager.getPeers() as Map<string, AbstractPeerConnection.IPC_Handler>;
-        this.webrtc.userMedia.stopLocalStream();
-        peers.forEach(peer => peer.removeStream(this.webrtc.userMedia.getLocalStream()));
+        self.webrtc.userMedia.stopLocalStream();
+        peers.forEach(peer => {
+            peer.offer = true;
+            peer.removeStream(self.webrtc.userMedia.getLocalStream())
+        });
 
-        this.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
-            self.onStreamReady(stream);
-            peers.forEach(peer => peer.addStream(stream));
-        }).catch(err => {
-            console.error("LocalStream Fail", err);
+        process.nextTick(() => {
+            let requestMedia = {
+                video: media.video,
+                audio: true
+            } as MediaStreamConstraints;
+            self.webrtc.userMedia.startLocalStream(requestMedia).then(function (stream) {
+                self.onStreamReady(stream);
+                peers.forEach(peer => {
+                    peer.offer = true;
+                    peer.addStream(stream);
+                });
+            }).catch(err => {
+                console.error("LocalStream Fail", err);
 
-            self.setState(prev => ({ ...prev, localStreamStatus: err }));
-            self.props.onError("LocalStream Fail: " + err);
+                self.setState(prev => ({ ...prev, localStreamStatus: err }));
+                self.props.onError("LocalStream Fail: " + err);
+            });
         });
     }
 
@@ -142,15 +149,14 @@ class WebRtcComponent extends React.Component<MyCompProps, IComponentNameState> 
 
     onStreamReady(stream: MediaStream) {
         let selfView = getEl(ReactDOM.findDOMNode(this.refs.localVideo));
-        // let video = document.createElement('video');
-        // video.oncontextmenu = function () { return false; };
-        // el.appendChild(video);
 
         if (!selfView) return;
         selfView.srcObject = stream;
 
-        this.selfAudioName = this.webrtc.userMedia.getAudioTrack().label;
-        this.selfVideoName = this.webrtc.userMedia.getVideoTrack().label;
+        let video = this.webrtc.userMedia.getVideoTrack() as MediaStreamTrack;
+        let audio = this.webrtc.userMedia.getAudioTrack() as MediaStreamTrack;
+        this.selfAudioName = audio.label;
+        this.selfVideoName = video.label;
         this.setState({ selfViewSrc: stream, localStreamStatus: "ready" });
     }
 

@@ -241,9 +241,6 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
 
     onStreamReady(stream: MediaStream | null) {
         let selfView = getEl(ReactDOM.findDOMNode(this.refs.localVideo));
-        // let video = document.createElement('video');
-        // video.oncontextmenu = function () { return false; };
-        // el.appendChild(video);
         if (!selfView) return;
         if (!!stream && stream.getVideoTracks().length > 0) {
             selfView.srcObject = stream;
