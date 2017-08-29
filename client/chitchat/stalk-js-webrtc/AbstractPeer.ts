@@ -10,19 +10,21 @@ import { AbstractPeerConnection } from "./";
 
 export namespace AbstractPeer {
     export abstract class BasePeer implements AbstractPeerConnection.IPC_Handler {
-        debug: boolean;
-        type: string;
-        parentsEmitter: EventEmitter;
+
         id: string;
         pc: RTCPeerConnection;
-        enableDataChannels: boolean = true;
+        channels: any;
+        pcEvent: EventEmitter;
+        readonly debug: boolean;
+        readonly type: string;
+        parentsEmitter: EventEmitter;
         receiveChannel;
-        channels = {};
         pcPeers;
         browserPrefix: string;
         nick;
         offer: boolean;
 
+        enableDataChannels: boolean = true;
         send_event: (messageType: string, payload?: any, optional?: { to: string }) => void;
         logError = (error) => {
             console.log(error);
@@ -56,7 +58,6 @@ export namespace AbstractPeer {
         addStream(stream: MediaStream) {
             this.pc.addStream(stream);
         }
-
 
         onSetSessionDescriptionError(error) {
             console.warn('Failed to set session description: ' + error.toString());
@@ -93,5 +94,7 @@ export namespace AbstractPeer {
                 }, self.onSetSessionDescriptionError);
             }, self.onCreateSessionDescriptionError);
         }
+
+        handleMessage(message: any) { }
     }
 }

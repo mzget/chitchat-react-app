@@ -84,7 +84,6 @@ export class WebRTC {
                                     type: type,
                                     offer: true
                                 }, self);
-                                self.webrtcEvents.emit(AbstractWEBRTC.CREATED_PEER, peer);
                             }
                         }
                     }

@@ -1,3 +1,4 @@
+import { EventEmitter } from "events";
 import { AbstractPeer, AbstractPeerConnection } from "../";
 import { getImage } from '../libs/VideoToBlurImage';
 import { createStreamByText } from '..//libs/StreamHelper';
@@ -9,6 +10,8 @@ export class Peer extends AbstractPeer.BasePeer {
     }
     initPeerConnection(stream) {
         let self = this;
+        self.channels = {};
+        self.pcEvent = new EventEmitter();
         this.pc = new RTCPeerConnection(configuration);
         this.pc.onicecandidate = function (event) {
             if (event.candidate) {
@@ -21,22 +24,32 @@ export class Peer extends AbstractPeer.BasePeer {
             }
         };
         this.pc.oniceconnectionstatechange = function (event) {
+            let target = event.target;
             if (self.debug)
-                console.log('oniceconnectionstatechange', event.target.iceConnectionState);
-            if (event.target.iceConnectionState === 'completed') {
+                console.log('oniceconnectionstatechange', target.iceConnectionState);
+            self.pcEvent.emit("oniceconnectionstatechange", target.iceConnectionState);
+            if (target.iceConnectionState === 'completed') {
             }
-            if (event.target.iceConnectionState === 'connected') {
+            else if (target.iceConnectionState === 'connected') {
                 self.createDataChannel("message");
                 self.pc.ondatachannel = self.receiveChannelCallback.bind(self);
             }
-            else if (event.target.iceConnectionState == "failed") {
+            else if (target.iceConnectionState == "failed") {
                 self.parentsEmitter.emit(AbstractPeerConnection.ON_ICE_CONNECTION_FAILED, self.pc);
                 self.send_event(AbstractPeerConnection.CONNECTIVITY_ERROR, null, { to: self.id });
             }
         };
-        this.pc.onsignalingstatechange = function (event) {
+        this.pc.onicegatheringstatechange = (event) => {
+            let target = event.target;
             if (self.debug)
-                console.log('onsignalingstatechange', event.target.signalingState);
+                console.log("onicegatheringstatechange", target.iceGatheringState);
+            self.pcEvent.emit("onicegatheringstatechange", target.iceGatheringState);
+        };
+        this.pc.onsignalingstatechange = function (event) {
+            let target = event.target;
+            if (self.debug)
+                console.log('onsignalingstatechange', target.signalingState);
+            self.pcEvent.emit("onsignalingstatechange", target.signalingState);
         };
         this.pc.onaddstream = function (peer) {
             if (self.debug)

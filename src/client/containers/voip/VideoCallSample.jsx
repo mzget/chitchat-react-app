@@ -87,10 +87,11 @@ class VideoCall extends React.Component {
             this.removeVideo = this.removeVideo.bind(this);
             this.onStreamReady = this.onStreamReady.bind(this);
             this.connectionReady = this.connectionReady.bind(this);
+            this.onPeerCreated = this.onPeerCreated.bind(this);
             this.webrtc.webrtcEvents.on(AbstractWEBRTC.ON_CONNECTION_READY, this.connectionReady);
             this.webrtc.webrtcEvents.on(AbstractWEBRTC.ON_CONNECTION_CLOSE, (data) => { console.log("signalling close", data); });
             this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOIN_ROOM_ERROR, (err) => console.log("joinRoom fail", err));
-            this.webrtc.webrtcEvents.on(AbstractWEBRTC.CREATED_PEER, (peer) => console.log("createdPeer", peer.id));
+            this.webrtc.webrtcEvents.on(AbstractWEBRTC.CREATED_PEER, (peer) => this.onPeerCreated);
             this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOINED_ROOM, (roomname) => console.log("joined", roomname));
             this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_ADDED, this.peerAdded);
             this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_REMOVED, this.removeVideo);
@@ -175,13 +176,13 @@ class VideoCall extends React.Component {
             }, 350);
         }
         remotesView.volume = 1;
-        this.setState({ remoteSrc: peer.stream, remoteVolume: 100, peer: peer });
+        this.setState({ remoteSrc: peer.stream, remoteVolume: 100 });
     }
     removeVideo() {
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
         if (!!remotesView)
             remotesView.disable = true;
-        this.setState({ remoteSrc: null, peer: null });
+        this.setState({ remoteSrc: null });
     }
     onStreamReady(stream) {
         let selfView = getEl(ReactDOM.findDOMNode(this.refs.localVideo));
@@ -198,6 +199,9 @@ class VideoCall extends React.Component {
         this.selfAudioName = this.webrtc.userMedia.getAudioTrackName();
         this.selfVideoName = this.webrtc.userMedia.getVideoTrackName();
         this.setState({ selfViewSrc: stream, localStreamStatus: "ready" });
+    }
+    onPeerCreated(peer) {
+        this.setState(prev => (Object.assign({}, prev, { peer: peer })));
     }
     componentWillMount() {
         if (!this.props.teamReducer.team) {

@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { EventEmitter } from "events";
+import { AbstractPeerConnection } from "../../chitchat/stalk-js-webrtc/index";
 
 interface IPeerStatus {
     peerIceState: string;
@@ -28,28 +30,21 @@ export class PeerStatus extends React.Component<{ peer }, IPeerStatus> {
         }
     }
 
-    peerAdded(peer) {
+    peerAdded(peer: AbstractPeerConnection.IPC_Handler) {
         let self = this;
         self.peer = peer;
 
-        let peerEvent = peer.target as RTCPeerConnection;
-        peerEvent.oniceconnectionstatechange = (event) => {
-            let target = event.target as RTCPeerConnection;
-
-            self.setState(prev => ({ ...prev, peerIceState: target.iceConnectionState }));
-        }
-        peerEvent.onicegatheringstatechange = (event) => {
-            let target = event.target as RTCPeerConnection;
-
-            self.setState(prev => ({ ...prev, peerIceGatheringState: target.iceGatheringState }));
-        }
-        peerEvent.onsignalingstatechange = (event) => {
-            let target = event.target as RTCPeerConnection;
-
-            self.setState(prev => ({ ...prev, peerSignalingState: target.signalingState }));
-        }
+        let peerEvent = peer.pcEvent as EventEmitter;
+        peerEvent.on("oniceconnectionstatechange", event => {
+            self.setState(prev => ({ ...prev, peerIceState: event }));
+        });
+        peerEvent.on("onicegatheringstatechange", event => {
+            self.setState(prev => ({ ...prev, peerIceGatheringState: event }));
+        });
+        peerEvent.on("onsignalingstatechange", event => {
+            self.setState(prev => ({ ...prev, peerSignalingState: event }));
+        });
     }
-
 
     render() {
         return (

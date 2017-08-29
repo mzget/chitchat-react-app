@@ -19,19 +19,16 @@ export class PeerStatus extends React.Component {
     peerAdded(peer) {
         let self = this;
         self.peer = peer;
-        let peerEvent = peer.target;
-        peerEvent.oniceconnectionstatechange = (event) => {
-            let target = event.target;
-            self.setState(prev => (Object.assign({}, prev, { peerIceState: target.iceConnectionState })));
-        };
-        peerEvent.onicegatheringstatechange = (event) => {
-            let target = event.target;
-            self.setState(prev => (Object.assign({}, prev, { peerIceGatheringState: target.iceGatheringState })));
-        };
-        peerEvent.onsignalingstatechange = (event) => {
-            let target = event.target;
-            self.setState(prev => (Object.assign({}, prev, { peerSignalingState: target.signalingState })));
-        };
+        let peerEvent = peer.pcEvent;
+        peerEvent.on("oniceconnectionstatechange", event => {
+            self.setState(prev => (Object.assign({}, prev, { peerIceState: event })));
+        });
+        peerEvent.on("onicegatheringstatechange", event => {
+            self.setState(prev => (Object.assign({}, prev, { peerIceGatheringState: event })));
+        });
+        peerEvent.on("onsignalingstatechange", event => {
+            self.setState(prev => (Object.assign({}, prev, { peerSignalingState: event })));
+        });
     }
     render() {
         return (<div>

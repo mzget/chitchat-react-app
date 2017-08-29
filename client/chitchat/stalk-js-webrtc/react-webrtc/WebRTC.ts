@@ -108,7 +108,6 @@ export class WebRTC implements AbstractWEBRTC.IWebRTC {
                                     type: type,
                                     offer: true
                                 }, self);
-                                self.webrtcEvents.emit(AbstractWEBRTC.CREATED_PEER, peer);
                             }
                         }
                     }

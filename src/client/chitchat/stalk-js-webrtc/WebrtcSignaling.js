@@ -1,4 +1,3 @@
-import { AbstractWEBRTC } from "./index";
 export function withExchange(webrtcObject) {
     return function exchange(message) {
         let self = webrtcObject;
@@ -9,7 +8,6 @@ export function withExchange(webrtcObject) {
                 id: message.from,
                 offer: false,
             }, self);
-            self.webrtcEvents.emit(AbstractWEBRTC.CREATED_PEER, peer);
         }
         peer.handleMessage(message);
     };

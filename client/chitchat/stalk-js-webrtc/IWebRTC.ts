@@ -3,7 +3,7 @@
  *
  * Copyright 2017 Ahoo Studio.co.th.
  */
-import * as events from 'events';
+import { EventEmitter } from 'events';
 
 export namespace AbstractWEBRTC {
     export const ON_CONNECTION_READY = "connectionReady";
@@ -22,7 +22,7 @@ export namespace AbstractWEBRTC {
 
     export interface IWebRTC {
         signalingSocket: SocketIOClient.Socket;
-        webrtcEvents: events.EventEmitter;
+        webrtcEvents: EventEmitter;
         roomName: string;
         peerManager: AbstractPeerConnection.IPC_Estabished;
         userMedia: AbstractMediaStream.IUserMedia;
@@ -63,10 +63,23 @@ export namespace AbstractPeerConnection {
         id: string;
         pc: RTCPeerConnection;
         channels: any;
+        pcEvent: EventEmitter;
+        readonly debug: boolean;
+        readonly type: string;
+        parentsEmitter: EventEmitter;
+        receiveChannel;
+        pcPeers;
+        browserPrefix: string;
+        nick;
+        offer: boolean;
+
+        send_event: (messageType: string, payload?: any, optional?: { to: string }) => void;
+        logError(error: string);
+
         initPeerConnection(stream: MediaStream);
         addStream(stream: MediaStream);
         removeStream(stream: MediaStream);
-        handleMessage(message);
+        handleMessage(message: any);
     }
     export interface PeerConstructor {
         peer_id; stream; pcPeers; emitter; sendHandler; offer; debug;

@@ -4,7 +4,6 @@ export var AbstractPeer;
     class BasePeer {
         constructor(config) {
             this.enableDataChannels = true;
-            this.channels = {};
             this.logError = (error) => {
                 console.log(error);
             };
@@ -55,6 +54,7 @@ export var AbstractPeer;
                 }, self.onSetSessionDescriptionError);
             }, self.onCreateSessionDescriptionError);
         }
+        handleMessage(message) { }
     }
     AbstractPeer.BasePeer = BasePeer;
 })(AbstractPeer = AbstractPeer || (AbstractPeer = {}));
