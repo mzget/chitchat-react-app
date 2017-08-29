@@ -221,19 +221,18 @@ export class Peer extends AbstractPeer.BasePeer {
         let remoteVideoElement: HTMLVideoElement = document.getElementById('remoteVideos');
         let remoteAudioElement: HTMLVideoElement = document.getElementById('remoteAudio');
         if (data.type === AbstractPeerConnection.UNPAUSE) {
-            remoteAudioElement.src = '';
-            remoteVideoElement.srcObject = null;
-            remoteVideoElement.src = URL.createObjectURL(this.pc.getRemoteStreams()[0]);
+            remoteVideoElement.srcObject = this.pc.getRemoteStreams()[0];
         }
         else if (data.type === AbstractPeerConnection.PAUSE) {
-            remoteAudioElement.src = URL.createObjectURL(this.pc.getRemoteStreams()[0]);
+            remoteAudioElement.srcObject = this.pc.getRemoteStreams()[0];
             getImage(remoteVideoElement).then((res: MediaStream) => {
+                console.warn('getImage', res);
                 remoteVideoElement.srcObject = res;
             });
         }
         else if (data.type === AbstractPeerConnection.DUMMY_VIDEO) {
             let canvasStream = createStreamByText("NO CAMERA");
-            if (!!canvasStream) remoteVideoElement.src = URL.createObjectURL(canvasStream);
+            if (!!canvasStream) remoteVideoElement.srcObject = canvasStream;
         }
     }
 }

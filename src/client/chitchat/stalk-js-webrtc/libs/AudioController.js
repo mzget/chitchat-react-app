@@ -7,11 +7,11 @@ export class AudioController {
         this.volume = 1;
         if (this.support) {
             let context = AudioCtx.getInstance();
-            let microphone = context.createMediaStreamSource(stream);
+            this.microphone = context.createMediaStreamSource(stream);
             this.gainFilter = context.createGain();
             let destination = context.createMediaStreamDestination();
             let outputStream = destination.stream;
-            microphone.connect(this.gainFilter);
+            this.microphone.connect(this.gainFilter);
             this.gainFilter.connect(destination);
             stream.addTrack(outputStream.getAudioTracks()[0]);
             this.audioSource = stream.getAudioTracks()[0];
@@ -38,5 +38,7 @@ export class AudioController {
     }
     removeAudioStream() {
         !!this.audioSource && this.audioSource.stop();
+        !!this.microphone && this.microphone.disconnect();
+        !!this.gainFilter && this.gainFilter.disconnect();
     }
 }
