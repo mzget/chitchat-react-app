@@ -68,8 +68,8 @@ export class Peer extends AbstractPeer.BasePeer {
         this.pc.onicegatheringstatechange = (event) => {
             let target = event.target as RTCPeerConnection;
 
-            // if (self.debug)
-            //     console.log("onicegatheringstatechange", target.iceGatheringState);
+            if (self.debug)
+                console.log("onicegatheringstatechange", target.iceGatheringState);
 
             self.pcEvent.emit("onicegatheringstatechange", target.iceGatheringState);
         }
@@ -97,6 +97,8 @@ export class Peer extends AbstractPeer.BasePeer {
         };
 
         this.pc.addStream(stream);
+
+        self.parentsEmitter.emit(AbstractPeerConnection.CREATED_PEER, self);
     }
 
     getStats() {

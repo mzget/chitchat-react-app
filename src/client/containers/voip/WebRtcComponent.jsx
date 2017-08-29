@@ -88,9 +88,9 @@ class WebRtcComponent extends React.Component {
             this.removeVideo = this.removeVideo.bind(this);
             this.onStreamReady = this.onStreamReady.bind(this);
             this.connectionReady = this.connectionReady.bind(this);
+            this.onPeerCreated = this.onPeerCreated.bind(this);
             this.webrtc.webrtcEvents.on(AbstractWEBRTC.ON_CONNECTION_READY, this.connectionReady);
             this.webrtc.webrtcEvents.on(AbstractWEBRTC.ON_CONNECTION_CLOSE, (data) => { console.log("signalling close", data); });
-            this.webrtc.webrtcEvents.on(AbstractWEBRTC.CREATED_PEER, (peer) => console.log("createdPeer", peer.id));
             this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOINED_ROOM, (roomname) => (this.props.onJoinedRoom) ? this.props.onJoinedRoom(roomname) : console.log("joined", roomname));
             this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOIN_ROOM_ERROR, (err) => console.log("joinRoom fail", err));
             this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_ADDED, this.peerAdded);
@@ -98,6 +98,7 @@ class WebRtcComponent extends React.Component {
             this.webrtc.webrtcEvents.on(AbstractPeerConnection.CONNECTIVITY_ERROR, (peer) => {
                 console.log(AbstractPeerConnection.CONNECTIVITY_ERROR, peer);
             });
+            this.webrtc.webrtcEvents.on(AbstractPeerConnection.CREATED_PEER, this.onPeerCreated);
         });
     }
     connectionReady(socker_id) {
@@ -134,12 +135,16 @@ class WebRtcComponent extends React.Component {
             remotesView.srcObject = peer.stream;
             remotesView.volume = 1;
         }
-        this.setState({ remoteSrc: peer.stream, remoteVolume: 100, peer: peer });
+        this.setState({ remoteSrc: peer.stream, remoteVolume: 100 });
     }
     removeVideo() {
         let remotesView = getEl(ReactDOM.findDOMNode(this.refs.remotes));
         remotesView.disable = true;
-        this.setState({ remoteSrc: null, peer: null });
+        this.setState({ remoteSrc: null });
+    }
+    onPeerCreated(peer) {
+        console.log("onPeerCreated", peer);
+        this.setState(prev => (Object.assign({}, prev, { peer: peer })));
     }
     showVolume(el, volume) {
         if (!el)

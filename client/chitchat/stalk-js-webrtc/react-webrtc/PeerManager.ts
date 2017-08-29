@@ -3,7 +3,7 @@
  *
  * Copyright 2017 Ahoo Studio.co.th.
  */
-import { AbstractPeerConnection, AbstractWEBRTC } from "../";
+import { AbstractPeerConnection } from "../";
 import { Peer } from "./Peer";
 import { WebRTC } from "./WebRTC";
 
@@ -30,9 +30,6 @@ export class PeerManager implements AbstractPeerConnection.IPC_Estabished {
         } as AbstractPeerConnection.PeerConstructor;
         let peer = new Peer(config);
         this.peers.set(options.id, peer);
-
-        webrtc.webrtcEvents.emit(AbstractWEBRTC.CREATED_PEER, peer);
-
         return peer;
     }
 

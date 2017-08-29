@@ -126,13 +126,13 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
         this.webrtc.webrtcEvents.on(AbstractWEBRTC.ON_CONNECTION_READY, this.connectionReady);
         this.webrtc.webrtcEvents.on(AbstractWEBRTC.ON_CONNECTION_CLOSE, (data) => { console.log("signalling close", data) });
         this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOIN_ROOM_ERROR, (err) => console.log("joinRoom fail", err));
-        this.webrtc.webrtcEvents.on(AbstractWEBRTC.CREATED_PEER, (peer: AbstractPeerConnection.IPC_Handler) => this.onPeerCreated);
         this.webrtc.webrtcEvents.on(AbstractWEBRTC.JOINED_ROOM, (roomname: string) => console.log("joined", roomname));
         this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_ADDED, this.peerAdded);
         this.webrtc.webrtcEvents.on(AbstractPeerConnection.PEER_STREAM_REMOVED, this.removeVideo);
         this.webrtc.webrtcEvents.on(AbstractPeerConnection.CONNECTIVITY_ERROR, (peer) => {
             console.log(AbstractPeerConnection.CONNECTIVITY_ERROR, peer);
         });
+        this.webrtc.webrtcEvents.on(AbstractPeerConnection.CREATED_PEER, this.onPeerCreated);
     }
 
     connectionReady(socker_id) {
@@ -259,6 +259,7 @@ class VideoCall extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     onPeerCreated(peer: AbstractPeerConnection.IPC_Handler) {
+        console.log("onPeerCreated", peer);
         this.setState(prev => ({ ...prev, peer: peer }));
     }
 

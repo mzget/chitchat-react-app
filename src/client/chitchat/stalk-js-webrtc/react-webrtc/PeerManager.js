@@ -1,4 +1,4 @@
-import { AbstractPeerConnection, AbstractWEBRTC } from "../";
+import { AbstractPeerConnection } from "../";
 import { Peer } from "./Peer";
 export class PeerManager {
     constructor(options) {
@@ -19,7 +19,6 @@ export class PeerManager {
         };
         let peer = new Peer(config);
         this.peers.set(options.id, peer);
-        webrtc.webrtcEvents.emit(AbstractWEBRTC.CREATED_PEER, peer);
         return peer;
     }
     getPeers(sessionId) {
