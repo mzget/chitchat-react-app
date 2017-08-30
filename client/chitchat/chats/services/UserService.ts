@@ -1,4 +1,4 @@
-﻿import * as Rx from "@reactivex/rxjs";
+﻿import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
 import { ChitChatFactory } from "../ChitChatFactory";

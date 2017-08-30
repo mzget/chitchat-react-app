@@ -1,32 +1,39 @@
 import { CallingEvents } from "stalk-js";
-import { Observable } from "@reactivex/rxjs";
+import { Observable } from "rxjs/Observable";
 import { createAction } from "redux-actions";
 
 import { ChitChatFactory } from "../../chats/";
 import { BackendFactory } from "../../chats/BackendFactory";
 
-const VIDEO_CALL_REQUEST = "VIDEO_CALL_REQUEST";
-export const VIDEO_CALL_SUCCESS = "VIDEO_CALL_SUCCESS";
-export const VIDEO_CALL_FAILURE = "VIDEO_CALL_FAILURE";
-const VIDEO_CALL_CANCELLED = "VIDEO_CALL_CANCELLED";
-const videoCallRequest = createAction(VIDEO_CALL_REQUEST, ({ target_ids, user_id, room_id }) => ({ target_ids, user_id, room_id }));
-const videoCallSuccess = createAction(VIDEO_CALL_SUCCESS, payload => payload);
-const videoCallFailure = createAction(VIDEO_CALL_FAILURE, error => error);
-export const videoCall_Epic = (data: { target_ids, user_id, room_id }) =>
+const CALLING_REQUEST = "CALLING_REQUEST";
+export const CALLING_SUCCESS = "CALLING_SUCCESS";
+export const CALLING_FAILURE = "CALLING_FAILURE";
+const CALLING_CANCELLED = "CALLING_CANCELLED";
+
+const CallingRequest = createAction(CALLING_REQUEST, ({ target_ids, user_id, room_id, calllingType }) => ({ target_ids, user_id, room_id, calllingType }));
+const CallingSuccess = createAction(CALLING_SUCCESS, payload => payload);
+const CallingFailure = createAction(CALLING_FAILURE, error => error);
+export const callling_Epic = (data: { target_ids, user_id, room_id, calllingType: string }) =>
     dispatch => {
-        dispatch(videoCallRequest(data));
+        dispatch(CallingRequest(data));
 
         let chitchatFac = ChitChatFactory.getInstance();
         let backendFactory = BackendFactory.getInstance();
-        let callingApi = backendFactory.getServer().getCallingAPI();
+        let server = backendFactory.getServer();
+        if (server) {
+            let callingApi = server.getCallingAPI();
 
-        let { target_ids, user_id, room_id } = data;
-        let source = Observable.fromPromise(
-            callingApi.calling(chitchatFac.config.Stalk.apiKey, CallingEvents.VideoCall, target_ids, { user_id, room_id }));
-        let obs = source.subscribe(
-            x => dispatch(videoCallSuccess(x)),
-            (err) => dispatch(videoCallFailure(err)),
-            () => console.log("completed"));
+            let { target_ids, user_id, room_id, calllingType } = data;
+            let source = Observable.fromPromise(
+                callingApi.calling(chitchatFac.config.Stalk.apiKey, calllingType, target_ids, { user_id, room_id }));
+            let obs = source.subscribe(
+                x => dispatch(CallingSuccess(x)),
+                (err) => dispatch(CallingFailure(err)),
+                () => console.log("OnCalling completed"));
+        }
+        else {
+            dispatch(CallingFailure("Stalk server not yet ready."));
+        }
     }
 
 const HANGUP_CALL = "HANGUP_CALL";
@@ -40,11 +47,17 @@ export const hangupVideoCall_Epic = action$ =>
         .mergeMap(action => {
             let chitchatFac = ChitChatFactory.getInstance();
             let backendFactory = BackendFactory.getInstance();
-            let callingApi = backendFactory.getServer().getCallingAPI();
+            let server = backendFactory.getServer();
+            if (!!server) {
+                let callingApi = server.getCallingAPI();
 
-            let { target_ids, user_id } = action.payload;
-            return Observable.fromPromise(
-                callingApi.calling(chitchatFac.config.Stalk.apiKey, CallingEvents.HangupCall, target_ids, { user_id }));
+                let { target_ids, user_id } = action.payload;
+                return Observable.fromPromise(
+                    callingApi.calling(chitchatFac.config.Stalk.apiKey, CallingEvents.HangupCall, target_ids, { user_id }));
+            }
+            else {
+                throw new Error("Stalk server not yet ready.");
+            }
         })
         .map(response => hangupCallSuccess(response))
         .catch(error => Observable.of(hangupCallFailure(error)));

@@ -27,6 +27,8 @@ export class ChitChatFactory {
 
             return ChitChatFactory.instance;
         }
+        else
+            return ChitChatFactory.instance;
     }
 
     store;

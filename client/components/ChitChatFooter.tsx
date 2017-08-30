@@ -11,7 +11,7 @@ export const ChitChatFooter = () => (
         <span style={{ width: 10 }} />
         <a href="https://github.com/mzget/chitchat-react-app/wiki#app" style={{ fontFamily: "Roboto", fontSize: 12 }}>Download app</a>
         <span style={{ width: 10 }} />
-        <a href="https://github.com/mzget/chitchat-react-app/wiki#app" style={{ fontFamily: "Roboto", fontSize: 12 }}>Guides</a>
+        <a href="https://github.com/mzget/chitchat-react-app/wiki/Guides" style={{ fontFamily: "Roboto", fontSize: 12 }}>Guides</a>
         <span style={{ width: 10 }} />
         <a href="https://github.com/mzget/chitchat-react-app/wiki" style={{ fontFamily: "Roboto", fontSize: 12 }}>Developer</a>
         <Flexbox flexGrow={1} />

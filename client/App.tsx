@@ -38,7 +38,9 @@ import { m_ProfilePageEnhanced } from "./containers/m_ProfilePageEnhanced";
 import { MainPageWithDialog } from "./containers/Main";
 import { M_MainPageEnhanced } from "./containers/m_Main";
 import { AdminWithDialogEnhance } from "./containers/Admin";
-import { VideoCallEnhance } from "./containers/VideoCall";
+import { VideoCallSample } from "./containers/voip/VideoCallSample";
+import { VideoCallPage } from "./containers/voip/VideoCallPage";
+import { AudioCallPage } from "./containers/voip/AudioCallPage";
 
 import { SMALL_TABLET } from "./chitchat/consts/Breakpoints";
 import { defaultMuiTheme } from "./utils/";
@@ -79,7 +81,9 @@ class App extends React.Component<any, any> {
                                 <Route path="/chatroom/chat/:room_id" component={(this.clientWidth < SMALL_TABLET) ? ChatPageEnhanced : MainPageWithDialog} />
                                 <Route path="/chatroom/settings/:room_id/:edit" component={(this.clientWidth < SMALL_TABLET) ? ChatRoomSettingsEnhanced : MainPageWithDialog} />
                                 <Route path="/admin/:menu?/:id?" component={AdminWithDialogEnhance} />
-                                <Route path="/videocall/:id" component={VideoCallEnhance} />
+                                <Route path="/groupcall/:id" component={VideoCallSample} />
+                                <Route path="/videocall/:id" component={VideoCallPage} />
+                                <Route path="/audiocall/:id" component={AudioCallPage} />
                                 <Route component={NoMatch} />
                             </Switch>
                         </div>

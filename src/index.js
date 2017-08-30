@@ -4,7 +4,7 @@ import App from './client/App';
 import registerServiceWorker from './client/registerServiceWorker';
 import './index.css';
 
-import 'rxjs';
+import 'webrtc-adapter';
 import 'typeface-roboto';
 global.userAgent = "react-js";
 const injectTapEventPlugin = require("react-tap-event-plugin");

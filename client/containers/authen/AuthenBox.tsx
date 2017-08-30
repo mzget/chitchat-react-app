@@ -112,7 +112,7 @@ export class AuthenBox extends React.Component<IComponentProps, IComponentNameSt
                         <SigninBox onLogingIn={this.onLogingIn} /> :
                         <SignupBox {...this.props} onError={this.props.onError} />
                 }
-                <br />
+                <span style={{ padding: 5 }} />
                 {
                     (this.state.showSignin) ?
                         <Flexbox justifyContent="center">
@@ -127,7 +127,8 @@ export class AuthenBox extends React.Component<IComponentProps, IComponentNameSt
                         (<Flexbox justifyContent="center" alignItems="center">
                             <p style={{ fontFamily: "Roboto", fontSize: 14, color: Colors.darkBlack }}>New to chitchat?</p>
                             <RaisedButton primary={true} label="Sign up now" onClick={this.onSignupPressed} style={{ margin: 8 }}> </RaisedButton>
-                        </Flexbox>) :
+                        </Flexbox>)
+                        :
                         (<Flexbox justifyContent="center" alignItems="center">
                             <p style={{ fontFamily: "Roboto", fontSize: 14, color: Colors.darkBlack }}>Already have account?</p>
                             <RaisedButton primary={true} label="Sign in" onClick={this.onSigninPressed} style={{ margin: 8 }}> </RaisedButton>

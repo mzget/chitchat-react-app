@@ -1,15 +1,23 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { shallowEqual } from "recompose";
+import { shallowEqual, compose } from "recompose";
 import Flexbox from "flexbox-react";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import { CallingEvents } from "stalk-js";
 import * as Colors from "material-ui/styles/colors";
+import * as chatroom from "../../chitchat/chats/redux/chatroom/";
+import * as calling from "../../chitchat/calling/";
+import { WithDialog } from "../toolsbox/DialogBoxEnhancer";
 import { SimpleToolbar } from "../../components/SimpleToolbar";
-import { WebRtcPage } from "../webrtc/";
+import { WebRtcPage } from "./";
 class VideoCall extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            isMuteAudio: false,
+            isPauseVideo: false,
+            micVol: 100,
+        };
         this.onBackPressed = this.onBackPressed.bind(this);
         this.onTitlePressed = this.onTitlePressed.bind(this);
     }
@@ -24,6 +32,28 @@ class VideoCall extends React.Component {
         if (!nextInline && !shallowEqual(nextInline, prevInline)) {
             this.onBackPressed();
         }
+        let { alertReducer: { error } } = nextProps;
+        if (!shallowEqual(this.props.alertReducer.error, error) && !!error) {
+            this.props.onError(error);
+        }
+        if (!error && this.props.alertReducer.error) {
+            this.props.history.goBack();
+        }
+    }
+    componentWillUnmount() {
+        this.props.dispatch(calling.onVideoCallEnded());
+        let { match, userReducer: { user }, stalkReducer } = this.props;
+        let room_id = match.params.id;
+        let room = chatroom.getRoom(room_id);
+        let targets = new Array();
+        if (!!room && room.members.length > 0) {
+            room.members.map(value => {
+                if (value._id !== user._id) {
+                    targets.push(value._id);
+                }
+            });
+        }
+        this.props.dispatch(calling.hangupCallRequest({ target_ids: targets, user_id: user._id }));
     }
     onBackPressed() {
         this.props.history.goBack();
@@ -32,29 +62,50 @@ class VideoCall extends React.Component {
         let { history, teamReducer } = this.props;
         history.replace(`/team/${teamReducer.team._id}`);
     }
+    onJoinedRoom(roomname) {
+        let self = this;
+        let { match, userReducer: { user }, stalkReducer } = this.props;
+        let incommingCall = stalkReducer.get("incommingCall");
+        if (!!incommingCall) {
+            self.props.dispatch(calling.onCalling(incommingCall.payload.room_id));
+        }
+        else {
+            let room_id = match.params.id;
+            self.props.dispatch(calling.onCalling(room_id));
+            let room = chatroom.getRoom(room_id);
+            let targets = new Array();
+            if (!!room) {
+                room.members.map(value => {
+                    if (value._id !== user._id) {
+                        targets.push(value._id);
+                    }
+                });
+            }
+            this.props.dispatch(calling.callling_Epic({
+                target_ids: targets,
+                user_id: user._id,
+                room_id: match.params.id,
+                calllingType: CallingEvents.VideoCall
+            }));
+        }
+    }
     render() {
         let { team } = this.props.teamReducer;
-        return (<MuiThemeProvider>
-                <Flexbox flexDirection="column" style={{ backgroundColor: Colors.blueGrey50 }}>
-                    <div style={{ position: "relative", height: "56px" }}>
-                        <div style={{ position: "fixed", width: "100%", zIndex: 1 }}>
-                            <SimpleToolbar title={(!!team) ? team.name.toUpperCase() : ""} onBackPressed={this.onBackPressed} onPressTitle={this.onTitlePressed}/>
-                        </div>
+        return (<Flexbox flexDirection="column" height="100vh" style={{ backgroundColor: Colors.blueGrey50 }}>
+                <div style={{ position: "relative", height: "56px" }}>
+                    <div style={{ position: "fixed", width: "100%", zIndex: 1 }}>
+                        <SimpleToolbar title={(!!team) ? team.name.toUpperCase() : ""} onBackPressed={this.onBackPressed} onPressTitle={this.onTitlePressed}/>
                     </div>
-                    <Flexbox flexDirection="row" height="calc(100vh - 56px)">
-                        <Flexbox minWidth="400px" justifyContent="center">
-                        </Flexbox>
-                        <Flexbox flexGrow={1} justifyContent="center">
-                            <WebRtcPage onError={this.props.onError}/>
-                        </Flexbox>
-                    </Flexbox>
-                </Flexbox>
-            </MuiThemeProvider>);
+                </div>
+                <WebRtcPage onJoinedRoom={this.onJoinedRoom.bind(this)} onError={this.props.onError}/>
+            </Flexbox>);
     }
 }
 const mapStateToProps = (state) => ({
+    userReducer: state.userReducer,
+    alertReducer: state.alertReducer,
     teamReducer: state.teamReducer,
     stalkReducer: state.stalkReducer
 });
-export var VideoCallPage = connect(mapStateToProps)(VideoCall);
-VideoCallPage = withRouter(VideoCallPage);
+const enhance = compose(WithDialog, withRouter, connect(mapStateToProps));
+export const VideoCallPage = enhance(VideoCall);

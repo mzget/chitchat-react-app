@@ -61,7 +61,12 @@ const getView = (props) => {
             }
         }}/>
                             </Flexbox>) : (<Flexbox flexDirection="row" alignItems={"center"}>
-                                    <FontIcon className="material-icons" style={{ marginRight: 24, fontSize: 48 }} color={Colors.lightGreen500} onClick={props.onVideoCall}>video_call</FontIcon>
+                                    <FontIcon className="material-icons" style={{ marginRight: 24, fontSize: 48, cursor: 'pointer' }} color={Colors.lightGreen500} onClick={props.onVideoCall}>
+                                        video_call
+                                        </FontIcon>
+                                    <FontIcon className="material-icons" style={{ marginRight: 24, fontSize: 36, cursor: 'pointer' }} color={Colors.lightGreen500} onClick={props.onAudioCall}>
+                                        call
+                                        </FontIcon>
                                 </Flexbox>)}
                 </Flexbox>
             </div>);
@@ -77,6 +82,9 @@ const mapStateToProps = (state) => ({
 const SubToolbarEnhancer = compose(withRouter, connect(mapStateToProps), withHandlers({
     onVideoCall: (props) => event => {
         props.history.push(`/videocall/${props.match.params.room_id}`);
-    }
+    },
+    onAudioCall: (props) => event => {
+        props.history.push(`/audiocall/${props.match.params.room_id}`);
+    },
 }), pure);
-export const SubToolbarEnhance = SubToolbarEnhancer(({ history, match, onError, chatroomReducer, userReducer, onVideoCall }) => (<SubToolbar onError={onError} onVideoCall={onVideoCall} history={history} match={match} chatroomReducer={chatroomReducer} userReducer={userReducer}/>));
+export const SubToolbarEnhance = SubToolbarEnhancer(({ history, match, onError, chatroomReducer, userReducer, onVideoCall, onAudioCall }) => (<SubToolbar onError={onError} onVideoCall={onVideoCall} onAudioCall={onAudioCall} history={history} match={match} chatroomReducer={chatroomReducer} userReducer={userReducer}/>));

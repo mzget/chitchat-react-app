@@ -3,7 +3,7 @@
  *
  * ChatRoomComponent for handle some business logic of chat room.
  */
-import * as Rx from "@reactivex/rxjs";
+import * as Rx from "rxjs/Rx";
 import * as async from "async";
 import { ServerImplemented } from "stalk-js";
 import { ChitChatFactory } from "./ChitChatFactory";
@@ -24,10 +24,9 @@ import { MemberImp } from "./models/MemberImp";
 import * as chatroomService from "./services/chatroomService";
 import * as chatlogActionsHelper from "./redux/chatlogs/chatlogActionsHelper";
 
+export class Unread { message: MessageImp; rid: string; count: number; }
 export type ChatLogMap = Map<string, ChatLog>;
-export type UnreadMap = Map<string, IUnread>;
-export interface IUnread { message: IMessage; rid: string; count: number; }
-export class Unread { message: IMessage; rid: string; count: number; }
+export type UnreadMap = Map<string, Unread>;
 
 export class ChatsLogComponent implements IRoomAccessListenerImp {
     dataListener: DataListener;
@@ -41,19 +40,19 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         return Array.from(this.chatslog.values());
     }
 
-    private unreadMessageMap = new Map<string, IUnread>();
+    private unreadMessageMap = new Map<string, Unread>();
     public getUnreadMessageMap(): UnreadMap {
         return this.unreadMessageMap;
     }
-    public setUnreadMessageMap(unreads: Array<IUnread>) {
+    public setUnreadMessageMap(unreads: Array<Unread>) {
         unreads.map(v => {
             this.unreadMessageMap.set(v.rid, v);
         });
     }
-    public addUnreadMessage(unread: IUnread) {
+    public addUnreadMessage(unread: Unread) {
         this.unreadMessageMap.set(unread.rid, unread);
     }
-    public getUnreadItem(room_id: string): IUnread {
+    public getUnreadItem(room_id: string) {
         return this.unreadMessageMap.get(room_id);
     }
     public updatedLastAccessTimeEvent: (data: RoomAccessData) => void;
@@ -142,9 +141,9 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
     }
 
     public getUnreadMessages(user_id: string, roomAccess: RoomAccessData[],
-        callback: (err: Error | null, logsData: Array<IUnread>) => void) {
+        callback: (err: Error | null, logsData: Array<Unread>) => void) {
         let self = this;
-        let unreadLogs = new Array<IUnread>();
+        let unreadLogs = new Array<Unread>();
 
         // create a queue object with concurrency 2
         let q = async.queue(function (task: RoomAccessData, callback: () => void) {
@@ -180,7 +179,7 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         let value = await response.json();
 
         if (value.success) {
-            let unread = value.result as IUnread;
+            let unread = value.result as Unread;
             unread.rid = roomAccess.roomId;
             let decoded = await CryptoHelper.decryptionText(unread.message as MessageImp);
 
@@ -199,17 +198,11 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
 
                 if (others.length > 0) {
                     let contact = others[0];
-                    let avatar = null;
-
+                    let avatar;
                     if (!contact.avatar) {
-                        try {
-                            let user = await chatlogActionsHelper.getContactProfile(contact._id);
+                        let user = await chatlogActionsHelper.getContactProfile(contact._id);
+                        if (!!user)
                             avatar = user.avatar;
-                        }
-                        catch (err) {
-                            if (err)
-                                console.warn("getContactProfile fail", err);
-                        }
                     }
 
                     roomInfo.name = (contact.username) ? contact.username : "EMPTY ROOM";
@@ -243,9 +236,9 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
 
         // create a queue object with concurrency 2
         let q = async.queue(function (task, callback) {
-            let value = task as IUnread;
+            let value = task as Unread;
             let rooms = chatrooms.filter(v => v._id == value.rid);
-            let roomInfo = (rooms.length > 0) ? rooms[0] : null as Room;
+            let roomInfo = (rooms.length > 0) ? rooms[0] : null;
             if (!!roomInfo) {
                 self.decorateRoomInfoData(roomInfo).then(room => {
                     chatrooms.forEach(v => {
@@ -299,14 +292,14 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         return new Promise((resolve, rejected) => {
             // create a queue object with concurrency 2
             let q = async.queue(function (task, callback) {
-                let unread = task as IUnread;
+                let unread = task as Unread;
                 let rooms = chatrooms.filter(v => v._id == unread.rid);
-                let room = (rooms.length > 0) ? rooms[0] : null as Room;
+                let room = (rooms.length > 0) ? rooms[0] : null;
                 if (!room) {
                     callback();
                 }
 
-                self.organizeChatLogMap(unread, room, () => {
+                self.organizeChatLogMap(unread, room as Room, () => {
                     callback();
                 });
             }, 2);
@@ -323,7 +316,9 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         });
     }
 
-    private async organizeChatLogMap(unread: IUnread, roomInfo: Room, done: () => void) {
+    private async organizeChatLogMap(unread: Unread, roomInfo: Room, done: () => void) {
+        if (!roomInfo) return;
+
         let self = this;
         let log = new ChatLog(roomInfo);
         log.setNotiCount(unread.count);
@@ -331,15 +326,7 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         if (!!unread.message) {
             log.setLastMessageTime(unread.message.createTime.toString());
 
-            let contact = null;
-            try {
-                contact = await chatlogActionsHelper.getContactProfile(unread.message.sender);
-            }
-            catch (err) {
-                if (err)
-                    console.warn("get sender contact fail", err);
-            }
-            let sender = (!!contact) ? contact.username : "";
+            let sender = (!!unread.message) ? unread.message.user.username : "";
 
             if (unread.message.body != null) {
                 let displayMsg = unread.message.body;
@@ -414,7 +401,7 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
         this.chatslog.set(chatLog.id, chatLog);
         done();
     }
-    public checkRoomInfo(unread: IUnread, chatrooms: Array<Room>): Promise<Room> {
+    public checkRoomInfo(unread: Unread, chatrooms: Array<Room>): Promise<Room> {
         let self = this;
         return new Promise((resolve, rejected) => {
             let rooms = (!!chatrooms && chatrooms.length > 0) ? chatrooms.filter(v => v._id == unread.rid) : [];
@@ -431,7 +418,6 @@ export class ChatsLogComponent implements IRoomAccessListenerImp {
                 });
             }
             else {
-                console.log("organize chats log of room: ", roomInfo.name);
                 this.organizeChatLogMap(unread, roomInfo, () => {
                     resolve();
                 });

@@ -63,7 +63,6 @@ export class DataListener {
         this.onAddRoomAccessEventListeners.map(value => value(dataEvent));
     }
     onUserLogin(dataEvent) {
-        console.log("user loged In", JSON.stringify(dataEvent));
         this.dataManager.onUserLogin(dataEvent);
     }
     onUserLogout(dataEvent) {

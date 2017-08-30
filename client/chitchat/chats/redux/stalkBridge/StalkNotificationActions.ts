@@ -46,14 +46,18 @@ export const notify = (messageImp: MessageImp) => {
         CryptoHelper.decryptionText(messageImp).then((decoded) => {
             message.body = decoded.body;
 
-            NotiAPI.NotificationFactory.getInstance().nativeNotifyAPI(message);
+            if (global["userAgent"] == REACTJS)
+                NotiAPI.NotificationFactory.getInstance().nativeNotifyAPI(message);
+
             getStore().dispatch(stalkNotiNewMessage(message));
         });
     }
     else {
         message.body = `Sent you ${messageImp.type.toLowerCase()}`;
 
-        NotiAPI.NotificationFactory.getInstance().nativeNotifyAPI(message);
+        if (global["userAgent"] == REACTJS)
+            NotiAPI.NotificationFactory.getInstance().nativeNotifyAPI(message);
+
         getStore().dispatch(stalkNotiNewMessage(message));
     }
 };
