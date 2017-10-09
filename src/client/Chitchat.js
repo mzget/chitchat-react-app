@@ -4,7 +4,7 @@ const api_stalk = "wss://chitchats.ga";
 const stalkPort = 3050;
 const stalkKey = "chitchat1234";
 const chitchat_api = "https://chitchats.ga:9000";
-export const chitchat_graphql = "https://chitchats.ga/graphql";
+export const chitchat_graphql = "https://chitchats.ga:9000/graphql";
 export const signalingServer = "https://chitchats.ga:8888";
 export const config = {
     Stalk: {
