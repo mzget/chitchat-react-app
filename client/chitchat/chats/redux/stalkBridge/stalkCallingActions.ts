@@ -4,7 +4,7 @@
  * This is pure function action for redux app.
  */
 import { CallingEvents } from "stalk-js";
-import { BackendFactory, CallPayload } from "../../";
+import { BackendFactory, CallPayload } from "../../BackendFactory";
 import * as callingActions from "../../../calling/";
 
 export function stalkCallingInit() {
@@ -17,10 +17,10 @@ function onCall_handler(dataEvent) {
 
     console.log(`onCall_handler :`, call);
 
-    if (call.event == CallingEvents.VideoCall || call.event == CallingEvents.VoiceCall) {
+    if (call.event === CallingEvents.VideoCall || call.event === CallingEvents.VoiceCall) {
         callingActions.onVOIPCall(call);
     }
-    else if (call.event == CallingEvents.HangupCall) {
+    else if (call.event === CallingEvents.HangupCall) {
         callingActions.onHangupCall(call.payload);
     }
 }
