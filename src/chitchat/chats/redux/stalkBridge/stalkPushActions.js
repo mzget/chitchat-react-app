@@ -3,17 +3,17 @@
  *
  * This is pure function action for redux app.
  */
-import { BackendFactory } from "../../BackendFactory";
-import { ChatRoomComponent } from "../../ChatRoomComponent";
+import { BackendFactory } from "stalk-js/starter";
+import { ChatRoomComponent } from "stalk-simplechat";
 export function stalkPushInit() {
     const pushDataListener = BackendFactory.getInstance().pushDataListener;
     pushDataListener.addPushEvents(onPush_handler);
 }
 function onPush_handler(dataEvent) {
-    let push = dataEvent;
+    const push = dataEvent;
     console.log(`onPush_handler :`, push);
-    let chatRoomComponent = ChatRoomComponent.getInstance();
-    if (push.event == "onMessageRead") {
+    const chatRoomComponent = ChatRoomComponent.getInstance();
+    if (push.event === "onMessageRead") {
         if (!!chatRoomComponent) {
             ChatRoomComponent.getInstance().onMessageRead(push.message);
         }

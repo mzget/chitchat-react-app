@@ -7,7 +7,7 @@ import { SigninBox } from "./SigninBox";
 import { SignupBox } from "./SignupBox";
 import { Facebook } from "../../components/social_login/SocialButtons";
 import * as AuthRx from "../../redux/authen/authRx";
-import * as CryptoHelper from "../../chitchat/chats/utils/CryptoHelper";
+import * as CryptoHelper from "stalk-simplechat/app/utils/CryptoHelper";
 export class AuthenBox extends React.Component {
     componentWillMount() {
         this.state = {
@@ -20,8 +20,8 @@ export class AuthenBox extends React.Component {
                 social_id: "",
                 social_token: "",
                 social_type: "",
-                avatar: ""
-            }
+                avatar: "",
+            },
         };
         this.onSignupPressed = this.onSignupPressed.bind(this);
         this.onSigninPressed = this.onSigninPressed.bind(this);
@@ -30,7 +30,7 @@ export class AuthenBox extends React.Component {
         this.onFacebookLogin = this.onFacebookLogin.bind(this);
     }
     componentWillReceiveProps(nextProps) {
-        let { authReducer, alertReducer } = nextProps;
+        const { authReducer, alertReducer } = nextProps;
         if (authReducer.state === AuthRx.SIGN_UP_SUCCESS) {
             this.setState({ showSignin: true });
         }
@@ -50,16 +50,16 @@ export class AuthenBox extends React.Component {
     }
     onFacebookLogin(response) {
         console.log("onFacebookLogin", response);
-        this.setState(prev => (Object.assign({}, prev, { social: {
+        this.setState((prev) => (Object.assign({}, prev, { social: {
                 email: response.email,
                 username: response.name,
                 firstname: response.first_name,
                 lastname: response.last_name,
                 social_id: response.id,
                 avatar: response.picture.data.url,
-                social_type: "facebook"
+                social_type: "facebook",
             } })));
-        let data = { email: response.email, social_type: "facebook" };
+        const data = { email: response.email, social_type: "facebook" };
         this.props.dispatch(AuthRx.authSocial(data));
     }
     onLogingIn(username, password) {

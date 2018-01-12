@@ -28,7 +28,7 @@ export class Unread { message: MessageImp; rid: string; count: number; }
 export type ChatLogMap = Map<string, ChatLog>;
 export type UnreadMap = Map<string, Unread>;
 
-export class ChatsLogComponent implements IRoomAccessListenerImp {
+class ChatsLogComponent implements IRoomAccessListenerImp {
     dataListener: DataListener;
 
     private chatlog_count: number = 0;

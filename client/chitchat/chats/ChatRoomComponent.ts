@@ -32,7 +32,7 @@ export function getStickerPath(message: IMessage) {
     return message as MessageImp;
 }
 
-export class ChatRoomComponent implements ChatEvents.IChatServerEvents {
+class ChatRoomComponent implements ChatEvents.IChatServerEvents {
     private static instance: ChatRoomComponent;
     public static getInstance() {
         return ChatRoomComponent.instance;

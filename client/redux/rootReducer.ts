@@ -10,10 +10,10 @@
  */
 
 import { combineReducers } from "redux";
-import { reducer as notificationsReducer } from 'reapop';
-import { ApolloClient, createNetworkInterface } from 'react-apollo';
+import { reducer as notificationsReducer } from "reapop";
+import { ApolloClient, createNetworkInterface } from "react-apollo";
 
-import { chitchat_graphql } from "../Chitchat";
+import { chitchatGraphql } from "../Chitchat";
 import { LOG_OUT_SUCCESS } from "./authen/authRx";
 import { STALK_ON_SOCKET_RECONNECT } from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 
@@ -33,8 +33,8 @@ import { alertReducer, AlertInitState } from "./app/alertReducer";
 
 export const apolloClient = new ApolloClient({
     networkInterface: createNetworkInterface({
-        uri: chitchat_graphql,
-    })
+        uri: chitchatGraphql,
+    }),
 });
 const apolloReducer = apolloClient.reducer();
 export const apolloMiddleWare = apolloClient.middleware();
@@ -56,7 +56,7 @@ const appReducer = combineReducers({
     adminReducer,
     alertReducer,
     notifications: notificationsReducer(),
-    apollo: apolloReducer
+    apollo: apolloReducer,
 });
 
 /*
@@ -75,13 +75,13 @@ export function getInitialState() {
         chatlogReducer: new ChatLogRecord(chatlogDefaults),
         userReducer: new UserInitState(),
         adminReducer: new AdminInitState(),
-        alertReducer: new AlertInitState()
+        alertReducer: new AlertInitState(),
     };
     return _initState;
 }
 
 export const rootReducer = (state, action) => {
-    if (state.authReducer.state === LOG_OUT_SUCCESS || state.stalkReducer.state == STALK_ON_SOCKET_RECONNECT) {
+    if (state.authReducer.state === LOG_OUT_SUCCESS || state.stalkReducer.state === STALK_ON_SOCKET_RECONNECT) {
         state = getInitialState();
     }
 

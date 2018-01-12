@@ -9,7 +9,7 @@ import { SignupBox } from "./SignupBox";
 import { Google, Facebook } from "../../components/social_login/SocialButtons";
 
 import * as AuthRx from "../../redux/authen/authRx";
-import * as CryptoHelper from "../../chitchat/chats/utils/CryptoHelper";
+import * as CryptoHelper from "stalk-simplechat/app/utils/CryptoHelper";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 
@@ -23,8 +23,8 @@ interface IComponentNameState {
         social_id: "",
         social_token: "",
         social_type: "",
-        avatar: ""
-    }
+        avatar: "",
+    };
 }
 
 export class AuthenBox extends React.Component<IComponentProps, IComponentNameState> {
@@ -39,8 +39,8 @@ export class AuthenBox extends React.Component<IComponentProps, IComponentNameSt
                 social_id: "",
                 social_token: "",
                 social_type: "",
-                avatar: ""
-            }
+                avatar: "",
+            },
         };
 
         this.onSignupPressed = this.onSignupPressed.bind(this);
@@ -52,12 +52,11 @@ export class AuthenBox extends React.Component<IComponentProps, IComponentNameSt
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let { authReducer, alertReducer } = nextProps;
+        const { authReducer, alertReducer } = nextProps;
 
         if (authReducer.state === AuthRx.SIGN_UP_SUCCESS) {
             this.setState({ showSignin: true });
-        }
-        else if (authReducer.state === AuthRx.AUTH_SOCIAL_FAILURE && !shallowEqual(authReducer.state, this.props.authReducer.state)) {
+        } else if (authReducer.state === AuthRx.AUTH_SOCIAL_FAILURE && !shallowEqual(authReducer.state, this.props.authReducer.state)) {
             this.props.onError(alertReducer.error);
             this.props.dispatch(AuthRx.signupSocial(this.state.social));
         }
@@ -75,7 +74,7 @@ export class AuthenBox extends React.Component<IComponentProps, IComponentNameSt
     onFacebookLogin(response) {
         console.log("onFacebookLogin", response);
 
-        this.setState(prev => ({
+        this.setState((prev) => ({
             ...prev,
             social: {
                 email: response.email,
@@ -84,21 +83,20 @@ export class AuthenBox extends React.Component<IComponentProps, IComponentNameSt
                 lastname: response.last_name,
                 social_id: response.id,
                 avatar: response.picture.data.url,
-                social_type: "facebook"
-            }
+                social_type: "facebook",
+            },
         }));
 
-        let data = { email: response.email, social_type: "facebook" };
+        const data = { email: response.email, social_type: "facebook" };
         this.props.dispatch(AuthRx.authSocial(data));
     }
 
-    onLogingIn(username, password) {
+    public onLogingIn(username, password) {
         if (username.length > 0 && password.length > 0) {
             CryptoHelper.hashComputation(password).then((hash: string) => {
                 this.props.dispatch(AuthRx.authUser({ email: username, password: hash }));
             });
-        }
-        else {
+        } else {
             console.error("Require fields is missing!");
             this.props.onError("Require fields is missing!");
         }

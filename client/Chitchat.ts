@@ -1,35 +1,35 @@
-import { IConfig, IChitChatApi, IStalkApi, ChitChatFactory } from "./chitchat/chats/";
-export const chitchatFactory = ChitChatFactory.createInstance();
+import { IApiConfig, IStalkConfig } from "stalk-js/starter";
 
-const api_stalk = "wss://chitchats.ga"; //"wss://chitchats.ga";
-const stalkPort = 3050; //3010
+const apiStalk = "wss://chitchats.ga"; // "wss://chitchats.ga";
+const stalkPort = 3020; // 3010
 const stalkKey = "chitchat1234";
-const chitchat_api = "https://chitchats.ga:9000"; //"http://localhost:9000"; "https://chitchats.ga"
-export const chitchat_graphql = "https://chitchats.ga:9000/graphql"; // "http://localhost:9000/graphql" : "https://chitchats.ga/graphql";
+
+const apiChitchat = "https://chitchats.ga:9000"; // "http://localhost:9000"; "https://chitchats.ga"
+export const chitchatGraphql = "https://chitchats.ga:9000/graphql"; // "http://localhost:9000/graphql" : "https://chitchats.ga/graphql";
 export const signalingServer = "https://chitchats.ga:8888";
 
 export const config = {
     Stalk: {
         apiKey: stalkKey,
-        chat: `${api_stalk}`,
-        port: stalkPort
-    } as IStalkApi,
+        chat: `${apiStalk}`,
+        port: stalkPort,
+    } as IStalkConfig,
     api: {
         apiKey: "chitchat1234",
-        host: `${chitchat_api}`,
-        api: `${chitchat_api}/api`,
-        auth: `${chitchat_api}/api/auth`,
-        user: `${chitchat_api}/api/users`,
-        team: `${chitchat_api}/api/team`,
-        group: `${chitchat_api}/api/group`,
-        orgChart: `${chitchat_api}/api/orgChart`,
-        chatroom: `${chitchat_api}/api/chatroom`,
-        message: `${chitchat_api}/api/stalk/message`,
-        stalk_user: `${chitchat_api}/api/stalk/user`,
-        fileUpload: `${chitchat_api}/chats/upload`
-    } as IChitChatApi,
+        host: `${apiChitchat}`,
+        api: `${apiChitchat}/api`,
+        auth: `${apiChitchat}/api/auth`,
+        user: `${apiChitchat}/api/users`,
+        team: `${apiChitchat}/api/team`,
+        group: `${apiChitchat}/api/group`,
+        orgChart: `${apiChitchat}/api/orgChart`,
+        chatroom: `${apiChitchat}/api/chatroom`,
+        message: `${apiChitchat}/api/stalk/message`,
+        stalk_user: `${apiChitchat}/api/stalk/user`,
+        fileUpload: `${apiChitchat}/chats/upload`,
+    } as IApiConfig,
     appConfig: {
         encryption: true,
-        secret: "chitchat#1234"
-    }
-} as IConfig;
+        secret: "chitchat#1234",
+    },
+};

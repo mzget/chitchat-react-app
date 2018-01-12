@@ -13,11 +13,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
-import { BackendFactory } from "../../BackendFactory";
+import { BackendFactory } from "stalk-js/starter";
+import InternalStore from "stalk-simplechat";
 import * as ServiceProvider from "../../services/ServiceProvider";
-import { ChitChatFactory } from "../../ChitChatFactory";
-const getStore = () => ChitChatFactory.getInstance().store;
-const authReducer = () => ChitChatFactory.getInstance().authStore;
+const getStore = () => InternalStore.store;
+const authReducer = () => InternalStore.authStore;
 export const STALK_REMOVE_ROOM_ACCESS = "STALK_REMOVE_ROOM_ACCESS";
 export const STALK_REMOVE_ROOM_ACCESS_FAILURE = "STALK_REMOVE_ROOM_ACCESS_FAILURE";
 export const STALK_REMOVE_ROOM_ACCESS_SUCCESS = "STALK_REMOVE_ROOM_ACCESS_SUCCESS";
@@ -28,7 +28,7 @@ const removeRoomAccess_Cancelled = () => ({ type: STALK_REMOVE_ROOM_ACCESS_CANCE
 const removeRoomAccess_Failure = error => ({ type: STALK_REMOVE_ROOM_ACCESS_FAILURE, payload: error });
 export const removeRoomAccess_Epic = action$ => (action$.ofType(STALK_REMOVE_ROOM_ACCESS)
     .mergeMap(action => {
-    let { _id } = authReducer().user;
+    const { _id } = authReducer().user;
     return ServiceProvider.removeLastAccessRoomInfo(_id, action.payload);
 }).map(json => {
     console.log("removeRoomAccess_Epic", json.response);
@@ -76,14 +76,14 @@ export const updateLastAccessRoom_Epic = action$ => action$.ofType(UPDATE_LAST_A
     let roomAccess = getStore().getState().chatlogReducer.get("roomAccess");
     let _newRoomAccess = new Array();
     if (Array.isArray(roomAccess)) {
-        let _has = roomAccess.some(value => (value.roomId == _tempRoomAccess[0].roomId));
+        const _has = roomAccess.some((value) => (value.roomId === _tempRoomAccess[0].roomId));
         if (!_has) {
             roomAccess.push(_tempRoomAccess[0]);
             _newRoomAccess = roomAccess.slice();
         }
         else {
             _newRoomAccess = roomAccess.map((value, id) => {
-                if (value.roomId == _tempRoomAccess[0].roomId) {
+                if (value.roomId === _tempRoomAccess[0].roomId) {
                     value.accessTime = _tempRoomAccess[0].accessTime;
                 }
                 return value;
@@ -96,32 +96,32 @@ export const updateLastAccessRoom_Epic = action$ => action$.ofType(UPDATE_LAST_A
     BackendFactory.getInstance().dataListener.onUpdatedLastAccessTime(_tempRoomAccess[0]);
     return updateLastAccessRoomSuccess(_newRoomAccess);
 })
-    .do(x => {
+    .do((x) => {
     if (x.payload) {
         BackendFactory.getInstance().dataManager.setRoomAccessForUser(x.payload);
     }
 })
     .takeUntil(action$.ofType(UPDATE_LAST_ACCESS_ROOM_CANCELLED))
-    .catch(error => Rx.Observable.of(updateLastAccessRoomFailure(error.message)));
+    .catch((error) => Rx.Observable.of(updateLastAccessRoomFailure(error.message)));
 export const GET_LAST_ACCESS_ROOM = "GET_LAST_ACCESS_ROOM";
 export const GET_LAST_ACCESS_ROOM_SUCCESS = "GET_LAST_ACCESS_ROOM_SUCCESS";
 export const GET_LAST_ACCESS_ROOM_FAILURE = "GET_LAST_ACCESS_ROOM_FAILURE";
 export const getLastAccessRoom = (team_id) => ({ type: GET_LAST_ACCESS_ROOM, payload: { team_id } });
 const getLastAccessRoomSuccess = (payload) => ({ type: GET_LAST_ACCESS_ROOM_SUCCESS, payload });
 const getLastAccessRoomFailure = (error) => ({ type: GET_LAST_ACCESS_ROOM_FAILURE, payload: error });
-export const getLastAccessRoom_Epic = action$ => (action$.ofType(GET_LAST_ACCESS_ROOM)
-    .mergeMap(action => {
-    let { team_id } = action.payload;
+export const getLastAccessRoom_Epic = (action$) => (action$.ofType(GET_LAST_ACCESS_ROOM)
+    .mergeMap((action) => {
+    const { team_id } = action.payload;
     return ServiceProvider.getLastAccessRoomInfo(team_id)
-        .then(response => response.json())
-        .then(json => {
+        .then((response) => response.json())
+        .then((json) => {
         console.log("getLastAccessRoomInfo result", json);
         return json;
     });
 })
-    .map(json => {
-    let result = json.result;
+    .map((json) => {
+    const result = json.result;
     BackendFactory.getInstance().dataListener.onAccessRoom(result);
     return getLastAccessRoomSuccess(result);
 })
-    .catch(json => Rx.Observable.of(getLastAccessRoomFailure(json))));
+    .catch((json) => Rx.Observable.of(getLastAccessRoomFailure(json))));

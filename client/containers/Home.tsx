@@ -7,7 +7,7 @@ import Flexbox from "flexbox-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as Colors from "material-ui/styles/colors";
 import Subheader from "material-ui/Subheader";
-import { Divider } from 'material-ui';
+import { Divider } from "material-ui";
 
 import { IComponentProps } from "../utils/IComponentProps";
 
@@ -20,24 +20,23 @@ import { AuthenBox } from "./authen/AuthenBox";
 import { WithDialog } from "./toolsbox/DialogBoxEnhancer";
 import { ChitChatFooter } from "../components/ChitChatFooter";
 
-
 interface IComponentNameState {
     alert: boolean;
 }
 
 class Home extends React.Component<IComponentProps, IComponentNameState> {
-    alertTitle: string;
-    alertMessage: string;
+    public alertTitle: string;
+    public alertMessage: string;
 
-    onForgotAccount() {
+    public onForgotAccount() {
         this.props.history.push("/forgotaccount");
     }
 
-    componentWillMount() {
-        console.log("Home", global["userAgent"]);
+    public componentWillMount() {
+        console.log("Home", global.userAgent);
 
         this.state = {
-            alert: false
+            alert: false,
         };
 
         this.props.dispatch(AppActions.getSession());
@@ -45,26 +44,27 @@ class Home extends React.Component<IComponentProps, IComponentNameState> {
         this.onForgotAccount = this.onForgotAccount.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
-        let { userReducer, authReducer, alertReducer
+    public componentWillReceiveProps(nextProps) {
+        const { userReducer, authReducer, alertReducer,
         } = nextProps as IComponentProps;
 
-        let toolbar = document.getElementById("toolbar");
-        let warning_bar = document.getElementById("warning_bar");
-        let app_body = document.getElementById("app_body");
-        let app_footer = document.getElementById("app_footer");
+        const toolbar = document.getElementById("toolbar");
+        const warning_bar = document.getElementById("warning_bar");
+        const app_body = document.getElementById("app_body");
+        const app_footer = document.getElementById("app_footer");
 
         if (!shallowEqual(authReducer, this.props.authReducer)) {
             switch (authReducer.state) {
                 case AuthRx.AUTH_USER_FAILURE: {
                     this.alertTitle = AuthRx.AUTH_USER_FAILURE;
                     this.alertMessage = authReducer.error;
-                    this.setState(previous => ({ ...previous, alert: true }));
+                    this.setState((previous) => ({ ...previous, alert: true }));
                     break;
                 }
                 case AppActions.GET_SESSION_TOKEN_SUCCESS: {
-                    if (authReducer.state !== this.props.authReducer.state)
+                    if (authReducer.state !== this.props.authReducer.state) {
                         this.props.dispatch(AuthRx.tokenAuthUser(authReducer.token));
+                    }
                     break;
                 }
                 default:

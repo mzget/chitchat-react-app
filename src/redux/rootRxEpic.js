@@ -13,22 +13,22 @@ import { stalkInitChatlog_Epic, getTeamsInfo_Epic } from "../actions/";
 export const rootEpic = combineEpics(
 // @Admin
 adminRx.createNewOrgChartEpic, adminRx.getOrgChartEpic, adminRx.updateUserOrgChartEpic, adminRx.updateUserTeamRole_Epic, userRx.onAuth_Epic, userRx.fetchUser_Epic, userRx.suggestUser_Epic, userRx.fetchContactEpic, userRx.fetchAgentEpic, userRx.getTeamProfileEpic, userRx.uploadUserAvatar_Epic, userRx.updateUserInfo_Epic, userRx.saveDeviceToken_Epic, 
-///@ Signup user.
+/// @ Signup user.
 authRx.signupUserEpic, authRx.authUser_Epic, authRx.authSocial_Epic, authRx.SignupSocial_Epic, authRx.tokenAuthUserEpic, authRx.logoutUser_Epic, 
-///@Teams
+/// @Teams
 teamRx.fetchUserTeamsEpic, teamRx.createNewTeamEpic, teamRx.getTeamsInfoEpic, teamRx.getTeamMembersEpic, teamRx.findTeamEpic, teamRx.joinTeamEpic, 
-///@Group
+/// @Group
 groupRx.getOrgGroup_Epic, groupRx.createOrgGroup_Epic, groupRx.uploadGroupImage_Epic, editGroupRxActions.editGroupDetail_Epic, editGroupRxActions.editGroupMember_Epic, editGroupRxActions.addGroupMember_Epic, editGroupRxActions.removeGroupMember_Epic, 
 /**
  * Private group...
  */
 privateGroupRxActions.getPrivateGroup_Epic, privateGroupRxActions.createPrivateGroup_Epic, 
-///@ChatRoom
+/// @ChatRoom
 chatroom.getPrivateChatRoom_Epic, chatroom.getPersistendMessageEpic, chatroom.createPrivateChatRoomEpic, chatroom.uploadFileEpic, chatroom.updateMessagesRead_Epic, 
 /// @message rx.
 // messageRxEpic.fetchOlderMessageCount_Epic,
 calling.hangupVideoCall_Epic, 
-///@chatlogs
+/// @chatlogs
 chatlogRxActions.getLastAccessRoom_Epic, chatlogRxActions.updateLastAccessRoom_Epic, 
 // chatlogRxActions.stalkInitChatlogs_Epic
 chatlogRxActions.removeRoomAccess_Epic, stalkInitChatlog_Epic, getTeamsInfo_Epic);

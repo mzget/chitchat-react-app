@@ -1,26 +1,24 @@
 import * as React from "react";
 import { SigninForm } from "../../components/SigninForm";
-;
-;
 export class SigninBox extends React.Component {
     componentWillMount() {
         this.state = {
             username: "",
-            password: ""
+            password: "",
         };
         this.onUsername = this.onUsername.bind(this);
         this.onPassword = this.onPassword.bind(this);
         this.onSubmitForm = this.onSubmitForm.bind(this);
     }
     onUsername(event, text) {
-        this.setState(previous => (Object.assign({}, previous, { username: text })));
+        this.setState((previous) => (Object.assign({}, previous, { username: text })));
     }
     onPassword(event, text) {
-        this.setState(previous => (Object.assign({}, previous, { password: text })));
+        this.setState((previous) => (Object.assign({}, previous, { password: text })));
     }
     onSubmitForm() {
-        let username = this.state.username;
-        let password = this.state.password;
+        const username = this.state.username;
+        const password = this.state.password;
         this.props.onLogingIn(username, password);
         this.setState({ username: "", password: "" });
     }

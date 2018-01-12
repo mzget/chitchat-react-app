@@ -1,46 +1,46 @@
-import { ChitChatFactory } from "../ChitChatFactory";
+import InternalStore from "stalk-simplechat";
 import { withToken, chitchat_headers } from "../utils/chitchatServiceUtils";
 
-const getConfig = () => ChitChatFactory.getInstance().config;
+const getConfig = () => InternalStore.apiConfig;
 
 export function auth(user: { email: string, password: string }) {
-    return fetch(`${getConfig().api.auth}`, {
+    return fetch(`${getConfig().auth}`, {
         method: "POST",
         body: JSON.stringify({ email: user.email, password: user.password }),
-        headers: chitchat_headers()
+        headers: chitchat_headers(),
     });
 }
 
 export function authWithSocial(user: { email: string, social_type: string }) {
-    return fetch(`${getConfig().api.auth}/social`, {
+    return fetch(`${getConfig().auth}/social`, {
         method: "POST",
         body: JSON.stringify({
             email: user.email,
-            social_type: user.social_type
+            social_type: user.social_type,
         }),
-        headers: chitchat_headers()
+        headers: chitchat_headers(),
     });
 }
 
 export function tokenAuth(token: string) {
-    return fetch(`${getConfig().api.auth}/verify`, {
+    return fetch(`${getConfig().auth}/verify`, {
         method: "POST",
-        body: JSON.stringify({ token: token }),
-        headers: chitchat_headers()
+        body: JSON.stringify({ token }),
+        headers: chitchat_headers(),
     });
 }
 
 export function logout(token: string) {
-    return fetch(`${getConfig().api.auth}/logout`, {
+    return fetch(`${getConfig().auth}/logout`, {
         method: "POST",
-        headers: withToken(chitchat_headers())(token)
+        headers: withToken(chitchat_headers())(token),
     });
 }
 
-export function signup(user) {
-    return fetch(`${getConfig().api.user}/signup`, {
+export function signup(user: any) {
+    return fetch(`${getConfig().user}/signup`, {
         method: "POST",
         headers: chitchat_headers(),
-        body: JSON.stringify({ user: user })
+        body: JSON.stringify({ user }),
     });
 }

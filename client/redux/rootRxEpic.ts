@@ -30,7 +30,7 @@ export const rootEpic = combineEpics(
     userRx.updateUserInfo_Epic,
     userRx.saveDeviceToken_Epic,
 
-    ///@ Signup user.
+    /// @ Signup user.
     authRx.signupUserEpic,
     authRx.authUser_Epic,
     authRx.authSocial_Epic,
@@ -38,7 +38,7 @@ export const rootEpic = combineEpics(
     authRx.tokenAuthUserEpic,
     authRx.logoutUser_Epic,
 
-    ///@Teams
+    /// @Teams
     teamRx.fetchUserTeamsEpic,
     teamRx.createNewTeamEpic,
     teamRx.getTeamsInfoEpic,
@@ -46,7 +46,7 @@ export const rootEpic = combineEpics(
     teamRx.findTeamEpic,
     teamRx.joinTeamEpic,
 
-    ///@Group
+    /// @Group
     groupRx.getOrgGroup_Epic,
     groupRx.createOrgGroup_Epic,
     groupRx.uploadGroupImage_Epic,
@@ -61,7 +61,7 @@ export const rootEpic = combineEpics(
     privateGroupRxActions.getPrivateGroup_Epic,
     privateGroupRxActions.createPrivateGroup_Epic,
 
-    ///@ChatRoom
+    /// @ChatRoom
     chatroom.getPrivateChatRoom_Epic,
     chatroom.getPersistendMessageEpic,
     chatroom.createPrivateChatRoomEpic,
@@ -71,12 +71,12 @@ export const rootEpic = combineEpics(
     // messageRxEpic.fetchOlderMessageCount_Epic,
     calling.hangupVideoCall_Epic,
 
-    ///@chatlogs
+    /// @chatlogs
     chatlogRxActions.getLastAccessRoom_Epic,
     chatlogRxActions.updateLastAccessRoom_Epic,
     // chatlogRxActions.stalkInitChatlogs_Epic
     chatlogRxActions.removeRoomAccess_Epic,
 
     stalkInitChatlog_Epic,
-    getTeamsInfo_Epic
+    getTeamsInfo_Epic,
 );

@@ -4,7 +4,7 @@ import { withRouter, Link } from "react-router-dom";
 import { shallowEqual } from "recompose";
 import Flexbox from "flexbox-react";
 import * as Colors from "material-ui/styles/colors";
-import { Divider } from 'material-ui';
+import { Divider } from "material-ui";
 import * as AuthRx from "../redux/authen/authRx";
 import * as AppActions from "../redux/app/persistentDataActions";
 import { SimpleToolbar } from "../components/SimpleToolbar";
@@ -16,30 +16,31 @@ class Home extends React.Component {
         this.props.history.push("/forgotaccount");
     }
     componentWillMount() {
-        console.log("Home", global["userAgent"]);
+        console.log("Home", global.userAgent);
         this.state = {
-            alert: false
+            alert: false,
         };
         this.props.dispatch(AppActions.getSession());
         this.onForgotAccount = this.onForgotAccount.bind(this);
     }
     componentWillReceiveProps(nextProps) {
-        let { userReducer, authReducer, alertReducer } = nextProps;
-        let toolbar = document.getElementById("toolbar");
-        let warning_bar = document.getElementById("warning_bar");
-        let app_body = document.getElementById("app_body");
-        let app_footer = document.getElementById("app_footer");
+        const { userReducer, authReducer, alertReducer, } = nextProps;
+        const toolbar = document.getElementById("toolbar");
+        const warning_bar = document.getElementById("warning_bar");
+        const app_body = document.getElementById("app_body");
+        const app_footer = document.getElementById("app_footer");
         if (!shallowEqual(authReducer, this.props.authReducer)) {
             switch (authReducer.state) {
                 case AuthRx.AUTH_USER_FAILURE: {
                     this.alertTitle = AuthRx.AUTH_USER_FAILURE;
                     this.alertMessage = authReducer.error;
-                    this.setState(previous => (Object.assign({}, previous, { alert: true })));
+                    this.setState((previous) => (Object.assign({}, previous, { alert: true })));
                     break;
                 }
                 case AppActions.GET_SESSION_TOKEN_SUCCESS: {
-                    if (authReducer.state !== this.props.authReducer.state)
+                    if (authReducer.state !== this.props.authReducer.state) {
                         this.props.dispatch(AuthRx.tokenAuthUser(authReducer.token));
+                    }
                     break;
                 }
                 default:

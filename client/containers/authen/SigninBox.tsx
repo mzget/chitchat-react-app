@@ -4,18 +4,18 @@ import { SigninForm } from "../../components/SigninForm";
 
 interface IComponentNameProps {
     onLogingIn: (username, password) => void;
-};
+}
 
 interface IComponentNameState {
     username: string;
     password: string;
-};
+}
 
 export class SigninBox extends React.Component<IComponentNameProps, IComponentNameState> {
     componentWillMount() {
         this.state = {
             username: "",
-            password: ""
+            password: "",
         };
 
         this.onUsername = this.onUsername.bind(this);
@@ -24,15 +24,15 @@ export class SigninBox extends React.Component<IComponentNameProps, IComponentNa
     }
 
     onUsername(event, text: string) {
-        this.setState(previous => ({ ...previous, username: text }));
+        this.setState((previous) => ({ ...previous, username: text }));
     }
     onPassword(event, text: string) {
-        this.setState(previous => ({ ...previous, password: text }));
+        this.setState((previous) => ({ ...previous, password: text }));
     }
 
-    onSubmitForm() {
-        let username = this.state.username;
-        let password = this.state.password;
+    public onSubmitForm() {
+        const username = this.state.username;
+        const password = this.state.password;
 
         this.props.onLogingIn(username, password);
 

@@ -1,16 +1,16 @@
-import { getLastAccessRoomInfo, updateLastAccessRoomInfo, removeLastAccessRoomInfo } from "../chitchat/chats/services/ServiceProvider";
-test('getLastAccessRoomInfo', () => {
-    let { chitchatFactory } = require("../Chitchat");
+import { getLastAccessRoomInfo, removeLastAccessRoomInfo, updateLastAccessRoomInfo, } from "../chitchat/chats/services/ServiceProvider";
+test("getLastAccessRoomInfo", () => {
+    const { chitchatFactory } = require("../Chitchat");
     chitchatFactory.setAuthStore("test", "test_token");
     expect(getLastAccessRoomInfo("1234")).toMatchObject({});
 });
-test('updateLastAccessRoomInfo', () => {
-    let { chitchatFactory } = require("../Chitchat");
+test("updateLastAccessRoomInfo", () => {
+    const { chitchatFactory } = require("../Chitchat");
     chitchatFactory.setAuthStore("test", "test_token");
     expect(updateLastAccessRoomInfo("1234", "1234")).toMatchObject({});
 });
-test('removeLastAccessRoomInfo', () => {
-    let { chitchatFactory } = require("../Chitchat");
+test("removeLastAccessRoomInfo", () => {
+    const { chitchatFactory } = require("../Chitchat");
     chitchatFactory.setAuthStore("test", "test_token");
     expect(removeLastAccessRoomInfo("1234", "1234")).toMatchObject({});
 });

@@ -1,64 +1,43 @@
-import { IStalkApi, IChitChatApi, IConfig } from "./iConfig";
+import { IStalkConfig, IApiConfig } from "stalk-js/starter";
 import { ITeamMember } from "./models/IteamMember";
-import { SecureServiceFactory } from "./secure/secureServiceFactory";
 
-export type AuthStore = {
-    user: any;
-    chitchat_token: string;
-};
-
-export type TeamStore = {
+export interface TeamStore {
     team: any;
-    members: Array<ITeamMember>
-};
+    members: ITeamMember[];
+}
 
-export type AppStore = {
+export interface AppStore {
     appState: string;
-};
+}
 
 export class ChitChatFactory {
     private static instance: ChitChatFactory;
-    public static getInstance(): ChitChatFactory {
+    public static getInstance() {
         return ChitChatFactory.instance;
     }
     public static createInstance() {
-        if (ChitChatFactory.instance == null || ChitChatFactory.instance == undefined) {
+        if (ChitChatFactory.instance == null || ChitChatFactory.instance === undefined) {
             ChitChatFactory.instance = new ChitChatFactory();
 
             return ChitChatFactory.instance;
-        }
-        else
+        } else {
             return ChitChatFactory.instance;
-    }
-
-    store;
-    public initStore(_store) {
-        this.store = _store;
-    }
-    config: IConfig;
-    public initConfig(_config: IConfig) {
-        this.config = _config;
-    }
-    public initSecureService() {
-        if (this.config.appConfig.encryption == true) {
-            SecureServiceFactory.createService(this.config.appConfig.secret);
         }
     }
 
-    public getStore() { return this.store; }
-    public getConfig(): IConfig { return this.config; }
-
-    authStore: AuthStore;
-    public setAuthStore(user: any, chitchat_token: string) {
-        this.authStore = { user: user, chitchat_token: chitchat_token };
+    public config: IApiConfig;
+    public initConfig(apiConfig: IApiConfig) {
+        this.config = apiConfig;
     }
 
-    teamStore: TeamStore;
+    public getConfig(): IApiConfig { return this.config; }
+
+    public teamStore: TeamStore;
     public setTeamStore(store: TeamStore) {
         this.teamStore = store;
     }
 
-    appStore: AppStore = { appState: "active" }; // active, background, inactive
+    public appStore: AppStore = { appState: "active" }; // active, background, inactive
     public setAppStore(store: AppStore) {
         this.appStore = store;
     }

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider } from "react-apollo";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 /**
  * ### configureStore
@@ -8,16 +8,21 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
  */
 import Store from "./redux/configureStore";
 import { apolloClient } from "./redux/rootReducer";
-import { chitchatFactory, config } from "./Chitchat";
-chitchatFactory.initConfig(config);
-chitchatFactory.initStore(Store);
-chitchatFactory.initSecureService();
+import InternalStore from "stalk-simplechat/app/InternalStore";
+import { SecureServiceFactory } from "stalk-simplechat";
+import { config } from "./Chitchat";
+InternalStore.initConfig(config.Stalk);
+InternalStore.initApiConfig(config.api);
+InternalStore.initStore(Store);
+SecureServiceFactory.createService(config.appConfig.secret);
 Store.subscribe(() => {
-    chitchatFactory.setAuthStore(Store.getState().userReducer.user, Store.getState().authReducer.token);
-    chitchatFactory.setTeamStore({
-        team: Store.getState().teamReducer.team,
-        members: Store.getState().teamReducer.members
-    });
+    // chitchatFactory.setAuthStore(
+    //     Store.getState().userReducer.user,
+    //     Store.getState().authReducer.token);
+    // chitchatFactory.setTeamStore({
+    //     team: Store.getState().teamReducer.team,
+    //     members: Store.getState().teamReducer.members,
+    // });
 });
 import { ReapopNotiBoxWithState } from "./components/NotificationSystem";
 import { StalkNotiDialog } from "./containers/stalk/StalkNotiDialog";

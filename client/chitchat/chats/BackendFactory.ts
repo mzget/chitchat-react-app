@@ -13,7 +13,7 @@ import { ServerEventListener } from "./ServerEventListener";
 import { ChitChatFactory } from "./ChitChatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
 
-export class BackendFactory {
+class BackendFactory {
     private static instance: BackendFactory;
     public static getInstance(): BackendFactory {
         return BackendFactory.instance;
@@ -60,7 +60,7 @@ export class BackendFactory {
     async handshake(uid: string) {
         try {
             // @ get connector server.
-            let msg = {} as IDictionary;
+            const msg = {} as IDictionary;
             msg["uid"] = uid;
             msg["x-api-key"] = getConfig().Stalk.apiKey;
             let connector = await StalkFactory.geteEnter(this.stalk, msg);

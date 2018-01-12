@@ -18,7 +18,7 @@ import { ChatsLogComponent } from "./ChatslogComponent";
 import { ServerEventListener } from "./ServerEventListener";
 import { ChitChatFactory } from "./ChitChatFactory";
 const getConfig = () => ChitChatFactory.getInstance().config;
-export class BackendFactory {
+class BackendFactory {
     static getInstance() {
         return BackendFactory.instance;
     }
@@ -54,7 +54,7 @@ export class BackendFactory {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // @ get connector server.
-                let msg = {};
+                const msg = {};
                 msg["uid"] = uid;
                 msg["x-api-key"] = getConfig().Stalk.apiKey;
                 let connector = yield StalkFactory.geteEnter(this.stalk, msg);

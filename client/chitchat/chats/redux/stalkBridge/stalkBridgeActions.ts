@@ -4,15 +4,16 @@
  * This is pure function action for redux app.
  */
 
-import { BackendFactory } from "../../BackendFactory";
+import { ServerImp } from "stalk-js";
+import { BackendFactory } from "stalk-js/starter";
 import * as StalkNotificationAction from "./StalkNotificationActions";
 import * as ChatLogsActions from "../chatlogs/chatlogsActions";
 import { stalkPushInit, stalkCallingInit } from "./";
 
 import { StalkAccount, RoomAccessData } from "../../../shared/Stalk";
 
-import { ChitChatFactory } from "../../ChitChatFactory";
-const getStore = () => ChitChatFactory.getInstance().store;
+import InternalStore from "stalk-simplechat";
+const getStore = () => InternalStore.store;
 
 export const getSessionToken = () => {
     const backendFactory = BackendFactory.getInstance();
@@ -25,26 +26,26 @@ export const STALK_INIT_SUCCESS = "STALK_INIT_SUCCESS";
 export const STALK_INIT_FAILURE = "STALK_INIT_FAILURE";
 
 export function stalkLogin(user: any) {
-    if (getStore().getState().stalkReducer.isInit) return;
+    if (getStore().getState().stalkReducer.isInit) { return; }
 
     getStore().dispatch({ type: STALK_INIT });
 
-    const backendFactory = BackendFactory.createInstance();
+    const backendFactory = BackendFactory.createInstance(InternalStore.config, InternalStore.apiConfig);
 
-    let account = {} as StalkAccount;
+    const account = {} as StalkAccount;
     account._id = user._id;
     account.username = user.username;
-    backendFactory.dataManager.setProfile(account).then(profile => {
-        ChatLogsActions.initChatsLog();
-    });
-    backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
-    backendFactory.stalkInit().then(socket => {
+    // backendFactory.dataManager.setProfile(account).then((profile) => {
+    //     ChatLogsActions.initChatsLog();
+    // });
+    // backendFactory.dataManager.addContactInfoFailEvents(onGetContactProfileFail);
+    backendFactory.stalkInit().then((socket) => {
         backendFactory.handshake(user._id).then((connector) => {
             backendFactory.checkIn(user).then((value: any) => {
                 console.log("Joined stalk-service success", value);
-                let result: { success: boolean, token: any } = JSON.parse(JSON.stringify(value.data));
+                const result: { success: boolean, token: any } = JSON.parse(JSON.stringify(value.data));
                 if (result.success) {
-                    stalkManageConnection().then(function (server) {
+                    stalkManageConnection().then((server) => {
                         server.listenSocketEvents();
                         backendFactory.getServerListener();
                         backendFactory.subscriptions();
@@ -54,24 +55,23 @@ export function stalkLogin(user: any) {
                         stalkCallingInit();
 
                         getStore().dispatch({ type: STALK_INIT_SUCCESS, payload: { token: result.token, user: account } });
-                    }).catch(err => {
+                    }).catch((err) => {
                         console.warn("Stalk subscription fail: ", err);
                         getStore().dispatch({ type: STALK_INIT_FAILURE, payload: err });
                     });
-                }
-                else {
+                } else {
                     console.warn("Joined chat-server fail: ", result);
                     getStore().dispatch({ type: STALK_INIT_FAILURE });
                 }
-            }).catch(err => {
+            }).catch((err) => {
                 console.warn("Cannot checkIn", err);
                 getStore().dispatch({ type: STALK_INIT_FAILURE });
             });
-        }).catch(err => {
+        }).catch((err) => {
             console.warn("Hanshake fail: ", err);
             getStore().dispatch({ type: STALK_INIT_FAILURE });
         });
-    }).catch(err => {
+    }).catch((err) => {
         console.log("StalkInit Fail.", err);
         getStore().dispatch({ type: STALK_INIT_FAILURE });
     });
@@ -87,7 +87,7 @@ const onStalkSocketDisconnected = (data) => ({ type: STALK_ON_SOCKET_DISCONNECTE
 async function stalkManageConnection() {
     const backendFactory = BackendFactory.getInstance();
 
-    let server = backendFactory.getServer();
+    const server = backendFactory.getServer() as ServerImp;
 
     server.onSocketReconnect = (data) => {
         getStore().dispatch(onStalkSocketReconnect(data.type));

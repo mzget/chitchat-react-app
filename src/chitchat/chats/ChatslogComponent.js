@@ -24,7 +24,7 @@ import * as chatroomService from "./services/chatroomService";
 import * as chatlogActionsHelper from "./redux/chatlogs/chatlogActionsHelper";
 export class Unread {
 }
-export class ChatsLogComponent {
+class ChatsLogComponent {
     constructor() {
         this.chatlog_count = 0;
         this.chatslog = new Map();

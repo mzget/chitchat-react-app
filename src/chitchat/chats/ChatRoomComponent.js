@@ -28,7 +28,7 @@ export function getStickerPath(message) {
     message["src"] = imagesPath[sticker_id].img;
     return message;
 }
-export class ChatRoomComponent {
+class ChatRoomComponent {
     constructor() {
         this.updateMessageQueue = new Array();
         this.saveMessages = (chatMessages, message) => {

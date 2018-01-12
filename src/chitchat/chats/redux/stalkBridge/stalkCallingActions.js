@@ -4,14 +4,14 @@
  * This is pure function action for redux app.
  */
 import { CallingEvents } from "stalk-js";
-import { BackendFactory } from "../../BackendFactory";
+import { CallingDataListener } from "stalk-js/starter";
 import * as callingActions from "../../../calling/";
 export function stalkCallingInit() {
-    const callingDataListener = BackendFactory.getInstance().callingDataListener;
+    const callingDataListener = CallingDataListener.createInstance();
     callingDataListener.addOnCallListener(onCall_handler);
 }
 function onCall_handler(dataEvent) {
-    let call = dataEvent;
+    const call = dataEvent;
     console.log(`onCall_handler :`, call);
     if (call.event === CallingEvents.VideoCall || call.event === CallingEvents.VoiceCall) {
         callingActions.onVOIPCall(call);

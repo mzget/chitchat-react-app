@@ -13,11 +13,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as R from "ramda";
 import { createAction } from "redux-actions";
-import { Utils, ChatEvents } from "stalk-js";
+import { ChatEvents, HttpStatusCode } from "stalk-js";
+import { BackendFactory } from "stalk-js/starter";
+import { ChatRoomComponent, ON_MESSAGE_CHANGE } from "stalk-simplechat";
 import * as chatroomService from "../../services/chatroomService";
 import * as MessageService from "../../services/MessageService";
-import { ChatRoomComponent, ON_MESSAGE_CHANGE } from "../../ChatRoomComponent";
-import { BackendFactory } from "../../BackendFactory";
 import { SecureServiceFactory } from "../../secure/secureServiceFactory";
 import * as NotificationManager from "../stalkBridge/StalkNotificationActions";
 import { updateLastAccessRoom } from "../chatlogs/chatlogRxActions";
@@ -49,7 +49,7 @@ export function initChatRoom(currentRoom) {
             }
         });
     }
-    let chatroomComp = ChatRoomComponent.createInstance();
+    const chatroomComp = ChatRoomComponent.createInstance();
     chatroomComp.setRoomId(currentRoom._id);
     NotificationManager.unsubscribeGlobalNotifyMessageEvent();
     chatroomComp.chatroomDelegate = onChatRoomDelegate;
@@ -57,7 +57,7 @@ export function initChatRoom(currentRoom) {
 }
 function onChatRoomDelegate(event, data) {
     if (event === ChatEvents.ON_CHAT) {
-        let messageImp = data;
+        const messageImp = data;
         let backendFactory = BackendFactory.getInstance();
         /**
          * Todo **
@@ -76,10 +76,10 @@ function onChatRoomDelegate(event, data) {
             if (!!appState) {
                 if (appState === "active") {
                     MessageService.updateMessageReader(messageImp._id, messageImp.rid)
-                        .then(response => response.json())
-                        .then(value => {
+                        .then((response) => response.json())
+                        .then((value) => {
                         console.log("updateMessageReader: ", value);
-                    }).catch(err => {
+                    }).catch((err) => {
                         console.warn("updateMessageReader: ", err);
                     });
                 }
@@ -105,11 +105,11 @@ export const ON_MESSAGE_CHANGED = "ON_MESSAGE_CHANGED";
 const onMessageChangedAction = createAction(ON_MESSAGE_CHANGED, (messages) => messages);
 const onEarlyMessageReady = (data) => ({ type: ChatRoomActionsType.ON_EARLY_MESSAGE_READY, payload: data });
 export function checkOlderMessages() {
-    return dispatch => {
-        let room = getStore().getState().chatroomReducer.room;
-        ChatRoomComponent.getInstance().getTopEdgeMessageTime().then(res => {
+    return (dispatch) => {
+        const room = getStore().getState().chatroomReducer.room;
+        ChatRoomComponent.getInstance().getTopEdgeMessageTime().then((res) => {
             chatroomService.getOlderMessagesCount(room._id, res.toString(), false)
-                .then(response => response.json())
+                .then((response) => response.json())
                 .then((result) => {
                 console.log("getEarlyMessagesCount", result);
                 if (result.success && result.result > 0) {
@@ -120,7 +120,7 @@ export function checkOlderMessages() {
                     //                console.log("onOlderMessageReady is false ! Don't show load earlier message on top view.");
                     dispatch(onEarlyMessageReady(false));
                 }
-            }).catch(err => {
+            }).catch((err) => {
                 console.warn("getEarlyMessagesCount fail", err);
                 dispatch(onEarlyMessageReady(false));
             });
@@ -129,21 +129,21 @@ export function checkOlderMessages() {
 }
 export const LOAD_EARLY_MESSAGE = "LOAD_EARLY_MESSAGE";
 export const LOAD_EARLY_MESSAGE_SUCCESS = "LOAD_EARLY_MESSAGE_SUCCESS";
-const loadEarlyMessage = createAction(LOAD_EARLY_MESSAGE, payload => payload);
+const loadEarlyMessage = createAction(LOAD_EARLY_MESSAGE, (payload) => payload);
 const loadEarlyMessage_success = (payload) => ({ type: LOAD_EARLY_MESSAGE_SUCCESS, payload });
 export function loadEarlyMessageChunk(room_id) {
-    return dispatch => {
+    return (dispatch) => {
         dispatch(loadEarlyMessage(room_id));
-        let chatroom = ChatRoomComponent.getInstance();
-        chatroom.getOlderMessageChunk(room_id).then(docs => {
+        const chatroom = ChatRoomComponent.getInstance();
+        chatroom.getOlderMessageChunk(room_id).then((docs) => {
             dispatch(loadEarlyMessage_success(docs));
             // @check older message again.
             dispatch(checkOlderMessages());
-            //# update messages read.
+            // # update messages read.
             if (docs.length > 0) {
                 dispatch(updateMessagesRead(docs, room_id));
             }
-        }).catch(err => {
+        }).catch((err) => {
             console.warn("loadEarlyMessageChunk fail", err);
         });
     };
@@ -153,31 +153,32 @@ export const GET_NEWER_MESSAGE_FAILURE = "GET_NEWER_MESSAGE_FAILURE";
 export const GET_NEWER_MESSAGE_SUCCESS = "GET_NEWER_MESSAGE_SUCCESS";
 const getNewerMessage = createAction(GET_NEWER_MESSAGE);
 const getNewerMessage_failure = createAction(GET_NEWER_MESSAGE_FAILURE);
-const getNewerMessage_success = createAction(GET_NEWER_MESSAGE_SUCCESS, messages => messages);
+const getNewerMessage_success = createAction(GET_NEWER_MESSAGE_SUCCESS, (messages) => messages);
 export function getNewerMessageFromNet() {
-    return dispatch => {
+    return (dispatch) => {
         dispatch(getNewerMessage());
-        let token = authReducer().chitchat_token;
-        let chatroom = ChatRoomComponent.getInstance();
+        const token = authReducer().chitchat_token;
+        const chatroom = ChatRoomComponent.getInstance();
         chatroom.getNewerMessageRecord(token, (results, room_id) => {
-            chatroom.decryptMessage(results).then(messages => {
+            chatroom.decryptMessage(results).then((messages) => {
                 dispatch(getNewerMessage_success(messages));
             });
-            //# update messages read.
+            // # update messages read.
             if (results.length > 0) {
                 dispatch(updateMessagesRead(results, room_id));
             }
-        }).catch(err => {
-            if (err)
+        }).catch((err) => {
+            if (err) {
                 console.warn("getNewerMessageRecord fail", err);
+            }
             dispatch(getNewerMessage_failure());
         });
     };
 }
 export function getMessages() {
     return __awaiter(this, void 0, void 0, function* () {
-        let chatroomComp = ChatRoomComponent.getInstance();
-        let messages = yield chatroomComp.getMessages();
+        const chatroomComp = ChatRoomComponent.getInstance();
+        const messages = yield chatroomComp.getMessages();
         return messages;
     });
 }
@@ -192,10 +193,10 @@ export function sendMessage(message) {
         dispatch(send_message_request());
         if (message.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption === true) {
             const secure = SecureServiceFactory.getService();
-            secure.encryption(message.body).then(result => {
+            secure.encryption(message.body).then((result) => {
                 message.body = result;
-                let backendFactory = BackendFactory.getInstance();
-                let chatApi = backendFactory.getServer().getChatRoomAPI();
+                const backendFactory = BackendFactory.getInstance();
+                const chatApi = backendFactory.getServer().getChatRoomAPI();
                 chatApi.pushByUids({ data: message }).then((result) => {
                     if (result.code !== 200) {
                         dispatch(sendMessageResponse(result, null));
@@ -203,17 +204,17 @@ export function sendMessage(message) {
                     else {
                         dispatch(sendMessageResponse(null, result));
                     }
-                }).catch(err => {
+                }).catch((err) => {
                     dispatch(sendMessageResponse(err, null));
                 });
-            }).catch(err => {
+            }).catch((err) => {
                 console.error(err);
                 dispatch(send_message_failure(err));
             });
         }
         else {
-            let backendFactory = BackendFactory.getInstance();
-            let chatApi = backendFactory.getServer().getChatRoomAPI();
+            const backendFactory = BackendFactory.getInstance();
+            const chatApi = backendFactory.getServer().getChatRoomAPI();
             chatApi.pushByUids({ data: message }).then((result) => {
                 if (result.code !== 200) {
                     dispatch(sendMessageResponse(result, null));
@@ -221,29 +222,29 @@ export function sendMessage(message) {
                 else {
                     dispatch(sendMessageResponse(null, result));
                 }
-            }).catch(err => {
+            }).catch((err) => {
                 dispatch(sendMessageResponse(err, null));
             });
         }
     };
 }
 function sendMessageResponse(err, res) {
-    return dispatch => {
+    return (dispatch) => {
         console.log("sendMessageResponse!", err, res);
         if (!!err) {
             dispatch(send_message_failure(err.message));
         }
         else {
-            let chatroomComp = ChatRoomComponent.getInstance();
-            if (res.code == Utils.statusCode.success && res.data.hasOwnProperty("resultMsg")) {
-                let _msg = Object.assign({}, res.data.resultMsg);
+            const chatroomComp = ChatRoomComponent.getInstance();
+            if (res.code === HttpStatusCode.success && res.data.hasOwnProperty("resultMsg")) {
+                const _msg = Object.assign({}, res.data.resultMsg);
                 if (_msg.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption) {
                     const secure = SecureServiceFactory.getService();
-                    secure.decryption(_msg.body).then(res => {
+                    secure.decryption(_msg.body).then((res) => {
                         _msg.body = res;
                         chatroomComp.saveToPersisted(_msg);
                         dispatch(send_message_success(_msg));
-                    }).catch(err => {
+                    }).catch((err) => {
                         _msg.body = err.toString();
                         chatroomComp.saveToPersisted(_msg);
                         dispatch(send_message_success(_msg));
@@ -270,11 +271,11 @@ export function joinRoom(roomId, token, username) {
     return (dispatch) => {
         dispatch(joinRoom_request());
         try {
-            let backendFactory = BackendFactory.getInstance();
-            let server = backendFactory.getServer();
+            const backendFactory = BackendFactory.getInstance();
+            const server = backendFactory.getServer();
             server.getLobby().joinRoom(token, username, roomId, (err, res) => {
                 console.log("JoinChatRoomRequest value", res);
-                if (err || res.code !== Utils.statusCode.success) {
+                if (err || res.code !== HttpStatusCode.success) {
                     dispatch(joinRoom_failure(err));
                 }
                 else {
@@ -293,10 +294,10 @@ const leaveRoom = () => ({ type: LEAVE_ROOM });
 const leaveRoomSuccess = () => ({ type: LEAVE_ROOM_SUCCESS });
 export function leaveRoomAction() {
     return (dispatch) => {
-        let _room = getStore().getState().chatroomReducer.get("room");
+        const _room = getStore().getState().chatroomReducer.get("room");
         if (!!_room) {
-            let token = getStore().getState().stalkReducer.stalkToken;
-            let room_id = _room._id;
+            const token = getStore().getState().stalkReducer.stalkToken;
+            const room_id = _room._id;
             ChatRoomComponent.getInstance().dispose();
             NotificationManager.regisNotifyNewMessageEvent();
             dispatch(updateLastAccessRoom(room_id));
@@ -317,14 +318,14 @@ export const GET_PERSISTEND_CHATROOM_SUCCESS = "GET_PERSISTEND_CHATROOM_SUCCESS"
 export const GET_PERSISTEND_CHATROOM_FAILURE = "GET_PERSISTEND_CHATROOM_FAILURE";
 const getPersistChatroomFail = () => ({ type: GET_PERSISTEND_CHATROOM_FAILURE });
 const getPersistChatroomSuccess = (roomInfo) => ({ type: GET_PERSISTEND_CHATROOM_SUCCESS, payload: roomInfo });
-export const getPersistendChatroom = (roomId) => (dispatch => {
+export const getPersistendChatroom = (roomId) => ((dispatch) => {
     dispatch({ type: GET_PERSISTEND_CHATROOM, payload: roomId });
     const { chatrooms } = getStore().getState().chatroomReducer;
     if (!chatrooms) {
         return dispatch(getPersistChatroomFail());
     }
     const rooms = chatrooms.filter((room, index, array) => {
-        if (room._id.toString() == roomId) {
+        if (room._id.toString() === roomId) {
             return room;
         }
     });
@@ -336,12 +337,12 @@ export const getPersistendChatroom = (roomId) => (dispatch => {
     }
 });
 export const getRoom = (room_id) => {
-    let { chatrooms } = getStore().getState().chatroomReducer;
+    const { chatrooms } = getStore().getState().chatroomReducer;
     if (!chatrooms) {
         return null;
     }
     const rooms = chatrooms.filter((room, index, array) => {
-        if (room._id.toString() == room_id) {
+        if (room._id.toString() === room_id) {
             return room;
         }
     });
@@ -349,15 +350,15 @@ export const getRoom = (room_id) => {
 };
 export const createChatRoom = (myUser, contactUser) => {
     if (myUser && contactUser) {
-        let owner = {};
+        const owner = {};
         owner._id = myUser._id;
         owner.user_role = (myUser.role) ? myUser.role : "user";
         owner.username = `${myUser.firstname} ${myUser.lastname}`;
-        let contact = {};
+        const contact = {};
         contact._id = contactUser._id;
         contact.user_role = (contactUser.role) ? contactUser.role : "user";
         contact.username = `${contactUser.firstname} ${contactUser.lastname}`;
-        let members = { owner, contact };
+        const members = { owner, contact };
         return members;
     }
     else {
@@ -368,11 +369,11 @@ export const createChatRoom = (myUser, contactUser) => {
 export const UPDATED_CHATROOMS = "UPDATED_CHATROOMS";
 export const updatedChatRoomSuccess = (chatrooms) => ({ type: UPDATED_CHATROOMS, payload: chatrooms });
 export const updateChatRoom = (rooms) => {
-    return dispatch => {
+    return (dispatch) => {
         let chatrooms = getStore().getState().chatroomReducer.get("chatrooms");
         if (chatrooms) {
             // R.unionWith(R.eqBy(R.prop('a')), l1, l2);
-            let _newRooms = R.unionWith(R.eqBy(R.prop("_id")), rooms, chatrooms);
+            const _newRooms = R.unionWith(R.eqBy(R.prop("_id")), rooms, chatrooms);
             dispatch(updatedChatRoomSuccess(_newRooms));
         }
         else {
@@ -388,16 +389,16 @@ const getChatTargetId = createAction(GET_CHAT_TARGET_UID, (room_id) => room_id);
 const getChatTargetIdSuccess = createAction(GET_CHAT_TARGET_UID_SUCCESS, (payload) => payload);
 const getChatTargetIdFailure = createAction(GET_CHAT_TARGET_UID_FAILURE, (error) => error);
 export function getChatTargetIds(room_id) {
-    return dispatch => {
+    return (dispatch) => {
         dispatch(getChatTargetId(room_id));
-        let { room } = getStore().getState().chatroomReducer;
-        let { _id } = authReducer().user;
+        const { room } = getStore().getState().chatroomReducer;
+        const { _id } = authReducer().user;
         if (!room) {
             dispatch(getChatTargetIdFailure("Has no room object!"));
         }
         else {
-            let results = new Array();
-            room.members.map(value => (value._id != _id) ? results.push(value._id) : null);
+            const results = new Array();
+            room.members.map((value) => (value._id !== _id) ? results.push(value._id) : null);
             dispatch(getChatTargetIdSuccess(results));
         }
     };
