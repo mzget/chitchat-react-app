@@ -18,12 +18,13 @@ export const authReducer = (state = new AuthenInitState(), action) => {
             return state.set("user", action.payload.email).set("isFetching", true);
         }
         case authRx.AUTH_USER_SUCCESS: {
-            return state.set("token", action.payload).set("isFetching", false);;
+            return state.set("token", action.payload)
+                .set("isFetching", false);
         }
         case authRx.AUTH_USER_FAILURE: {
             return state.set("state", authRx.AUTH_USER_FAILURE)
                 .set("token", null)
-                .set("user", null).set("isFetching", false);;
+                .set("user", null).set("isFetching", false);
         }
 
         case authRx.AUTH_SOCIAL: {

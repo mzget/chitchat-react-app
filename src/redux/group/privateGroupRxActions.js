@@ -1,7 +1,7 @@
 import * as Rx from "rxjs";
 const { Observable: { ajax }, AjaxResponse } = Rx;
-import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
-const config = () => ChitChatFactory.getInstance().config;
+import InternalStore from "stalk-simplechat";
+const config = () => InternalStore.apiConfig;
 import Store from "../configureStore";
 import { updateChatRoom } from "../../chitchat/chats/redux/chatroom/chatroomActions";
 export const SET_PRIVATE_GROUP = "SET_PRIVATE_GROUP";
@@ -9,18 +9,18 @@ const GET_PRIVATE_GROUP = "GET_PRIVATE_GROUP";
 export const GET_PRIVATE_GROUP_SUCCESS = "GET_PRIVATE_GROUP_SUCCESS";
 export const GET_PRIVATE_GROUP_FAILURE = "GET_PRIVATE_GROUP_FAILURE";
 const GET_PRIVATE_GROUP_CANCELLED = "GET_PRIVATE_GROUP_CANCELLED";
-export const getPrivateGroup = (team_id) => ({ type: GET_PRIVATE_GROUP, payload: team_id });
+export const getPrivateGroup = (teamId) => ({ type: GET_PRIVATE_GROUP, payload: teamId });
 const getPrivateGroupSuccess = (payload) => ({ type: GET_PRIVATE_GROUP_SUCCESS, payload });
 const getPrivateGroupFailure = (err) => ({ type: GET_PRIVATE_GROUP_FAILURE, payload: err });
 const getPrivateGroupCancelled = () => ({ type: GET_PRIVATE_GROUP_CANCELLED });
-export const getPrivateGroup_Epic = action$ => (action$.ofType(GET_PRIVATE_GROUP)
-    .mergeMap(action => ajax.getJSON(`${config().api.group}/private_group?team_id=${action.payload}`, { "x-access-token": Store.getState().authReducer.token })
-    .map(response => getPrivateGroupSuccess(response))
+export const getPrivateGroup_Epic = (action$) => (action$.ofType(GET_PRIVATE_GROUP)
+    .mergeMap((action) => ajax.getJSON(`${config().group}/private_group?team_id=${action.payload}`, { "x-access-token": Store.getState().authReducer.token })
+    .map((response) => getPrivateGroupSuccess(response))
     .takeUntil(action$.ofType(GET_PRIVATE_GROUP_CANCELLED))
-    .catch(error => Rx.Observable.of(getPrivateGroupFailure(error.xhr.response)))
-    .do(response => {
-    if (response.type == GET_PRIVATE_GROUP_SUCCESS) {
-        let rooms = response.payload.result;
+    .catch((error) => Rx.Observable.of(getPrivateGroupFailure(error.xhr.response)))
+    .do((response) => {
+    if (response.type === GET_PRIVATE_GROUP_SUCCESS) {
+        const rooms = response.payload.result;
         Store.dispatch(updateChatRoom(rooms));
     }
 })));
@@ -32,15 +32,15 @@ export const createPrivateGroup = (group) => ({ type: CREATE_PRIVATE_GROUP, payl
 export const createPrivateGroupSuccess = (result) => ({ type: CREATE_PRIVATE_GROUP_SUCCESS, payload: result });
 export const createPrivateGroupFailure = (error) => ({ type: CREATE_PRIVATE_GROUP_FAILURE, payload: error });
 export const createPrivateGroupCancelled = () => ({ type: CREATE_PRIVATE_GROUP_CANCELLED });
-export const createPrivateGroup_Epic = action$ => (action$.ofType(CREATE_PRIVATE_GROUP).mergeMap(action => ajax({
+export const createPrivateGroup_Epic = (action$) => (action$.ofType(CREATE_PRIVATE_GROUP).mergeMap((action) => ajax({
     method: "POST",
-    url: `${config().api.group}/private_group/create`,
+    url: `${config().group}/private_group/create`,
     body: JSON.stringify({ room: action.payload }),
     headers: {
         "Content-Type": "application/json",
-        "x-access-token": Store.getState().authReducer.token
-    }
+        "x-access-token": Store.getState().authReducer.token,
+    },
 })
-    .map(json => createPrivateGroupSuccess(json.response.result))
+    .map((json) => createPrivateGroupSuccess(json.response.result))
     .takeUntil(action$.ofType(CREATE_PRIVATE_GROUP_CANCELLED))
-    .catch(error => Rx.Observable.of(createPrivateGroupFailure(error.xhr.response)))));
+    .catch((error) => Rx.Observable.of(createPrivateGroupFailure(error.xhr.response)))));

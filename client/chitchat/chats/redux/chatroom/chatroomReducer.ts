@@ -8,7 +8,7 @@ import {
     ChatRoomActionsType, GET_NEWER_MESSAGE_SUCCESS, GET_NEWER_MESSAGE_FAILURE, ON_MESSAGE_CHANGED,
     SEND_MESSAGE_FAILURE,
     GET_CHAT_TARGET_UID_SUCCESS, GET_CHAT_TARGET_UID_FAILURE
-} from "./";
+} from "./chatroomActions";
 import * as chatroomRxActions from "./chatroomRxEpic";
 import * as chatroomActions from "./chatroomActions";
 import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
@@ -127,7 +127,7 @@ export const chatroomReducer = (state = chatRoomRecoder, action) => {
         }
 
         case ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
-            let payload = action.payload;
+            const payload = action.payload;
             return state.set("state", ChatRoomActionsType.ON_EARLY_MESSAGE_READY)
                 .set("earlyMessageReady", payload);
         }

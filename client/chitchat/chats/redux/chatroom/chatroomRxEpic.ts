@@ -8,7 +8,7 @@ import { Store } from "redux";
 import { createAction } from "redux-actions";
 const { ajax, fromPromise } = Rx.Observable;
 
-import { FileResult } from "./";
+import { FileResult } from "./chatroomReducer";
 import InternalStore, { ChatRoomComponent } from "stalk-simplechat";
 import { checkOlderMessages, getNewerMessageFromNet, GET_NEWER_MESSAGE_SUCCESS } from "./chatroomActions";
 import { MessageImp } from "../../models/MessageImp";
@@ -29,7 +29,8 @@ export const fetchPrivateChatRoom = (ownerId: string, roommateId: string) => ({ 
 const fetchPrivateChatRoomSuccess = (payload) => ({ type: FETCH_PRIVATE_CHATROOM_SUCCESS, payload });
 const cancelFetchPrivateChatRoom = () => ({ type: FETCH_PRIVATE_CHATROOM_CANCELLED });
 const fetchPrivateChatRoomFailure = (payload) => ({ type: FETCH_PRIVATE_CHATROOM_FAILURE, payload });
-export const getPrivateChatRoom_Epic = (action$) =>
+
+export const getPrivateChatRoomEpic = (action$) =>
     action$.ofType(FETCH_PRIVATE_CHATROOM)
         .mergeMap((action) => fromPromise(chatroomService.getPrivateChatroom(action.payload.ownerId, action.payload.roommateId)))
         .mergeMap((response) => fromPromise(response.json()))
@@ -60,7 +61,7 @@ export const createPrivateChatRoomEpic = (action$) => {
     return action$.ofType(CREATE_PRIVATE_CHATROOM)
         .mergeMap((action) => ajax({
             method: "POST",
-            url: `${getConfig().api.group}/private_chat/create`,
+            url: `${getConfig().group}/private_chat/create`,
             body: action.payload,
             headers: {
                 "Content-Type": "application/json",
@@ -80,6 +81,7 @@ export const getPersistendMessage = (currentRid: string) => ({ type: GET_PERSIST
 const getPersistendMessage_cancel = () => ({ type: GET_PERSISTEND_MESSAGE_CANCELLED });
 const getPersistendMessage_success = (payload) => ({ type: GET_PERSISTEND_MESSAGE_SUCCESS, payload });
 const getPersistendMessage_failure = (error) => ({ type: GET_PERSISTEND_MESSAGE_FAILURE, payload: error });
+
 export const getPersistendMessageEpic = (action$) => {
     return action$.ofType(GET_PERSISTEND_MESSAGE)
         .mergeMap((action) => ChatRoomComponent.getInstance().getPersistentMessage(action.payload))
@@ -99,7 +101,8 @@ export const UPDATE_MESSAGES_READ_FAILUER = "UPDATE_MESSAGES_READ_FAILURE";
 export const updateMessagesRead = createAction(UPDATE_MESSAGES_READ, (messages: MessageImp[], room_id: string) => ({ messages, room_id }));
 export const updateMessagesRead_Success = createAction(UPDATE_MESSAGES_READ_SUCCESS, (payload) => payload);
 export const updateMessagesRead_Failure = createAction(UPDATE_MESSAGES_READ_FAILUER, (payload) => payload);
-export const updateMessagesRead_Epic = (action$) => {
+
+export const updateMessagesReadEpic = (action$) => {
     return action$.ofType(UPDATE_MESSAGES_READ)
         .mergeMap((action) => {
             const messages = action.payload.messages as MessageImp[];
@@ -140,7 +143,7 @@ export const uploadFileEpic = (action$) => (
 
             return ajax({
                 method: "POST",
-                url: `${getConfig().api.fileUpload}`,
+                url: `${getConfig().fileUpload}`,
                 body,
                 headers: {},
             });

@@ -6,14 +6,13 @@ import * as editGroupRxActions from "./editGroupRxActions";
 
 import { Room, RoomType } from "../../chitchat/chats/models/Room";
 
-
 export const GroupInitState = Record({
     isFetching: false,
     state: null,
     error: null,
     orgGroups: null,
     privateGroups: null,
-    groupImageResult: null
+    groupImageResult: null,
 });
 export const groupReducer = (state = new GroupInitState(), action) => {
     switch (action.type) {
@@ -21,16 +20,15 @@ export const groupReducer = (state = new GroupInitState(), action) => {
             return state.set("orgGroups", action.payload.result);
         }
         case groupRx.CREATE_ORG_GROUP_SUCCESS: {
-            let group = action.payload as Array<Room>;
+            const group = action.payload as Room[];
             if (group && group.length > 0) {
-                if (group[0].type == RoomType.organizationGroup) {
-                    let prev = state.get("orgGroups") as Array<Room>;
-                    let _next = prev.concat(group);
+                if (group[0].type === RoomType.organizationGroup) {
+                    const prev = state.get("orgGroups") as Room[];
+                    const _next = prev.concat(group);
 
                     return state.set("orgGroups", _next)
                         .set("state", groupRx.CREATE_ORG_GROUP_SUCCESS);
-                }
-                else return state;
+                } else { return state; }
             }
 
             return state;
@@ -47,16 +45,15 @@ export const groupReducer = (state = new GroupInitState(), action) => {
             return state.set("privateGroups", action.payload.result);
         }
         case privateGroupRxActions.CREATE_PRIVATE_GROUP_SUCCESS: {
-            let group = action.payload as Array<Room>;
+            const group = action.payload as Room[];
             if (group && group.length > 0) {
-                if (group[0].type == RoomType.privateGroup) {
-                    let prev = state.get("privateGroups") as Array<Room>;
-                    let _next = prev.concat(group);
+                if (group[0].type === RoomType.privateGroup) {
+                    const prev = state.get("privateGroups") as Room[];
+                    const _next = prev.concat(group);
 
                     return state.set("privateGroups", _next)
                         .set("state", privateGroupRxActions.CREATE_PRIVATE_GROUP_SUCCESS);
-                }
-                else return state;
+                } else { return state; }
             }
 
             return state;

@@ -13,6 +13,8 @@ export const config = {
         apiKey: stalkKey,
         chat: `${apiStalk}`,
         port: stalkPort,
+        apiVersion: "0.2",
+        appId: "chitchat",
     } as IStalkConfig,
     api: {
         apiKey: "chitchat1234",

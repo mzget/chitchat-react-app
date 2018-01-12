@@ -9,13 +9,24 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Store from "./redux/configureStore";
 import { apolloClient } from "./redux/rootReducer";
 import InternalStore from "stalk-simplechat/app/InternalStore";
+import { MessageDAL } from "stalk-simplechat/app/DAL/MessageDAL";
 import { SecureServiceFactory } from "stalk-simplechat";
 import { config } from "./Chitchat";
 InternalStore.initConfig(config.Stalk);
 InternalStore.initApiConfig(config.api);
 InternalStore.initStore(Store);
+InternalStore.setStorage(new MessageDAL());
 SecureServiceFactory.createService(config.appConfig.secret);
 Store.subscribe(() => {
+    if (Store.getState().userReducer.user) {
+        InternalStore.setAuth({
+            user: {
+                _id: Store.getState().userReducer.user._id,
+                username: Store.getState().userReducer.user.username,
+            },
+            api_token: Store.getState().authReducer.token,
+        });
+    }
     // chitchatFactory.setAuthStore(
     //     Store.getState().userReducer.user,
     //     Store.getState().authReducer.token);

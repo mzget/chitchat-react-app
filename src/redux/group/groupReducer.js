@@ -9,7 +9,7 @@ export const GroupInitState = Record({
     error: null,
     orgGroups: null,
     privateGroups: null,
-    groupImageResult: null
+    groupImageResult: null,
 });
 export const groupReducer = (state = new GroupInitState(), action) => {
     switch (action.type) {
@@ -17,16 +17,17 @@ export const groupReducer = (state = new GroupInitState(), action) => {
             return state.set("orgGroups", action.payload.result);
         }
         case groupRx.CREATE_ORG_GROUP_SUCCESS: {
-            let group = action.payload;
+            const group = action.payload;
             if (group && group.length > 0) {
-                if (group[0].type == RoomType.organizationGroup) {
-                    let prev = state.get("orgGroups");
-                    let _next = prev.concat(group);
+                if (group[0].type === RoomType.organizationGroup) {
+                    const prev = state.get("orgGroups");
+                    const _next = prev.concat(group);
                     return state.set("orgGroups", _next)
                         .set("state", groupRx.CREATE_ORG_GROUP_SUCCESS);
                 }
-                else
+                else {
                     return state;
+                }
             }
             return state;
         }
@@ -41,16 +42,17 @@ export const groupReducer = (state = new GroupInitState(), action) => {
             return state.set("privateGroups", action.payload.result);
         }
         case privateGroupRxActions.CREATE_PRIVATE_GROUP_SUCCESS: {
-            let group = action.payload;
+            const group = action.payload;
             if (group && group.length > 0) {
-                if (group[0].type == RoomType.privateGroup) {
-                    let prev = state.get("privateGroups");
-                    let _next = prev.concat(group);
+                if (group[0].type === RoomType.privateGroup) {
+                    const prev = state.get("privateGroups");
+                    const _next = prev.concat(group);
                     return state.set("privateGroups", _next)
                         .set("state", privateGroupRxActions.CREATE_PRIVATE_GROUP_SUCCESS);
                 }
-                else
+                else {
                     return state;
+                }
             }
             return state;
         }

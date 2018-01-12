@@ -21,7 +21,7 @@ export const fetchPrivateChatRoom = (ownerId, roommateId) => ({ type: FETCH_PRIV
 const fetchPrivateChatRoomSuccess = (payload) => ({ type: FETCH_PRIVATE_CHATROOM_SUCCESS, payload });
 const cancelFetchPrivateChatRoom = () => ({ type: FETCH_PRIVATE_CHATROOM_CANCELLED });
 const fetchPrivateChatRoomFailure = (payload) => ({ type: FETCH_PRIVATE_CHATROOM_FAILURE, payload });
-export const getPrivateChatRoom_Epic = (action$) => action$.ofType(FETCH_PRIVATE_CHATROOM)
+export const getPrivateChatRoomEpic = (action$) => action$.ofType(FETCH_PRIVATE_CHATROOM)
     .mergeMap((action) => fromPromise(chatroomService.getPrivateChatroom(action.payload.ownerId, action.payload.roommateId)))
     .mergeMap((response) => fromPromise(response.json()))
     .map((json) => {
@@ -50,7 +50,7 @@ export const createPrivateChatRoomEpic = (action$) => {
     return action$.ofType(CREATE_PRIVATE_CHATROOM)
         .mergeMap((action) => ajax({
         method: "POST",
-        url: `${getConfig().api.group}/private_chat/create`,
+        url: `${getConfig().group}/private_chat/create`,
         body: action.payload,
         headers: {
             "Content-Type": "application/json",
@@ -86,7 +86,7 @@ export const UPDATE_MESSAGES_READ_FAILUER = "UPDATE_MESSAGES_READ_FAILURE";
 export const updateMessagesRead = createAction(UPDATE_MESSAGES_READ, (messages, room_id) => ({ messages, room_id }));
 export const updateMessagesRead_Success = createAction(UPDATE_MESSAGES_READ_SUCCESS, (payload) => payload);
 export const updateMessagesRead_Failure = createAction(UPDATE_MESSAGES_READ_FAILUER, (payload) => payload);
-export const updateMessagesRead_Epic = (action$) => {
+export const updateMessagesReadEpic = (action$) => {
     return action$.ofType(UPDATE_MESSAGES_READ)
         .mergeMap((action) => {
         const messages = action.payload.messages;
@@ -124,7 +124,7 @@ export const uploadFileEpic = (action$) => (action$.ofType(CHATROOM_UPLOAD_FILE)
     body.append("file", action.payload.file);
     return ajax({
         method: "POST",
-        url: `${getConfig().api.fileUpload}`,
+        url: `${getConfig().fileUpload}`,
         body,
         headers: {},
     });

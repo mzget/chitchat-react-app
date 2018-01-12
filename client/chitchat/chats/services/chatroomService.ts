@@ -16,7 +16,7 @@ export const getRoomInfo = (room_id: string): Promise<any> => {
 export const getUnreadMessage = (room_id: string, user_id: string, lastAccessTime: string): Promise<any> => {
     return fetch(`${getConfig().api.chatroom}/unreadMessage?room_id=${room_id}&user_id=${user_id}&lastAccessTime=${lastAccessTime}`, {
         method: "GET",
-        headers: chitchat_headers()
+        headers: chitchat_headers(),
     });
 };
 

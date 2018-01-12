@@ -10,7 +10,7 @@ import { Store } from "redux";
 import { createAction } from "redux-actions";
 import { ChatEvents, IDictionary, HttpStatusCode } from "stalk-js";
 import { BackendFactory } from "stalk-js/starter";
-import { ChatRoomComponent, ON_MESSAGE_CHANGE } from "stalk-simplechat";
+import InternalStore, { ChatRoomComponent, ON_MESSAGE_CHANGE } from "stalk-simplechat";
 import { ServerEventListener } from "../../ServerEventListener";
 
 import * as chatroomService from "../../services/chatroomService";
@@ -22,16 +22,15 @@ import * as NotificationManager from "../stalkBridge/StalkNotificationActions";
 import { updateLastAccessRoom } from "../chatlogs/chatlogRxActions";
 import { updateMessagesRead } from "./chatroomRxEpic";
 
-import { Room, RoomType, IMember } from "../../models/Room";
 import { MessageType, IMessage } from "../../../shared/Message";
-import { MessageImp } from "../../models/MessageImp";
-import { MemberImp } from "../../models/MemberImp";
+import { Room, RoomType, IMember } from "stalk-simplechat/app/models/Room";
+import { MessageImp } from "stalk-simplechat/app/models/MessageImp";
+import { MemberImp } from "stalk-simplechat/app/models/MemberImp";
 
-import { ChitChatFactory } from "../../ChitChatFactory";
-const getStore = () => ChitChatFactory.getInstance().store as Store<any>;
-const getConfig = () => ChitChatFactory.getInstance().config;
-const authReducer = () => ChitChatFactory.getInstance().authStore;
-const appReducer = () => ChitChatFactory.getInstance().appStore;
+const getStore = () => InternalStore.store as Store<any>;
+const getConfig = () => InternalStore.config;
+const authReducer = () => InternalStore.authStore;
+const appReducer = () => InternalStore.store;
 
 /**
  * ChatRoomActionsType
@@ -44,8 +43,8 @@ export class ChatRoomActionsType {
 export function initChatRoom(currentRoom: Room) {
     if (!currentRoom) { throw new Error("Empty roomInfo"); }
 
-    let room_name = currentRoom.name;
-    if (!room_name && currentRoom.type === RoomType.privateChat) {
+    const roomName = currentRoom.name;
+    if (!roomName && currentRoom.type === RoomType.privateChat) {
         currentRoom.members.some((v, id, arr) => {
             if (v._id !== authReducer().user._id) {
                 currentRoom.name = v.username;
@@ -54,7 +53,7 @@ export function initChatRoom(currentRoom: Room) {
         });
     }
 
-    const chatroomComp = ChatRoomComponent.createInstance();
+    const chatroomComp = ChatRoomComponent.createInstance(InternalStore.dataManager);
     chatroomComp.setRoomId(currentRoom._id);
 
     NotificationManager.unsubscribeGlobalNotifyMessageEvent();
@@ -63,22 +62,22 @@ export function initChatRoom(currentRoom: Room) {
     chatroomComp.outsideRoomDelegete = onOutSideRoomDelegate;
 }
 
-function onChatRoomDelegate(event, data: MessageImp | MessageImp[]) {
+function onChatRoomDelegate(event: string, data: MessageImp | MessageImp[]) {
     if (event === ChatEvents.ON_CHAT) {
         const messageImp = data as MessageImp;
-        let backendFactory = BackendFactory.getInstance();
+        const backendFactory = BackendFactory.getInstance();
         /**
          * Todo **
          * - if message_id is mine. Do nothing...
          * - if not my message. Update who read this message. And tell anyone.
          */
-        if (authReducer().user._id == messageImp.sender) {
+        if (authReducer().user._id === messageImp.sender) {
             // dispatch(replaceMyMessage(newMsg));
             console.log("is my message");
         } else {
             console.log("is contact message");
             // @ Check app not run in background.
-            let appState = appReducer().appState;
+            const appState = appReducer().appState;
             console.log("AppState: ", appState); // active, background, inactive
             if (!!appState) {
                 if (appState === "active") {

@@ -20,24 +20,24 @@ export const EDIT_GROUP_MEMBER_SUCCESS = "EDIT_GROUP_MEMBER_SUCCESS";
 const EDIT_GROUP_MEMBER_FAILURE = "EDIT_GROUP_MEMBER_FAILURE";
 const EDIT_GROUP_MEMBER_CANCELLED = "EDIT_GROUP_MEMBER_CANCELLED";
 
-export const editGroupMember = createAction(EDIT_GROUP_MEMBER, (payload: { room_id: string, members: Array<IMember> }) => payload);
-const editGroupMemberSuccess = createAction(EDIT_GROUP_MEMBER_SUCCESS, payload => payload);
-const editGroupMemberFailure = createAction(EDIT_GROUP_MEMBER_FAILURE, err => err);
+export const editGroupMember = createAction(EDIT_GROUP_MEMBER, (payload: { room_id: string, members: IMember[] }) => payload);
+const editGroupMemberSuccess = createAction(EDIT_GROUP_MEMBER_SUCCESS, (payload) => payload);
+const editGroupMemberFailure = createAction(EDIT_GROUP_MEMBER_FAILURE, (err) => err);
 const editGroupMemberCancelled = createAction(EDIT_GROUP_MEMBER_CANCELLED);
-export const editGroupMember_Epic = action$ => (
-    action$.ofType(EDIT_GROUP_MEMBER).mergeMap(action =>
+export const editGroupMember_Epic = (action$) => (
+    action$.ofType(EDIT_GROUP_MEMBER).mergeMap((action) =>
         ajax({
             method: "POST",
-            url: `${config().api.group}/editMember/${action.payload.room_id}`,
+            url: `${config().group}/editMember/${action.payload.room_id}`,
             body: JSON.stringify({ members: action.payload.members }),
             headers: {
                 "Content-Type": "application/json",
-                "x-access-token": Store.getState().authReducer.token
-            }
-        }).map(response => editGroupMemberSuccess(response.xhr.response))
+                "x-access-token": Store.getState().authReducer.token,
+            },
+        }).map((response) => editGroupMemberSuccess(response.xhr.response))
             .takeUntil(action$.ofType(EDIT_GROUP_MEMBER_CANCELLED))
-            .catch(error => Rx.Observable.of(editGroupMemberFailure(error.xhr.response)))
-            .do(response => {
+            .catch((error) => Rx.Observable.of(editGroupMemberFailure(error.xhr.response)))
+            .do((response) => {
                 // if (response.type == GET_ORG_GROUP_SUCCESS) {
                 //     const dataManager = BackendFactory.getInstance().dataManager;
                 //     let rooms = response.payload.result as Array<Room>;
@@ -45,35 +45,35 @@ export const editGroupMember_Epic = action$ => (
                 //         dataManager.roomDAL.save(x._id, x);
                 //     }).subscribe();
                 // }
-            })
+            }),
     ));
-
 
 /**
  * Add group member...
- *  */
+ *
+ */
 const ADD_GROUP_MEMBER = "ADD_GROUP_MEMBER";
 export const ADD_GROUP_MEMBER_SUCCESS = "ADD_GROUP_MEMBER_SUCCESS";
 const ADD_GROUP_MEMBER_FAILURE = "ADD_GROUP_MEMBER_FAILURE";
 const ADD_GROUP_MEMBER_CANCELLED = "ADD_GROUP_MEMBER_CANCELLED";
 
 export const addGroupMember = createAction(ADD_GROUP_MEMBER, (room_id: string, member: IMember) => ({ room_id, member }));
-const addGroupMemberSuccess = createAction(ADD_GROUP_MEMBER_SUCCESS, payload => payload.result);
-const addGroupMemberFailure = createAction(ADD_GROUP_MEMBER_FAILURE, error => error);
+const addGroupMemberSuccess = createAction(ADD_GROUP_MEMBER_SUCCESS, (payload) => payload.result);
+const addGroupMemberFailure = createAction(ADD_GROUP_MEMBER_FAILURE, (error) => error);
 const addGroupMemberCancelled = createAction(ADD_GROUP_MEMBER_CANCELLED);
-export const addGroupMember_Epic = action$ =>
+export const addGroupMember_Epic = (action$) =>
     action$.ofType(ADD_GROUP_MEMBER)
-        .mergeMap(action => groupService.addMember(action.payload.room_id, action.payload.member)
-            .map(response => addGroupMemberSuccess(response.xhr.response))
+        .mergeMap((action) => groupService.addMember(action.payload.room_id, action.payload.member)
+            .map((response) => addGroupMemberSuccess(response.xhr.response))
             .takeUntil(action$.ofType(ADD_GROUP_MEMBER_CANCELLED))
-            .catch(error => Rx.Observable.of(addGroupMemberFailure(error.xhr.response)))
-            ._do(response => {
-                if (response.type == ADD_GROUP_MEMBER_SUCCESS) {
-                    let group = response.payload as Room;
-                    if (group.type == RoomType.privateGroup) {
-                        let { privateGroups }: { privateGroups: Array<Room> } = Store.getState().groupReducer;
-                        let newPrivateGroups = privateGroups.map(v => {
-                            if (v._id == group._id) {
+            .catch((error) => Rx.Observable.of(addGroupMemberFailure(error.xhr.response)))
+            ._do((response) => {
+                if (response.type === ADD_GROUP_MEMBER_SUCCESS) {
+                    const group = response.payload as Room;
+                    if (group.type === RoomType.privateGroup) {
+                        const { privateGroups }: { privateGroups: Room[] } = Store.getState().groupReducer;
+                        const newPrivateGroups = privateGroups.map((v) => {
+                            if (v._id === group._id) {
                                 v = group;
                             }
 
@@ -95,23 +95,23 @@ export const REMOVE_GROUP_MEMBER_FAILURE = "REMOVE_GROUP_MEMBER_FAILURE";
 const REMOVE_GROUP_MEMBER_CANCELLED = "REMOVE_GROUP_MEMBER_CANCELLED";
 
 export const removeGroupMember = createAction(REMOVE_GROUP_MEMBER, (room_id: string, member_id: string) => ({ room_id, member_id }));
-const removeGroupMemberSuccess = createAction(REMOVE_GROUP_MEMBER_SUCCESS, payload => payload.result);
-const removeGroupMemberFailure = createAction(REMOVE_GROUP_MEMBER_FAILURE, error => error);
+const removeGroupMemberSuccess = createAction(REMOVE_GROUP_MEMBER_SUCCESS, (payload) => payload.result);
+const removeGroupMemberFailure = createAction(REMOVE_GROUP_MEMBER_FAILURE, (error) => error);
 const removeGroupMemberCancelled = createAction(REMOVE_GROUP_MEMBER_CANCELLED);
-export const removeGroupMember_Epic = action$ =>
+export const removeGroupMember_Epic = (action$) =>
     action$.ofType(REMOVE_GROUP_MEMBER)
-        .mergeMap(action => {
+        .mergeMap((action) => {
             return groupService.removeMember(action.payload.room_id, action.payload.member_id)
-                .map(response => removeGroupMemberSuccess(response.xhr.response))
+                .map((response) => removeGroupMemberSuccess(response.xhr.response))
                 .takeUntil(action$.ofType(REMOVE_GROUP_MEMBER_CANCELLED))
-                .catch(error => Rx.Observable.of(removeGroupMemberFailure(error.xhr.response)))
-                ._do(response => {
-                    if (response.type == REMOVE_GROUP_MEMBER_SUCCESS) {
-                        let group = response.payload as Room;
-                        if (group.type == RoomType.privateGroup) {
-                            let { privateGroups }: { privateGroups: Array<Room> } = Store.getState().groupReducer;
-                            let newPrivateGroups = privateGroups.map(v => {
-                                if (v._id == group._id) {
+                .catch((error) => Rx.Observable.of(removeGroupMemberFailure(error.xhr.response)))
+                ._do((response) => {
+                    if (response.type === REMOVE_GROUP_MEMBER_SUCCESS) {
+                        const group = response.payload as Room;
+                        if (group.type === RoomType.privateGroup) {
+                            const { privateGroups }: { privateGroups: Room[] } = Store.getState().groupReducer;
+                            const newPrivateGroups = privateGroups.map((v) => {
+                                if (v._id === group._id) {
                                     v = group;
                                 }
 
@@ -122,7 +122,7 @@ export const removeGroupMember_Epic = action$ =>
                             Store.dispatch(chatroomActions.updateChatRoom(newPrivateGroups));
                         }
                     }
-                })
+                });
         });
 
 /**
@@ -134,20 +134,20 @@ export const EDIT_GROUP_DETAIL_FAILURE = "EDIT_GROUP_DETAIL_FAILURE";
 const EDIT_GROUP_DETAIL_CANCELLED = "EDIT_GROUP_DETAIL_CANCELLED";
 
 export const editGroupDetail = createAction(EDIT_GROUP_DETAIL, (room: Room) => room);
-const editGroupDetailSuccess = createAction(EDIT_GROUP_DETAIL_SUCCESS, payload => payload);
-const editGroupDetailFailure = createAction(EDIT_GROUP_DETAIL_FAILURE, error => error);
+const editGroupDetailSuccess = createAction(EDIT_GROUP_DETAIL_SUCCESS, (payload) => payload);
+const editGroupDetailFailure = createAction(EDIT_GROUP_DETAIL_FAILURE, (error) => error);
 const editGroupDetailCancelled = createAction(EDIT_GROUP_DETAIL_CANCELLED);
-export const editGroupDetail_Epic = action$ => (
-    action$.ofType(EDIT_GROUP_DETAIL).mergeMap(action =>
+export const editGroupDetail_Epic = (action$) => (
+    action$.ofType(EDIT_GROUP_DETAIL).mergeMap((action) =>
         ajax({
             method: "POST",
-            url: `${config().api.group}/update`,
+            url: `${config().group}/update`,
             body: JSON.stringify({ room: action.payload }),
             headers: {
                 "Content-Type": "application/json",
-                "x-access-token": Store.getState().authReducer.token
-            }
-        }).map(response => editGroupDetailSuccess(response.xhr.response))
+                "x-access-token": Store.getState().authReducer.token,
+            },
+        }).map((response) => editGroupDetailSuccess(response.xhr.response))
             .takeUntil(action$.ofType(EDIT_GROUP_DETAIL_CANCELLED))
-            .catch(error => Rx.Observable.of(editGroupDetailFailure(error.xhr.response)))
+            .catch((error) => Rx.Observable.of(editGroupDetailFailure(error.xhr.response))),
     ));

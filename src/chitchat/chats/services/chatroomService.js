@@ -11,7 +11,7 @@ export const getRoomInfo = (room_id) => {
 export const getUnreadMessage = (room_id, user_id, lastAccessTime) => {
     return fetch(`${getConfig().api.chatroom}/unreadMessage?room_id=${room_id}&user_id=${user_id}&lastAccessTime=${lastAccessTime}`, {
         method: "GET",
-        headers: chitchat_headers()
+        headers: chitchat_headers(),
     });
 };
 export const getOlderMessagesCount = (room_id, topEdgeMessageTime, queryMessage) => {

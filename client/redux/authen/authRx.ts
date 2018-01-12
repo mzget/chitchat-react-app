@@ -41,7 +41,7 @@ export const authUser = (user: { email: string, password: string }) => ({ type: 
 const authUserSuccess = (payload) => ({ type: AUTH_USER_SUCCESS, payload });
 const authUserFailure = (payload) => ({ type: AUTH_USER_FAILURE, payload });
 const authUserCancelled = () => ({ type: AUTH_USER_CANCELLED });
-export const authUser_Epic = (action$) =>
+export const authUserEpic = (action$) =>
     action$.ofType(AUTH_USER)
         .mergeMap((action) => Rx.Observable.fromPromise(authService.auth(action.payload)))
         .mergeMap((response) => Rx.Observable.from(response.json()))
@@ -54,8 +54,10 @@ export const authUser_Epic = (action$) =>
             }
         })
         .takeUntil(action$.ofType(AUTH_USER_CANCELLED))
-        .catch((error) =>
-            Rx.Observable.of(authUserFailure((error.message))));
+        .catch((error) => {
+            console.warn(error);
+            Rx.Observable.of(authUserFailure((error.message)));
+        });
 
 export const AUTH_FETCHING = "AUTH_FETCHING";
 export const authFetching = createAction(AUTH_FETCHING);

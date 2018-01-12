@@ -1,6 +1,6 @@
 import { combineEpics } from "redux-observable";
 import * as userRx from "./user/userRx";
-import * as chatroom from "../chitchat/chats/redux/chatroom/";
+import * as chatroom from "../chitchat/chats/redux/chatroom/chatroomRxEpic";
 import * as chatlogRxActions from "../chitchat/chats/redux/chatlogs/chatlogRxActions";
 import * as calling from "../chitchat/calling/";
 import * as authRx from "./authen/authRx";
@@ -14,17 +14,17 @@ export const rootEpic = combineEpics(
 // @Admin
 adminRx.createNewOrgChartEpic, adminRx.getOrgChartEpic, adminRx.updateUserOrgChartEpic, adminRx.updateUserTeamRole_Epic, userRx.onAuth_Epic, userRx.fetchUser_Epic, userRx.suggestUser_Epic, userRx.fetchContactEpic, userRx.fetchAgentEpic, userRx.getTeamProfileEpic, userRx.uploadUserAvatar_Epic, userRx.updateUserInfo_Epic, userRx.saveDeviceToken_Epic, 
 /// @ Signup user.
-authRx.signupUserEpic, authRx.authUser_Epic, authRx.authSocial_Epic, authRx.SignupSocial_Epic, authRx.tokenAuthUserEpic, authRx.logoutUser_Epic, 
+authRx.signupUserEpic, authRx.authUserEpic, authRx.authSocial_Epic, authRx.SignupSocial_Epic, authRx.tokenAuthUserEpic, authRx.logoutUser_Epic, 
 /// @Teams
 teamRx.fetchUserTeamsEpic, teamRx.createNewTeamEpic, teamRx.getTeamsInfoEpic, teamRx.getTeamMembersEpic, teamRx.findTeamEpic, teamRx.joinTeamEpic, 
 /// @Group
-groupRx.getOrgGroup_Epic, groupRx.createOrgGroup_Epic, groupRx.uploadGroupImage_Epic, editGroupRxActions.editGroupDetail_Epic, editGroupRxActions.editGroupMember_Epic, editGroupRxActions.addGroupMember_Epic, editGroupRxActions.removeGroupMember_Epic, 
+groupRx.getOrgGroupEpic, groupRx.createOrgGroupEpic, groupRx.uploadGroupImageEpic, editGroupRxActions.editGroupDetail_Epic, editGroupRxActions.editGroupMember_Epic, editGroupRxActions.addGroupMember_Epic, editGroupRxActions.removeGroupMember_Epic, 
 /**
  * Private group...
  */
 privateGroupRxActions.getPrivateGroup_Epic, privateGroupRxActions.createPrivateGroup_Epic, 
 /// @ChatRoom
-chatroom.getPrivateChatRoom_Epic, chatroom.getPersistendMessageEpic, chatroom.createPrivateChatRoomEpic, chatroom.uploadFileEpic, chatroom.updateMessagesRead_Epic, 
+chatroom.getPrivateChatRoomEpic, chatroom.getPersistendMessageEpic, chatroom.createPrivateChatRoomEpic, chatroom.uploadFileEpic, chatroom.updateMessagesReadEpic, 
 /// @message rx.
 // messageRxEpic.fetchOlderMessageCount_Epic,
 calling.hangupVideoCall_Epic, 
