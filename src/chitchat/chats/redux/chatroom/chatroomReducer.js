@@ -3,7 +3,7 @@
  *
  * This is pure function for redux app.
  */
-import { ChatRoomActionsType, GET_NEWER_MESSAGE_SUCCESS, ON_MESSAGE_CHANGED, SEND_MESSAGE_FAILURE, GET_CHAT_TARGET_UID_SUCCESS, GET_CHAT_TARGET_UID_FAILURE } from "./chatroomActions";
+import { ChatRoomActionsType, GET_NEWER_MESSAGE_SUCCESS, ON_MESSAGE_CHANGED, SEND_MESSAGE_FAILURE, GET_CHAT_TARGET_UID_SUCCESS, GET_CHAT_TARGET_UID_FAILURE, } from "./chatroomActions";
 import * as chatroomRxActions from "./chatroomRxEpic";
 import * as chatroomActions from "./chatroomActions";
 import * as immutable from "immutable";
@@ -21,7 +21,7 @@ const chatroomDefaults = {
     fileInfo: null,
     error: null,
     chatDisabled: false,
-    chatrooms: null
+    chatrooms: null,
 };
 // Create our FruitRecord class
 export class ChatRoomRecoder extends immutable.Record(chatroomDefaults) {
@@ -69,14 +69,14 @@ export const chatroomReducer = (state = chatRoomRecoder, action) => {
                 .set("responseFile", action.payload);
         }
         case SEND_MESSAGE_FAILURE: {
-            let payload = action.payload;
-            let nextState = state.set("state", SEND_MESSAGE_FAILURE)
+            const payload = action.payload;
+            const nextState = state.set("state", SEND_MESSAGE_FAILURE)
                 .set("isFetching", false)
                 .set("error", payload);
             return nextState;
         }
         case ON_MESSAGE_CHANGED: {
-            let payload = action.payload;
+            const payload = action.payload;
             return state.set("messages", payload);
         }
         case ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
@@ -85,19 +85,19 @@ export const chatroomReducer = (state = chatRoomRecoder, action) => {
                 .set("earlyMessageReady", payload);
         }
         case chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS: {
-            let payload = action.payload;
+            const payload = action.payload;
             return state.set("messages", payload)
                 .set("state", chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS);
         }
         case chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS: {
-            let payload = action.payload;
+            const payload = action.payload;
             return state.set("messages", payload);
         }
         case GET_NEWER_MESSAGE_SUCCESS: {
-            let payload = action.payload;
+            const payload = action.payload;
             return state.set("messages", payload);
         }
-        /**Create chat room */
+        /** Create chat room */
         case chatroomRxActions.CREATE_PRIVATE_CHATROOM:
             return state.set("isFetching", true)
                 .set("state", chatroomRxActions.CREATE_PRIVATE_CHATROOM);
@@ -108,7 +108,7 @@ export const chatroomReducer = (state = chatRoomRecoder, action) => {
         }
         case chatroomRxActions.CREATE_PRIVATE_CHATROOM_FAILURE:
             return state.set("isFetching", false);
-        /**Fetch chat room */
+        /** Fetch chat room */
         case chatroomRxActions.FETCH_PRIVATE_CHATROOM:
             return state.set("isFetching", true);
         case chatroomRxActions.FETCH_PRIVATE_CHATROOM_SUCCESS:
@@ -132,7 +132,7 @@ export const chatroomReducer = (state = chatRoomRecoder, action) => {
         case chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE: {
             return state.set("state", chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE);
         }
-        /**Set room empty */
+        /** Set room empty */
         case chatroomActions.LEAVE_ROOM: {
             return state
                 .set("state", chatroomActions.LEAVE_ROOM)

@@ -1,20 +1,25 @@
 import * as Rx from "rxjs";
-import { ChitChatFactory } from "../ChitChatFactory";
-import { withToken, chitchat_headers } from "../utils/chitchatServiceUtils";
-const getConfig = () => ChitChatFactory.getInstance().config;
-const authReducer = () => ChitChatFactory.getInstance().authStore;
+import InternalStore, { withToken, apiHeaders, } from "stalk-simplechat";
+const getConfig = () => InternalStore.apiConfig;
+const authReducer = () => InternalStore.authStore;
 const { ajax } = Rx.Observable;
-export function updateMessageReader(message_id, room_id) {
-    return fetch(`${getConfig().api.message}/updateReader`, {
+export function updateMessageReader(messageId, roomId) {
+    return fetch(`${getConfig().message}/updateReader`, {
         method: "POST",
-        headers: withToken(chitchat_headers())(authReducer().chitchat_token),
-        body: JSON.stringify({ room_id: room_id, message_id: message_id })
+        headers: withToken(apiHeaders())(authReducer().api_token),
+        body: JSON.stringify({
+            room_id: roomId,
+            message_id: messageId,
+        }),
     });
 }
-export function updateMessagesReader(messages_id, room_id) {
-    return fetch(`${getConfig().api.message}/updateMessagesReader`, {
+export function updateMessagesReader(messagesId, roomId) {
+    return fetch(`${getConfig().message}/updateMessagesReader`, {
         method: "POST",
-        headers: withToken(chitchat_headers())(authReducer().chitchat_token),
-        body: JSON.stringify({ room_id: room_id, messages: messages_id })
+        headers: withToken(apiHeaders())(authReducer().api_token),
+        body: JSON.stringify({
+            room_id: roomId,
+            messages: messagesId,
+        }),
     });
 }

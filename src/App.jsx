@@ -8,9 +8,7 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
  */
 import Store from "./redux/configureStore";
 import { apolloClient } from "./redux/rootReducer";
-import InternalStore from "stalk-simplechat/app/InternalStore";
-import { MessageDAL } from "stalk-simplechat/app/DAL/MessageDAL";
-import { SecureServiceFactory } from "stalk-simplechat";
+import InternalStore, { MessageDAL, SecureServiceFactory, } from "stalk-simplechat";
 import { config } from "./Chitchat";
 InternalStore.initConfig(config.Stalk);
 InternalStore.initApiConfig(config.api);

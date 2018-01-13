@@ -15,7 +15,7 @@ import * as R from "ramda";
 import { createAction } from "redux-actions";
 import { ChatEvents, HttpStatusCode } from "stalk-js";
 import { BackendFactory } from "stalk-js/starter";
-import InternalStore, { ChatRoomComponent, ON_MESSAGE_CHANGE } from "stalk-simplechat";
+import InternalStore, { ChatRoomComponent, ON_MESSAGE_CHANGE, } from "stalk-simplechat";
 import * as chatroomService from "../../services/chatroomService";
 import * as MessageService from "../../services/MessageService";
 import { SecureServiceFactory } from "../../secure/secureServiceFactory";
@@ -151,26 +151,23 @@ export const GET_NEWER_MESSAGE = "GET_NEWER_MESSAGE";
 export const GET_NEWER_MESSAGE_FAILURE = "GET_NEWER_MESSAGE_FAILURE";
 export const GET_NEWER_MESSAGE_SUCCESS = "GET_NEWER_MESSAGE_SUCCESS";
 const getNewerMessage = createAction(GET_NEWER_MESSAGE);
-const getNewerMessage_failure = createAction(GET_NEWER_MESSAGE_FAILURE);
-const getNewerMessage_success = createAction(GET_NEWER_MESSAGE_SUCCESS, (messages) => messages);
+const getNewerMessageFailure = createAction(GET_NEWER_MESSAGE_FAILURE);
+const getNewerMessageSuccess = createAction(GET_NEWER_MESSAGE_SUCCESS, (messages) => messages);
 export function getNewerMessageFromNet() {
     return (dispatch) => {
         dispatch(getNewerMessage());
-        const token = authReducer().chitchat_token;
         const chatroom = ChatRoomComponent.getInstance();
-        chatroom.getNewerMessageRecord(token, (results, room_id) => {
-            chatroom.decryptMessage(results).then((messages) => {
-                dispatch(getNewerMessage_success(messages));
-            });
+        chatroom.getNewerMessageRecord((results, roomId) => {
+            dispatch(getNewerMessageSuccess(results));
             // # update messages read.
             if (results.length > 0) {
-                dispatch(updateMessagesRead(results, room_id));
+                dispatch(updateMessagesRead(results, roomId));
             }
         }).catch((err) => {
             if (err) {
                 console.warn("getNewerMessageRecord fail", err);
             }
-            dispatch(getNewerMessage_failure());
+            dispatch(getNewerMessageFailure());
         });
     };
 }
@@ -190,7 +187,7 @@ const send_message_failure = (error) => ({ type: SEND_MESSAGE_FAILURE, payload: 
 export function sendMessage(message) {
     return (dispatch) => {
         dispatch(send_message_request());
-        if (message.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption === true) {
+        if (message.type === MessageType[MessageType.Text] && InternalStore.encryption === true) {
             const secure = SecureServiceFactory.getService();
             secure.encryption(message.body).then((result) => {
                 message.body = result;
@@ -237,7 +234,7 @@ function sendMessageResponse(err, res) {
             const chatroomComp = ChatRoomComponent.getInstance();
             if (res.code === HttpStatusCode.success && res.data.hasOwnProperty("resultMsg")) {
                 const _msg = Object.assign({}, res.data.resultMsg);
-                if (_msg.type === MessageType[MessageType.Text] && getConfig().appConfig.encryption) {
+                if (_msg.type === MessageType[MessageType.Text] && InternalStore.encryption) {
                     const secure = SecureServiceFactory.getService();
                     secure.decryption(_msg.body).then((res) => {
                         _msg.body = res;

@@ -5,8 +5,8 @@ import * as async from "async";
 import Flexbox from "flexbox-react";
 import { indigo50, white, grey50 } from "material-ui/styles/colors";
 
-import { ChitChatFactory } from "../chitchat/chats/ChitChatFactory";
-const config = () => ChitChatFactory.getInstance().config;
+import InternalStore from "stalk-simplechat";
+const getConfig = () => InternalStore.apiConfig;
 
 import { TypingBox } from "./TypingBox";
 import { ChatBox } from "./chat/ChatBox";
@@ -28,8 +28,6 @@ import * as FileType from "../chitchat/shared/FileType";
 
 import { decorateMessage, IMessageDecorator } from "../actions/chatroom/chatroomMessageUtils";
 import { IComponentProps } from "../utils/IComponentProps";
-
-
 
 interface IComponentNameState {
     messages: any[];
@@ -73,17 +71,16 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             earlyMessageReady: false,
             openButtomMenu: false,
             openMapDialog: false,
-            onAlert: false
+            onAlert: false,
         };
 
         this.chatHeight = this.clientHeight - (56 + 52 + 52);
 
-        let { chatroomReducer, userReducer, match: { params } } = this.props;
+        const { chatroomReducer, userReducer, match: { params } } = this.props;
 
         if (!chatroomReducer.room) {
             this.props.dispatch(chatroom.getPersistendChatroom(params.room_id));
-        }
-        else {
+        } else {
             this.roomInitialize(this.props);
         }
     }
@@ -97,32 +94,30 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     componentWillReceiveProps(nextProps: IComponentProps) {
-        let { chatroomReducer, stalkReducer } = nextProps;
+        const { chatroomReducer, stalkReducer } = nextProps;
 
         this.h_subHeader = (stalkReducer.get("state") === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ? 34 : 0;
         this.h_body = (this.clientHeight - (this.h_header + this.h_subHeader + this.h_typingArea));
 
         if (!shallowEqual(chatroomReducer.get("messages"), this.props.chatroomReducer.get("messages"))) {
-            this.setState(previousState => ({
+            this.setState((previousState) => ({
                 ...previousState,
-                messages: chatroomReducer.get("messages")
+                messages: chatroomReducer.get("messages"),
             }), () => {
                 this.chatBox.scrollTop = this.chatBox.scrollHeight;
             });
         }
 
-        let prevUpload = this.props.chatroomReducer.get("uploading");
-        if (chatroomReducer.get("uploading") == false && !shallowEqual(chatroomReducer.get("uploading"), prevUpload)) {
-            let responseFile = chatroomReducer.get("responseFile");
-            let fileInfo = chatroomReducer.get("fileInfo");
+        const prevUpload = this.props.chatroomReducer.get("uploading");
+        if (chatroomReducer.get("uploading") === false && !shallowEqual(chatroomReducer.get("uploading"), prevUpload)) {
+            const responseFile = chatroomReducer.get("responseFile");
+            const fileInfo = chatroomReducer.get("fileInfo");
 
             if (responseFile.mimetype.match(FileType.imageType)) {
                 this.onSubmitImageChat(responseFile.originalname, responseFile.path);
-            }
-            else if (responseFile.mimetype.match(FileType.videoType)) {
+            } else if (responseFile.mimetype.match(FileType.videoType)) {
                 this.onSubmitVideoChat(fileInfo, responseFile.path);
-            }
-            else if (responseFile.mimetype.match(FileType.textType) || fileInfo.type.match(FileType.file)) {
+            } else if (responseFile.mimetype.match(FileType.textType) || fileInfo.type.match(FileType.file)) {
                 this.onSubmitFile(fileInfo, responseFile);
             }
 
@@ -139,21 +134,24 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 break;
         }
 
-        if (shallowEqual(chatroomReducer.state, this.props.chatroomReducer.state)) return;
+        if (shallowEqual(chatroomReducer.state, this.props.chatroomReducer.state)) { return; }
         switch (chatroomReducer.state) {
             case chatroom.GET_PERSISTEND_CHATROOM_SUCCESS: {
-                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
+                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
                     this.roomInitialize(nextProps);
+                }
                 break;
             }
             case chatroomRxEpic.FETCH_PRIVATE_CHATROOM_SUCCESS: {
-                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
+                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
                     this.roomInitialize(nextProps);
+                }
                 break;
             }
             case chatroomRxEpic.CREATE_PRIVATE_CHATROOM_SUCCESS: {
-                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room))
+                if (!shallowEqual(chatroomReducer.room, this.props.chatroomReducer.room)) {
                     this.roomInitialize(nextProps);
+                }
                 break;
             }
             case chatroom.GET_PERSISTEND_CHATROOM_FAILURE: {
@@ -172,16 +170,16 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             case chatroom.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
                 this.setState((previousState) => ({
                     ...previousState,
-                    earlyMessageReady: chatroomReducer.earlyMessageReady
+                    earlyMessageReady: chatroomReducer.earlyMessageReady,
                 }));
 
                 break;
             }
             case chatroom.LOAD_EARLY_MESSAGE_SUCCESS: {
-                this.setState(previousState => ({
+                this.setState((previousState) => ({
                     ...previousState,
                     isLoadingEarlierMessages: false,
-                    earlyMessageReady: false
+                    earlyMessageReady: false,
                 }));
                 break;
             }
@@ -191,7 +189,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     onLoadEarlierMessages() {
-        this.setState(previousState => ({
+        this.setState((previousState) => ({
             ...previousState,
             isLoadingEarlierMessages: true,
         }));
@@ -200,7 +198,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     roomInitialize(props: IComponentProps) {
-        let { chatroomReducer, userReducer }: { chatroomReducer: ChatRoomRecoder, userReducer: any } = props;
+        const { chatroomReducer, userReducer }: { chatroomReducer: ChatRoomRecoder, userReducer: any } = props;
         if (!userReducer.user) {
             return this.props.dispatch(chatroom.leaveRoomAction());
         }
@@ -209,19 +207,19 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         // - Init chatroom service.
         // - getPersistedMessage.
         // - Request join room.
-        let room = chatroomReducer.get("room");
+        const room = chatroomReducer.get("room");
         chatroom.initChatRoom(room);
         this.props.dispatch(chatroomRxEpic.getPersistendMessage(room._id));
         this.props.dispatch(chatroom.getChatTargetIds(room._id));
     }
 
     setMessageStatus(uniqueId, status) {
-        let messages = [];
-        let _messages = this.state.messages.slice();
+        const messages = [];
+        const _messages = this.state.messages.slice();
 
         for (let i = 0; i < _messages.length; i++) {
-            if (_messages[i].uuid == uniqueId) {
-                let clone = Object.assign({}, _messages[i]);
+            if (_messages[i].uuid === uniqueId) {
+                const clone = Object.assign({}, _messages[i]);
                 clone.status = status;
                 messages.push(clone);
             } else {
@@ -229,7 +227,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
             }
         }
 
-        this.setState({ ...this.state, messages: messages });
+        this.setState({ ...this.state, messages });
     }
 
     onTypingTextChange(event) {
@@ -237,64 +235,64 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     onSubmitTextChat() {
-        if (this.state.typingText.length <= 0) return;
+        if (this.state.typingText.length <= 0) { return; }
 
-        let msg = {
-            text: this.state.typingText
+        const msg = {
+            text: this.state.typingText,
         };
 
         this.prepareSend(msg);
     }
 
     onSubmitImageChat(filename: string, responseUrl: string) {
-        let msg = {
+        const msg = {
             image: filename,
-            src: `${config().api.host}/${responseUrl}`
+            src: `${getConfig().host}/${responseUrl}`,
         };
 
         this.prepareSend(msg);
     }
 
     onSubmitVideoChat(file: File, responseUrl: string) {
-        let msg = {
+        const msg = {
             video: file.name,
-            src: `${config().api.host}/${responseUrl}`
+            src: `${getConfig().host}/${responseUrl}`,
         };
 
         this.prepareSend(msg);
     }
 
     onSubmitFile(file: File, responseFile: any) {
-        let { path, mimetype, size } = responseFile;
-        let msg = {
+        const { path, mimetype, size } = responseFile;
+        const msg = {
             file: file.name,
-            mimetype: mimetype,
-            size: size,
-            src: `${config().api.host}/${path}`
+            mimetype,
+            size,
+            src: `${getConfig().host}/${path}`,
         };
 
         this.prepareSend(msg);
     }
 
     onSubmitStickerChat(id: number) {
-        let msg = {
-            sticker: id
+        const msg = {
+            sticker: id,
         };
         this.onToggleSticker();
         this.prepareSend(msg);
     }
 
     prepareSend(msg: IMessageDecorator) {
-        let message = decorateMessage(msg);
+        const message = decorateMessage(msg);
         this.send(message);
 
-        //@ show last submit message witn sending... status.
-        let _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
+        // @ show last submit message witn sending... status.
+        const _messages = (!!this.state.messages) ? this.state.messages.slice() : new Array();
         _messages.push(message);
-        this.setState(previousState => ({
+        this.setState((previousState) => ({
             ...previousState,
             typingText: "",
-            messages: _messages
+            messages: _messages,
         }), () => {
             this.chatBox.scrollTop = this.chatBox.scrollHeight;
         });
@@ -305,13 +303,12 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     fileReaderChange = (e, results) => {
-        results.forEach(result => {
+        results.forEach((result) => {
             const [progressEvent, file] = result;
 
             if (file.type && file.type.length > 0) {
                 this.props.dispatch(chatroomRxEpic.uploadFile(progressEvent, file));
-            }
-            else {
+            } else {
                 this.props.onError("Can't upload unknown file type.");
             }
         });
@@ -320,23 +317,23 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     onToggleSticker() {
         this.chatHeight = (this.state.openButtomMenu) ? this.chatHeight + this.stickerBox : this.chatHeight - this.stickerBox;
 
-        this.setState(previousState => ({
+        this.setState((previousState) => ({
             ...previousState,
-            openButtomMenu: !previousState.openButtomMenu
+            openButtomMenu: !previousState.openButtomMenu,
         }));
     }
 
     onLocation() {
-        this.setState(previousState => ({
+        this.setState((previousState) => ({
             ...previousState,
-            openMapDialog: !previousState.openMapDialog
+            openMapDialog: !previousState.openMapDialog,
         }));
     }
     onLocationChange(position: Point) {
         this.tempLocation = position;
     }
     onSubmitPosition() {
-        let message = { position: this.tempLocation };
+        const message = { position: this.tempLocation };
         this.tempLocation = null;
 
         this.onLocation();
@@ -345,7 +342,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
     // {/*height="calc(100vh - 56px - 52px - 52px)"*/}
     render(): JSX.Element {
-        let { chatroomReducer, stalkReducer } = this.props;
+        const { chatroomReducer, stalkReducer } = this.props;
 
         return (
             <div id={"app_body"}>

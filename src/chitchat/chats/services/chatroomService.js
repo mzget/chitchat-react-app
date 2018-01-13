@@ -1,45 +1,44 @@
-import { ChitChatFactory } from "../";
-import { withToken, chitchat_headers } from "../utils/chitchatServiceUtils";
-const getConfig = () => ChitChatFactory.getInstance().config;
-const authReducer = () => ChitChatFactory.getInstance().authStore;
-export const getRoomInfo = (room_id) => {
-    return fetch(`${getConfig().api.chatroom}/roomInfo?room_id=${room_id}`, {
+import InternalStore, { withToken, apiHeaders, } from "stalk-simplechat";
+const getConfig = () => InternalStore.apiConfig;
+const authReducer = () => InternalStore.authStore;
+export const getRoomInfo = (roomId) => {
+    return fetch(`${getConfig().chatroom}/roomInfo?room_id=${roomId}`, {
         method: "GET",
-        headers: withToken(chitchat_headers())(authReducer().chitchat_token)
+        headers: withToken(apiHeaders())(authReducer().api_token),
     });
 };
-export const getUnreadMessage = (room_id, user_id, lastAccessTime) => {
-    return fetch(`${getConfig().api.chatroom}/unreadMessage?room_id=${room_id}&user_id=${user_id}&lastAccessTime=${lastAccessTime}`, {
+export const getUnreadMessage = (roomId, userId, lastAccessTime) => {
+    return fetch(`${getConfig().chatroom}/unreadMessage?room_id=${roomId}&user_id=${userId}&lastAccessTime=${lastAccessTime}`, {
         method: "GET",
-        headers: chitchat_headers(),
+        headers: apiHeaders(),
     });
 };
-export const getOlderMessagesCount = (room_id, topEdgeMessageTime, queryMessage) => {
-    return fetch(`${getConfig().api.chatroom}/olderMessagesCount/?message=${queryMessage}&room_id=${room_id}&topEdgeMessageTime=${topEdgeMessageTime}`, {
+export const getOlderMessagesCount = (roomId, topEdgeMessageTime, queryMessage) => {
+    return fetch(`${getConfig().chatroom}/olderMessagesCount/?message=${queryMessage}&room_id=${roomId}&topEdgeMessageTime=${topEdgeMessageTime}`, {
         method: "GET",
-        headers: chitchat_headers()
+        headers: apiHeaders(),
     });
 };
-export const getChatHistory = (room_id, lastMessageTime, token) => {
-    return fetch(`${getConfig().api.chatroom}/getChatHistory`, {
+export const getChatHistory = (roomId, lastMessageTime, token) => {
+    return fetch(`${getConfig().chatroom}/getChatHistory`, {
         body: JSON.stringify({
-            room_id: room_id,
-            lastMessageTime: lastMessageTime
+            room_id: roomId,
+            lastMessageTime,
         }),
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "x-access-token": token
-        }
+            "x-access-token": token,
+        },
     });
 };
 export const getPrivateChatroom = (ownerId, roommateId) => {
-    return fetch(`${getConfig().api.chatroom}`, {
+    return fetch(`${getConfig().chatroom}`, {
         method: "POST",
-        headers: chitchat_headers(),
+        headers: apiHeaders(),
         body: JSON.stringify({
-            ownerId: ownerId,
-            roommateId: roommateId
-        })
+            ownerId,
+            roommateId,
+        }),
     });
 };

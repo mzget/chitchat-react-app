@@ -4,7 +4,7 @@ const apiStalk = "wss://chitchats.ga"; // "wss://chitchats.ga";
 const stalkPort = 3020; // 3010
 const stalkKey = "chitchat1234";
 
-const apiChitchat = "https://chitchats.ga:9000"; // "http://localhost:9000"; "https://chitchats.ga"
+const apiChitchat = "https://chitchats.ga:9000"; // "http://localhost:9000"; "https://chitchats.ga:9000"
 export const chitchatGraphql = "https://chitchats.ga:9000/graphql"; // "http://localhost:9000/graphql" : "https://chitchats.ga/graphql";
 export const signalingServer = "https://chitchats.ga:8888";
 

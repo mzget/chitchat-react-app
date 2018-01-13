@@ -7,18 +7,18 @@
 import {
     ChatRoomActionsType, GET_NEWER_MESSAGE_SUCCESS, GET_NEWER_MESSAGE_FAILURE, ON_MESSAGE_CHANGED,
     SEND_MESSAGE_FAILURE,
-    GET_CHAT_TARGET_UID_SUCCESS, GET_CHAT_TARGET_UID_FAILURE
+    GET_CHAT_TARGET_UID_SUCCESS,
+    GET_CHAT_TARGET_UID_FAILURE,
 } from "./chatroomActions";
 import * as chatroomRxActions from "./chatroomRxEpic";
 import * as chatroomActions from "./chatroomActions";
-import * as StalkBridgeActions from "../stalkBridge/stalkBridgeActions";
 import * as chatlogsActions from "../chatlogs/chatlogsActions";
 import * as actions from "../../../../actions/";
-import * as Models from "../../models/"
+import * as Models from "../../models/";
 
 import * as immutable from "immutable";
 
-export type FileResult = {
+export interface FileResult {
     destination: string;
     encoding: string;
     fieldname: string;
@@ -27,7 +27,7 @@ export type FileResult = {
     originalname: string;
     path: string;
     size: number;
-};
+}
 // Define our record defaults
 const chatroomDefaults = {
     isFetching: false,
@@ -42,17 +42,17 @@ const chatroomDefaults = {
     fileInfo: null,
     error: null,
     chatDisabled: false,
-    chatrooms: null
+    chatrooms: null,
 } as IChatroom;
-// Define our record types with a typescript interface 
+// Define our record types with a typescript interface
 interface IChatroom {
     isFetching: boolean;
     uploading: boolean;
     state: string;
     room: Models.Room;
-    chatTargets: Array<string>;
+    chatTargets: string[];
     responseFile: FileResult;
-    messages: Array<Models.MessageImp>;
+    messages: Models.MessageImp[];
     earlyMessageReady: any;
     uploadingFile: any;
     fileInfo: any;
@@ -71,7 +71,7 @@ export class ChatRoomRecoder extends immutable.Record(chatroomDefaults) {
     // and lets typescript know the return type based on our IFruitParams interface
     get<T extends keyof IChatroom>(value: T): IChatroom[T] {
         // super.get() is mapped to the original get() function on Record
-        return super.get(value)
+        return super.get(value);
     }
     // set<T extends keyof IChatroom>(key: T, value): IChatroom[T] {
     //     return super.set(key, value);
@@ -113,8 +113,8 @@ export const chatroomReducer = (state = chatRoomRecoder, action) => {
         }
 
         case SEND_MESSAGE_FAILURE: {
-            let payload = action.payload;
-            let nextState = state.set("state", SEND_MESSAGE_FAILURE)
+            const payload = action.payload;
+            const nextState = state.set("state", SEND_MESSAGE_FAILURE)
                 .set("isFetching", false)
                 .set("error", payload);
 
@@ -122,7 +122,7 @@ export const chatroomReducer = (state = chatRoomRecoder, action) => {
         }
 
         case ON_MESSAGE_CHANGED: {
-            let payload = action.payload;
+            const payload = action.payload;
             return state.set("messages", payload);
         }
 
@@ -132,21 +132,21 @@ export const chatroomReducer = (state = chatRoomRecoder, action) => {
                 .set("earlyMessageReady", payload);
         }
         case chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS: {
-            let payload = action.payload;
+            const payload = action.payload;
             return state.set("messages", payload)
                 .set("state", chatroomActions.LOAD_EARLY_MESSAGE_SUCCESS);
         }
 
         case chatroomRxActions.GET_PERSISTEND_MESSAGE_SUCCESS: {
-            let payload = action.payload;
+            const payload = action.payload;
             return state.set("messages", payload);
         }
         case GET_NEWER_MESSAGE_SUCCESS: {
-            let payload = action.payload;
+            const payload = action.payload;
             return state.set("messages", payload);
         }
 
-        /**Create chat room */
+        /** Create chat room */
         case chatroomRxActions.CREATE_PRIVATE_CHATROOM:
             return state.set("isFetching", true)
                 .set("state", chatroomRxActions.CREATE_PRIVATE_CHATROOM);
@@ -158,7 +158,7 @@ export const chatroomReducer = (state = chatRoomRecoder, action) => {
         case chatroomRxActions.CREATE_PRIVATE_CHATROOM_FAILURE:
             return state.set("isFetching", false);
 
-        /**Fetch chat room */
+        /** Fetch chat room */
         case chatroomRxActions.FETCH_PRIVATE_CHATROOM:
             return state.set("isFetching", true);
         case chatroomRxActions.FETCH_PRIVATE_CHATROOM_SUCCESS:
@@ -184,7 +184,7 @@ export const chatroomReducer = (state = chatRoomRecoder, action) => {
             return state.set("state", chatroomActions.GET_PERSISTEND_CHATROOM_FAILURE);
         }
 
-        /**Set room empty */
+        /** Set room empty */
         case chatroomActions.LEAVE_ROOM: {
             return state
                 .set("state", chatroomActions.LEAVE_ROOM)

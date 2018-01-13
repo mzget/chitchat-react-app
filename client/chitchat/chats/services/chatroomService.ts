@@ -1,53 +1,55 @@
 import * as Rx from "rxjs/Rx";
 
-import { ChitChatFactory } from "../";
-import { withToken, chitchat_headers } from "../utils/chitchatServiceUtils";
+import InternalStore, {
+    withToken,
+    apiHeaders,
+} from "stalk-simplechat";
 
-const getConfig = () => ChitChatFactory.getInstance().config;
-const authReducer = () => ChitChatFactory.getInstance().authStore;
+const getConfig = () => InternalStore.apiConfig;
+const authReducer = () => InternalStore.authStore;
 
-export const getRoomInfo = (room_id: string): Promise<any> => {
-    return fetch(`${getConfig().api.chatroom}/roomInfo?room_id=${room_id}`, {
+export const getRoomInfo = (roomId: string): Promise<any> => {
+    return fetch(`${getConfig().chatroom}/roomInfo?room_id=${roomId}`, {
         method: "GET",
-        headers: withToken(chitchat_headers())(authReducer().chitchat_token)
+        headers: withToken(apiHeaders())(authReducer().api_token),
     });
 };
 
-export const getUnreadMessage = (room_id: string, user_id: string, lastAccessTime: string): Promise<any> => {
-    return fetch(`${getConfig().api.chatroom}/unreadMessage?room_id=${room_id}&user_id=${user_id}&lastAccessTime=${lastAccessTime}`, {
+export const getUnreadMessage = (roomId: string, userId: string, lastAccessTime: string): Promise<any> => {
+    return fetch(`${getConfig().chatroom}/unreadMessage?room_id=${roomId}&user_id=${userId}&lastAccessTime=${lastAccessTime}`, {
         method: "GET",
-        headers: chitchat_headers(),
+        headers: apiHeaders(),
     });
 };
 
-export const getOlderMessagesCount = (room_id: string, topEdgeMessageTime: string, queryMessage: boolean) => {
-    return fetch(`${getConfig().api.chatroom}/olderMessagesCount/?message=${queryMessage}&room_id=${room_id}&topEdgeMessageTime=${topEdgeMessageTime}`, {
+export const getOlderMessagesCount = (roomId: string, topEdgeMessageTime: string, queryMessage: boolean) => {
+    return fetch(`${getConfig().chatroom}/olderMessagesCount/?message=${queryMessage}&room_id=${roomId}&topEdgeMessageTime=${topEdgeMessageTime}`, {
         method: "GET",
-        headers: chitchat_headers()
+        headers: apiHeaders(),
     });
 };
 
-export const getChatHistory = (room_id: string, lastMessageTime: Date, token: string) => {
-    return fetch(`${getConfig().api.chatroom}/getChatHistory`, {
+export const getChatHistory = (roomId: string, lastMessageTime: Date, token: string) => {
+    return fetch(`${getConfig().chatroom}/getChatHistory`, {
         body: JSON.stringify({
-            room_id: room_id,
-            lastMessageTime: lastMessageTime
+            room_id: roomId,
+            lastMessageTime,
         }),
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "x-access-token": token
-        }
+            "x-access-token": token,
+        },
     });
 };
 
 export const getPrivateChatroom = (ownerId: string, roommateId: string) => {
-    return fetch(`${getConfig().api.chatroom}`, {
+    return fetch(`${getConfig().chatroom}`, {
         method: "POST",
-        headers: chitchat_headers(),
+        headers: apiHeaders(),
         body: JSON.stringify({
-            ownerId: ownerId,
-            roommateId: roommateId
-        })
+            ownerId,
+            roommateId,
+        }),
     });
 };

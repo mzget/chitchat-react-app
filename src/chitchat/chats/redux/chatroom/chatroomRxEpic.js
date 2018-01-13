@@ -66,15 +66,15 @@ const GET_PERSISTEND_MESSAGE_CANCELLED = "GET_PERSISTEND_MESSAGE_CANCELLED";
 export const GET_PERSISTEND_MESSAGE_SUCCESS = "GET_PERSISTEND_MESSAGE_SUCCESS";
 const GET_PERSISTEND_MESSAGE_FAILURE = "GET_PERSISTEND_MESSAGE_FAILURE";
 export const getPersistendMessage = (currentRid) => ({ type: GET_PERSISTEND_MESSAGE, payload: currentRid });
-const getPersistendMessage_cancel = () => ({ type: GET_PERSISTEND_MESSAGE_CANCELLED });
-const getPersistendMessage_success = (payload) => ({ type: GET_PERSISTEND_MESSAGE_SUCCESS, payload });
-const getPersistendMessage_failure = (error) => ({ type: GET_PERSISTEND_MESSAGE_FAILURE, payload: error });
+const getPersistendMessageCancel = () => ({ type: GET_PERSISTEND_MESSAGE_CANCELLED });
+const getPersistendMessageSuccess = (payload) => ({ type: GET_PERSISTEND_MESSAGE_SUCCESS, payload });
+const getPersistendMessageFailure = (error) => ({ type: GET_PERSISTEND_MESSAGE_FAILURE, payload: error });
 export const getPersistendMessageEpic = (action$) => {
     return action$.ofType(GET_PERSISTEND_MESSAGE)
         .mergeMap((action) => ChatRoomComponent.getInstance().getPersistentMessage(action.payload))
-        .map((json) => getPersistendMessage_success(json))
+        .map((json) => getPersistendMessageSuccess(json))
         .takeUntil(action$.ofType(GET_PERSISTEND_MESSAGE_CANCELLED))
-        .catch((error) => Rx.Observable.of(getPersistendMessage_failure(error)))
+        .catch((error) => Rx.Observable.of(getPersistendMessageFailure(error)))
         ._do((x) => {
         getStore().dispatch(checkOlderMessages());
         getStore().dispatch(getNewerMessageFromNet());
