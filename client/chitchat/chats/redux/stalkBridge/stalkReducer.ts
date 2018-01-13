@@ -26,10 +26,10 @@ export const stalkInitState = {
     inline: "",
     notiMessage: null,
     stalkToken: "",
-    user: null
+    user: null,
 } as IStalkStoreParams;
 
-// Define our record types with a typescript interface 
+// Define our record types with a typescript interface
 interface IStalkStoreParams {
     isInit: boolean;
     isFetching: boolean;
@@ -53,15 +53,13 @@ export class StalkRecord extends Record(stalkInitState) {
     get<T extends keyof IStalkStoreParams>(value: T): IStalkStoreParams[T] {
 
         // super.get() is mapped to the original get() function on Record
-        return super.get(value)
+        return super.get(value);
     }
 
 }
 const initialState = new StalkRecord(stalkInitState);
 
 export function stalkReducer(state = initialState, action) {
-    if (!(state instanceof StalkRecord)) return initialState.mergeDeep(state);
-
     switch (action.type) {
         case StalkBridgeActions.STALK_INIT: {
             return state.set("isInit", false)

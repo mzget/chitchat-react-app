@@ -11,7 +11,7 @@ import * as adminRx from "./admin/adminRx";
 import * as groupRx from "./group/groupRx";
 import * as privateGroupRxActions from "./group/privateGroupRxActions";
 import * as editGroupRxActions from "./group/editGroupRxActions";
-import { stalkInitChatlog_Epic, getTeamsInfo_Epic } from "../actions/";
+import { stalkInitChatlogEpic, getTeamsInfoEpic, stalkInitSuccessEpic } from "../actions/chitchatRxActions";
 
 export const rootEpic = combineEpics(
     // @Admin
@@ -72,11 +72,11 @@ export const rootEpic = combineEpics(
     calling.hangupVideoCall_Epic,
 
     /// @chatlogs
-    chatlogRxActions.getLastAccessRoom_Epic,
-    chatlogRxActions.updateLastAccessRoom_Epic,
-    // chatlogRxActions.stalkInitChatlogs_Epic
-    chatlogRxActions.removeRoomAccess_Epic,
+    chatlogRxActions.getLastAccessRoomEpic,
+    chatlogRxActions.updateLastAccessRoomEpic,
+    chatlogRxActions.removeRoomAccessEpic,
 
-    stalkInitChatlog_Epic,
-    getTeamsInfo_Epic,
+    stalkInitSuccessEpic,
+    stalkInitChatlogEpic,
+    getTeamsInfoEpic,
 );

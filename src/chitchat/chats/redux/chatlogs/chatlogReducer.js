@@ -13,7 +13,7 @@ export const chatlogDefaults = {
     chatsLog: null,
     logCount: null,
     roomAccess: null,
-    error: null
+    error: null,
 };
 // Create our FruitRecord class
 export class ChatLogRecord extends Record(chatlogDefaults) {
@@ -32,19 +32,19 @@ const initialState = new ChatLogRecord(chatlogDefaults);
 export function chatlogReducer(state = initialState, action) {
     switch (action.type) {
         case ChatlogsActions.STALK_GET_CHATSLOG_COMPLETE: {
-            let { chatsLog, logCount } = action.payload;
+            const { chatsLog, logCount } = action.payload;
             return state.set("chatsLog", chatsLog)
                 .set("logCount", logCount)
                 .set("state", ChatlogsActions.STALK_GET_CHATSLOG_COMPLETE);
         }
         case ChatlogsActions.STALK_CHATLOG_CONTACT_COMPLETE: {
-            let nextState = state.set("state", ChatlogsActions.STALK_CHATLOG_CONTACT_COMPLETE)
+            const nextState = state.set("state", ChatlogsActions.STALK_CHATLOG_CONTACT_COMPLETE)
                 .set("chatsLog", action.payload);
             return nextState;
         }
         case ChatlogsActions.STALK_CHATLOG_MAP_CHANGED: {
-            let { chatsLog, logCount } = action.payload;
-            let nextState = state.set("chatsLog", chatsLog)
+            const { chatsLog, logCount } = action.payload;
+            const nextState = state.set("chatsLog", chatsLog)
                 .set("logCount", logCount)
                 .set("state", ChatlogsActions.STALK_CHATLOG_MAP_CHANGED);
             return nextState;
@@ -53,7 +53,7 @@ export function chatlogReducer(state = initialState, action) {
             return state.set("isFetching", true);
         }
         case ChatlogRxActions.GET_LAST_ACCESS_ROOM_SUCCESS: {
-            let data = action.payload;
+            const data = action.payload;
             if (Array.isArray(data) && data.length > 0) {
                 return state.set("roomAccess", data[0].roomAccess).set("isFetching", false);
             }
@@ -77,7 +77,7 @@ export function chatlogReducer(state = initialState, action) {
                 .set("state", ChatlogRxActions.STALK_REMOVE_ROOM_ACCESS);
         }
         case ChatlogRxActions.STALK_REMOVE_ROOM_ACCESS_SUCCESS: {
-            let data = action.payload;
+            const data = action.payload;
             if (Array.isArray(data) && data.length > 0) {
                 return state.set("roomAccess", data[0].roomAccess)
                     .set("isFetching", false)

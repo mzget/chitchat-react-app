@@ -20,7 +20,7 @@ export const getSessionToken = () => {
     const backendFactory = BackendFactory.getInstance();
     return getStore().getState().stalkReducer.stalkToken;
 };
-const onGetContactProfileFail = (contact_id) => { };
+const onGetContactProfileFail = (contactId) => { };
 export const STALK_INIT = "STALK_INIT";
 export const STALK_INIT_SUCCESS = "STALK_INIT_SUCCESS";
 export const STALK_INIT_FAILURE = "STALK_INIT_FAILURE";

@@ -17,7 +17,7 @@ import { chitchatGraphql } from "../Chitchat";
 import { LOG_OUT_SUCCESS } from "./authen/authRx";
 import { STALK_ON_SOCKET_RECONNECT } from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
 
-/**
+/*
 * ## Reducers
 */
 import { deviceReducer, DeviceInitialState } from "./device/deviceReducer";

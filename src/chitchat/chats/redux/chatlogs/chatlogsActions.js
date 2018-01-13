@@ -13,7 +13,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
-import { BackendFactory } from "stalk-js/starter";
 import InternalStore from "stalk-simplechat";
 import { Unread } from "stalk-simplechat";
 import * as chatroomActions from "../chatroom/chatroomActions";
@@ -55,7 +54,7 @@ function updateLastAccessTimeEventHandler(newRoomAccess) {
 }
 export function initChatsLog() {
     const chatsLogComponent = InternalStore.createChatLogInstance();
-    chatsLogComponent.onReady = function (rooms) {
+    chatsLogComponent.onReady = (rooms) => {
         getStore().dispatch(chatroomActions.updateChatRoom(rooms));
         getUnreadMessages();
     };
@@ -67,13 +66,13 @@ export function initChatsLog() {
     };
     chatsLogComponent.addOnChatListener(listenerImp);
     chatsLogComponent.updatedLastAccessTimeEvent = updateLastAccessTimeEventHandler;
-    chatsLogComponent.addNewRoomAccessEvent = function (data) {
+    chatsLogComponent.addNewRoomAccessEvent = (data) => {
         getUnreadMessages();
     };
     getStore().dispatch({ type: STALK_INIT_CHATLOG });
 }
 function getUnreadMessages() {
-    const chatsLogComp = BackendFactory.getInstance().chatLogComp;
+    const chatsLogComp = InternalStore.chatlogInstance;
     const { _id } = authReducer().user;
     const { roomAccess, state } = getStore().getState().chatlogReducer;
     if (roomAccess && roomAccess.length > 0) {
@@ -90,27 +89,27 @@ function getUnreadMessages() {
     }
 }
 function calculateUnreadCount() {
-    const chatsLogComp = BackendFactory.getInstance().chatLogComp;
+    const chatsLogComp = InternalStore.chatlogInstance;
     chatsLogComp.calculateChatsLogCount();
 }
 function increaseLogsCount(count) {
-    const chatsLogComp = BackendFactory.getInstance().chatLogComp;
+    const chatsLogComp = InternalStore.chatlogInstance;
     chatsLogComp.increaseChatsLogCount(count);
 }
 function decreaseLogsCount(count) {
-    const chatsLogComp = BackendFactory.getInstance().chatLogComp;
+    const chatsLogComp = InternalStore.chatlogInstance;
     chatsLogComp.decreaseChatsLogCount(count);
 }
 export function getChatsLogCount() {
-    const chatsLogComp = BackendFactory.getInstance().chatLogComp;
+    const chatsLogComp = InternalStore.chatlogInstance;
     return chatsLogComp ? chatsLogComp.getChatsLogCount() : null;
 }
 function getUnreadMessageMap() {
-    const chatsLogComp = BackendFactory.getInstance().chatLogComp;
+    const chatsLogComp = InternalStore.chatlogInstance;
     return chatsLogComp.getUnreadMessageMap();
 }
 function getChatsLog() {
-    const chatsLogComp = BackendFactory.getInstance().chatLogComp;
+    const chatsLogComp = InternalStore.chatlogInstance;
     const chatsLog = chatsLogComp.getChatsLog();
     const logCount = chatsLogComp.getChatsLogCount();
     getStore().dispatch({
@@ -120,7 +119,7 @@ function getChatsLog() {
 }
 function onUnreadMessageMapChanged(unread) {
     return __awaiter(this, void 0, void 0, function* () {
-        const chatsLogComp = BackendFactory.getInstance().chatLogComp;
+        const chatsLogComp = InternalStore.chatlogInstance;
         const { chatrooms } = getStore().getState().chatroomReducer;
         const room = yield chatsLogComp.checkRoomInfo(unread, chatrooms);
         if (room) {
@@ -135,14 +134,14 @@ function onUnreadMessageMapChanged(unread) {
     });
 }
 function getUnreadMessageComplete() {
-    const chatsLogComp = BackendFactory.getInstance().chatLogComp;
+    const chatsLogComp = InternalStore.chatlogInstance;
     const { _id } = authReducer().user;
     const { chatrooms } = getStore().getState().chatroomReducer;
     chatsLogComp.getRoomsInfo(_id, chatrooms);
     // $rootScope.$broadcast('getunreadmessagecomplete', {});
 }
 const getChatLogContact = (chatlog) => {
-    const dataManager = BackendFactory.getInstance().dataManager;
+    const dataManager = InternalStore.chatlogInstance;
     const contacts = chatlog.room.members.filter((value) => {
         return !dataManager.isMySelf(value._id);
     });

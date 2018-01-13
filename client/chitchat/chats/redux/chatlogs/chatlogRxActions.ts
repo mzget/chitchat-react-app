@@ -23,35 +23,36 @@ export const STALK_REMOVE_ROOM_ACCESS_CANCELLED = "STALK_REMOVE_ROOM_ACCESS_CANC
 export const removeRoomAccess = (room_id: string) => ({ type: STALK_REMOVE_ROOM_ACCESS, payload: room_id });
 const removeRoomAccess_Success = (payload) => ({ type: STALK_REMOVE_ROOM_ACCESS_SUCCESS, payload });
 const removeRoomAccess_Cancelled = () => ({ type: STALK_REMOVE_ROOM_ACCESS_CANCELLED });
-const removeRoomAccess_Failure = error => ({ type: STALK_REMOVE_ROOM_ACCESS_FAILURE, payload: error });
-export const removeRoomAccess_Epic = action$ => (
+const removeRoomAccess_Failure = (error) => ({ type: STALK_REMOVE_ROOM_ACCESS_FAILURE, payload: error });
+
+export const removeRoomAccessEpic = (action$) => (
     action$.ofType(STALK_REMOVE_ROOM_ACCESS)
-        .mergeMap(action => {
+        .mergeMap((action) => {
             const { _id } = authReducer().user;
             return ServiceProvider.removeLastAccessRoomInfo(_id, action.payload);
-        }).map(json => {
+        }).map((json) => {
             console.log("removeRoomAccess_Epic", json.response);
 
-            let result = json.response;
+            const result = json.response;
             if (result.success && result.result.length > 0) {
                 return removeRoomAccess_Success(result.result);
             } else {
                 return removeRoomAccess_Failure(result.message);
             }
         })
-        .do(x => {
-            if (x.type == STALK_REMOVE_ROOM_ACCESS_SUCCESS) {
+        .do((x) => {
+            if (x.type === STALK_REMOVE_ROOM_ACCESS_SUCCESS) {
                 waitForRemovedRoom(x.payload);
             }
         })
         .takeUntil(action$.ofType(STALK_REMOVE_ROOM_ACCESS_CANCELLED))
-        .catch(error => Rx.Observable.of(removeRoomAccess_Failure(error.xhr.response)))
+        .catch((error) => Rx.Observable.of(removeRoomAccess_Failure(error.xhr.response)))
 );
 
 const waitForRemovedRoom = async (data) => {
-    let id = setInterval(() => {
-        let { state } = getStore().getState().chatlogReducer;
-        if (state == STALK_REMOVE_ROOM_ACCESS_SUCCESS) {
+    const id = setInterval(() => {
+        const { state } = getStore().getState().chatlogReducer;
+        if (state === STALK_REMOVE_ROOM_ACCESS_SUCCESS) {
             BackendFactory.getInstance().dataListener.onAccessRoom(data);
 
             clearInterval(id);
@@ -64,22 +65,23 @@ export const UPDATE_LAST_ACCESS_ROOM_SUCCESS = "UPDATE_LAST_ACCESS_ROOM_SUCCESS"
 export const UPDATE_LAST_ACCESS_ROOM_FAILURE = "UPDATE_LAST_ACCESS_ROOM_FAILURE";
 const UPDATE_LAST_ACCESS_ROOM_CANCELLED = "UPDATE_LAST_ACCESS_ROOM_CANCELLED";
 
-export const updateLastAccessRoom = (room_id) => ({ type: UPDATE_LAST_ACCESS_ROOM, payload: room_id });
+export const updateLastAccessRoom = (roomId) => ({ type: UPDATE_LAST_ACCESS_ROOM, payload: roomId });
 const updateLastAccessRoomSuccess = (payload) => ({ type: UPDATE_LAST_ACCESS_ROOM_SUCCESS, payload });
 const updateLastAccessRoomFailure = (error) => ({ type: UPDATE_LAST_ACCESS_ROOM_FAILURE, payload: error });
 export const updateLastAccessRoomCancelled = () => ({ type: UPDATE_LAST_ACCESS_ROOM_CANCELLED });
-export const updateLastAccessRoom_Epic = action$ =>
+
+export const updateLastAccessRoomEpic = (action$) =>
     action$.ofType(UPDATE_LAST_ACCESS_ROOM)
-        .mergeMap(action => {
-            let { _id } = authReducer().user;
+        .mergeMap((action) => {
+            const { _id } = authReducer().user;
             return ServiceProvider.updateLastAccessRoomInfo(_id, action.payload);
         })
-        .map(response => {
+        .map((response) => {
             console.log("updateLastAccessRoom value", response.xhr.response);
 
-            let results = response.xhr.response.result[0];
-            let _tempRoomAccess = results.roomAccess as RoomAccessData[];
-            let roomAccess = getStore().getState().chatlogReducer.get("roomAccess") as any[];
+            const results = response.xhr.response.result[0];
+            const _tempRoomAccess = results.roomAccess as RoomAccessData[];
+            const roomAccess = getStore().getState().chatlogReducer.get("roomAccess") as any[];
 
             let _newRoomAccess = new Array();
             if (Array.isArray(roomAccess)) {
@@ -114,24 +116,22 @@ export const updateLastAccessRoom_Epic = action$ =>
 export const GET_LAST_ACCESS_ROOM = "GET_LAST_ACCESS_ROOM";
 export const GET_LAST_ACCESS_ROOM_SUCCESS = "GET_LAST_ACCESS_ROOM_SUCCESS";
 export const GET_LAST_ACCESS_ROOM_FAILURE = "GET_LAST_ACCESS_ROOM_FAILURE";
-
-export const getLastAccessRoom = (team_id: string) => ({ type: GET_LAST_ACCESS_ROOM, payload: { team_id } });
+export const getLastAccessRoom = (teamId: string) => ({ type: GET_LAST_ACCESS_ROOM, payload: { teamId } });
 const getLastAccessRoomSuccess = (payload) => ({ type: GET_LAST_ACCESS_ROOM_SUCCESS, payload });
 const getLastAccessRoomFailure = (error) => ({ type: GET_LAST_ACCESS_ROOM_FAILURE, payload: error });
-export const getLastAccessRoom_Epic = (action$) => (
-    action$.ofType(GET_LAST_ACCESS_ROOM)
-        .mergeMap((action) => {
-            const { team_id } = action.payload;
-            return ServiceProvider.getLastAccessRoomInfo(team_id)
-                .then((response) => response.json())
-                .then((json) => {
-                    console.log("getLastAccessRoomInfo result", json);
-                    return json;
-                });
-        })
-        .map((json) => {
-            const result = json.result as StalkAccount[];
-            BackendFactory.getInstance().dataListener.onAccessRoom(result);
-            return getLastAccessRoomSuccess(result);
-        })
+
+export const getLastAccessRoomEpic = (action$) => (
+    action$.ofType(GET_LAST_ACCESS_ROOM).mergeMap((action) => {
+        const { teamId } = action.payload;
+        return ServiceProvider.getLastAccessRoomInfo(teamId)
+            .then((response) => response.json())
+            .then((json) => {
+                console.log("getLastAccessRoomInfo result", json);
+                return json;
+            });
+    }).map((json) => {
+        const result = json.result as StalkAccount[];
+        BackendFactory.getInstance().dataListener.onAccessRoom(result);
+        return getLastAccessRoomSuccess(result);
+    })
         .catch((json) => Rx.Observable.of(getLastAccessRoomFailure(json))));

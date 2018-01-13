@@ -423,7 +423,7 @@ export function getChatTargetIds(room_id: string) {
             dispatch(getChatTargetIdFailure("Has no room object!"));
         } else {
             const results = new Array<string>();
-            room.members.map((value) => (value._id !== _id) ? results.push(value._id) : null);
+            (room.members as IMember[]).map((value) => (value._id !== _id) ? results.push(value._id) : null);
 
             dispatch(getChatTargetIdSuccess(results));
         }

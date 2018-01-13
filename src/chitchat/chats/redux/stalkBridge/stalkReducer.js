@@ -23,7 +23,7 @@ export const stalkInitState = {
     inline: "",
     notiMessage: null,
     stalkToken: "",
-    user: null
+    user: null,
 };
 // Create our Record class
 export class StalkRecord extends Record(stalkInitState) {
@@ -40,8 +40,6 @@ export class StalkRecord extends Record(stalkInitState) {
 }
 const initialState = new StalkRecord(stalkInitState);
 export function stalkReducer(state = initialState, action) {
-    if (!(state instanceof StalkRecord))
-        return initialState.mergeDeep(state);
     switch (action.type) {
         case StalkBridgeActions.STALK_INIT: {
             return state.set("isInit", false)

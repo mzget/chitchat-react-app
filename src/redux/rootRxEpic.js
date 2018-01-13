@@ -9,7 +9,7 @@ import * as adminRx from "./admin/adminRx";
 import * as groupRx from "./group/groupRx";
 import * as privateGroupRxActions from "./group/privateGroupRxActions";
 import * as editGroupRxActions from "./group/editGroupRxActions";
-import { stalkInitChatlog_Epic, getTeamsInfo_Epic } from "../actions/";
+import { stalkInitChatlogEpic, getTeamsInfoEpic, stalkInitSuccessEpic } from "../actions/chitchatRxActions";
 export const rootEpic = combineEpics(
 // @Admin
 adminRx.createNewOrgChartEpic, adminRx.getOrgChartEpic, adminRx.updateUserOrgChartEpic, adminRx.updateUserTeamRole_Epic, userRx.onAuth_Epic, userRx.fetchUser_Epic, userRx.suggestUser_Epic, userRx.fetchContactEpic, userRx.fetchAgentEpic, userRx.getTeamProfileEpic, userRx.uploadUserAvatar_Epic, userRx.updateUserInfo_Epic, userRx.saveDeviceToken_Epic, 
@@ -29,6 +29,4 @@ chatroom.getPrivateChatRoomEpic, chatroom.getPersistendMessageEpic, chatroom.cre
 // messageRxEpic.fetchOlderMessageCount_Epic,
 calling.hangupVideoCall_Epic, 
 /// @chatlogs
-chatlogRxActions.getLastAccessRoom_Epic, chatlogRxActions.updateLastAccessRoom_Epic, 
-// chatlogRxActions.stalkInitChatlogs_Epic
-chatlogRxActions.removeRoomAccess_Epic, stalkInitChatlog_Epic, getTeamsInfo_Epic);
+chatlogRxActions.getLastAccessRoomEpic, chatlogRxActions.updateLastAccessRoomEpic, chatlogRxActions.removeRoomAccessEpic, stalkInitSuccessEpic, stalkInitChatlogEpic, getTeamsInfoEpic);

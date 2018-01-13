@@ -10,30 +10,36 @@ const { ajax } = Rx.Observable;
 import { STALK_INIT_CHATLOG, getLastAccessRoom } from "../chitchat/chats/redux/chatlogs/";
 import { TEAM_SELECTED, getTeamsInfo } from "../redux/team/teamRx";
 import { FETCH_USER_SUCCESS } from "../redux/user/userRx";
+import { STALK_INIT_SUCCESS } from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
+import { initChatsLog } from "../chitchat/chats/redux/chatlogs/chatlogsActions";
 
 import Store from "../redux/configureStore";
 
-export const stalkInitChatlog_Epic = action$ =>
-    action$.filter(action => (action.type == STALK_INIT_CHATLOG || action.type == TEAM_SELECTED))
+export const stalkInitSuccessEpic = (action$) =>
+    action$.ofType(STALK_INIT_SUCCESS).map((x) => {
+        initChatsLog();
+        return { type: "" };
+    });
+
+export const stalkInitChatlogEpic = (action$) =>
+    action$.filter((action) => (action.type === STALK_INIT_CHATLOG || action.type === TEAM_SELECTED))
         .map((x) => {
             if (!!Store.getState().teamReducer.team) {
-                let team_id = Store.getState().teamReducer.team._id;
+                const teamId = Store.getState().teamReducer.team._id;
 
-                return getLastAccessRoom(team_id);
-            }
-            else {
+                return getLastAccessRoom(teamId);
+            } else {
                 return { type: "" };
             }
         });
 
-export const getTeamsInfo_Epic = (action$) => (
-    action$.filter(action => action.type == FETCH_USER_SUCCESS)
-        .map(x => {
-            let { userReducer } = Store.getState();
+export const getTeamsInfoEpic = (action$) => (
+    action$.filter((action) => action.type === FETCH_USER_SUCCESS)
+        .map((x) => {
+            const { userReducer } = Store.getState();
             if (!!userReducer.user.teams && userReducer.user.teams.length > 0) {
                 return getTeamsInfo(userReducer.user.teams);
-            }
-            else {
+            } else {
                 return { type: "WAIT_FOR_USER_TEAMS" };
             }
         })
