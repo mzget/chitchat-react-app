@@ -64,41 +64,40 @@ export const updateLastAccessRoom = (roomId) => ({ type: UPDATE_LAST_ACCESS_ROOM
 const updateLastAccessRoomSuccess = (payload) => ({ type: UPDATE_LAST_ACCESS_ROOM_SUCCESS, payload });
 const updateLastAccessRoomFailure = (error) => ({ type: UPDATE_LAST_ACCESS_ROOM_FAILURE, payload: error });
 export const updateLastAccessRoomCancelled = () => ({ type: UPDATE_LAST_ACCESS_ROOM_CANCELLED });
-export const updateLastAccessRoomEpic = (action$) => action$.ofType(UPDATE_LAST_ACCESS_ROOM)
-    .mergeMap((action) => {
+export const updateLastAccessRoomEpic = (action$) => action$.ofType(UPDATE_LAST_ACCESS_ROOM).mergeMap((action) => {
     const { _id } = authReducer().user;
     return ServiceProvider.updateLastAccessRoomInfo(_id, action.payload);
 })
     .map((response) => {
     console.log("updateLastAccessRoom value", response.xhr.response);
     const results = response.xhr.response.result[0];
-    const _tempRoomAccess = results.roomAccess;
+    const tempRoomAccess = results.roomAccess;
     const roomAccess = getStore().getState().chatlogReducer.get("roomAccess");
-    let _newRoomAccess = new Array();
+    let newRoomAccess = new Array();
     if (Array.isArray(roomAccess)) {
-        const _has = roomAccess.some((value) => (value.roomId === _tempRoomAccess[0].roomId));
-        if (!_has) {
-            roomAccess.push(_tempRoomAccess[0]);
-            _newRoomAccess = roomAccess.slice();
+        const has = roomAccess.some((value) => (value.roomId === tempRoomAccess[0].roomId));
+        if (!has) {
+            roomAccess.push(tempRoomAccess[0]);
+            newRoomAccess = roomAccess.slice();
         }
         else {
-            _newRoomAccess = roomAccess.map((value, id) => {
-                if (value.roomId === _tempRoomAccess[0].roomId) {
-                    value.accessTime = _tempRoomAccess[0].accessTime;
+            newRoomAccess = roomAccess.map((value, id) => {
+                if (value.roomId === tempRoomAccess[0].roomId) {
+                    value.accessTime = tempRoomAccess[0].accessTime;
                 }
                 return value;
             });
         }
     }
     else {
-        _newRoomAccess = _tempRoomAccess.slice();
+        newRoomAccess = tempRoomAccess.slice();
     }
-    BackendFactory.getInstance().dataListener.onUpdatedLastAccessTime(_tempRoomAccess[0]);
-    return updateLastAccessRoomSuccess(_newRoomAccess);
+    BackendFactory.getInstance().dataListener.onUpdatedLastAccessTime(tempRoomAccess[0]);
+    return updateLastAccessRoomSuccess(newRoomAccess);
 })
     .do((x) => {
     if (x.payload) {
-        BackendFactory.getInstance().dataManager.setRoomAccessForUser(x.payload);
+        // BackendFactory.getInstance().dataManager.setRoomAccessForUser(x.payload);
     }
 })
     .takeUntil(action$.ofType(UPDATE_LAST_ACCESS_ROOM_CANCELLED))

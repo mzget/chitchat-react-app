@@ -14,7 +14,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 import InternalStore from "stalk-simplechat";
-import { Unread } from "stalk-simplechat";
+import { getUnreadMessage, Unread } from "stalk-simplechat/app";
 import * as chatroomActions from "../chatroom/chatroomActions";
 const getStore = () => InternalStore.store;
 const authReducer = () => InternalStore.authStore;
@@ -41,7 +41,7 @@ function updateLastAccessTimeEventHandler(newRoomAccess) {
     console.log("updateLastAccessTimeEventHandler", newRoomAccess);
     const chatsLogComp = InternalStore.chatlogInstance;
     const { _id } = authReducer().user;
-    chatsLogComp.getUnreadMessage(_id, newRoomAccess).then((unread) => {
+    getUnreadMessage(_id, newRoomAccess).then((unread) => {
         chatsLogComp.addUnreadMessage(unread);
         calculateUnreadCount();
         onUnreadMessageMapChanged(unread);

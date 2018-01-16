@@ -9,9 +9,9 @@ const { ajax } = Rx.Observable;
 
 import { BackendFactory } from "stalk-js/starter";
 import InternalStore from "stalk-simplechat";
-import { ChatsLogComponent, Unread } from "stalk-simplechat";
+import { ChatsLogComponent, getUnreadMessage, Unread, IUnread } from "stalk-simplechat/app";
 import { RoomAccessData, StalkAccount } from "../../../shared/stalk";
-import { Room } from "stalk-simplechat/app/models/Room";
+import { Room } from "stalk-simplechat/app/models";
 import ChatLog from "../../models/chatLog";
 import * as ServiceProvider from "../../services/ServiceProvider";
 import * as chatroomActions from "../chatroom/chatroomActions";
@@ -33,7 +33,7 @@ const listenerImp = (newMsg) => {
         const unread = new Unread();
         unread.message = newMsg;
         unread.rid = newMsg.rid;
-        let count = (!!chatsLogComp.getUnreadItem(newMsg.rid)) ? chatsLogComp.getUnreadItem(newMsg.rid).count : 0;
+        let count = (!!chatsLogComp.getUnreadItem(newMsg.rid)) ? (chatsLogComp.getUnreadItem(newMsg.rid) as IUnread).count : 0;
         count++;
         unread.count = count;
         chatsLogComp.addUnreadMessage(unread);
@@ -48,7 +48,7 @@ function updateLastAccessTimeEventHandler(newRoomAccess: RoomAccessData) {
     const chatsLogComp = InternalStore.chatlogInstance;
     const { _id } = authReducer().user;
 
-    chatsLogComp.getUnreadMessage(_id, newRoomAccess).then((unread) => {
+    getUnreadMessage(_id, newRoomAccess).then((unread) => {
         chatsLogComp.addUnreadMessage(unread);
 
         calculateUnreadCount();
