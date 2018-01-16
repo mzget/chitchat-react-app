@@ -21,7 +21,7 @@ export const getPrivateGroup_Epic = (action$) => (action$.ofType(GET_PRIVATE_GRO
     .do((response) => {
     if (response.type === GET_PRIVATE_GROUP_SUCCESS) {
         const rooms = response.payload.result;
-        Store.dispatch(updateChatRoom(rooms));
+        updateChatRoom(rooms);
     }
 })));
 const CREATE_PRIVATE_GROUP = "CREATE_PRIVATE_GROUP";

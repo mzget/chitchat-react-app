@@ -8,7 +8,7 @@ export class ChatLogsBox extends React.Component {
     componentWillMount() {
         this.state = {
             search: "",
-            chatsLog: null
+            chatsLog: [],
         };
         this.removedLog = this.removedLog.bind(this);
         this.enterRoom = this.enterRoom.bind(this);
@@ -29,6 +29,6 @@ export class ChatLogsBox extends React.Component {
     }
 }
 const mapStateToProps = (state) => ({
-    chatlogReducer: state.chatlogReducer
+    chatlogReducer: state.chatlogReducer,
 });
 export const ChatLogsBoxEnhancer = connect(mapStateToProps)(ChatLogsBox);

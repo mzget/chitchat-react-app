@@ -104,7 +104,8 @@ const getTeamProfileCancelled = () => ({ type: GET_TEAM_PROFILE_CANCELLED });
 export const getTeamProfileEpic = (action$) => (action$.ofType(GET_TEAM_PROFILE)
     .mergeMap((action) => {
     const token = Store.getState().authReducer.token;
-    return UserService.getTeamProfile(token, action.payload);
+    const response = UserService.getTeamProfile(token, action.payload);
+    return response;
 })
     .map((result) => getTeamProfileSuccess(result.response.result))
     .takeUntil(action$.ofType(GET_TEAM_PROFILE_CANCELLED))

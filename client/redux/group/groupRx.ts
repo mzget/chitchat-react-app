@@ -35,7 +35,7 @@ export const getOrgGroupEpic = (action$) => (
             .do((response) => {
                 if (response.type === GET_ORG_GROUP_SUCCESS) {
                     const rooms = response.payload.result as Room[];
-                    Store.dispatch(updateChatRoom(rooms));
+                    updateChatRoom(rooms);
                 }
             }),
     ));

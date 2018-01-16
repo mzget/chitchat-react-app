@@ -39,7 +39,7 @@ export class ChatLogRecord extends Record(chatlogDefaults) {
     // and lets typescript know the return type based on our IFruitParams interface
     get<T extends keyof IChatLogParams>(value: T): IChatLogParams[T] {
         // super.get() is mapped to the original get() function on Record
-        return super.get(value)
+        return super.get(value);
     }
 }
 const initialState = new ChatLogRecord(chatlogDefaults);

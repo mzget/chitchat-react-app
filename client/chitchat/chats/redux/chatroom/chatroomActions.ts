@@ -393,18 +393,18 @@ export const createChatRoom = (myUser, contactUser) => {
 export const UPDATED_CHATROOMS = "UPDATED_CHATROOMS";
 export const updatedChatRoomSuccess = (chatrooms: Room[]) => ({ type: UPDATED_CHATROOMS, payload: chatrooms });
 export const updateChatRoom = (rooms: Room[]) => {
-    return (dispatch) => {
-        let chatrooms: Room[] = getStore().getState().chatroomReducer.get("chatrooms");
-        if (chatrooms) {
-            // R.unionWith(R.eqBy(R.prop('a')), l1, l2);
-            const _newRooms = R.unionWith(R.eqBy(R.prop("_id")), rooms, chatrooms) as Room[];
-            dispatch(updatedChatRoomSuccess(_newRooms));
-        } else {
-            chatrooms = rooms.slice();
+    let chatrooms: Room[] = getStore().getState().chatroomReducer.get("chatrooms");
 
-            dispatch(updatedChatRoomSuccess(chatrooms));
-        }
-    };
+    if (chatrooms) {
+        // R.unionWith(R.eqBy(R.prop('a')), l1, l2);
+        const newRooms = R.unionWith(R.eqBy(R.prop("_id")), rooms, chatrooms) as Room[];
+        console.log("newRooms", newRooms);
+        getStore().dispatch(updatedChatRoomSuccess(newRooms));
+    } else {
+        chatrooms = rooms.slice();
+
+        getStore().dispatch(updatedChatRoomSuccess(chatrooms));
+    }
 };
 
 const GET_CHAT_TARGET_UID = "GET_CHAT_TARGET_UID";

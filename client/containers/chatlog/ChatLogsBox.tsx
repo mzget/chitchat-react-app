@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import Subheader from "material-ui/Subheader";
 
-import { ChatsLogComponent, ChatLogMap, IUnread, Unread } from "../../chitchat/chats/ChatslogComponent";
+// import { ChatsLogComponent, ChatLogMap, IUnread, Unread } from "../../chitchat/chats/ChatslogComponent";
 import ChatLog from "../../chitchat/chats/models/chatLog";
 
 import Store from "../../redux/configureStore";
@@ -16,7 +16,7 @@ import { ListChatLogs } from "./ListChatLogs";
 
 interface IComponentNameProps {
     location: {
-        query
+        query,
     };
     params;
     chatlogReducer;
@@ -24,7 +24,7 @@ interface IComponentNameProps {
 }
 
 interface IComponentNameState {
-    chatsLog: Array<any>;
+    chatsLog: any[];
     search;
 }
 
@@ -32,7 +32,7 @@ export class ChatLogsBox extends React.Component<IComponentNameProps, IComponent
     componentWillMount() {
         this.state = {
             search: "",
-            chatsLog: null
+            chatsLog: [],
         };
 
         this.removedLog = this.removedLog.bind(this);
@@ -65,6 +65,6 @@ export class ChatLogsBox extends React.Component<IComponentNameProps, IComponent
 }
 
 const mapStateToProps = (state) => ({
-    chatlogReducer: state.chatlogReducer
+    chatlogReducer: state.chatlogReducer,
 });
 export const ChatLogsBoxEnhancer = connect(mapStateToProps)(ChatLogsBox);

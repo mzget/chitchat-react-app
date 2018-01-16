@@ -3,7 +3,7 @@ import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 
-import { Room, RoomType, IMember } from "../../chitchat/chats/models/Room";
+import { Room, RoomType, IMember } from "stalk-simplechat/app/models/Room";
 import * as groupService from "../../chitchat/chats/services/groupService";
 import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
 const config = () => ChitChatFactory.getInstance().config;
@@ -81,7 +81,7 @@ export const addGroupMember_Epic = (action$) =>
                         });
 
                         Store.dispatch({ type: SET_PRIVATE_GROUP, payload: newPrivateGroups });
-                        Store.dispatch(chatroomActions.updateChatRoom(newPrivateGroups));
+                        chatroomActions.updateChatRoom(newPrivateGroups);
                     }
                 }
             }));
@@ -119,7 +119,7 @@ export const removeGroupMember_Epic = (action$) =>
                             });
 
                             Store.dispatch({ type: SET_PRIVATE_GROUP, payload: newPrivateGroups });
-                            Store.dispatch(chatroomActions.updateChatRoom(newPrivateGroups));
+                            chatroomActions.updateChatRoom(newPrivateGroups);
                         }
                     }
                 });

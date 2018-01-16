@@ -6,7 +6,7 @@ import InternalStore from "stalk-simplechat";
 const config = () => InternalStore.apiConfig;
 
 import Store from "../configureStore";
-import { Room, RoomType } from "../../chitchat/chats/models/Room";
+import { Room, RoomType } from "stalk-simplechat/app/models/Room";
 
 import { updateChatRoom } from "../../chitchat/chats/redux/chatroom/chatroomActions";
 
@@ -30,7 +30,7 @@ export const getPrivateGroup_Epic = (action$) => (
             .do((response) => {
                 if (response.type === GET_PRIVATE_GROUP_SUCCESS) {
                     const rooms = response.payload.result as Room[];
-                    Store.dispatch(updateChatRoom(rooms));
+                    updateChatRoom(rooms);
                 }
             }),
     ));

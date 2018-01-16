@@ -11,9 +11,11 @@ import Store from "./redux/configureStore";
 import { apolloClient } from "./redux/rootReducer";
 
 import InternalStore, {
-    MessageDAL,
     SecureServiceFactory,
 } from "stalk-simplechat";
+import {
+    MessageDAL,
+} from "stalk-simplechat/app/DAL/MessageDAL";
 import { config } from "./Chitchat";
 InternalStore.initConfig(config.Stalk);
 InternalStore.initApiConfig(config.api);

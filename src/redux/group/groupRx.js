@@ -22,7 +22,7 @@ export const getOrgGroupEpic = (action$) => (action$.ofType(GET_ORG_GROUP).merge
     .do((response) => {
     if (response.type === GET_ORG_GROUP_SUCCESS) {
         const rooms = response.payload.result;
-        Store.dispatch(updateChatRoom(rooms));
+        updateChatRoom(rooms);
     }
 })));
 /**

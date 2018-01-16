@@ -65,7 +65,7 @@ export function initChatsLog() {
     const chatsLogComponent = InternalStore.createChatLogInstance();
 
     chatsLogComponent.onReady = (rooms: Room[]) => {
-        getStore().dispatch(chatroomActions.updateChatRoom(rooms));
+        chatroomActions.updateChatRoom(rooms);
 
         getUnreadMessages();
     };
@@ -197,5 +197,5 @@ async function updateRooms(room) {
         chatrooms.push(room);
     }
 
-    getStore().dispatch(chatroomActions.updateChatRoom(chatrooms));
+    chatroomActions.updateChatRoom(chatrooms);
 }

@@ -55,7 +55,7 @@ function updateLastAccessTimeEventHandler(newRoomAccess) {
 export function initChatsLog() {
     const chatsLogComponent = InternalStore.createChatLogInstance();
     chatsLogComponent.onReady = (rooms) => {
-        getStore().dispatch(chatroomActions.updateChatRoom(rooms));
+        chatroomActions.updateChatRoom(rooms);
         getUnreadMessages();
     };
     chatsLogComponent.getRoomsInfoCompleteEvent = () => {
@@ -165,6 +165,6 @@ function updateRooms(room) {
             chatrooms = new Array();
             chatrooms.push(room);
         }
-        getStore().dispatch(chatroomActions.updateChatRoom(chatrooms));
+        chatroomActions.updateChatRoom(chatrooms);
     });
 }
