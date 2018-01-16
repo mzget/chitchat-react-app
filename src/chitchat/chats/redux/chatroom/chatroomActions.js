@@ -369,7 +369,6 @@ export const updateChatRoom = (rooms) => {
     if (chatrooms) {
         // R.unionWith(R.eqBy(R.prop('a')), l1, l2);
         const newRooms = R.unionWith(R.eqBy(R.prop("_id")), rooms, chatrooms);
-        console.log("newRooms", newRooms);
         getStore().dispatch(updatedChatRoomSuccess(newRooms));
     }
     else {

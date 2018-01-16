@@ -398,7 +398,6 @@ export const updateChatRoom = (rooms: Room[]) => {
     if (chatrooms) {
         // R.unionWith(R.eqBy(R.prop('a')), l1, l2);
         const newRooms = R.unionWith(R.eqBy(R.prop("_id")), rooms, chatrooms) as Room[];
-        console.log("newRooms", newRooms);
         getStore().dispatch(updatedChatRoomSuccess(newRooms));
     } else {
         chatrooms = rooms.slice();

@@ -9,7 +9,7 @@ import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
 import IconMenu from "material-ui/IconMenu";
 import MenuItem from "material-ui/MenuItem";
-import ActionInfo from 'material-ui/svg-icons/action/info';
+import ActionInfo from "material-ui/svg-icons/action/info";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Avatar from "material-ui/Avatar";
 
@@ -18,8 +18,8 @@ import BadgeSimple from "../../components/BadgeSimple";
 // import { ChatlogItem } from "../../components/ChatlogItem";
 
 interface IChatlogProps {
-    value: Array<ChatLog>;
-    onSelected: Function;
+    value: ChatLog[];
+    onSelected: () => void;
     onRemovedLog: (log: ChatLog) => void;
 }
 
@@ -68,7 +68,7 @@ const renderList = (props: IChatlogProps) => (
                         <div key={log.id}
                             style={{ float: "right", position: "absolute", top: "10%", right: "2%", margin: "auto" }}>
                             {
-                                (log.count && log.count != 0) ? <BadgeSimple content={log.count} /> : null
+                                (log.count && log.count !== 0) ? <BadgeSimple content={log.count} /> : null
                             }
                             {
                                 rightIconMenu(log, props.onRemovedLog)
