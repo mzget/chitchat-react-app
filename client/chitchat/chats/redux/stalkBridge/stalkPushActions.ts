@@ -5,7 +5,7 @@
  */
 
 import { BackendFactory } from "stalk-js/starter";
-import { Push } from "../../PushDataListener";
+import { Push } from "stalk-js/starter/PushDataListener";
 import { ChatRoomComponent } from "stalk-simplechat";
 
 export function stalkPushInit() {

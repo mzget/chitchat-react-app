@@ -13,6 +13,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
+import { BackendFactory } from "stalk-js/starter";
 import InternalStore from "stalk-simplechat";
 import { getUnreadMessage, Unread } from "stalk-simplechat/app";
 import * as chatroomActions from "../chatroom/chatroomActions";
@@ -53,7 +54,7 @@ function updateLastAccessTimeEventHandler(newRoomAccess) {
     });
 }
 export function initChatsLog() {
-    const chatsLogComponent = InternalStore.createChatLogInstance();
+    const chatsLogComponent = InternalStore.createChatLogInstance(BackendFactory.getInstance());
     chatsLogComponent.onReady = (rooms) => {
         chatroomActions.updateChatRoom(rooms);
         getUnreadMessages();
