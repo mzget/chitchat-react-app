@@ -2,11 +2,11 @@ import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
 import InternalStore from "stalk-simplechat";
-const config = () => InternalStore.apiConfig;
+const apiConfig = () => InternalStore.apiConfig;
 import { SimpleStorageFactory } from "../../chitchat/chats/dataAccessLayer";
 const appStorage = SimpleStorageFactory.getObject("app");
 import * as UserService from "../../chitchat/chats/services/UserService";
-import * as StalkBridgeActions from "../../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
+import { StalkBridge } from "stalk-simplechat";
 import { AUTH_USER_SUCCESS, AUTH_SOCIAL_SUCCESS, TOKEN_AUTH_USER_SUCCESS } from "../authen/authRx";
 import Store from "../configureStore";
 export const onAuth_Epic = (action$) => action$.filter((action) => (action.type === AUTH_USER_SUCCESS || action.type === AUTH_SOCIAL_SUCCESS || action.type === TOKEN_AUTH_USER_SUCCESS))
@@ -33,8 +33,8 @@ export const fetchUser_Epic = (action$) => action$.ofType(FETCH_USER)
                 username: `${user.firstname} ${user.lastname}`,
             };
             const stalkReducer = Store.getState().stalkReducer;
-            if (stalkReducer.state !== StalkBridgeActions.STALK_INIT) {
-                StalkBridgeActions.stalkLogin(account);
+            if (stalkReducer.state !== StalkBridge.StalkBridgeActions.STALK_INIT) {
+                StalkBridge.StalkBridgeActions.stalkLogin(account);
             }
         }
     }
@@ -49,7 +49,7 @@ export const updateUserInfoFailure = createAction(UPDATE_USER_INFO_FAILURE, (err
 export const updateUserInfoCancelled = createAction(UPDATE_USER_INFO_CANCELLED);
 export const updateUserInfo_Epic = (action$) => (action$.ofType(UPDATE_USER_INFO).mergeMap((action) => ajax({
     method: "POST",
-    url: `${config().user}/userInfo`,
+    url: `${apiConfig().user}/userInfo`,
     body: JSON.stringify({ user: action.payload }),
     headers: {
         "Content-Type": "application/json",
@@ -67,7 +67,7 @@ const fetchAgentByIdSuccess = (payload) => ({ type: FETCH_AGENT_BY_ID_SUCCESS, p
 const fetchAgentByIdFailure = (payload) => ({ type: FETCH_AGENT_BY_ID_FAILURE, payload });
 const fetchAgentByIdCancelled = () => ({ type: FETCH_AGENT_BY_ID_CANCELLED });
 export const fetchAgentIdEpic = (action$) => (action$.ofType(FETCH_AGENT_BY_ID)
-    .margeMap((action) => ajax.getJSON(`${config().api.user}/agent/${action.payload}`)
+    .margeMap((action) => ajax.getJSON(`${apiConfig().user}/agent/${action.payload}`)
     .map(fetchAgentByIdSuccess)
     .takeUntil(action$.ofType(FETCH_AGENT_BY_ID_CANCELLED))
     .catch((error) => Rx.Observable.of(fetchAgentByIdFailure(error.xhr.response)))));
@@ -80,7 +80,7 @@ const fetchAgentSuccess = (payload) => ({ type: FETCH_AGENT_SUCCESS, payload });
 const fetchAgentFailure = (payload) => ({ type: FETCH_AGENT_FAILURE, payload });
 const fetchAgentCancelled = () => ({ type: FETCH_AGENT_CANCELLED });
 export const fetchAgentEpic = (action$) => (action$.ofType(FETCH_AGENT)
-    .mergeMap((action) => ajax.getJSON(`${config().user}/agent/${action.payload}`)
+    .mergeMap((action) => ajax.getJSON(`${apiConfig().user}/agent/${action.payload}`)
     .map(fetchAgentSuccess)
     .takeUntil(action$.ofType(FETCH_AGENT_CANCELLED))
     .catch((error) => Rx.Observable.of(fetchAgentFailure(error.xhr.response)))));
@@ -89,7 +89,7 @@ const FETCH_CONTACT_SUCCESS = "FETCH_CONTACT_SUCCESS";
 export const fetchContact = (contactId) => ({ type: FETCH_CONTACT, payload: contactId });
 const fetchContactSuccess = (payload) => ({ type: FETCH_CONTACT_SUCCESS, payload });
 export const fetchContactEpic = (action$) => action$.ofType(FETCH_CONTACT)
-    .mergeMap((action) => ajax.getJSON(`${config().user}/contact/?id=${action.payload}`)
+    .mergeMap((action) => ajax.getJSON(`${apiConfig().user}/contact/?id=${action.payload}`)
     .map(fetchContactSuccess)
     .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
     .catch((error) => Rx.Observable.of(fetchUserRejected(error.xhr.response))));
@@ -124,7 +124,7 @@ export const uploadUserAvatar_Epic = (action$) => (action$.ofType(UPLOAD_USER_AV
     body.append("file", action.payload);
     return ajax({
         method: "POST",
-        url: `${config().user}/uploadImage`,
+        url: `${apiConfig().user}/uploadImage`,
         body,
         headers: {
             "x-access-token": Store.getState().authReducer.token,
@@ -152,7 +152,7 @@ export const emptyState = createAction(USERRX_EMPTY_STATE);
 const saveDeviceToken_Success = createAction("SAVE_DEVICE_TOKEN_SUCCESS", (payload) => payload);
 const saveDeviceToken_Failure = createAction("SAVE_DEVICE_TOKEN_FAILURE", (error) => error);
 export const saveDeviceToken_Epic = (action$) => (action$.filter((action) => action.type === FETCH_USER_SUCCESS)
-    .mergeMap((action) => appStorage.get("deviceToken"))
+    .mergeMap((action) => (appStorage) ? appStorage.get("deviceToken") : "")
     .mergeMap((deviceToken) => {
     const { user } = Store.getState().userReducer;
     return UserService.saveDevice(deviceToken, user._id);

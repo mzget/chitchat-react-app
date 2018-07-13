@@ -1,11 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 /**
  * Copyright 2016 Ahoo Studio.co.th.
  *
@@ -81,9 +73,9 @@ class ChatsLogComponent {
         let results = new Array();
         if (roomAccess.length > 0) {
             let source = Rx.Observable.from(roomAccess);
-            source.flatMap((item) => __awaiter(this, void 0, void 0, function* () {
+            source.flatMap(async (item) => {
                 try {
-                    let room = yield self.getRoomInfo(item.roomId);
+                    let room = await self.getRoomInfo(item.roomId);
                     if (room) {
                         results.push(room);
                     }
@@ -92,7 +84,7 @@ class ChatsLogComponent {
                 catch (ex) {
                     return null;
                 }
-            })).subscribe(room => { }, (err) => console.error("error", err), () => {
+            }).subscribe(room => { }, (err) => console.error("error", err), () => {
                 self._isReady = true;
                 if (!!self.onReady) {
                     self.onReady(results);
@@ -142,56 +134,50 @@ class ChatsLogComponent {
             callback(null, null);
         }
     }
-    getUnreadMessage(user_id, roomAccess) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let response = yield chatroomService.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString());
-            let value = yield response.json();
-            if (value.success) {
-                let unread = value.result;
-                unread.rid = roomAccess.roomId;
-                let decoded = yield CryptoHelper.decryptionText(unread.message);
-                return unread;
-            }
-            else {
-                throw new Error(value.message);
-            }
-        });
+    async getUnreadMessage(user_id, roomAccess) {
+        let response = await chatroomService.getUnreadMessage(roomAccess.roomId, user_id, roomAccess.accessTime.toString());
+        let value = await response.json();
+        if (value.success) {
+            let unread = value.result;
+            unread.rid = roomAccess.roomId;
+            let decoded = await CryptoHelper.decryptionText(unread.message);
+            return unread;
+        }
+        else {
+            throw new Error(value.message);
+        }
     }
-    decorateRoomInfoData(roomInfo) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (roomInfo.type == RoomType.privateChat) {
-                if (Array.isArray(roomInfo.members)) {
-                    let others = roomInfo.members.filter((value) => value._id != authReducer().user._id);
-                    if (others.length > 0) {
-                        let contact = others[0];
-                        let avatar;
-                        if (!contact.avatar) {
-                            let user = yield chatlogActionsHelper.getContactProfile(contact._id);
-                            if (!!user)
-                                avatar = user.avatar;
-                        }
-                        roomInfo.name = (contact.username) ? contact.username : "EMPTY ROOM";
-                        roomInfo.image = (contact.avatar) ? contact.avatar : avatar;
+    async decorateRoomInfoData(roomInfo) {
+        if (roomInfo.type == RoomType.privateChat) {
+            if (Array.isArray(roomInfo.members)) {
+                let others = roomInfo.members.filter((value) => value._id != authReducer().user._id);
+                if (others.length > 0) {
+                    let contact = others[0];
+                    let avatar;
+                    if (!contact.avatar) {
+                        let user = await chatlogActionsHelper.getContactProfile(contact._id);
+                        if (!!user)
+                            avatar = user.avatar;
                     }
+                    roomInfo.name = (contact.username) ? contact.username : "EMPTY ROOM";
+                    roomInfo.image = (contact.avatar) ? contact.avatar : avatar;
                 }
             }
-            return roomInfo;
-        });
+        }
+        return roomInfo;
     }
-    getRoomInfo(room_id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let self = this;
-            let response = yield chatroomService.getRoomInfo(room_id);
-            let json = yield response.json();
-            if (json.success) {
-                let roomInfos = json.result;
-                let room = yield self.decorateRoomInfoData(roomInfos[0]);
-                return room;
-            }
-            else {
-                throw new Error(json.message);
-            }
-        });
+    async getRoomInfo(room_id) {
+        let self = this;
+        let response = await chatroomService.getRoomInfo(room_id);
+        let json = await response.json();
+        if (json.success) {
+            let roomInfos = json.result;
+            let room = await self.decorateRoomInfoData(roomInfos[0]);
+            return room;
+        }
+        else {
+            throw new Error(json.message);
+        }
     }
     getRoomsInfo(user_id, chatrooms) {
         let self = this;
@@ -266,79 +252,77 @@ class ChatsLogComponent {
             });
         });
     }
-    organizeChatLogMap(unread, roomInfo, done) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!roomInfo)
-                return;
-            let self = this;
-            let log = new ChatLog(roomInfo);
-            log.setNotiCount(unread.count);
-            if (!!unread.message) {
-                log.setLastMessageTime(unread.message.createTime.toString());
-                let sender = (!!unread.message) ? unread.message.user.username : "";
-                if (unread.message.body != null) {
-                    let displayMsg = unread.message.body;
-                    switch (`${unread.message.type}`) {
-                        case MessageType[MessageType.Text]:
-                            /*
-                                self.main.decodeService(displayMsg, function (err, res) {
-                                    if (!err) {
-                                        displayMsg = res;
-                                    } else { console.warn(err, res); }
-                                });
-                            */
-                            self.setLogProp(log, displayMsg, function (log) {
-                                self.addChatLog(log, done);
+    async organizeChatLogMap(unread, roomInfo, done) {
+        if (!roomInfo)
+            return;
+        let self = this;
+        let log = new ChatLog(roomInfo);
+        log.setNotiCount(unread.count);
+        if (!!unread.message) {
+            log.setLastMessageTime(unread.message.createTime.toString());
+            let sender = (!!unread.message) ? unread.message.user.username : "";
+            if (unread.message.body != null) {
+                let displayMsg = unread.message.body;
+                switch (`${unread.message.type}`) {
+                    case MessageType[MessageType.Text]:
+                        /*
+                            self.main.decodeService(displayMsg, function (err, res) {
+                                if (!err) {
+                                    displayMsg = res;
+                                } else { console.warn(err, res); }
                             });
-                            break;
-                        case MessageType[MessageType.Sticker]:
-                            displayMsg = sender + " sent a sticker.";
-                            self.setLogProp(log, displayMsg, function (log) {
-                                self.addChatLog(log, done);
-                            });
-                            break;
-                        case MessageType[MessageType.Voice]:
-                            displayMsg = sender + " sent a voice message.";
-                            self.setLogProp(log, displayMsg, function (log) {
-                                self.addChatLog(log, done);
-                            });
-                            break;
-                        case MessageType[MessageType.Image]:
-                            displayMsg = sender + " sent a image.";
-                            self.setLogProp(log, displayMsg, function (log) {
-                                self.addChatLog(log, done);
-                            });
-                            break;
-                        case MessageType[MessageType.Video]:
-                            displayMsg = sender + " sent a video.";
-                            self.setLogProp(log, displayMsg, function (log) {
-                                self.addChatLog(log, done);
-                            });
-                            break;
-                        case MessageType[MessageType.Location]:
-                            displayMsg = sender + " sent a location.";
-                            self.setLogProp(log, displayMsg, function (log) {
-                                self.addChatLog(log, done);
-                            });
-                            break;
-                        case MessageType[MessageType.File]:
-                            self.setLogProp(log, displayMsg, function (log) {
-                                self.addChatLog(log, done);
-                            });
-                            break;
-                        default:
-                            console.log("bobo");
-                            break;
-                    }
+                        */
+                        self.setLogProp(log, displayMsg, function (log) {
+                            self.addChatLog(log, done);
+                        });
+                        break;
+                    case MessageType[MessageType.Sticker]:
+                        displayMsg = sender + " sent a sticker.";
+                        self.setLogProp(log, displayMsg, function (log) {
+                            self.addChatLog(log, done);
+                        });
+                        break;
+                    case MessageType[MessageType.Voice]:
+                        displayMsg = sender + " sent a voice message.";
+                        self.setLogProp(log, displayMsg, function (log) {
+                            self.addChatLog(log, done);
+                        });
+                        break;
+                    case MessageType[MessageType.Image]:
+                        displayMsg = sender + " sent a image.";
+                        self.setLogProp(log, displayMsg, function (log) {
+                            self.addChatLog(log, done);
+                        });
+                        break;
+                    case MessageType[MessageType.Video]:
+                        displayMsg = sender + " sent a video.";
+                        self.setLogProp(log, displayMsg, function (log) {
+                            self.addChatLog(log, done);
+                        });
+                        break;
+                    case MessageType[MessageType.Location]:
+                        displayMsg = sender + " sent a location.";
+                        self.setLogProp(log, displayMsg, function (log) {
+                            self.addChatLog(log, done);
+                        });
+                        break;
+                    case MessageType[MessageType.File]:
+                        self.setLogProp(log, displayMsg, function (log) {
+                            self.addChatLog(log, done);
+                        });
+                        break;
+                    default:
+                        console.log("bobo");
+                        break;
                 }
             }
-            else {
-                let displayMsg = "Start Chatting Now!";
-                self.setLogProp(log, displayMsg, function (log) {
-                    self.addChatLog(log, done);
-                });
-            }
-        });
+        }
+        else {
+            let displayMsg = "Start Chatting Now!";
+            self.setLogProp(log, displayMsg, function (log) {
+                self.addChatLog(log, done);
+            });
+        }
     }
     setLogProp(log, displayMessage, callback) {
         log.setLastMessage(displayMessage);

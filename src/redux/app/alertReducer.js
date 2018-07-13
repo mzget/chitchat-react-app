@@ -2,7 +2,7 @@ import { Record } from "immutable";
 import { UPLOAD_USER_AVATAR_FAILURE, FETCH_USER_FAILURE, UPDATE_USER_INFO_FAILURE } from "../user/userRx";
 import * as authRx from "../authen/authRx";
 import * as teamRx from "../team/teamRx";
-import { UPDATE_LAST_ACCESS_ROOM_FAILURE } from "../../chitchat/chats/redux/chatlogs/chatlogRxActions";
+import { UPDATE_LAST_ACCESS_ROOM_FAILURE } from "stalk-simplechat";
 import * as editGroupActions from "../group/editGroupRxActions";
 import * as adminRx from "../admin/adminRx";
 import * as calling from "../../chitchat/calling/";

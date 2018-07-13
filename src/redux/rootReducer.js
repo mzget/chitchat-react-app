@@ -13,7 +13,10 @@ import { reducer as notificationsReducer } from "reapop";
 import { ApolloClient, createNetworkInterface } from "react-apollo";
 import { chitchatGraphql } from "../Chitchat";
 import { LOG_OUT_SUCCESS } from "./authen/authRx";
-import { STALK_ON_SOCKET_RECONNECT } from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
+import { STALK_ON_SOCKET_RECONNECT } from "stalk-simplechat/app/redux/stalkBridge/stalkBridgeActions";
+import { stalkReducer, StalkInitState } from "stalk-simplechat/app/redux/stalkBridge/stalkReducer";
+import { chatroomReducer, chatRoomRecoder } from "stalk-simplechat/app/redux/chatroom/chatroomReducer";
+import { chatlogReducer, ChatLogInitState } from "stalk-simplechat/app/redux/chatlogs/chatlogReducer";
 /*
 * ## Reducers
 */
@@ -23,9 +26,6 @@ import { UserInitState, userReducer } from "./user/userReducer";
 import { AdminInitState, adminReducer } from "./admin/adminReducer";
 import { AuthenInitState, authReducer } from "./authen/authReducer";
 import { GroupInitState, groupReducer } from "./group/groupReducer";
-import { stalkReducer, stalkInitState, StalkRecord } from "../chitchat/chats/redux/stalkBridge/stalkReducer";
-import { chatroomReducer, chatRoomRecoder } from "../chitchat/chats/redux/chatroom/chatroomReducer";
-import { chatlogReducer, ChatLogRecord, chatlogDefaults } from "../chitchat/chats/redux/chatlogs/chatlogReducer";
 import { alertReducer, AlertInitState } from "./app/alertReducer";
 export const apolloClient = new ApolloClient({
     networkInterface: createNetworkInterface({
@@ -65,9 +65,9 @@ export function getInitialState() {
         teamReducer: new TeamInitState(),
         groupReducer: new GroupInitState(),
         authReducer: new AuthenInitState(),
-        stalkReducer: new StalkRecord(stalkInitState),
+        stalkReducer: new StalkInitState(),
         chatroomReducer: chatRoomRecoder,
-        chatlogReducer: new ChatLogRecord(chatlogDefaults),
+        chatlogReducer: new ChatLogInitState(),
         userReducer: new UserInitState(),
         adminReducer: new AdminInitState(),
         alertReducer: new AlertInitState(),

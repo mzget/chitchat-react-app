@@ -16,7 +16,7 @@ class SimpleWebRTC extends WildEmitter {
                 else if (this.webrtc.localStreams.length > 0) {
                     self.emit('readyToCall', self.connection.getSessionid());
                 }
-                else {
+                else { //without media
                     self.emit('readyToCall', self.connection.getSessionid());
                 }
             }
@@ -208,7 +208,7 @@ class SimpleWebRTC extends WildEmitter {
         let options = opts || {};
         let config = this.config = {
             url: 'https://sandbox.simplewebrtc.com:443/',
-            socketio: {},
+            socketio: { /* 'force new connection':true*/},
             connection: null,
             debug: false,
             localVideoEl: '',

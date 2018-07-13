@@ -4,7 +4,7 @@ const { ajax } = Rx.Observable;
 import Store from "../configureStore";
 import InternalStore from "stalk-simplechat";
 const config = () => InternalStore.apiConfig;
-import { updateChatRoom } from "../../chitchat/chats/redux/chatroom/chatroomActions";
+import { updateChatRoom } from "stalk-simplechat";
 /**
  * Get org groups...
  */

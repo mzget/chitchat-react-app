@@ -2,14 +2,6 @@
  * Copyright 2016 Ahoo Studio.co.th.
  *
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { StalkFactory } from "stalk-js";
 import { DataManager } from "./DataManager";
 import { DataListener } from "./DataListener";
@@ -43,43 +35,35 @@ class BackendFactory {
             return null;
         }
     }
-    stalkInit() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.stalk = StalkFactory.create(getConfig().Stalk.chat, getConfig().Stalk.port);
-            let socket = yield StalkFactory.init(this.stalk);
-            return socket;
-        });
+    async stalkInit() {
+        this.stalk = StalkFactory.create(getConfig().Stalk.chat, getConfig().Stalk.port);
+        let socket = await StalkFactory.init(this.stalk);
+        return socket;
     }
-    handshake(uid) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                // @ get connector server.
-                const msg = {};
-                msg["uid"] = uid;
-                msg["x-api-key"] = getConfig().Stalk.apiKey;
-                let connector = yield StalkFactory.geteEnter(this.stalk, msg);
-                let params = { host: connector.host, port: connector.port, reconnect: false };
-                yield StalkFactory.handshake(this.stalk, params);
-                return yield connector;
-            }
-            catch (ex) {
-                throw new Error("handshake fail: " + ex.message);
-            }
-        });
-    }
-    checkIn(user) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let msg = {};
-            msg["user"] = user;
+    async handshake(uid) {
+        try {
+            // @ get connector server.
+            const msg = {};
+            msg["uid"] = uid;
             msg["x-api-key"] = getConfig().Stalk.apiKey;
-            let result = yield StalkFactory.checkIn(this.stalk, msg);
-            return result;
-        });
+            let connector = await StalkFactory.geteEnter(this.stalk, msg);
+            let params = { host: connector.host, port: connector.port, reconnect: false };
+            await StalkFactory.handshake(this.stalk, params);
+            return await connector;
+        }
+        catch (ex) {
+            throw new Error("handshake fail: " + ex.message);
+        }
     }
-    checkOut() {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield StalkFactory.checkOut(this.stalk);
-        });
+    async checkIn(user) {
+        let msg = {};
+        msg["user"] = user;
+        msg["x-api-key"] = getConfig().Stalk.apiKey;
+        let result = await StalkFactory.checkIn(this.stalk, msg);
+        return result;
+    }
+    async checkOut() {
+        await StalkFactory.checkOut(this.stalk);
     }
     /**
      * @returns

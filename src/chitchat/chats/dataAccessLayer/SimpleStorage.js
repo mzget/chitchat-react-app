@@ -11,7 +11,7 @@ export class SimpleStorageFactory {
     }
 }
 SimpleStorageFactory.warehouse = new Map();
-class SimpleStorage {
+export class SimpleStorage {
     constructor(storeName) {
         this.store = localForage.createInstance({
             name: storeName

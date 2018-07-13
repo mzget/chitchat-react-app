@@ -7,7 +7,7 @@ import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
 const config = () => ChitChatFactory.getInstance().config;
 import Store from "../configureStore";
 import { SET_PRIVATE_GROUP } from "./privateGroupRxActions";
-import * as chatroomActions from "../../chitchat/chats/redux/chatroom/chatroomActions";
+import * as chatroomActions from "stalk-simplechat/app/redux/chatroom";
 /**
  * Edit group members...
  */

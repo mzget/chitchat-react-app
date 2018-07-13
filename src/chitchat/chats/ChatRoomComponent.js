@@ -3,14 +3,6 @@
  *
  * ChatRoomComponent for handle some business logic of chat room.
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import * as async from "async";
 import * as Rx from "rxjs";
 import { ChatEvents } from "stalk-js";
@@ -69,17 +61,13 @@ class ChatRoomComponent {
     setRoomId(rid) {
         this.roomId = rid;
     }
-    save(room_id, messages) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let results = yield this.dataManager.messageDAL.saveData(room_id, messages);
-            return results;
-        });
+    async save(room_id, messages) {
+        let results = await this.dataManager.messageDAL.saveData(room_id, messages);
+        return results;
     }
-    get(room_id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let results = yield this.dataManager.messageDAL.getData(room_id);
-            return results;
-        });
+    async get(room_id) {
+        let results = await this.dataManager.messageDAL.getData(room_id);
+        return results;
     }
     saveToPersisted(message) {
         let self = this;
@@ -103,39 +91,37 @@ class ChatRoomComponent {
             console.warn("Cannot get persistend message of room", err);
         });
     }
-    decryptMessage(messages) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let self = this;
-            let results = new Array();
-            return new Promise((resolve, reject) => {
-                if (messages.length > 0) {
-                    Rx.Observable.from(messages)
-                        .mergeMap((message) => __awaiter(this, void 0, void 0, function* () {
-                        if (message.type === MessageType[MessageType.Text]) {
-                            return yield CryptoHelper.decryptionText(message);
-                        }
-                        else if (message.type === MessageType[MessageType.Sticker]) {
-                            let _message = getStickerPath(message);
-                            return yield _message;
-                        }
-                        else {
-                            return message;
-                        }
-                    })).subscribe(value => {
-                        results.push(value);
-                    }, (err) => {
-                        console.warn("decryptMessage", err);
-                        resolve(results);
-                    }, () => {
-                        console.log("decryptMessage complete");
-                        let sortResult = results.sort(self.compareMessage);
-                        resolve(sortResult);
-                    });
-                }
-                else {
-                    resolve(messages);
-                }
-            });
+    async decryptMessage(messages) {
+        let self = this;
+        let results = new Array();
+        return new Promise((resolve, reject) => {
+            if (messages.length > 0) {
+                Rx.Observable.from(messages)
+                    .mergeMap(async (message) => {
+                    if (message.type === MessageType[MessageType.Text]) {
+                        return await CryptoHelper.decryptionText(message);
+                    }
+                    else if (message.type === MessageType[MessageType.Sticker]) {
+                        let _message = getStickerPath(message);
+                        return await _message;
+                    }
+                    else {
+                        return message;
+                    }
+                }).subscribe(value => {
+                    results.push(value);
+                }, (err) => {
+                    console.warn("decryptMessage", err);
+                    resolve(results);
+                }, () => {
+                    console.log("decryptMessage complete");
+                    let sortResult = results.sort(self.compareMessage);
+                    resolve(sortResult);
+                });
+            }
+            else {
+                resolve(messages);
+            }
         });
     }
     onChat(message) {
@@ -152,193 +138,177 @@ class ChatRoomComponent {
     }
     onRoomJoin(data) { }
     onLeaveRoom(data) { }
-    messageReadTick(messageQueue, room_id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let chatMessages = Object.create(null);
-            let chats = yield this.get(room_id);
-            chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
-            messageQueue.forEach(message => {
-                chatMessages.some(value => {
-                    if (value._id === message._id) {
-                        value.readers = message.readers;
-                        return true;
-                    }
-                });
+    async messageReadTick(messageQueue, room_id) {
+        let chatMessages = Object.create(null);
+        let chats = await this.get(room_id);
+        chatMessages = (!!chats && Array.isArray(chats)) ? chats : new Array();
+        messageQueue.forEach(message => {
+            chatMessages.some(value => {
+                if (value._id === message._id) {
+                    value.readers = message.readers;
+                    return true;
+                }
             });
-            let results = yield this.save(room_id, chatMessages);
-            if (!!this.chatroomDelegate) {
-                this.chatroomDelegate(ON_MESSAGE_CHANGE, results);
-            }
         });
+        let results = await this.save(room_id, chatMessages);
+        if (!!this.chatroomDelegate) {
+            this.chatroomDelegate(ON_MESSAGE_CHANGE, results);
+        }
     }
     onMessageRead(message) {
         this.updateMessageQueue.push(message);
     }
-    getPersistentMessage(rid) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let self = this;
-            let messages = yield self.get(rid);
+    async getPersistentMessage(rid) {
+        let self = this;
+        let messages = await self.get(rid);
+        if (messages && messages.length > 0) {
+            return messages;
+        }
+        else {
+            console.log("chatMessages is empty!");
+            return new Array();
+        }
+    }
+    async getNewerMessageRecord(sessionToken, callback) {
+        let self = this;
+        let lastMessageTime = new Date();
+        const getLastMessageTime = (cb) => {
+            let { roomAccess } = getStore().getState().chatlogReducer;
+            async.some(roomAccess, (item, cb) => {
+                if (item.roomId === self.roomId) {
+                    lastMessageTime = item.accessTime;
+                    cb(null, true);
+                }
+                else
+                    cb(null, false);
+            }, (err, result) => {
+                cb(result);
+            });
+        };
+        const saveMergedMessage = async (decryptedChats) => {
+            let _results = new Array();
             if (messages && messages.length > 0) {
-                return messages;
+                _results = messages.concat(decryptedChats);
             }
             else {
-                console.log("chatMessages is empty!");
-                return new Array();
+                _results = decryptedChats.slice();
             }
-        });
-    }
-    getNewerMessageRecord(sessionToken, callback) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let self = this;
-            let lastMessageTime = new Date();
-            const getLastMessageTime = (cb) => {
-                let { roomAccess } = getStore().getState().chatlogReducer;
-                async.some(roomAccess, (item, cb) => {
-                    if (item.roomId === self.roomId) {
-                        lastMessageTime = item.accessTime;
-                        cb(null, true);
-                    }
-                    else
-                        cb(null, false);
-                }, (err, result) => {
-                    cb(result);
-                });
-            };
-            const saveMergedMessage = (decryptedChats) => __awaiter(this, void 0, void 0, function* () {
-                let _results = new Array();
-                if (messages && messages.length > 0) {
-                    _results = messages.concat(decryptedChats);
-                }
-                else {
-                    _results = decryptedChats.slice();
-                }
-                // Save persistent chats log here.
-                let results = yield self.save(self.roomId, _results);
-                callback(_results, this.roomId);
-            });
-            const getNewerMessage = () => __awaiter(this, void 0, void 0, function* () {
-                let histories = yield self.getNewerMessageFromNet(lastMessageTime, sessionToken);
-                let decryptedChats = yield self.decryptMessage(histories);
-                saveMergedMessage(decryptedChats);
-            });
-            let messages = yield self.get(this.roomId);
-            if (messages && messages.length > 0) {
-                if (messages[messages.length - 1] != null) {
-                    lastMessageTime = messages[messages.length - 1].createTime;
-                    getNewerMessage();
-                }
-                else {
-                    getLastMessageTime((boo) => {
-                        getNewerMessage();
-                    });
-                }
+            // Save persistent chats log here.
+            let results = await self.save(self.roomId, _results);
+            callback(_results, this.roomId);
+        };
+        const getNewerMessage = async () => {
+            let histories = await self.getNewerMessageFromNet(lastMessageTime, sessionToken);
+            let decryptedChats = await self.decryptMessage(histories);
+            saveMergedMessage(decryptedChats);
+        };
+        let messages = await self.get(this.roomId);
+        if (messages && messages.length > 0) {
+            if (messages[messages.length - 1] != null) {
+                lastMessageTime = messages[messages.length - 1].createTime;
+                getNewerMessage();
             }
             else {
                 getLastMessageTime((boo) => {
                     getNewerMessage();
                 });
             }
-        });
+        }
+        else {
+            getLastMessageTime((boo) => {
+                getNewerMessage();
+            });
+        }
     }
-    getNewerMessageFromNet(lastMessageTime, sessionToken) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let self = this;
-            let response = yield chatroomService.getChatHistory(self.roomId, lastMessageTime, sessionToken);
-            let value = yield response.json();
-            if (value.success) {
-                let histories = new Array();
-                histories = value.result;
-                return histories;
-            }
-            else {
-                console.log("WTF god only know.", value.message);
-                throw new Error(value.message);
-            }
-        });
+    async getNewerMessageFromNet(lastMessageTime, sessionToken) {
+        let self = this;
+        let response = await chatroomService.getChatHistory(self.roomId, lastMessageTime, sessionToken);
+        let value = await response.json();
+        if (value.success) {
+            let histories = new Array();
+            histories = value.result;
+            return histories;
+        }
+        else {
+            console.log("WTF god only know.", value.message);
+            throw new Error(value.message);
+        }
     }
-    getOlderMessageChunk(room_id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let self = this;
-            function saveRoomMessages(merged) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    let value = yield self.save(room_id, merged);
-                    return value;
-                });
-            }
-            let time = yield self.getTopEdgeMessageTime();
-            if (time) {
-                let response = yield chatroomService.getOlderMessagesCount(room_id, time.toString(), true);
-                let result = yield response.json();
-                console.log("getOlderMessageChunk value", result);
-                // todo
-                /**
-                 * Merge messages record to chatMessages array.
-                 * Never save message to persistend layer.
-                 */
-                if (result.success && result.result.length > 0) {
-                    let earlyMessages = result.result;
-                    let decryptedChats = yield self.decryptMessage(earlyMessages);
-                    let persistMessages = yield self.get(room_id);
-                    if (!!persistMessages && persistMessages.length > 0) {
-                        let mergedMessageArray = new Array();
-                        mergedMessageArray = decryptedChats.concat(persistMessages);
-                        let resultsArray = new Array();
-                        let results = yield new Promise((resolve, rejected) => {
-                            async.map(mergedMessageArray, function iterator(item, cb) {
-                                let hasMessage = resultsArray.some(function itor(value, id, arr) {
-                                    if (!!value && value._id === item._id) {
-                                        return true;
-                                    }
-                                });
-                                if (hasMessage === false) {
-                                    resultsArray.push(item);
-                                    cb(null, null);
+    async getOlderMessageChunk(room_id) {
+        let self = this;
+        async function saveRoomMessages(merged) {
+            let value = await self.save(room_id, merged);
+            return value;
+        }
+        let time = await self.getTopEdgeMessageTime();
+        if (time) {
+            let response = await chatroomService.getOlderMessagesCount(room_id, time.toString(), true);
+            let result = await response.json();
+            console.log("getOlderMessageChunk value", result);
+            // todo
+            /**
+             * Merge messages record to chatMessages array.
+             * Never save message to persistend layer.
+             */
+            if (result.success && result.result.length > 0) {
+                let earlyMessages = result.result;
+                let decryptedChats = await self.decryptMessage(earlyMessages);
+                let persistMessages = await self.get(room_id);
+                if (!!persistMessages && persistMessages.length > 0) {
+                    let mergedMessageArray = new Array();
+                    mergedMessageArray = decryptedChats.concat(persistMessages);
+                    let resultsArray = new Array();
+                    let results = await new Promise((resolve, rejected) => {
+                        async.map(mergedMessageArray, function iterator(item, cb) {
+                            let hasMessage = resultsArray.some(function itor(value, id, arr) {
+                                if (!!value && value._id === item._id) {
+                                    return true;
                                 }
-                                else {
-                                    cb(null, null);
-                                }
-                            }, function done(err, results) {
-                                let merged = resultsArray.sort(self.compareMessage);
-                                resolve(merged);
                             });
+                            if (hasMessage === false) {
+                                resultsArray.push(item);
+                                cb(null, null);
+                            }
+                            else {
+                                cb(null, null);
+                            }
+                        }, function done(err, results) {
+                            let merged = resultsArray.sort(self.compareMessage);
+                            resolve(merged);
                         });
-                        return yield saveRoomMessages(results);
-                    }
-                    else {
-                        let merged = decryptedChats.sort(self.compareMessage);
-                        return yield saveRoomMessages(merged);
-                    }
+                    });
+                    return await saveRoomMessages(results);
                 }
                 else {
-                    return new Array();
+                    let merged = decryptedChats.sort(self.compareMessage);
+                    return await saveRoomMessages(merged);
                 }
             }
             else {
-                throw new Error("getTopEdgeMessageTime fail");
+                return new Array();
             }
-        });
+        }
+        else {
+            throw new Error("getTopEdgeMessageTime fail");
+        }
     }
-    getTopEdgeMessageTime() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let self = this;
-            function waitRoomMessage() {
-                return __awaiter(this, void 0, void 0, function* () {
-                    let topEdgeMessageTime = new Date();
-                    let messages = yield self.get(self.roomId);
-                    if (!!messages && messages.length > 0) {
-                        if (!!messages[0].createTime) {
-                            topEdgeMessageTime = messages[0].createTime;
-                        }
-                    }
-                    return topEdgeMessageTime;
-                });
+    async getTopEdgeMessageTime() {
+        let self = this;
+        async function waitRoomMessage() {
+            let topEdgeMessageTime = new Date();
+            let messages = await self.get(self.roomId);
+            if (!!messages && messages.length > 0) {
+                if (!!messages[0].createTime) {
+                    topEdgeMessageTime = messages[0].createTime;
+                }
             }
-            return new Promise((resolve, reject) => {
-                waitRoomMessage().then((topEdgeMessageTime) => {
-                    resolve(topEdgeMessageTime);
-                }).catch(err => {
-                    reject(err);
-                });
+            return topEdgeMessageTime;
+        }
+        return new Promise((resolve, reject) => {
+            waitRoomMessage().then((topEdgeMessageTime) => {
+                resolve(topEdgeMessageTime);
+            }).catch(err => {
+                reject(err);
             });
         });
     }
@@ -352,20 +322,16 @@ class ChatRoomComponent {
         // a must be equal to b
         return 0;
     }
-    updateWhoReadMyMessages() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let self = this;
-            let res = yield self.getTopEdgeMessageTime();
-            let backendFactory = BackendFactory.getInstance();
-            let chatroomApi = backendFactory.getServer().getChatRoomAPI();
-            chatroomApi.getMessagesReaders(res.toString());
-        });
+    async updateWhoReadMyMessages() {
+        let self = this;
+        let res = await self.getTopEdgeMessageTime();
+        let backendFactory = BackendFactory.getInstance();
+        let chatroomApi = backendFactory.getServer().getChatRoomAPI();
+        chatroomApi.getMessagesReaders(res.toString());
     }
-    getMessages() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let messages = yield this.get(this.roomId);
-            return messages;
-        });
+    async getMessages() {
+        let messages = await this.get(this.roomId);
+        return messages;
     }
     dispose() {
         console.log("ChatRoomComponent: dispose");

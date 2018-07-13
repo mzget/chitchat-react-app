@@ -5,11 +5,11 @@
  */
 import * as Rx from "rxjs/Rx";
 const { ajax } = Rx.Observable;
-import { STALK_INIT_CHATLOG, getLastAccessRoom } from "../chitchat/chats/redux/chatlogs/";
+import { STALK_INIT_CHATLOG, getLastAccessRoom } from "stalk-simplechat";
+import { STALK_INIT_SUCCESS } from "stalk-simplechat/app/redux/stalkBridge/stalkBridgeActions";
+import { initChatsLog } from "stalk-simplechat/app/redux/chatlogs/chatlogsActions";
 import { TEAM_SELECTED, getTeamsInfo } from "../redux/team/teamRx";
 import { FETCH_USER_SUCCESS } from "../redux/user/userRx";
-import { STALK_INIT_SUCCESS } from "../chitchat/chats/redux/stalkBridge/stalkBridgeActions";
-import { initChatsLog } from "../chitchat/chats/redux/chatlogs/chatlogsActions";
 import Store from "../redux/configureStore";
 export const stalkInitSuccessEpic = (action$) => action$.ofType(STALK_INIT_SUCCESS).map((x) => {
     initChatsLog();

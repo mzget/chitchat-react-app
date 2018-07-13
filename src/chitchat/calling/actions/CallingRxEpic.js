@@ -1,4 +1,4 @@
-import { CallingEvents } from "stalk-js";
+import { CallingEvents } from "stalk-js/stalkjs";
 import { BackendFactory } from "stalk-js/starter";
 import { Observable } from "rxjs/Observable";
 import { createAction } from "redux-actions";
