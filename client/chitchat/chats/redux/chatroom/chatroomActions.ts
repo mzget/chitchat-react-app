@@ -25,7 +25,7 @@ import * as NotificationManager from "../stalkBridge/StalkNotificationActions";
 import { updateLastAccessRoom } from "../chatlogs/chatlogRxActions";
 import { updateMessagesRead } from "./chatroomRxEpic";
 
-import { MessageType, IMessage } from "../../../shared/Message";
+import { MessageType, IMessage } from "stalk-js/starter/models";
 import { Room, RoomType, IMember } from "stalk-simplechat/app/models/Room";
 import { MessageImp } from "stalk-simplechat/app/models/MessageImp";
 import { MemberImp } from "stalk-simplechat/app/models/MemberImp";

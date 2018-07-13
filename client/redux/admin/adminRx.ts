@@ -3,8 +3,8 @@ import * as Rx from "rxjs";
 const { ajax } = Rx.Observable;
 
 import Store from "../configureStore";
-import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
-const config = () => ChitChatFactory.getInstance().config;
+import InternalStore from "stalk-simplechat";
+const config = () => InternalStore.getConfig();
 
 import * as UserService from "../../chitchat/chats/services/UserService";
 

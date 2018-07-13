@@ -198,7 +198,8 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
     }
 
     roomInitialize(props: IComponentProps) {
-        const { chatroomReducer, userReducer }: { chatroomReducer: ChatRoomRecoder, userReducer: any } = props;
+        const { chatroomReducer, userReducer, stalkReducer }:
+            { chatroomReducer: ChatRoomRecoder, userReducer: any, stalkReducer: any } = props;
         if (!userReducer.user) {
             return this.props.dispatch(chatroom.leaveRoomAction());
         }
@@ -211,6 +212,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
         chatroom.initChatRoom(room);
         this.props.dispatch(chatroomRxEpic.getPersistendMessage(room._id));
         this.props.dispatch(chatroom.getChatTargetIds(room._id));
+        this.props.dispatch(chatroom.joinRoom(room._id, stalkReducer.stalkToken, stalkReducer.user.username));
     }
 
     setMessageStatus(uniqueId, status) {

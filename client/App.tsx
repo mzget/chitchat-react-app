@@ -13,6 +13,7 @@ import { apolloClient } from "./redux/rootReducer";
 import InternalStore, {
     SecureServiceFactory, LogLevel,
 } from "stalk-simplechat";
+// import { store } from "stalk-simplechat/app/redux/configStore";
 import {
     MessageDAL,
 } from "stalk-simplechat/app/DAL/MessageDAL";

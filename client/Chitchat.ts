@@ -1,6 +1,6 @@
 import { IApiConfig, IStalkConfig } from "stalk-js/starter";
 
-const apiStalk = "wss://chitchats.ga"; // "wss://chitchats.ga";
+const apiStalk = "wss://chitchats.ga";
 const stalkPort = 3020; // 3010
 const stalkKey = "chitchat1234";
 

@@ -22,7 +22,7 @@ import { SecureServiceFactory } from "../../secure/secureServiceFactory";
 import * as NotificationManager from "../stalkBridge/StalkNotificationActions";
 import { updateLastAccessRoom } from "../chatlogs/chatlogRxActions";
 import { updateMessagesRead } from "./chatroomRxEpic";
-import { MessageType } from "../../../shared/Message";
+import { MessageType } from "stalk-js/starter/models";
 import { RoomType } from "stalk-simplechat/app/models/Room";
 const getStore = () => InternalStore.store;
 const getConfig = () => InternalStore.config;

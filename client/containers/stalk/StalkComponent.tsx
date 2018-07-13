@@ -16,7 +16,7 @@ import * as chatroomRx from "../../chitchat/chats/redux/chatroom/chatroomRxEpic"
 class StalkComponent extends React.Component<any, any> {
     render() {
         return (
-            <div style={{width:"100%"}}>
+            <div style={{ width: "100%" }}>
                 {
                     (this.props.stalkReducer.state === StalkBridgeActions.STALK_INIT_FAILURE ||
                         this.props.stalkReducer.state === StalkBridgeActions.STALK_CONNECTION_PROBLEM) ?

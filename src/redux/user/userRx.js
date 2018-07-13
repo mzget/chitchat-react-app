@@ -49,7 +49,7 @@ export const updateUserInfoFailure = createAction(UPDATE_USER_INFO_FAILURE, (err
 export const updateUserInfoCancelled = createAction(UPDATE_USER_INFO_CANCELLED);
 export const updateUserInfo_Epic = (action$) => (action$.ofType(UPDATE_USER_INFO).mergeMap((action) => ajax({
     method: "POST",
-    url: `${config().api.user}/userInfo`,
+    url: `${config().user}/userInfo`,
     body: JSON.stringify({ user: action.payload }),
     headers: {
         "Content-Type": "application/json",
@@ -80,7 +80,7 @@ const fetchAgentSuccess = (payload) => ({ type: FETCH_AGENT_SUCCESS, payload });
 const fetchAgentFailure = (payload) => ({ type: FETCH_AGENT_FAILURE, payload });
 const fetchAgentCancelled = () => ({ type: FETCH_AGENT_CANCELLED });
 export const fetchAgentEpic = (action$) => (action$.ofType(FETCH_AGENT)
-    .mergeMap((action) => ajax.getJSON(`${config().api.user}/agent/${action.payload}`)
+    .mergeMap((action) => ajax.getJSON(`${config().user}/agent/${action.payload}`)
     .map(fetchAgentSuccess)
     .takeUntil(action$.ofType(FETCH_AGENT_CANCELLED))
     .catch((error) => Rx.Observable.of(fetchAgentFailure(error.xhr.response)))));
@@ -89,7 +89,7 @@ const FETCH_CONTACT_SUCCESS = "FETCH_CONTACT_SUCCESS";
 export const fetchContact = (contactId) => ({ type: FETCH_CONTACT, payload: contactId });
 const fetchContactSuccess = (payload) => ({ type: FETCH_CONTACT_SUCCESS, payload });
 export const fetchContactEpic = (action$) => action$.ofType(FETCH_CONTACT)
-    .mergeMap((action) => ajax.getJSON(`${config().api.user}/contact/?id=${action.payload}`)
+    .mergeMap((action) => ajax.getJSON(`${config().user}/contact/?id=${action.payload}`)
     .map(fetchContactSuccess)
     .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
     .catch((error) => Rx.Observable.of(fetchUserRejected(error.xhr.response))));
@@ -124,7 +124,7 @@ export const uploadUserAvatar_Epic = (action$) => (action$.ofType(UPLOAD_USER_AV
     body.append("file", action.payload);
     return ajax({
         method: "POST",
-        url: `${config().api.user}/uploadImage`,
+        url: `${config().user}/uploadImage`,
         body,
         headers: {
             "x-access-token": Store.getState().authReducer.token,

@@ -65,7 +65,7 @@ export const updateUserInfoCancelled = createAction(UPDATE_USER_INFO_CANCELLED);
 export const updateUserInfo_Epic = (action$) => (
     action$.ofType(UPDATE_USER_INFO).mergeMap((action) => ajax({
         method: "POST",
-        url: `${config().api.user}/userInfo`,
+        url: `${config().user}/userInfo`,
         body: JSON.stringify({ user: action.payload }),
         headers: {
             "Content-Type": "application/json",
@@ -102,7 +102,7 @@ const fetchAgentCancelled = () => ({ type: FETCH_AGENT_CANCELLED });
 export const fetchAgentEpic = (action$) => (
     action$.ofType(FETCH_AGENT)
         .mergeMap((action) =>
-            ajax.getJSON(`${config().api.user}/agent/${action.payload}`)
+            ajax.getJSON(`${config().user}/agent/${action.payload}`)
                 .map(fetchAgentSuccess)
                 .takeUntil(action$.ofType(FETCH_AGENT_CANCELLED))
                 .catch((error) => Rx.Observable.of(fetchAgentFailure(error.xhr.response))))
@@ -115,7 +115,7 @@ export const fetchContact = (contactId: string) => ({ type: FETCH_CONTACT, paylo
 const fetchContactSuccess = (payload) => ({ type: FETCH_CONTACT_SUCCESS, payload });
 export const fetchContactEpic = (action$) => action$.ofType(FETCH_CONTACT)
     .mergeMap((action) =>
-        ajax.getJSON(`${config().api.user}/contact/?id=${action.payload}`)
+        ajax.getJSON(`${config().user}/contact/?id=${action.payload}`)
             .map(fetchContactSuccess)
             .takeUntil(action$.ofType(FETCH_USER_CANCELLED))
             .catch((error) => Rx.Observable.of(fetchUserRejected(error.xhr.response))),
@@ -148,6 +148,7 @@ const UPLOAD_USER_AVATAR = "UPLOAD_USER_AVATAR";
 export const UPLOAD_USER_AVATAR_SUCCESS = "UPLOAD_USER_AVATAR_SUCCESS";
 export const UPLOAD_USER_AVATAR_FAILURE = "UPLOAD_USER_AVATAR_FAILURE";
 const UPLOAD_USER_AVATAR_CANCELLED = "UPLOAD_USER_AVATAR_CANCELLED";
+
 export const uploadUserAvatar = createAction(UPLOAD_USER_AVATAR, (file) => file);
 export const uploadUserAvatarSuccess = createAction(UPLOAD_USER_AVATAR_SUCCESS, (result) => result);
 export const uploadUserAvatarFailure = createAction(UPLOAD_USER_AVATAR_FAILURE, (error) => error);
@@ -160,7 +161,7 @@ export const uploadUserAvatar_Epic = (action$) => (
 
             return ajax({
                 method: "POST",
-                url: `${config().api.user}/uploadImage`,
+                url: `${config().user}/uploadImage`,
                 body,
                 headers: {
                     "x-access-token": Store.getState().authReducer.token,
