@@ -26,7 +26,9 @@ interface IComponentNameState {
 
 class TeamCreateBox extends React.Component<IComponentProps, IComponentNameState> {
 
-    componentWillMount() {
+    constructor(props) {
+        super(props);
+
         this.state = {
             team_name: "",
             teambox_state: TeamBoxState.idle

@@ -1,13 +1,11 @@
 ﻿import * as Rx from "rxjs";
-const { Observable: { ajax }, AjaxResponse } = Rx;
-
-import { BackendFactory } from "stalk-js/starter";
-import InternalStore from "stalk-simplechat";
-const config = () => InternalStore.apiConfig;
-
 import Store from "../configureStore";
 import { Room, RoomType } from "stalk-simplechat/app/models/Room";
 import { updateChatRoom } from "stalk-simplechat/app/redux/chatroom/chatroomActions";
+import InternalStore from "stalk-simplechat";
+
+const { Observable: { ajax }, AjaxResponse } = Rx;
+const config = () => InternalStore.apiConfig;
 
 export const SET_PRIVATE_GROUP = "SET_PRIVATE_GROUP";
 

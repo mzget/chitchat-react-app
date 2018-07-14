@@ -1,10 +1,10 @@
 import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
-const { ajax } = Rx.Observable;
 import Store from "../configureStore";
 import InternalStore from "stalk-simplechat";
-const config = () => InternalStore.apiConfig;
 import { updateChatRoom } from "stalk-simplechat";
+const config = () => InternalStore.apiConfig;
+const { ajax } = Rx.Observable;
 /**
  * Get org groups...
  */

@@ -16,7 +16,8 @@ var TeamBoxState;
     TeamBoxState[TeamBoxState["create"] = 2] = "create";
 })(TeamBoxState || (TeamBoxState = {}));
 class TeamCreateBox extends React.Component {
-    componentWillMount() {
+    constructor(props) {
+        super(props);
         this.state = {
             team_name: "",
             teambox_state: TeamBoxState.idle

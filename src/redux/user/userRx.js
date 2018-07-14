@@ -1,14 +1,14 @@
 import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
-const { ajax } = Rx.Observable;
 import InternalStore from "stalk-simplechat";
-const apiConfig = () => InternalStore.apiConfig;
 import { SimpleStorageFactory } from "../../chitchat/chats/dataAccessLayer";
-const appStorage = SimpleStorageFactory.getObject("app");
 import * as UserService from "../../chitchat/chats/services/UserService";
 import { StalkBridge } from "stalk-simplechat";
 import { AUTH_USER_SUCCESS, AUTH_SOCIAL_SUCCESS, TOKEN_AUTH_USER_SUCCESS } from "../authen/authRx";
 import Store from "../configureStore";
+const { ajax } = Rx.Observable;
+const apiConfig = () => InternalStore.apiConfig;
+const appStorage = SimpleStorageFactory.getObject("app");
 export const onAuth_Epic = (action$) => action$.filter((action) => (action.type === AUTH_USER_SUCCESS || action.type === AUTH_SOCIAL_SUCCESS || action.type === TOKEN_AUTH_USER_SUCCESS))
     .map((response) => fetchUser(Store.getState().authReducer.user));
 const FETCH_USER = "FETCH_USER";

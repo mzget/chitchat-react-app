@@ -2,12 +2,13 @@
 import Subheader from "material-ui/Subheader";
 import RaisedButton from "material-ui/RaisedButton";
 
+import { TeamListView } from "./TeamListView";
+import { ITeam } from "../../chitchat/chats/models/ITeam";
+
+
 const style = {
     margin: 6,
 };
-
-import { TeamListView } from "./TeamListView";
-import { ITeam } from "../../chitchat/chats/models/ITeam";
 
 abstract class IComponentNameProps {
     teams: Array<any>;

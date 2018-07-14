@@ -2,13 +2,9 @@ import { Record } from "immutable";
 import { createAction } from "redux-actions";
 
 import * as Rx from "rxjs/Rx";
-const { ajax } = Rx.Observable;
 import { StalkAccount } from "stalk-js/starter/models";
 import InternalStore from "stalk-simplechat";
-const apiConfig = () => InternalStore.apiConfig;
-
 import { SimpleStorageFactory } from "../../chitchat/chats/dataAccessLayer";
-const appStorage = SimpleStorageFactory.getObject("app");
 
 import * as UserService from "../../chitchat/chats/services/UserService";
 import { ChitChatAccount } from "../../chitchat/chats/models/User";
@@ -16,6 +12,11 @@ import { StalkBridge } from "stalk-simplechat";
 import { AUTH_USER_SUCCESS, AUTH_SOCIAL_SUCCESS, TOKEN_AUTH_USER_SUCCESS } from "../authen/authRx";
 
 import Store from "../configureStore";
+
+const { ajax } = Rx.Observable;
+const apiConfig = () => InternalStore.apiConfig;
+
+const appStorage = SimpleStorageFactory.getObject("app");
 
 export const onAuth_Epic = (action$) =>
     action$.filter((action) =>

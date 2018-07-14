@@ -1,13 +1,13 @@
 import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
-const { ajax } = Rx.Observable;
 import { RoomType } from "stalk-simplechat/app/models/Room";
-import * as groupService from "../../chitchat/chats/services/groupService";
+import * as groupService from "stalk-simplechat/app/services/GroupServices";
 import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
-const config = () => ChitChatFactory.getInstance().config;
 import Store from "../configureStore";
 import { SET_PRIVATE_GROUP } from "./privateGroupRxActions";
 import * as chatroomActions from "stalk-simplechat/app/redux/chatroom";
+const { ajax } = Rx.Observable;
+const config = () => ChitChatFactory.getInstance().config;
 /**
  * Edit group members...
  */

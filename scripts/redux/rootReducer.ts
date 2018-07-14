@@ -9,7 +9,7 @@
  *
  */
 
-import { combineReducers } from "redux";
+import { combineReducers, Store } from "redux";
 import { reducer as notificationsReducer } from "reapop";
 import { ApolloClient, createNetworkInterface } from "react-apollo";
 
@@ -17,7 +17,7 @@ import { chitchatGraphql } from "../Chitchat";
 import { LOG_OUT_SUCCESS } from "./authen/authRx";
 import { STALK_ON_SOCKET_RECONNECT } from "stalk-simplechat/app/redux/stalkBridge/stalkBridgeActions";
 import { stalkReducer, StalkInitState } from "stalk-simplechat/app/redux/stalkBridge/stalkReducer";
-import { chatroomReducer, chatRoomRecoder } from "stalk-simplechat/app/redux/chatroom/chatroomReducer";
+import { chatroomReducer, ChatRoomInitState } from "stalk-simplechat/app/redux/chatroom/chatroomReducer";
 import { chatlogReducer, ChatLogInitState } from "stalk-simplechat/app/redux/chatlogs/chatlogReducer";
 
 /*
@@ -44,7 +44,7 @@ export const apolloMiddleWare = apolloClient.middleware();
  * the rootReducer will call each and every reducer with the state and action
  * EVERY TIME there is a basic action
  */
-const appReducer = combineReducers({
+const s = {
     deviceReducer,
     authReducer,
     teamReducer,
@@ -57,7 +57,8 @@ const appReducer = combineReducers({
     alertReducer,
     notifications: notificationsReducer(),
     apollo: apolloReducer,
-});
+} as any;
+const appReducer = combineReducers(s);
 
 /*
  *
@@ -71,7 +72,7 @@ export function getInitialState() {
         groupReducer: new GroupInitState(),
         authReducer: new AuthenInitState(),
         stalkReducer: new StalkInitState(),
-        chatroomReducer: chatRoomRecoder,
+        chatroomReducer: new ChatRoomInitState(),
         chatlogReducer: new ChatLogInitState(),
         userReducer: new UserInitState(),
         adminReducer: new AdminInitState(),

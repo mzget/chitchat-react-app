@@ -1,10 +1,10 @@
 import * as React from "react";
 import Subheader from "material-ui/Subheader";
 import RaisedButton from "material-ui/RaisedButton";
+import { TeamListView } from "./TeamListView";
 const style = {
     margin: 6,
 };
-import { TeamListView } from "./TeamListView";
 class IComponentNameProps {
 }
 export const TeamListBox = (props) => (<div>

@@ -23,8 +23,10 @@ class Contacts extends React.Component {
                 let contacts = teamReducer.members.filter((v, i) => {
                     return v._id === this._tempContact_id;
                 });
-                let members = chatroomActions.createChatRoom(userReducer.user, contacts[0]);
-                this.props.dispatch(chatroomRx.createPrivateChatRoom(members.owner, members.contact));
+                let members = chatroomActions.createPrivateChatRoomMembers(userReducer.user, contacts[0]);
+                if (members) {
+                    this.props.dispatch(chatroomRx.createPrivateChatRoom(members.owner, members.contact));
+                }
             }
         }
     }
@@ -36,7 +38,9 @@ class Contacts extends React.Component {
     }
     render() {
         return (<div>
-                <Subheader>Chats</Subheader>
+                <Subheader>
+                    Chats
+                </Subheader>
                 <MemberList items={this.props.teamReducer.members} onSelected={this.onselectMember}/>
             </div>);
     }

@@ -4,9 +4,6 @@
  * This is pure function action for redux app.
  */
 
-import * as Rx from "rxjs/Rx";
-const { ajax } = Rx.Observable;
-
 import { STALK_INIT_CHATLOG, getLastAccessRoom } from "stalk-simplechat";
 import { STALK_INIT_SUCCESS } from "stalk-simplechat/app/redux/stalkBridge/stalkBridgeActions";
 import { initChatsLog } from "stalk-simplechat/app/redux/chatlogs/chatlogsActions";

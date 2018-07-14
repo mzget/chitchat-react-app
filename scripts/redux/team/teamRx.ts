@@ -2,12 +2,13 @@
 import { Record } from "immutable";
 import { createAction, Reducer } from "redux-actions";
 import * as Rx from "rxjs/Rx";
-const { ajax } = Rx.Observable;
 
 import Store from "../configureStore";
 import * as userRx from "../user/userRx";
 import { ITeamMember } from "../../chitchat/chats/models/ITeamMember";
+
 const getConfig = () => InternalStore.apiConfig;
+const { ajax } = Rx.Observable;
 
 const FETCH_USER_TEAMS = "FETCH_USER_TEAMS";
 const FETCH_USER_TEAMS_SUCCESS = "FETCH_USER_TEAMS_SUCCESS";

@@ -4,10 +4,9 @@ import { shallowEqual } from "recompose";
 import Flexbox from "flexbox-react";
 import { grey50 } from "material-ui/styles/colors";
 import InternalStore from "stalk-simplechat";
-const getConfig = () => InternalStore.apiConfig;
-import { StalkBridgeActions } from "stalk-simplechat";
-import * as chatroom from "stalk-simplechat/app/redux/chatroom";
-import { chatroomRxEpic } from "stalk-simplechat/app/redux/chatroom";
+import * as StalkBridgeActions from "stalk-simplechat/app/redux/stalkBridge/stalkBridgeActions";
+import * as chatroom from "stalk-simplechat/app/redux/chatroom/chatroomActions";
+import * as chatroomRxEpic from "stalk-simplechat/app/redux/chatroom/chatroomRxEpic";
 import { TypingBox } from "./TypingBox";
 import { ChatBox } from "./chat/ChatBox";
 import { SnackbarToolBox } from "./toolsbox/SnackbarToolBox";
@@ -17,6 +16,7 @@ import { MapDialog } from "./chat/MapDialog";
 import { imagesPath } from "../chitchat/consts/StickerPath";
 import * as FileType from "../chitchat/shared/FileType";
 import { decorateMessage } from "../actions/chatroom/chatroomMessageUtils";
+const getConfig = () => InternalStore.apiConfig;
 class Chat extends React.Component {
     constructor(props) {
         super(props);
@@ -141,7 +141,7 @@ class Chat extends React.Component {
                 // this.setMessageStatus(chatroomReducer.responseMessage.uuid, "ErrorButton");
                 break;
             }
-            case chatroom.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
+            case chatroom.ON_EARLY_MESSAGE_READY: {
                 this.setState((previousState) => ({
                     ...previousState,
                     earlyMessageReady: chatroomReducer.earlyMessageReady,

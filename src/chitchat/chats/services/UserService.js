@@ -1,6 +1,6 @@
 import * as Rx from "rxjs/Rx";
-const { ajax } = Rx.Observable;
 import InternalStore, { apiHeaders } from "stalk-simplechat";
+const { ajax } = Rx.Observable;
 const getConfig = () => InternalStore.apiConfig;
 export function getTeamProfile(token, team_id) {
     return Rx.Observable.ajax({

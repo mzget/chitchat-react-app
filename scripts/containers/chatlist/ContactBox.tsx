@@ -5,7 +5,6 @@ import Subheader from "material-ui/Subheader";
 
 import { IComponentProps } from "../../utils/IComponentProps";
 
-import * as userRx from "../../redux/user/userRx";
 import * as teamRx from "../../redux/team/teamRx";
 import * as chatroomActions from "stalk-simplechat/app/redux/chatroom/chatroomActions";
 import * as chatroomRx from "stalk-simplechat/app/redux/chatroom/chatroomRxEpic";
@@ -33,8 +32,10 @@ class Contacts extends React.Component<IComponentProps, IComponentNameState> {
                 let contacts = teamReducer.members.filter((v, i) => {
                     return v._id === this._tempContact_id;
                 });
-                let members = chatroomActions.createChatRoom(userReducer.user, contacts[0]);
-                this.props.dispatch(chatroomRx.createPrivateChatRoom(members.owner, members.contact));
+                let members = chatroomActions.createPrivateChatRoomMembers(userReducer.user, contacts[0]);
+                if (members) {
+                    this.props.dispatch(chatroomRx.createPrivateChatRoom(members.owner, members.contact));
+                }
             }
         }
     }
@@ -51,9 +52,12 @@ class Contacts extends React.Component<IComponentProps, IComponentNameState> {
     public render(): JSX.Element {
         return (
             <div>
-                <Subheader>Chats</Subheader>
+                <Subheader>
+                    Chats
+                </Subheader>
                 <MemberList items={this.props.teamReducer.members} onSelected={this.onselectMember} />
-            </div>);
+            </div>
+        );
     }
 }
 

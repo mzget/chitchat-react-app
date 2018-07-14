@@ -28,7 +28,9 @@ interface IComponentNameState {
 }
 
 export class ChatLogsBox extends React.Component<IComponentNameProps, IComponentNameState> {
-    componentWillMount() {
+    constructor(props) {
+        super(props);
+
         this.state = {
             search: "",
             chatsLog: [],

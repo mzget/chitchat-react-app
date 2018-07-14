@@ -334,24 +334,6 @@ export const getRoom = (room_id) => {
     });
     return rooms[0];
 };
-export const createChatRoom = (myUser, contactUser) => {
-    if (myUser && contactUser) {
-        const owner = {};
-        owner._id = myUser._id;
-        owner.user_role = (myUser.role) ? myUser.role : "user";
-        owner.username = `${myUser.firstname} ${myUser.lastname}`;
-        const contact = {};
-        contact._id = contactUser._id;
-        contact.user_role = (contactUser.role) ? contactUser.role : "user";
-        contact.username = `${contactUser.firstname} ${contactUser.lastname}`;
-        const members = { owner, contact };
-        return members;
-    }
-    else {
-        console.warn("Not yet ready for create chatroom");
-        return null;
-    }
-};
 export const UPDATED_CHATROOMS = "UPDATED_CHATROOMS";
 export const updatedChatRoomSuccess = (chatrooms) => ({ type: UPDATED_CHATROOMS, payload: chatrooms });
 export const updateChatRoom = (rooms) => {

@@ -2,13 +2,12 @@
 import InternalStore, { StalkBridge } from "stalk-simplechat";
 import { createAction } from "redux-actions";
 import * as Rx from "rxjs/Rx";
-const { Observable } = Rx;
-const { ajax, fromPromise } = Observable;
-
 import Store from "../configureStore";
 import { Services } from "stalk-simplechat";
 import * as AppActions from "../app/persistentDataActions";
 
+const { Observable } = Rx;
+const { ajax, fromPromise } = Observable;
 const authService = Services.AuthService;
 
 const SIGN_UP = "SIGN_UP";

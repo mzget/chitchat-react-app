@@ -1,9 +1,9 @@
 import * as Rx from "rxjs";
-const { Observable: { ajax }, AjaxResponse } = Rx;
-import InternalStore from "stalk-simplechat";
-const config = () => InternalStore.apiConfig;
 import Store from "../configureStore";
 import { updateChatRoom } from "stalk-simplechat/app/redux/chatroom/chatroomActions";
+import InternalStore from "stalk-simplechat";
+const { Observable: { ajax }, AjaxResponse } = Rx;
+const config = () => InternalStore.apiConfig;
 export const SET_PRIVATE_GROUP = "SET_PRIVATE_GROUP";
 const GET_PRIVATE_GROUP = "GET_PRIVATE_GROUP";
 export const GET_PRIVATE_GROUP_SUCCESS = "GET_PRIVATE_GROUP_SUCCESS";

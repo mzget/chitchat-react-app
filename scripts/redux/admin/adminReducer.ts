@@ -1,5 +1,4 @@
-﻿
-import { Record } from "immutable";
+﻿import { Record } from "immutable";
 import * as adminRx from "./adminRx";
 
 export const AdminInitState = Record({

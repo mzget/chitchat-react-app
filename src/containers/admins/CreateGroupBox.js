@@ -5,10 +5,10 @@ import { darkWhite } from "material-ui/styles/colors";
 import { CreateGroupView } from "./CreateGroupView";
 import { SelectOrgChartView } from "./SelectOrgChartView";
 import { ChitChatFactory } from "../../chitchat/chats/ChitChatFactory";
-const config = () => ChitChatFactory.getInstance().config;
 import { RoomType, MemberRole } from "../../chitchat/chats/models/Room";
 import * as groupRx from "../../redux/group/groupRx";
 import * as privateGroupRx from "../../redux/group/privateGroupRxActions";
+const config = () => ChitChatFactory.getInstance().config;
 export const createOrgGroup = "create-org-group";
 export const createPjbGroup = "create-projectbase-group";
 export const createPvGroup = "create-group";
@@ -52,7 +52,7 @@ class CreateGroupBox extends React.Component {
             let next = Immutable.fromJS(groupReducer);
             if (!next.equals(prev)) {
                 this.groupImage = null;
-                this.group.image = `${config().api.host}${groupReducer.groupImageResult.path}`;
+                this.group.image = `${config().host}${groupReducer.groupImageResult.path}`;
                 this.submit();
             }
         }

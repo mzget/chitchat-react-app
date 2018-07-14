@@ -1,10 +1,10 @@
 import { createAction } from "redux-actions";
 import * as Rx from "rxjs";
-const { ajax } = Rx.Observable;
 import Store from "../configureStore";
 import InternalStore from "stalk-simplechat";
-const config = () => InternalStore.getConfig();
 import * as UserService from "../../chitchat/chats/services/UserService";
+const config = () => InternalStore.apiConfig;
+const { ajax } = Rx.Observable;
 const CREATE_NEW_ORG_CHART = "CREATE_NEW_ORG_CHART";
 export const CREATE_NEW_ORG_CHART_SUCCESS = "CREATE_NEW_ORG_CHART_SUCCESS";
 export const CREATE_NEW_ORG_CHART_FAILURE = "CREATE_NEW_ORG_CHART_FAILURE";
@@ -16,7 +16,7 @@ const createNewOrgChartCancelled = createAction(CREATE_NEW_ORG_CHART_CANCELLED);
 export const createNewOrgChartEpic = action$ => action$.ofType(CREATE_NEW_ORG_CHART)
     .mergeMap(action => ajax({
     method: "POST",
-    url: `${config().api.orgChart}/create`,
+    url: `${config().orgChart}/create`,
     body: JSON.stringify({
         chart: action.payload.chart,
         permission: action.payload.team_role
@@ -38,7 +38,7 @@ const getOrgChartSuccess = createAction(GET_ORG_CHART_SUCCESS, payload => payloa
 const getOrgChartFailure = createAction(GET_ORG_CHART_FAILURE, error => error);
 const getOrgChartCancelled = createAction(GET_ORG_CHART_CANCELLED);
 export const getOrgChartEpic = action$ => action$.ofType(GET_ORG_CHART)
-    .mergeMap(action => ajax.getJSON(`${config().api.orgChart}/team/${action.payload}`, {
+    .mergeMap(action => ajax.getJSON(`${config().orgChart}/team/${action.payload}`, {
     "x-access-token": Store.getState().authReducer.token
 }).map(json => getOrgChartSuccess(json))
     .takeUntil(action$.ofType(GET_ORG_CHART_CANCELLED))

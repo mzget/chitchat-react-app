@@ -5,7 +5,8 @@ import * as chatroomActions from "stalk-simplechat/app/redux/chatroom/chatroomAc
 import * as ChatLogRxActions from "stalk-simplechat/app/redux/chatlogs/chatlogRxActions";
 import { ListChatLogs } from "./ListChatLogs";
 export class ChatLogsBox extends React.Component {
-    componentWillMount() {
+    constructor(props) {
+        super(props);
         this.state = {
             search: "",
             chatsLog: [],

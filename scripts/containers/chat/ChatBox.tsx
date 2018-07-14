@@ -1,13 +1,11 @@
 import * as React from "react";
 import { Store } from "redux";
-const FontAwesome = require("react-fontawesome");
 
 import { indigo50, white, grey50, green50 } from "material-ui/styles/colors";
 import { List, ListItem } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
-import * as FileType from "../../chitchat/shared/FileType";
 import { MessageImp } from "stalk-simplechat/app/models";
 import { MessageType } from "stalk-js/starter/models";
 
@@ -18,6 +16,7 @@ import { CardVideoWithAvatar } from "../../components/CardVideoWithAvatar";
 import { CardMapWithAvatar } from "../../components/Cards/CardMapWithAvatar";
 
 import configureStore from "../../redux/configureStore";
+const FontAwesome = require("react-fontawesome");
 
 interface IChatBoxProps {
     value: Array<MessageImp>;

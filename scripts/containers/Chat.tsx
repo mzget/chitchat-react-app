@@ -6,11 +6,10 @@ import Flexbox from "flexbox-react";
 import { indigo50, white, grey50 } from "material-ui/styles/colors";
 
 import InternalStore from "stalk-simplechat";
-const getConfig = () => InternalStore.apiConfig;
 
-import { StalkBridgeActions } from "stalk-simplechat";
-import * as chatroom from "stalk-simplechat/app/redux/chatroom";
-import { chatroomRxEpic } from "stalk-simplechat/app/redux/chatroom";
+import * as StalkBridgeActions from "stalk-simplechat/app/redux/stalkBridge/stalkBridgeActions";
+import * as chatroom from "stalk-simplechat/app/redux/chatroom/chatroomActions";
+import * as chatroomRxEpic from "stalk-simplechat/app/redux/chatroom/chatroomRxEpic";
 
 import { TypingBox } from "./TypingBox";
 import { ChatBox } from "./chat/ChatBox";
@@ -28,6 +27,8 @@ import * as FileType from "../chitchat/shared/FileType";
 
 import { decorateMessage, IMessageDecorator } from "../actions/chatroom/chatroomMessageUtils";
 import { IComponentProps } from "../utils/IComponentProps";
+
+const getConfig = () => InternalStore.apiConfig;
 
 interface IComponentNameState {
     messages: any[];
@@ -167,7 +168,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
                 // this.setMessageStatus(chatroomReducer.responseMessage.uuid, "ErrorButton");
                 break;
             }
-            case chatroom.ChatRoomActionsType.ON_EARLY_MESSAGE_READY: {
+            case chatroom.ON_EARLY_MESSAGE_READY: {
                 this.setState((previousState) => ({
                     ...previousState,
                     earlyMessageReady: chatroomReducer.earlyMessageReady,
@@ -199,7 +200,7 @@ class Chat extends React.Component<IComponentProps, IComponentNameState> {
 
     roomInitialize(props: IComponentProps) {
         const { chatroomReducer, userReducer, stalkReducer }:
-            { chatroomReducer: ChatRoomRecoder, userReducer: any, stalkReducer: any } = props;
+            { chatroomReducer: any, userReducer: any, stalkReducer: any } = props;
         if (!userReducer.user) {
             return this.props.dispatch(chatroom.leaveRoomAction());
         }

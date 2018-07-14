@@ -1,5 +1,4 @@
 import * as React from "react";
-const FontAwesome = require("react-fontawesome");
 import { white, green50 } from "material-ui/styles/colors";
 import { List, ListItem } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
@@ -11,6 +10,7 @@ import { CardFileWithAvatar } from "../../components/CardFileWithAvatar";
 import { CardVideoWithAvatar } from "../../components/CardVideoWithAvatar";
 import { CardMapWithAvatar } from "../../components/Cards/CardMapWithAvatar";
 import configureStore from "../../redux/configureStore";
+const FontAwesome = require("react-fontawesome");
 ;
 export const ChatBox = (props) => (<MuiThemeProvider>
         <List style={props.styles} id={"chatbox"}>

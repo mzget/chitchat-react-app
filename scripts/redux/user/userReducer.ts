@@ -1,6 +1,5 @@
 import { Record } from "immutable";
 import * as Rx from "rxjs/Rx";
-const { ajax } = Rx.Observable;
 
 import {
     FETCH_USER_SUCCESS,
