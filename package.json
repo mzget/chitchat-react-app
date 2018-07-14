@@ -51,7 +51,7 @@
     "rxjs": "^5.5.6",
     "socket.io-client": "^2.0.4",
     "stalk-js": "0.1",
-    "stalk-simplechat": "^1.1.1",
+    "stalk-simplechat": "https://github.com/mzget/simple-chat#develop",
     "tracking": "^1.1.3",
     "typeface-roboto": "0.0.35",
     "valid-url": "^1.0.9",

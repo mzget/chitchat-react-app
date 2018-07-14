@@ -42,7 +42,7 @@ import { AudioCallPage } from "./containers/voip/AudioCallPage";
 import { SMALL_TABLET } from "./chitchat/consts/Breakpoints";
 import { defaultMuiTheme } from "./utils/";
 
-InternalStore.logLevel = LogLevel.error;
+InternalStore.logLevel = LogLevel.debug;
 InternalStore.initConfig(config.Stalk);
 InternalStore.initApiConfig(config.api);
 InternalStore.initStore(Store);

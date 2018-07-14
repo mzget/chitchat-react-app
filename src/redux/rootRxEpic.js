@@ -1,7 +1,7 @@
 import { combineEpics } from "redux-observable";
 import * as userRx from "./user/userRx";
 import * as chatroom from "stalk-simplechat/app/redux/chatroom/chatroomRxEpic";
-import { getLastAccessRoom_Epic, updateLastAccessRoom_Epic, removeRoomAccess_Epic } from "stalk-simplechat/app/redux/chatlogs";
+import { getLastAccessRoomEpic, updateLastAccessRoomEpic, removeRoomAccessEpic } from "stalk-simplechat/app/redux/chatlogs/chatlogRxActions";
 import * as calling from "../chitchat/calling/";
 import * as authRx from "./authen/authRx";
 import * as teamRx from "./team/teamRx";
@@ -29,4 +29,4 @@ chatroom.getPrivateChatRoom_Epic, chatroom.createPrivateChatRoomEpic, chatroom.u
 // messageRxEpic.fetchOlderMessageCount_Epic,
 calling.hangupVideoCall_Epic, 
 /// @chatlogs
-getLastAccessRoom_Epic, updateLastAccessRoom_Epic, removeRoomAccess_Epic, stalkInitSuccessEpic, stalkInitChatlogEpic, getTeamsInfoEpic);
+getLastAccessRoomEpic, updateLastAccessRoomEpic, removeRoomAccessEpic, stalkInitSuccessEpic, stalkInitChatlogEpic, getTeamsInfoEpic);

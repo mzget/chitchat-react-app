@@ -12,25 +12,7 @@ import InternalStore, { SecureServiceFactory, LogLevel, } from "stalk-simplechat
 // import { store } from "stalk-simplechat/app/redux/configStore";
 import { MessageDAL, } from "stalk-simplechat/app/DAL/MessageDAL";
 import { config } from "./Chitchat";
-import { ReapopNotiBoxWithState } from "./components/NotificationSystem";
-import { StalkNotiDialog } from "./containers/stalk/StalkNotiDialog";
-import { StalkCompEnhancer } from "./containers/stalk/StalkComponent";
-import { FetchingDialogEnhance } from "./containers/toolsbox/FetchingDialog";
-import { HomeWithDialogEnhance } from "./containers/Home";
-import { ForgotAccount } from "./containers/ForgottenAccount";
-import { ChatPageEnhanced } from "./containers/ChatPageEnhanced";
-import { ChatRoomSettingsEnhanced } from "./containers/ChatRoomSettingsPage";
-import { TeamPageEnhanced } from "./containers/TeamPageEnhanced";
-import { m_ProfilePageEnhanced } from "./containers/m_ProfilePageEnhanced";
-import { MainPageWithDialog } from "./containers/Main";
-import { M_MainPageEnhanced } from "./containers/m_Main";
-import { AdminWithDialogEnhance } from "./containers/Admin";
-import { VideoCallSample } from "./containers/voip/VideoCallSample";
-import { VideoCallPage } from "./containers/voip/VideoCallPage";
-import { AudioCallPage } from "./containers/voip/AudioCallPage";
-import { SMALL_TABLET } from "./chitchat/consts/Breakpoints";
-import { defaultMuiTheme } from "./utils/";
-InternalStore.logLevel = LogLevel.debug;
+InternalStore.logLevel = LogLevel.error;
 InternalStore.initConfig(config.Stalk);
 InternalStore.initApiConfig(config.api);
 InternalStore.initStore(Store);
@@ -54,6 +36,24 @@ Store.subscribe(() => {
     //     members: Store.getState().teamReducer.members,
     // });
 });
+import { ReapopNotiBoxWithState } from "./components/NotificationSystem";
+import { StalkNotiDialog } from "./containers/stalk/StalkNotiDialog";
+import { StalkCompEnhancer } from "./containers/stalk/StalkComponent";
+import { FetchingDialogEnhance } from "./containers/toolsbox/FetchingDialog";
+import { HomeWithDialogEnhance } from "./containers/Home";
+import { ForgotAccount } from "./containers/ForgottenAccount";
+import { ChatPageEnhanced } from "./containers/ChatPageEnhanced";
+import { ChatRoomSettingsEnhanced } from "./containers/ChatRoomSettingsPage";
+import { TeamPageEnhanced } from "./containers/TeamPageEnhanced";
+import { m_ProfilePageEnhanced } from "./containers/m_ProfilePageEnhanced";
+import { MainPageWithDialog } from "./containers/Main";
+import { M_MainPageEnhanced } from "./containers/m_Main";
+import { AdminWithDialogEnhance } from "./containers/Admin";
+import { VideoCallSample } from "./containers/voip/VideoCallSample";
+import { VideoCallPage } from "./containers/voip/VideoCallPage";
+import { AudioCallPage } from "./containers/voip/AudioCallPage";
+import { SMALL_TABLET } from "./chitchat/consts/Breakpoints";
+import { defaultMuiTheme } from "./utils/";
 const NoMatch = ({ location }) => (<div>
         <h3>No match for <code>{location.pathname}</code></h3>
     </div>);
