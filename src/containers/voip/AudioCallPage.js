@@ -43,7 +43,7 @@ class AudioCall extends React.Component {
         let room_id = match.params.id;
         let room = chatroom.getRoom(room_id);
         let targets = new Array();
-        if (!!room && room.members.length > 0) {
+        if (!!room && Array.isArray(room.members)) {
             room.members.map(value => {
                 if (value._id !== user._id) {
                     targets.push(value._id);
@@ -74,7 +74,7 @@ class AudioCall extends React.Component {
             self.props.dispatch(calling.onCalling(room_id));
             let room = chatroom.getRoom(room_id);
             let targets = new Array();
-            if (!!room) {
+            if (!!room && Array.isArray(room.members)) {
                 room.members.map(value => {
                     if (value._id !== user._id) {
                         targets.push(value._id);
@@ -90,8 +90,8 @@ class AudioCall extends React.Component {
     render() {
         let { team } = this.props.teamReducer;
         let remoteUser = {
-            avatar: null,
-            username: '',
+            avatar: "",
+            username: "",
         };
         let room_id = this.props.match.params.id;
         let room = chatroom.getRoom(room_id);
