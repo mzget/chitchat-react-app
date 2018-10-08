@@ -8,6 +8,10 @@ const apiChitchat = "https://chitchats.ga:9000"; // "http://localhost:9000"; "ht
 export const chitchatGraphql = "https://chitchats.ga:9000/graphql"; // "http://localhost:9000/graphql" : "https://chitchats.ga/graphql";
 export const signalingServer = "https://chitchats.ga:8888";
 
+interface ApiConfig extends IApiConfig {
+    stalk_user: string;
+}
+
 export const config = {
     Stalk: {
         apiKey: stalkKey,
@@ -29,7 +33,7 @@ export const config = {
         message: `${apiChitchat}/api/stalk/message`,
         stalk_user: `${apiChitchat}/api/stalk/user`,
         fileUpload: `${apiChitchat}/chats/upload`,
-    } as IApiConfig,
+    } as ApiConfig,
     appConfig: {
         encryption: true,
         secret: "chitchat#1234",

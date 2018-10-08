@@ -1,7 +1,7 @@
 import { combineEpics } from "redux-observable";
 import * as userRx from "./user/userRx";
 import * as chatroom from "stalk-simplechat/app/redux/chatroom/chatroomRxEpic";
-import { getLastAccessRoomEpic, updateLastAccessRoomEpic, removeRoomAccessEpic } from "stalk-simplechat/app/redux/chatlogs/chatlogRxActions";
+import { updateLastAccessRoomEpic, removeRoomAccessEpic } from "stalk-simplechat/app/redux/chatlogs/chatlogRxActions";
 import * as calling from "../chitchat/calling/";
 import * as authRx from "./authen/authRx";
 import * as teamRx from "./team/teamRx";
@@ -10,6 +10,7 @@ import * as groupRx from "./group/groupRx";
 import * as privateGroupRxActions from "./group/privateGroupRxActions";
 import * as editGroupRxActions from "./group/editGroupRxActions";
 import { stalkInitChatlogEpic, getTeamsInfoEpic, stalkInitSuccessEpic } from "../actions/chitchatRxActions";
+import { getLastAccessRoomEpic } from "./chatlogs/chatlogRxActions";
 export const rootEpic = combineEpics(
 // @Admin
 adminRx.createNewOrgChartEpic, adminRx.getOrgChartEpic, adminRx.updateUserOrgChartEpic, adminRx.updateUserTeamRole_Epic, userRx.onAuth_Epic, userRx.fetchUser_Epic, userRx.suggestUser_Epic, userRx.fetchContactEpic, userRx.fetchAgentEpic, userRx.getTeamProfileEpic, userRx.uploadUserAvatar_Epic, userRx.updateUserInfo_Epic, userRx.saveDeviceToken_Epic, 
@@ -24,7 +25,7 @@ groupRx.getOrgGroupEpic, groupRx.createOrgGroupEpic, groupRx.uploadGroupImageEpi
  */
 privateGroupRxActions.getPrivateGroup_Epic, privateGroupRxActions.createPrivateGroup_Epic, 
 /// @ChatRoom
-chatroom.getPrivateChatRoom_Epic, chatroom.createPrivateChatRoomEpic, chatroom.uploadFileEpic, 
+chatroom.getPrivateChatRoomEpic, chatroom.createPrivateChatRoomEpic, chatroom.uploadFileEpic, 
 /// @message rx.
 // messageRxEpic.fetchOlderMessageCount_Epic,
 calling.hangupVideoCall_Epic, 

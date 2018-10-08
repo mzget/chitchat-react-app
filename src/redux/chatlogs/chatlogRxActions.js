@@ -4,12 +4,12 @@
  * This is pure function action for redux app.
  */
 import * as Rx from "rxjs/Rx";
-const { ajax } = Rx.Observable;
 import { BackendFactory } from "stalk-js/starter";
 import InternalStore from "stalk-simplechat";
-import * as ServiceProvider from "../../services/ServiceProvider";
+import * as ServiceProvider from "../../chitchat/chats/services/ServiceProvider";
 const getStore = () => InternalStore.store;
 const authReducer = () => InternalStore.authStore;
+const { ajax } = Rx.Observable;
 export const STALK_REMOVE_ROOM_ACCESS = "STALK_REMOVE_ROOM_ACCESS";
 export const STALK_REMOVE_ROOM_ACCESS_FAILURE = "STALK_REMOVE_ROOM_ACCESS_FAILURE";
 export const STALK_REMOVE_ROOM_ACCESS_SUCCESS = "STALK_REMOVE_ROOM_ACCESS_SUCCESS";
@@ -100,7 +100,8 @@ export const GET_LAST_ACCESS_ROOM_FAILURE = "GET_LAST_ACCESS_ROOM_FAILURE";
 export const getLastAccessRoom = (teamId) => ({ type: GET_LAST_ACCESS_ROOM, payload: { teamId } });
 const getLastAccessRoomSuccess = (payload) => ({ type: GET_LAST_ACCESS_ROOM_SUCCESS, payload });
 const getLastAccessRoomFailure = (error) => ({ type: GET_LAST_ACCESS_ROOM_FAILURE, payload: error });
-export const getLastAccessRoomEpic = (action$) => (action$.ofType(GET_LAST_ACCESS_ROOM).mergeMap((action) => {
+export const getLastAccessRoomEpic = (action$) => (action$.ofType(GET_LAST_ACCESS_ROOM)
+    .mergeMap((action) => {
     const { teamId } = action.payload;
     return ServiceProvider.getLastAccessRoomInfo(teamId)
         .then((response) => response.json())

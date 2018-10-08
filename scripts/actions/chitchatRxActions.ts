@@ -4,12 +4,13 @@
  * This is pure function action for redux app.
  */
 
-import { STALK_INIT_CHATLOG, getLastAccessRoom } from "stalk-simplechat";
+import { STALK_INIT_CHATLOG } from "stalk-simplechat";
 import { STALK_INIT_SUCCESS } from "stalk-simplechat/app/redux/stalkBridge/stalkBridgeActions";
 import { ChatlogRedux } from "stalk-simplechat";
+import * as chatlogRxActions from "../redux/chatlogs/chatlogRxActions";
+
 import { TEAM_SELECTED, getTeamsInfo } from "../redux/team/teamRx";
 import { FETCH_USER_SUCCESS } from "../redux/user/userRx";
-
 import Store from "../redux/configureStore";
 
 export const stalkInitSuccessEpic = (action$) =>
@@ -23,8 +24,7 @@ export const stalkInitChatlogEpic = (action$) =>
         .map((x) => {
             if (!!Store.getState().teamReducer.team) {
                 const teamId = Store.getState().teamReducer.team._id;
-
-                return getLastAccessRoom(teamId);
+                return chatlogRxActions.getLastAccessRoom(teamId);
             } else {
                 return { type: "" };
             }

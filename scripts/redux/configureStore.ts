@@ -14,7 +14,7 @@
  *
  * redux functions
  */
-import { createStore, combineReducers, applyMiddleware, compose } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { createEpicMiddleware } from "redux-observable";
 
@@ -28,8 +28,7 @@ let createStoreWithMiddleware: any = null;
 
 if (process.env.NODE_ENV === `development`) {
     const { logger } = require(`redux-logger`);
-    // middlewares.push(logger);
-    // createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
+    middlewares.push(logger);
 
     const reduxDevtools = require("redux-devtools-extension");
     const { composeWithDevTools } = reduxDevtools;

@@ -5,15 +5,14 @@
  */
 
 import * as Rx from "rxjs/Rx";
-const { ajax } = Rx.Observable;
-
 import { BackendFactory } from "stalk-js/starter";
-import { StalkAccount, RoomAccessData } from "../../../shared/Stalk";
+import { StalkAccount, RoomAccessData } from "stalk-js/starter/models";
 import InternalStore, { ChatRoomComponent } from "stalk-simplechat";
-import * as ServiceProvider from "../../services/ServiceProvider";
+import * as ServiceProvider from "../../chitchat/chats/services/ServiceProvider";
 
 const getStore = () => InternalStore.store;
 const authReducer = () => InternalStore.authStore;
+const { ajax } = Rx.Observable;
 
 export const STALK_REMOVE_ROOM_ACCESS = "STALK_REMOVE_ROOM_ACCESS";
 export const STALK_REMOVE_ROOM_ACCESS_FAILURE = "STALK_REMOVE_ROOM_ACCESS_FAILURE";
@@ -120,17 +119,18 @@ const getLastAccessRoomSuccess = (payload) => ({ type: GET_LAST_ACCESS_ROOM_SUCC
 const getLastAccessRoomFailure = (error) => ({ type: GET_LAST_ACCESS_ROOM_FAILURE, payload: error });
 
 export const getLastAccessRoomEpic = (action$) => (
-    action$.ofType(GET_LAST_ACCESS_ROOM).mergeMap((action) => {
-        const { teamId } = action.payload;
-        return ServiceProvider.getLastAccessRoomInfo(teamId)
-            .then((response) => response.json())
-            .then((json) => {
-                console.log("getLastAccessRoomInfo result", json);
-                return json;
-            });
-    }).map((json) => {
-        const result = json.result as StalkAccount[];
-        BackendFactory.getInstance().dataListener.onAccessRoom(result);
-        return getLastAccessRoomSuccess(result);
-    })
+    action$.ofType(GET_LAST_ACCESS_ROOM)
+        .mergeMap((action) => {
+            const { teamId } = action.payload;
+            return ServiceProvider.getLastAccessRoomInfo(teamId)
+                .then((response) => response.json())
+                .then((json) => {
+                    console.log("getLastAccessRoomInfo result", json);
+                    return json;
+                });
+        }).map((json) => {
+            const result = json.result as StalkAccount[];
+            BackendFactory.getInstance().dataListener.onAccessRoom(result);
+            return getLastAccessRoomSuccess(result);
+        })
         .catch((json) => Rx.Observable.of(getLastAccessRoomFailure(json))));
