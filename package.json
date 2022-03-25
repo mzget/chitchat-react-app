@@ -22,7 +22,7 @@
     "@types/redux-actions": "^1.2.8",
     "@types/socket.io-client": "^1.4.29",
     "auto-launch": "^5.0.1",
-    "electron": "^1.7.6",
+    "electron": "^13.6.6",
     "electron-builder": "^19.23.1",
     "jest": "^20.0.4",
     "react-scripts": "1.0.10",
